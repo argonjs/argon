@@ -6,8 +6,7 @@
         "declaration": true,
         "emitDecoratorMetadata": false,
         "experimentalDecorators": true,
-        "allowSyntheticDefaultImports": true,
-        "allowJs": true
+        "allowSyntheticDefaultImports": true
     },
     "filesGlob": [
         "example/**/*.ts",

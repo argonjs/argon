@@ -1,9 +1,9 @@
 !function(e){function r(e,r,o){return 4===arguments.length?t.apply(this,arguments):void n(e,{declarative:!0,deps:r,declare:o})}function t(e,r,t,o){n(e,{declarative:!1,deps:r,executingRequire:t,execute:o})}function n(e,r){r.name=e,e in p||(p[e]=r),r.normalizedDeps=r.deps}function o(e,r){if(r[e.groupIndex]=r[e.groupIndex]||[],-1==v.call(r[e.groupIndex],e)){r[e.groupIndex].push(e);for(var t=0,n=e.normalizedDeps.length;n>t;t++){var a=e.normalizedDeps[t],u=p[a];if(u&&!u.evaluated){var d=e.groupIndex+(u.declarative!=e.declarative);if(void 0===u.groupIndex||u.groupIndex<d){if(void 0!==u.groupIndex&&(r[u.groupIndex].splice(v.call(r[u.groupIndex],u),1),0==r[u.groupIndex].length))throw new TypeError("Mixed dependency cycle detected");u.groupIndex=d}o(u,r)}}}}function a(e){var r=p[e];r.groupIndex=0;var t=[];o(r,t);for(var n=!!r.declarative==t.length%2,a=t.length-1;a>=0;a--){for(var u=t[a],i=0;i<u.length;i++){var s=u[i];n?d(s):l(s)}n=!n}}function u(e){return x[e]||(x[e]={name:e,dependencies:[],exports:{},importers:[]})}function d(r){if(!r.module){var t=r.module=u(r.name),n=r.module.exports,o=r.declare.call(e,function(e,r){if(t.locked=!0,"object"==typeof e)for(var o in e)n[o]=e[o];else n[e]=r;for(var a=0,u=t.importers.length;u>a;a++){var d=t.importers[a];if(!d.locked)for(var i=0;i<d.dependencies.length;++i)d.dependencies[i]===t&&d.setters[i](n)}return t.locked=!1,r},r.name);t.setters=o.setters,t.execute=o.execute;for(var a=0,i=r.normalizedDeps.length;i>a;a++){var l,s=r.normalizedDeps[a],c=p[s],v=x[s];v?l=v.exports:c&&!c.declarative?l=c.esModule:c?(d(c),v=c.module,l=v.exports):l=f(s),v&&v.importers?(v.importers.push(t),t.dependencies.push(v)):t.dependencies.push(null),t.setters[a]&&t.setters[a](l)}}}function i(e){var r,t=p[e];if(t)t.declarative?c(e,[]):t.evaluated||l(t),r=t.module.exports;else if(r=f(e),!r)throw new Error("Unable to load dependency "+e+".");return(!t||t.declarative)&&r&&r.__useDefault?r["default"]:r}function l(r){if(!r.module){var t={},n=r.module={exports:t,id:r.name};if(!r.executingRequire)for(var o=0,a=r.normalizedDeps.length;a>o;o++){var u=r.normalizedDeps[o],d=p[u];d&&l(d)}r.evaluated=!0;var c=r.execute.call(e,function(e){for(var t=0,n=r.deps.length;n>t;t++)if(r.deps[t]==e)return i(r.normalizedDeps[t]);throw new TypeError("Module "+e+" not declared as a dependency.")},t,n);c&&(n.exports=c),t=n.exports,t&&t.__esModule?r.esModule=t:r.esModule=s(t)}}function s(r){if(r===e)return r;var t={};if("object"==typeof r||"function"==typeof r)if(g){var n;for(var o in r)(n=Object.getOwnPropertyDescriptor(r,o))&&h(t,o,n)}else{var a=r&&r.hasOwnProperty;for(var o in r)(!a||r.hasOwnProperty(o))&&(t[o]=r[o])}return t["default"]=r,h(t,"__useDefault",{value:!0}),t}function c(r,t){var n=p[r];if(n&&!n.evaluated&&n.declarative){t.push(r);for(var o=0,a=n.normalizedDeps.length;a>o;o++){var u=n.normalizedDeps[o];-1==v.call(t,u)&&(p[u]?c(u,t):f(u))}n.evaluated||(n.evaluated=!0,n.module.execute.call(e))}}function f(e){if(D[e])return D[e];if("@node/"==e.substr(0,6))return y(e.substr(6));var r=p[e];if(!r)throw"Module "+e+" not present.";return a(e),c(e,[]),p[e]=void 0,r.declarative&&h(r.module.exports,"__esModule",{value:!0}),D[e]=r.declarative?r.module.exports:r.esModule}var p={},v=Array.prototype.indexOf||function(e){for(var r=0,t=this.length;t>r;r++)if(this[r]===e)return r;return-1},g=!0;try{Object.getOwnPropertyDescriptor({a:0},"a")}catch(m){g=!1}var h;!function(){try{Object.defineProperty({},"a",{})&&(h=Object.defineProperty)}catch(e){h=function(e,r,t){try{e[r]=t.value||t.get.call(e)}catch(n){}}}}();var x={},y="undefined"!=typeof System&&System._nodeRequire||"undefined"!=typeof require&&require.resolve&&"undefined"!=typeof process&&require,D={"@empty":{}};return function(e,n,o){return function(a){a(function(a){for(var u={_nodeRequire:y,register:r,registerDynamic:t,get:f,set:function(e,r){D[e]=r},newModule:function(e){return e}},d=0;d<n.length;d++)(function(e,r){r&&r.__esModule?D[e]=r:D[e]=s(r)})(n[d],arguments[d]);o(u);var i=f(e[0]);if(e.length>1)for(var d=1;d<e.length;d++)f(e[d]);return i.__useDefault?i["default"]:i})}}}("undefined"!=typeof self?self:global)
 
-(["1"], [], function($__System) {
+(["1","1"], [], function($__System) {
 
 !function(){var t=$__System;if("undefined"!=typeof window&&"undefined"!=typeof document&&window.location)var s=location.protocol+"//"+location.hostname+(location.port?":"+location.port:"");t.set("@@cjs-helpers",t.newModule({getPathVars:function(t){var n,o=t.lastIndexOf("!");n=-1!=o?t.substr(0,o):t;var e=n.split("/");return e.pop(),e=e.join("/"),"file:///"==n.substr(0,8)?(n=n.substr(7),e=e.substr(7),isWindows&&(n=n.substr(1),e=e.substr(1))):s&&n.substr(0,s.length)===s&&(n=n.substr(s.length),e=e.substr(s.length)),{filename:n,dirname:e}}}))}();
-!function(e){function n(e,n){e=e.replace(l,"");var r=e.match(s),i=(r[1].split(",")[n]||"require").replace(p,""),t=c[i]||(c[i]=new RegExp(u+i+a,"g"));t.lastIndex=0;for(var o,f=[];o=t.exec(e);)f.push(o[2]||o[3]);return f}function r(e,n,i,t){if("object"==typeof e&&!(e instanceof Array))return r.apply(null,Array.prototype.splice.call(arguments,1,arguments.length-1));if("string"==typeof e&&"function"==typeof n&&(e=[e]),!(e instanceof Array)){if("string"==typeof e){var f=o.get(e);return f.__useDefault?f["default"]:f}throw new TypeError("Invalid require")}for(var l=[],u=0;u<e.length;u++)l.push(o["import"](e[u],t));Promise.all(l).then(function(e){n&&n.apply(null,e)},i)}function i(i,t,l){"string"!=typeof i&&(l=t,t=i,i=null),t instanceof Array||(l=t,t=["require","exports","module"].splice(0,l.length)),"function"!=typeof l&&(l=function(e){return function(){return e}}(l)),void 0===t[t.length-1]&&t.pop();var u,a,s;-1!=(u=f.call(t,"require"))&&(t.splice(u,1),i||(t=t.concat(n(l.toString(),u)))),-1!=(a=f.call(t,"exports"))&&t.splice(a,1),-1!=(s=f.call(t,"module"))&&t.splice(s,1);var p={name:i,deps:t,execute:function(n,i,f){for(var p=[],c=0;c<t.length;c++)p.push(n(t[c]));f.uri=f.id,f.config=function(){},-1!=s&&p.splice(s,0,f),-1!=a&&p.splice(a,0,i),-1!=u&&p.splice(u,0,function(e,i,t){return"string"==typeof e&&"function"!=typeof i?n(e):r.call(o,e,i,t,f.id)});var d=l.apply(-1==a?e:i,p);return"undefined"==typeof d&&f&&(d=f.exports),"undefined"!=typeof d?d:void 0}};if(i)d.anonDefine||d.isBundle?(d.anonDefine&&d.anonDefine.name&&o.registerDynamic(d.anonDefine.name,d.anonDefine.deps,!1,d.anonDefine.execute),d.anonDefine=null):d.anonDefine=p,d.isBundle=!0,o.registerDynamic(i,p.deps,!1,p.execute);else{if(d.anonDefine)throw new TypeError("Multiple defines for anonymous module");d.anonDefine=p}}function t(n){d.anonDefine=null,d.isBundle=!1;var r=e.module,t=e.exports,o=e.define;return e.module=void 0,e.exports=void 0,e.define=i,function(){e.define=o,e.module=r,e.exports=t}}var o=$__System,f=Array.prototype.indexOf||function(e){for(var n=0,r=this.length;r>n;n++)if(this[n]===e)return n;return-1},l=/(\/\*([\s\S]*?)\*\/|([^:]|^)\/\/(.*)$)/gm,u="(?:^|[^$_a-zA-Z\\xA0-\\uFFFF.])",a="\\s*\\(\\s*(\"([^\"]+)\"|'([^']+)')\\s*\\)",s=/\(([^\)]*)\)/,p=/^\s+|\s+$/g,c={};i.amd={};var d={isBundle:!1,anonDefine:null};o.set("@@amd-helpers",o.newModule({createDefine:t,require:r,define:i,lastModule:d})),o.amdDefine=i,o.amdRequire=r}("undefined"!=typeof self?self:global);
+!function(e){function n(e,n){e=e.replace(l,"");var r=e.match(u),t=(r[1].split(",")[n]||"require").replace(s,""),i=p[t]||(p[t]=new RegExp(a+t+f,"g"));i.lastIndex=0;for(var o,c=[];o=i.exec(e);)c.push(o[2]||o[3]);return c}function r(e,n,t,o){if("object"==typeof e&&!(e instanceof Array))return r.apply(null,Array.prototype.splice.call(arguments,1,arguments.length-1));if("string"==typeof e&&"function"==typeof n&&(e=[e]),!(e instanceof Array)){if("string"==typeof e){var l=i.get(e);return l.__useDefault?l["default"]:l}throw new TypeError("Invalid require")}for(var a=[],f=0;f<e.length;f++)a.push(i["import"](e[f],o));Promise.all(a).then(function(e){n&&n.apply(null,e)},t)}function t(t,l,a){"string"!=typeof t&&(a=l,l=t,t=null),l instanceof Array||(a=l,l=["require","exports","module"].splice(0,a.length)),"function"!=typeof a&&(a=function(e){return function(){return e}}(a)),void 0===l[l.length-1]&&l.pop();var f,u,s;-1!=(f=o.call(l,"require"))&&(l.splice(f,1),t||(l=l.concat(n(a.toString(),f)))),-1!=(u=o.call(l,"exports"))&&l.splice(u,1),-1!=(s=o.call(l,"module"))&&l.splice(s,1);var p={name:t,deps:l,execute:function(n,t,o){for(var p=[],c=0;c<l.length;c++)p.push(n(l[c]));o.uri=o.id,o.config=function(){},-1!=s&&p.splice(s,0,o),-1!=u&&p.splice(u,0,t),-1!=f&&p.splice(f,0,function(e,t,l){return"string"==typeof e&&"function"!=typeof t?n(e):r.call(i,e,t,l,o.id)});var d=a.apply(-1==u?e:t,p);return"undefined"==typeof d&&o&&(d=o.exports),"undefined"!=typeof d?d:void 0}};if(t)c.anonDefine||c.isBundle?c.anonDefine&&c.anonDefine.name&&(c.anonDefine=null):c.anonDefine=p,c.isBundle=!0,i.registerDynamic(p.name,p.deps,!1,p.execute);else{if(c.anonDefine&&!c.anonDefine.name)throw new Error("Multiple anonymous defines in module "+t);c.anonDefine=p}}var i=$__System,o=Array.prototype.indexOf||function(e){for(var n=0,r=this.length;r>n;n++)if(this[n]===e)return n;return-1},l=/(\/\*([\s\S]*?)\*\/|([^:]|^)\/\/(.*)$)/gm,a="(?:^|[^$_a-zA-Z\\xA0-\\uFFFF.])",f="\\s*\\(\\s*(\"([^\"]+)\"|'([^']+)')\\s*\\)",u=/\(([^\)]*)\)/,s=/^\s+|\s+$/g,p={};t.amd={};var c={isBundle:!1,anonDefine:null};i.amdDefine=t,i.amdRequire=r}("undefined"!=typeof self?self:global);
 $__System.register("2", ["6", "3", "4", "5"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
@@ -686,19 +686,19 @@ $__System.register("4", ["7", "6", "3", "5", "8", "9"], function(exports_1, cont
           }
           return plugin;
         };
+        Object.defineProperty(Context.prototype, "reality", {
+          get: function() {
+            return this.__reality;
+          },
+          enumerable: true,
+          configurable: true
+        });
         Object.defineProperty(Context.prototype, "_reality", {
           set: function(value) {
             if (!this.__reality || this.__reality.id !== value.id) {
               this.__reality = value;
               this.realityChangeEvent.raiseEvent(undefined);
             }
-          },
-          enumerable: true,
-          configurable: true
-        });
-        Object.defineProperty(Context.prototype, "reality", {
-          get: function() {
-            return this.__reality;
           },
           enumerable: true,
           configurable: true
@@ -944,8 +944,8 @@ $__System.register("4", ["7", "6", "3", "5", "8", "9"], function(exports_1, cont
           enumerable: true,
           configurable: true
         });
-        Context.prototype.getDesiredPresentationModeForSession = function(s) {
-          return this._sessionToDesiredPresentationModeMap.get(s);
+        Context.prototype.getDesiredPresentationModeForSession = function(session) {
+          return this._sessionToDesiredPresentationModeMap.get(session);
         };
         Object.defineProperty(Context.prototype, "desiredReality", {
           get: function() {
@@ -960,8 +960,8 @@ $__System.register("4", ["7", "6", "3", "5", "8", "9"], function(exports_1, cont
           enumerable: true,
           configurable: true
         });
-        Context.prototype.getDesiredRealityForSession = function(s) {
-          return this._sessionToDesiredRealityMap.get(s);
+        Context.prototype.getDesiredRealityForSession = function(session) {
+          return this._sessionToDesiredRealityMap.get(session);
         };
         Context.prototype._setReality = function(reality) {
           var _this = this;
@@ -1306,9 +1306,9 @@ $__System.register("b", ["7"], function(exports_1, context_1) {
 
 $__System.registerDynamic("c", ["@empty"], true, function($__require, exports, module) {
   var process = $__require("@empty");
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
+  var define;
+  var global = this;
+  var GLOBAL = this;
   !function(b, c, a) {
     "use strict";
     !function(b) {
@@ -4032,12 +4032,11 @@ $__System.registerDynamic("c", ["@empty"], true, function($__require, exports, m
       return b;
     }) : c.core = b;
   }(1, 1);
-  global.define = __define;
   return module.exports;
 });
 
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("d", ["exports", "c", "e"], function(exports, _coreJs, _aureliaPal) {
   'use strict';
   exports.__esModule = true;
@@ -4299,10 +4298,9 @@ define("d", ["exports", "c", "e"], function(exports, _coreJs, _aureliaPal) {
   };
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("e", ["exports"], function(exports) {
   'use strict';
   exports.__esModule = true;
@@ -4357,10 +4355,9 @@ define("e", ["exports"], function(exports) {
   }
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("6", ["exports", "c", "d", "e"], function(exports, _coreJs, _aureliaMetadata, _aureliaPal) {
   'use strict';
   exports.__esModule = true;
@@ -4852,7 +4849,6 @@ define("6", ["exports", "c", "d", "e"], function(exports, _coreJs, _aureliaMetad
   }
 });
 
-_removeDefine();
 })();
 $__System.register("3", ["7", "6", "5"], function(exports_1, context_1) {
   "use strict";
@@ -5244,6 +5240,9 @@ $__System.register("9", ["6", "b", "3"], function(exports_1, context_1) {
             throw new Error("Cannot setup an unsupported reality");
           handler.call(this, reality, port);
         };
+        RealitySetupService.prototype.supportsReality = function(reality) {
+          return !!this.handlers.get(reality.type);
+        };
         RealitySetupService.prototype.setupEmptyReality = function(reality, port) {
           var _this = this;
           var channel = this.messageChannelFactory.create();
@@ -5267,9 +5266,6 @@ $__System.register("9", ["6", "b", "3"], function(exports_1, context_1) {
           });
           remoteRealitySession.open(port, {role: session_ts_1.Role.Reality});
         };
-        RealitySetupService.prototype.supportsReality = function(reality) {
-          return !!this.handlers.get(reality.type);
-        };
         RealitySetupService = __decorate([aurelia_dependency_injection_1.inject(timer_ts_1.TimerService, session_ts_1.MessageChannelFactory, session_ts_1.SessionFactory)], RealitySetupService);
         return RealitySetupService;
       }());
@@ -5279,7 +5275,7 @@ $__System.register("9", ["6", "b", "3"], function(exports_1, context_1) {
 });
 
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("f", ["10", "11", "12", "13"], function(defined, defineProperties, DeveloperError, Event) {
   "use strict";
   function CallbackProperty(callback, isConstant) {
@@ -5319,10 +5315,9 @@ define("f", ["10", "11", "12", "13"], function(defined, defineProperties, Develo
   return CallbackProperty;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("14", ["15"], function(freezeObject) {
   "use strict";
   var ClockRange = {
@@ -5333,10 +5328,9 @@ define("14", ["15"], function(freezeObject) {
   return freezeObject(ClockRange);
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("16", ["10"], function(defined) {
   "use strict";
   var getTimestamp;
@@ -5352,10 +5346,9 @@ define("16", ["10"], function(defined) {
   return getTimestamp;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("17", ["14", "18", "19", "10", "12", "13", "16", "1a"], function(ClockRange, ClockStep, defaultValue, defined, DeveloperError, Event, getTimestamp, JulianDate) {
   "use strict";
   function Clock(options) {
@@ -5440,10 +5433,9 @@ define("17", ["14", "18", "19", "10", "12", "13", "16", "1a"], function(ClockRan
   return Clock;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("18", ["15"], function(freezeObject) {
   "use strict";
   var ClockStep = {
@@ -5454,10 +5446,9 @@ define("18", ["15"], function(freezeObject) {
   return freezeObject(ClockStep);
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("1b", ["1c", "10", "11", "12", "1d", "1e", "1f"], function(createGuid, defined, defineProperties, DeveloperError, CesiumMath, Entity, EntityCollection) {
   "use strict";
   var entityOptionsScratch = {id: undefined};
@@ -5772,10 +5763,9 @@ define("1b", ["1c", "10", "11", "12", "1d", "1e", "1f"], function(createGuid, de
   return CompositeEntityCollection;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("20", ["10", "11", "12"], function(defined, defineProperties, DeveloperError) {
   "use strict";
   function AssociativeArray() {
@@ -5836,10 +5826,9 @@ define("20", ["10", "11", "12"], function(defined, defineProperties, DeveloperEr
   return AssociativeArray;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("1c", [], function() {
   "use strict";
   function createGuid() {
@@ -5852,10 +5841,9 @@ define("1c", [], function() {
   return createGuid;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("21", ["22", "19", "10", "11", "12", "13", "23", "24"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, Event, ReferenceFrame, PositionProperty) {
   "use strict";
   function ConstantPositionProperty(value, referenceFrame) {
@@ -5906,10 +5894,9 @@ define("21", ["22", "19", "10", "11", "12", "13", "23", "24"], function(Cartesia
   return ConstantPositionProperty;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("25", ["19", "10", "11", "12", "13"], function(defaultValue, defined, defineProperties, DeveloperError, Event) {
   "use strict";
   function ConstantProperty(value) {
@@ -5949,10 +5936,9 @@ define("25", ["19", "10", "11", "12", "13"], function(defaultValue, defined, def
   return ConstantProperty;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("26", ["19", "10", "25"], function(defaultValue, defined, ConstantProperty) {
   "use strict";
   function createProperty(name, privateName, subscriptionName, configurable, createPropertyCallback) {
@@ -5993,10 +5979,9 @@ define("26", ["19", "10", "25"], function(defaultValue, defined, ConstantPropert
   return createPropertyDescriptor;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("27", ["26"], function(createPropertyDescriptor) {
   "use strict";
   function createRawProperty(value) {
@@ -6008,10 +5993,9 @@ define("27", ["26"], function(createPropertyDescriptor) {
   return createRawPropertyDescriptor;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("1e", ["22", "1c", "19", "10", "11", "12", "13", "28", "29", "2a", "2b", "@empty", "@empty", "21", "@empty", "26", "27", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "2c", "@empty", "@empty"], function(Cartesian3, createGuid, defaultValue, defined, defineProperties, DeveloperError, Event, Matrix3, Matrix4, Quaternion, Transforms, BillboardGraphics, BoxGraphics, ConstantPositionProperty, CorridorGraphics, createPropertyDescriptor, createRawPropertyDescriptor, CylinderGraphics, EllipseGraphics, EllipsoidGraphics, LabelGraphics, ModelGraphics, PathGraphics, PointGraphics, PolygonGraphics, PolylineGraphics, PolylineVolumeGraphics, Property, RectangleGraphics, WallGraphics) {
   "use strict";
   function createConstantPositionProperty(value) {
@@ -6261,10 +6245,9 @@ define("1e", ["22", "1c", "19", "10", "11", "12", "13", "28", "29", "2a", "2b", 
   return Entity;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("1f", ["20", "1c", "10", "11", "12", "13", "2d", "1a", "2e", "2f", "1e"], function(AssociativeArray, createGuid, defined, defineProperties, DeveloperError, Event, Iso8601, JulianDate, RuntimeError, TimeInterval, Entity) {
   "use strict";
   var entityOptionsScratch = {id: undefined};
@@ -6445,10 +6428,9 @@ define("1f", ["20", "1c", "10", "11", "12", "13", "2d", "1a", "2e", "2f", "1e"],
   return EntityCollection;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("30", ["22", "31", "19", "10", "11", "12", "32"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, Ellipsoid) {
   "use strict";
   function GeographicProjection(ellipsoid) {
@@ -6491,10 +6473,9 @@ define("30", ["22", "31", "19", "10", "11", "12", "32"], function(Cartesian3, Ca
   return GeographicProjection;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("33", ["19", "10", "12", "1d"], function(defaultValue, defined, DeveloperError, CesiumMath) {
   "use strict";
   var factorial = CesiumMath.factorial;
@@ -6692,10 +6673,9 @@ define("33", ["19", "10", "12", "1d"], function(defaultValue, defined, Developer
   return HermitePolynomialApproximation;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("34", ["10", "11", "12", "28", "2a", "23", "2b"], function(defined, defineProperties, DeveloperError, Matrix3, Quaternion, ReferenceFrame, Transforms) {
   "use strict";
   var OrientationProperty = function() {
@@ -6822,10 +6802,9 @@ define("34", ["10", "11", "12", "28", "2a", "23", "2b"], function(defined, defin
   return OrientationProperty;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("35", ["15"], function(freezeObject) {
   "use strict";
   var Intersect = {
@@ -6836,10 +6815,9 @@ define("35", ["15"], function(freezeObject) {
   return freezeObject(Intersect);
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("36", ["22", "10", "12", "15"], function(Cartesian3, defined, DeveloperError, freezeObject) {
   "use strict";
   function Plane(normal, distance) {
@@ -6897,10 +6875,9 @@ define("36", ["22", "10", "12", "15"], function(Cartesian3, defined, DeveloperEr
   return Plane;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("37", ["22", "19", "10", "12", "35", "36"], function(Cartesian3, defaultValue, defined, DeveloperError, Intersect, Plane) {
   "use strict";
   function CullingVolume(planes) {
@@ -6957,10 +6934,9 @@ define("37", ["22", "19", "10", "12", "35", "36"], function(Cartesian3, defaultV
   return CullingVolume;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("38", ["39", "22", "3a", "19", "10", "11", "12", "29", "37"], function(Cartesian2, Cartesian3, Cartesian4, defaultValue, defined, defineProperties, DeveloperError, Matrix4, CullingVolume) {
   "use strict";
   function PerspectiveOffCenterFrustum() {
@@ -7164,10 +7140,9 @@ define("38", ["39", "22", "3a", "19", "10", "11", "12", "29", "37"], function(Ca
   return PerspectiveOffCenterFrustum;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("3b", ["10", "11", "12", "38"], function(defined, defineProperties, DeveloperError, PerspectiveOffCenterFrustum) {
   "use strict";
   function PerspectiveFrustum() {
@@ -7264,10 +7239,9 @@ define("3b", ["10", "11", "12", "38"], function(defined, defineProperties, Devel
   return PerspectiveFrustum;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("3c", ["10", "11", "12", "13", "2c"], function(defined, defineProperties, DeveloperError, Event, Property) {
   "use strict";
   function resolve(that) {
@@ -7336,10 +7310,9 @@ define("3c", ["10", "11", "12", "13", "2c"], function(defined, defineProperties,
   return ReferenceEntity;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("3d", ["10", "11", "12", "13", "2e", "2c"], function(defined, defineProperties, DeveloperError, Event, RuntimeError, Property) {
   "use strict";
   function resolveEntity(that) {
@@ -7511,10 +7484,9 @@ define("3d", ["10", "11", "12", "13", "2e", "2c"], function(defined, definePrope
   return ReferenceProperty;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("23", ["15"], function(freezeObject) {
   "use strict";
   var ReferenceFrame = {
@@ -7524,10 +7496,9 @@ define("23", ["15"], function(freezeObject) {
   return freezeObject(ReferenceFrame);
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("24", ["22", "10", "11", "12", "28", "29", "2a", "23", "2b"], function(Cartesian3, defined, defineProperties, DeveloperError, Matrix3, Matrix4, Quaternion, ReferenceFrame, Transforms) {
   "use strict";
   function PositionProperty() {
@@ -7678,10 +7649,9 @@ define("24", ["22", "10", "11", "12", "28", "29", "2a", "23", "2b"], function(Ca
   return PositionProperty;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("2f", ["19", "10", "11", "12", "15", "1a"], function(defaultValue, defined, defineProperties, DeveloperError, freezeObject, JulianDate) {
   "use strict";
   function TimeInterval(options) {
@@ -7832,10 +7802,9 @@ define("2f", ["19", "10", "11", "12", "15", "1a"], function(defaultValue, define
   return TimeInterval;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("2d", ["15", "1a", "2f"], function(freezeObject, JulianDate, TimeInterval) {
   "use strict";
   var MINIMUM_VALUE = freezeObject(JulianDate.fromIso8601('0000-01-01T00:00:00Z'));
@@ -7852,10 +7821,9 @@ define("2d", ["15", "1a", "2f"], function(freezeObject, JulianDate, TimeInterval
   return Iso8601;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("2c", ["19", "10", "11", "12", "2d"], function(defaultValue, defined, defineProperties, DeveloperError, Iso8601) {
   "use strict";
   function Property() {
@@ -7907,10 +7875,9 @@ define("2c", ["19", "10", "11", "12", "2d"], function(defaultValue, defined, def
   return Property;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("3e", ["22", "19", "10", "11", "12", "13", "23", "24", "2c", "3f"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, Event, ReferenceFrame, PositionProperty, Property, SampledProperty) {
   "use strict";
   function SampledPositionProperty(referenceFrame, numberOfDerivatives) {
@@ -8020,10 +7987,9 @@ define("3e", ["22", "19", "10", "11", "12", "13", "23", "24", "2c", "3f"], funct
   return SampledPositionProperty;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("13", ["10", "11", "12"], function(defined, defineProperties, DeveloperError) {
   "use strict";
   function Event() {
@@ -8097,10 +8063,9 @@ define("13", ["10", "11", "12"], function(defined, defineProperties, DeveloperEr
   return Event;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("40", ["15"], function(freezeObject) {
   "use strict";
   var ExtrapolationType = {
@@ -8111,10 +8076,9 @@ define("40", ["15"], function(freezeObject) {
   return freezeObject(ExtrapolationType);
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("41", ["10", "12"], function(defined, DeveloperError) {
   "use strict";
   var LinearApproximation = {type: 'Linear'};
@@ -8148,10 +8112,9 @@ define("41", ["10", "12"], function(defined, DeveloperError) {
   return LinearApproximation;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("3f", ["42", "19", "10", "11", "12", "13", "40", "1a", "41"], function(binarySearch, defaultValue, defined, defineProperties, DeveloperError, Event, ExtrapolationType, JulianDate, LinearApproximation) {
   "use strict";
   var PackableNumber = {
@@ -8598,10 +8561,9 @@ define("3f", ["42", "19", "10", "11", "12", "13", "40", "1a", "41"], function(bi
   return SampledProperty;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("39", ["19", "10", "12", "15", "1d"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
   "use strict";
   function Cartesian2(x, y) {
@@ -8906,10 +8868,9 @@ define("39", ["19", "10", "12", "15", "1d"], function(defaultValue, defined, Dev
   return Cartesian2;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("43", ["44", "42", "19", "10", "45", "15", "1a", "46", "47", "2e", "48", "49"], function(when, binarySearch, defaultValue, defined, EarthOrientationParametersSample, freezeObject, JulianDate, LeapSecond, loadJson, RuntimeError, TimeConstants, TimeStandard) {
   "use strict";
   function EarthOrientationParameters(options) {
@@ -9133,10 +9094,9 @@ define("43", ["44", "42", "19", "10", "45", "15", "1a", "46", "47", "2e", "48", 
   return EarthOrientationParameters;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("45", [], function() {
   "use strict";
   function EarthOrientationParametersSample(xPoleWander, yPoleWander, xPoleOffset, yPoleOffset, ut1MinusUtc) {
@@ -9149,10 +9109,9 @@ define("45", [], function() {
   return EarthOrientationParametersSample;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("31", ["22", "19", "10", "12", "15", "1d", "4a"], function(Cartesian3, defaultValue, defined, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
   "use strict";
   function Cartographic(longitude, latitude, height) {
@@ -9252,10 +9211,9 @@ define("31", ["22", "19", "10", "12", "15", "1d", "4a"], function(Cartesian3, de
   return Cartographic;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("4a", ["22", "10", "12", "1d"], function(Cartesian3, defined, DeveloperError, CesiumMath) {
   "use strict";
   var scaleToGeodeticSurfaceIntersection = new Cartesian3();
@@ -9335,10 +9293,9 @@ define("4a", ["22", "10", "12", "1d"], function(Cartesian3, defined, DeveloperEr
   return scaleToGeodeticSurface;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("32", ["22", "31", "19", "10", "11", "12", "15", "1d", "4a"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
   "use strict";
   function initialize(ellipsoid, x, y, z) {
@@ -9574,10 +9531,9 @@ define("32", ["22", "31", "19", "10", "11", "12", "15", "1d", "4a"], function(Ca
   return Ellipsoid;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("4b", [], function() {
   function URI(uri) {
     if (uri instanceof URI) {
@@ -9723,10 +9679,9 @@ define("4b", [], function() {
   return URI;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("4c", ["4b", "10", "12", "require"], function(Uri, defined, DeveloperError, require) {
   "use strict";
   var cesiumScriptRegex = /((?:.*\/)|^)cesium[\w-]*\.js(?:\W|$)/i;
@@ -9790,10 +9745,9 @@ define("4c", ["4b", "10", "12", "require"], function(Uri, defined, DeveloperErro
   return buildModuleUrl;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("4d", ["19"], function(defaultValue) {
   "use strict";
   function clone(object, deep) {
@@ -9816,10 +9770,9 @@ define("4d", ["19"], function(defaultValue) {
   return clone;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 (function(define) {
   'use strict';
   define("44", [], function() {
@@ -10162,10 +10115,9 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
   typeof exports === 'object' ? (module.exports = factory()) : (this.when = factory());
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("4e", [], function() {
   "use strict";
   function parseResponseHeaders(headerString) {
@@ -10188,10 +10140,9 @@ define("4e", [], function() {
   return parseResponseHeaders;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("4f", ["10", "4e"], function(defined, parseResponseHeaders) {
   "use strict";
   function RequestErrorEvent(statusCode, response, responseHeaders) {
@@ -10212,10 +10163,9 @@ define("4f", ["10", "4e"], function(defined, parseResponseHeaders) {
   return RequestErrorEvent;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("50", ["44", "19", "10", "12", "4f", "2e"], function(when, defaultValue, defined, DeveloperError, RequestErrorEvent, RuntimeError) {
   "use strict";
   function loadWithXhr(options) {
@@ -10321,10 +10271,9 @@ define("50", ["44", "19", "10", "12", "4f", "2e"], function(when, defaultValue, 
   return loadWithXhr;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("51", ["50"], function(loadWithXhr) {
   "use strict";
   function loadText(url, headers) {
@@ -10336,10 +10285,9 @@ define("51", ["50"], function(loadWithXhr) {
   return loadText;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("47", ["4d", "10", "12", "51"], function(clone, defined, DeveloperError, loadText) {
   "use strict";
   var defaultHeaders = {Accept: 'application/json,*/*;q=0.01'};
@@ -10360,10 +10308,9 @@ define("47", ["4d", "10", "12", "51"], function(clone, defined, DeveloperError, 
   return loadJson;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("52", ["44", "4c", "19", "10", "53", "1a", "47", "49"], function(when, buildModuleUrl, defaultValue, defined, Iau2006XysSample, JulianDate, loadJson, TimeStandard) {
   "use strict";
   function Iau2006XysData(options) {
@@ -10516,10 +10463,9 @@ define("52", ["44", "4c", "19", "10", "53", "1a", "47", "49"], function(when, bu
   return Iau2006XysData;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("53", [], function() {
   "use strict";
   function Iau2006XysSample(x, y, s) {
@@ -10530,10 +10476,9 @@ define("53", [], function() {
   return Iau2006XysSample;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("54", [], function() {
   function sprintf() {
     var regex = /%%|%(\d+\$)?([-+\'#0 ]*)(\*\d+\$|\*|\d+)?(\.(\*\d+\$|\*|\d+))?([scboxXuideEfFgG])/g;
@@ -10680,10 +10625,9 @@ define("54", [], function() {
   return sprintf;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("42", ["10", "12"], function(defined, DeveloperError) {
   "use strict";
   function binarySearch(array, itemToFind, comparator) {
@@ -10718,10 +10662,9 @@ define("42", ["10", "12"], function(defined, DeveloperError) {
   return binarySearch;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("55", [], function() {
   "use strict";
   function GregorianDate(year, month, day, hour, minute, second, millisecond, isLeapSecond) {
@@ -10737,10 +10680,9 @@ define("55", [], function() {
   return GregorianDate;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("56", ["12"], function(DeveloperError) {
   "use strict";
   function isLeapYear(year) {
@@ -10752,10 +10694,9 @@ define("56", ["12"], function(DeveloperError) {
   return isLeapYear;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("46", [], function() {
   "use strict";
   function LeapSecond(date, offset) {
@@ -10765,10 +10706,9 @@ define("46", [], function() {
   return LeapSecond;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("49", ["15"], function(freezeObject) {
   "use strict";
   var TimeStandard = {
@@ -10778,10 +10718,9 @@ define("49", ["15"], function(freezeObject) {
   return freezeObject(TimeStandard);
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("1a", ["54", "42", "19", "10", "12", "55", "56", "46", "48", "49"], function(sprintf, binarySearch, defaultValue, defined, DeveloperError, GregorianDate, isLeapYear, LeapSecond, TimeConstants, TimeStandard) {
   "use strict";
   var gregorianDateScratch = new GregorianDate();
@@ -11315,10 +11254,9 @@ define("1a", ["54", "42", "19", "10", "12", "55", "56", "46", "48", "49"], funct
   return JulianDate;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("3a", ["19", "10", "12", "15", "1d"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
   "use strict";
   function Cartesian4(x, y, z, w) {
@@ -11671,10 +11609,9 @@ define("3a", ["19", "10", "12", "15", "1d"], function(defaultValue, defined, Dev
   return Cartesian4;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("2e", ["10"], function(defined) {
   "use strict";
   function RuntimeError(message) {
@@ -11698,10 +11635,9 @@ define("2e", ["10"], function(defined) {
   return RuntimeError;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("29", ["22", "3a", "19", "10", "12", "15", "1d", "28", "2e"], function(Cartesian3, Cartesian4, defaultValue, defined, DeveloperError, freezeObject, CesiumMath, Matrix3, RuntimeError) {
   "use strict";
   function Matrix4(column0Row0, column1Row0, column2Row0, column3Row0, column0Row1, column1Row1, column2Row1, column3Row1, column0Row2, column1Row2, column2Row2, column3Row2, column0Row3, column1Row3, column2Row3, column3Row3) {
@@ -13144,10 +13080,9 @@ define("29", ["22", "3a", "19", "10", "12", "15", "1d", "28", "2e"], function(Ca
   return Matrix4;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("11", ["10"], function(defined) {
   "use strict";
   var definePropertyWorks = (function() {
@@ -13166,10 +13101,9 @@ define("11", ["10"], function(defined) {
   return defineProperties;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("57", ["10", "11"], function(defined, defineProperties) {
   "use strict";
   var _supportsFullscreen;
@@ -13305,10 +13239,9 @@ define("57", ["10", "11"], function(defined, defineProperties) {
   return Fullscreen;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("58", ["19", "10", "57"], function(defaultValue, defined, Fullscreen) {
   "use strict";
   var theNavigator;
@@ -13458,10 +13391,9 @@ define("58", ["19", "10", "57"], function(defaultValue, defined, Fullscreen) {
   return FeatureDetection;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("22", ["19", "10", "12", "15", "1d"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
   "use strict";
   function Cartesian3(x, y, z) {
@@ -13943,10 +13875,9 @@ define("22", ["19", "10", "12", "15", "1d"], function(defaultValue, defined, Dev
   return Cartesian3;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("59", [], function() {
   var MersenneTwister = function(seed) {
     if (seed == undefined) {
@@ -14001,10 +13932,9 @@ define("59", [], function() {
   return MersenneTwister;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("19", ["15"], function(freezeObject) {
   "use strict";
   function defaultValue(a, b) {
@@ -14017,10 +13947,9 @@ define("19", ["15"], function(freezeObject) {
   return defaultValue;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("12", ["10"], function(defined) {
   "use strict";
   function DeveloperError(message) {
@@ -14047,10 +13976,9 @@ define("12", ["10"], function(defined) {
   return DeveloperError;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("1d", ["59", "19", "10", "12"], function(MersenneTwister, defaultValue, defined, DeveloperError) {
   "use strict";
   var CesiumMath = {};
@@ -14283,10 +14211,9 @@ define("1d", ["59", "19", "10", "12"], function(MersenneTwister, defaultValue, d
   return CesiumMath;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("28", ["22", "19", "10", "12", "15", "1d"], function(Cartesian3, defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
   "use strict";
   function Matrix3(column0Row0, column1Row0, column2Row0, column0Row1, column1Row1, column2Row1, column0Row2, column1Row2, column2Row2) {
@@ -15036,10 +14963,9 @@ define("28", ["22", "19", "10", "12", "15", "1d"], function(Cartesian3, defaultV
   return Matrix3;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("2a", ["22", "19", "10", "12", "58", "15", "1d", "28"], function(Cartesian3, defaultValue, defined, DeveloperError, FeatureDetection, freezeObject, CesiumMath, Matrix3) {
   "use strict";
   function Quaternion(x, y, z, w) {
@@ -15613,10 +15539,9 @@ define("2a", ["22", "19", "10", "12", "58", "15", "1d", "28"], function(Cartesia
   return Quaternion;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("10", [], function() {
   "use strict";
   function defined(value) {
@@ -15625,10 +15550,9 @@ define("10", [], function() {
   return defined;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("15", ["10"], function(defined) {
   "use strict";
   var freezeObject = Object.freeze;
@@ -15640,10 +15564,9 @@ define("15", ["10"], function(defined) {
   return freezeObject;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("48", ["15"], function(freezeObject) {
   "use strict";
   var TimeConstants = {
@@ -15661,10 +15584,9 @@ define("48", ["15"], function(freezeObject) {
   return freezeObject(TimeConstants);
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 define("2b", ["44", "39", "22", "3a", "19", "10", "12", "43", "45", "32", "52", "53", "1a", "1d", "28", "29", "2a", "48"], function(when, Cartesian2, Cartesian3, Cartesian4, defaultValue, defined, DeveloperError, EarthOrientationParameters, EarthOrientationParametersSample, Ellipsoid, Iau2006XysData, Iau2006XysSample, JulianDate, CesiumMath, Matrix3, Matrix4, Quaternion, TimeConstants) {
   "use strict";
   var Transforms = {};
@@ -16058,7 +15980,6 @@ define("2b", ["44", "39", "22", "3a", "19", "10", "12", "43", "45", "32", "52", 
   return Transforms;
 });
 
-_removeDefine();
 })();
 $__System.register("5a", ["7"], function(exports_1, context_1) {
   "use strict";

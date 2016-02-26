@@ -5,7 +5,6 @@ SystemJS.config({
         "github:*/*.json"
     ],
     transpiler: false,
-
     typescriptOptions: {
         "tsconfig": true,
         "typeCheck": false,
@@ -20,6 +19,8 @@ SystemJS.config({
         "css": "github:systemjs/plugin-css@0.1.20",
         "mocha": "npm:mocha@2.4.5",
         "process": "github:jspm/nodelibs-process@0.2.0-alpha",
+        "traceur": "github:jmcriffey/bower-traceur@0.0.93",
+        "traceur-runtime": "github:jmcriffey/bower-traceur-runtime@0.0.93",
         "ts": "github:frankwallis/plugin-typescript@2.6.0"
     },
 
