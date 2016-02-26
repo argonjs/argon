@@ -8,7 +8,7 @@ An open-standards augmented reality platform for the web
 * Clone argon
 
 ```sh
-git clone https://github.gatech.edu/ael/argon.git
+git clone https://github.com/argonjs/argon.git
 ```
 
 * Make sure you have Node.js/npm installed (There are many guides for this online)
