@@ -1,0 +1,101 @@
+{
+    "name": "argon",
+    "version": "0.2.0-alpha",
+    "main": "dist/argon.js",
+    "typings": "dist/argon.d.ts",
+    "jspm": {
+        "main": "src/argon.ts!",
+        "format": "es6",
+        "dependencies": {
+            "Cesium": "github:aelatgt/cesium@referenceFrames",
+            "aurelia-dependency-injection": "github:aurelia/dependency-injection@^0.12.1",
+            "ts": "github:frankwallis/plugin-typescript@^2.5.9"
+        },
+        "devDependencies": {
+            "chai": "npm:chai@^3.5.0",
+            "css": "github:systemjs/plugin-css@^0.1.19",
+            "mocha": "npm:mocha@^2.3.3"
+        },
+        "peerDependencies": {
+            "buffer": "github:jspm/nodelibs-buffer@^0.2.0-alpha",
+            "process": "github:jspm/nodelibs-process@^0.2.0-alpha"
+        },
+        "overrides": {
+            "github:frankwallis/plugin-typescript@2.6.0": {
+                "dependencies": {
+                    "typescript": "npm:typescript@1.9.0-dev.20160204"
+                }
+            },
+            "npm:core-js@1.2.6": {
+                "main": "client/shim.min.js",
+                "map": {
+                    "fs": "@empty",
+                    "path": "@empty",
+                    "process": "@empty"
+                }
+            },
+            "npm:mocha@2.4.5": {
+                "browser": "mocha",
+                "main": "mocha",
+                "meta": {
+                    "mocha.js": {
+                        "deps": [
+                            "./mocha.css!"
+                        ],
+                        "exports": "mocha"
+                    }
+                },
+                "dependencies": {
+                    "css": "*"
+                },
+                "registry": "jspm"
+            },
+            "npm:typescript@1.9.0-dev.20160204": {
+                "browser": {},
+                "map": {
+                    "buffer": "@empty",
+                    "child_process": "@empty",
+                    "fs": "@empty",
+                    "os": "@empty",
+                    "path": "@empty",
+                    "process": "@empty",
+                    "readline": "@empty"
+                }
+            },  
+            "github:aelatgt/cesium@referenceFrames": {
+                "map": {
+                "./Source/DataSources/BillboardGraphics": "@empty",
+                "./Source/DataSources/BoxGraphics": "@empty",
+                "./Source/DataSources/CorridorGraphics": "@empty",
+                "./Source/DataSources/CylinderGraphics": "@empty",
+                "./Source/DataSources/EllipseGraphics": "@empty",
+                "./Source/DataSources/EllipsoidGraphics": "@empty",
+                "./Source/DataSources/LabelGraphics": "@empty",
+                "./Source/DataSources/ModelGraphics": "@empty",
+                "./Source/DataSources/PathGraphics": "@empty",
+                "./Source/DataSources/PointGraphics": "@empty",
+                "./Source/DataSources/PolygonGraphics": "@empty",
+                "./Source/DataSources/PolylineGraphics": "@empty",
+                "./Source/DataSources/PolylineVolumeGraphics": "@empty",
+                "./Source/DataSources/RectangleGraphics": "@empty",
+                "./Source/DataSources/WallGraphics": "@empty"
+                }
+            }
+        }
+    },
+    "devDependencies": {
+        "browser-sync": "^2.11.0",
+        "jspm": "^0.16.15",
+        "tsconfig-glob": "^0.2.1",
+        "typedoc": "^0.3.12",
+        "typescript": "^1.9.0-dev.20160204"
+    },
+    "dependencies": {},
+    "scripts": {
+        "tsconfig": "tsconfig .",
+        "build": "jspm build src/argon.ts dist/argon.js --format umd --global-name Argon",
+        "browser-sync": "browser-sync  start --server --directory --startPath \"index.html\" --files \"src/**\"",
+        "test": "npm run browser-sync",
+        "typedoc": "typedoc --out docs --name argon.js --readme README.md --target ES5 --module commonjs --experimentalDecorators --excludeNotExported --excludeExternals src/argon.ts src/context.ts src/device.ts src/reality.ts src/view.ts src/session.ts src/timer.ts src/utils.ts src/vuforia.ts src/definitions jspm_packages/github/aurelia/dependency-injection@0.12.1/aurelia-dependency-injection.d.ts jspm_packages/github/aurelia/logging@0.9.0/aurelia-logging.d.ts jspm_packages/github/aurelia/metadata@0.10.1/aurelia-metadata.d.ts jspm_packages/github/aurelia/pal@0.3.0/aurelia-pal.d.ts typings/tsd.d.ts"
+    }
+}

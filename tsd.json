@@ -1,0 +1,27 @@
+{
+  "version": "v4",
+  "repo": "borisyankov/DefinitelyTyped",
+  "ref": "master",
+  "path": "typings",
+  "bundle": "typings/tsd.d.ts",
+  "installed": {
+    "chai/chai.d.ts": {
+      "commit": "b104f61d0e7527953274fef90fb0918c1e39611f"
+    },
+    "assertion-error/assertion-error.d.ts": {
+      "commit": "b104f61d0e7527953274fef90fb0918c1e39611f"
+    },
+    "systemjs/systemjs.d.ts": {
+      "commit": "9fb1a5074160e679289b56b99a763104926a4a24"
+    },
+    "es6-collections/es6-collections.d.ts": {
+      "commit": "923c5431d9447db9d5cf41adc5914e3c94c1ff10"
+    },
+    "es6-promise/es6-promise.d.ts": {
+      "commit": "923c5431d9447db9d5cf41adc5914e3c94c1ff10"
+    },
+    "mocha/mocha.d.ts": {
+      "commit": "93bae1bb4c887c1375a4c1f0c3bb849ff06b8ac6"
+    }
+  }
+}
