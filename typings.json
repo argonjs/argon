@@ -1,0 +1,11 @@
+{
+  "name": "argon",
+  "ambientDependencies": {
+    "chai": "github:DefinitelyTyped/DefinitelyTyped/chai/chai.d.ts#b104f61d0e7527953274fef90fb0918c1e39611f",
+    "assertion-error": "github:DefinitelyTyped/DefinitelyTyped/assertion-error/assertion-error.d.ts#b104f61d0e7527953274fef90fb0918c1e39611f",
+    "systemjs": "github:DefinitelyTyped/DefinitelyTyped/systemjs/systemjs.d.ts#9fb1a5074160e679289b56b99a763104926a4a24",
+    "es6-collections": "github:DefinitelyTyped/DefinitelyTyped/es6-collections/es6-collections.d.ts#923c5431d9447db9d5cf41adc5914e3c94c1ff10",
+    "es6-promise": "github:DefinitelyTyped/DefinitelyTyped/es6-promise/es6-promise.d.ts#923c5431d9447db9d5cf41adc5914e3c94c1ff10",
+    "mocha": "github:DefinitelyTyped/DefinitelyTyped/mocha/mocha.d.ts#93bae1bb4c887c1375a4c1f0c3bb849ff06b8ac6"
+  }
+}
