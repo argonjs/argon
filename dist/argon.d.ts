@@ -117,8 +117,8 @@ export class TimerService {
 export class DeviceService {
     device: Cesium.Entity;
     eye: Cesium.Entity;
-    getDevicePose(time:Cesium.JulianDate) : Pose;
-    getEyePose(time:Cesium.JulianDate) : Pose;
+    getDevicePose(time:Cesium.JulianDate) : EntityPose;
+    getEyePose(time:Cesium.JulianDate) : EntityPose;
     getCameraState() : CameraState;
     defaultReality : Reality;
     viewSize : {width:number,height:number};
@@ -155,7 +155,7 @@ export enum PoseStatus {
 	UNKNOWN = 8
 }
 
-export interface Pose {
+export interface EntityPose {
     referenceFrame: string | Cesium.ReferenceFrame;
     position?: {
         x: number;
@@ -169,15 +169,15 @@ export interface Pose {
         w: number;
     };
 }
-export interface PoseMap {
-    [id: string]: Pose;
+export interface EntityPoseMap {
+    [id: string]: EntityPose;
 }
 export interface FrameState {
     frameNumber: number;
     time: Cesium.JulianDate;
     reality?: Reality;
     camera?: CameraState;
-    entities?: PoseMap;
+    entities?: EntityPoseMap;
     size?:{width:number, height:number}
 }
     
