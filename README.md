@@ -13,19 +13,19 @@ git clone https://github.com/argonjs/argon.git
 
 * Make sure you have Node.js/npm installed (There are many guides for this online)
 
-* Install `typescript`, `tsd` and `jspm` globally so they can be run from the command line.
+* Install `typescript`, `typings` and `jspm` globally so they can be run from the command line.
 This will usually require you to be root, and that *usually* means using `sudo`.
 
 ```sh
-sudo npm install -g typescript@next tsd jspm
+sudo npm install -g typescript@next typings jspm
 ```
 
-* Go to the directory where you have argon.js downloaded and install dependencies using npm, jspm, and tsd
+* Go to the directory where you have argon.js downloaded and install dependencies using npm, jspm, and typings
 
 ```sh
 npm install
 jspm install
-tsd install
+typings install
 ```
 
 * To execute the typescript compiler, run: 

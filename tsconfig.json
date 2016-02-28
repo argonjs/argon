@@ -12,11 +12,11 @@
         "example/**/*.ts",
         "src/**/*.ts",
         "test/**/*.ts",
-        "typings/tsd.d.ts",
+        "typings/browser.d.ts",
         "jspm_packages/github/aurelia/**/*.d.ts"
     ],
     "files": [
-        "typings/tsd.d.ts",
+        "typings/browser.d.ts",
         "jspm_packages/github/aurelia/pal@0.3.0/aurelia-pal.d.ts",
         "src/definitions/cesium.d.ts",
         "src/definitions/jspm_modules.d.ts",
