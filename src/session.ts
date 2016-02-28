@@ -1,7 +1,7 @@
 import * as Cesium from 'Cesium';
 import {createGuid} from './cesium/cesium-imports.ts';
 import {inject, singleton} from 'aurelia-dependency-injection';
-import {Event, createDeferred} from './utils.ts';
+import {Event} from './utils.ts';
 import {Context} from './context.ts'
 
 declare class Object {
@@ -12,9 +12,9 @@ declare class Object {
 * Describes the role of a Session
 */
 export enum Role {
-	Application = "Application" as any,
-	Reality = "Reality" as any,
-	Manager = "Manager" as any
+	APPLICATION = "Application" as any,
+	REALITY = "Reality" as any,
+	MANAGER = "Manager" as any
 }
 
 export class SessionFactory {
@@ -124,8 +124,6 @@ export class Session {
 	public info:SessionConfiguration;
 	public frameElement:HTMLIFrameElement;
 	
-	private _openDeferred = createDeferred();
-	public openPromise = this._openDeferred.promise;
 	public openEvent = new Event<void>();
 	public focusEvent = new Event<void>();
 	public closeEvent = new Event<void>();
@@ -141,7 +139,6 @@ export class Session {
 		
 		this.on[Session.OPEN] = (info:SessionConfiguration) => {
 			this.info = info;
-			this._openDeferred.resolve();
 			this.openEvent.raiseEvent(null);
 		}
 		

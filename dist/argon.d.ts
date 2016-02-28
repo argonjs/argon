@@ -10,23 +10,24 @@ export const Container:any;
     
 export class ArgonSystem {
     static instance: ArgonSystem;
-    config: SessionConfiguration;
-    container: Container;
     constructor(config: SessionConfiguration, container?:Container);
+    configuration: SessionConfiguration;
+    container: Container;
     context: Context;
+    reality: RealityService;
     timer: TimerService;
     device: DeviceService;
-    vuforia: VuforiaPlugin;
-    view: ViewPlugin;
+    vuforia: VuforiaService;
+    view: ViewService;
 }
 export function init(options?:{config?:SessionConfiguration, container?:Container}): ArgonSystem;
 export function initReality(options?:{config?:SessionConfiguration, container?:Container}): ArgonSystem;
 
 
 export enum Role {
-    Application = 0,
-    Reality = 1,
-    Manager = 2,
+    APPLICATION,
+    REALITY,
+    MANAGER,
 }
 
 type RemoveCallback = () => void;
@@ -116,8 +117,8 @@ export class TimerService {
 export class DeviceService {
     device: Cesium.Entity;
     eye: Cesium.Entity;
-    getDevicePose(time:Cesium.JulianDate) : EntityPose;
-    getEyePose(time:Cesium.JulianDate) : EntityPose;
+    getDevicePose(time:Cesium.JulianDate) : Pose;
+    getEyePose(time:Cesium.JulianDate) : Pose;
     getCameraState() : CameraState;
     defaultReality : Reality;
     viewSize : {width:number,height:number};
@@ -140,7 +141,21 @@ export interface PerspectiveCameraState extends CameraState {
     fovx?: number;
 }
 
-export interface EntityPose {
+export interface EntityState {
+	position: Cesium.Cartesian3
+    orientation: Cesium.Quaternion,
+    time: Cesium.JulianDate
+    poseStatus: PoseStatus
+}
+
+export enum PoseStatus {
+	FOUND = 1,
+	LOST = 2,
+	KNOWN = 4,
+	UNKNOWN = 8
+}
+
+export interface Pose {
     referenceFrame: string | Cesium.ReferenceFrame;
     position?: {
         x: number;
@@ -154,15 +169,15 @@ export interface EntityPose {
         w: number;
     };
 }
-export interface EntityPoseMap {
-    [id: string]: EntityPose;
+export interface PoseMap {
+    [id: string]: Pose;
 }
 export interface FrameState {
     frameNumber: number;
     time: Cesium.JulianDate;
     reality?: Reality;
     camera?: CameraState;
-    entities?: EntityPoseMap;
+    entities?: PoseMap;
     size?:{width:number, height:number}
 }
     
@@ -171,7 +186,7 @@ export enum PresentationMode {
     Immersive
 }
 
-export class RealitySetupService {
+export class RealityService {
     timer: TimerService;
     messageChannelFactory: MessageChannelFactory;
     sessionFactory: SessionFactory;
@@ -182,24 +197,11 @@ export class RealitySetupService {
     supportsReality(reality: Reality): boolean;
 }
 
-export abstract class ContextPlugin {
-    context: Context;
-    onContextInit(): void;
-    onContextReady(): void;
-}
-
 export class Context {        
-    constructor(realityService: RealitySetupService, deviceService: DeviceService, sessionFactory: SessionFactory, messageChannelFactory: MessageChannelFactory, role: Role, plugins: ContextPlugin[], connectService: ConnectService);
-    realityService: RealitySetupService;
-    deviceService: DeviceService;
-    sessionFactory: SessionFactory;
-    messageChannelFactory: MessageChannelFactory;
-    role: Role;
-    plugins: ContextPlugin[];
-    getPlugin<T extends ContextPlugin>(PluginType:{ new(...args: any[]): T }) : T;
+    constructor(realityService: RealityService, deviceService: DeviceService, sessionFactory: SessionFactory, messageChannelFactory: MessageChannelFactory, role: Role, connectService: ConnectService);
     parentSession: Session;
     entities: Cesium.EntityCollection;
-    getEntityPose(entity:Cesium.Entity, referenceFrame:Cesium.ReferenceFrame|Cesium.Entity) : EntityPose;
+    getEntityState(entity:Cesium.Entity, referenceFrame?:Cesium.ReferenceFrame|Cesium.Entity) : EntityState;
     frame: FrameState;
     frustum: Cesium.PerspectiveFrustum;
     reality: Reality;
@@ -211,12 +213,15 @@ export class Context {
     renderEvent: Event<FrameState>;
     focusEvent: Event<void>;
     blurEvent: Event<void>;
-    realityChangeEvent: Event<void>;
+    connectEvent: Event<void>;
+    sessionConnectEvent: Event<Session>;
     realityConnectEvent: Event<Session>;
     sessionFocusEvent: Event<Session>;
-    sessionCreateEvent: Event<Session>;
+    realityChangeEvent: Event<void>;
     desiredPresentationMode: PresentationMode;
+    setDesiredPresentationMode(desiredPresentationMode:PresentationMode):void;
     desiredReality: Reality;
+    setDesiredReality(desiredReality:Reality):void;
     getDesiredPresentationModeForSession(s: Session): PresentationMode;
     getDesiredRealityForSession(s: Session): Reality;
     onSelectReality(): Reality;
@@ -227,6 +232,8 @@ export class Context {
     eyeOriginEastNorthUp: Cesium.Entity;
     localOriginEastNorthUp: Cesium.Entity;
     localOriginEastUpSouth: Cesium.Entity;
+    origin: Cesium.Entity;
+    setOrigin(origin:Cesium.Entity):void;
 }
 
 export class VuforiaInitError extends Error {}
@@ -263,7 +270,7 @@ export interface VuforiaDataSetLoadMessage {
     trackables: VuforiaTrackables
 }
 
-export class VuforiaPluginDelegate {
+export class VuforiaServiceDelegate {
     isSupported(): boolean;
     init(options: any): any | PromiseLike<any>;
     deinit(): any | PromiseLike<any>;
@@ -283,8 +290,8 @@ export class VuforiaPluginDelegate {
     dataSetLoadEvent: Event<VuforiaDataSetLoadMessage>;
 }
 
-export class VuforiaPlugin extends ContextPlugin {
-    constructor(delegate: VuforiaPluginDelegate);
+export class VuforiaService {
+    constructor(context:Context, delegate: VuforiaServiceDelegate);
     isSupported(): PromiseLike<boolean>;
     init(options?: VuforiaInitOptions): void;
     deinit(): void;
@@ -326,8 +333,7 @@ export interface VuforiaVideoMode {
     framerate:number
 }
 
-export class ViewPlugin extends ContextPlugin {
+export class ViewService {
+    constructor(context:Context);
     element: HTMLDivElement;
-    onContextInit(): void;
-    onContextReady(): void;
 }

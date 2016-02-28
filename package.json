@@ -23,7 +23,7 @@
         "overrides": {
             "github:frankwallis/plugin-typescript@2.6.0": {
                 "dependencies": {
-                    "typescript": "npm:typescript@1.9.0-dev.20160204"
+                    "typescript": "npm:typescript@1.9.0-dev.20160226"
                 }
             },
             "npm:core-js@1.2.6": {
@@ -88,11 +88,11 @@
         "jspm": "^0.17.0-beta.9",
         "tsconfig-glob": "^0.2.1",
         "typedoc": "^0.3.12",
-        "typescript": "^1.9.0-dev.20160204"
+        "typescript": "^1.9.0-dev.20160226"
     },
     "scripts": {
         "tsconfig": "tsconfig .",
-        "build": "jspm build src/argon.ts dist/argon.js --format umd --global-name Argon",
+        "build": "jspm build src/argon.ts dist/argon.js --format umd --global-name Argon --skip-source-maps",
         "browser-sync": "browser-sync  start --server --directory --startPath \"index.html\" --files \"src/**\"",
         "test": "npm run browser-sync",
         "typedoc": "typedoc --out docs --name argon.js --readme README.md --target ES5 --module commonjs --experimentalDecorators --excludeNotExported --excludeExternals src/argon.ts src/context.ts src/device.ts src/reality.ts src/view.ts src/session.ts src/timer.ts src/utils.ts src/vuforia.ts src/definitions jspm_packages/github/aurelia/dependency-injection@0.12.1/aurelia-dependency-injection.d.ts jspm_packages/github/aurelia/logging@0.9.0/aurelia-logging.d.ts jspm_packages/github/aurelia/metadata@0.10.1/aurelia-metadata.d.ts jspm_packages/github/aurelia/pal@0.3.0/aurelia-pal.d.ts typings/tsd.d.ts"

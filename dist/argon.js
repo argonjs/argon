@@ -4,7 +4,922 @@
 
 !function(){var t=$__System;if("undefined"!=typeof window&&"undefined"!=typeof document&&window.location)var s=location.protocol+"//"+location.hostname+(location.port?":"+location.port:"");t.set("@@cjs-helpers",t.newModule({getPathVars:function(t){var n,o=t.lastIndexOf("!");n=-1!=o?t.substr(0,o):t;var e=n.split("/");return e.pop(),e=e.join("/"),"file:///"==n.substr(0,8)?(n=n.substr(7),e=e.substr(7),isWindows&&(n=n.substr(1),e=e.substr(1))):s&&n.substr(0,s.length)===s&&(n=n.substr(s.length),e=e.substr(s.length)),{filename:n,dirname:e}}}))}();
 !function(e){function n(e,n){e=e.replace(l,"");var r=e.match(u),t=(r[1].split(",")[n]||"require").replace(s,""),i=p[t]||(p[t]=new RegExp(a+t+f,"g"));i.lastIndex=0;for(var o,c=[];o=i.exec(e);)c.push(o[2]||o[3]);return c}function r(e,n,t,o){if("object"==typeof e&&!(e instanceof Array))return r.apply(null,Array.prototype.splice.call(arguments,1,arguments.length-1));if("string"==typeof e&&"function"==typeof n&&(e=[e]),!(e instanceof Array)){if("string"==typeof e){var l=i.get(e);return l.__useDefault?l["default"]:l}throw new TypeError("Invalid require")}for(var a=[],f=0;f<e.length;f++)a.push(i["import"](e[f],o));Promise.all(a).then(function(e){n&&n.apply(null,e)},t)}function t(t,l,a){"string"!=typeof t&&(a=l,l=t,t=null),l instanceof Array||(a=l,l=["require","exports","module"].splice(0,a.length)),"function"!=typeof a&&(a=function(e){return function(){return e}}(a)),void 0===l[l.length-1]&&l.pop();var f,u,s;-1!=(f=o.call(l,"require"))&&(l.splice(f,1),t||(l=l.concat(n(a.toString(),f)))),-1!=(u=o.call(l,"exports"))&&l.splice(u,1),-1!=(s=o.call(l,"module"))&&l.splice(s,1);var p={name:t,deps:l,execute:function(n,t,o){for(var p=[],c=0;c<l.length;c++)p.push(n(l[c]));o.uri=o.id,o.config=function(){},-1!=s&&p.splice(s,0,o),-1!=u&&p.splice(u,0,t),-1!=f&&p.splice(f,0,function(e,t,l){return"string"==typeof e&&"function"!=typeof t?n(e):r.call(i,e,t,l,o.id)});var d=a.apply(-1==u?e:t,p);return"undefined"==typeof d&&o&&(d=o.exports),"undefined"!=typeof d?d:void 0}};if(t)c.anonDefine||c.isBundle?c.anonDefine&&c.anonDefine.name&&(c.anonDefine=null):c.anonDefine=p,c.isBundle=!0,i.registerDynamic(p.name,p.deps,!1,p.execute);else{if(c.anonDefine&&!c.anonDefine.name)throw new Error("Multiple anonymous defines in module "+t);c.anonDefine=p}}var i=$__System,o=Array.prototype.indexOf||function(e){for(var n=0,r=this.length;r>n;n++)if(this[n]===e)return n;return-1},l=/(\/\*([\s\S]*?)\*\/|([^:]|^)\/\/(.*)$)/gm,a="(?:^|[^$_a-zA-Z\\xA0-\\uFFFF.])",f="\\s*\\(\\s*(\"([^\"]+)\"|'([^']+)')\\s*\\)",u=/\(([^\)]*)\)/,s=/^\s+|\s+$/g,p={};t.amd={};var c={isBundle:!1,anonDefine:null};i.amdDefine=t,i.amdRequire=r}("undefined"!=typeof self?self:global);
-$__System.register("2", ["6", "3", "4", "5"], function(exports_1, context_1) {
+$__System.register("2", ["4", "3"], function(exports_1, context_1) {
+  "use strict";
+  var __moduleName = context_1 && context_1.id;
+  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
+    var c = arguments.length,
+        r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+        d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
+      r = Reflect.decorate(decorators, target, key, desc);
+    else
+      for (var i = decorators.length - 1; i >= 0; i--)
+        if (d = decorators[i])
+          r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+  };
+  var aurelia_dependency_injection_1,
+      context_ts_1;
+  var ViewService;
+  return {
+    setters: [function(aurelia_dependency_injection_1_1) {
+      aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
+    }, function(context_ts_1_1) {
+      context_ts_1 = context_ts_1_1;
+    }],
+    execute: function() {
+      ViewService = (function() {
+        function ViewService(context) {
+          var _this = this;
+          this.context = context;
+          if (typeof document !== 'undefined') {
+            var viewportMetaTag = document.querySelector('meta[name=viewport]');
+            if (!viewportMetaTag)
+              viewportMetaTag = document.createElement('meta');
+            viewportMetaTag.name = 'viewport';
+            viewportMetaTag.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0';
+            document.head.appendChild(viewportMetaTag);
+            var argonView_1 = document.querySelector('#argon');
+            if (!argonView_1)
+              argonView_1 = document.createElement('div');
+            argonView_1.id = 'argon';
+            document.documentElement.appendChild(argonView_1);
+            this.element = argonView_1;
+            if (document.body)
+              document.body.appendChild(argonView_1);
+            else {
+              document.addEventListener('DOMContentLoaded', function() {
+                document.body.appendChild(argonView_1);
+              });
+            }
+            var style = document.createElement("style");
+            style.type = 'text/css';
+            document.head.appendChild(style);
+            var sheet = style.sheet;
+            sheet.insertRule("\n                #argon {\n                    position: fixed;\n                    transform: translateZ(0px);\n                    z-index: -9999;\n                    left: 0px;\n                    bottom: 0px;\n                    width: 100%;\n                    height: 100%;\n                    margin: 0;\n                    border: 0;\n                    padding: 0;\n                }\n            ", 0);
+            sheet.insertRule("\n                #argon > * {\n                    position: absolute;\n                    transform: translateZ(0px);\n                    left: 0px;\n                    bottom: 0px;\n                    width: inherit;\n                    height: inherit;\n                }\n            ", 1);
+          }
+          if (typeof document !== 'undefined') {
+            var previousWidth_1,
+                previousHeight_1;
+            this.context.updateEvent.addEventListener(function(frameState) {
+              var width = frameState.size.width;
+              var height = frameState.size.height;
+              if (previousWidth_1 !== width || previousHeight_1 !== height) {
+                _this.element.style.width = frameState.size.width + 'px';
+                _this.element.style.height = frameState.size.height + 'px';
+              }
+              previousWidth_1 = width;
+              previousHeight_1 = height;
+            });
+          }
+        }
+        ViewService = __decorate([aurelia_dependency_injection_1.inject(context_ts_1.Context)], ViewService);
+        return ViewService;
+      }());
+      exports_1("ViewService", ViewService);
+    }
+  };
+});
+
+$__System.register("5", ["6", "7"], function(exports_1, context_1) {
+  "use strict";
+  var __moduleName = context_1 && context_1.id;
+  var cesium_imports_ts_1,
+      utils_ts_1;
+  var DeviceService;
+  return {
+    setters: [function(cesium_imports_ts_1_1) {
+      cesium_imports_ts_1 = cesium_imports_ts_1_1;
+    }, function(utils_ts_1_1) {
+      utils_ts_1 = utils_ts_1_1;
+    }],
+    execute: function() {
+      DeviceService = (function() {
+        function DeviceService() {
+          this.device = new cesium_imports_ts_1.Entity({
+            id: 'DEVICE',
+            name: 'device'
+          });
+          this.eye = new cesium_imports_ts_1.Entity({
+            id: 'EYE',
+            name: 'eye'
+          });
+          this.defaultReality = {type: 'empty'};
+          var sampledDevicePosition = new cesium_imports_ts_1.SampledPositionProperty();
+          sampledDevicePosition.forwardExtrapolationType = cesium_imports_ts_1.ExtrapolationType.HOLD;
+          var sampledDeviceOrientation = new cesium_imports_ts_1.SampledProperty(cesium_imports_ts_1.Quaternion);
+          sampledDeviceOrientation.forwardExtrapolationType = cesium_imports_ts_1.ExtrapolationType.HOLD;
+          this.device.position = sampledDevicePosition;
+          this.device.orientation = sampledDeviceOrientation;
+          var eyePosition = new cesium_imports_ts_1.ConstantPositionProperty(cesium_imports_ts_1.Cartesian3.ZERO, this.device);
+          var eyeOrientation = new cesium_imports_ts_1.ConstantProperty(cesium_imports_ts_1.Quaternion.IDENTITY);
+          this.eye.position = eyePosition;
+          this.eye.orientation = eyeOrientation;
+        }
+        DeviceService.prototype.getDevicePose = function(time) {
+          return utils_ts_1.calculatePose(this.device, time);
+        };
+        DeviceService.prototype.getEyePose = function(time) {
+          if (typeof window !== 'undefined') {
+            var interfaceRotation = -window.orientation || 0;
+            var eyeOrientation = this.eye.orientation;
+            eyeOrientation.setValue(cesium_imports_ts_1.Quaternion.fromAxisAngle(cesium_imports_ts_1.Cartesian3.UNIT_Z, interfaceRotation));
+          }
+          return utils_ts_1.calculatePose(this.eye, time);
+        };
+        DeviceService.prototype.getCameraState = function() {
+          return {
+            type: "perspective",
+            fovY: cesium_imports_ts_1.CesiumMath.toRadians(60)
+          };
+        };
+        DeviceService.prototype.getViewSize = function() {
+          if (typeof document !== 'undefined') {
+            return {
+              width: document.documentElement.clientWidth,
+              height: document.documentElement.clientHeight
+            };
+          }
+          return {
+            width: 0,
+            height: 0
+          };
+        };
+        return DeviceService;
+      }());
+      exports_1("DeviceService", DeviceService);
+    }
+  };
+});
+
+$__System.register("3", ["6", "4", "8", "7", "5", "9"], function(exports_1, context_1) {
+  "use strict";
+  var __moduleName = context_1 && context_1.id;
+  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
+    var c = arguments.length,
+        r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+        d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
+      r = Reflect.decorate(decorators, target, key, desc);
+    else
+      for (var i = decorators.length - 1; i >= 0; i--)
+        if (d = decorators[i])
+          r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+  };
+  var cesium_imports_ts_1,
+      aurelia_dependency_injection_1,
+      session_ts_1,
+      utils_ts_1,
+      device_ts_1,
+      reality_ts_1;
+  var PoseStatus,
+      PresentationMode,
+      scratchDate,
+      scratchCartesian3,
+      scratchQuaternion,
+      scratchOriginCartesian3,
+      Context;
+  return {
+    setters: [function(cesium_imports_ts_1_1) {
+      cesium_imports_ts_1 = cesium_imports_ts_1_1;
+    }, function(aurelia_dependency_injection_1_1) {
+      aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
+    }, function(session_ts_1_1) {
+      session_ts_1 = session_ts_1_1;
+    }, function(utils_ts_1_1) {
+      utils_ts_1 = utils_ts_1_1;
+    }, function(device_ts_1_1) {
+      device_ts_1 = device_ts_1_1;
+    }, function(reality_ts_1_1) {
+      reality_ts_1 = reality_ts_1_1;
+    }],
+    execute: function() {
+      (function(PoseStatus) {
+        PoseStatus[PoseStatus["FOUND"] = 1] = "FOUND";
+        PoseStatus[PoseStatus["LOST"] = 2] = "LOST";
+        PoseStatus[PoseStatus["KNOWN"] = 4] = "KNOWN";
+        PoseStatus[PoseStatus["UNKNOWN"] = 8] = "UNKNOWN";
+      })(PoseStatus || (PoseStatus = {}));
+      exports_1("PoseStatus", PoseStatus);
+      (function(PresentationMode) {
+        PresentationMode[PresentationMode["Page"] = "Page"] = "Page";
+        PresentationMode[PresentationMode["Immersive"] = "Immersive"] = "Immersive";
+      })(PresentationMode || (PresentationMode = {}));
+      exports_1("PresentationMode", PresentationMode);
+      scratchDate = new cesium_imports_ts_1.JulianDate(0, 0);
+      scratchCartesian3 = new cesium_imports_ts_1.Cartesian3(0, 0);
+      scratchQuaternion = new cesium_imports_ts_1.Quaternion(0, 0);
+      scratchOriginCartesian3 = new cesium_imports_ts_1.Cartesian3(0, 0);
+      Context = (function() {
+        function Context(realityService, deviceService, sessionFactory, messageChannelFactory, role, parentSessionConnectService) {
+          this.realityService = realityService;
+          this.deviceService = deviceService;
+          this.sessionFactory = sessionFactory;
+          this.messageChannelFactory = messageChannelFactory;
+          this.role = role;
+          this.parentSessionConnectService = parentSessionConnectService;
+          this.__reality = undefined;
+          this._entities = new cesium_imports_ts_1.EntityCollection();
+          this._frame = undefined;
+          this._errorEvent = new utils_ts_1.Event();
+          this._updateEvent = new utils_ts_1.Event();
+          this._renderEvent = new utils_ts_1.Event();
+          this._localOriginChangeEvent = new utils_ts_1.Event();
+          this._focusEvent = new utils_ts_1.Event();
+          this._blurEvent = new utils_ts_1.Event();
+          this._hasFocus = false;
+          this._sessions = [];
+          this._focussedSession = null;
+          this._connectEvent = new utils_ts_1.Event();
+          this._sessionCreateEvent = new utils_ts_1.Event();
+          this._realityConnectEvent = new utils_ts_1.Event();
+          this._realityChangeEvent = new utils_ts_1.Event();
+          this._sessionFocusEvent = new utils_ts_1.Event();
+          this._sessionToDesiredRealityMap = new WeakMap();
+          this._desiredRealityToOwnerSessionMap = new WeakMap();
+          this._sessionToDesiredPresentationModeMap = new WeakMap();
+          this._sessionToSubscribedEntities = new WeakMap();
+          this._desiredReality = null;
+          this.entityStateMap = new Map();
+          this.frustum = new cesium_imports_ts_1.PerspectiveFrustum;
+          this.device = new cesium_imports_ts_1.Entity({
+            id: 'DEVICE',
+            name: 'device',
+            position: new cesium_imports_ts_1.ConstantPositionProperty(),
+            orientation: new cesium_imports_ts_1.ConstantProperty()
+          });
+          this.eye = new cesium_imports_ts_1.Entity({
+            id: 'EYE',
+            name: 'eye',
+            position: new cesium_imports_ts_1.ConstantPositionProperty(),
+            orientation: new cesium_imports_ts_1.ConstantProperty()
+          });
+          this.eyeOriginEastNorthUp = new cesium_imports_ts_1.Entity({
+            name: 'eyeOrigin',
+            position: new cesium_imports_ts_1.ConstantPositionProperty(),
+            orientation: new cesium_imports_ts_1.ConstantProperty()
+          });
+          this.localOriginEastNorthUp = new cesium_imports_ts_1.Entity({
+            name: 'origin',
+            position: new cesium_imports_ts_1.ConstantPositionProperty(),
+            orientation: new cesium_imports_ts_1.ConstantProperty()
+          });
+          this.localOriginEastUpSouth = new cesium_imports_ts_1.Entity({
+            name: 'originEastUpSouth',
+            position: new cesium_imports_ts_1.ConstantPositionProperty(cesium_imports_ts_1.Cartesian3.ZERO, this.localOriginEastNorthUp),
+            orientation: new cesium_imports_ts_1.ConstantProperty(cesium_imports_ts_1.Quaternion.fromAxisAngle(cesium_imports_ts_1.Cartesian3.UNIT_X, Math.PI / 2))
+          });
+          this._origin = this.localOriginEastNorthUp;
+          this.entities.add(this.device);
+          this.entities.add(this.eye);
+        }
+        Context.prototype.init = function() {
+          var _this = this;
+          this._parentSession = this.addSession();
+          this.parentSession.on['ar.context.update'] = function(frameState) {
+            _this._update(frameState);
+          };
+          this.parentSession.on['ar.context.realityControlSession'] = function(message) {
+            var messageChannel = _this.messageChannelFactory.create();
+            var realityControlSession = _this.sessionFactory.create();
+            messageChannel.port1.onmessage = function(msg) {
+              _this.parentSession.send('ar.context.realityControlMessage', msg.data);
+            };
+            _this.parentSession.on['ar.context.realityControlMessage'] = function(message) {
+              messageChannel.port1.postMessage(message);
+            };
+            realityControlSession.openEvent.addEventListener(function() {
+              _this.realityConnectEvent.raiseEvent(realityControlSession);
+            });
+            _this.parentSession.closeEvent.addEventListener(function() {
+              realityControlSession.close();
+            });
+            realityControlSession.open(messageChannel.port2, {role: _this.role});
+          };
+          this.parentSession.on['ar.context.focus'] = function() {
+            _this._hasFocus = true;
+            _this.focusEvent.raiseEvent(undefined);
+          };
+          this.parentSession.on['ar.context.blur'] = function() {
+            _this._hasFocus = false;
+            _this.blurEvent.raiseEvent(undefined);
+          };
+          this.parentSession.errorEvent.addEventListener(function(error) {
+            _this.errorEvent.raiseEvent(error);
+          });
+          this.errorEvent.addEventListener(function(error) {
+            if (_this.errorEvent.numberOfListeners === 1)
+              console.error(error);
+          });
+          this.parentSession.openEvent.addEventListener(function() {
+            _this._connectEvent.raiseEvent(undefined);
+            if (!_this.desiredReality)
+              _this.setDesiredReality(null);
+          });
+          this.parentSessionConnectService.connect(this.parentSession);
+          this.parentSession.focus();
+        };
+        Object.defineProperty(Context.prototype, "reality", {
+          get: function() {
+            return this.__reality;
+          },
+          enumerable: true,
+          configurable: true
+        });
+        Object.defineProperty(Context.prototype, "_reality", {
+          set: function(value) {
+            if (!this.__reality || this.__reality.id !== value.id) {
+              this.__reality = value;
+              this.realityChangeEvent.raiseEvent(undefined);
+            }
+          },
+          enumerable: true,
+          configurable: true
+        });
+        Object.defineProperty(Context.prototype, "parentSession", {
+          get: function() {
+            return this._parentSession;
+          },
+          enumerable: true,
+          configurable: true
+        });
+        Object.defineProperty(Context.prototype, "entities", {
+          get: function() {
+            return this._entities;
+          },
+          enumerable: true,
+          configurable: true
+        });
+        ;
+        Object.defineProperty(Context.prototype, "frame", {
+          get: function() {
+            return this._frame;
+          },
+          enumerable: true,
+          configurable: true
+        });
+        ;
+        Object.defineProperty(Context.prototype, "errorEvent", {
+          get: function() {
+            return this._errorEvent;
+          },
+          enumerable: true,
+          configurable: true
+        });
+        Object.defineProperty(Context.prototype, "updateEvent", {
+          get: function() {
+            return this._updateEvent;
+          },
+          enumerable: true,
+          configurable: true
+        });
+        ;
+        Object.defineProperty(Context.prototype, "renderEvent", {
+          get: function() {
+            return this._renderEvent;
+          },
+          enumerable: true,
+          configurable: true
+        });
+        ;
+        Object.defineProperty(Context.prototype, "localOriginChangeEvent", {
+          get: function() {
+            return this._localOriginChangeEvent;
+          },
+          enumerable: true,
+          configurable: true
+        });
+        ;
+        Object.defineProperty(Context.prototype, "focusEvent", {
+          get: function() {
+            return this._focusEvent;
+          },
+          enumerable: true,
+          configurable: true
+        });
+        ;
+        Object.defineProperty(Context.prototype, "blurEvent", {
+          get: function() {
+            return this._blurEvent;
+          },
+          enumerable: true,
+          configurable: true
+        });
+        ;
+        Object.defineProperty(Context.prototype, "hasFocus", {
+          get: function() {
+            return this._hasFocus;
+          },
+          enumerable: true,
+          configurable: true
+        });
+        ;
+        Object.defineProperty(Context.prototype, "sessions", {
+          get: function() {
+            return this._sessions;
+          },
+          enumerable: true,
+          configurable: true
+        });
+        ;
+        Object.defineProperty(Context.prototype, "focussedSession", {
+          get: function() {
+            return this._focussedSession;
+          },
+          enumerable: true,
+          configurable: true
+        });
+        Object.defineProperty(Context.prototype, "connectEvent", {
+          get: function() {
+            return this._connectEvent;
+          },
+          enumerable: true,
+          configurable: true
+        });
+        ;
+        Object.defineProperty(Context.prototype, "sessionConnectEvent", {
+          get: function() {
+            return this._sessionCreateEvent;
+          },
+          enumerable: true,
+          configurable: true
+        });
+        ;
+        Object.defineProperty(Context.prototype, "realityConnectEvent", {
+          get: function() {
+            return this._realityConnectEvent;
+          },
+          enumerable: true,
+          configurable: true
+        });
+        ;
+        Object.defineProperty(Context.prototype, "realityChangeEvent", {
+          get: function() {
+            return this._realityChangeEvent;
+          },
+          enumerable: true,
+          configurable: true
+        });
+        ;
+        Object.defineProperty(Context.prototype, "sessionFocusEvent", {
+          get: function() {
+            return this._sessionFocusEvent;
+          },
+          enumerable: true,
+          configurable: true
+        });
+        ;
+        Context.prototype._update = function(state) {
+          if (!cesium_imports_ts_1.defined(state.entities))
+            state.entities = {};
+          if (!cesium_imports_ts_1.defined(state.entities['DEVICE'])) {
+            state.entities['DEVICE'] = this.deviceService.getDevicePose(state.time);
+          }
+          if (!cesium_imports_ts_1.defined(state.entities['EYE'])) {
+            state.entities['EYE'] = this.deviceService.getEyePose(state.time);
+          }
+          if (!cesium_imports_ts_1.defined(state.camera))
+            state.camera = this.deviceService.getCameraState();
+          if (!cesium_imports_ts_1.defined(state.size))
+            state.size = this.deviceService.getViewSize();
+          for (var id in state.entities) {
+            this._updateEntity(id, state);
+          }
+          this._updateOrigin(state);
+          if (state.camera.type === 'perspective') {
+            var camera = state.camera;
+            if (!camera.fovX && !camera.fovY) {
+              console.error('Camera state is invalid: both fovX and fovY are missing.');
+              return;
+            }
+            var aspect = this.frustum.aspectRatio = camera.fovX && camera.fovY ? Math.tan(camera.fovX * 0.5) / Math.tan(camera.fovY * 0.5) : state.size.width / state.size.height;
+            if (aspect > 1) {
+              if (!camera.fovX)
+                camera.fovX = 2 * Math.atan(Math.tan(camera.fovY * 0.5) * aspect);
+              this.frustum.fov = camera.fovX;
+            } else {
+              if (!camera.fovY)
+                camera.fovY = 2 * Math.atan(Math.tan(camera.fovX * 0.5) / aspect);
+              this.frustum.fov = camera.fovY;
+            }
+            this.frustum['xOffset'] = camera.xOffset;
+            this.frustum['yOffset'] = camera.yOffset;
+          }
+          var entityPoseCache = {};
+          if (this.role === session_ts_1.Role.MANAGER) {
+            for (var _i = 0,
+                _a = this.sessions; _i < _a.length; _i++) {
+              var session = _a[_i];
+              if (session.info.enableIncomingUpdateEvents)
+                this._sendUpdateForSesion(state, session, entityPoseCache);
+            }
+          }
+          this._reality = state.reality;
+          this._frame = state;
+          this.updateEvent.raiseEvent(state);
+          this.renderEvent.raiseEvent(state);
+        };
+        Context.prototype._updateEntity = function(id, state) {
+          var entityPose = state.entities[id];
+          var referenceFrame = (typeof entityPose.referenceFrame === 'number') ? entityPose.referenceFrame : this.entities.getById(entityPose.referenceFrame);
+          if (!cesium_imports_ts_1.defined(referenceFrame)) {
+            referenceFrame = this._updateEntity(entityPose.referenceFrame, state);
+          }
+          var entity = this.entities.getOrCreateEntity(id);
+          if (entity.position instanceof cesium_imports_ts_1.ConstantPositionProperty === false || entity.orientation instanceof cesium_imports_ts_1.ConstantProperty === false) {
+            entity.position = new cesium_imports_ts_1.ConstantPositionProperty(entityPose.position, referenceFrame);
+            entity.orientation = new cesium_imports_ts_1.ConstantProperty(entityPose.orientation);
+          }
+          var entityPosition = entity.position;
+          var entityOrientation = entity.orientation;
+          entityPosition.setValue(entityPose.position, referenceFrame);
+          entityOrientation.setValue(entityPose.orientation);
+          return entity;
+        };
+        Context.prototype._updateOrigin = function(state) {
+          var eyeRootFrame = utils_ts_1.getRootReferenceFrame(this.eye);
+          var eyePosition = this.eye.position.getValueInReferenceFrame(state.time, eyeRootFrame, scratchCartesian3);
+          var eyeENUPositionProperty = this.eyeOriginEastNorthUp.position;
+          eyeENUPositionProperty.setValue(eyePosition, eyeRootFrame);
+          var localENUFrame = this.localOriginEastNorthUp.position.referenceFrame;
+          var localENUPosition = this.localOriginEastNorthUp.position.getValueInReferenceFrame(state.time, localENUFrame, scratchOriginCartesian3);
+          if (!localENUPosition || localENUFrame !== eyeRootFrame || cesium_imports_ts_1.Cartesian3.magnitudeSquared(cesium_imports_ts_1.Cartesian3.subtract(eyePosition, localENUPosition, scratchOriginCartesian3)) > 25000000) {
+            var localENUPositionProperty = this.localOriginEastNorthUp.position;
+            var localENUOrientationProperty = this.localOriginEastNorthUp.orientation;
+            localENUPositionProperty.setValue(eyePosition, eyeRootFrame);
+            var enuOrientation = utils_ts_1.getEntityOrientationInReferenceFrame(this.localOriginEastNorthUp, state.time, eyeRootFrame, scratchQuaternion);
+            localENUOrientationProperty.setValue(enuOrientation);
+            this.localOriginChangeEvent.raiseEvent(undefined);
+          }
+        };
+        Context.prototype._sendUpdateForSesion = function(parentState, session, entityPoseCache) {
+          var sessionEntities = {};
+          for (var id in parentState.entities) {
+            sessionEntities[id] = parentState.entities[id];
+          }
+          for (var id in this._sessionToSubscribedEntities.get(session)) {
+            if (!cesium_imports_ts_1.defined(entityPoseCache[id])) {
+              var entity = this.entities.getById(id);
+              entityPoseCache[id] = utils_ts_1.calculatePose(entity, parentState.time);
+            }
+            sessionEntities[id] = entityPoseCache[id];
+          }
+          var sessionState = {
+            time: parentState.time,
+            frameNumber: parentState.frameNumber,
+            reality: parentState.reality,
+            camera: parentState.camera,
+            size: parentState.size,
+            entities: sessionEntities
+          };
+          session.send('ar.context.update', sessionState);
+        };
+        Context.prototype.setDesiredPresentationMode = function(presentationMode) {
+          this._desiredPresentationMode = presentationMode;
+          this.parentSession.send('ar.context.desiredPresentationMode', {presentationMode: presentationMode});
+        };
+        Object.defineProperty(Context.prototype, "desiredPresentationMode", {
+          get: function() {
+            return this._desiredPresentationMode;
+          },
+          enumerable: true,
+          configurable: true
+        });
+        Context.prototype.getDesiredPresentationModeForSession = function(session) {
+          return this._sessionToDesiredPresentationModeMap.get(session);
+        };
+        Context.prototype.setDesiredReality = function(reality) {
+          if (reality && !reality['id'])
+            reality['id'] = cesium_imports_ts_1.createGuid();
+          this._desiredReality = reality;
+          this.parentSession.send('ar.context.desiredReality', {reality: reality});
+        };
+        Object.defineProperty(Context.prototype, "desiredReality", {
+          get: function() {
+            return this._desiredReality;
+          },
+          enumerable: true,
+          configurable: true
+        });
+        Context.prototype.getDesiredRealityForSession = function(session) {
+          return this._sessionToDesiredRealityMap.get(session);
+        };
+        Context.prototype._setReality = function(reality) {
+          var _this = this;
+          if (this.reality && reality && this.reality.id === reality.id)
+            return;
+          if (this.reality && !reality)
+            return;
+          if (!this.reality && !reality) {
+            reality = this.deviceService.defaultReality;
+            reality.id = 'default';
+          }
+          var realitySession = this.addSession();
+          realitySession.on['ar.context.update'] = function(state) {
+            state.reality = reality;
+            _this._update(state);
+          };
+          realitySession.on['ar.context.realityControlMessage'] = function(message) {
+            var owner = _this._desiredRealityToOwnerSessionMap.get(reality) || _this.parentSession;
+            owner.send('ar.context.realityControlMessage', message);
+          };
+          realitySession.openEvent.addEventListener(function() {
+            var previousRealitySession = _this._realitySession;
+            var previousReality = _this.reality;
+            _this._realitySession = realitySession;
+            _this._reality = reality;
+            console.log("Reality session set: " + JSON.stringify(reality));
+            if (previousRealitySession) {
+              previousRealitySession.close();
+            }
+            if (realitySession.info.role !== session_ts_1.Role.REALITY) {
+              realitySession.sendError({message: "Expected a session with role === Role.Reality"});
+              realitySession.close();
+              return;
+            }
+            if (realitySession.info.enableRealityControlPort) {
+              var owner = _this._desiredRealityToOwnerSessionMap.get(reality) || _this.parentSession;
+              var channel = _this.messageChannelFactory.create();
+              realitySession.send('ar.context.realityControlSession');
+              owner.send('ar.context.realityControlSession');
+            }
+          });
+          realitySession.closeEvent.addEventListener(function() {
+            console.log("Reality session closed: " + JSON.stringify(reality));
+            _this._setReality(_this.onSelectReality());
+          });
+          var messageChannel = this.messageChannelFactory.create();
+          realitySession.open(messageChannel.port1, {role: this.role});
+          this.realityService.setup(reality, messageChannel.port2);
+        };
+        Context.prototype.onSessionDesiresFocus = function(session) {};
+        Context.prototype.onSelectReality = function() {
+          console.log("Selecting a reality...");
+          var selectedReality = this.getDesiredRealityForSession(this.focussedSession);
+          if (!selectedReality) {
+            for (var _i = 0,
+                _a = this.sessions; _i < _a.length; _i++) {
+              var session = _a[_i];
+              var desiredReality = this.getDesiredRealityForSession(session);
+              if (desiredReality && this.realityService.isSupported(desiredReality.type)) {
+                selectedReality = desiredReality;
+                break;
+              }
+            }
+          }
+          console.log('Selected reality: ' + JSON.stringify(selectedReality));
+          return selectedReality;
+        };
+        Context.prototype.addSession = function() {
+          var _this = this;
+          var session = this.sessionFactory.create();
+          this._sessions.push(session);
+          session.on['ar.context.desiredReality'] = function(message, event) {
+            var reality = message.reality;
+            console.log("Session set desired reality: " + JSON.stringify(reality));
+            if (reality) {
+              _this._sessionToDesiredRealityMap.set(session, reality);
+              _this._desiredRealityToOwnerSessionMap.set(reality, session);
+              if (!_this.realityService.handlers.get(reality.type)) {
+                session.sendError({message: reality.type + " reality is not suppored on this platform"});
+              }
+            } else {
+              _this._sessionToDesiredRealityMap.delete(session);
+            }
+            _this._setReality(_this.onSelectReality());
+          };
+          session.on['ar.context.subscribe'] = function(_a) {
+            var id = _a.id;
+            var subscriptions = _this._sessionToSubscribedEntities.get(session) || [];
+            if (subscriptions.indexOf(id) === -1)
+              subscriptions.push(id);
+          };
+          session.on['ar.context.focus'] = function() {
+            _this.onSessionDesiresFocus(session);
+          };
+          session.focusEvent.addEventListener(function() {
+            var previousFocussedSession = _this._focussedSession;
+            if (previousFocussedSession !== session) {
+              if (previousFocussedSession)
+                previousFocussedSession.send('ar.context.blur');
+              session.send('ar.context.focus');
+              _this._focussedSession = session;
+              _this.sessionFocusEvent.raiseEvent(session);
+            }
+          });
+          session.closeEvent.addEventListener(function() {
+            var index = _this._sessions.indexOf(session);
+            if (index > -1) {
+              _this._sessions.splice(index);
+            }
+            if (_this._realitySession === session) {
+              _this._realitySession = null;
+            }
+          });
+          session.openEvent.addEventListener(function() {
+            _this.sessionConnectEvent.raiseEvent(session);
+          });
+          return session;
+        };
+        Context.prototype.subscribeToEntity = function(id) {
+          if (this.role !== session_ts_1.Role.MANAGER) {
+            this.parentSession.send('ar.context.subscribe', {id: id});
+          }
+          return this.entities.getOrCreateEntity(id);
+        };
+        Context.prototype.getEntityState = function(entity, referenceFrame) {
+          if (referenceFrame === void 0) {
+            referenceFrame = this.origin;
+          }
+          var time = this.frame.time;
+          var key = entity.id + this._stringFromReferenceFrame(referenceFrame);
+          var entityState = this.entityStateMap.get(key);
+          if (entityState && cesium_imports_ts_1.JulianDate.equals(entityState.time, time))
+            return entityState;
+          if (!cesium_imports_ts_1.defined(entityState)) {
+            entityState = {
+              position: new cesium_imports_ts_1.Cartesian3,
+              orientation: new cesium_imports_ts_1.Quaternion,
+              time: time,
+              poseStatus: PoseStatus.UNKNOWN
+            };
+            this.entityStateMap.set(key, entityState);
+          } else {
+            entityState.time = time;
+          }
+          var position = utils_ts_1.getEntityPositionInReferenceFrame(entity, time, referenceFrame, entityState.position);
+          var orientation = utils_ts_1.getEntityOrientationInReferenceFrame(entity, time, referenceFrame, entityState.orientation);
+          var hasPose = position && orientation;
+          var poseStatus = 0;
+          var previousStatus = entityState.poseStatus;
+          if (hasPose) {
+            poseStatus &= PoseStatus.KNOWN;
+          } else {
+            poseStatus &= PoseStatus.UNKNOWN;
+          }
+          if (hasPose && previousStatus | PoseStatus.UNKNOWN) {
+            poseStatus &= PoseStatus.FOUND;
+          } else if (!hasPose && previousStatus | PoseStatus.KNOWN) {
+            poseStatus &= PoseStatus.LOST;
+          }
+          entityState.poseStatus = poseStatus;
+          return entityState;
+        };
+        Context.prototype._stringFromReferenceFrame = function(referenceFrame) {
+          var rf = referenceFrame;
+          return cesium_imports_ts_1.defined(rf.id) ? rf.id : '' + rf;
+        };
+        Object.defineProperty(Context.prototype, "origin", {
+          get: function() {
+            return this._origin;
+          },
+          enumerable: true,
+          configurable: true
+        });
+        ;
+        Context.prototype.setOrigin = function(origin) {
+          this._origin = origin;
+        };
+        Context = __decorate([aurelia_dependency_injection_1.inject(reality_ts_1.RealityService, device_ts_1.DeviceService, session_ts_1.SessionFactory, session_ts_1.MessageChannelFactory, session_ts_1.Role, session_ts_1.ConnectService)], Context);
+        return Context;
+      }());
+      exports_1("Context", Context);
+    }
+  };
+});
+
+$__System.register("a", ["6"], function(exports_1, context_1) {
+  "use strict";
+  var __moduleName = context_1 && context_1.id;
+  var cesium_imports_ts_1;
+  var TimerService,
+      lastTime;
+  function requestAnimationFramePoly(callback) {
+    var currTime = new Date().getTime();
+    var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+    var id = setTimeout(function() {
+      callback(currTime + timeToCall);
+    }, timeToCall);
+    lastTime = currTime + timeToCall;
+    return id;
+  }
+  return {
+    setters: [function(cesium_imports_ts_1_1) {
+      cesium_imports_ts_1 = cesium_imports_ts_1_1;
+    }],
+    execute: function() {
+      TimerService = (function() {
+        function TimerService() {
+          this.frameNumbers = new WeakMap();
+        }
+        TimerService.prototype.requestFrame = function(callback) {
+          var _this = this;
+          if (typeof requestAnimationFrame !== 'undefined' && typeof performance !== 'undefined') {
+            this.navigationStartDate = this.navigationStartDate || cesium_imports_ts_1.JulianDate.fromDate(new Date(performance.timing.navigationStart));
+            requestAnimationFrame(function(time) {
+              var frameTime = cesium_imports_ts_1.JulianDate.addSeconds(_this.navigationStartDate, time / 1000, new cesium_imports_ts_1.JulianDate(0, 0));
+              callback(frameTime, _this.getNextFrameNumber(callback));
+            });
+          } else {
+            requestAnimationFramePoly(function(time) {
+              var frameTime = cesium_imports_ts_1.JulianDate.fromDate(new Date(time));
+              callback(frameTime, _this.getNextFrameNumber(callback));
+            });
+          }
+        };
+        TimerService.prototype.getNextFrameNumber = function(callback) {
+          var frameNumber = this.frameNumbers.get(callback) || 0;
+          this.frameNumbers.set(callback, frameNumber + 1);
+          return frameNumber;
+        };
+        return TimerService;
+      }());
+      exports_1("TimerService", TimerService);
+      lastTime = 0;
+    }
+  };
+});
+
+$__System.register("9", ["4", "a", "8"], function(exports_1, context_1) {
+  "use strict";
+  var __moduleName = context_1 && context_1.id;
+  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
+    var c = arguments.length,
+        r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+        d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
+      r = Reflect.decorate(decorators, target, key, desc);
+    else
+      for (var i = decorators.length - 1; i >= 0; i--)
+        if (d = decorators[i])
+          r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+  };
+  var aurelia_dependency_injection_1,
+      timer_ts_1,
+      session_ts_1;
+  var RealityService;
+  return {
+    setters: [function(aurelia_dependency_injection_1_1) {
+      aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
+    }, function(timer_ts_1_1) {
+      timer_ts_1 = timer_ts_1_1;
+    }, function(session_ts_1_1) {
+      session_ts_1 = session_ts_1_1;
+    }],
+    execute: function() {
+      RealityService = (function() {
+        function RealityService(timer, messageChannelFactory, sessionFactory) {
+          this.timer = timer;
+          this.messageChannelFactory = messageChannelFactory;
+          this.sessionFactory = sessionFactory;
+          this.handlers = new Map();
+          this.handlers.set('empty', this.setupEmptyReality);
+        }
+        RealityService.prototype.setup = function(reality, port) {
+          var handler = this.handlers.get(reality.type);
+          if (!handler)
+            throw new Error("Cannot setup an unsupported reality");
+          handler.call(this, reality, port);
+        };
+        RealityService.prototype.isSupported = function(type) {
+          return !!this.handlers.get(type);
+        };
+        RealityService.prototype.setupEmptyReality = function(reality, port) {
+          var _this = this;
+          var channel = this.messageChannelFactory.create();
+          var remoteRealitySession = this.sessionFactory.create();
+          var doUpdate = true;
+          remoteRealitySession.openEvent.addEventListener(function() {
+            var update = function(time, frameNumber) {
+              if (doUpdate) {
+                var frameState = {
+                  time: time,
+                  frameNumber: frameNumber
+                };
+                remoteRealitySession.send('ar.context.update', frameState);
+                _this.timer.requestFrame(update);
+              }
+            };
+            _this.timer.requestFrame(update);
+          });
+          remoteRealitySession.closeEvent.addEventListener(function() {
+            doUpdate = false;
+          });
+          remoteRealitySession.open(port, {role: session_ts_1.Role.REALITY});
+        };
+        RealityService = __decorate([aurelia_dependency_injection_1.inject(timer_ts_1.TimerService, session_ts_1.MessageChannelFactory, session_ts_1.SessionFactory)], RealityService);
+        return RealityService;
+      }());
+      exports_1("RealityService", RealityService);
+    }
+  };
+});
+
+$__System.register("b", ["4", "8", "3", "7", "9"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __extends = (this && this.__extends) || function(d, b) {
@@ -31,7 +946,8 @@ $__System.register("2", ["6", "3", "4", "5"], function(exports_1, context_1) {
   var aurelia_dependency_injection_1,
       session_ts_1,
       context_ts_1,
-      utils_ts_1;
+      utils_ts_1,
+      reality_ts_1;
   var VuforiaInitError,
       VuforiaLoadDataSetError,
       VuforiaUnloadDataSetError,
@@ -39,8 +955,8 @@ $__System.register("2", ["6", "3", "4", "5"], function(exports_1, context_1) {
       VuforiaDeactivateDataSetError,
       VuforiaInitErrorCode,
       VuforiaErrorType,
-      VuforiaPluginDelegate,
-      VuforiaPlugin,
+      VuforiaServiceDelegate,
+      VuforiaService,
       VuforiaDataSet;
   return {
     setters: [function(aurelia_dependency_injection_1_1) {
@@ -51,6 +967,8 @@ $__System.register("2", ["6", "3", "4", "5"], function(exports_1, context_1) {
       context_ts_1 = context_ts_1_1;
     }, function(utils_ts_1_1) {
       utils_ts_1 = utils_ts_1_1;
+    }, function(reality_ts_1_1) {
+      reality_ts_1 = reality_ts_1_1;
     }],
     execute: function() {
       VuforiaInitError = (function(_super) {
@@ -116,39 +1034,40 @@ $__System.register("2", ["6", "3", "4", "5"], function(exports_1, context_1) {
         VuforiaErrorType[VuforiaErrorType["DeactivateDataSetError"] = "DeactivateDataSetError"] = "DeactivateDataSetError";
       })(VuforiaErrorType || (VuforiaErrorType = {}));
       exports_1("VuforiaErrorType", VuforiaErrorType);
-      VuforiaPluginDelegate = (function() {
-        function VuforiaPluginDelegate() {
+      VuforiaServiceDelegate = (function() {
+        function VuforiaServiceDelegate() {
           this.updateEvent = new utils_ts_1.Event();
           this.errorEvent = new utils_ts_1.Event();
           this.dataSetLoadEvent = new utils_ts_1.Event();
         }
-        VuforiaPluginDelegate.prototype.isSupported = function() {
+        VuforiaServiceDelegate.prototype.isSupported = function() {
           return false;
         };
-        VuforiaPluginDelegate.prototype.init = function(options) {};
-        VuforiaPluginDelegate.prototype.deinit = function() {};
-        VuforiaPluginDelegate.prototype.startCamera = function() {};
-        VuforiaPluginDelegate.prototype.stopCamera = function() {};
-        VuforiaPluginDelegate.prototype.startObjectTracker = function() {};
-        VuforiaPluginDelegate.prototype.stopObjectTracker = function() {};
-        VuforiaPluginDelegate.prototype.hintMaxSimultaneousImageTargets = function(max) {};
-        VuforiaPluginDelegate.prototype.setVideoBackgroundConfig = function(videoConfig) {};
-        VuforiaPluginDelegate.prototype.loadDataSet = function(url) {};
-        VuforiaPluginDelegate.prototype.unloadDataSet = function(url) {};
-        VuforiaPluginDelegate.prototype.activateDataSet = function(url) {};
-        VuforiaPluginDelegate.prototype.deactivateDataSet = function(url) {};
-        VuforiaPluginDelegate.prototype.getVideoMode = function() {
+        VuforiaServiceDelegate.prototype.init = function(options) {};
+        VuforiaServiceDelegate.prototype.deinit = function() {};
+        VuforiaServiceDelegate.prototype.startCamera = function() {};
+        VuforiaServiceDelegate.prototype.stopCamera = function() {};
+        VuforiaServiceDelegate.prototype.startObjectTracker = function() {};
+        VuforiaServiceDelegate.prototype.stopObjectTracker = function() {};
+        VuforiaServiceDelegate.prototype.hintMaxSimultaneousImageTargets = function(max) {};
+        VuforiaServiceDelegate.prototype.setVideoBackgroundConfig = function(videoConfig) {};
+        VuforiaServiceDelegate.prototype.loadDataSet = function(url) {};
+        VuforiaServiceDelegate.prototype.unloadDataSet = function(url) {};
+        VuforiaServiceDelegate.prototype.activateDataSet = function(url) {};
+        VuforiaServiceDelegate.prototype.deactivateDataSet = function(url) {};
+        VuforiaServiceDelegate.prototype.getVideoMode = function() {
           return null;
         };
         ;
-        return VuforiaPluginDelegate;
+        return VuforiaServiceDelegate;
       }());
-      exports_1("VuforiaPluginDelegate", VuforiaPluginDelegate);
-      VuforiaPlugin = (function(_super) {
-        __extends(VuforiaPlugin, _super);
-        function VuforiaPlugin(delegate) {
+      exports_1("VuforiaServiceDelegate", VuforiaServiceDelegate);
+      VuforiaService = (function() {
+        function VuforiaService(context, realityService, delegate) {
           var _this = this;
-          _super.call(this);
+          this.context = context;
+          this.realityService = realityService;
+          this.delegate = delegate;
           this._commandQueue = new utils_ts_1.CommandQueue;
           this._sessionInitOptions = new WeakMap();
           this._sessionCameraStarted = new WeakMap();
@@ -159,27 +1078,48 @@ $__System.register("2", ["6", "3", "4", "5"], function(exports_1, context_1) {
           this._controllingSession = null;
           this._isInitialized = false;
           this.dataSetMap = new Map();
-          this._delegate = delegate;
-          delegate.errorEvent.addEventListener(function(msg) {
-            var session = _this._commandQueue.currentUserData;
-            if (msg.type === VuforiaErrorType.InitError) {
-              _this._sessionInitOptions.delete(session);
-              _this._controllingSession = null;
-              _this._isInitialized = false;
-              _this._commandQueue.clear();
-            }
-            session.send('ar.vuforia.errorEvent', msg);
+          context.connectEvent.addEventListener(function() {
+            context.parentSession.on['ar.vuforia.errorEvent'] = function(err, event) {
+              var error = null;
+              switch (err.type) {
+                case VuforiaErrorType.InitError:
+                  error = new VuforiaInitError(err.message, err.data.code);
+                  break;
+                case VuforiaErrorType.LoadDataSetError:
+                  error = new VuforiaLoadDataSetError(err.message);
+                  break;
+                case VuforiaErrorType.UnloadDataSetError:
+                  error = new VuforiaUnloadDataSetError(err.message);
+                  break;
+                case VuforiaErrorType.ActivateDataSetError:
+                  error = new VuforiaActivateDataSetError(err.message);
+                  break;
+                default:
+                  error = new Error(err.message);
+                  break;
+              }
+              context.errorEvent.raiseEvent(error);
+            };
+            context.parentSession.on['ar.vuforia.dataSetLoadEvent'] = function(msg, event) {
+              var url = msg.url,
+                  trackables = msg.trackables;
+              var dataSet = _this.dataSetMap.get(url);
+              dataSet._resolveTrackables(trackables);
+            };
           });
-          delegate.dataSetLoadEvent.addEventListener(function(msg) {
-            var session = _this._commandQueue.currentUserData;
-            session.send('ar.vuforia.dataSetLoadEvent', msg);
+          realityService.handlers.set('vuforia', function(reality, port) {
+            var remoteRealitySession = realityService.sessionFactory.create();
+            remoteRealitySession.open(port, {role: session_ts_1.Role.REALITY});
+            remoteRealitySession.send('ar.vuforia.init');
+            remoteRealitySession.send('ar.vuforia.startCamera');
+            var remove = delegate.updateEvent.addEventListener(function(frameState) {
+              remoteRealitySession.send('ar.context.update', frameState);
+            });
+            remoteRealitySession.closeEvent.addEventListener(function() {
+              remove();
+            });
           });
-        }
-        ;
-        VuforiaPlugin.prototype.onContextInit = function() {
-          var _this = this;
-          var delegate = this._delegate;
-          this.context.sessionCreateEvent.addEventListener(function(session) {
+          context.sessionConnectEvent.addEventListener(function(session) {
             var loadedDataSets = new Set();
             _this._sessionLoadedDataSets.set(session, loadedDataSets);
             var activatedDataSets = new Set();
@@ -191,7 +1131,7 @@ $__System.register("2", ["6", "3", "4", "5"], function(exports_1, context_1) {
               if (!delegate.isSupported())
                 return;
               _this._sessionInitOptions.set(session, options);
-              if (_this._controllingSession === null || session === _this.context.focussedSession) {
+              if (_this._controllingSession === null || session === context.focussedSession) {
                 _this._initVuforia(session);
               }
             };
@@ -314,55 +1254,28 @@ $__System.register("2", ["6", "3", "4", "5"], function(exports_1, context_1) {
               _this._controllingSession = null;
             });
           });
-          this.context.sessionFocusEvent.addEventListener(function(session) {
+          context.sessionFocusEvent.addEventListener(function(session) {
             if (_this._sessionInitOptions.has(session)) {
               _this._initVuforia(session);
             }
           });
-        };
-        VuforiaPlugin.prototype.onContextReady = function() {
-          var _this = this;
-          this.context.parentSession.on['ar.vuforia.errorEvent'] = function(err, event) {
-            var error = null;
-            switch (err.type) {
-              case VuforiaErrorType.InitError:
-                error = new VuforiaInitError(err.message, err.data.code);
-                break;
-              case VuforiaErrorType.LoadDataSetError:
-                error = new VuforiaLoadDataSetError(err.message);
-                break;
-              case VuforiaErrorType.UnloadDataSetError:
-                error = new VuforiaUnloadDataSetError(err.message);
-                break;
-              case VuforiaErrorType.ActivateDataSetError:
-                error = new VuforiaActivateDataSetError(err.message);
-                break;
-              default:
-                error = new Error(err.message);
-                break;
+          delegate.errorEvent.addEventListener(function(msg) {
+            var session = _this._commandQueue.currentUserData;
+            if (msg.type === VuforiaErrorType.InitError) {
+              _this._sessionInitOptions.delete(session);
+              _this._controllingSession = null;
+              _this._isInitialized = false;
+              _this._commandQueue.clear();
             }
-            _this.context.errorEvent.raiseEvent(error);
-          };
-          this.context.parentSession.on['ar.vuforia.dataSetLoadEvent'] = function(msg, event) {
-            var url = msg.url,
-                trackables = msg.trackables;
-            var dataSet = _this.dataSetMap.get(url);
-            dataSet._resolveTrackables(trackables);
-          };
-          this.context.realityService.handlers.set('vuforia', function(reality, port) {
-            var remoteRealitySession = _this.context.sessionFactory.create();
-            remoteRealitySession.open(port, {role: session_ts_1.Role.Reality});
-            remoteRealitySession.send('ar.vuforia.init');
-            remoteRealitySession.send('ar.vuforia.startCamera');
-            var remove = _this._delegate.updateEvent.addEventListener(function(frameState) {
-              remoteRealitySession.send('ar.context.update', frameState);
-            });
-            remoteRealitySession.closeEvent.addEventListener(function() {
-              remove();
-            });
+            session.send('ar.vuforia.errorEvent', msg);
           });
-        };
-        VuforiaPlugin.prototype._initVuforia = function(session) {
+          delegate.dataSetLoadEvent.addEventListener(function(msg) {
+            var session = _this._commandQueue.currentUserData;
+            session.send('ar.vuforia.dataSetLoadEvent', msg);
+          });
+        }
+        ;
+        VuforiaService.prototype._initVuforia = function(session) {
           var _this = this;
           var queue = this._commandQueue;
           var initOptions = this._sessionInitOptions.get(session);
@@ -371,7 +1284,7 @@ $__System.register("2", ["6", "3", "4", "5"], function(exports_1, context_1) {
           var objectTrackerStarted = this._sessionObjectTrackerStarted.get(session);
           var loadedDataSets = this._sessionLoadedDataSets.get(session);
           var activatedDataSets = this._sessionActivatedDataSets.get(session);
-          var delegate = this._delegate;
+          var delegate = this.delegate;
           if (this._isInitialized) {
             queue.clear();
             queue.push(function() {
@@ -407,41 +1320,41 @@ $__System.register("2", ["6", "3", "4", "5"], function(exports_1, context_1) {
             }, session);
           });
         };
-        VuforiaPlugin.prototype.isSupported = function() {
+        VuforiaService.prototype.isSupported = function() {
           return this.context.parentSession.request('ar.vuforia.isSupported');
         };
-        VuforiaPlugin.prototype.init = function(options) {
+        VuforiaService.prototype.init = function(options) {
           this.context.parentSession.send('ar.vuforia.init', options);
         };
-        VuforiaPlugin.prototype.deinit = function() {
+        VuforiaService.prototype.deinit = function() {
           this.context.parentSession.send('ar.vuforia.deinit');
         };
-        VuforiaPlugin.prototype.startCamera = function() {
+        VuforiaService.prototype.startCamera = function() {
           this.context.parentSession.send('ar.vuforia.startCamera');
         };
-        VuforiaPlugin.prototype.stopCamera = function() {
+        VuforiaService.prototype.stopCamera = function() {
           this.context.parentSession.send('ar.vuforia.stopCamera');
         };
-        VuforiaPlugin.prototype.startObjectTracker = function() {
+        VuforiaService.prototype.startObjectTracker = function() {
           this.context.parentSession.send('ar.vuforia.startObjectTracker');
         };
-        VuforiaPlugin.prototype.stopObjectTracker = function() {
+        VuforiaService.prototype.stopObjectTracker = function() {
           this.context.parentSession.send('ar.vuforia.stopObjectTracker');
         };
-        VuforiaPlugin.prototype.hintMaxSimultaneousImageTargets = function(max) {
+        VuforiaService.prototype.hintMaxSimultaneousImageTargets = function(max) {
           this.context.parentSession.send('ar.vuforia.hintMaxSimultaneousImageTargets', {max: max});
         };
-        VuforiaPlugin.prototype.createDataSet = function(url) {
+        VuforiaService.prototype.createDataSet = function(url) {
           url = utils_ts_1.resolveURL(url);
           var parentSession = this.context.parentSession;
           var dataSet = new VuforiaDataSet(url, parentSession);
           this.dataSetMap.set(url, dataSet);
           return dataSet;
         };
-        VuforiaPlugin = __decorate([aurelia_dependency_injection_1.inject(VuforiaPluginDelegate)], VuforiaPlugin);
-        return VuforiaPlugin;
-      }(context_ts_1.ContextPlugin));
-      exports_1("VuforiaPlugin", VuforiaPlugin);
+        VuforiaService = __decorate([aurelia_dependency_injection_1.inject(context_ts_1.Context, reality_ts_1.RealityService, VuforiaServiceDelegate)], VuforiaService);
+        return VuforiaService;
+      }());
+      exports_1("VuforiaService", VuforiaService);
       VuforiaDataSet = (function() {
         function VuforiaDataSet(url, parentSession) {
           var _this = this;
@@ -495,811 +1408,6 @@ $__System.register("2", ["6", "3", "4", "5"], function(exports_1, context_1) {
         return VuforiaDataSet;
       }());
       exports_1("VuforiaDataSet", VuforiaDataSet);
-    }
-  };
-});
-
-$__System.register("4", ["7", "6", "3", "5", "8", "9"], function(exports_1, context_1) {
-  "use strict";
-  var __moduleName = context_1 && context_1.id;
-  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
-    var c = arguments.length,
-        r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
-        d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
-      r = Reflect.decorate(decorators, target, key, desc);
-    else
-      for (var i = decorators.length - 1; i >= 0; i--)
-        if (d = decorators[i])
-          r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-  };
-  var cesium_imports_ts_1,
-      aurelia_dependency_injection_1,
-      session_ts_1,
-      utils_ts_1,
-      device_ts_1,
-      reality_ts_1;
-  var PresentationMode,
-      ContextPlugin,
-      scratchDate,
-      scratchCartesian3,
-      scratchQuaternion,
-      scratchOriginCartesian3,
-      Context;
-  return {
-    setters: [function(cesium_imports_ts_1_1) {
-      cesium_imports_ts_1 = cesium_imports_ts_1_1;
-    }, function(aurelia_dependency_injection_1_1) {
-      aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
-    }, function(session_ts_1_1) {
-      session_ts_1 = session_ts_1_1;
-    }, function(utils_ts_1_1) {
-      utils_ts_1 = utils_ts_1_1;
-    }, function(device_ts_1_1) {
-      device_ts_1 = device_ts_1_1;
-    }, function(reality_ts_1_1) {
-      reality_ts_1 = reality_ts_1_1;
-    }],
-    execute: function() {
-      (function(PresentationMode) {
-        PresentationMode[PresentationMode["Page"] = "Page"] = "Page";
-        PresentationMode[PresentationMode["Immersive"] = "Immersive"] = "Immersive";
-      })(PresentationMode || (PresentationMode = {}));
-      exports_1("PresentationMode", PresentationMode);
-      ContextPlugin = (function() {
-        function ContextPlugin() {
-          this.context = undefined;
-        }
-        return ContextPlugin;
-      }());
-      exports_1("ContextPlugin", ContextPlugin);
-      scratchDate = new cesium_imports_ts_1.JulianDate(0, 0);
-      scratchCartesian3 = new cesium_imports_ts_1.Cartesian3(0, 0);
-      scratchQuaternion = new cesium_imports_ts_1.Quaternion(0, 0);
-      scratchOriginCartesian3 = new cesium_imports_ts_1.Cartesian3(0, 0);
-      Context = (function() {
-        function Context(realityService, deviceService, sessionFactory, messageChannelFactory, role, plugins, parentSessionConnectService) {
-          var _this = this;
-          this.realityService = realityService;
-          this.deviceService = deviceService;
-          this.sessionFactory = sessionFactory;
-          this.messageChannelFactory = messageChannelFactory;
-          this.role = role;
-          this.plugins = plugins;
-          this.__reality = undefined;
-          this._entities = new cesium_imports_ts_1.EntityCollection();
-          this._frame = undefined;
-          this._errorEvent = new utils_ts_1.Event();
-          this._updateEvent = new utils_ts_1.Event();
-          this._renderEvent = new utils_ts_1.Event();
-          this._localOriginChangeEvent = new utils_ts_1.Event();
-          this._focusEvent = new utils_ts_1.Event();
-          this._blurEvent = new utils_ts_1.Event();
-          this._hasFocus = false;
-          this._sessions = [];
-          this._focussedSession = null;
-          this._realityChangeEvent = new utils_ts_1.Event();
-          this._realityConnectEvent = new utils_ts_1.Event();
-          this._sessionFocusEvent = new utils_ts_1.Event();
-          this._sessionCreateEvent = new utils_ts_1.Event();
-          this._sessionToDesiredRealityMap = new WeakMap();
-          this._desiredRealityToOwnerSessionMap = new WeakMap();
-          this._sessionToDesiredPresentationModeMap = new WeakMap();
-          this._sessionToSubscribedEntities = new WeakMap();
-          this._desiredReality = null;
-          this.frustum = new cesium_imports_ts_1.PerspectiveFrustum;
-          this.device = new cesium_imports_ts_1.Entity({
-            id: 'DEVICE',
-            name: 'device',
-            position: new cesium_imports_ts_1.ConstantPositionProperty(),
-            orientation: new cesium_imports_ts_1.ConstantProperty()
-          });
-          this.eye = new cesium_imports_ts_1.Entity({
-            id: 'EYE',
-            name: 'eye',
-            position: new cesium_imports_ts_1.ConstantPositionProperty(),
-            orientation: new cesium_imports_ts_1.ConstantProperty()
-          });
-          this.eyeOriginEastNorthUp = new cesium_imports_ts_1.Entity({
-            name: 'eyeOrigin',
-            position: new cesium_imports_ts_1.ConstantPositionProperty(),
-            orientation: new cesium_imports_ts_1.ConstantProperty()
-          });
-          this.localOriginEastNorthUp = new cesium_imports_ts_1.Entity({
-            name: 'origin',
-            position: new cesium_imports_ts_1.ConstantPositionProperty(),
-            orientation: new cesium_imports_ts_1.ConstantProperty()
-          });
-          this.localOriginEastUpSouth = new cesium_imports_ts_1.Entity({
-            name: 'originEastUpSouth',
-            position: new cesium_imports_ts_1.ConstantPositionProperty(cesium_imports_ts_1.Cartesian3.ZERO, this.localOriginEastNorthUp),
-            orientation: new cesium_imports_ts_1.ConstantProperty(cesium_imports_ts_1.Quaternion.fromAxisAngle(cesium_imports_ts_1.Cartesian3.UNIT_X, Math.PI / 2))
-          });
-          this.entities.add(this.device);
-          this.entities.add(this.eye);
-          if (!Array.isArray(plugins))
-            this.plugins = plugins = [plugins];
-          for (var _i = 0,
-              plugins_1 = plugins; _i < plugins_1.length; _i++) {
-            var plugin = plugins_1[_i];
-            plugin.context = this;
-            plugin.onContextInit();
-          }
-          this._parentSession = this.addSession();
-          parentSessionConnectService.connect(this.parentSession);
-          this.parentSession.on['ar.context.update'] = function(frameState) {
-            _this._update(frameState);
-          };
-          this.parentSession.on['ar.context.realityControlSession'] = function(message) {
-            var messageChannel = _this.messageChannelFactory.create();
-            var realityControlSession = _this.sessionFactory.create();
-            messageChannel.port1.onmessage = function(msg) {
-              _this.parentSession.send('ar.context.realityControlMessage', msg.data);
-            };
-            _this.parentSession.on['ar.context.realityControlMessage'] = function(message) {
-              messageChannel.port1.postMessage(message);
-            };
-            realityControlSession.openEvent.addEventListener(function() {
-              _this.realityConnectEvent.raiseEvent(realityControlSession);
-            });
-            _this.parentSession.closeEvent.addEventListener(function() {
-              realityControlSession.close();
-            });
-            realityControlSession.open(messageChannel.port2, {role: role});
-          };
-          this.parentSession.on['ar.context.focus'] = function() {
-            _this._hasFocus = true;
-            _this.focusEvent.raiseEvent(undefined);
-          };
-          this.parentSession.on['ar.context.blur'] = function() {
-            _this._hasFocus = false;
-            _this.blurEvent.raiseEvent(undefined);
-          };
-          this.parentSession.errorEvent.addEventListener(function(error) {
-            _this.errorEvent.raiseEvent(error);
-          });
-          this.errorEvent.addEventListener(function(error) {
-            if (_this.errorEvent.numberOfListeners === 1)
-              console.error(error);
-          });
-          for (var _a = 0,
-              plugins_2 = plugins; _a < plugins_2.length; _a++) {
-            var plugin = plugins_2[_a];
-            plugin.onContextReady();
-          }
-          this.parentSession.openPromise.then(function() {
-            if (!_this.desiredReality)
-              _this.desiredReality = null;
-          });
-          this.parentSession.focus();
-        }
-        Context.prototype.getPlugin = function(PluginType) {
-          var plugin;
-          for (var _i = 0,
-              _a = this.plugins; _i < _a.length; _i++) {
-            var p = _a[_i];
-            if (p instanceof PluginType) {
-              plugin = p;
-              break;
-            }
-          }
-          return plugin;
-        };
-        Object.defineProperty(Context.prototype, "reality", {
-          get: function() {
-            return this.__reality;
-          },
-          enumerable: true,
-          configurable: true
-        });
-        Object.defineProperty(Context.prototype, "_reality", {
-          set: function(value) {
-            if (!this.__reality || this.__reality.id !== value.id) {
-              this.__reality = value;
-              this.realityChangeEvent.raiseEvent(undefined);
-            }
-          },
-          enumerable: true,
-          configurable: true
-        });
-        Object.defineProperty(Context.prototype, "parentSession", {
-          get: function() {
-            return this._parentSession;
-          },
-          enumerable: true,
-          configurable: true
-        });
-        Object.defineProperty(Context.prototype, "entities", {
-          get: function() {
-            return this._entities;
-          },
-          enumerable: true,
-          configurable: true
-        });
-        ;
-        Object.defineProperty(Context.prototype, "frame", {
-          get: function() {
-            return this._frame;
-          },
-          enumerable: true,
-          configurable: true
-        });
-        ;
-        Object.defineProperty(Context.prototype, "errorEvent", {
-          get: function() {
-            return this._errorEvent;
-          },
-          enumerable: true,
-          configurable: true
-        });
-        Object.defineProperty(Context.prototype, "updateEvent", {
-          get: function() {
-            return this._updateEvent;
-          },
-          enumerable: true,
-          configurable: true
-        });
-        ;
-        Object.defineProperty(Context.prototype, "renderEvent", {
-          get: function() {
-            return this._renderEvent;
-          },
-          enumerable: true,
-          configurable: true
-        });
-        ;
-        Object.defineProperty(Context.prototype, "localOriginChangeEvent", {
-          get: function() {
-            return this._localOriginChangeEvent;
-          },
-          enumerable: true,
-          configurable: true
-        });
-        ;
-        Object.defineProperty(Context.prototype, "focusEvent", {
-          get: function() {
-            return this._focusEvent;
-          },
-          enumerable: true,
-          configurable: true
-        });
-        ;
-        Object.defineProperty(Context.prototype, "blurEvent", {
-          get: function() {
-            return this._blurEvent;
-          },
-          enumerable: true,
-          configurable: true
-        });
-        ;
-        Object.defineProperty(Context.prototype, "hasFocus", {
-          get: function() {
-            return this._hasFocus;
-          },
-          enumerable: true,
-          configurable: true
-        });
-        ;
-        Object.defineProperty(Context.prototype, "sessions", {
-          get: function() {
-            return this._sessions;
-          },
-          enumerable: true,
-          configurable: true
-        });
-        ;
-        Object.defineProperty(Context.prototype, "focussedSession", {
-          get: function() {
-            return this._focussedSession;
-          },
-          enumerable: true,
-          configurable: true
-        });
-        Object.defineProperty(Context.prototype, "realityChangeEvent", {
-          get: function() {
-            return this._realityChangeEvent;
-          },
-          enumerable: true,
-          configurable: true
-        });
-        ;
-        Object.defineProperty(Context.prototype, "realityConnectEvent", {
-          get: function() {
-            return this._realityConnectEvent;
-          },
-          enumerable: true,
-          configurable: true
-        });
-        ;
-        Object.defineProperty(Context.prototype, "sessionFocusEvent", {
-          get: function() {
-            return this._sessionFocusEvent;
-          },
-          enumerable: true,
-          configurable: true
-        });
-        ;
-        Object.defineProperty(Context.prototype, "sessionCreateEvent", {
-          get: function() {
-            return this._sessionCreateEvent;
-          },
-          enumerable: true,
-          configurable: true
-        });
-        ;
-        Context.prototype._update = function(state) {
-          if (!cesium_imports_ts_1.defined(state.entities))
-            state.entities = {};
-          if (!cesium_imports_ts_1.defined(state.entities['DEVICE'])) {
-            state.entities['DEVICE'] = this.deviceService.getDevicePose(state.time);
-          }
-          if (!cesium_imports_ts_1.defined(state.entities['EYE'])) {
-            state.entities['EYE'] = this.deviceService.getEyePose(state.time);
-          }
-          if (!cesium_imports_ts_1.defined(state.camera))
-            state.camera = this.deviceService.getCameraState();
-          if (!cesium_imports_ts_1.defined(state.size))
-            state.size = this.deviceService.getViewSize();
-          for (var id in state.entities) {
-            this._updateEntity(id, state);
-          }
-          this._updateOrigin(state);
-          if (state.camera.type === 'perspective') {
-            var camera = state.camera;
-            if (!camera.fovX && !camera.fovY) {
-              console.error('Camera state is invalid: both fovX and fovY are missing.');
-              return;
-            }
-            var aspect = this.frustum.aspectRatio = camera.fovX && camera.fovY ? Math.tan(camera.fovX * 0.5) / Math.tan(camera.fovY * 0.5) : state.size.width / state.size.height;
-            if (aspect > 1) {
-              if (!camera.fovX)
-                camera.fovX = 2 * Math.atan(Math.tan(camera.fovY * 0.5) * aspect);
-              this.frustum.fov = camera.fovX;
-            } else {
-              if (!camera.fovY)
-                camera.fovY = 2 * Math.atan(Math.tan(camera.fovX * 0.5) / aspect);
-              this.frustum.fov = camera.fovY;
-            }
-            this.frustum['xOffset'] = camera.xOffset;
-            this.frustum['yOffset'] = camera.yOffset;
-          }
-          var entityStateCache = {};
-          if (this.role === session_ts_1.Role.Manager) {
-            for (var _i = 0,
-                _a = this.sessions; _i < _a.length; _i++) {
-              var session = _a[_i];
-              if (session.info.enableIncomingUpdateEvents)
-                this._sendUpdateForSesion(state, session, entityStateCache);
-            }
-          }
-          this._reality = state.reality;
-          this._frame = state;
-          this.updateEvent.raiseEvent(state);
-          this.renderEvent.raiseEvent(state);
-        };
-        Context.prototype._updateEntity = function(id, state) {
-          var entityState = state.entities[id];
-          var referenceFrame = (typeof entityState.referenceFrame === 'number') ? entityState.referenceFrame : this.entities.getById(entityState.referenceFrame);
-          if (!cesium_imports_ts_1.defined(referenceFrame)) {
-            referenceFrame = this._updateEntity(entityState.referenceFrame, state);
-          }
-          var entity = this.entities.getOrCreateEntity(id);
-          if (entity.position instanceof cesium_imports_ts_1.ConstantPositionProperty === false || entity.orientation instanceof cesium_imports_ts_1.ConstantProperty === false) {
-            entity.position = new cesium_imports_ts_1.ConstantPositionProperty(entityState.position, referenceFrame);
-            entity.orientation = new cesium_imports_ts_1.ConstantProperty(entityState.orientation);
-          }
-          var entityPosition = entity.position;
-          var entityOrientation = entity.orientation;
-          entityPosition.setValue(entityState.position, referenceFrame);
-          entityOrientation.setValue(entityState.orientation);
-          return entity;
-        };
-        Context.prototype._updateOrigin = function(state) {
-          var eyeRootFrame = utils_ts_1.getRootReferenceFrame(this.eye);
-          var eyePosition = this.eye.position.getValueInReferenceFrame(state.time, eyeRootFrame, scratchCartesian3);
-          var eyeENUPositionProperty = this.eyeOriginEastNorthUp.position;
-          eyeENUPositionProperty.setValue(eyePosition, eyeRootFrame);
-          var localENUFrame = this.localOriginEastNorthUp.position.referenceFrame;
-          var localENUPosition = this.localOriginEastNorthUp.position.getValueInReferenceFrame(state.time, localENUFrame, scratchOriginCartesian3);
-          if (!localENUPosition || localENUFrame !== eyeRootFrame || cesium_imports_ts_1.Cartesian3.magnitudeSquared(cesium_imports_ts_1.Cartesian3.subtract(eyePosition, localENUPosition, scratchOriginCartesian3)) > 25000000) {
-            var localENUPositionProperty = this.localOriginEastNorthUp.position;
-            var localENUOrientationProperty = this.localOriginEastNorthUp.orientation;
-            localENUPositionProperty.setValue(eyePosition, eyeRootFrame);
-            var enuOrientation = utils_ts_1.getEntityOrientationInReferenceFrame(this.localOriginEastNorthUp, state.time, eyeRootFrame, scratchQuaternion);
-            localENUOrientationProperty.setValue(enuOrientation);
-            this.localOriginChangeEvent.raiseEvent(undefined);
-          }
-        };
-        Context.prototype._sendUpdateForSesion = function(parentState, session, entityStateCache) {
-          var sessionEntities = {};
-          for (var id in parentState.entities) {
-            sessionEntities[id] = parentState.entities[id];
-          }
-          for (var id in this._sessionToSubscribedEntities.get(session)) {
-            if (!cesium_imports_ts_1.defined(entityStateCache[id])) {
-              var entity = this.entities.getById(id);
-              entityStateCache[id] = utils_ts_1.calculatePose(entity, parentState.time);
-            }
-            sessionEntities[id] = entityStateCache[id];
-          }
-          var sessionState = {
-            time: parentState.time,
-            frameNumber: parentState.frameNumber,
-            reality: parentState.reality,
-            camera: parentState.camera,
-            size: parentState.size,
-            entities: sessionEntities
-          };
-          session.send('ar.context.update', sessionState);
-        };
-        Object.defineProperty(Context.prototype, "desiredPresentationMode", {
-          get: function() {
-            return this._desiredPresentationMode;
-          },
-          set: function(presentationMode) {
-            this._desiredPresentationMode = presentationMode;
-            this.parentSession.send('ar.context.desiredPresentationMode', {presentationMode: presentationMode});
-          },
-          enumerable: true,
-          configurable: true
-        });
-        Context.prototype.getDesiredPresentationModeForSession = function(session) {
-          return this._sessionToDesiredPresentationModeMap.get(session);
-        };
-        Object.defineProperty(Context.prototype, "desiredReality", {
-          get: function() {
-            return this._desiredReality;
-          },
-          set: function(reality) {
-            if (reality && !reality['id'])
-              reality['id'] = cesium_imports_ts_1.createGuid();
-            this._desiredReality = reality;
-            this.parentSession.send('ar.context.desiredReality', {reality: reality});
-          },
-          enumerable: true,
-          configurable: true
-        });
-        Context.prototype.getDesiredRealityForSession = function(session) {
-          return this._sessionToDesiredRealityMap.get(session);
-        };
-        Context.prototype._setReality = function(reality) {
-          var _this = this;
-          if (this.reality && reality && this.reality.id === reality.id)
-            return;
-          if (this.reality && !reality)
-            return;
-          if (!this.reality && !reality) {
-            reality = this.deviceService.defaultReality;
-            reality.id = 'default';
-          }
-          var realitySession = this.addSession();
-          realitySession.on['ar.context.update'] = function(state) {
-            state.reality = reality;
-            _this._update(state);
-          };
-          realitySession.on['ar.context.realityControlMessage'] = function(message) {
-            var owner = _this._desiredRealityToOwnerSessionMap.get(reality) || _this.parentSession;
-            owner.send('ar.context.realityControlMessage', message);
-          };
-          realitySession.openEvent.addEventListener(function() {
-            var previousRealitySession = _this._realitySession;
-            var previousReality = _this.reality;
-            _this._realitySession = realitySession;
-            _this._reality = reality;
-            console.log("Reality session set: " + JSON.stringify(reality));
-            if (previousRealitySession) {
-              previousRealitySession.close();
-            }
-            if (realitySession.info.role !== session_ts_1.Role.Reality) {
-              realitySession.sendError({message: "Expected a session with role === Role.Reality"});
-              realitySession.close();
-              return;
-            }
-            if (realitySession.info.enableRealityControlPort) {
-              var owner = _this._desiredRealityToOwnerSessionMap.get(reality) || _this.parentSession;
-              var channel = _this.messageChannelFactory.create();
-              realitySession.send('ar.context.realityControlSession');
-              owner.send('ar.context.realityControlSession');
-            }
-          });
-          realitySession.closeEvent.addEventListener(function() {
-            console.log("Reality session closed: " + JSON.stringify(reality));
-            _this._setReality(_this.onSelectReality());
-          });
-          var messageChannel = this.messageChannelFactory.create();
-          realitySession.open(messageChannel.port1, {role: this.role});
-          this.realityService.setupReality(reality, messageChannel.port2);
-        };
-        Context.prototype.onSessionDesiresFocus = function(session) {};
-        Context.prototype.onSelectReality = function() {
-          console.log("Selecting a reality...");
-          var selectedReality = this.getDesiredRealityForSession(this.focussedSession);
-          if (!selectedReality) {
-            for (var _i = 0,
-                _a = this.sessions; _i < _a.length; _i++) {
-              var session = _a[_i];
-              var desiredReality = this.getDesiredRealityForSession(session);
-              if (desiredReality && this.realityService.supportsReality(desiredReality)) {
-                selectedReality = desiredReality;
-                break;
-              }
-            }
-          }
-          console.log('Selected reality: ' + JSON.stringify(selectedReality));
-          return selectedReality;
-        };
-        Context.prototype.addSession = function() {
-          var _this = this;
-          var session = this.sessionFactory.create();
-          this._sessions.push(session);
-          session.on['ar.context.desiredReality'] = function(message, event) {
-            var reality = message.reality;
-            console.log("Session set desired reality: " + JSON.stringify(reality));
-            if (reality) {
-              _this._sessionToDesiredRealityMap.set(session, reality);
-              _this._desiredRealityToOwnerSessionMap.set(reality, session);
-              if (!_this.realityService.handlers.get(reality.type)) {
-                session.sendError({message: reality.type + " reality is not suppored on this platform"});
-              }
-            } else {
-              _this._sessionToDesiredRealityMap.delete(session);
-            }
-            _this._setReality(_this.onSelectReality());
-          };
-          session.on['ar.context.subscribe'] = function(_a) {
-            var id = _a.id;
-            var subscriptions = _this._sessionToSubscribedEntities.get(session) || [];
-            if (subscriptions.indexOf(id) === -1)
-              subscriptions.push(id);
-          };
-          session.on['ar.context.focus'] = function() {
-            _this.onSessionDesiresFocus(session);
-          };
-          session.focusEvent.addEventListener(function() {
-            var previousFocussedSession = _this._focussedSession;
-            if (previousFocussedSession !== session) {
-              if (previousFocussedSession)
-                previousFocussedSession.send('ar.context.blur');
-              session.send('ar.context.focus');
-              _this._focussedSession = session;
-              _this.sessionFocusEvent.raiseEvent(session);
-            }
-          });
-          session.closeEvent.addEventListener(function() {
-            var index = _this._sessions.indexOf(session);
-            if (index > -1) {
-              _this._sessions.splice(index);
-            }
-            if (_this._realitySession === session) {
-              _this._realitySession = null;
-            }
-          });
-          this.sessionCreateEvent.raiseEvent(session);
-          return session;
-        };
-        Context.prototype.subscribeToEntity = function(id) {
-          if (this.role !== session_ts_1.Role.Manager) {
-            this.parentSession.send('ar.context.subscribe', {id: id});
-          }
-          return this.entities.getOrCreateEntity(id);
-        };
-        Context.prototype.getEntityPose = function(entity, referenceFrame) {
-          if (referenceFrame === void 0) {
-            referenceFrame = cesium_imports_ts_1.ReferenceFrame.FIXED;
-          }
-          var time = this.frame.time;
-          var position = utils_ts_1.getEntityPositionInReferenceFrame(entity, time, referenceFrame, scratchCartesian3);
-          var orientation = utils_ts_1.getEntityOrientationInReferenceFrame(entity, time, referenceFrame, scratchQuaternion);
-          return position && orientation ? {
-            position: position,
-            orientation: orientation
-          } : undefined;
-        };
-        Context = __decorate([aurelia_dependency_injection_1.inject(reality_ts_1.RealitySetupService, device_ts_1.DeviceService, session_ts_1.SessionFactory, session_ts_1.MessageChannelFactory, session_ts_1.Role, aurelia_dependency_injection_1.All.of(ContextPlugin), session_ts_1.ConnectService)], Context);
-        return Context;
-      }());
-      exports_1("Context", Context);
-    }
-  };
-});
-
-$__System.register("a", ["4"], function(exports_1, context_1) {
-  "use strict";
-  var __moduleName = context_1 && context_1.id;
-  var __extends = (this && this.__extends) || function(d, b) {
-    for (var p in b)
-      if (b.hasOwnProperty(p))
-        d[p] = b[p];
-    function __() {
-      this.constructor = d;
-    }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-  };
-  var context_ts_1;
-  var ViewPlugin;
-  return {
-    setters: [function(context_ts_1_1) {
-      context_ts_1 = context_ts_1_1;
-    }],
-    execute: function() {
-      ViewPlugin = (function(_super) {
-        __extends(ViewPlugin, _super);
-        function ViewPlugin() {
-          _super.apply(this, arguments);
-        }
-        ViewPlugin.prototype.onContextInit = function() {
-          if (typeof document !== 'undefined') {
-            var viewportMetaTag = document.querySelector('meta[name=viewport]');
-            if (!viewportMetaTag)
-              viewportMetaTag = document.createElement('meta');
-            viewportMetaTag.name = 'viewport';
-            viewportMetaTag.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0';
-            document.head.appendChild(viewportMetaTag);
-            var argonView_1 = document.querySelector('#argon');
-            if (!argonView_1)
-              argonView_1 = document.createElement('div');
-            argonView_1.id = 'argon';
-            document.documentElement.appendChild(argonView_1);
-            this.element = argonView_1;
-            if (document.body)
-              document.body.appendChild(argonView_1);
-            else {
-              document.addEventListener('DOMContentLoaded', function() {
-                document.body.appendChild(argonView_1);
-              });
-            }
-            var style = document.createElement("style");
-            style.type = 'text/css';
-            document.head.appendChild(style);
-            var sheet = style.sheet;
-            sheet.insertRule("\n                #argon {\n                    position: fixed;\n                    transform: translateZ(0px);\n                    z-index: -9999;\n                    left: 0px;\n                    bottom: 0px;\n                    width: 100%;\n                    height: 100%;\n                    margin: 0;\n                    border: 0;\n                    padding: 0;\n                }\n            ", 0);
-            sheet.insertRule("\n                #argon > * {\n                    position: absolute;\n                    transform: translateZ(0px);\n                    left: 0px;\n                    bottom: 0px;\n                    width: inherit;\n                    height: inherit;\n                }\n            ", 1);
-          }
-        };
-        ViewPlugin.prototype.onContextReady = function() {
-          var _this = this;
-          if (typeof document !== 'undefined') {
-            var previousWidth_1,
-                previousHeight_1;
-            this.context.updateEvent.addEventListener(function(frameState) {
-              var width = frameState.size.width;
-              var height = frameState.size.height;
-              if (previousWidth_1 !== width || previousHeight_1 !== height) {
-                _this.element.style.width = frameState.size.width + 'px';
-                _this.element.style.height = frameState.size.height + 'px';
-              }
-              previousWidth_1 = width;
-              previousHeight_1 = height;
-            });
-          }
-        };
-        return ViewPlugin;
-      }(context_ts_1.ContextPlugin));
-      exports_1("ViewPlugin", ViewPlugin);
-    }
-  };
-});
-
-$__System.register("8", ["7", "5"], function(exports_1, context_1) {
-  "use strict";
-  var __moduleName = context_1 && context_1.id;
-  var cesium_imports_ts_1,
-      utils_ts_1;
-  var DeviceService;
-  return {
-    setters: [function(cesium_imports_ts_1_1) {
-      cesium_imports_ts_1 = cesium_imports_ts_1_1;
-    }, function(utils_ts_1_1) {
-      utils_ts_1 = utils_ts_1_1;
-    }],
-    execute: function() {
-      DeviceService = (function() {
-        function DeviceService() {
-          this.device = new cesium_imports_ts_1.Entity({
-            id: 'DEVICE',
-            name: 'device'
-          });
-          this.eye = new cesium_imports_ts_1.Entity({
-            id: 'EYE',
-            name: 'eye'
-          });
-          this.defaultReality = {type: 'empty'};
-          var sampledDevicePosition = new cesium_imports_ts_1.SampledPositionProperty();
-          sampledDevicePosition.forwardExtrapolationType = cesium_imports_ts_1.ExtrapolationType.HOLD;
-          var sampledDeviceOrientation = new cesium_imports_ts_1.SampledProperty(cesium_imports_ts_1.Quaternion);
-          sampledDeviceOrientation.forwardExtrapolationType = cesium_imports_ts_1.ExtrapolationType.HOLD;
-          this.device.position = sampledDevicePosition;
-          this.device.orientation = sampledDeviceOrientation;
-          var eyePosition = new cesium_imports_ts_1.ConstantPositionProperty(cesium_imports_ts_1.Cartesian3.ZERO, this.device);
-          var eyeOrientation = new cesium_imports_ts_1.ConstantProperty(cesium_imports_ts_1.Quaternion.IDENTITY);
-          this.eye.position = eyePosition;
-          this.eye.orientation = eyeOrientation;
-        }
-        DeviceService.prototype.getDevicePose = function(time) {
-          return utils_ts_1.calculatePose(this.device, time);
-        };
-        DeviceService.prototype.getEyePose = function(time) {
-          if (typeof window !== 'undefined') {
-            var interfaceRotation = -window.orientation || 0;
-            var eyeOrientation = this.eye.orientation;
-            eyeOrientation.setValue(cesium_imports_ts_1.Quaternion.fromAxisAngle(cesium_imports_ts_1.Cartesian3.UNIT_Z, interfaceRotation));
-          }
-          return utils_ts_1.calculatePose(this.eye, time);
-        };
-        DeviceService.prototype.getCameraState = function() {
-          return {
-            type: "perspective",
-            fovY: cesium_imports_ts_1.CesiumMath.toRadians(60)
-          };
-        };
-        DeviceService.prototype.getViewSize = function() {
-          if (typeof document !== 'undefined') {
-            return {
-              width: document.documentElement.clientWidth,
-              height: document.documentElement.clientHeight
-            };
-          }
-          return {
-            width: 0,
-            height: 0
-          };
-        };
-        return DeviceService;
-      }());
-      exports_1("DeviceService", DeviceService);
-    }
-  };
-});
-
-$__System.register("b", ["7"], function(exports_1, context_1) {
-  "use strict";
-  var __moduleName = context_1 && context_1.id;
-  var cesium_imports_ts_1;
-  var TimerService,
-      lastTime;
-  function requestAnimationFramePoly(callback) {
-    var currTime = new Date().getTime();
-    var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-    var id = setTimeout(function() {
-      callback(currTime + timeToCall);
-    }, timeToCall);
-    lastTime = currTime + timeToCall;
-    return id;
-  }
-  return {
-    setters: [function(cesium_imports_ts_1_1) {
-      cesium_imports_ts_1 = cesium_imports_ts_1_1;
-    }],
-    execute: function() {
-      TimerService = (function() {
-        function TimerService() {
-          this.frameNumbers = new WeakMap();
-        }
-        TimerService.prototype.requestFrame = function(callback) {
-          var _this = this;
-          if (typeof requestAnimationFrame !== 'undefined' && typeof performance !== 'undefined') {
-            this.navigationStartDate = this.navigationStartDate || cesium_imports_ts_1.JulianDate.fromDate(new Date(performance.timing.navigationStart));
-            requestAnimationFrame(function(time) {
-              var frameTime = cesium_imports_ts_1.JulianDate.addSeconds(_this.navigationStartDate, time / 1000, new cesium_imports_ts_1.JulianDate(0, 0));
-              callback(frameTime, _this.getNextFrameNumber(callback));
-            });
-          } else {
-            requestAnimationFramePoly(function(time) {
-              var frameTime = cesium_imports_ts_1.JulianDate.fromDate(new Date(time));
-              callback(frameTime, _this.getNextFrameNumber(callback));
-            });
-          }
-        };
-        TimerService.prototype.getNextFrameNumber = function(callback) {
-          var frameNumber = this.frameNumbers.get(callback) || 0;
-          this.frameNumbers.set(callback, frameNumber + 1);
-          return frameNumber;
-        };
-        return TimerService;
-      }());
-      exports_1("TimerService", TimerService);
-      lastTime = 0;
     }
   };
 });
@@ -4358,7 +4466,7 @@ define("e", ["exports"], function(exports) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("6", ["exports", "c", "d", "e"], function(exports, _coreJs, _aureliaMetadata, _aureliaPal) {
+define("4", ["exports", "c", "d", "e"], function(exports, _coreJs, _aureliaMetadata, _aureliaPal) {
   'use strict';
   exports.__esModule = true;
   var _classInvokers;
@@ -4850,7 +4958,7 @@ define("6", ["exports", "c", "d", "e"], function(exports, _coreJs, _aureliaMetad
 });
 
 })();
-$__System.register("3", ["7", "6", "5"], function(exports_1, context_1) {
+$__System.register("8", ["6", "4", "7"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __extends = (this && this.__extends) || function(d, b) {
@@ -4898,9 +5006,9 @@ $__System.register("3", ["7", "6", "5"], function(exports_1, context_1) {
     }],
     execute: function() {
       (function(Role) {
-        Role[Role["Application"] = "Application"] = "Application";
-        Role[Role["Reality"] = "Reality"] = "Reality";
-        Role[Role["Manager"] = "Manager"] = "Manager";
+        Role[Role["APPLICATION"] = "Application"] = "APPLICATION";
+        Role[Role["REALITY"] = "Reality"] = "REALITY";
+        Role[Role["MANAGER"] = "Manager"] = "MANAGER";
       })(Role || (Role = {}));
       exports_1("Role", Role);
       SessionFactory = (function() {
@@ -4984,8 +5092,6 @@ $__System.register("3", ["7", "6", "5"], function(exports_1, context_1) {
       Session = (function() {
         function Session() {
           var _this = this;
-          this._openDeferred = utils_ts_1.createDeferred();
-          this.openPromise = this._openDeferred.promise;
           this.openEvent = new utils_ts_1.Event();
           this.focusEvent = new utils_ts_1.Event();
           this.closeEvent = new utils_ts_1.Event();
@@ -4996,7 +5102,6 @@ $__System.register("3", ["7", "6", "5"], function(exports_1, context_1) {
           this._receivedOpenMessage = false;
           this.on[Session.OPEN] = function(info) {
             _this.info = info;
-            _this._openDeferred.resolve();
             _this.openEvent.raiseEvent(null);
           };
           this.on[Session.CLOSE] = function(message) {
@@ -5194,82 +5299,6 @@ $__System.register("3", ["7", "6", "5"], function(exports_1, context_1) {
         return WKWebViewConnectService;
       }(ConnectService));
       exports_1("WKWebViewConnectService", WKWebViewConnectService);
-    }
-  };
-});
-
-$__System.register("9", ["6", "b", "3"], function(exports_1, context_1) {
-  "use strict";
-  var __moduleName = context_1 && context_1.id;
-  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
-    var c = arguments.length,
-        r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
-        d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
-      r = Reflect.decorate(decorators, target, key, desc);
-    else
-      for (var i = decorators.length - 1; i >= 0; i--)
-        if (d = decorators[i])
-          r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-  };
-  var aurelia_dependency_injection_1,
-      timer_ts_1,
-      session_ts_1;
-  var RealitySetupService;
-  return {
-    setters: [function(aurelia_dependency_injection_1_1) {
-      aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
-    }, function(timer_ts_1_1) {
-      timer_ts_1 = timer_ts_1_1;
-    }, function(session_ts_1_1) {
-      session_ts_1 = session_ts_1_1;
-    }],
-    execute: function() {
-      RealitySetupService = (function() {
-        function RealitySetupService(timer, messageChannelFactory, sessionFactory) {
-          this.timer = timer;
-          this.messageChannelFactory = messageChannelFactory;
-          this.sessionFactory = sessionFactory;
-          this.handlers = new Map();
-          this.handlers.set('empty', this.setupEmptyReality);
-        }
-        RealitySetupService.prototype.setupReality = function(reality, port) {
-          var handler = this.handlers.get(reality.type);
-          if (!handler)
-            throw new Error("Cannot setup an unsupported reality");
-          handler.call(this, reality, port);
-        };
-        RealitySetupService.prototype.supportsReality = function(reality) {
-          return !!this.handlers.get(reality.type);
-        };
-        RealitySetupService.prototype.setupEmptyReality = function(reality, port) {
-          var _this = this;
-          var channel = this.messageChannelFactory.create();
-          var remoteRealitySession = this.sessionFactory.create();
-          var doUpdate = true;
-          remoteRealitySession.openEvent.addEventListener(function() {
-            var update = function(time, frameNumber) {
-              if (doUpdate) {
-                var frameState = {
-                  time: time,
-                  frameNumber: frameNumber
-                };
-                remoteRealitySession.send('ar.context.update', frameState);
-                _this.timer.requestFrame(update);
-              }
-            };
-            _this.timer.requestFrame(update);
-          });
-          remoteRealitySession.closeEvent.addEventListener(function() {
-            doUpdate = false;
-          });
-          remoteRealitySession.open(port, {role: session_ts_1.Role.Reality});
-        };
-        RealitySetupService = __decorate([aurelia_dependency_injection_1.inject(timer_ts_1.TimerService, session_ts_1.MessageChannelFactory, session_ts_1.SessionFactory)], RealitySetupService);
-        return RealitySetupService;
-      }());
-      exports_1("RealitySetupService", RealitySetupService);
     }
   };
 });
@@ -15981,7 +16010,7 @@ define("2b", ["44", "39", "22", "3a", "19", "10", "12", "43", "45", "32", "52", 
 });
 
 })();
-$__System.register("5a", ["7"], function(exports_1, context_1) {
+$__System.register("5a", ["6"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var cesium_imports_ts_1;
@@ -16050,7 +16079,7 @@ $__System.register("5a", ["7"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("7", ["42", "f", "39", "22", "3a", "17", "18", "1b", "21", "25", "1c", "19", "10", "12", "32", "1e", "1f", "13", "40", "30", "33", "1a", "1d", "28", "29", "34", "3b", "24", "2c", "2a", "3c", "23", "3d", "3e", "3f", "2b", "5a"], function(exports_1, context_1) {
+$__System.register("6", ["42", "f", "39", "22", "3a", "17", "18", "1b", "21", "25", "1c", "19", "10", "12", "32", "1e", "1f", "13", "40", "30", "33", "1a", "1d", "28", "29", "34", "3b", "24", "2c", "2a", "3c", "23", "3d", "3e", "3f", "2b", "5a"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   return {
@@ -16131,7 +16160,7 @@ $__System.register("7", ["42", "f", "39", "22", "3a", "17", "18", "1b", "21", "2
   };
 });
 
-$__System.register("5", ["13", "7"], function(exports_1, context_1) {
+$__System.register("7", ["13", "6"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var Event_1,
@@ -16142,20 +16171,6 @@ $__System.register("5", ["13", "7"], function(exports_1, context_1) {
       scratchMatrix4,
       scratchMatrix3,
       urlParser;
-  function createDeferred() {
-    var resolve;
-    var reject;
-    var promise = new Promise(function(res, rej) {
-      resolve = res;
-      reject = rej;
-    });
-    return {
-      promise: promise,
-      resolve: resolve,
-      reject: reject
-    };
-  }
-  exports_1("createDeferred", createDeferred);
   function calculatePose(entity, time) {
     var entityPosition = entity.position;
     var referenceFrame = entityPosition.referenceFrame;
@@ -16321,16 +16336,17 @@ $__System.register("5", ["13", "7"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("1", ["6", "7", "4", "2", "a", "b", "8", "3", "9", "5"], function(exports_1, context_1) {
+$__System.register("1", ["4", "6", "3", "a", "5", "9", "2", "b", "8", "7"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var aurelia_dependency_injection_1,
       Cesium,
       context_ts_1,
-      vuforia_ts_1,
-      view_ts_1,
       timer_ts_1,
       device_ts_1,
+      reality_ts_1,
+      view_ts_1,
+      vuforia_ts_1,
       session_ts_1;
   var ArgonSystem;
   function init(options) {
@@ -16339,15 +16355,15 @@ $__System.register("1", ["6", "7", "4", "2", "a", "b", "8", "3", "9", "5"], func
     }
     var role;
     if (typeof window === 'undefined') {
-      role = session_ts_1.Role.Manager;
+      role = session_ts_1.Role.MANAGER;
     } else if (navigator.userAgent.indexOf('Argon') > 0 || window.top !== window) {
-      role = session_ts_1.Role.Application;
+      role = session_ts_1.Role.APPLICATION;
     } else {
-      role = session_ts_1.Role.Manager;
+      role = session_ts_1.Role.MANAGER;
     }
     var config = Object.assign({
       role: role,
-      enableIncomingUpdateEvents: role === session_ts_1.Role.Application
+      enableIncomingUpdateEvents: role === session_ts_1.Role.APPLICATION
     }, options.config);
     return new ArgonSystem(config, options.container);
   }
@@ -16356,7 +16372,7 @@ $__System.register("1", ["6", "7", "4", "2", "a", "b", "8", "3", "9", "5"], func
     if (options === void 0) {
       options = {};
     }
-    var config = Object.assign({role: session_ts_1.Role.Reality}, {enableRealityControlPort: true}, options.config);
+    var config = Object.assign({role: session_ts_1.Role.REALITY}, {enableRealityControlPort: true}, options.config);
     return new ArgonSystem(config, options.container);
   }
   exports_1("initReality", initReality);
@@ -16383,23 +16399,24 @@ $__System.register("1", ["6", "7", "4", "2", "a", "b", "8", "3", "9", "5"], func
     }, function(context_ts_1_1) {
       context_ts_1 = context_ts_1_1;
       exportStar_1(context_ts_1_1);
-    }, function(vuforia_ts_1_1) {
-      vuforia_ts_1 = vuforia_ts_1_1;
-      exportStar_1(vuforia_ts_1_1);
-    }, function(view_ts_1_1) {
-      view_ts_1 = view_ts_1_1;
-      exportStar_1(view_ts_1_1);
     }, function(timer_ts_1_1) {
       timer_ts_1 = timer_ts_1_1;
       exportStar_1(timer_ts_1_1);
     }, function(device_ts_1_1) {
       device_ts_1 = device_ts_1_1;
       exportStar_1(device_ts_1_1);
+    }, function(reality_ts_1_1) {
+      reality_ts_1 = reality_ts_1_1;
+      exportStar_1(reality_ts_1_1);
+    }, function(view_ts_1_1) {
+      view_ts_1 = view_ts_1_1;
+      exportStar_1(view_ts_1_1);
+    }, function(vuforia_ts_1_1) {
+      vuforia_ts_1 = vuforia_ts_1_1;
+      exportStar_1(vuforia_ts_1_1);
     }, function(session_ts_1_1) {
       session_ts_1 = session_ts_1_1;
       exportStar_1(session_ts_1_1);
-    }, function(reality_ts_1_1) {
-      exportStar_1(reality_ts_1_1);
     }, function(utils_ts_1_1) {
       exportStar_1(utils_ts_1_1);
     }],
@@ -16411,15 +16428,12 @@ $__System.register("1", ["6", "7", "4", "2", "a", "b", "8", "3", "9", "5"], func
           if (container === void 0) {
             container = new aurelia_dependency_injection_1.Container();
           }
-          this.config = config;
           this.container = container;
           ArgonSystem.instance = this;
           this.container.registerInstance('config', config);
-          this.container.registerInstance(session_ts_1.Role, this.config.role);
+          this.container.registerInstance(session_ts_1.Role, config.role);
           this.container.registerInstance(ArgonSystem, this);
-          this.container.registerSingleton(context_ts_1.ContextPlugin, view_ts_1.ViewPlugin);
-          this.container.registerSingleton(context_ts_1.ContextPlugin, vuforia_ts_1.VuforiaPlugin);
-          if (this.config.role === session_ts_1.Role.Manager) {
+          if (config.role === session_ts_1.Role.MANAGER) {
             this.container.registerSingleton(session_ts_1.ConnectService, session_ts_1.LoopbackConnectService);
           } else if (session_ts_1.WKWebViewConnectService.isAvailable()) {
             this.container.registerSingleton(session_ts_1.ConnectService, session_ts_1.WKWebViewConnectService);
@@ -16430,8 +16444,15 @@ $__System.register("1", ["6", "7", "4", "2", "a", "b", "8", "3", "9", "5"], func
           } else {
             this.container.registerSingleton(session_ts_1.ConnectService, session_ts_1.LoopbackConnectService);
           }
-          this.context;
+          this.context.init();
         }
+        Object.defineProperty(ArgonSystem.prototype, "configuration", {
+          get: function() {
+            return this.container.get('config');
+          },
+          enumerable: true,
+          configurable: true
+        });
         Object.defineProperty(ArgonSystem.prototype, "context", {
           get: function() {
             return this.container.get(context_ts_1.Context);
@@ -16453,16 +16474,23 @@ $__System.register("1", ["6", "7", "4", "2", "a", "b", "8", "3", "9", "5"], func
           enumerable: true,
           configurable: true
         });
+        Object.defineProperty(ArgonSystem.prototype, "reality", {
+          get: function() {
+            return this.container.get(reality_ts_1.RealityService);
+          },
+          enumerable: true,
+          configurable: true
+        });
         Object.defineProperty(ArgonSystem.prototype, "view", {
           get: function() {
-            return this.context.getPlugin(view_ts_1.ViewPlugin);
+            return this.container.get(view_ts_1.ViewService);
           },
           enumerable: true,
           configurable: true
         });
         Object.defineProperty(ArgonSystem.prototype, "vuforia", {
           get: function() {
-            return this.context.getPlugin(vuforia_ts_1.VuforiaPlugin);
+            return this.container.get(vuforia_ts_1.VuforiaService);
           },
           enumerable: true,
           configurable: true
@@ -16483,4 +16511,3 @@ $__System.register("1", ["6", "7", "4", "2", "a", "b", "8", "3", "9", "5"], func
   else
     Argon = factory();
 });
-//# sourceMappingURL=argon.js.map

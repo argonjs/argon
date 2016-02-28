@@ -40,10 +40,10 @@ tsc
 npm run test
 ```
 
-* To create a bundle, execute:  
+* To create a build, execute:  
 
 ```sh
-npm run bundle
+npm run build
 ```
 
 ### Potential Problems

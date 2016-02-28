@@ -1,8 +1,8 @@
 import {inject} from 'aurelia-dependency-injection';
 import {Role, Session, MessagePortLike} from './session.ts';
-import {Context, ContextPlugin, FrameState} from './context.ts'
+import {Context, FrameState} from './context.ts'
 import {Event, CommandQueue, resolveURL} from './utils.ts'
-import {Reality} from './reality.ts'
+import {Reality, RealityService} from './reality.ts'
 import {defined} from './cesium/cesium-imports.ts'
 
 export class VuforiaInitError extends Error { constructor(message:string, public code:VuforiaInitErrorCode) { super(message) }}
@@ -34,7 +34,7 @@ export enum VuforiaErrorType {
 	DeactivateDataSetError = "DeactivateDataSetError" as any,
 }
 
-export class VuforiaPluginDelegate {
+export class VuforiaServiceDelegate {
 	isSupported() {return false}
 	init(options:VuforiaInitOptions) : any|PromiseLike<void> {}
 	deinit() : any|PromiseLike<any> {}
@@ -84,49 +84,57 @@ export interface VuforiaDataSetLoadMessage {
 	trackables: VuforiaTrackables
 }
 
-@inject(VuforiaPluginDelegate)
-export class VuforiaPlugin extends ContextPlugin {
+@inject(Context, RealityService, VuforiaServiceDelegate)
+export class VuforiaService {
 	
-	constructor(delegate:VuforiaPluginDelegate){
-		super();
-		this._delegate = delegate;
+	constructor(private context:Context, private realityService:RealityService, private delegate:VuforiaServiceDelegate) {
 		
-		delegate.errorEvent.addEventListener((msg) => {
-			const session = <Session>this._commandQueue.currentUserData;
-			if (msg.type === VuforiaErrorType.InitError) {
-				this._sessionInitOptions.delete(session);
-				this._controllingSession = null;
-				this._isInitialized = false;
-				this._commandQueue.clear();
+		context.connectEvent.addEventListener(()=>{
+			context.parentSession.on['ar.vuforia.errorEvent'] = (err:VuforiaErrorMessage, event) => {
+				let error = null;
+				switch (err.type) {
+					case VuforiaErrorType.InitError : error = new VuforiaInitError(err.message, err.data.code); break;
+					case VuforiaErrorType.LoadDataSetError : error = new VuforiaLoadDataSetError(err.message); break;
+					case VuforiaErrorType.UnloadDataSetError : error = new VuforiaUnloadDataSetError(err.message); break;
+					case VuforiaErrorType.ActivateDataSetError : error = new VuforiaActivateDataSetError(err.message); break;
+					default : error = new Error(err.message); break;
+				}
+				context.errorEvent.raiseEvent(error);
 			}
-			session.send('ar.vuforia.errorEvent', msg);
+			
+			context.parentSession.on['ar.vuforia.dataSetLoadEvent'] = (msg:VuforiaDataSetLoadMessage, event) => {
+				const {url, trackables} = msg;
+				const dataSet = this.dataSetMap.get(url);
+				dataSet._resolveTrackables(trackables);
+			}
 		})
 		
-		delegate.dataSetLoadEvent.addEventListener((msg)=> {
-			const session = <Session>this._commandQueue.currentUserData;
-			session.send('ar.vuforia.dataSetLoadEvent', msg);
+		realityService.handlers.set('vuforia', (reality:Reality, port:MessagePortLike) => {
+			
+			const remoteRealitySession = realityService.sessionFactory.create();
+			
+			remoteRealitySession.open(port, {role:Role.REALITY});
+			remoteRealitySession.send('ar.vuforia.init');
+			remoteRealitySession.send('ar.vuforia.startCamera');
+			
+			const remove = delegate.updateEvent.addEventListener((frameState)=> {                
+				remoteRealitySession.send('ar.context.update', frameState);
+				// TODO: Only pass frameNumber / time, and update the trackable entities 
+				// directly. Two reasons:
+				// 1) Allow vuforia to be used when it is not the current reality
+				// 2) Only send trackable data to the session that wants it
+				// remoteRealitySession.send('ar.context.update', {
+				// 	frameNumber: frameState.frameNumber,
+				// 	time: frameState.time,	
+				// });
+			});
+			
+			remoteRealitySession.closeEvent.addEventListener(()=> {
+				remove();
+			});
 		})
 		
-	};
-	
-	private _delegate:VuforiaPluginDelegate;
-	private _commandQueue = new CommandQueue;
-	
-	private _sessionInitOptions = new WeakMap<Session, VuforiaInitOptions>();
-	private _sessionCameraStarted = new WeakMap<Session, boolean>();
-	private _sessionObjectTrackerStarted = new WeakMap<Session, boolean>();
-	private _sessionMaxSimultaneousImageTargets = new WeakMap<Session, number>();
-	private _sessionLoadedDataSets = new WeakMap<Session, Set<string>>();
-	private _sessionActivatedDataSets = new WeakMap<Session, Set<string>>();
-	private _controllingSession:Session = null;
-	private _isInitialized = false;
-    
-	private dataSetMap = new Map<string, VuforiaDataSet>();
-	
-	onContextInit() {
-		const delegate = this._delegate;
-		
-		this.context.sessionCreateEvent.addEventListener((session)=> {
+		context.sessionConnectEvent.addEventListener((session)=> {
 			
 			const loadedDataSets = new Set<string>();
 			this._sessionLoadedDataSets.set(session, loadedDataSets);
@@ -140,7 +148,7 @@ export class VuforiaPlugin extends ContextPlugin {
 			session.on['ar.vuforia.init'] = (options:VuforiaInitOptions, event) => {
 				if (!delegate.isSupported()) return;
 				this._sessionInitOptions.set(session, options);
-				if (this._controllingSession === null || session === this.context.focussedSession) {
+				if (this._controllingSession === null || session === context.focussedSession) {
 					this._initVuforia(session);
 				}
 			}
@@ -232,57 +240,43 @@ export class VuforiaPlugin extends ContextPlugin {
 				this._controllingSession = null;
 			})
 		});
-		this.context.sessionFocusEvent.addEventListener((session) => {
+		
+		context.sessionFocusEvent.addEventListener((session) => {
 			if (this._sessionInitOptions.has(session)) {
 				this._initVuforia(session)
 			}
 		})
-	}
-	
-	onContextReady() {
-		this.context.parentSession.on['ar.vuforia.errorEvent'] = (err:VuforiaErrorMessage, event) => {
-			let error = null;
-			switch (err.type) {
-				case VuforiaErrorType.InitError : error = new VuforiaInitError(err.message, err.data.code); break;
-				case VuforiaErrorType.LoadDataSetError : error = new VuforiaLoadDataSetError(err.message); break;
-				case VuforiaErrorType.UnloadDataSetError : error = new VuforiaUnloadDataSetError(err.message); break;
-				case VuforiaErrorType.ActivateDataSetError : error = new VuforiaActivateDataSetError(err.message); break;
-				default : error = new Error(err.message); break;
+		
+		delegate.errorEvent.addEventListener((msg) => {
+			const session = <Session>this._commandQueue.currentUserData;
+			if (msg.type === VuforiaErrorType.InitError) {
+				this._sessionInitOptions.delete(session);
+				this._controllingSession = null;
+				this._isInitialized = false;
+				this._commandQueue.clear();
 			}
-			this.context.errorEvent.raiseEvent(error);
-		}
-		
-		this.context.parentSession.on['ar.vuforia.dataSetLoadEvent'] = (msg:VuforiaDataSetLoadMessage, event) => {
-			const {url, trackables} = msg;
-			const dataSet = this.dataSetMap.get(url);
-			dataSet._resolveTrackables(trackables);
-		}
-		
-		this.context.realityService.handlers.set('vuforia', (reality:Reality, port:MessagePortLike) => {
-			
-			const remoteRealitySession = this.context.sessionFactory.create();
-			
-			remoteRealitySession.open(port, {role:Role.Reality});
-			remoteRealitySession.send('ar.vuforia.init');
-			remoteRealitySession.send('ar.vuforia.startCamera');
-			
-			const remove = this._delegate.updateEvent.addEventListener((frameState)=> {                
-				remoteRealitySession.send('ar.context.update', frameState);
-				// TODO: Only pass frameNumber / time, and update the trackable entities 
-				// directly. Two reasons:
-				// 1) Allow vuforia to be used when it is not the current reality
-				// 2) Only send trackable data to the session that wants it
-				// remoteRealitySession.send('ar.context.update', {
-				// 	frameNumber: frameState.frameNumber,
-				// 	time: frameState.time,	
-				// });
-			});
-			
-			remoteRealitySession.closeEvent.addEventListener(()=> {
-				remove();
-			});
+			session.send('ar.vuforia.errorEvent', msg);
 		})
-	}
+		
+		delegate.dataSetLoadEvent.addEventListener((msg)=> {
+			const session = <Session>this._commandQueue.currentUserData;
+			session.send('ar.vuforia.dataSetLoadEvent', msg);
+		})
+		
+	};
+	
+	private _commandQueue = new CommandQueue;
+	
+	private _sessionInitOptions = new WeakMap<Session, VuforiaInitOptions>();
+	private _sessionCameraStarted = new WeakMap<Session, boolean>();
+	private _sessionObjectTrackerStarted = new WeakMap<Session, boolean>();
+	private _sessionMaxSimultaneousImageTargets = new WeakMap<Session, number>();
+	private _sessionLoadedDataSets = new WeakMap<Session, Set<string>>();
+	private _sessionActivatedDataSets = new WeakMap<Session, Set<string>>();
+	private _controllingSession:Session = null;
+	private _isInitialized = false;
+    
+	private dataSetMap = new Map<string, VuforiaDataSet>();
 	
 	private _initVuforia(session:Session) {
 		const queue = this._commandQueue;
@@ -292,7 +286,7 @@ export class VuforiaPlugin extends ContextPlugin {
 		const objectTrackerStarted = this._sessionObjectTrackerStarted.get(session);
 		const loadedDataSets = this._sessionLoadedDataSets.get(session);
 		const activatedDataSets = this._sessionActivatedDataSets.get(session);
-		const delegate = this._delegate;
+		const delegate = this.delegate;
 		
 		if (this._isInitialized) {
 			queue.clear();
@@ -323,39 +317,39 @@ export class VuforiaPlugin extends ContextPlugin {
 		});
 	}
 	
-	isSupported() : PromiseLike<boolean> {
+	public isSupported() : PromiseLike<boolean> {
 		return this.context.parentSession.request('ar.vuforia.isSupported');
 	}
 	
-	init(options?:VuforiaInitOptions) {
+	public init(options?:VuforiaInitOptions) {
 		this.context.parentSession.send('ar.vuforia.init', options)
 	}
 	
-	deinit() {
+	public deinit() {
 		this.context.parentSession.send('ar.vuforia.deinit');
 	}
 	
-	startCamera() {
+	public startCamera() {
 		this.context.parentSession.send('ar.vuforia.startCamera')
 	}
 	
-	stopCamera() {
+	public stopCamera() {
 		this.context.parentSession.send('ar.vuforia.stopCamera')
 	}
 	
-	startObjectTracker() {
+	public startObjectTracker() {
 		this.context.parentSession.send('ar.vuforia.startObjectTracker')
 	}
 	
-	stopObjectTracker() {
+	public stopObjectTracker() {
 		this.context.parentSession.send('ar.vuforia.stopObjectTracker')
 	}
 	
-	hintMaxSimultaneousImageTargets(max) {
+	public hintMaxSimultaneousImageTargets(max) {
 		this.context.parentSession.send('ar.vuforia.hintMaxSimultaneousImageTargets', {max})
 	}
 	
-	createDataSet(url) : VuforiaDataSet {
+	public createDataSet(url) : VuforiaDataSet {
 		url = resolveURL(url);
 		const parentSession = this.context.parentSession;
 		const dataSet = new VuforiaDataSet(url, parentSession);

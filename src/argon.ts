@@ -1,11 +1,12 @@
 import {Container} from 'aurelia-dependency-injection'
 import * as Cesium from './cesium/cesium-imports.ts'
 
-import {Context, ContextPlugin} from './context.ts'
-import {VuforiaPlugin} from './vuforia.ts'
-import {ViewPlugin} from './view.ts'
+import {Context} from './context.ts'
 import {TimerService} from './timer.ts'
 import {DeviceService} from './device.ts'
+import {RealityService} from './reality.ts'
+import {ViewService} from './view.ts'
+import {VuforiaService} from './vuforia.ts'
 
 import { 
 	Role,
@@ -31,17 +32,14 @@ export class ArgonSystem {
 	
 	static instance:ArgonSystem;
 	
-	constructor(public config:SessionConfiguration, public container=new Container()) {
+	constructor(config:SessionConfiguration, public container=new Container()) {
 		ArgonSystem.instance = this;
 		
         this.container.registerInstance('config', config);
-		this.container.registerInstance(Role, this.config.role);
+		this.container.registerInstance(Role, config.role);
 		this.container.registerInstance(ArgonSystem, this);
 		
-		this.container.registerSingleton(ContextPlugin, ViewPlugin);
-		this.container.registerSingleton(ContextPlugin, VuforiaPlugin);
-		
-		if (this.config.role === Role.Manager) {
+		if (config.role === Role.MANAGER) {
 			this.container.registerSingleton(
 				ConnectService, 
 				LoopbackConnectService
@@ -68,7 +66,11 @@ export class ArgonSystem {
 			);
 		}
         
-        this.context; // jumpstart the dependency injection 
+        this.context.init(); 
+	}
+	
+	public get configuration() : SessionConfiguration {
+		return this.container.get('config')
 	}
 
 	public get context() : Context {
@@ -82,31 +84,36 @@ export class ArgonSystem {
 	public get device() : DeviceService {
 		return this.container.get(DeviceService);
 	}
+	
+	public get reality() : RealityService {
+		return this.container.get(RealityService);
+	}
     
-    public get view() : ViewPlugin {
-        return this.context.getPlugin(ViewPlugin);
+    public get view() : ViewService {
+        return this.container.get(ViewService);
     }
 	
-	public get vuforia() : VuforiaPlugin {
-		return this.context.getPlugin(VuforiaPlugin);
+	public get vuforia() : VuforiaService {
+		return this.container.get(VuforiaService);
 	}
+	
 }
 
 export function init(options:{config?:SessionConfiguration, container?:Container}={}) {
 	let role:Role;
 	if (typeof window === 'undefined') {
-		role = Role.Manager
+		role = Role.MANAGER
 	} else if (navigator.userAgent.indexOf('Argon') > 0 || window.top !== window) {
-		role = Role.Application
+		role = Role.APPLICATION
 	} else {
-		role = Role.Manager
+		role = Role.MANAGER
 	}
-	const config = Object.assign({role, enableIncomingUpdateEvents:role===Role.Application}, options.config);
+	const config = Object.assign({role, enableIncomingUpdateEvents:role===Role.APPLICATION}, options.config);
 	return new ArgonSystem(config, options.container);
 }
 
 export function initReality(options:{config?:SessionConfiguration, container?:Container}={}) {
-	const config = Object.assign({role:Role.Reality}, {enableRealityControlPort:true}, options.config);
+	const config = Object.assign({role:Role.REALITY}, {enableRealityControlPort:true}, options.config);
 	return new ArgonSystem(config, options.container);	
 }
 

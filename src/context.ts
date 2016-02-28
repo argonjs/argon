@@ -20,7 +20,7 @@ import {Role, Session, SessionFactory, MessageChannelFactory, ConnectService, Me
 import {Event, calculatePose, getRootReferenceFrame, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame} from './utils.ts'
 import {TimerService} from './timer.ts'
 import {DeviceService} from './device.ts'
-import {Reality, RealitySetupService} from './reality.ts'
+import {Reality, RealityService} from './reality.ts'
 
 /**
  * Base interface for camera states.
@@ -51,18 +51,36 @@ export interface PerspectiveCameraState extends CameraState {
 }
 
 /**
- * Holds information on the location and orientation of an entity relative to
- * some reference frame.
+ * Describes the state of an entity at a particular time relative to a particular reference frame
  */
-export interface EntityPose {
-	referenceFrame:string|Cesium.ReferenceFrame,
-	position?:{x:number,y:number,z:number},
-	orientation?:{x:number,y:number,z:number,w:number}
+export interface EntityState {
+	position: Cesium.Cartesian3
+    orientation: Cesium.Quaternion,
+    time: Cesium.JulianDate
+    poseStatus: PoseStatus
+}
+
+/*
+* A bitmask that describes the pose status of an EntityState.
+*/
+export enum PoseStatus {
+	FOUND = 1,
+	LOST = 2,
+	KNOWN = 4,
+	UNKNOWN = 8
 }
 
 /**
- * Maps from entity ids to their associated poses. Optionally contains a
- * basepoint entity.
+ * Describes the position, orientation, and referenceFrame of an entity.
+ */
+export interface EntityPose {
+	position?:{x:number,y:number,z:number},
+	orientation?:{x:number,y:number,z:number,w:number},
+	referenceFrame:Cesium.ReferenceFrame|string,
+}
+
+/**
+ * A map of entity ids and their associated poses.
  */
 export interface EntityPoseMap {
     EYE?:EntityPose,
@@ -97,28 +115,6 @@ export enum PresentationMode {
     Immersive = "Immersive" as any
 }
 
-/**
- * A plugin that can execute arbitrary code while and after a context is setup.
- */
-export abstract class ContextPlugin {
-
-    /**
-     * The context to which this plugin is attached.
-     */
-    public context:Context = undefined;
-
-    /**
-     * Called when the context is first created, but before it is finished
-     * being setup.
-     */
-    public abstract onContextInit();
-
-    /**
-     * Called once the context has finished being setup.
-     */
-    public abstract onContextReady();
-}
-
 const scratchDate = new JulianDate(0,0);
 const scratchCartesian3 = new Cartesian3(0,0);
 const scratchQuaternion = new Quaternion(0,0);
@@ -127,30 +123,28 @@ const scratchOriginCartesian3 = new Cartesian3(0,0);
 /**
  * TODO
  */
-@inject(RealitySetupService, DeviceService, SessionFactory, MessageChannelFactory, Role, All.of(ContextPlugin), ConnectService)
+@inject(RealityService, DeviceService, SessionFactory, MessageChannelFactory, Role, ConnectService)
 export class Context {
     
     /**
      * TODO
      */
-    constructor(public realityService:RealitySetupService,
-                public deviceService:DeviceService,
-                public sessionFactory:SessionFactory,
-                public messageChannelFactory:MessageChannelFactory,
-                public role:Role,
-                public plugins:ContextPlugin[],
-                parentSessionConnectService:ConnectService) {
-        
+    constructor(private realityService:RealityService,
+                private deviceService:DeviceService,
+                private sessionFactory:SessionFactory,
+                private messageChannelFactory:MessageChannelFactory,
+                private role:Role,
+                private parentSessionConnectService:ConnectService) {
         this.entities.add(this.device);
         this.entities.add(this.eye);
-        
-        // until https://github.com/aurelia/dependency-injection/issues/71 is fixed
-        if (!Array.isArray(plugins)) this.plugins = plugins = <any>[plugins];
-        
-        for (const plugin of plugins) { plugin.context = this; plugin.onContextInit(); }
+    }
+    
+    /**
+     * Called internally by the ArgonSystem instance. 
+     */
+    public init() {
                     
         this._parentSession = this.addSession();
-        parentSessionConnectService.connect(this.parentSession);
         
         this.parentSession.on['ar.context.update'] = (frameState:FrameState) => {
             this._update(frameState);
@@ -175,7 +169,7 @@ export class Context {
                 realityControlSession.close();
             });
             
-            realityControlSession.open(messageChannel.port2, {role});
+            realityControlSession.open(messageChannel.port2, {role: this.role});
         }
         this.parentSession.on['ar.context.focus'] = () => {
             this._hasFocus = true;
@@ -194,32 +188,14 @@ export class Context {
 			if (this.errorEvent.numberOfListeners === 1) console.error(error);
         })
         
-        for (const plugin of plugins) { plugin.onContextReady(); }
-        
-        this.parentSession.openPromise.then(()=>{
-            if (!this.desiredReality) this.desiredReality = null;
+        this.parentSession.openEvent.addEventListener(()=>{
+            this._connectEvent.raiseEvent(undefined);
+            if (!this.desiredReality) this.setDesiredReality(null);
         })
         
+        this.parentSessionConnectService.connect(this.parentSession);
+        
         this.parentSession.focus();
-    }
-    
-    /**
-     * Returns a registered plugin of a specific class, if one exists.
-     *
-     * @param PluginType - The class of plugin to search for.
-     * @returns If a plugin created by the class `PluginType` has been
-     * registered, that plugin. If no such plugin has been registered,
-     * undefined.
-     */
-    public getPlugin<T extends ContextPlugin>(PluginType:{ new(...args: any[]): T }) : T {
-        let plugin:T;
-        for (const p of this.plugins) {
-            if (p instanceof PluginType) {
-                plugin = p;
-                break;
-            }
-        }
-        return plugin;
     }
     
     /**
@@ -255,8 +231,7 @@ export class Context {
     private _frame:FrameState = undefined;
     
     /**
-     * An event that can be subscribed to in order to get callbacks whenever an
-     * error occurs.
+     * An event that is raised when a error occurs.
      *
      * The callback receives the error that occurred.
      */
@@ -321,15 +296,23 @@ export class Context {
     private _focussedSession:Session = null;
     
     /**
-     * An event that can be subscribed to in order to get callbacks whenever
-     * this context's reality is changed.
+     * An event that is raised when the parent session is opened.
      */
-    public get realityChangeEvent() { return this._realityChangeEvent }; 
-    private _realityChangeEvent = new Event<void>();
+    public get connectEvent() { return this._connectEvent }; 
+    private _connectEvent = new Event<void>();
     
     /**
-     * An event that can be subscribed to in order to get callbacks whenever a
-     * new reality control session is opened.
+     * An event that is raised when the parent session is opened, 
+     * and when any child session is opened (if this context has a manager role). 
+     * This event is never raised when a reality control session is opened.
+     *
+     * The callback receives the newly opened session.
+     */
+    public get sessionConnectEvent() { return this._sessionCreateEvent }; 
+    private _sessionCreateEvent = new Event<Session>();
+    
+    /**
+     * An event that is raised when a reality control session is opened.
      *
      * The callback receives the newly opened reality control session.
      */
@@ -337,22 +320,18 @@ export class Context {
     private _realityConnectEvent = new Event<Session>();
     
     /**
-     * An event that can be subscribed to in order to get callbacks whenever a
-     * session is focused upon.
+     * An event that is raised when this context's reality is changed.
+     */
+    public get realityChangeEvent() { return this._realityChangeEvent }; 
+    private _realityChangeEvent = new Event<void>();
+    
+    /**
+     * An event that is raised when a session is focused upon.
      *
      * The callback receives the newly focused session.
      */
     public get sessionFocusEvent() { return this._sessionFocusEvent };
     private _sessionFocusEvent = new Event<Session>();
-    
-    /**
-     * An event that can be subscribed to in order to get callbacks whenever a
-     * new session is created by this context.
-     *
-     * The callback receives the newly created session.
-     */
-    public get sessionCreateEvent() { return this._sessionCreateEvent }; 
-    private _sessionCreateEvent = new Event<Session>();
     
     private _sessionToDesiredRealityMap = new WeakMap<Session, Reality>();
     private _desiredRealityToOwnerSessionMap = new WeakMap<Reality, Session>();
@@ -400,12 +379,12 @@ export class Context {
             this.frustum['yOffset'] = camera.yOffset;
         }
         
-        const entityStateCache:EntityPoseMap = {};
+        const entityPoseCache:EntityPoseMap = {};
         
-        if (this.role === Role.Manager) {
+        if (this.role === Role.MANAGER) {
             for (const session of this.sessions) {
                 if (session.info.enableIncomingUpdateEvents)
-                    this._sendUpdateForSesion(state, session, entityStateCache);
+                    this._sendUpdateForSesion(state, session, entityPoseCache);
             }
         }
         
@@ -416,27 +395,27 @@ export class Context {
     }
     
     private _updateEntity(id:string, state:FrameState) {
-        const entityState = state.entities[id];
+        const entityPose = state.entities[id];
         
-        let referenceFrame = (typeof entityState.referenceFrame === 'number') ?
-            <Cesium.ReferenceFrame>entityState.referenceFrame : 
-            this.entities.getById(entityState.referenceFrame);
+        let referenceFrame = (typeof entityPose.referenceFrame === 'number') ?
+            <Cesium.ReferenceFrame>entityPose.referenceFrame : 
+            this.entities.getById(entityPose.referenceFrame);
         if (!defined(referenceFrame)) {
-            referenceFrame = this._updateEntity(<string>entityState.referenceFrame, state);
+            referenceFrame = this._updateEntity(<string>entityPose.referenceFrame, state);
         }
         
         const entity = this.entities.getOrCreateEntity(id);
         
         if (entity.position instanceof ConstantPositionProperty === false ||
             entity.orientation instanceof ConstantProperty === false) {
-            entity.position = new ConstantPositionProperty(<Cesium.Cartesian3>entityState.position,referenceFrame);
-            entity.orientation = new ConstantProperty(entityState.orientation);
+            entity.position = new ConstantPositionProperty(<Cesium.Cartesian3>entityPose.position,referenceFrame);
+            entity.orientation = new ConstantProperty(entityPose.orientation);
         }
         
         const entityPosition = <Cesium.ConstantPositionProperty>entity.position;
         const entityOrientation = <Cesium.ConstantProperty>entity.orientation;
-        entityPosition.setValue(<Cesium.Cartesian3>entityState.position, referenceFrame)
-        entityOrientation.setValue(entityState.orientation);
+        entityPosition.setValue(<Cesium.Cartesian3>entityPose.position, referenceFrame)
+        entityOrientation.setValue(entityPose.orientation);
             
         return entity;
     }
@@ -461,7 +440,7 @@ export class Context {
         }
     }
     
-    private _sendUpdateForSesion(parentState:FrameState, session:Session, entityStateCache:EntityPoseMap) {
+    private _sendUpdateForSesion(parentState:FrameState, session:Session, entityPoseCache:EntityPoseMap) {
         const sessionEntities:EntityPoseMap = {}
             
         for (var id in parentState.entities) {
@@ -469,11 +448,11 @@ export class Context {
         }
         
         for (var id in this._sessionToSubscribedEntities.get(session)) {
-            if (!defined(entityStateCache[id])) {
+            if (!defined(entityPoseCache[id])) {
                 const entity = this.entities.getById(id);
-                entityStateCache[id] = calculatePose(entity, parentState.time);
+                entityPoseCache[id] = calculatePose(entity, parentState.time);
             }
-            sessionEntities[id] = entityStateCache[id];
+            sessionEntities[id] = entityPoseCache[id];
         }
         
         const sessionState:FrameState = {
@@ -489,9 +468,9 @@ export class Context {
     }
         
     /**
-     * The presentation mode this context is currently in.
+     * Set the desired presentation mode.
      */
-    public set desiredPresentationMode(presentationMode:PresentationMode) {
+    public setDesiredPresentationMode(presentationMode:PresentationMode) {
         this._desiredPresentationMode = presentationMode;
         this.parentSession.send('ar.context.desiredPresentationMode', {presentationMode});
     }
@@ -513,9 +492,9 @@ export class Context {
     }
         
     /**
-     * The reality desired by this context.
+     * Set the desired reality. 
      */
-    public set desiredReality(reality:{type:string}) {
+    public setDesiredReality(reality:{type:string}) {
         if (reality && !reality['id']) reality['id'] = createGuid();
         this._desiredReality = reality;
         this.parentSession.send('ar.context.desiredReality', {reality});
@@ -572,7 +551,7 @@ export class Context {
                 previousRealitySession.close();
             }
             
-            if (realitySession.info.role !== Role.Reality) {
+            if (realitySession.info.role !== Role.REALITY) {
                 realitySession.sendError({message:"Expected a session with role === Role.Reality"});
                 realitySession.close();
                 return;
@@ -595,7 +574,7 @@ export class Context {
         const messageChannel = this.messageChannelFactory.create();
         realitySession.open(messageChannel.port1, {role:this.role});
         
-        this.realityService.setupReality(reality, messageChannel.port2);
+        this.realityService.setup(reality, messageChannel.port2);
     }
     
     /**
@@ -622,7 +601,7 @@ export class Context {
         if (!selectedReality) {
             for (const session of this.sessions) {
                 const desiredReality = this.getDesiredRealityForSession(session);
-                if (desiredReality && this.realityService.supportsReality(desiredReality)) {
+                if (desiredReality && this.realityService.isSupported(desiredReality.type)) {
                     selectedReality = desiredReality;
                     break;
                 }
@@ -701,7 +680,9 @@ export class Context {
             }
         });
         
-        this.sessionCreateEvent.raiseEvent(session);
+        session.openEvent.addEventListener(()=>{
+            this.sessionConnectEvent.raiseEvent(session);
+        })
         
         return session;
     }
@@ -713,38 +694,83 @@ export class Context {
      * @returns The entity that was subscribed to.
      */
     public subscribeToEntity(id:string) : Cesium.Entity {
-        if (this.role !== Role.Manager) {
+        if (this.role !== Role.MANAGER) {
             this.parentSession.send('ar.context.subscribe', {id})
         }
         return this.entities.getOrCreateEntity(id);
     }
     
     /**
-     * Gets the pose for an entity relative to a reference frame.
+     * Gets the state of an entity relative to a reference frame.
      *
-     * @param entity - The entity whose pose is to be gotten.
+     * @param entity - The entity whose state is to be queried.
      * @param referenceFrame - The reference frame that the pose is relative
-     * to. Optional, if not specified defaults to the fixed position reference
-     * frame.
+     * to. If not specified, defaults to `this.origin`.
      * @returns If the position and orientation exist for the given entity, an
      * object with the fields `position` and `orientation`, both of type
      * `Cesium.Cartesian3`. Otherwise undefined.
      */
-    public getEntityPose(entity:Cesium.Entity, referenceFrame:Cesium.ReferenceFrame|Cesium.Entity=ReferenceFrame.FIXED) {
+    public getEntityState(entity:Cesium.Entity, referenceFrame:Cesium.ReferenceFrame|Cesium.Entity=this.origin) {
         const time = this.frame.time;
+        
+        const key = entity.id+this._stringFromReferenceFrame(referenceFrame);
+        let entityState = this.entityStateMap.get(key);
+        
+        if (entityState && JulianDate.equals(entityState.time, time)) 
+            return entityState;
+            
+        if (!defined(entityState)) {
+            entityState = {
+                position: new Cartesian3,
+                orientation: new Quaternion,
+                time,
+                poseStatus: PoseStatus.UNKNOWN
+            }
+            this.entityStateMap.set(key, entityState);
+        } else {
+            entityState.time = time;
+        }
+        
         const position = getEntityPositionInReferenceFrame(
             entity,
             time,
             referenceFrame,
-            scratchCartesian3
+            entityState.position
         );
         const orientation = getEntityOrientationInReferenceFrame(
             entity, 
             time, 
             referenceFrame, 
-            scratchQuaternion
+            entityState.orientation
         );
-        return position && orientation ? {position, orientation} : undefined
+        
+        const hasPose = position && orientation;
+        
+        let poseStatus = 0;
+        const previousStatus = entityState.poseStatus;
+        
+        if (hasPose) {
+            poseStatus &= PoseStatus.KNOWN;
+        } else {
+            poseStatus &= PoseStatus.UNKNOWN;
+        }  
+        
+        if (hasPose && previousStatus | PoseStatus.UNKNOWN) {
+            poseStatus &= PoseStatus.FOUND;
+        } else if (!hasPose && previousStatus | PoseStatus.KNOWN) { 
+            poseStatus &= PoseStatus.LOST;
+        }
+        
+        entityState.poseStatus = poseStatus;
+        
+        return entityState;
+    }
+    
+    private entityStateMap = new Map<string, EntityState>();
+    
+    private _stringFromReferenceFrame(referenceFrame:Cesium.ReferenceFrame|Cesium.Entity) {
+        const rf = <any>referenceFrame;
+        return defined(rf.id) ? rf.id : '' + rf;
     }
     
     /**
@@ -804,4 +830,14 @@ export class Context {
         position: new ConstantPositionProperty(Cartesian3.ZERO, this.localOriginEastNorthUp),
         orientation: new ConstantProperty(Quaternion.fromAxisAngle(Cartesian3.UNIT_X, Math.PI/2))
     });
+    
+    /**
+     * The origin to use when calling `getEntityState`. By default,
+     * this is `this.localOriginEastNorthUp`.
+     */
+    public get origin() { return this._origin };
+    private _origin = this.localOriginEastNorthUp;
+    public setOrigin(origin:Cesium.Entity) {
+        this._origin = origin;
+    }
 }

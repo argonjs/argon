@@ -37,26 +37,6 @@ export class Event<T> {
 	
 }
 
-export interface Deferred<T> {
-	promise:Promise<T>
-	resolve:(value?: {}|Thenable<{}>)=>void
-	reject:(error?:any)=>void
-}
-
-export function createDeferred<T>() : Deferred<T> {
-	let resolve;
-	let reject;
-	const promise = new Promise((res, rej)=>{
-		resolve = res;
-		reject = rej;
-	});
-	return {
-		promise,
-		resolve,
-		reject
-	}
-}
-
 export function calculatePose(entity:Cesium.Entity, time:Cesium.JulianDate) : EntityPose {
 	const entityPosition = entity.position;
     const referenceFrame = entityPosition.referenceFrame;

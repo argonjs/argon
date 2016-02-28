@@ -19,7 +19,7 @@ export interface Reality {
 * Assists in setting up a reality and stores the mappings from realities to their handler functions
 */
 @inject(TimerService, MessageChannelFactory, SessionFactory)
-export class RealitySetupService {
+export class RealityService {
     
     /**
      * A map of reality types and their respective setup functions.
@@ -44,19 +44,19 @@ export class RealitySetupService {
      * @param reality the reality to setup
      * @param port the port to pass to the setup function
      */
-    public setupReality(reality:Reality, port:MessagePortLike) {
+    public setup(reality:Reality, port:MessagePortLike) {
         const handler = this.handlers.get(reality.type);
         if (!handler) throw new Error("Cannot setup an unsupported reality");
         handler.call(this, reality, port);
     }
     
     /**
-    * Check if the provided reality is supported. 
-    * @param some reality
+    * Check if a type of reality is supported by this ArgonSystem. 
+    * @param type reality type
     * @return true if a handler exists and false otherwise
     */
-    public supportsReality(reality:Reality) : boolean {
-        return !!this.handlers.get(reality.type)
+    public isSupported(type:string) : boolean {
+        return !!this.handlers.get(type)
     }
     
     private setupEmptyReality(reality:Reality, port:MessagePortLike) {
@@ -79,7 +79,7 @@ export class RealitySetupService {
         remoteRealitySession.closeEvent.addEventListener(()=> {
             doUpdate = false;
         });
-        remoteRealitySession.open(port, {role:Role.Reality});
+        remoteRealitySession.open(port, {role:Role.REALITY});
     }
     
 }

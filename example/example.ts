@@ -7,13 +7,14 @@ const app = Argon.init();
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera();
-const origin = app.context.localOriginEastUpSouth;
 
 const cssRenderer = new THREE.CSS3DRenderer();
 const webglRenderer = new THREE.WebGLRenderer({alpha:true, logarithmicDepthBuffer:true});
 
 app.view.element.appendChild(cssRenderer.domElement);
 app.view.element.appendChild(webglRenderer.domElement);
+
+app.context.setOrigin(app.context.localOriginEastUpSouth);
 
 app.vuforia.init();
 app.vuforia.startCamera();
@@ -31,12 +32,16 @@ dataset.trackablesPromise.then((trackables)=> {
     box.position.z = 25
     
     app.context.updateEvent.addEventListener((frameState) => {
-        const stonesPose = app.context.getEntityPose(stonesEntity, origin);
-        if (stonesPose) {
-            stonesObject.position.copy(stonesPose.position);
-            stonesObject.quaternion.copy(stonesPose.orientation);
+        const stonesState = app.context.getEntityState(stonesEntity);
+        
+        if (stonesState.poseStatus | Argon.PoseStatus.KNOWN) {
+            stonesObject.position.copy(stonesState.position);
+            stonesObject.quaternion.copy(stonesState.orientation);
+        }
+        
+        if (stonesState.poseStatus | Argon.PoseStatus.FOUND) {
             stonesObject.add(box);
-        } else {
+        } else if (stonesState.poseStatus | Argon.PoseStatus.LOST) {
             stonesObject.remove(box);
         }
     })
@@ -50,12 +55,12 @@ app.context.updateEvent.addEventListener((frameState) => {
     camera.aspect = app.context.frustum.aspectRatio;
     camera.projectionMatrix.fromArray(app.context.frustum.infiniteProjectionMatrix)
     
-    const eyePose = app.context.getEntityPose(app.context.eye, origin);
+    const eyeState = app.context.getEntityState(app.context.eye);
     
-    if (eyePose) {
-        camera.position.copy(eyePose.position);
-        camera.quaternion.copy(eyePose.orientation);
-        eyeOrigin.position.copy(eyePose.position);
+    if (eyeState.poseStatus | Argon.PoseStatus.KNOWN) {
+        camera.position.copy(eyeState.position);
+        camera.quaternion.copy(eyeState.orientation);
+        eyeOrigin.position.copy(eyeState.position);
     }
 })
 

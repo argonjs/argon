@@ -1,10 +1,12 @@
-import {Context, ContextPlugin, FrameState} from './context.ts'
+import {inject} from 'aurelia-dependency-injection';
+import {Context, FrameState} from './context.ts'
 
-export class ViewPlugin extends ContextPlugin {
+@inject(Context)
+export class ViewService {
     
     public element:HTMLDivElement;
     
-    onContextInit() {
+    constructor(private context:Context) {
         if (typeof document !== 'undefined') {
             let viewportMetaTag = <HTMLMetaElement> document.querySelector('meta[name=viewport]');
             if (!viewportMetaTag) viewportMetaTag = document.createElement('meta');
@@ -54,9 +56,7 @@ export class ViewPlugin extends ContextPlugin {
                 }
             `, 1);
         }
-    }
-    
-    onContextReady() {
+        
         if (typeof document !== 'undefined') {
             let previousWidth, previousHeight;
             this.context.updateEvent.addEventListener((frameState)=>{
