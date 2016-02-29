@@ -28,23 +28,32 @@ describe('Argon', () => {
   })
   
   describe('new ArgonSystem()', () => {
-    it('should create an ArgonSystem with Role=Role.Manager', (done) => {
+    it('should create an ArgonSystem with Role=Role.MANAGER', () => {
+      const manager = new Argon.ArgonSystem({role:Argon.Role.MANAGER});
+      expect(manager).to.be.an.instanceOf(Argon.ArgonSystem);
+      expect(manager.configuration.role).to.equal(Argon.Role.MANAGER);
+    });
+    it('should create an ArgonSystem with Role=Role.APPLICATION', () => {
+      const app = new Argon.ArgonSystem({role:Argon.Role.APPLICATION});
+      expect(app).to.be.an.instanceOf(Argon.ArgonSystem);
+      expect(app.configuration.role).to.equal(Argon.Role.APPLICATION);
+    });
+    it('should create an ArgonSystem with Role=Role.REALITY', () => {
+      const app = new Argon.ArgonSystem({role:Argon.Role.REALITY});
+      expect(app).to.be.an.instanceOf(Argon.ArgonSystem);
+      expect(app.configuration.role).to.equal(Argon.Role.REALITY);
+    });
+    it('should raise a focus event when Role=Role.MANAGER', (done) => {
       const manager = new Argon.ArgonSystem({role:Argon.Role.MANAGER});
       expect(manager).to.be.an.instanceOf(Argon.ArgonSystem);
       expect(manager.configuration.role).to.equal(Argon.Role.MANAGER);
       
       function expectFocus() {
-        expect(manager.context.parentSession).to.equal(manager.context.focussedSession);
-        done();
+          expect(manager.context.hasFocus).to.be.true;
+          done();
       }
       
-      if (manager.context.hasFocus) expectFocus()
-      else manager.context.focusEvent.addEventListener(expectFocus)
-    });
-    it('should create an ArgonSystem with Role=Role.Application', () => {
-      const app = new Argon.ArgonSystem({role:Argon.Role.APPLICATION});
-      expect(app).to.be.an.instanceOf(Argon.ArgonSystem);
-      expect(app.configuration.role).to.equal(Argon.Role.APPLICATION);
+      manager.context.focusEvent.addEventListener(expectFocus)
     });
   })
   

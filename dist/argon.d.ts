@@ -213,7 +213,6 @@ export class Context {
     renderEvent: Event<FrameState>;
     focusEvent: Event<void>;
     blurEvent: Event<void>;
-    connectEvent: Event<void>;
     sessionConnectEvent: Event<Session>;
     realityConnectEvent: Event<Session>;
     sessionFocusEvent: Event<Session>;

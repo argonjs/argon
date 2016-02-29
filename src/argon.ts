@@ -35,36 +35,38 @@ export class ArgonSystem {
 	constructor(config:SessionConfiguration, public container=new Container()) {
 		ArgonSystem.instance = this;
 		
-        this.container.registerInstance('config', config);
-		this.container.registerInstance(Role, config.role);
-		this.container.registerInstance(ArgonSystem, this);
+        container.registerInstance('config', config);
+		container.registerInstance(Role, config.role);
+		container.registerInstance(ArgonSystem, this);
 		
 		if (config.role === Role.MANAGER) {
-			this.container.registerSingleton(
+			container.registerSingleton(
 				ConnectService, 
 				LoopbackConnectService
 			);
 		} else if (WKWebViewConnectService.isAvailable()) {
-			this.container.registerSingleton(
+			container.registerSingleton(
 				ConnectService, 
 				WKWebViewConnectService
 			)
 		} else if (DebugConnectService.isAvailable()) {
-			this.container.registerSingleton(
+			container.registerSingleton(
 				ConnectService, 
 				DebugConnectService
 			);
 		} else if (DebugConnectService.isAvailable()) {
-			this.container.registerSingleton(
+			container.registerSingleton(
 				ConnectService, 
 				DOMConnectService
 			);
 		} else {
-			this.container.registerSingleton(
+			container.registerSingleton(
 				ConnectService, 
 				LoopbackConnectService
 			);
 		}
+			
+		container.get(VuforiaService);
         
         this.context.init(); 
 	}

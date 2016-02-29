@@ -89,25 +89,23 @@ export class VuforiaService {
 	
 	constructor(private context:Context, private realityService:RealityService, private delegate:VuforiaServiceDelegate) {
 		
-		context.connectEvent.addEventListener(()=>{
-			context.parentSession.on['ar.vuforia.errorEvent'] = (err:VuforiaErrorMessage, event) => {
-				let error = null;
-				switch (err.type) {
-					case VuforiaErrorType.InitError : error = new VuforiaInitError(err.message, err.data.code); break;
-					case VuforiaErrorType.LoadDataSetError : error = new VuforiaLoadDataSetError(err.message); break;
-					case VuforiaErrorType.UnloadDataSetError : error = new VuforiaUnloadDataSetError(err.message); break;
-					case VuforiaErrorType.ActivateDataSetError : error = new VuforiaActivateDataSetError(err.message); break;
-					default : error = new Error(err.message); break;
-				}
-				context.errorEvent.raiseEvent(error);
+		context.parentSession.on['ar.vuforia.errorEvent'] = (err:VuforiaErrorMessage, event) => {
+			let error = null;
+			switch (err.type) {
+				case VuforiaErrorType.InitError : error = new VuforiaInitError(err.message, err.data.code); break;
+				case VuforiaErrorType.LoadDataSetError : error = new VuforiaLoadDataSetError(err.message); break;
+				case VuforiaErrorType.UnloadDataSetError : error = new VuforiaUnloadDataSetError(err.message); break;
+				case VuforiaErrorType.ActivateDataSetError : error = new VuforiaActivateDataSetError(err.message); break;
+				default : error = new Error(err.message); break;
 			}
-			
-			context.parentSession.on['ar.vuforia.dataSetLoadEvent'] = (msg:VuforiaDataSetLoadMessage, event) => {
-				const {url, trackables} = msg;
-				const dataSet = this.dataSetMap.get(url);
-				dataSet._resolveTrackables(trackables);
-			}
-		})
+			context.errorEvent.raiseEvent(error);
+		}
+		
+		context.parentSession.on['ar.vuforia.dataSetLoadEvent'] = (msg:VuforiaDataSetLoadMessage, event) => {
+			const {url, trackables} = msg;
+			const dataSet = this.dataSetMap.get(url);
+			dataSet._resolveTrackables(trackables);
+		}
 		
 		realityService.handlers.set('vuforia', (reality:Reality, port:MessagePortLike) => {
 			
@@ -157,7 +155,7 @@ export class VuforiaService {
 					if (this._sessionInitOptions.has(session)) {
 						this._commandQueue.clear();
 						this._commandQueue.push(() => {
-							return delegate.deinit().then(()=>{
+							return Promise.resolve(delegate.deinit()).then(()=>{
 								this._isInitialized = false;
 							});
 						}, session);

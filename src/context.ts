@@ -137,13 +137,6 @@ export class Context {
                 private parentSessionConnectService:ConnectService) {
         this.entities.add(this.device);
         this.entities.add(this.eye);
-    }
-    
-    /**
-     * Called internally by the ArgonSystem instance. 
-     */
-    public init() {
-                    
         this._parentSession = this.addSession();
         
         this.parentSession.on['ar.context.update'] = (frameState:FrameState) => {
@@ -187,15 +180,17 @@ export class Context {
         this.errorEvent.addEventListener((error)=> {
 			if (this.errorEvent.numberOfListeners === 1) console.error(error);
         })
-        
-        this.parentSession.openEvent.addEventListener(()=>{
-            this._connectEvent.raiseEvent(undefined);
+    }
+    
+    /**
+     * Called internally by the ArgonSystem instance. 
+     */
+    public init() {
+        this.parentSessionConnectService.connect(this.parentSession);
+        this.parentSession.focus();
+        Promise.resolve().then(()=>{
             if (!this.desiredReality) this.setDesiredReality(null);
         })
-        
-        this.parentSessionConnectService.connect(this.parentSession);
-        
-        this.parentSession.focus();
     }
     
     /**
@@ -296,13 +291,7 @@ export class Context {
     private _focussedSession:Session = null;
     
     /**
-     * An event that is raised when the parent session is opened.
-     */
-    public get connectEvent() { return this._connectEvent }; 
-    private _connectEvent = new Event<void>();
-    
-    /**
-     * An event that is raised when the parent session is opened, 
+     * An event that is raised when the parent session is opened (when this.init is called), 
      * and when any child session is opened (if this context has a manager role). 
      * This event is never raised when a reality control session is opened.
      *

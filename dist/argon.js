@@ -215,6 +215,7 @@ $__System.register("3", ["6", "4", "8", "7", "5", "9"], function(exports_1, cont
       scratchOriginCartesian3 = new cesium_imports_ts_1.Cartesian3(0, 0);
       Context = (function() {
         function Context(realityService, deviceService, sessionFactory, messageChannelFactory, role, parentSessionConnectService) {
+          var _this = this;
           this.realityService = realityService;
           this.deviceService = deviceService;
           this.sessionFactory = sessionFactory;
@@ -233,7 +234,6 @@ $__System.register("3", ["6", "4", "8", "7", "5", "9"], function(exports_1, cont
           this._hasFocus = false;
           this._sessions = [];
           this._focussedSession = null;
-          this._connectEvent = new utils_ts_1.Event();
           this._sessionCreateEvent = new utils_ts_1.Event();
           this._realityConnectEvent = new utils_ts_1.Event();
           this._realityChangeEvent = new utils_ts_1.Event();
@@ -275,9 +275,6 @@ $__System.register("3", ["6", "4", "8", "7", "5", "9"], function(exports_1, cont
           this._origin = this.localOriginEastNorthUp;
           this.entities.add(this.device);
           this.entities.add(this.eye);
-        }
-        Context.prototype.init = function() {
-          var _this = this;
           this._parentSession = this.addSession();
           this.parentSession.on['ar.context.update'] = function(frameState) {
             _this._update(frameState);
@@ -314,13 +311,15 @@ $__System.register("3", ["6", "4", "8", "7", "5", "9"], function(exports_1, cont
             if (_this.errorEvent.numberOfListeners === 1)
               console.error(error);
           });
-          this.parentSession.openEvent.addEventListener(function() {
-            _this._connectEvent.raiseEvent(undefined);
+        }
+        Context.prototype.init = function() {
+          var _this = this;
+          this.parentSessionConnectService.connect(this.parentSession);
+          this.parentSession.focus();
+          Promise.resolve().then(function() {
             if (!_this.desiredReality)
               _this.setDesiredReality(null);
           });
-          this.parentSessionConnectService.connect(this.parentSession);
-          this.parentSession.focus();
         };
         Object.defineProperty(Context.prototype, "reality", {
           get: function() {
@@ -432,14 +431,6 @@ $__System.register("3", ["6", "4", "8", "7", "5", "9"], function(exports_1, cont
           enumerable: true,
           configurable: true
         });
-        Object.defineProperty(Context.prototype, "connectEvent", {
-          get: function() {
-            return this._connectEvent;
-          },
-          enumerable: true,
-          configurable: true
-        });
-        ;
         Object.defineProperty(Context.prototype, "sessionConnectEvent", {
           get: function() {
             return this._sessionCreateEvent;
@@ -1078,35 +1069,33 @@ $__System.register("b", ["4", "8", "3", "7", "9"], function(exports_1, context_1
           this._controllingSession = null;
           this._isInitialized = false;
           this.dataSetMap = new Map();
-          context.connectEvent.addEventListener(function() {
-            context.parentSession.on['ar.vuforia.errorEvent'] = function(err, event) {
-              var error = null;
-              switch (err.type) {
-                case VuforiaErrorType.InitError:
-                  error = new VuforiaInitError(err.message, err.data.code);
-                  break;
-                case VuforiaErrorType.LoadDataSetError:
-                  error = new VuforiaLoadDataSetError(err.message);
-                  break;
-                case VuforiaErrorType.UnloadDataSetError:
-                  error = new VuforiaUnloadDataSetError(err.message);
-                  break;
-                case VuforiaErrorType.ActivateDataSetError:
-                  error = new VuforiaActivateDataSetError(err.message);
-                  break;
-                default:
-                  error = new Error(err.message);
-                  break;
-              }
-              context.errorEvent.raiseEvent(error);
-            };
-            context.parentSession.on['ar.vuforia.dataSetLoadEvent'] = function(msg, event) {
-              var url = msg.url,
-                  trackables = msg.trackables;
-              var dataSet = _this.dataSetMap.get(url);
-              dataSet._resolveTrackables(trackables);
-            };
-          });
+          context.parentSession.on['ar.vuforia.errorEvent'] = function(err, event) {
+            var error = null;
+            switch (err.type) {
+              case VuforiaErrorType.InitError:
+                error = new VuforiaInitError(err.message, err.data.code);
+                break;
+              case VuforiaErrorType.LoadDataSetError:
+                error = new VuforiaLoadDataSetError(err.message);
+                break;
+              case VuforiaErrorType.UnloadDataSetError:
+                error = new VuforiaUnloadDataSetError(err.message);
+                break;
+              case VuforiaErrorType.ActivateDataSetError:
+                error = new VuforiaActivateDataSetError(err.message);
+                break;
+              default:
+                error = new Error(err.message);
+                break;
+            }
+            context.errorEvent.raiseEvent(error);
+          };
+          context.parentSession.on['ar.vuforia.dataSetLoadEvent'] = function(msg, event) {
+            var url = msg.url,
+                trackables = msg.trackables;
+            var dataSet = _this.dataSetMap.get(url);
+            dataSet._resolveTrackables(trackables);
+          };
           realityService.handlers.set('vuforia', function(reality, port) {
             var remoteRealitySession = realityService.sessionFactory.create();
             remoteRealitySession.open(port, {role: session_ts_1.Role.REALITY});
@@ -1140,7 +1129,7 @@ $__System.register("b", ["4", "8", "3", "7", "9"], function(exports_1, context_1
                 if (_this._sessionInitOptions.has(session)) {
                   _this._commandQueue.clear();
                   _this._commandQueue.push(function() {
-                    return delegate.deinit().then(function() {
+                    return Promise.resolve(delegate.deinit()).then(function() {
                       _this._isInitialized = false;
                     });
                   }, session);
@@ -16430,20 +16419,21 @@ $__System.register("1", ["4", "6", "3", "a", "5", "9", "2", "b", "8", "7"], func
           }
           this.container = container;
           ArgonSystem.instance = this;
-          this.container.registerInstance('config', config);
-          this.container.registerInstance(session_ts_1.Role, config.role);
-          this.container.registerInstance(ArgonSystem, this);
+          container.registerInstance('config', config);
+          container.registerInstance(session_ts_1.Role, config.role);
+          container.registerInstance(ArgonSystem, this);
           if (config.role === session_ts_1.Role.MANAGER) {
-            this.container.registerSingleton(session_ts_1.ConnectService, session_ts_1.LoopbackConnectService);
+            container.registerSingleton(session_ts_1.ConnectService, session_ts_1.LoopbackConnectService);
           } else if (session_ts_1.WKWebViewConnectService.isAvailable()) {
-            this.container.registerSingleton(session_ts_1.ConnectService, session_ts_1.WKWebViewConnectService);
+            container.registerSingleton(session_ts_1.ConnectService, session_ts_1.WKWebViewConnectService);
           } else if (session_ts_1.DebugConnectService.isAvailable()) {
-            this.container.registerSingleton(session_ts_1.ConnectService, session_ts_1.DebugConnectService);
+            container.registerSingleton(session_ts_1.ConnectService, session_ts_1.DebugConnectService);
           } else if (session_ts_1.DebugConnectService.isAvailable()) {
-            this.container.registerSingleton(session_ts_1.ConnectService, session_ts_1.DOMConnectService);
+            container.registerSingleton(session_ts_1.ConnectService, session_ts_1.DOMConnectService);
           } else {
-            this.container.registerSingleton(session_ts_1.ConnectService, session_ts_1.LoopbackConnectService);
+            container.registerSingleton(session_ts_1.ConnectService, session_ts_1.LoopbackConnectService);
           }
+          container.get(vuforia_ts_1.VuforiaService);
           this.context.init();
         }
         Object.defineProperty(ArgonSystem.prototype, "configuration", {
