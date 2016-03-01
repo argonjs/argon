@@ -1,3 +1,4 @@
+import 'aurelia-polyfills'
 import {Container} from 'aurelia-dependency-injection'
 import * as Cesium from './cesium/cesium-imports.ts'
 

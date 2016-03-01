@@ -700,7 +700,7 @@ export class Context {
      * `Cesium.Cartesian3`. Otherwise undefined.
      */
     public getEntityState(entity: Cesium.Entity, referenceFrame: Cesium.ReferenceFrame | Cesium.Entity = this.origin) {
-        const time = this.frame.time;
+        const time = this.frame && this.frame.time;
 
         const key = entity.id + this._stringFromReferenceFrame(referenceFrame);
         let entityState = this.entityStateMap.get(key);
@@ -712,12 +712,12 @@ export class Context {
             entityState = {
                 position: new Cartesian3,
                 orientation: new Quaternion,
-                time,
+                time: JulianDate.clone(time),
                 poseStatus: PoseStatus.UNKNOWN
             }
             this.entityStateMap.set(key, entityState);
         } else {
-            entityState.time = time;
+            JulianDate.clone(time, entityState.time);
         }
 
         const position = getEntityPositionInReferenceFrame(
@@ -735,7 +735,7 @@ export class Context {
 
         const hasPose = position && orientation;
 
-        let poseStatus = 0;
+        let poseStatus:PoseStatus;
         const previousStatus = entityState.poseStatus;
 
         if (hasPose) {
