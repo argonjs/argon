@@ -1,11 +1,18 @@
 import {inject} from 'aurelia-dependency-injection';
 import {Context, FrameState} from './context.ts'
 
+/**
+ * Provides service for using Argon in a web page
+ */
 @inject(Context)
 export class ViewService {
 
     public element: HTMLDivElement;
 
+    /*
+     * Initializes element in web browser to house argon
+     * Updates width and height of element
+     */
     constructor(private context: Context) {
         if (typeof document !== 'undefined') {
             let viewportMetaTag = <HTMLMetaElement>document.querySelector('meta[name=viewport]');
