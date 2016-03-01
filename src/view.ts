@@ -3,30 +3,30 @@ import {Context, FrameState} from './context.ts'
 
 @inject(Context)
 export class ViewService {
-    
-    public element:HTMLDivElement;
-    
-    constructor(private context:Context) {
+
+    public element: HTMLDivElement;
+
+    constructor(private context: Context) {
         if (typeof document !== 'undefined') {
-            let viewportMetaTag = <HTMLMetaElement> document.querySelector('meta[name=viewport]');
+            let viewportMetaTag = <HTMLMetaElement>document.querySelector('meta[name=viewport]');
             if (!viewportMetaTag) viewportMetaTag = document.createElement('meta');
             viewportMetaTag.name = 'viewport'
             viewportMetaTag.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'
             document.head.appendChild(viewportMetaTag);
-            
-            let argonView = <HTMLDivElement> document.querySelector('#argon');
+
+            let argonView = <HTMLDivElement>document.querySelector('#argon');
             if (!argonView) argonView = document.createElement('div');
             argonView.id = 'argon';
             document.documentElement.appendChild(argonView);
             this.element = argonView;
-            
+
             if (document.body) document.body.appendChild(argonView)
             else {
-                document.addEventListener('DOMContentLoaded', ()=>{
+                document.addEventListener('DOMContentLoaded', () => {
                     document.body.appendChild(argonView);
                 })
             }
-            
+
             var style = document.createElement("style");
             style.type = 'text/css';
             document.head.appendChild(style);
@@ -56,10 +56,10 @@ export class ViewService {
                 }
             `, 1);
         }
-        
+
         if (typeof document !== 'undefined') {
             let previousWidth, previousHeight;
-            this.context.updateEvent.addEventListener((frameState)=>{
+            this.context.updateEvent.addEventListener((frameState) => {
                 const width = frameState.size.width;
                 const height = frameState.size.height;
                 if (previousWidth !== width || previousHeight !== height) {
@@ -71,5 +71,5 @@ export class ViewService {
             })
         }
     }
-    
+
 }

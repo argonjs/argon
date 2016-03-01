@@ -1,7 +1,7 @@
 // import * as Argon from 'src/argon'
 import * as Argon from 'dist/argon'
 
-declare const THREE:any;
+declare const THREE: any;
 
 const app = Argon.init();
 
@@ -9,7 +9,7 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera();
 
 const cssRenderer = new THREE.CSS3DRenderer();
-const webglRenderer = new THREE.WebGLRenderer({alpha:true, logarithmicDepthBuffer:true});
+const webglRenderer = new THREE.WebGLRenderer({ alpha: true, logarithmicDepthBuffer: true });
 
 app.view.element.appendChild(cssRenderer.domElement);
 app.view.element.appendChild(webglRenderer.domElement);
@@ -22,30 +22,30 @@ app.vuforia.startObjectTracker();
 
 const dataset = app.vuforia.createDataSet('dataset/StonesAndChips.xml');
 
-dataset.trackablesPromise.then((trackables)=> {
-    
+dataset.trackablesPromise.then((trackables) => {
+
     const stonesEntity = app.context.subscribeToEntity(trackables['stones'].id)
     const stonesObject = new THREE.Object3D;
     scene.add(stonesObject);
-    
+
     var box = new THREE.Mesh(new THREE.BoxGeometry(50, 50, 50), new THREE.MeshNormalMaterial())
     box.position.z = 25
-    
+
     app.context.updateEvent.addEventListener((frameState) => {
         const stonesState = app.context.getEntityState(stonesEntity);
-        
+
         if (stonesState.poseStatus | Argon.PoseStatus.KNOWN) {
             stonesObject.position.copy(stonesState.position);
             stonesObject.quaternion.copy(stonesState.orientation);
         }
-        
+
         if (stonesState.poseStatus | Argon.PoseStatus.FOUND) {
             stonesObject.add(box);
         } else if (stonesState.poseStatus | Argon.PoseStatus.LOST) {
             stonesObject.remove(box);
         }
     })
-    
+
 })
 
 dataset.activate();
@@ -54,9 +54,9 @@ app.context.updateEvent.addEventListener((frameState) => {
     camera.fov = Argon.Cesium.CesiumMath.toDegrees(app.context.frustum.fovy);
     camera.aspect = app.context.frustum.aspectRatio;
     camera.projectionMatrix.fromArray(app.context.frustum.infiniteProjectionMatrix)
-    
+
     const eyeState = app.context.getEntityState(app.context.eye);
-    
+
     if (eyeState.poseStatus | Argon.PoseStatus.KNOWN) {
         camera.position.copy(eyeState.position);
         camera.quaternion.copy(eyeState.orientation);
@@ -68,8 +68,8 @@ app.context.renderEvent.addEventListener((frameState) => {
     const {width, height} = frameState.size;
     cssRenderer.setSize(width, height);
     webglRenderer.setSize(width, height);
-    cssRenderer.render( scene, camera );
-    webglRenderer.render( scene, camera );
+    cssRenderer.render(scene, camera);
+    webglRenderer.render(scene, camera);
 })
 
 const eyeOrigin = new THREE.Object3D;
@@ -142,7 +142,7 @@ cssObjectXpos.position.x = 200.0
 cssObjectXpos.rotation.y = - Math.PI / 2
 
 cssObjectXneg.position.x = -200.0
-cssObjectXneg.rotation.y =  Math.PI / 2
+cssObjectXneg.rotation.y = Math.PI / 2
 
 // for Y
 cssObjectYpos.position.y = 200.0

@@ -10,9 +10,9 @@ import {calculatePose} from './utils.ts'
 * Describes a Reality
 */
 export interface Reality {
-    type:string;
-    id?:string;
-    [option:string]:any
+    type: string;
+    id?: string;
+    [option: string]: any
 }
 
 /**
@@ -20,23 +20,23 @@ export interface Reality {
 */
 @inject(TimerService, MessageChannelFactory, SessionFactory)
 export class RealityService {
-    
+
     /**
      * A map of reality types and their respective setup functions.
      * In order to support a new type of reality, the setup function must be added to this map.
      */
-    public handlers = new Map<string,(reality:Reality, port:MessagePortLike)=>void>();
-    
+    public handlers = new Map<string, (reality: Reality, port: MessagePortLike) => void>();
+
     /**
     * Assigns a timer, messageChannelFactory, and sessionFactory to this reality setup service. Sets up an empty reality
     */
     constructor(
-        public timer:TimerService, 
-        public messageChannelFactory:MessageChannelFactory,
-        public sessionFactory:SessionFactory) {
-            this.handlers.set('empty', this.setupEmptyReality);
+        public timer: TimerService,
+        public messageChannelFactory: MessageChannelFactory,
+        public sessionFactory: SessionFactory) {
+        this.handlers.set('empty', this.setupEmptyReality);
     }
-    
+
 
     /**
      * Setup a reality (a handler for the provided reality type must 
@@ -44,29 +44,29 @@ export class RealityService {
      * @param reality the reality to setup
      * @param port the port to pass to the setup function
      */
-    public setup(reality:Reality, port:MessagePortLike) {
+    public setup(reality: Reality, port: MessagePortLike) {
         const handler = this.handlers.get(reality.type);
         if (!handler) throw new Error("Cannot setup an unsupported reality");
         handler.call(this, reality, port);
     }
-    
+
     /**
     * Check if a type of reality is supported by this ArgonSystem. 
     * @param type reality type
     * @return true if a handler exists and false otherwise
     */
-    public isSupported(type:string) : boolean {
+    public isSupported(type: string): boolean {
         return !!this.handlers.get(type)
     }
-    
-    private setupEmptyReality(reality:Reality, port:MessagePortLike) {
+
+    private setupEmptyReality(reality: Reality, port: MessagePortLike) {
         const channel = this.messageChannelFactory.create();
         const remoteRealitySession = this.sessionFactory.create();
         let doUpdate = true;
-        remoteRealitySession.openEvent.addEventListener(()=> {
-            const update = (time:Cesium.JulianDate, frameNumber:number) => {
+        remoteRealitySession.openEvent.addEventListener(() => {
+            const update = (time: Cesium.JulianDate, frameNumber: number) => {
                 if (doUpdate) {
-                    const frameState:FrameState = {
+                    const frameState: FrameState = {
                         time,
                         frameNumber
                     }
@@ -76,10 +76,10 @@ export class RealityService {
             }
             this.timer.requestFrame(update);
         })
-        remoteRealitySession.closeEvent.addEventListener(()=> {
+        remoteRealitySession.closeEvent.addEventListener(() => {
             doUpdate = false;
         });
-        remoteRealitySession.open(port, {role:Role.REALITY});
+        remoteRealitySession.open(port, { role: Role.REALITY });
     }
-    
+
 }

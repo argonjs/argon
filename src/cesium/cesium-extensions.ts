@@ -28,81 +28,81 @@ Matrix4['prototype'].length = 16;
 
 var __slice = Array.prototype.slice
 
-var after = function (fn:Function, after:Function) {
-  return function () {
-    var result = fn.apply(this, arguments)
-    after.call(this, result)
-    return result
-  }
+var after = function(fn: Function, after: Function) {
+    return function() {
+        var result = fn.apply(this, arguments)
+        after.call(this, result)
+        return result
+    }
 }
 
-function removeBeforeDate(property:any, time:Cesium.JulianDate) {
-  var times = property._times
-  var index = ~binarySearch(times, time, JulianDate.compare)
-  if(index > 0){
-    times.splice(0, index)
-    property._values.splice(0, index * property._innerType.packedLength)
-    property._updateTableLength = true
-    property._definitionChanged.raiseEvent(property)
-  }
+function removeBeforeDate(property: any, time: Cesium.JulianDate) {
+    var times = property._times
+    var index = ~binarySearch(times, time, JulianDate.compare)
+    if (index > 0) {
+        times.splice(0, index)
+        property._values.splice(0, index * property._innerType.packedLength)
+        property._updateTableLength = true
+        property._definitionChanged.raiseEvent(property)
+    }
 }
 
 SampledProperty.prototype.removeSamplesBeforeDate = function(time) {
-  removeBeforeDate(this, time)
+    removeBeforeDate(this, time)
 }
 
 SampledPositionProperty.prototype.removeSamplesBeforeDate = function(time) {
-  removeBeforeDate(this._property, time)
+    removeBeforeDate(this._property, time)
 }
 
-function removeOldSamples(property:any, maxNumSamples:number) {
-  if (maxNumSamples === undefined) maxNumSamples = 10
-  var removeCount = property._times.length - maxNumSamples
-  if (removeCount > 0) {
-    property._times.splice(0, removeCount)
-    property._values.splice(0, removeCount * property._innerType.packedLength)
-    property._updateTableLength = true
-  }
+function removeOldSamples(property: any, maxNumSamples: number) {
+    if (maxNumSamples === undefined) maxNumSamples = 10
+    var removeCount = property._times.length - maxNumSamples
+    if (removeCount > 0) {
+        property._times.splice(0, removeCount)
+        property._values.splice(0, removeCount * property._innerType.packedLength)
+        property._updateTableLength = true
+    }
 }
 
 SampledProperty.prototype.addSample = after(
-  SampledProperty.prototype.addSample,
-  function() {
-    removeOldSamples(this, this.maxNumSamples)
-  }
+    SampledProperty.prototype.addSample,
+    function() {
+        removeOldSamples(this, this.maxNumSamples)
+    }
 )
 
 SampledProperty.prototype.addSamples = after(
-  SampledProperty.prototype.addSamples,
-  function() {
-    removeOldSamples(this, this.maxNumSamples)
-  }
+    SampledProperty.prototype.addSamples,
+    function() {
+        removeOldSamples(this, this.maxNumSamples)
+    }
 )
 
 SampledProperty.prototype.addSamplesPackedArray = after(
-  SampledProperty.prototype.addSamplesPackedArray,
-  function() {
-    removeOldSamples(this, this.maxNumSamples)
-  }
+    SampledProperty.prototype.addSamplesPackedArray,
+    function() {
+        removeOldSamples(this, this.maxNumSamples)
+    }
 )
 
 SampledPositionProperty.prototype.addSample = after(
-  SampledPositionProperty.prototype.addSample,
-  function() {
-    removeOldSamples(this._property, this.maxNumSamples)
-  }
+    SampledPositionProperty.prototype.addSample,
+    function() {
+        removeOldSamples(this._property, this.maxNumSamples)
+    }
 )
 
 SampledPositionProperty.prototype.addSamples = after(
-  SampledPositionProperty.prototype.addSamples,
-  function() {
-    removeOldSamples(this._property, this.maxNumSamples)
-  }
+    SampledPositionProperty.prototype.addSamples,
+    function() {
+        removeOldSamples(this._property, this.maxNumSamples)
+    }
 )
 
 SampledPositionProperty.prototype.addSamplesPackedArray = after(
-  SampledPositionProperty.prototype.addSamplesPackedArray,
-  function() {
-    removeOldSamples(this._property, this.maxNumSamples)
-  }
+    SampledPositionProperty.prototype.addSamplesPackedArray,
+    function() {
+        removeOldSamples(this._property, this.maxNumSamples)
+    }
 )
