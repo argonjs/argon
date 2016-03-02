@@ -1,5 +1,6 @@
 import chai from 'chai'
 import * as Argon from '../src/argon.ts'
+import Cesium from 'Cesium'
 
 import {MessageChannelFactory, SessionFactory, MessageChannelLike, Session} from '../src/session.ts'
 import {TimerService} from '../src/timer.ts'
@@ -381,6 +382,59 @@ describe('Context', () => {
             });
             context.setDesiredReality({ type: 'reality_type' });
             expect(context.desiredReality['type']).to.equal('reality_type');
+        })
+    })
+
+    describe('#getEntityState', () => {
+        it('poseState when pose is not known', (done) => {
+            const {context} = createContext();
+            const entity = new Argon.Cesium.Entity;
+            const removeListener = context.updateEvent.addEventListener(()=>{
+                const state = context.getEntityState(entity);
+                expect(state.poseStatus & Argon.PoseStatus.UNKNOWN).to.be.ok;
+                removeListener();
+                done();
+            })
+        })
+        it('poseState when pose is found', (done) => {
+            const {context} = createContext();
+            const entity = new Argon.Cesium.Entity({
+                position: new Argon.Cesium.ConstantPositionProperty(Argon.Cesium.Cartesian3.ZERO, context.origin),
+                orientation: new Argon.Cesium.ConstantProperty(Argon.Cesium.Quaternion.IDENTITY)
+            });
+            const removeListener = context.updateEvent.addEventListener(()=>{
+                const state = context.getEntityState(entity);
+                expect(state.poseStatus & Argon.PoseStatus.FOUND).to.be.ok;
+                expect(state.poseStatus & Argon.PoseStatus.KNOWN).to.be.ok;
+                removeListener();
+                done();
+            })
+        })
+        it('poseState when pose is lost', (done) => {
+            const {context} = createContext();
+            const entity = new Argon.Cesium.Entity({
+                position: new Argon.Cesium.ConstantPositionProperty(Argon.Cesium.Cartesian3.ZERO, context.origin),
+                orientation: new Argon.Cesium.ConstantProperty(Argon.Cesium.Quaternion.IDENTITY)
+            });
+            let found = false;
+            const removeListener = context.updateEvent.addEventListener(()=>{
+                const state = context.getEntityState(entity);
+                if (!found) {
+                    expect(state.poseStatus & Argon.PoseStatus.FOUND).to.be.ok;
+                    expect(state.poseStatus & Argon.PoseStatus.KNOWN).to.be.ok;
+                    expect(state.poseStatus & Argon.PoseStatus.LOST).to.not.be.ok;
+                    expect(state.poseStatus & Argon.PoseStatus.UNKNOWN).to.not.be.ok;
+                    (<Cesium.ConstantPositionProperty>entity.position).setValue(undefined);
+                    found = true;
+                } else {
+                    expect(state.poseStatus & Argon.PoseStatus.LOST).to.be.ok;
+                    expect(state.poseStatus & Argon.PoseStatus.UNKNOWN).to.be.ok;
+                    expect(state.poseStatus & Argon.PoseStatus.FOUND).to.not.be.ok;
+                    expect(state.poseStatus & Argon.PoseStatus.KNOWN).to.not.be.ok;
+                    removeListener();
+                    done();
+                }
+            })
         })
     })
 
