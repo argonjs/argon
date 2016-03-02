@@ -326,6 +326,9 @@ export class Context {
     private _desiredRealityToOwnerSessionMap = new WeakMap<Reality, Session>();
     private _sessionToDesiredPresentationModeMap = new WeakMap<Session, PresentationMode>();
     private _sessionToSubscribedEntities = new WeakMap<Session, string[]>();
+    
+    private _updatingEntities = new Set<string>();
+    private _knownEntities = new Set<string>();
 
     private _update(state: FrameState) {
 
@@ -342,9 +345,18 @@ export class Context {
         if (!defined(state.camera)) state.camera = this.deviceService.getCameraState()
         if (!defined(state.size)) state.size = this.deviceService.getViewSize();
 
+        this._knownEntities.clear();
         for (const id in state.entities) {
             this._updateEntity(id, state);
+            this._updatingEntities.add(id);
+            this._knownEntities.add(id);
         }
+        this._updatingEntities.forEach((id)=>{
+            if (!this._knownEntities.has(id)) {
+                this.entities.getById(id).position = undefined;
+                this._updatingEntities.delete(id);
+            }
+        })
 
         this._updateOrigin(state);
 
@@ -735,19 +747,19 @@ export class Context {
 
         const hasPose = position && orientation;
 
-        let poseStatus:PoseStatus;
+        let poseStatus:PoseStatus = 0;
         const previousStatus = entityState.poseStatus;
 
         if (hasPose) {
-            poseStatus &= PoseStatus.KNOWN;
+            poseStatus |= PoseStatus.KNOWN;
         } else {
-            poseStatus &= PoseStatus.UNKNOWN;
+            poseStatus |= PoseStatus.UNKNOWN;
         }
 
-        if (hasPose && previousStatus | PoseStatus.UNKNOWN) {
-            poseStatus &= PoseStatus.FOUND;
-        } else if (!hasPose && previousStatus | PoseStatus.KNOWN) {
-            poseStatus &= PoseStatus.LOST;
+        if (hasPose && previousStatus & PoseStatus.UNKNOWN) {
+            poseStatus |= PoseStatus.FOUND;
+        } else if (!hasPose && previousStatus & PoseStatus.KNOWN) {
+            poseStatus |= PoseStatus.LOST;
         }
 
         entityState.poseStatus = poseStatus;

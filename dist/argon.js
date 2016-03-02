@@ -606,6 +606,8 @@ $__System.register("5", ["8", "6", "a", "9", "7", "b"], function(exports_1, cont
           this._desiredRealityToOwnerSessionMap = new WeakMap();
           this._sessionToDesiredPresentationModeMap = new WeakMap();
           this._sessionToSubscribedEntities = new WeakMap();
+          this._updatingEntities = new Set();
+          this._knownEntities = new Set();
           this._desiredReality = null;
           this.entityStateMap = new Map();
           this.frustum = new cesium_imports_ts_1.PerspectiveFrustum;
@@ -828,6 +830,7 @@ $__System.register("5", ["8", "6", "a", "9", "7", "b"], function(exports_1, cont
         });
         ;
         Context.prototype._update = function(state) {
+          var _this = this;
           if (!cesium_imports_ts_1.defined(state.entities))
             state.entities = {};
           if (!cesium_imports_ts_1.defined(state.entities['DEVICE'])) {
@@ -840,9 +843,18 @@ $__System.register("5", ["8", "6", "a", "9", "7", "b"], function(exports_1, cont
             state.camera = this.deviceService.getCameraState();
           if (!cesium_imports_ts_1.defined(state.size))
             state.size = this.deviceService.getViewSize();
+          this._knownEntities.clear();
           for (var id in state.entities) {
             this._updateEntity(id, state);
+            this._updatingEntities.add(id);
+            this._knownEntities.add(id);
           }
+          this._updatingEntities.forEach(function(id) {
+            if (!_this._knownEntities.has(id)) {
+              _this.entities.getById(id).position = undefined;
+              _this._updatingEntities.delete(id);
+            }
+          });
           this._updateOrigin(state);
           if (state.camera.type === 'perspective') {
             var camera = state.camera;
@@ -1108,17 +1120,17 @@ $__System.register("5", ["8", "6", "a", "9", "7", "b"], function(exports_1, cont
           var position = utils_ts_1.getEntityPositionInReferenceFrame(entity, time, referenceFrame, entityState.position);
           var orientation = utils_ts_1.getEntityOrientationInReferenceFrame(entity, time, referenceFrame, entityState.orientation);
           var hasPose = position && orientation;
-          var poseStatus;
+          var poseStatus = 0;
           var previousStatus = entityState.poseStatus;
           if (hasPose) {
-            poseStatus &= PoseStatus.KNOWN;
+            poseStatus |= PoseStatus.KNOWN;
           } else {
-            poseStatus &= PoseStatus.UNKNOWN;
+            poseStatus |= PoseStatus.UNKNOWN;
           }
-          if (hasPose && previousStatus | PoseStatus.UNKNOWN) {
-            poseStatus &= PoseStatus.FOUND;
-          } else if (!hasPose && previousStatus | PoseStatus.KNOWN) {
-            poseStatus &= PoseStatus.LOST;
+          if (hasPose && previousStatus & PoseStatus.UNKNOWN) {
+            poseStatus |= PoseStatus.FOUND;
+          } else if (!hasPose && previousStatus & PoseStatus.KNOWN) {
+            poseStatus |= PoseStatus.LOST;
           }
           entityState.poseStatus = poseStatus;
           return entityState;
