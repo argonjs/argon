@@ -9,13 +9,51 @@
 <body>
     <div id="mocha"></div>
     <script>
-        System.import('mocha').then(function(mocha) {
-            mocha.setup('bdd')
-            System.import('test/test.ts').then(function() {
-                mocha.checkLeaks();
-                mocha.run();
-            })
-        })
+        System.import('istanbul/lib/instrumenter.js').then(function(Instrumenter) {
+
+            // Override the systemjs translate function so that our typescript
+            // is instrumented by istanbul for code coverage.
+            //
+            // TODO: It's probably possible to avoid this by modifying the meta
+            // property of SystemJS for our files to use a custom plugin which
+            // does this.
+            var oldSystemTranslate = System.translate;
+            System.translate = function(load) {
+                var result = oldSystemTranslate.call(this, load);
+
+                var matchResult = /((?:src|test)\/.*\.ts)$/.exec(load.address);
+                if (matchResult !== null) {
+                    var fileName = matchResult[1];
+                    result = result.then(function(code) {
+                        load.source = new Instrumenter({embedSource:true}).instrumentSync(code, fileName);
+                        // TODO: should also update load.sourceMap
+                        return load.source;
+                    });
+                }
+
+                return result;
+            }
+
+            // Setup mocha
+            System.import('mocha').then(function(mocha) {
+                mocha.setup('bdd');
+
+                // Run tests with mocha
+                System.import('test/test.ts!').then(function() {
+                    mocha.checkLeaks();
+                    mocha.run(function() {
+                        // Prompt the user to copy the code coverage data to the
+                        // clipboard.
+                        //
+                        // TODO: it would be better to automatically create the
+                        // file with the browser file api (chrome only) or with web
+                        // sockets (to pass this back to the server where it can
+                        // write the file to disk).
+                        window.prompt("The code coverage data:", JSON.stringify(window.__coverage__));
+                    });
+                });
+            });
+        });
     </script>
 </body>
 </html>
