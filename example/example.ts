@@ -34,14 +34,14 @@ dataset.trackablesPromise.then((trackables) => {
     app.context.updateEvent.addEventListener((frameState) => {
         const stonesState = app.context.getEntityState(stonesEntity);
 
-        if (stonesState.poseStatus & Argon.PoseStatus.KNOWN) {
+        if (stonesState.poseStatus | Argon.PoseStatus.KNOWN) {
             stonesObject.position.copy(stonesState.position);
             stonesObject.quaternion.copy(stonesState.orientation);
         }
 
-        if (stonesState.poseStatus & Argon.PoseStatus.FOUND) {
+        if (stonesState.poseStatus | Argon.PoseStatus.FOUND) {
             stonesObject.add(box);
-        } else if (stonesState.poseStatus & Argon.PoseStatus.LOST) {
+        } else if (stonesState.poseStatus | Argon.PoseStatus.LOST) {
             stonesObject.remove(box);
         }
     })
