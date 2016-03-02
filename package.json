@@ -47,8 +47,10 @@
         "registry": "jspm"
       },
       "github:aelatgt/cesium@referenceFrames": {
+        "registry":"github",
+        "dependencies":{},
         "map": {
-          "./Source/DataSources/BillboardGraphics": "@empty",
+          "./Source/DatajSources/BillboardGraphics": "@empty",
           "./Source/DataSources/BoxGraphics": "@empty",
           "./Source/DataSources/CorridorGraphics": "@empty",
           "./Source/DataSources/CylinderGraphics": "@empty",
