@@ -2,10 +2,7 @@
 
 An open-standards augmented reality platform for the web
 
-This software was created as part of a research project at the
-Augmented Environments Lab at Georgia Tech.  To support our research, we
-request that if you make use of this software, you let us know how
-you used it by sending mail to Blair MacIntyre (blair@cc.gatech.edu).
+*This software was created as part of a research project at the Augmented Environments Lab at Georgia Tech.  To support our research, we request that if you make use of this software, you let us know how you used it by sending mail to Blair MacIntyre (blair@cc.gatech.edu).*
 
 ### Quick Build Guide
 
