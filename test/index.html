@@ -10,6 +10,10 @@
     <div id="mocha"></div>
     <script>
         System.import('istanbul/lib/instrumenter.js').then(function(Instrumenter) {
+            // A map from argon source file names to their source maps
+            var sourceMaps = {};
+            // A map from argon source file names to their transpiled js
+            var sourceJs = {};
 
             // Override the systemjs translate function so that our typescript
             // is instrumented by istanbul for code coverage.
@@ -21,11 +25,19 @@
             System.translate = function(load) {
                 var result = oldSystemTranslate.call(this, load);
 
-                var matchResult = /((?:src|test)\/.*\.ts)$/.exec(load.address);
+                var matchResult = /((?:src|test)\/.*)\.ts$/.exec(load.address);
                 if (matchResult !== null) {
                     var fileName = matchResult[1];
+                    var baseFileName = fileName.slice(fileName.lastIndexOf('/') + 1)
+
                     result = result.then(function(code) {
-                        load.source = new Instrumenter({embedSource:true}).instrumentSync(code, fileName);
+                        var codeWithSourceMapComment = '//# sourceMappingURL=' + baseFileName + '.js.map\n' + code;
+
+                        sourceJs[fileName + '.js'] = codeWithSourceMapComment;
+                        sourceMaps[fileName + '.js.map'] = load.metadata.sourceMap;
+                        sourceMaps[fileName + '.js.map'].sources = [baseFileName + '.ts'];
+
+                        load.source = new Instrumenter().instrumentSync(codeWithSourceMapComment, fileName + '.js');
                         // TODO: should also update load.sourceMap
                         return load.source;
                     });
@@ -42,14 +54,11 @@
                 System.import('test/test.ts!').then(function() {
                     mocha.checkLeaks();
                     mocha.run(function() {
-                        // Prompt the user to copy the code coverage data to the
-                        // clipboard.
-                        //
-                        // TODO: it would be better to automatically create the
-                        // file with the browser file api (chrome only) or with web
-                        // sockets (to pass this back to the server where it can
-                        // write the file to disk).
-                        window.prompt("The code coverage data:", JSON.stringify(window.__coverage__));
+                        window.___browserSync___.socket.emit('argon:coverage', {
+                            coverage: window.__coverage__,
+                            sourceMaps: sourceMaps,
+                            sourceJs: sourceJs
+                        });
                     });
                 });
             });
