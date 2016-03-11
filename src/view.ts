@@ -1,6 +1,9 @@
 import {inject} from 'aurelia-dependency-injection';
 import {Context, FrameState} from './context.ts'
 
+/**
+ * Provides a DOM element in which augmentations can be rendered
+ */
 @inject(Context)
 export class ViewService {
 
