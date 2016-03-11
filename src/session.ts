@@ -9,77 +9,68 @@ declare class Object {
 }
 
 /*
- * Describes the role of a Session
+ * Describes the role of an ArgonSystem
  */
 export enum Role {
 
     /*
-     * A simple session.
+     * An application recieves state update events from a manager.
      */
     APPLICATION = "Application" as any,
 
     /*
-     * A session with all updated infomation, such as time and location.
+     * A reality provides state update events to a manager.
      */
     REALITY = "Reality" as any,
 
     /*
-     * A session controls other applications.
+     * A manager recieves state update events from a reality and sends state update events to applications.
      */
     MANAGER = "Manager" as any
 }
 
 /*
- * Create session.
+ * A factory for creating Session instances. 
  */
 export class SessionFactory {
 
-    /*
-     * Create new session.
-     * @return A new session.
-     */
     public create() {
         return new Session();
     }
 }
 
 /**
- * Create the event with the message.
+ * A minimal MessageEvent interface.
  */
-export class MessageEventLike {
-
-    /**
-     * Create a message as the event.
-     * @param Any data to be the message.
-     * @return A event with message. 
-     */
-    constructor(public data: any) { }
+export declare class MessageEventLike {
+    constructor(data: any);
+    data: any;
 }
 
 /**
- * Basic message port.
+ * A minimal MessagePort interface.
  */
 export interface MessagePortLike {
 
     /**
-      * Create a message event.
+      * A callback for handling incoming messages.
       */
     onmessage: (ev: MessageEventLike) => any;
 
     /**
-     * Post the message.
+     * Send a message through this message port.
      * @param message The message needed to be posted.
      */
     postMessage(message?: any): void;
 
     /**
-     * The status of the message port. 
+     * Close this message port. 
      */
     close?: () => void;
 }
 
 /**
- * The message channel which has two ports to post message.
+ * A MessageChannel pollyfill. 
  */
 export class MessageChannelLike {
 
@@ -94,7 +85,7 @@ export class MessageChannelLike {
     public port2: MessagePortLike;
 
     /**
-     * Create a message channel with two ports to be ready to post message. 
+     * Create a MessageChannelLike instance. 
      */
     constructor() {
         const messageChannel = this;
@@ -151,14 +142,13 @@ export class MessageChannelLike {
 }
 
 /**
- * Create message channel. 
+ * A factory which creates MessageChannel or MessageChannelLike instances, depending on
+ * wheter or not MessageChannel is avaialble in the execution context. 
  */
 export class MessageChannelFactory {
 
     /**
-     * Create message channel.
-     * @return A new message channel if messageChannel is not defined before.
-     * Otherwise, craete a new messageChannelLike.
+     * Create a MessageChannel (or MessageChannelLike) instance.
      */
     public create(): MessageChannelLike {
         if (typeof MessageChannel !== 'undefined') return new MessageChannel()
@@ -167,21 +157,19 @@ export class MessageChannelFactory {
 }
 
 /**
- * Define MessageHandler as the Alias for the function 
+ * A callback for message events.  
  */
 export type MessageHandler = (message: any, event: MessageEvent) => void | any;
 
 /**
- * Map a topic to a messageHandler.
+ * Describes a map from message topic to MessageHandler.
  */
 export interface MessageHandlerMap {
     [topic: string]: MessageHandler
 }
 
 /**
- * The description of a session with role, user data,
- * whether reality control port enables or not,
- * and whether incoming update events enables or not.
+ * Describes the configuration of a session. 
  */
 export interface SessionConfiguration {
     role: Role;
@@ -191,39 +179,37 @@ export interface SessionConfiguration {
 }
 
 /**
- * The description of error message. 
+ * Describes an error message. 
  */
 export interface ErrorMessage {
     /**
-     * The string describes the message.
+     * A string which describes the error message.
      */
     message: string
 }
 
 /**
- * The description of the session.
+ * Provides two-way communication between an 
+ * Application and a Manager, or a Reality and a Manager.
  */
 export class Session {
+    
+    private static OPEN = 'ar.session.open';
+    
+    private static CLOSE = 'ar.session.close';
+   
+    private static ERROR = 'ar.session.error';
+    
     /**
-     * Indicate the session is open. 
-     */
-    public static OPEN = 'ar.session.open';
-    /**
-     * Indicate the session is closed. 
-     */
-    public static CLOSE = 'ar.session.close';
-    /**
-     * Indicate the session has error. 
-     */
-    public static ERROR = 'ar.session.error';
-    /**
-     * A message port to post message.
+     * A message port to post and receive messages.
      */
     public messagePort: MessagePortLike;
+    
     /**
-     * Holding all the inforamtion about the session.
+     * Describes the configuration of the connected system. 
      */
     public info: SessionConfiguration;
+    
     /**
      * Holding the element of the frame.
      */
@@ -258,12 +244,6 @@ export class Session {
     private _isClosed = false;
     private _receivedOpenMessage = false;
 
-    /**
-     * Create a new session.
-     * If session is open, assign the inforamtion to the session and raise the event.
-     * If session is closed, close the session.
-     * If session has error, raise event with error message.  
-     */
     constructor() {
 
         this.on[Session.OPEN] = (info: SessionConfiguration) => {
@@ -286,10 +266,9 @@ export class Session {
     }
 
     /**
-     * Open a session which has been opened before. 
-     * Post message on message port.
-     * @param messagePort A place to post message.
-     * @param options Holding all the inforamtion about the session.
+     * Open this session.
+     * @param messagePort the message port to post and receive messages.
+     * @param options the configuration which describes this system.
      */
     open(messagePort: MessagePortLike, options: SessionConfiguration) {
         this.messagePort = messagePort;
@@ -330,11 +309,11 @@ export class Session {
     }
 
     /**
-     * Send the topic 
-     * @param topic The topic of the message.
-     * @param message The message ready to be posted on message port.
+     * Send a message 
+     * @param topic the message topic.
+     * @param message the message to be sent.
      * @return Return true if the message is posted successfully,
-     * return false if the session is closed or has not been opened yet.
+     * return false if the session is closed.
      */
     send(topic: string, message?: {}): boolean {
         if (!this._isOpened) throw new Error('Session must be open to send messages');
@@ -345,8 +324,8 @@ export class Session {
     }
 
     /**
-     * Send error message with send method.
-     * @param errorMessage An enrror message.
+     * Send an error message.
+     * @param errorMessage An error message.
      * @return Return true if the error message is sent successfully,
      * otherwise, return false.
      */
@@ -355,12 +334,11 @@ export class Session {
     }
 
     /**
-     * Request a task and return a promise to hold the result
-     * so that other parties can access to the result. 
-     * @param topic The topic of the message.
-     * @param message The message ready to be posted on message port.
-     * @return if the session is not opened or is closed, return a rejeected promise,
-     * if the request is successful, a new promise is returned with result from the request.
+     * Send a request and return a promise for the result.
+     * @param topic the message topic.
+     * @param message the message to be sent.
+     * @return if the session is not opened or is closed, return a rejected promise,
+     * Otherwise, the returned promise is resolved or rejected based on the response.
      */
     request(topic: string, message?: {}): PromiseLike<any> {
         if (!this._isOpened || this._isClosed)
@@ -384,14 +362,14 @@ export class Session {
     }
 
     /**
-     * Raise a focus event.
+     * Request that this session be focussed (TODO: find a better place for this)
      */
     focus() {
         this.focusEvent.raiseEvent(null);
     }
 
     /**
-     * Close a session.
+     * Close this session.
      */
     close() {
         if (this._isClosed) return;
@@ -406,7 +384,7 @@ export class Session {
 }
 
 /**
- * Provides the connect service to a session.
+ * Establishes a connection to the manager.
  */
 export abstract class ConnectService {
 
@@ -417,21 +395,16 @@ export abstract class ConnectService {
 }
 
 /**
- * Connect to loop back service. 
+ * Connect this system to itself as the manager. 
  */
 @inject('config', MessageChannelFactory)
 export class LoopbackConnectService extends ConnectService {
 
-    /**
-     * Create a new Loop Back Connect Service with super call.
-     * @param config Holding all inforamtion about the session.
-     * @param messageChannelFactory A new message channel
-     */
     constructor(public config: SessionConfiguration, public messageChannelFactory: MessageChannelFactory) { super() }
     
     /**
-     * Open the session and post the session's information on the message port.
-     * @param session The session wants to connect to loop back service.
+     * Create a loopback connection.
+     * @param session the manager session instance.
      */
     connect(session: Session) {
         const messageChannel = this.messageChannelFactory.create();
@@ -444,30 +417,24 @@ export class LoopbackConnectService extends ConnectService {
 }
 
 /**
- * Connect to DOM service.
+ * Connect this system to the manager via the parent document (assuming this system is running in an iFrame).
  */
 @inject('config', MessageChannelFactory)
 export class DOMConnectService extends ConnectService {
     
-    /**
-     * Create a new Loop Back Connect Service with super call.
-     * @param config Holding all inforamtion about the session.
-     * @param messageChannelFactory A new message channel
-     */
     constructor(public config: SessionConfiguration, public messageChannelFactory: MessageChannelFactory) { super() }
     
-    /**
-     * Check whether the window and the window's parent are defined or not.
-     * @return Return true if both window and its parent are undefined,
-     * otherwise, return false.
+   /**
+     * Check whether this connect method is available or not.
+     * @return true if this method is availble, otherwise false
      */
     public static isAvailable(): boolean {
         return typeof window !== 'undefined' && typeof window.parent !== 'undefined';
     }
+    
     /**
-     * Post message 'Argon_session' to window's parent when the document is complete.
-     * Open the session and post the inforamtion on its port.
-     * @param config Holding all inforamtion about the session.
+     * Connect to the manager.
+     * @param session the manager session instance.
      */
     public connect(session: Session) {
         const messageChannel = this.messageChannelFactory.create();
@@ -479,29 +446,25 @@ export class DOMConnectService extends ConnectService {
 }
 
 /**
- * Connect to Debug service.
+ * Connect this system to a remote manager for debugging.
  */
 @inject('config', MessageChannelFactory)
 export class DebugConnectService extends ConnectService {
-    /**
-     * Create a new Loop Back Connect Service with super call.
-     * @param config Holding all inforamtion about the session.
-     * @param messageChannelFactory A new message channel
-     */
+    
     constructor(public config: SessionConfiguration, public messageChannelFactory: MessageChannelFactory) { super() }
     
     /**
-     * Check whether the window is avaibable.
-     * @return Return true if window is undefined and is not in '_Argon_debug_port_',
-     * otherwise, return false.
+     * Check whether this connect method is available or not.
+     * @return true if this method is availble, otherwise false
      */
     public static isAvailable(): boolean {
         return typeof window !== 'undefined' &&
             !!window['__ARGON_DEBUG_PORT__'];
     }
+    
     /**
-     * Connect the session to '_argon_debug_port'.
-     * @param session A session to be connected to '_argon_debug_port'.
+     * Connect to the manager.
+     * @param session the manager session instance.
      */
     public connect(session: Session) {
         session.open(window['__ARGON_DEBUG_PORT__'], this.config);
@@ -511,22 +474,16 @@ export class DebugConnectService extends ConnectService {
 declare const webkit: any;
 
 /**
- * Connect to WK web view service.
+ * A service which connects this system to the manager via a WKWebview message handler.
  */
 @inject('config', MessageChannelFactory)
 export class WKWebViewConnectService extends ConnectService {
 
-    /**
-     * Create a new Loop Back Connect Service with super call.
-     * @param config Holding all inforamtion about the session.
-     * @param messageChannelFactory A new message channel
-     */
     constructor(public config: SessionConfiguration, public messageChannelFactory: MessageChannelFactory) { super() }
     
     /**
-     * Check whether the window is available or not.
-     * @return Return true if window is undefined and does not have webkit.
-     * otherwise, return false.
+     * Check whether this connect method is available or not.
+     * @return true if this method is availble, otherwise false
      */
     public static isAvailable(): boolean {
         return typeof window !== 'undefined' &&
@@ -534,8 +491,8 @@ export class WKWebViewConnectService extends ConnectService {
     }
 
     /**
-     * Connect the session to webkit service.
-     * @param session A session to be connected to webkit service.
+     * Connect to the manager.
+     * @param session the manager session instance.
      */
     public connect(session: Session) {
         const messageChannel = this.messageChannelFactory.create();
