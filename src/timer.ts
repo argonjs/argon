@@ -1,4 +1,3 @@
-import * as Cesium from 'Cesium' // typescript workaround (only use for type resolution!)
 import {
     JulianDate
 } from './cesium/cesium-imports.ts'
@@ -17,7 +16,7 @@ export class TimerService {
      * 
      * @param callback function
      */
-    public requestFrame(callback: (time: Cesium.JulianDate, frameNumber: number) => void) {
+    public requestFrame(callback: (time: JulianDate, frameNumber: number) => void) {
         if (typeof requestAnimationFrame !== 'undefined' && typeof performance !== 'undefined') {
             this.navigationStartDate = this.navigationStartDate || JulianDate.fromDate(new Date(performance.timing.navigationStart))
             requestAnimationFrame((time) => {

@@ -1,5 +1,4 @@
-// import * as Argon from 'src/argon'
-import * as Argon from 'dist/argon'
+import * as Argon from 'argon'
 
 declare const THREE: any;
 
@@ -24,15 +23,15 @@ const dataset = app.vuforia.createDataSet('dataset/StonesAndChips.xml');
 
 dataset.trackablesPromise.then((trackables) => {
 
-    const stonesEntity = app.context.subscribeToEntity(trackables['stones'].id)
+    const stonesEntity = app.context.subscribeToEntityById(trackables['stones'].id)
     const stonesObject = new THREE.Object3D;
     scene.add(stonesObject);
 
-    var box = new THREE.Mesh(new THREE.BoxGeometry(50, 50, 50), new THREE.MeshNormalMaterial())
+    const box = new THREE.Mesh(new THREE.BoxGeometry(50, 50, 50), new THREE.MeshNormalMaterial())
     box.position.z = 25
 
     app.context.updateEvent.addEventListener((frameState) => {
-        const stonesState = app.context.getEntityState(stonesEntity);
+        const stonesState = app.context.getCurrentEntityState(stonesEntity);
 
         if (stonesState.poseStatus & Argon.PoseStatus.KNOWN) {
             stonesObject.position.copy(stonesState.position);
@@ -55,9 +54,9 @@ app.context.updateEvent.addEventListener((frameState) => {
     camera.aspect = app.context.frustum.aspectRatio;
     camera.projectionMatrix.fromArray(app.context.frustum.infiniteProjectionMatrix)
 
-    const eyeState = app.context.getEntityState(app.context.eye);
+    const eyeState = app.context.getCurrentEntityState(app.context.eye);
 
-    if (eyeState.poseStatus | Argon.PoseStatus.KNOWN) {
+    if (eyeState.poseStatus & Argon.PoseStatus.KNOWN) {
         camera.position.copy(eyeState.position);
         camera.quaternion.copy(eyeState.orientation);
         eyeOrigin.position.copy(eyeState.position);
@@ -130,12 +129,12 @@ divZneg.style.backgroundColor = "green"
 divZneg.innerText = "Neg Z = North"
 
 // create 6 CSS3DObjects in the scene graph
-var cssObjectXpos = new THREE.CSS3DObject(divXpos)
-var cssObjectXneg = new THREE.CSS3DObject(divXneg)
-var cssObjectYpos = new THREE.CSS3DObject(divYpos)
-var cssObjectYneg = new THREE.CSS3DObject(divYneg)
-var cssObjectZpos = new THREE.CSS3DObject(divZpos)
-var cssObjectZneg = new THREE.CSS3DObject(divZneg)
+const cssObjectXpos = new THREE.CSS3DObject(divXpos)
+const cssObjectXneg = new THREE.CSS3DObject(divXneg)
+const cssObjectYpos = new THREE.CSS3DObject(divYpos)
+const cssObjectYneg = new THREE.CSS3DObject(divYneg)
+const cssObjectZpos = new THREE.CSS3DObject(divZpos)
+const cssObjectZneg = new THREE.CSS3DObject(divZneg)
 
 // the width and height is used to align things.
 cssObjectXpos.position.x = 200.0

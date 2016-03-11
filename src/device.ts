@@ -1,4 +1,3 @@
-import * as Cesium from 'Cesium'
 import {EntityPose, CameraState} from './context.ts'
 import {
     Entity,
@@ -58,7 +57,7 @@ export class DeviceService {
     public getEyePose(time): EntityPose {
         if (typeof window !== 'undefined') {
             const interfaceRotation = -window.orientation || 0;
-            const eyeOrientation = <Cesium.ConstantProperty>this.eye.orientation;
+            const eyeOrientation = <ConstantProperty>this.eye.orientation;
             eyeOrientation.setValue(Quaternion.fromAxisAngle(Cartesian3.UNIT_Z, interfaceRotation));
         }
         return calculatePose(this.eye, time);

@@ -1,11 +1,11 @@
 {
   "name": "argon",
   "version": "0.2.0-alpha",
-  "main": "dist/argon.js",
-  "typings": "dist/argon.d.ts",
+  "main": "dist/argon.umd.js",
+  "typings": "dist/src/argon.d.ts",
   "jspm": {
-    "main": "src/argon.ts!",
-    "format": "es6",
+    "main": "dist/src/argon.js",
+    "format": "register",
     "dependencies": {
       "Cesium": "github:aelatgt/cesium@referenceFrames",
       "aurelia-dependency-injection": "npm:aurelia-dependency-injection@^1.0.0-beta.1.1.4",
@@ -47,8 +47,8 @@
         "registry": "jspm"
       },
       "github:aelatgt/cesium@referenceFrames": {
-        "registry":"github",
-        "dependencies":{},
+        "registry": "github",
+        "dependencies": {},
         "map": {
           "./Source/DatajSources/BillboardGraphics": "@empty",
           "./Source/DataSources/BoxGraphics": "@empty",
@@ -86,15 +86,15 @@
     "jspm": "^0.17.0-beta.9",
     "tsconfig-glob": "^0.2.1",
     "typedoc": "^0.3.12",
-    "typescript": "^1.9.0-dev.20160226",
+    "typescript": "^1.9.0-dev.20160303",
     "typescript-formatter": "^2.1.0"
   },
   "scripts": {
     "tsconfig": "tsconfig .",
     "format": "tsfmt -r",
-    "build": "jspm build src/argon.ts dist/argon.js --format umd --global-name Argon --skip-source-maps",
+    "build": "tsconfig . && tsfmt -r && tsc && jspm build src/argon.ts dist/argon.umd.js --format umd --global-name Argon --skip-source-maps",
     "browser-sync": "browser-sync  start --server --directory --startPath \"index.html\" --files \"src/**\"",
     "test": "npm run browser-sync",
-    "typedoc": "typedoc --out docs --gaID UA-63191442-2 --name argon.js --readme README.md --target ES5 --module commonjs --experimentalDecorators --excludeNotExported --excludeExternals src/argon.ts src/context.ts src/device.ts src/reality.ts src/view.ts src/session.ts src/timer.ts src/utils.ts src/vuforia.ts src/definitions jspm_packages/github/aurelia/dependency-injection@0.12.1/aurelia-dependency-injection.d.ts jspm_packages/github/aurelia/logging@0.9.0/aurelia-logging.d.ts jspm_packages/github/aurelia/metadata@0.10.1/aurelia-metadata.d.ts jspm_packages/github/aurelia/pal@0.3.0/aurelia-pal.d.ts typings/browser.d.ts"
+    "typedoc": "typedoc --out docs --gaID UA-63191442-2 --name argon.js --readme README.md --target ES5 --module commonjs --experimentalDecorators --excludeNotExported --excludeExternals -p src src/argon.ts src/context.ts src/device.ts src/reality.ts src/view.ts src/session.ts src/timer.ts src/utils.ts src/vuforia.ts typings/browser.d.ts jspm_packages/npm/aurelia-dependency-injection@1.0.0-beta.1.1.4/aurelia-dependency-injection.d.ts jspm_packages/npm/aurelia-logging@1.0.0-beta.1.1.2/aurelia-logging.d.ts jspm_packages/npm/aurelia-metadata@1.0.0-beta.1.1.5/aurelia-metadata.d.ts jspm_packages/npm/aurelia-pal@1.0.0-beta.1.1.1/aurelia-pal.d.ts jspm_packages/npm/aurelia-polyfills@1.0.0-beta.1.0.0/aurelia-polyfills.d.ts"
   }
 }

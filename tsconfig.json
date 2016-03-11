@@ -2,39 +2,32 @@
     "compilerOptions": {
         "target": "es5",
         "module": "system",
-        "outDir": "build",
+        "outDir": "dist/src",
         "declaration": true,
         "emitDecoratorMetadata": false,
         "experimentalDecorators": true,
         "allowSyntheticDefaultImports": true
     },
     "filesGlob": [
-        "example/**/*.ts",
-        "src/**/*.ts",
-        "test/**/*.ts",
+        "src/*.ts",
         "typings/browser.d.ts",
         "jspm_packages/npm/aurelia-*/**/*.d.ts"
     ],
     "files": [
-        "jspm_packages/npm/aurelia-pal@1.0.0-beta.1.1.1/aurelia-pal.d.ts",
-        "src/definitions/cesium.d.ts",
-        "src/definitions/jspm_modules.d.ts",
+        "jspm_packages/npm/aurelia-polyfills@1.0.0-beta.1.0.0/aurelia-polyfills.d.ts",
         "typings/browser.d.ts",
         "jspm_packages/npm/aurelia-dependency-injection@1.0.0-beta.1.1.4/aurelia-dependency-injection.d.ts",
         "jspm_packages/npm/aurelia-logging@1.0.0-beta.1.1.2/aurelia-logging.d.ts",
         "jspm_packages/npm/aurelia-metadata@1.0.0-beta.1.1.5/aurelia-metadata.d.ts",
+        "jspm_packages/npm/aurelia-pal@1.0.0-beta.1.1.1/aurelia-pal.d.ts",
+        "src/utils.ts",
+        "src/context.ts",
+        "src/vuforia.ts",
+        "src/argon.ts",
         "src/device.ts",
         "src/reality.ts",
         "src/session.ts",
-        "src/argon.ts",
-        "src/utils.ts",
-        "src/view.ts",
-        "src/vuforia.ts",
-        "test/test.ts",
-        "src/cesium/cesium-imports.ts",
-        "src/context.ts",
-        "example/example.ts",
-        "src/cesium/cesium-extensions.ts",
-        "src/timer.ts"
+        "src/timer.ts",
+        "src/view.ts"
     ]
 }

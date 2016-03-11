@@ -1,4 +1,3 @@
-import * as Cesium from 'Cesium'; // typescript workaround (only useful for type resolution)
 import {JulianDate} from './cesium/cesium-imports.ts'
 import {inject, factory, Container} from 'aurelia-dependency-injection'
 import {FrameState} from './context.ts'
@@ -64,7 +63,7 @@ export class RealityService {
         const remoteRealitySession = this.sessionFactory.create();
         let doUpdate = true;
         remoteRealitySession.openEvent.addEventListener(() => {
-            const update = (time: Cesium.JulianDate, frameNumber: number) => {
+            const update = (time: JulianDate, frameNumber: number) => {
                 if (doUpdate) {
                     const frameState: FrameState = {
                         time,

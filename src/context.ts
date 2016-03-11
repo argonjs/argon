@@ -1,4 +1,3 @@
-import * as Cesium from 'Cesium' // typescript workaround (only use for type resolution!)
 import {
     Entity,
     EntityCollection,
@@ -54,9 +53,9 @@ export interface PerspectiveCameraState extends CameraState {
  * Describes the state of an entity at a particular time relative to a particular reference frame
  */
 export interface EntityState {
-    position: Cesium.Cartesian3
-    orientation: Cesium.Quaternion,
-    time: Cesium.JulianDate
+    position: Cartesian3
+    orientation: Quaternion,
+    time: JulianDate
     poseStatus: PoseStatus
 }
 
@@ -76,7 +75,7 @@ export enum PoseStatus {
 export interface EntityPose {
     position?: { x: number, y: number, z: number },
     orientation?: { x: number, y: number, z: number, w: number },
-    referenceFrame: Cesium.ReferenceFrame | string,
+    referenceFrame: ReferenceFrame | string,
 }
 
 /**
@@ -92,7 +91,7 @@ export interface EntityPoseMap {
  */
 export interface FrameState {
     frameNumber: number,
-    time: Cesium.JulianDate,
+    time: JulianDate,
     reality?: Reality,
     camera?: CameraState,
     size?: { width: number, height: number }
@@ -326,7 +325,7 @@ export class Context {
     private _desiredRealityToOwnerSessionMap = new WeakMap<Reality, Session>();
     private _sessionToDesiredPresentationModeMap = new WeakMap<Session, PresentationMode>();
     private _sessionToSubscribedEntities = new WeakMap<Session, string[]>();
-    
+
     private _updatingEntities = new Set<string>();
     private _knownEntities = new Set<string>();
 
@@ -351,7 +350,7 @@ export class Context {
             this._updatingEntities.add(id);
             this._knownEntities.add(id);
         }
-        this._updatingEntities.forEach((id)=>{
+        this._updatingEntities.forEach((id) => {
             if (!this._knownEntities.has(id)) {
                 this.entities.getById(id).position = undefined;
                 this._updatingEntities.delete(id);
@@ -399,7 +398,7 @@ export class Context {
         const entityPose = state.entities[id];
 
         let referenceFrame = (typeof entityPose.referenceFrame === 'number') ?
-            <Cesium.ReferenceFrame>entityPose.referenceFrame :
+            <ReferenceFrame>entityPose.referenceFrame :
             this.entities.getById(entityPose.referenceFrame);
         if (!defined(referenceFrame)) {
             referenceFrame = this._updateEntity(<string>entityPose.referenceFrame, state);
@@ -409,13 +408,13 @@ export class Context {
 
         if (entity.position instanceof ConstantPositionProperty === false ||
             entity.orientation instanceof ConstantProperty === false) {
-            entity.position = new ConstantPositionProperty(<Cesium.Cartesian3>entityPose.position, referenceFrame);
+            entity.position = new ConstantPositionProperty(<Cartesian3>entityPose.position, referenceFrame);
             entity.orientation = new ConstantProperty(entityPose.orientation);
         }
 
-        const entityPosition = <Cesium.ConstantPositionProperty>entity.position;
-        const entityOrientation = <Cesium.ConstantProperty>entity.orientation;
-        entityPosition.setValue(<Cesium.Cartesian3>entityPose.position, referenceFrame)
+        const entityPosition = <ConstantPositionProperty>entity.position;
+        const entityOrientation = <ConstantProperty>entity.orientation;
+        entityPosition.setValue(<Cartesian3>entityPose.position, referenceFrame)
         entityOrientation.setValue(entityPose.orientation);
 
         return entity;
@@ -425,15 +424,15 @@ export class Context {
         const eyeRootFrame = getRootReferenceFrame(this.eye);
         const eyePosition = this.eye.position.getValueInReferenceFrame(state.time, eyeRootFrame, scratchCartesian3);
 
-        const eyeENUPositionProperty = <Cesium.ConstantPositionProperty>this.eyeOriginEastNorthUp.position;
+        const eyeENUPositionProperty = <ConstantPositionProperty>this.eyeOriginEastNorthUp.position;
         eyeENUPositionProperty.setValue(eyePosition, eyeRootFrame);
 
         const localENUFrame = this.localOriginEastNorthUp.position.referenceFrame
         const localENUPosition = this.localOriginEastNorthUp.position.getValueInReferenceFrame(state.time, localENUFrame, scratchOriginCartesian3)
         if (!localENUPosition || localENUFrame !== eyeRootFrame ||
             Cartesian3.magnitudeSquared(Cartesian3.subtract(eyePosition, localENUPosition, scratchOriginCartesian3)) > 25000000) {
-            const localENUPositionProperty = <Cesium.ConstantPositionProperty>this.localOriginEastNorthUp.position;
-            const localENUOrientationProperty = <Cesium.ConstantProperty>this.localOriginEastNorthUp.orientation;
+            const localENUPositionProperty = <ConstantPositionProperty>this.localOriginEastNorthUp.position;
+            const localENUOrientationProperty = <ConstantProperty>this.localOriginEastNorthUp.orientation;
             localENUPositionProperty.setValue(eyePosition, eyeRootFrame);
             const enuOrientation = getEntityOrientationInReferenceFrame(this.localOriginEastNorthUp, state.time, eyeRootFrame, scratchQuaternion);
             localENUOrientationProperty.setValue(enuOrientation);
@@ -694,7 +693,7 @@ export class Context {
      * @param id - The unique identifier of an entity.
      * @returns The entity that was subscribed to.
      */
-    public subscribeToEntity(id: string): Cesium.Entity {
+    public subscribeToEntityById(id: string): Entity {
         if (this.role !== Role.MANAGER) {
             this.parentSession.send('ar.context.subscribe', { id })
         }
@@ -702,16 +701,15 @@ export class Context {
     }
 
     /**
-     * Gets the state of an entity relative to a reference frame.
+     * Gets the state of an entity at the current context time relative to a reference frame.
      *
      * @param entity - The entity whose state is to be queried.
-     * @param referenceFrame - The reference frame that the pose is relative
-     * to. If not specified, defaults to `this.origin`.
+     * @param referenceFrame - The relative reference frame. Defaults to `this.origin`.
      * @returns If the position and orientation exist for the given entity, an
      * object with the fields `position` and `orientation`, both of type
-     * `Cesium.Cartesian3`. Otherwise undefined.
+     * `Cartesian3`. Otherwise undefined.
      */
-    public getEntityState(entity: Cesium.Entity, referenceFrame: Cesium.ReferenceFrame | Cesium.Entity = this.origin) {
+    public getCurrentEntityState(entity: Entity, referenceFrame: ReferenceFrame | Entity = this.origin) {
         const time = this.frame && this.frame.time;
 
         const key = entity.id + this._stringFromReferenceFrame(referenceFrame);
@@ -747,7 +745,7 @@ export class Context {
 
         const hasPose = position && orientation;
 
-        let poseStatus:PoseStatus = 0;
+        let poseStatus: PoseStatus = 0;
         const previousStatus = entityState.poseStatus;
 
         if (hasPose) {
@@ -769,7 +767,7 @@ export class Context {
 
     private entityStateMap = new Map<string, EntityState>();
 
-    private _stringFromReferenceFrame(referenceFrame: Cesium.ReferenceFrame | Cesium.Entity) {
+    private _stringFromReferenceFrame(referenceFrame: ReferenceFrame | Entity) {
         const rf = <any>referenceFrame;
         return defined(rf.id) ? rf.id : '' + rf;
     }
@@ -777,12 +775,12 @@ export class Context {
     /**
      * The eye frustum.
      */
-    public frustum: Cesium.PerspectiveFrustum = new PerspectiveFrustum;
+    public frustum: PerspectiveFrustum = new PerspectiveFrustum;
 
     /**
      * An entity representing the device running Argon.
      */
-    public device: Cesium.Entity = new Entity({
+    public device: Entity = new Entity({
         id: 'DEVICE',
         name: 'device',
         position: new ConstantPositionProperty(),
@@ -793,7 +791,7 @@ export class Context {
      * An entity representing the 'eye' through which Argon sees (usually a
      * camera). The scene is always rendered from this viewport.
      */
-    public eye: Cesium.Entity = new Entity({
+    public eye: Entity = new Entity({
         id: 'EYE',
         name: 'eye',
         position: new ConstantPositionProperty(),
@@ -804,7 +802,7 @@ export class Context {
      * An origin positioned at the eye, aligned with the local East-North-Up
      * coordinate system.
      */
-    public eyeOriginEastNorthUp: Cesium.Entity = new Entity({
+    public eyeOriginEastNorthUp: Entity = new Entity({
         name: 'eyeOrigin',
         position: new ConstantPositionProperty(),
         orientation: new ConstantProperty()
@@ -814,7 +812,7 @@ export class Context {
      * An origin positioned near the eye which doesn't change very often,
      * aligned with the East-North-Up coordinate system.
      */
-    public localOriginEastNorthUp: Cesium.Entity = new Entity({
+    public localOriginEastNorthUp: Entity = new Entity({
         name: 'origin',
         position: new ConstantPositionProperty(),
         orientation: new ConstantProperty()
@@ -826,7 +824,7 @@ export class Context {
      * converting to the Y-Up convention used in some libraries, such as
      * three.js.
      */
-    public localOriginEastUpSouth: Cesium.Entity = new Entity({
+    public localOriginEastUpSouth: Entity = new Entity({
         name: 'originEastUpSouth',
         position: new ConstantPositionProperty(Cartesian3.ZERO, this.localOriginEastNorthUp),
         orientation: new ConstantProperty(Quaternion.fromAxisAngle(Cartesian3.UNIT_X, Math.PI / 2))
@@ -838,7 +836,7 @@ export class Context {
      */
     public get origin() { return this._origin };
     private _origin = this.localOriginEastNorthUp;
-    public setOrigin(origin: Cesium.Entity) {
+    public setOrigin(origin: Entity) {
         this._origin = origin;
     }
 }

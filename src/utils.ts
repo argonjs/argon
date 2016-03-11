@@ -1,8 +1,9 @@
 import {resolver, Container} from 'aurelia-dependency-injection';
 import {EntityPose} from './context.ts'
 import CesiumEvent from 'Cesium/Source/Core/Event';
-import * as Cesium from 'Cesium';
 import {
+    Entity,
+    JulianDate,
     Ellipsoid,
     OrientationProperty,
     Quaternion,
@@ -37,14 +38,14 @@ export class Event<T> {
 
 }
 
-export function calculatePose(entity: Cesium.Entity, time: Cesium.JulianDate): EntityPose {
+export function calculatePose(entity: Entity, time: JulianDate): EntityPose {
     const entityPosition = entity.position;
     const referenceFrame = entityPosition.referenceFrame;
     const referenceFrameID = typeof referenceFrame === 'number' ? referenceFrame : referenceFrame.id;
     return {
         referenceFrame: referenceFrameID,
-        position: entity.position.getValueInReferenceFrame(time, referenceFrame, <Cesium.Cartesian3>{}),
-        orientation: entity.orientation.getValue(time, <Cesium.Quaternion>{})
+        position: entity.position.getValueInReferenceFrame(time, referenceFrame, <Cartesian3>{}),
+        orientation: entity.orientation.getValue(time, <Quaternion>{})
     }
 }
 
@@ -95,16 +96,16 @@ export class CommandQueue {
 }
 
 
-export function getAncestorReferenceFrames(frame: Cesium.Entity) {
-    var frames: Array<Cesium.Entity | Cesium.ReferenceFrame> = []
+export function getAncestorReferenceFrames(frame: Entity) {
+    var frames: Array<Entity | ReferenceFrame> = []
     while (frame !== undefined && frame !== null) {
         frames.unshift(frame)
-        frame = frame.position && <Cesium.Entity>frame.position.referenceFrame
+        frame = frame.position && <Entity>frame.position.referenceFrame
     }
     return frames
 }
 
-export function getRootReferenceFrame(frame: Cesium.Entity) {
+export function getRootReferenceFrame(frame: Entity) {
     return getAncestorReferenceFrames(frame)[0]
 }
 
@@ -113,21 +114,21 @@ const scratchMatrix4 = new Matrix4
 const scratchMatrix3 = new Matrix3
 
 export function getEntityPositionInReferenceFrame(
-    entity: Cesium.Entity,
-    time: Cesium.JulianDate,
-    referenceFrame: Cesium.ReferenceFrame | Cesium.Entity,
-    result: Cesium.Cartesian3): Cesium.Cartesian3 {
+    entity: Entity,
+    time: JulianDate,
+    referenceFrame: ReferenceFrame | Entity,
+    result: Cartesian3): Cartesian3 {
     return entity.position && entity.position.getValueInReferenceFrame(time, referenceFrame, result)
 }
 
 export function getEntityOrientationInReferenceFrame(
-    entity: Cesium.Entity,
-    time: Cesium.JulianDate,
-    referenceFrame: Cesium.ReferenceFrame | Cesium.Entity,
-    result: Cesium.Quaternion): Cesium.Quaternion {
+    entity: Entity,
+    time: JulianDate,
+    referenceFrame: ReferenceFrame | Entity,
+    result: Quaternion): Quaternion {
     const entityFrame = entity.position && entity.position.referenceFrame
     if (entityFrame === undefined) return undefined
-    let orientation: Cesium.Quaternion = entity.orientation && entity.orientation.getValue(time, result)
+    let orientation: Quaternion = entity.orientation && entity.orientation.getValue(time, result)
     if (!orientation) {
         // if not orientation is available, calculate an orientation based on position
         const entityPositionFIXED = getEntityPositionInReferenceFrame(entity, time, ReferenceFrame.FIXED, scratchCartesianPositionFIXED)

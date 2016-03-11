@@ -4,7 +4,7 @@ SystemJS.config({
         "npm:*.json",
         "github:*/*.json"
     ],
-    transpiler: false,
+    transpiler: 'ts',
     typescriptOptions: {
         "tsconfig": true,
         "typeCheck": false,
@@ -29,7 +29,7 @@ SystemJS.config({
     packages: {
         "example": {
             "map": {
-                "dist/argon": "dist/argon.js"
+                "argon": "dist/argon.js"
             }
         },
         "github:jspm/nodelibs-buffer@0.2.0-alpha": {
@@ -59,13 +59,6 @@ SystemJS.config({
                 "base64-js": "npm:base64-js@1.1.0",
                 "ieee754": "npm:ieee754@1.1.6",
                 "isarray": "npm:isarray@1.0.0"
-            }
-        },
-        "src": {
-            "meta": {
-                "*.ts": {
-                    "loader": "ts"
-                }
             }
         },
         "github:frankwallis/plugin-typescript@2.6.0": {

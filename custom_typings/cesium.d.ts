@@ -1,3 +1,160 @@
+declare module 'Cesium/Source/Core/binarySearch' {
+    import {binarySearch} from 'Cesium';
+    export default binarySearch;
+}
+declare module 'Cesium/Source/DataSources/CallbackProperty' {
+    import {CallbackProperty} from 'Cesium';
+    export default CallbackProperty;
+}
+declare module 'Cesium/Source/Core/Cartesian2' {
+    import {Cartesian2} from 'Cesium';
+    export default Cartesian2;
+}
+declare module 'Cesium/Source/Core/Cartesian3' {
+    import {Cartesian3} from 'Cesium';
+    export default Cartesian3;
+}
+declare module 'Cesium/Source/Core/Cartesian4' {
+    import {Cartesian4} from 'Cesium';
+    export default Cartesian4;
+}
+declare module 'Cesium/Source/Core/Clock' {
+    import {Clock} from 'Cesium';
+    export default Clock;
+}
+declare module 'Cesium/Source/Core/ClockStep' {
+    import {ClockStep} from 'Cesium';
+    export default ClockStep;
+}
+declare module 'Cesium/Source/Core/Color' {
+    import {Color} from 'Cesium';
+    export default Color;
+}
+declare module 'Cesium/Source/DataSources/CompositeEntityCollection' {
+    import {CompositeEntityCollection} from 'Cesium';
+    export default CompositeEntityCollection;
+}
+declare module 'Cesium/Source/DataSources/ConstantPositionProperty' {
+    import {ConstantPositionProperty} from 'Cesium';
+    export default ConstantPositionProperty;
+}
+declare module 'Cesium/Source/DataSources/ConstantProperty' {
+    import {ConstantProperty} from 'Cesium';
+    export default ConstantProperty;
+}
+declare module 'Cesium/Source/Core/createGuid' {
+    import {createGuid} from 'Cesium';
+    export default createGuid;
+}
+declare module 'Cesium/Source/DataSources/CzmlDataSource' {
+    import {CzmlDataSource} from 'Cesium';
+    export default CzmlDataSource;
+}
+declare module 'Cesium/Source/Core/defaultValue' {
+    import {defaultValue} from 'Cesium';
+    export default defaultValue;
+}
+declare module 'Cesium/Source/Core/defined' {
+    import {defined} from 'Cesium';
+    export default defined;
+}
+declare module 'Cesium/Source/DataSources/DataSource' {
+    import {DataSource} from 'Cesium';
+    export default DataSource;
+}
+declare module 'Cesium/Source/Core/DeveloperError' {
+    import {DeveloperError} from 'Cesium';
+    export default DeveloperError;
+}
+declare module 'Cesium/Source/Core/Ellipsoid' {
+    import {Ellipsoid} from 'Cesium';
+    export default Ellipsoid;
+}
+declare module 'Cesium/Source/DataSources/Entity' {
+    import {Entity} from 'Cesium';
+    export default Entity;
+}
+declare module 'Cesium/Source/DataSources/EntityCollection' {
+    import {EntityCollection} from 'Cesium';
+    export default EntityCollection;
+}
+declare module 'Cesium/Source/Core/Event' {
+    import {Event} from 'Cesium';
+    export default Event;
+}
+declare module 'Cesium/Source/Core/ExtrapolationType' {
+    import {ExtrapolationType} from 'Cesium';
+    export default ExtrapolationType;
+}
+declare module 'Cesium/Source/Core/GeographicProjection' {
+    import {GeographicProjection} from 'Cesium';
+    export default GeographicProjection;
+}
+declare module 'Cesium/Source/Core/HermitePolynomialApproximation' {
+    import {HermitePolynomialApproximation} from 'Cesium';
+    export default HermitePolynomialApproximation;
+}
+declare module 'Cesium/Source/Core/JulianDate' {
+    import {JulianDate} from 'Cesium';
+    export default JulianDate;
+}
+declare module 'Cesium/Source/Core/Math' {
+    import {CesiumMath} from 'Cesium';
+    export default CesiumMath;
+}
+declare module 'Cesium/Source/Core/Matrix3' {
+    import {Matrix3} from 'Cesium';
+    export default Matrix3;
+}
+declare module 'Cesium/Source/Core/Matrix4' {
+    import {Matrix4} from 'Cesium';
+    export default Matrix4;
+}
+declare module 'Cesium/Source/DataSources/OrientationProperty' {
+    import {OrientationProperty} from 'Cesium';
+    export default OrientationProperty;
+}
+declare module 'Cesium/Source/Scene/PerspectiveFrustum' {
+    import {PerspectiveFrustum} from 'Cesium';
+    export default PerspectiveFrustum;
+}
+declare module 'Cesium/Source/DataSources/PositionProperty' {
+    import {PositionProperty} from 'Cesium';
+    export default PositionProperty;
+}
+declare module 'Cesium/Source/DataSources/Property' {
+    import {Property} from 'Cesium';
+    export default Property;
+}
+declare module 'Cesium/Source/Core/Quaternion' {
+    import {Quaternion} from 'Cesium';
+    export default Quaternion;
+}
+declare module 'Cesium/Source/DataSources/ReferenceEntity' {
+    import {ReferenceEntity} from 'Cesium';
+    export default ReferenceEntity;
+}
+declare module 'Cesium/Source/Core/ReferenceFrame' {
+    import {ReferenceFrame} from 'Cesium';
+    export default ReferenceFrame;
+}
+declare module 'Cesium/Source/DataSources/ReferenceProperty' {
+    import {ReferenceProperty} from 'Cesium';
+    export default ReferenceProperty;
+}
+declare module 'Cesium/Source/DataSources/SampledPositionProperty' {
+    import {SampledPositionProperty} from 'Cesium';
+    export default SampledPositionProperty;
+}
+declare module 'Cesium/Source/DataSources/SampledProperty' {
+    import {SampledProperty} from 'Cesium';
+    export default SampledProperty;
+}
+declare module 'Cesium/Source/Core/Transforms' {
+    import {Transforms} from 'Cesium';
+    export default Transforms;
+}
+
 
 declare module 'Cesium' {
 

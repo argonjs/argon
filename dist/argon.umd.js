@@ -1091,13 +1091,13 @@ $__System.register("5", ["8", "6", "a", "9", "7", "b"], function(exports_1, cont
           });
           return session;
         };
-        Context.prototype.subscribeToEntity = function(id) {
+        Context.prototype.subscribeToEntityById = function(id) {
           if (this.role !== session_ts_1.Role.MANAGER) {
             this.parentSession.send('ar.context.subscribe', {id: id});
           }
           return this.entities.getOrCreateEntity(id);
         };
-        Context.prototype.getEntityState = function(entity, referenceFrame) {
+        Context.prototype.getCurrentEntityState = function(entity, referenceFrame) {
           if (referenceFrame === void 0) {
             referenceFrame = this.origin;
           }
