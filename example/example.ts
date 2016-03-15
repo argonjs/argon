@@ -1,3 +1,4 @@
+/// <reference path="../typings/browser.d.ts"/>
 import * as Argon from 'argon'
 
 declare const THREE: any;
@@ -10,10 +11,10 @@ const camera = new THREE.PerspectiveCamera();
 const cssRenderer = new THREE.CSS3DRenderer();
 const webglRenderer = new THREE.WebGLRenderer({ alpha: true, logarithmicDepthBuffer: true });
 
-app.view.element.appendChild(cssRenderer.domElement);
-app.view.element.appendChild(webglRenderer.domElement);
+app.viewport.element.appendChild(cssRenderer.domElement);
+app.viewport.element.appendChild(webglRenderer.domElement);
 
-app.context.setOrigin(app.context.localOriginEastUpSouth);
+app.context.setDefaultOrigin(app.context.localOriginEastUpSouth);
 
 app.vuforia.init();
 app.vuforia.startCamera();
@@ -49,10 +50,11 @@ dataset.trackablesPromise.then((trackables) => {
 
 dataset.activate();
 
-app.context.updateEvent.addEventListener((frameState) => {
-    camera.fov = Argon.Cesium.CesiumMath.toDegrees(app.context.frustum.fovy);
-    camera.aspect = app.context.frustum.aspectRatio;
-    camera.projectionMatrix.fromArray(app.context.frustum.infiniteProjectionMatrix)
+app.updateEvent.addEventListener(() => {
+    const frustum = app.camera.currentFrustum;
+    camera.fov = Argon.Cesium.CesiumMath.toDegrees(frustum.fovy);
+    camera.aspect = frustum.aspectRatio;
+    camera.projectionMatrix.fromArray(frustum.infiniteProjectionMatrix)
 
     const eyeState = app.context.getCurrentEntityState(app.context.eye);
 
@@ -63,8 +65,8 @@ app.context.updateEvent.addEventListener((frameState) => {
     }
 })
 
-app.context.renderEvent.addEventListener((frameState) => {
-    const {width, height} = frameState.size;
+app.renderEvent.addEventListener(() => {
+    const {width, height} = app.viewport.current;
     cssRenderer.setSize(width, height);
     webglRenderer.setSize(width, height);
     cssRenderer.render(scene, camera);

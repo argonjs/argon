@@ -1,5 +1,5 @@
 import {resolver, Container} from 'aurelia-dependency-injection';
-import {EntityPose} from './context.ts'
+import {EntityPose} from './reality'
 import CesiumEvent from 'Cesium/Source/Core/Event';
 import {
     Entity,
@@ -12,15 +12,15 @@ import {
     Transforms,
     Matrix3,
     Matrix4
-} from './cesium/cesium-imports.ts'
+} from './cesium/cesium-imports'
 
 /**
- * To remove the Callback function.
+ * A callback for removing the event listener.
  */
 export type RemoveCallback = () => void;
 
 /**
- * A generic utility class for managing subscribers for a particular event.
+ * Provides the ability raise and subscribe to an event.
  */
 export class Event<T> {
 
@@ -36,6 +36,7 @@ export class Event<T> {
     /**
       * Add an event listener.
       * @param The function to be executed when the event is raised.
+      * @return A convenience function which removes this event listener when called
       */
     addEventListener(listener: (data: T) => void): RemoveCallback {
         return this._event.addEventListener(listener);
@@ -78,15 +79,19 @@ export function calculatePose(entity: Entity, time: JulianDate): EntityPose {
     }
 }
 
+/**
+* TODO.
+*/
 export class CommandQueue {
     private _queue: Array<{ command: Function, userData: any }> = [];
     private _currentUserData: any;
     private _currentCommandPending: PromiseLike<any> = null;
-    
+
     /**
      * An error event.
      */
     public errorEvent = new Event<Error>();
+
     /**
      * If errorEvent has 1 listener, outputs the error message to the web console.
      */
@@ -95,6 +100,7 @@ export class CommandQueue {
             if (this.errorEvent.numberOfListeners === 1) console.error(error);
         })
     }
+
     /**
      * Push the command and the data needed to run the command to the command queue.
      * @param command Any command ready to be pushed into the command queue.
@@ -112,6 +118,7 @@ export class CommandQueue {
     public clear() {
         this._queue = [];
     }
+
     /**
      * Get current user data.
      * @return Current userData.
@@ -166,6 +173,8 @@ export function getRootReferenceFrame(frame: Entity) {
 const scratchCartesianPositionFIXED = new Cartesian3
 const scratchMatrix4 = new Matrix4
 const scratchMatrix3 = new Matrix3
+
+
 /**
  * Gets the value of the Position property at the provided time and in the provided reference frame.
  * @param entity The entity to get position. 
@@ -181,6 +190,7 @@ export function getEntityPositionInReferenceFrame(
     result: Cartesian3): Cartesian3 {
     return entity.position && entity.position.getValueInReferenceFrame(time, referenceFrame, result)
 }
+
 /**
  * Get the value of the Orientation property at the provided time and in the provided reference frame.
  * @param entity The entity to get position. 
@@ -212,6 +222,8 @@ export function getEntityOrientationInReferenceFrame(
 
 
 const urlParser = typeof document !== 'undefined' ? document.createElement("a") : undefined
+
+
 /**
  * If urlParser does not have a value, throw error message "resolveURL requires DOM api".
  * If inURL is undefined, throw error message "expected inURL".
@@ -226,6 +238,8 @@ export function resolveURL(inURL: string): string {
     urlParser.href = inURL
     return urlParser.href
 }
+
+
 /**
  * Parse URL to an object describing details of the URL with href, protocol, 
  * hostname, port, pathname, search, hash, host.
@@ -247,5 +261,123 @@ export function parseURL(inURL: string) {
         search: urlParser.search,
         hash: urlParser.hash,
         host: urlParser.host
+    }
+}
+
+
+/**
+ * A minimal MessageEvent interface.
+ */
+export declare class MessageEventLike {
+    constructor(data: any);
+    data: any;
+}
+
+/**
+ * A minimal MessagePort interface.
+ */
+export interface MessagePortLike {
+
+    /**
+      * A callback for handling incoming messages.
+      */
+    onmessage: (ev: MessageEventLike) => any;
+
+    /**
+     * Send a message through this message port.
+     * @param message The message needed to be posted.
+     */
+    postMessage(message?: any): void;
+
+    /**
+     * Close this message port. 
+     */
+    close?: () => void;
+}
+
+/**
+ * A MessageChannel pollyfill. 
+ */
+export class MessageChannelLike {
+
+    /**
+     * The first port.
+     */
+    public port1: MessagePortLike;
+
+    /**
+     * The second port.
+     */
+    public port2: MessagePortLike;
+
+    /**
+     * Create a MessageChannelLike instance. 
+     */
+    constructor() {
+        const messageChannel = this;
+        let _portsOpen = true;
+
+        let _port1ready: Promise<{}>;
+        let _port2ready: Promise<{}>;
+
+        let _port1onmessage: (messageEvent: MessageEventLike) => void;
+        _port1ready = new Promise((resolve, reject) => {
+            messageChannel.port1 = {
+                set onmessage(func) {
+                    _port1onmessage = func;
+                    resolve();
+                },
+                get onmessage() {
+                    return _port1onmessage;
+                },
+                postMessage(data: any) {
+                    _port2ready.then(() => {
+                        if (_portsOpen)
+                            messageChannel.port2.onmessage({ data });
+                    })
+                },
+                close() {
+                    _portsOpen = false;
+                }
+            }
+        });
+
+        let _port2onmessage: (messageEvent: MessageEventLike) => void;
+        _port2ready = new Promise((resolve, reject) => {
+            messageChannel.port2 = <MessagePortLike>{
+                set onmessage(func) {
+                    _port2onmessage = func;
+                    resolve();
+                },
+                get onmessage() {
+                    return _port2onmessage;
+                },
+                postMessage(data: any) {
+                    _port1ready.then(() => {
+                        if (_portsOpen)
+                            messageChannel.port1.onmessage({ data });
+                    })
+                },
+                close() {
+                    _portsOpen = false;
+                }
+            }
+        });
+
+    }
+}
+
+/**
+ * A factory which creates MessageChannel or MessageChannelLike instances, depending on
+ * wheter or not MessageChannel is avaialble in the execution context. 
+ */
+export class MessageChannelFactory {
+
+    /**
+     * Create a MessageChannel (or MessageChannelLike) instance.
+     */
+    public create(): MessageChannelLike {
+        if (typeof MessageChannel !== 'undefined') return new MessageChannel()
+        else return new MessageChannelLike();
     }
 }

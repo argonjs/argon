@@ -1,160 +1,10 @@
 import * as Cesium from 'Cesium';
-import {createGuid} from './cesium/cesium-imports.ts';
-import {inject, singleton} from 'aurelia-dependency-injection';
-import {Event} from './utils.ts';
-import {Context} from './context.ts'
+import {createGuid} from './cesium/cesium-imports';
+import {inject} from 'aurelia-dependency-injection';
+import {Configuration, Role} from './config'
+import {Event, MessageChannelFactory, MessagePortLike, MessageChannelLike} from './utils';
+import {ContextService} from './context'
 
-declare class Object {
-    static assign(target, ...sources): any;
-}
-
-/*
- * Describes the role of an ArgonSystem
- */
-export enum Role {
-
-    /*
-     * An application recieves state update events from a manager.
-     */
-    APPLICATION = "Application" as any,
-
-    /*
-     * A reality provides state update events to a manager.
-     */
-    REALITY = "Reality" as any,
-
-    /*
-     * A manager recieves state update events from a reality and sends state update events to applications.
-     */
-    MANAGER = "Manager" as any
-}
-
-/*
- * A factory for creating Session instances. 
- */
-export class SessionFactory {
-
-    public create() {
-        return new Session();
-    }
-}
-
-/**
- * A minimal MessageEvent interface.
- */
-export declare class MessageEventLike {
-    constructor(data: any);
-    data: any;
-}
-
-/**
- * A minimal MessagePort interface.
- */
-export interface MessagePortLike {
-
-    /**
-      * A callback for handling incoming messages.
-      */
-    onmessage: (ev: MessageEventLike) => any;
-
-    /**
-     * Send a message through this message port.
-     * @param message The message needed to be posted.
-     */
-    postMessage(message?: any): void;
-
-    /**
-     * Close this message port. 
-     */
-    close?: () => void;
-}
-
-/**
- * A MessageChannel pollyfill. 
- */
-export class MessageChannelLike {
-
-    /**
-     * The first port.
-     */
-    public port1: MessagePortLike;
-
-    /**
-     * The second port.
-     */
-    public port2: MessagePortLike;
-
-    /**
-     * Create a MessageChannelLike instance. 
-     */
-    constructor() {
-        const messageChannel = this;
-        let _portsOpen = true;
-
-        let _port1ready: Promise<{}>;
-        let _port2ready: Promise<{}>;
-
-        let _port1onmessage: (messageEvent: MessageEventLike) => void;
-        _port1ready = new Promise((resolve, reject) => {
-            messageChannel.port1 = {
-                set onmessage(func) {
-                    _port1onmessage = func;
-                    resolve();
-                },
-                get onmessage() {
-                    return _port1onmessage;
-                },
-                postMessage(data: any) {
-                    _port2ready.then(() => {
-                        if (_portsOpen)
-                            messageChannel.port2.onmessage({ data });
-                    })
-                },
-                close() {
-                    _portsOpen = false;
-                }
-            }
-        });
-
-        let _port2onmessage: (messageEvent: MessageEventLike) => void;
-        _port2ready = new Promise((resolve, reject) => {
-            messageChannel.port2 = <MessagePortLike>{
-                set onmessage(func) {
-                    _port2onmessage = func;
-                    resolve();
-                },
-                get onmessage() {
-                    return _port2onmessage;
-                },
-                postMessage(data: any) {
-                    _port1ready.then(() => {
-                        if (_portsOpen)
-                            messageChannel.port1.onmessage({ data });
-                    })
-                },
-                close() {
-                    _portsOpen = false;
-                }
-            }
-        });
-
-    }
-}
-
-/**
- * A factory which creates MessageChannel or MessageChannelLike instances, depending on
- * wheter or not MessageChannel is avaialble in the execution context. 
- */
-export class MessageChannelFactory {
-
-    /**
-     * Create a MessageChannel (or MessageChannelLike) instance.
-     */
-    public create(): MessageChannelLike {
-        if (typeof MessageChannel !== 'undefined') return new MessageChannel()
-        else return new MessageChannelLike();
-    }
-}
 
 /**
  * A callback for message events.  
@@ -169,16 +19,6 @@ export interface MessageHandlerMap {
 }
 
 /**
- * Describes the configuration of a session. 
- */
-export interface SessionConfiguration {
-    role: Role;
-    userData?: any;
-    enableRealityControlPort?: boolean;
-    enableIncomingUpdateEvents?: boolean;
-}
-
-/**
  * Describes an error message. 
  */
 export interface ErrorMessage {
@@ -189,73 +29,70 @@ export interface ErrorMessage {
 }
 
 /**
- * Provides two-way communication between an 
- * Application and a Manager, or a Reality and a Manager.
+ * Provides two-way communication between sessions, either 
+ * Application and Manager, or Reality and Manager.
  */
-export class Session {
-    
-    private static OPEN = 'ar.session.open';
-    
-    private static CLOSE = 'ar.session.close';
-   
-    private static ERROR = 'ar.session.error';
-    
+export class SessionPort {
+
     /**
-     * A message port to post and receive messages.
+     * An event which fires when a connection has been 
+     * established to the remote session.
+     */
+    public get connectEvent() {
+        if (this._isConnected)
+            console.warn(`Probable developer error. 
+                The connectEvent only fires once and the 
+                session is already connected.`)
+        return this._connectEvent;
+    };
+    private _connectEvent = new Event<void>();
+
+    /**
+     * An event which fires when this port has closed
+     */
+    public readonly closeEvent = new Event<void>();
+
+    /**
+     * An error which fires when an error occurs.
+     */
+    public readonly errorEvent = new Event<Error>();
+
+    /**
+     * A map from topic to message handler.
+     */
+    public readonly on: MessageHandlerMap = {};
+
+    /**
+     * The message port used to post and receive messages.
      */
     public messagePort: MessagePortLike;
-    
-    /**
-     * Describes the configuration of the connected system. 
-     */
-    public info: SessionConfiguration;
-    
-    /**
-     * Holding the element of the frame.
-     */
-    public frameElement: HTMLIFrameElement;
 
     /**
-     * An open event.
+     * Describes the configuration of the connected session. 
      */
-    public openEvent = new Event<void>();
+    public info: Configuration;
 
-    /**
-     * A focus event.
-     */
-    public focusEvent = new Event<void>();
-
-    /**
-     * A closed event.
-     */
-    public closeEvent = new Event<void>();
-
-    /**
-     * An error event.
-     */
-    public errorEvent = new Event<Error>();
-
-    /**
-     * A new map from topic to message handler.
-     */
-    public on: MessageHandlerMap = {};
+    private static OPEN = 'ar.session.open';
+    private static CLOSE = 'ar.session.close';
+    private static ERROR = 'ar.session.error';
 
     private _isOpened = false;
+    private _isConnected = false;
     private _isClosed = false;
-    private _receivedOpenMessage = false;
 
     constructor() {
 
-        this.on[Session.OPEN] = (info: SessionConfiguration) => {
+        this.on[SessionPort.OPEN] = (info: Configuration) => {
             this.info = info;
-            this.openEvent.raiseEvent(null);
+            this.connectEvent.raiseEvent(null);
+            this._isConnected = true;
         }
 
-        this.on[Session.CLOSE] = (message) => {
+        this.on[SessionPort.CLOSE] = (message) => {
             this.close()
         }
 
-        this.on[Session.ERROR] = (error: ErrorMessage) => {
+        this.on[SessionPort.ERROR] = (error: ErrorMessage) => {
             this.errorEvent.raiseEvent(new Error(error.message));
         }
 
@@ -266,18 +103,19 @@ export class Session {
     }
 
     /**
-     * Open this session.
+     * Establish a connection to another session via the provided MessagePort.
      * @param messagePort the message port to post and receive messages.
      * @param options the configuration which describes this system.
      */
-    open(messagePort: MessagePortLike, options: SessionConfiguration) {
+    open(messagePort: MessagePortLike, options: Configuration) {
         this.messagePort = messagePort;
 
-        if (this._isOpened || this._isClosed) throw new Error('Session.open: Session can only be opened once');
+        if (this._isOpened) throw new Error('Session.open: Session can only be opened once');
+        if (this._isClosed) throw new Error('Session.open: Session has already been closed');
 
         this._isOpened = true;
-        // options.role = this.role;
-        this.send(Session.OPEN, options);
+
+        this.send(SessionPort.OPEN, options);
 
         this.messagePort.onmessage = (evt: MessageEvent) => {
             if (this._isClosed) return;
@@ -302,7 +140,7 @@ export class Session {
                 })
             } else {
                 const error: ErrorMessage = { message: 'Unable to handle message ' + topic }
-                this.send(Session.ERROR, error);
+                this.send(SessionPort.ERROR, error);
                 throw new Error('No handlers are available for topic ' + topic);
             }
         }
@@ -316,7 +154,7 @@ export class Session {
      * return false if the session is closed.
      */
     send(topic: string, message?: {}): boolean {
-        if (!this._isOpened) throw new Error('Session must be open to send messages');
+        if (!this._isOpened) throw new Error('Session.send: Session must be open to send messages');
         if (this._isClosed) return false;
         const id = createGuid();
         this.messagePort.postMessage([id, topic, message])
@@ -330,7 +168,7 @@ export class Session {
      * otherwise, return false.
      */
     sendError(errorMessage: ErrorMessage): boolean {
-        return this.send(Session.ERROR, errorMessage);
+        return this.send(SessionPort.ERROR, errorMessage);
     }
 
     /**
@@ -342,7 +180,7 @@ export class Session {
      */
     request(topic: string, message?: {}): PromiseLike<any> {
         if (!this._isOpened || this._isClosed)
-            return Promise.reject(new Error('Session must be open to make requests'));
+            return Promise.reject(new Error('Session.request: Session must be open to make requests'));
         const id = createGuid();
         const resolveTopic = topic + ':resolve:' + id;
         const rejectTopic = topic + ':reject:' + id;
@@ -362,24 +200,27 @@ export class Session {
     }
 
     /**
-     * Request that this session be focussed (TODO: find a better place for this)
-     */
-    focus() {
-        this.focusEvent.raiseEvent(null);
-    }
-
-    /**
-     * Close this session.
+     * Close the connection to the remote session.
      */
     close() {
         if (this._isClosed) return;
         if (this._isOpened) {
-            this.send(Session.CLOSE);
+            this.send(SessionPort.CLOSE);
         }
         this._isClosed = true;
         if (this.messagePort && this.messagePort.close)
             this.messagePort.close();
         this.closeEvent.raiseEvent(null);
+    }
+}
+
+
+/*
+ * A factory for creating SessionPort instances. 
+ */
+export class SessionPortFactory {
+    public create() {
+        return new SessionPort();
     }
 }
 
@@ -389,70 +230,194 @@ export class Session {
 export abstract class ConnectService {
 
     /**
-     * @param session The session wants to connect with.
+     * @param manager The manager session port.
+     * @param config The configuration for this session.
      */
-    connect(session: Session): void { }
+    abstract connect(sessionService: SessionService): void;
+}
+
+@inject('config', ConnectService, SessionPortFactory, MessageChannelFactory)
+export class SessionService {
+
+    /**
+     * The port which handles communication between this session and the manager session.
+     */
+    public readonly manager = this.createSessionPort();
+
+    /**
+     * An event that is raised when an error occurs.
+     */
+    public readonly errorEvent = new Event<Error>();
+
+    /**
+     * Manager-only. An event that is raised when a managed session is opened.
+     */
+    public get connectEvent() {
+        this.ensureIsManager();
+        return this._connectEvent;
+    };
+    private _connectEvent = new Event<SessionPort>();
+
+    /**
+     * Manager-only. A collection of ports for the sessions managed by this session.
+     */
+    public get managedSessions() {
+        this.ensureIsManager();
+        return this._managedSessions;
+    }
+    private _managedSessions: SessionPort[] = [];
+
+    constructor(
+        public configuration: Configuration,
+        private connectService: ConnectService,
+        private sessionPortFactory: SessionPortFactory,
+        private messageChannelFactory: MessageChannelFactory) {
+
+        this.errorEvent.addEventListener((error) => {
+            if (this.errorEvent.numberOfListeners === 1) console.error(error);
+        })
+
+        this.manager.errorEvent.addEventListener((error) => {
+            this.errorEvent.raiseEvent(error);
+        })
+
+        Object.freeze(this);
+    }
+
+    /**
+     * Establishes a connection with the manager.
+     * Called internally by the composition root (ArgonSystem).
+     */
+    public connect() {
+        this.connectService.connect(this);
+    }
+
+    /**
+     * Manager-only. Creates a session port that is managed by this service.
+     * Session ports that are managed will automatically 
+     * forward open events to this.sessionConnectEvent and error 
+     * events to this.errorEvent. Other services are likely to add 
+     * message handlers to the newly connected port. 
+     * @return a new SessionPort instance
+     */
+    public addManagedSessionPort() {
+        this.ensureIsManager();
+        const session = this.sessionPortFactory.create();
+        session.errorEvent.addEventListener((error) => {
+            this.errorEvent.raiseEvent(error);
+        });
+        session.connectEvent.addEventListener(() => {
+            this.managedSessions.push(session);
+            this.connectEvent.raiseEvent(session);
+        });
+        session.closeEvent.addEventListener(() => {
+            const index = this.managedSessions.indexOf(session);
+            if (index > -1) this.managedSessions.splice(index);
+        });
+        return session;
+    }
+
+    /**
+     * Creates a session port that is not managed by this service.
+     * Unmanaged session ports will not forward any events to
+     * this object. 
+     * @return a new SessionPort instance
+     */
+    public createSessionPort() {
+        return this.sessionPortFactory.create();
+    }
+
+    /**
+     * Creates a message channel.
+     * @return a new MessageChannel instance
+     */
+    public createMessageChannel() {
+        return this.messageChannelFactory.create();
+    }
+
+    /**
+     * Returns true if this session is the manager
+     */
+    public isManager() {
+        return this.configuration.role === Role.MANAGER;
+    }
+
+    /**
+     * Returns true if this session is an application
+     */
+    public isApplication() {
+        return this.configuration.role === Role.APPLICATION;
+    }
+
+    /**
+     * Returns true if this session is a Reality
+     */
+    public isReality() {
+        return this.configuration.role === Role.REALITY;
+    }
+
+    /**
+     * Throws an error if this session is not a manager
+     */
+    public ensureIsManager() {
+        if (!this.isManager)
+            throw new Error('An manager-only API was accessed in a non-manager session.')
+    }
 }
 
 /**
- * Connect this system to itself as the manager. 
+ * Connect this session to itself as the manager. 
  */
-@inject('config', MessageChannelFactory)
 export class LoopbackConnectService extends ConnectService {
 
-    constructor(public config: SessionConfiguration, public messageChannelFactory: MessageChannelFactory) { super() }
-    
     /**
      * Create a loopback connection.
-     * @param session the manager session instance.
+     * @param sessionService The session service instance.
      */
-    connect(session: Session) {
-        const messageChannel = this.messageChannelFactory.create();
+    connect(sessionService: SessionService) {
+        const messageChannel = sessionService.createMessageChannel();
         const messagePort = messageChannel.port1;
         messageChannel.port2.onmessage = (evt) => {
             messageChannel.port2.postMessage(evt.data)
         }
-        session.open(messagePort, this.config);
+        sessionService.manager.connectEvent.addEventListener(() => {
+            sessionService.connectEvent.raiseEvent(sessionService.manager);
+        })
+        sessionService.manager.open(messagePort, sessionService.configuration);
     }
 }
 
 /**
- * Connect this system to the manager via the parent document (assuming this system is running in an iFrame).
+ * Connect this session to the manager via the parent document (assuming this system is running in an iFrame).
  */
-@inject('config', MessageChannelFactory)
 export class DOMConnectService extends ConnectService {
-    
-    constructor(public config: SessionConfiguration, public messageChannelFactory: MessageChannelFactory) { super() }
-    
-   /**
-     * Check whether this connect method is available or not.
-     * @return true if this method is availble, otherwise false
-     */
+
+    /**
+      * Check whether this connect method is available or not.
+      * @return true if this method is availble, otherwise false
+      */
     public static isAvailable(): boolean {
         return typeof window !== 'undefined' && typeof window.parent !== 'undefined';
     }
-    
+
     /**
      * Connect to the manager.
-     * @param session the manager session instance.
+     * @param sessionService The session service instance.
      */
-    public connect(session: Session) {
-        const messageChannel = this.messageChannelFactory.create();
+    connect(sessionService: SessionService) {
+        const messageChannel = sessionService.createMessageChannel();
         const postMessagePortToParent = () => window.parent.postMessage({ type: 'ARGON_SESSION' }, '*', [messageChannel.port1]);
         if (document.readyState === 'complete') postMessagePortToParent()
         else document.addEventListener('load', postMessagePortToParent);
-        session.open(messageChannel.port2, this.config);
+        sessionService.manager.open(messageChannel.port2, sessionService.configuration);
     }
 }
 
 /**
  * Connect this system to a remote manager for debugging.
  */
-@inject('config', MessageChannelFactory)
 export class DebugConnectService extends ConnectService {
-    
-    constructor(public config: SessionConfiguration, public messageChannelFactory: MessageChannelFactory) { super() }
-    
+
     /**
      * Check whether this connect method is available or not.
      * @return true if this method is availble, otherwise false
@@ -461,13 +426,13 @@ export class DebugConnectService extends ConnectService {
         return typeof window !== 'undefined' &&
             !!window['__ARGON_DEBUG_PORT__'];
     }
-    
+
     /**
      * Connect to the manager.
-     * @param session the manager session instance.
+     * @param sessionService The session service instance.
      */
-    public connect(session: Session) {
-        session.open(window['__ARGON_DEBUG_PORT__'], this.config);
+    connect({manager, configuration}: SessionService) {
+        manager.open(window['__ARGON_DEBUG_PORT__'], configuration);
     }
 }
 
@@ -476,11 +441,8 @@ declare const webkit: any;
 /**
  * A service which connects this system to the manager via a WKWebview message handler.
  */
-@inject('config', MessageChannelFactory)
 export class WKWebViewConnectService extends ConnectService {
 
-    constructor(public config: SessionConfiguration, public messageChannelFactory: MessageChannelFactory) { super() }
-    
     /**
      * Check whether this connect method is available or not.
      * @return true if this method is availble, otherwise false
@@ -492,17 +454,17 @@ export class WKWebViewConnectService extends ConnectService {
 
     /**
      * Connect to the manager.
-     * @param session the manager session instance.
+     * @param sessionService The session service instance.
      */
-    public connect(session: Session) {
-        const messageChannel = this.messageChannelFactory.create();
+    connect(sessionService: SessionService) {
+        const messageChannel = sessionService.createMessageChannel();
         messageChannel.port2.onmessage = (event) => {
             webkit.messageHandlers.argon.postMessage(JSON.stringify(event.data));
         }
         window['__ARGON_PORT__'] = messageChannel.port2;
-        session.open(messageChannel.port1, this.config);
+        sessionService.manager.open(messageChannel.port1, sessionService.configuration);
         window.addEventListener("beforeunload", function() {
-            session.close();
+            sessionService.manager.close();
         })
     }
 }

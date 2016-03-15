@@ -1,10 +1,10 @@
-System.register(['./cesium/cesium-imports.ts'], function(exports_1, context_1) {
+System.register(['./cesium/cesium-imports'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var cesium_imports_ts_1;
+    var cesium_imports_1;
     var TimerService, lastTime;
     function requestAnimationFramePoly(callback) {
-        var currTime = new Date().getTime();
+        var currTime = Date.now();
         var timeToCall = Math.max(0, 16 - (currTime - lastTime));
         var id = setTimeout(function () { callback(currTime + timeToCall); }, timeToCall);
         lastTime = currTime + timeToCall;
@@ -12,12 +12,12 @@ System.register(['./cesium/cesium-imports.ts'], function(exports_1, context_1) {
     }
     return {
         setters:[
-            function (cesium_imports_ts_1_1) {
-                cesium_imports_ts_1 = cesium_imports_ts_1_1;
+            function (cesium_imports_1_1) {
+                cesium_imports_1 = cesium_imports_1_1;
             }],
         execute: function() {
             /**
-             * Provide timer service
+             * Provides timer service
              */
             TimerService = (function () {
                 function TimerService() {
@@ -31,15 +31,16 @@ System.register(['./cesium/cesium-imports.ts'], function(exports_1, context_1) {
                 TimerService.prototype.requestFrame = function (callback) {
                     var _this = this;
                     if (typeof requestAnimationFrame !== 'undefined' && typeof performance !== 'undefined') {
-                        this.navigationStartDate = this.navigationStartDate || cesium_imports_ts_1.JulianDate.fromDate(new Date(performance.timing.navigationStart));
+                        this.navigationStartDate = this.navigationStartDate || cesium_imports_1.JulianDate.fromDate(new Date(performance.timing.navigationStart));
                         requestAnimationFrame(function (time) {
-                            var frameTime = cesium_imports_ts_1.JulianDate.addSeconds(_this.navigationStartDate, time / 1000, new cesium_imports_ts_1.JulianDate(0, 0));
+                            var frameTime = cesium_imports_1.JulianDate.addSeconds(_this.navigationStartDate, time / 1000, new cesium_imports_1.JulianDate(0, 0));
                             callback(frameTime, _this.getNextFrameNumber(callback));
                         });
                     }
                     else {
                         requestAnimationFramePoly(function (time) {
-                            var frameTime = cesium_imports_ts_1.JulianDate.fromDate(new Date(time));
+                            console.log('raf fired ' + time);
+                            var frameTime = cesium_imports_1.JulianDate.fromDate(new Date(time));
                             callback(frameTime, _this.getNextFrameNumber(callback));
                         });
                     }

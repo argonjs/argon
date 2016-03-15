@@ -1,44 +1,61 @@
 import 'aurelia-polyfills'
 import {Container} from 'aurelia-dependency-injection'
-import * as Cesium from './cesium/cesium-imports.ts'
-
-import {Context} from './context.ts'
-import {TimerService} from './timer.ts'
-import {DeviceService} from './device.ts'
-import {RealityService} from './reality.ts'
-import {ViewService} from './view.ts'
-import {VuforiaService} from './vuforia.ts'
+import * as Cesium from './cesium/cesium-imports'
 
 import {
-    Role,
-    SessionConfiguration,
+    SessionService,
     ConnectService,
     LoopbackConnectService,
     DOMConnectService,
     DebugConnectService,
     WKWebViewConnectService
-} from './session.ts';
+} from './session'
+
+import {CameraService} from './camera'
+import {Configuration, Role} from './config'
+import {ContextService} from './context'
+import {DeviceService} from './device'
+import {FocusService} from './focus'
+import {InteractionModeService} from './mode'
+import {RealityService, RealitySetupHandler, EmptyRealitySetupHandler, FrameState} from './reality'
+import {TimerService} from './timer'
+import {Event} from './utils'
+import {VuforiaService, VuforiaRealitySetupHandler} from './vuforia'
+import {ViewportService} from './viewport'
+
 
 export {Container, Cesium}
-export * from './timer.ts'
-export * from './device.ts'
-export * from './session.ts'
-export * from './reality.ts'
-export * from './context.ts'
-export * from './utils.ts'
-export * from './view.ts'
-export * from './vuforia.ts'
+export * from './camera'
+export * from './config'
+export * from './context'
+export * from './device'
+export * from './focus'
+export * from './mode'
+export * from './reality'
+export * from './session'
+export * from './timer'
+export * from './utils'
+export * from './viewport'
+export * from './vuforia'
 
+/**
+ * A composition root which instantiates the object graph based on a provided configuration
+ */
 export class ArgonSystem {
 
     static instance: ArgonSystem;
 
-    constructor(config: SessionConfiguration, public container = new Container()) {
+    constructor(config: Configuration, public container = new Container()) {
         ArgonSystem.instance = this;
+
+        if (!config.defaultReality) config.defaultReality = { type: 'empty' }
 
         container.registerInstance('config', config);
         container.registerInstance(Role, config.role);
         container.registerInstance(ArgonSystem, this);
+
+        container.registerSingleton(RealitySetupHandler, EmptyRealitySetupHandler);
+        container.registerSingleton(RealitySetupHandler, VuforiaRealitySetupHandler);
 
         if (config.role === Role.MANAGER) {
             container.registerSingleton(
@@ -67,42 +84,72 @@ export class ArgonSystem {
             );
         }
 
-        container.get(VuforiaService);
+        // ensure the entire object graph is instantiated before connecting to the manager. 
+        for (const key of Object.keys(ArgonSystem.prototype)) {
+            this[key];
+        }
 
-        this.context.init();
+        this.session.connect();
     }
 
-    public get configuration(): SessionConfiguration {
-        return this.container.get('config')
+    public get camera(): CameraService {
+        return this.container.get(CameraService);
     }
 
-    public get context(): Context {
-        return this.container.get(Context);
-    }
-
-    public get timer(): TimerService {
-        return this.container.get(TimerService);
+    public get context(): ContextService {
+        return this.container.get(ContextService);
     }
 
     public get device(): DeviceService {
         return this.container.get(DeviceService);
     }
 
+    public get focus(): FocusService {
+        return this.container.get(FocusService);
+    }
+
+    public get interactionMode(): InteractionModeService {
+        return this.container.get(InteractionModeService);
+    }
+
     public get reality(): RealityService {
         return this.container.get(RealityService);
     }
 
-    public get view(): ViewService {
-        return this.container.get(ViewService);
+    public get session(): SessionService {
+        return this.container.get(SessionService);
+    }
+
+    public get timer(): TimerService {
+        return this.container.get(TimerService);
+    }
+
+    public get viewport(): ViewportService {
+        return this.container.get(ViewportService);
     }
 
     public get vuforia(): VuforiaService {
         return this.container.get(VuforiaService);
     }
 
+    public get updateEvent() {
+        return this.context.updateEvent;
+    }
+
+    public get renderEvent() {
+        return this.context.renderEvent;
+    }
+
+    public get focusEvent() {
+        return this.focus.focusEvent;
+    }
+
+    public get blurEvent() {
+        return this.focus.blurEvent;
+    }
 }
 
-export function init(options: { config?: SessionConfiguration, container?: Container } = {}) {
+export function init(options: { config?: Configuration, container?: Container } = {}) {
     let role: Role;
     if (typeof window === 'undefined') {
         role = Role.MANAGER
@@ -115,11 +162,12 @@ export function init(options: { config?: SessionConfiguration, container?: Conta
     return new ArgonSystem(config, options.container);
 }
 
-export function initReality(options: { config?: SessionConfiguration, container?: Container } = {}) {
+export function initReality(options: { config?: Configuration, container?: Container } = {}) {
     const config = Object.assign({ role: Role.REALITY }, { enableRealityControlPort: true }, options.config);
     return new ArgonSystem(config, options.container);
 }
 
 declare class Object {
+    static keys(o: {}): string[];
     static assign(target, ...sources): any;
 }

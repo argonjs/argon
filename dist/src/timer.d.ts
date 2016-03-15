@@ -1,6 +1,6 @@
-import { JulianDate } from './cesium/cesium-imports.ts';
+import { JulianDate } from './cesium/cesium-imports';
 /**
- * Provide timer service
+ * Provides timer service
  */
 export declare class TimerService {
     private navigationStartDate;

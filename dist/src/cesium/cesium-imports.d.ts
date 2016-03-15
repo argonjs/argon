@@ -34,4 +34,4 @@ export { default as ReferenceProperty } from 'Cesium/Source/DataSources/Referenc
 export { default as SampledPositionProperty } from 'Cesium/Source/DataSources/SampledPositionProperty';
 export { default as SampledProperty } from 'Cesium/Source/DataSources/SampledProperty';
 export { default as Transforms } from 'Cesium/Source/Core/Transforms';
-import './cesium-extensions.ts';
+import './cesium-extensions';

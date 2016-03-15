@@ -1,9 +1,9 @@
 import {
     JulianDate
-} from './cesium/cesium-imports.ts'
+} from './cesium/cesium-imports'
 
 /**
- * Provide timer service
+ * Provides timer service
  */
 export class TimerService {
 
@@ -25,6 +25,7 @@ export class TimerService {
             })
         } else {
             requestAnimationFramePoly((time: number) => {
+                console.log('raf fired ' + time);
                 const frameTime = JulianDate.fromDate(new Date(time));
                 callback(frameTime, this.getNextFrameNumber(callback));
             })
@@ -40,7 +41,7 @@ export class TimerService {
 
 var lastTime = 0;
 function requestAnimationFramePoly(callback) {
-    var currTime = new Date().getTime();
+    var currTime = Date.now();
     var timeToCall = Math.max(0, 16 - (currTime - lastTime));
     var id = setTimeout(function() { callback(currTime + timeToCall); },
         timeToCall);

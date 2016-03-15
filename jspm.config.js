@@ -27,9 +27,17 @@ SystemJS.config({
     },
 
     packages: {
+        "src": {
+            "defaultExtension": "ts",
+            "meta": {
+                "*.ts": {
+                "loader": "ts"
+                }
+            }
+        },
         "example": {
             "map": {
-                "argon": "dist/argon.js"
+                "argon": "dist/argon.umd.js"
             }
         },
         "github:jspm/nodelibs-buffer@0.2.0-alpha": {
