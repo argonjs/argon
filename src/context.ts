@@ -177,7 +177,6 @@ export class ContextService {
 
         if (this.sessionService.isManager()) {
             this.realityService.frameEvent.addEventListener((state) => {
-                console.log('calling update');
                 this._update(state);
             });
         } else {
