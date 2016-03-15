@@ -11,12 +11,12 @@ export class FocusService {
     /**
      * An event that is raised when this session has gained focus
      */
-    public readonly focusEvent = new Event<void>();
+    public focusEvent = new Event<void>();
 
     /**
      * An event that is raised when this session has lost focus
      */
-    public readonly blurEvent = new Event<void>();
+    public blurEvent = new Event<void>();
 
     /**
      * True if this session has focus

@@ -50,17 +50,17 @@ export class SessionPort {
     /**
      * An event which fires when this port has closed
      */
-    public readonly closeEvent = new Event<void>();
+    public closeEvent = new Event<void>();
 
     /**
      * An error which fires when an error occurs.
      */
-    public readonly errorEvent = new Event<Error>();
+    public errorEvent = new Event<Error>();
 
     /**
      * A map from topic to message handler.
      */
-    public readonly on: MessageHandlerMap = {};
+    public on: MessageHandlerMap = {};
 
     /**
      * The message port used to post and receive messages.
@@ -242,12 +242,12 @@ export class SessionService {
     /**
      * The port which handles communication between this session and the manager session.
      */
-    public readonly manager = this.createSessionPort();
+    public manager = this.createSessionPort();
 
     /**
      * An event that is raised when an error occurs.
      */
-    public readonly errorEvent = new Event<Error>();
+    public errorEvent = new Event<Error>();
 
     /**
      * Manager-only. An event that is raised when a managed session is opened.
