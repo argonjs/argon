@@ -22,7 +22,7 @@ export declare class InteractionModeService {
     /**
      * An event that is raised when the interaction mode has changed
      */
-    readonly changeEvent: Event<{
+    changeEvent: Event<{
         previous: InteractionMode;
     }>;
     /**

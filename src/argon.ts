@@ -132,19 +132,19 @@ export class ArgonSystem {
         return this.container.get(VuforiaService);
     }
 
-    public get updateEvent() : Event<FrameState> {
+    public get updateEvent(): Event<FrameState> {
         return this.context.updateEvent;
     }
 
-    public get renderEvent() : Event<FrameState> {
+    public get renderEvent(): Event<FrameState> {
         return this.context.renderEvent;
     }
 
-    public get focusEvent() : Event<void> {
+    public get focusEvent(): Event<void> {
         return this.focus.focusEvent;
     }
 
-    public get blurEvent() : Event<void> {
+    public get blurEvent(): Event<void> {
         return this.focus.blurEvent;
     }
 }

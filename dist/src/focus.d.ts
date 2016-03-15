@@ -8,11 +8,11 @@ export declare class FocusService {
     /**
      * An event that is raised when this session has gained focus
      */
-    readonly focusEvent: Event<void>;
+    focusEvent: Event<void>;
     /**
      * An event that is raised when this session has lost focus
      */
-    readonly blurEvent: Event<void>;
+    blurEvent: Event<void>;
     /**
      * True if this session has focus
      */

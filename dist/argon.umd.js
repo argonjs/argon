@@ -450,7 +450,7 @@ $__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1,
             orientation: new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_X, Math.PI / 2))
           });
           this.localOriginChangeEvent = new utils_1.Event();
-          this.defaultOrigin = this.localOriginEastNorthUp;
+          this.defaultReferenceFrame = this.localOriginEastNorthUp;
           this.device = new cesium_imports_1.Entity({
             id: 'DEVICE',
             name: 'device',
@@ -493,8 +493,8 @@ $__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1,
             };
           });
         }
-        ContextService.prototype.setDefaultOrigin = function(origin) {
-          this.defaultOrigin = origin;
+        ContextService.prototype.setDefaultReferenceFrame = function(origin) {
+          this.defaultReferenceFrame = origin;
         };
         ContextService.prototype.subscribeToEntityById = function(id) {
           this.sessionService.manager.send('ar.context.subscribe', {id: id});
@@ -502,7 +502,7 @@ $__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1,
         };
         ContextService.prototype.getCurrentEntityState = function(entity, referenceFrame) {
           if (referenceFrame === void 0) {
-            referenceFrame = this.defaultOrigin;
+            referenceFrame = this.defaultReferenceFrame;
           }
           var time = this.time;
           var key = entity.id + _stringFromReferenceFrame(referenceFrame);

@@ -54,20 +54,20 @@ export declare class ContextService {
      * the current frame. It is suggested that all modifications to locally managed entities
      * should occur within this event.
      */
-    readonly updateEvent: Event<FrameState>;
+    updateEvent: Event<FrameState>;
     /**
      * An event that is raised when it is an approriate time to render graphics.
      * This event fires after the update event.
      */
-    readonly renderEvent: Event<FrameState>;
+    renderEvent: Event<FrameState>;
     /**
      * The set of entities that this session is aware of.
      */
-    readonly entities: EntityCollection;
+    entities: EntityCollection;
     /**
      * The current time (not valid until the first update event)
      */
-    readonly time: JulianDate;
+    time: JulianDate;
     /**
      * An origin positioned near the eye which doesn't change very often,
      * aligned with the East-North-Up coordinate system.
@@ -83,12 +83,12 @@ export declare class ContextService {
     /**
      * An event that fires when the local origin changes.
      */
-    readonly localOriginChangeEvent: Event<void>;
+    localOriginChangeEvent: Event<void>;
     /**
      * The default origin to use when calling `getEntityState`. By default,
      * this is `this.localOriginEastNorthUp`.
      */
-    defaultOrigin: Entity;
+    defaultReferenceFrame: Entity;
     /**
      * An entity representing the current device which is running Argon.
      */
@@ -110,9 +110,9 @@ export declare class ContextService {
     private _knownEntities;
     constructor(sessionService: SessionService, realityService: RealityService, cameraService: CameraService, viewportService: ViewportService);
     /**
-     * Set the default origin.
+     * Set the default reference frame for `getCurrentEntityState`.
      */
-    setDefaultOrigin(origin: Entity): void;
+    setDefaultReferenceFrame(origin: Entity): void;
     /**
      * Adds an entity to this session's set of tracked entities.
      *
@@ -124,7 +124,7 @@ export declare class ContextService {
      * Gets the state of an entity at the current context time relative to a reference frame.
      *
      * @param entity - The entity whose state is to be queried.
-     * @param referenceFrame - The relative reference frame. Defaults to `this.origin`.
+     * @param referenceFrame - The intended reference frame. Defaults to `this.defaultReferenceFrame`.
      * @returns If the position and orientation exist for the given entity, an
      * object with the fields `position` and `orientation`, both of type
      * `Cartesian3`. Otherwise undefined.

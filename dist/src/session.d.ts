@@ -33,15 +33,15 @@ export declare class SessionPort {
     /**
      * An event which fires when this port has closed
      */
-    readonly closeEvent: Event<void>;
+    closeEvent: Event<void>;
     /**
      * An error which fires when an error occurs.
      */
-    readonly errorEvent: Event<Error>;
+    errorEvent: Event<Error>;
     /**
      * A map from topic to message handler.
      */
-    readonly on: MessageHandlerMap;
+    on: MessageHandlerMap;
     /**
      * The message port used to post and receive messages.
      */
@@ -112,11 +112,11 @@ export declare class SessionService {
     /**
      * The port which handles communication between this session and the manager session.
      */
-    readonly manager: SessionPort;
+    manager: SessionPort;
     /**
      * An event that is raised when an error occurs.
      */
-    readonly errorEvent: Event<Error>;
+    errorEvent: Event<Error>;
     /**
      * Manager-only. An event that is raised when a managed session is opened.
      */

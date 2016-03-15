@@ -34,7 +34,7 @@ export declare class CameraService {
     /**
      * An event that is raised when the current camera state has changed
      */
-    readonly changeEvent: Event<{
+    changeEvent: Event<{
         previous: Camera;
     }>;
     /**
@@ -52,7 +52,7 @@ export declare class CameraService {
     /**
      * Manager-only. Maps a managed session to it's desired camera state.
      */
-    readonly desiredCameraMap: WeakMap<SessionPort, Camera>;
+    desiredCameraMap: WeakMap<SessionPort, Camera>;
     private _currentJSON;
     constructor(sessionService: SessionService, viewportService: ViewportService);
     /**

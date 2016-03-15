@@ -82,11 +82,11 @@ export declare class RealityService {
     /**
      * An event that is raised when a reality control port is opened.
      */
-    readonly connectEvent: Event<SessionPort>;
+    connectEvent: Event<SessionPort>;
     /**
      * An event that is raised when the current reality is changed.
      */
-    readonly changeEvent: Event<{
+    changeEvent: Event<{
         previous: Reality;
     }>;
     /**
@@ -94,15 +94,15 @@ export declare class RealityService {
      * This event contains pose updates for the entities that are managed by
      * the current reality.
      */
-    readonly frameEvent: Event<FrameState>;
+    frameEvent: Event<FrameState>;
     /**
      * Manager-only. A map from a managed session to the desired reality
      */
-    readonly desiredRealityMap: WeakMap<SessionPort, Reality>;
+    desiredRealityMap: WeakMap<SessionPort, Reality>;
     /**
      * Manager-only. A map from a desired reality to the session which requested it
      */
-    readonly desiredRealityMapInverse: WeakMap<Reality, SessionPort>;
+    desiredRealityMapInverse: WeakMap<Reality, SessionPort>;
     private _realitySession;
     constructor(handlers: RealitySetupHandler[], sessionService: SessionService, cameraService: CameraService, deviceService: DeviceService, focusService: FocusService, viewportService: ViewportService);
     /**

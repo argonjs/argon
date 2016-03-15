@@ -127,7 +127,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                      * The default origin to use when calling `getEntityState`. By default,
                      * this is `this.localOriginEastNorthUp`.
                      */
-                    this.defaultOrigin = this.localOriginEastNorthUp;
+                    this.defaultReferenceFrame = this.localOriginEastNorthUp;
                     /**
                      * An entity representing the current device which is running Argon.
                      */
@@ -184,10 +184,10 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                     });
                 }
                 /**
-                 * Set the default origin.
+                 * Set the default reference frame for `getCurrentEntityState`.
                  */
-                ContextService.prototype.setDefaultOrigin = function (origin) {
-                    this.defaultOrigin = origin;
+                ContextService.prototype.setDefaultReferenceFrame = function (origin) {
+                    this.defaultReferenceFrame = origin;
                 };
                 /**
                  * Adds an entity to this session's set of tracked entities.
@@ -203,13 +203,13 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                  * Gets the state of an entity at the current context time relative to a reference frame.
                  *
                  * @param entity - The entity whose state is to be queried.
-                 * @param referenceFrame - The relative reference frame. Defaults to `this.origin`.
+                 * @param referenceFrame - The intended reference frame. Defaults to `this.defaultReferenceFrame`.
                  * @returns If the position and orientation exist for the given entity, an
                  * object with the fields `position` and `orientation`, both of type
                  * `Cartesian3`. Otherwise undefined.
                  */
                 ContextService.prototype.getCurrentEntityState = function (entity, referenceFrame) {
-                    if (referenceFrame === void 0) { referenceFrame = this.defaultOrigin; }
+                    if (referenceFrame === void 0) { referenceFrame = this.defaultReferenceFrame; }
                     var time = this.time;
                     var key = entity.id + _stringFromReferenceFrame(referenceFrame);
                     var entityState = this._entityStateMap.get(key);
