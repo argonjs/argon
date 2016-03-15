@@ -14,7 +14,7 @@ const webglRenderer = new THREE.WebGLRenderer({ alpha: true, logarithmicDepthBuf
 app.viewport.element.appendChild(cssRenderer.domElement);
 app.viewport.element.appendChild(webglRenderer.domElement);
 
-app.context.setDefaultOrigin(app.context.localOriginEastUpSouth);
+app.context.setDefaultReferenceFrame(app.context.localOriginEastUpSouth);
 
 app.vuforia.init();
 app.vuforia.startCamera();

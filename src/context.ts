@@ -127,7 +127,7 @@ export class ContextService {
      * The default origin to use when calling `getEntityState`. By default,
      * this is `this.localOriginEastNorthUp`.
      */
-    public defaultOrigin = this.localOriginEastNorthUp;
+    public defaultReferenceFrame = this.localOriginEastNorthUp;
 
     /**
      * An entity representing the current device which is running Argon.
@@ -197,10 +197,10 @@ export class ContextService {
     }
 
     /**
-     * Set the default origin.
+     * Set the default reference frame for `getCurrentEntityState`.
      */
-    public setDefaultOrigin(origin: Entity) {
-        this.defaultOrigin = origin;
+    public setDefaultReferenceFrame(origin: Entity) {
+        this.defaultReferenceFrame = origin;
     }
 
     /**
@@ -218,12 +218,12 @@ export class ContextService {
      * Gets the state of an entity at the current context time relative to a reference frame.
      *
      * @param entity - The entity whose state is to be queried.
-     * @param referenceFrame - The relative reference frame. Defaults to `this.origin`.
+     * @param referenceFrame - The intended reference frame. Defaults to `this.defaultReferenceFrame`.
      * @returns If the position and orientation exist for the given entity, an
      * object with the fields `position` and `orientation`, both of type
      * `Cartesian3`. Otherwise undefined.
      */
-    public getCurrentEntityState(entity: Entity, referenceFrame: ReferenceFrame | Entity = this.defaultOrigin) {
+    public getCurrentEntityState(entity: Entity, referenceFrame: ReferenceFrame | Entity = this.defaultReferenceFrame) {
         const time = this.time;
 
         const key = entity.id + _stringFromReferenceFrame(referenceFrame);
