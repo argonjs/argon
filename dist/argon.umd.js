@@ -476,7 +476,6 @@ $__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1,
           this.entities.add(this.eye);
           if (this.sessionService.isManager()) {
             this.realityService.frameEvent.addEventListener(function(state) {
-              console.log('calling update');
               _this._update(state);
             });
           } else {

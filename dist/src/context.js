@@ -165,7 +165,6 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                     this.entities.add(this.eye);
                     if (this.sessionService.isManager()) {
                         this.realityService.frameEvent.addEventListener(function (state) {
-                            console.log('calling update');
                             _this._update(state);
                         });
                     }

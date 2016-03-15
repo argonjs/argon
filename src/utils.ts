@@ -272,7 +272,7 @@ export declare class MessageEventLike {
     constructor(data: any);
     data: any;
 }
- 
+
 /**
  * A minimal MessagePort interface.
  */
