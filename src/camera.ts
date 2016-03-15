@@ -44,7 +44,7 @@ export class CameraService {
     /**
      * An event that is raised when the current camera state has changed
      */
-    public readonly changeEvent = new Event<{ previous: Camera }>();
+    public changeEvent = new Event<{ previous: Camera }>();
 
     /**
      * Describes the current camera state
@@ -64,7 +64,7 @@ export class CameraService {
     /**
      * Manager-only. Maps a managed session to it's desired camera state.
      */
-    public readonly desiredCameraMap = new WeakMap<SessionPort, Camera>();
+    public desiredCameraMap = new WeakMap<SessionPort, Camera>();
 
     private _currentJSON: string;
 

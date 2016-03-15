@@ -18,7 +18,7 @@ export class ViewportService {
     /**
      * An event that is raised when the current viewport state has changed
      */
-    public readonly changeEvent = new Event<{ previous: Viewport }>();
+    public changeEvent = new Event<{ previous: Viewport }>();
 
     public current: Viewport;
 

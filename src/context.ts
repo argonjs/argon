@@ -78,23 +78,23 @@ export class ContextService {
      * the current frame. It is suggested that all modifications to locally managed entities 
      * should occur within this event. 
      */
-    public readonly updateEvent = new Event<FrameState>();
+    public updateEvent = new Event<FrameState>();
 
     /**
      * An event that is raised when it is an approriate time to render graphics. 
      * This event fires after the update event. 
      */
-    public readonly renderEvent = new Event<FrameState>();
+    public renderEvent = new Event<FrameState>();
 
     /**
      * The set of entities that this session is aware of.
      */
-    public readonly entities = new EntityCollection();
+    public entities = new EntityCollection();
 
     /**
      * The current time (not valid until the first update event)
      */
-    public readonly time = new JulianDate(0, 0);
+    public time = new JulianDate(0, 0);
 
     /**
      * An origin positioned near the eye which doesn't change very often,
@@ -121,7 +121,7 @@ export class ContextService {
     /**
      * An event that fires when the local origin changes.
      */
-    public readonly localOriginChangeEvent = new Event<void>();
+    public localOriginChangeEvent = new Event<void>();
 
     /**
      * The default origin to use when calling `getEntityState`. By default,

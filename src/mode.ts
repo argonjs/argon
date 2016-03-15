@@ -29,7 +29,7 @@ export class InteractionModeService {
     /**
      * An event that is raised when the interaction mode has changed
      */
-    public readonly changeEvent = new Event<{ previous: InteractionMode }>();
+    public changeEvent = new Event<{ previous: InteractionMode }>();
 
     /**
      * The current interaction mode.
