@@ -102,9 +102,11 @@ export class CameraService {
      * Set the current camera state. Called internally.
      */
     public _setCamera(camera: Camera) {
-        if (this._currentJSON !== JSON.stringify(camera)) {
+        const json = JSON.stringify(camera);
+        if (this._currentJSON !== json) {
             const previous = this.current;
             this.current = camera;
+            this._currentJSON = json;
 
             if (camera.type === 'perspective') {
                 const perspectiveCamera = <PerspectiveCamera>camera;
