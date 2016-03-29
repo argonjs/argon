@@ -46,7 +46,7 @@ export class ArgonSystem {
     static instance: ArgonSystem;
 
     constructor(config: Configuration, public container = new Container()) {
-        ArgonSystem.instance = this;
+        if (!ArgonSystem.instance) ArgonSystem.instance = this;
 
         if (!config.defaultReality) config.defaultReality = { type: 'empty' }
 
