@@ -479,7 +479,7 @@ export class AndroidConnectService extends ConnectService {
      * @return true if this method is availble, otherwise false
      */
     public static isAvailable(): boolean {
-        return window && window.argon && window.argon.emit;
+        return window && window.__argon_android__ && window.__argon_android__.emit;
     }
 
     /**
@@ -489,7 +489,7 @@ export class AndroidConnectService extends ConnectService {
     connect(sessionService: SessionService) {
         const messageChannel = sessionService.createMessageChannel();
         messageChannel.port2.onmessage = (event) => {
-            window.argon.emit("message", JSON.stringify(event.data));
+            window.__argon_android__.emit("message", JSON.stringify(event.data));
         };
         window['__ARGON_PORT__'] = messageChannel.port2;
         sessionService.manager.open(messageChannel.port1, sessionService.configuration);
