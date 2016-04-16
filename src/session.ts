@@ -480,8 +480,8 @@ export class AndroidConnectService extends ConnectService {
      */
     public static isAvailable(): boolean {
         return typeof window !== "undefined" &&
-            window["__argon_android__"] &&
-            window["__argon_android__"].emit;
+            !!window["__argon_android__"] &&
+            !!window["__argon_android__"].emit;
     }
 
     /**
