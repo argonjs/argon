@@ -1,5 +1,5 @@
 import {resolver, Container} from 'aurelia-dependency-injection';
-import {EntityPose} from './reality'
+import {SerializedEntityPose} from './reality'
 import CesiumEvent from 'Cesium/Source/Core/Event';
 import {
     Entity,
@@ -68,7 +68,7 @@ export class Event<T> {
  * @param time The time for which to retrieve the value.
  * @return An EntityPose object with orientation, position and referenceFrame.
  */
-export function calculatePose(entity: Entity, time: JulianDate): EntityPose {
+export function calculatePose(entity: Entity, time: JulianDate): SerializedEntityPose {
     const entityPosition = entity.position;
     const referenceFrame = entityPosition.referenceFrame;
     const referenceFrameID = typeof referenceFrame === 'number' ? referenceFrame : referenceFrame.id;
@@ -83,9 +83,8 @@ export function calculatePose(entity: Entity, time: JulianDate): EntityPose {
 * TODO.
 */
 export class CommandQueue {
-    private _queue: Array<{ command: Function, userData: any }> = [];
-    private _currentUserData: any;
-    private _currentCommandPending: PromiseLike<any> = null;
+    private _queue: Array<{ execute: Function, reject: (reason: any) => void }> = [];
+    private _currentCommandPending: Promise<any> = null;
 
     /**
      * An error event.
@@ -102,41 +101,49 @@ export class CommandQueue {
     }
 
     /**
-     * Push the command and the data needed to run the command to the command queue.
+     * Push a command to the command queue.
      * @param command Any command ready to be pushed into the command queue.
-     * @param userData Any data needed to run the command.
      */
-    public push(command: () => any | Thenable<any>, userData?: any) {
-        this._queue.push({ command, userData });
-        if (this._queue.length === 1 && this._currentCommandPending === null) {
+    public push<TResult>(command: () => TResult, execute?: boolean): Promise<TResult> {
+        const result = new Promise<TResult>((resolve, reject) => {
+            this._queue.push({
+                execute: () => {
+                    const result = Promise.resolve().then(command);
+                    resolve(result);
+                    return result;
+                }, reject
+            });
+        });
+        if (execute) this.execute();
+        return result;
+    }
+
+    /**
+     * Execute the command queue
+     */
+    public execute() {
+        if (this._queue.length > 0 && this._currentCommandPending === null) {
             Promise.resolve().then(this._executeNextCommand.bind(this));
         }
     }
+
     /**
      * Clear commandQueue.
      */
     public clear() {
+        this._queue.forEach((item) => {
+            item.reject("Unable to execute.")
+        })
         this._queue = [];
-    }
-
-    /**
-     * Get current user data.
-     * @return Current userData.
-     */
-    public get currentUserData(): any {
-        return this._currentUserData;
     }
 
     private _executeNextCommand() {
         const item = this._queue.shift();
         if (!item) {
-            this._currentUserData = null;
             this._currentCommandPending = null;
             return;
         }
-        const {command, userData} = item;
-        this._currentUserData = userData;
-        this._currentCommandPending = new Promise((resolve, reject) => resolve(command()))
+        this._currentCommandPending = item.execute()
             .then(this._executeNextCommand.bind(this))
             .catch((error) => {
                 this.errorEvent.raiseEvent(error);

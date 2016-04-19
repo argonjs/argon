@@ -13,7 +13,7 @@ System.register(['aurelia-dependency-injection', './config', './focus', './reali
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
     var aurelia_dependency_injection_1, config_1, focus_1, reality_1, session_1, utils_1;
-    var VuforiaInitError, VuforiaLoadDataSetError, VuforiaUnloadDataSetError, VuforiaActivateDataSetError, VuforiaDeactivateDataSetError, VuforiaInitErrorCode, VuforiaErrorType, VuforiaServiceDelegateBase, VuforiaServiceDelegate, VuforiaRealitySetupHandler, VuforiaService, VuforiaDataSet;
+    var VuforiaInitResult, VuforiaServiceDelegateBase, VuforiaServiceDelegate, VuforiaRealitySetupHandler, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, VuforiaDataSet;
     return {
         setters:[
             function (aurelia_dependency_injection_1_1) {
@@ -35,101 +35,39 @@ System.register(['aurelia-dependency-injection', './config', './focus', './reali
                 utils_1 = utils_1_1;
             }],
         execute: function() {
-            /** An error that occured in vuforia while initializing. */
-            VuforiaInitError = (function (_super) {
-                __extends(VuforiaInitError, _super);
-                function VuforiaInitError(message, code) {
-                    _super.call(this, message);
-                    this.code = code;
-                }
-                return VuforiaInitError;
-            }(Error));
-            exports_1("VuforiaInitError", VuforiaInitError);
-            /** An error that occured in vuforia while loading a data set. */
-            VuforiaLoadDataSetError = (function (_super) {
-                __extends(VuforiaLoadDataSetError, _super);
-                function VuforiaLoadDataSetError(message) {
-                    _super.call(this, message);
-                }
-                return VuforiaLoadDataSetError;
-            }(Error));
-            exports_1("VuforiaLoadDataSetError", VuforiaLoadDataSetError);
-            /** An error that occured in vuforia while unloading a data set. */
-            VuforiaUnloadDataSetError = (function (_super) {
-                __extends(VuforiaUnloadDataSetError, _super);
-                function VuforiaUnloadDataSetError(message) {
-                    _super.call(this, message);
-                }
-                return VuforiaUnloadDataSetError;
-            }(Error));
-            exports_1("VuforiaUnloadDataSetError", VuforiaUnloadDataSetError);
-            /** An error that occured in vuforia while activating a data set. */
-            VuforiaActivateDataSetError = (function (_super) {
-                __extends(VuforiaActivateDataSetError, _super);
-                function VuforiaActivateDataSetError(message) {
-                    _super.call(this, message);
-                }
-                return VuforiaActivateDataSetError;
-            }(Error));
-            exports_1("VuforiaActivateDataSetError", VuforiaActivateDataSetError);
-            /** An error that occured in vuforia while deactivating a data set. */
-            VuforiaDeactivateDataSetError = (function (_super) {
-                __extends(VuforiaDeactivateDataSetError, _super);
-                function VuforiaDeactivateDataSetError(message) {
-                    _super.call(this, message);
-                }
-                return VuforiaDeactivateDataSetError;
-            }(Error));
-            exports_1("VuforiaDeactivateDataSetError", VuforiaDeactivateDataSetError);
             /**
              * The set of possible error codes that can be returned from vuforia's
              * initialization function.
              */
-            (function (VuforiaInitErrorCode) {
+            (function (VuforiaInitResult) {
+                VuforiaInitResult[VuforiaInitResult["SUCCESS"] = 100] = "SUCCESS";
                 /** Error during initialization. */
-                VuforiaInitErrorCode[VuforiaInitErrorCode["INIT_ERROR"] = -1] = "INIT_ERROR";
+                VuforiaInitResult[VuforiaInitResult["INIT_ERROR"] = -1] = "INIT_ERROR";
                 /** The device is not supported. */
-                VuforiaInitErrorCode[VuforiaInitErrorCode["INIT_DEVICE_NOT_SUPPORTED"] = -2] = "INIT_DEVICE_NOT_SUPPORTED";
+                VuforiaInitResult[VuforiaInitResult["INIT_DEVICE_NOT_SUPPORTED"] = -2] = "INIT_DEVICE_NOT_SUPPORTED";
                 /** Cannot access the camera. */
-                VuforiaInitErrorCode[VuforiaInitErrorCode["INIT_NO_CAMERA_ACCESS"] = -3] = "INIT_NO_CAMERA_ACCESS";
+                VuforiaInitResult[VuforiaInitResult["INIT_NO_CAMERA_ACCESS"] = -3] = "INIT_NO_CAMERA_ACCESS";
                 /** License key is missing. */
-                VuforiaInitErrorCode[VuforiaInitErrorCode["INIT_LICENSE_ERROR_MISSING_KEY"] = -4] = "INIT_LICENSE_ERROR_MISSING_KEY";
+                VuforiaInitResult[VuforiaInitResult["INIT_LICENSE_ERROR_MISSING_KEY"] = -4] = "INIT_LICENSE_ERROR_MISSING_KEY";
                 /** Invalid license key passed to SDK. */
-                VuforiaInitErrorCode[VuforiaInitErrorCode["INIT_LICENSE_ERROR_INVALID_KEY"] = -5] = "INIT_LICENSE_ERROR_INVALID_KEY";
+                VuforiaInitResult[VuforiaInitResult["INIT_LICENSE_ERROR_INVALID_KEY"] = -5] = "INIT_LICENSE_ERROR_INVALID_KEY";
                 /** Unable to verify license key due to network (Permanent error). */
-                VuforiaInitErrorCode[VuforiaInitErrorCode["INIT_LICENSE_ERROR_NO_NETWORK_PERMANENT"] = -6] = "INIT_LICENSE_ERROR_NO_NETWORK_PERMANENT";
+                VuforiaInitResult[VuforiaInitResult["INIT_LICENSE_ERROR_NO_NETWORK_PERMANENT"] = -6] = "INIT_LICENSE_ERROR_NO_NETWORK_PERMANENT";
                 /** Unable to verify license key due to network (Transient error). */
-                VuforiaInitErrorCode[VuforiaInitErrorCode["INIT_LICENSE_ERROR_NO_NETWORK_TRANSIENT"] = -7] = "INIT_LICENSE_ERROR_NO_NETWORK_TRANSIENT";
+                VuforiaInitResult[VuforiaInitResult["INIT_LICENSE_ERROR_NO_NETWORK_TRANSIENT"] = -7] = "INIT_LICENSE_ERROR_NO_NETWORK_TRANSIENT";
                 /** Provided key is no longer valid. */
-                VuforiaInitErrorCode[VuforiaInitErrorCode["INIT_LICENSE_ERROR_CANCELED_KEY"] = -8] = "INIT_LICENSE_ERROR_CANCELED_KEY";
+                VuforiaInitResult[VuforiaInitResult["INIT_LICENSE_ERROR_CANCELED_KEY"] = -8] = "INIT_LICENSE_ERROR_CANCELED_KEY";
                 /** Provided key is not valid for this product. */
-                VuforiaInitErrorCode[VuforiaInitErrorCode["INIT_LICENSE_ERROR_PRODUCT_TYPE_MISMATCH"] = -9] = "INIT_LICENSE_ERROR_PRODUCT_TYPE_MISMATCH";
+                VuforiaInitResult[VuforiaInitResult["INIT_LICENSE_ERROR_PRODUCT_TYPE_MISMATCH"] = -9] = "INIT_LICENSE_ERROR_PRODUCT_TYPE_MISMATCH";
                 /** Dependent external device not detected/plugged in. */
-                VuforiaInitErrorCode[VuforiaInitErrorCode["INIT_EXTERNAL_DEVICE_NOT_DETECTED"] = -10] = "INIT_EXTERNAL_DEVICE_NOT_DETECTED";
-            })(VuforiaInitErrorCode || (VuforiaInitErrorCode = {}));
-            exports_1("VuforiaInitErrorCode", VuforiaInitErrorCode);
-            ;
+                VuforiaInitResult[VuforiaInitResult["INIT_EXTERNAL_DEVICE_NOT_DETECTED"] = -10] = "INIT_EXTERNAL_DEVICE_NOT_DETECTED";
+            })(VuforiaInitResult || (VuforiaInitResult = {}));
+            exports_1("VuforiaInitResult", VuforiaInitResult);
             /**
-             * The different kinds of errors that vuforia can raise.
-             */
-            (function (VuforiaErrorType) {
-                VuforiaErrorType[VuforiaErrorType["InitError"] = "InitError"] = "InitError";
-                VuforiaErrorType[VuforiaErrorType["LoadDataSetError"] = "LoadDataSetError"] = "LoadDataSetError";
-                VuforiaErrorType[VuforiaErrorType["UnloadDataSetError"] = "UnloadDataSetError"] = "UnloadDataSetError";
-                VuforiaErrorType[VuforiaErrorType["ActivateDataSetError"] = "ActivateDataSetError"] = "ActivateDataSetError";
-                VuforiaErrorType[VuforiaErrorType["DeactivateDataSetError"] = "DeactivateDataSetError"] = "DeactivateDataSetError";
-            })(VuforiaErrorType || (VuforiaErrorType = {}));
-            exports_1("VuforiaErrorType", VuforiaErrorType);
-            /**
-             * An abstract class representing the functionality needed to implement
-             * Vuforia's functionality for a `VuforiaService`. This is a null
-             * implementation that simply does nothing in response to all requests.
+             * An abstract class representing the Vuforia API.
              */
             VuforiaServiceDelegateBase = (function () {
                 function VuforiaServiceDelegateBase() {
-                    this.updateEvent = new utils_1.Event();
-                    this.errorEvent = new utils_1.Event();
-                    this.dataSetLoadEvent = new utils_1.Event();
                 }
                 return VuforiaServiceDelegateBase;
             }());
@@ -141,22 +79,26 @@ System.register(['aurelia-dependency-injection', './config', './focus', './reali
                 __extends(VuforiaServiceDelegate, _super);
                 function VuforiaServiceDelegate() {
                     _super.apply(this, arguments);
+                    this.stateUpdateEvent = new utils_1.Event();
                 }
-                VuforiaServiceDelegate.prototype.isSupported = function () { return false; };
-                VuforiaServiceDelegate.prototype.init = function (options) { };
+                VuforiaServiceDelegate.prototype.isAvailable = function () { return false; };
+                VuforiaServiceDelegate.prototype.setHint = function (hint, value) { return true; };
+                VuforiaServiceDelegate.prototype.init = function (options) { return null; };
                 VuforiaServiceDelegate.prototype.deinit = function () { };
-                VuforiaServiceDelegate.prototype.startCamera = function () { };
-                VuforiaServiceDelegate.prototype.stopCamera = function () { };
-                VuforiaServiceDelegate.prototype.startObjectTracker = function () { };
-                VuforiaServiceDelegate.prototype.stopObjectTracker = function () { };
-                VuforiaServiceDelegate.prototype.hintMaxSimultaneousImageTargets = function (max) { };
-                VuforiaServiceDelegate.prototype.setVideoBackgroundConfig = function (videoConfig) { };
-                VuforiaServiceDelegate.prototype.loadDataSet = function (url) { };
-                VuforiaServiceDelegate.prototype.unloadDataSet = function (url) { };
-                VuforiaServiceDelegate.prototype.activateDataSet = function (url) { };
-                VuforiaServiceDelegate.prototype.deactivateDataSet = function (url) { };
-                VuforiaServiceDelegate.prototype.getVideoMode = function () { return null; };
-                ;
+                VuforiaServiceDelegate.prototype.cameraDeviceInitAndStart = function () { return true; };
+                VuforiaServiceDelegate.prototype.cameraDeviceInit = function () { return true; };
+                // cameraDeviceDeinit() : boolean { return true }
+                VuforiaServiceDelegate.prototype.cameraDeviceSetFlashTorchMode = function (on) { return true; };
+                VuforiaServiceDelegate.prototype.objectTrackerInit = function () { return true; };
+                // objectTrackerDeinit() : boolean { return true }
+                VuforiaServiceDelegate.prototype.objectTrackerStart = function () { return true; };
+                VuforiaServiceDelegate.prototype.objectTrackerStop = function () { return true; };
+                VuforiaServiceDelegate.prototype.objectTrackerCreateDataSet = function (url) { return null; };
+                VuforiaServiceDelegate.prototype.objectTrackerDestroyDataSet = function (id) { return true; };
+                VuforiaServiceDelegate.prototype.objectTrackerActivateDataSet = function (id) { return true; };
+                VuforiaServiceDelegate.prototype.objectTrackerDeactivateDataSet = function (id) { return true; };
+                VuforiaServiceDelegate.prototype.dataSetFetch = function (id) { return null; };
+                VuforiaServiceDelegate.prototype.dataSetLoad = function (id) { return null; };
                 return VuforiaServiceDelegate;
             }(VuforiaServiceDelegateBase));
             exports_1("VuforiaServiceDelegate", VuforiaServiceDelegate);
@@ -168,25 +110,13 @@ System.register(['aurelia-dependency-injection', './config', './focus', './reali
                 }
                 VuforiaRealitySetupHandler.prototype.setup = function (reality, port) {
                     var remoteRealitySession = this.sessionService.createSessionPort();
-                    remoteRealitySession.connectEvent.addEventListener(function () {
-                        remoteRealitySession.send('ar.vuforia.init');
-                        remoteRealitySession.send('ar.vuforia.startCamera');
-                    });
-                    var remove = this.delegate.updateEvent.addEventListener(function (frameState) {
+                    var remove = this.delegate.stateUpdateEvent.addEventListener(function (frameState) {
                         remoteRealitySession.send('ar.reality.frameState', frameState);
-                        // TODO: Only pass frameNumber / time, and update the trackable entities 
-                        // directly. Two reasons:
-                        // 1) Allow vuforia to be used when it is not the current reality
-                        // 2) Only send trackable data to the session that wants it
-                        // remoteRealitySession.send('ar.context.update', {
-                        // 	frameNumber: frameState.frameNumber,
-                        // 	time: frameState.time,	
-                        // });
                     });
                     remoteRealitySession.closeEvent.addEventListener(function () {
                         remove();
                     });
-                    remoteRealitySession.open(port, { role: config_1.Role.REALITY });
+                    remoteRealitySession.open(port, { role: config_1.Role.REALITY_VIEW });
                 };
                 VuforiaRealitySetupHandler = __decorate([
                     aurelia_dependency_injection_1.inject(session_1.SessionService, VuforiaServiceDelegate)
@@ -195,55 +125,8 @@ System.register(['aurelia-dependency-injection', './config', './focus', './reali
             }());
             exports_1("VuforiaRealitySetupHandler", VuforiaRealitySetupHandler);
             /**
-             * Hooks up a context and its session with vuforia by allowing the context's
-             * sessions to make a number of requests:
-             *
-             *  * `ar.vuforia.isSupported` - Checks if vuforia is supported.
-             *    * Returns: True if vuforia is supported on the device argon is running
-             *      on and false if not.
-             *
-             *  * `ar.vuforia.init` - Initializes vuforia if it hasn't already been.
-             *    * Parameters:
-             *      * options: VuforiaInitOptions - The options to pass to vuforia as it is
-             *        being initialized.
-             *
-             *  * `ar.vuforia.deinit` - Deinitializes vuforia if it was previously
-             *    initialized by the same session.
-             *
-             *  * `ar.vuforia.startCamera` - Tells vuforia to startup the camera.
-             *
-             *  * `ar.vuforia.stopCamera` - Tells vuforia to shutdown the camera.
-             *
-             *  * `ar.vuforia.startObjectTracker` - Tells vuforia to startip its object
-             *    tracking system.
-             *
-             *  * `ar.vuforia.stopObjectTracker` - Tells vuforia to shutdown its object
-             *    tracking system.
-             *
-             *  * `ar.vuforia.hintMaxSimultaneousImageTargets` - Gives vuforia a hint on
-             *    the maximum number of targets it will be tracking.
-             *    * Parameters:
-             *      * options: {max: number} - The maximum number of targets vuforia will
-             *        be tracking for the session.
-             *
-             *  * `ar.vuforia.loadDataSet` - Asks vuforia to load a data set from the given
-             *    url.
-             *    * Parameters:
-             *      * options: {url: string} - The url pf the data set to load.
-             *
-             *  * `ar.vuforia.unloadDataSet` - Asks vuforia to unload a previously loaded
-             *    data set. Also deactivates the data set if it was activated.
-             *    * Parameters:
-             *      * options: {url: string} - The url of the data set to unload.
-             *
-             *  * `ar.vuforia.activateDataSet` - Asks vuforia to activate a data set. Also
-             *    loads the data set if it was not already loaded.
-             *    * Parameters:
-             *      * options: {url: string} - The url of the data set to activate.
-             *
-             *  * `ar.vuforia.deactivateDataSet` - Asks vuforia to deactivate a data set.
-             *    * Parameters:
-             *      * options: {url: string} - The url of the data set to deactivate.
+             * Mediates requests to the Vuforia API. Handles the following requests:
+             * // TODO
              */
             VuforiaService = (function () {
                 function VuforiaService(sessionService, focusService, realityService, delegate) {
@@ -252,238 +135,278 @@ System.register(['aurelia-dependency-injection', './config', './focus', './reali
                     this.focusService = focusService;
                     this.realityService = realityService;
                     this.delegate = delegate;
-                    this._commandQueue = new utils_1.CommandQueue;
-                    this._sessionInitOptions = new WeakMap();
-                    this._sessionCameraStarted = new WeakMap();
-                    this._sessionObjectTrackerStarted = new WeakMap();
-                    this._sessionMaxSimultaneousImageTargets = new WeakMap();
-                    this._sessionLoadedDataSets = new WeakMap();
-                    this._sessionActivatedDataSets = new WeakMap();
                     this._controllingSession = null;
+                    this._sessionIsInitialized = new WeakMap();
+                    this._sessionCommandQueue = new WeakMap();
+                    this._sessionInitOptions = new WeakMap();
+                    this._sessionObjectTrackerStarted = new WeakMap();
+                    this._sessionCreatedDataSets = new WeakMap();
+                    this._sessionActivatedDataSets = new WeakMap();
                     this._isInitialized = false;
-                    this._dataSetMap = new Map();
                     if (sessionService.isManager()) {
                         sessionService.connectEvent.addEventListener(function (session) {
-                            var loadedDataSets = new Set();
-                            _this._sessionLoadedDataSets.set(session, loadedDataSets);
+                            var commandQueue = new utils_1.CommandQueue();
+                            commandQueue.errorEvent.addEventListener(function (err) {
+                                _this.sessionService.errorEvent.raiseEvent(err);
+                                session.sendError(err);
+                            });
+                            _this._sessionCommandQueue.set(session, commandQueue);
+                            var createdDataSets = new Set();
+                            _this._sessionCreatedDataSets.set(session, createdDataSets);
                             var activatedDataSets = new Set();
                             _this._sessionActivatedDataSets.set(session, activatedDataSets);
-                            session.on['ar.vuforia.isSupported'] = function () {
-                                return delegate.isSupported();
+                            session.on['ar.vuforia.isAvailable'] = function () {
+                                return Promise.resolve({ available: delegate.isAvailable() });
                             };
                             session.on['ar.vuforia.init'] = function (options, event) {
-                                if (!delegate.isSupported())
-                                    return;
+                                if (!delegate.isAvailable())
+                                    return Promise.reject("Vuforia is not supported");
                                 _this._sessionInitOptions.set(session, options);
-                                if (_this._controllingSession === null || session === focusService.currentSession) {
-                                    _this._initVuforia(session);
+                                var result = commandQueue.push(function () {
+                                    return _this._init(session);
+                                }, _this._controllingSession === session);
+                                if (_this.focusService.getSession() === session) {
+                                    _this._setControllingSession(session);
                                 }
+                                return result;
                             };
-                            session.on['ar.vuforia.deinit'] = function (options, event) {
-                                if (session === _this._controllingSession) {
-                                    if (_this._sessionInitOptions.has(session)) {
-                                        _this._commandQueue.clear();
-                                        _this._commandQueue.push(function () {
-                                            return Promise.resolve(delegate.deinit()).then(function () {
-                                                _this._isInitialized = false;
-                                            });
-                                        }, session);
+                            session.on['ar.vuforia.objectTrackerCreateDataSet'] = function (_a, event) {
+                                var url = _a.url;
+                                return commandQueue.push(function () {
+                                    var id = delegate.objectTrackerCreateDataSet(url);
+                                    if (id) {
+                                        createdDataSets.add(id);
+                                        return Promise.resolve(id);
                                     }
-                                }
-                                _this._sessionInitOptions.delete(session);
+                                    return Promise.reject('Unable to create DataSet');
+                                }, _this._controllingSession === session);
                             };
-                            session.on['ar.vuforia.startCamera'] = function (message, event) {
-                                if (session === _this._controllingSession) {
-                                    if (!_this._sessionCameraStarted.get(session))
-                                        _this._commandQueue.push(function () { return delegate.startCamera(); }), session;
-                                }
-                                _this._sessionCameraStarted.set(session, true);
+                            session.on['ar.vuforia.objectTrackerActivateDataSet'] = function (_a, event) {
+                                var id = _a.id;
+                                return commandQueue.push(function () {
+                                    if (delegate.objectTrackerActivateDataSet(id)) {
+                                        activatedDataSets.add(id);
+                                        session.send('ar.vuforia.objectTrackerActivateDataSetEvent', { id: id });
+                                        return;
+                                    }
+                                    return Promise.reject("Unable to activate DataSet (#{id})");
+                                }, _this._controllingSession === session);
                             };
-                            session.on['ar.vuforia.stopCamera'] = function (message, event) {
-                                if (session === _this._controllingSession) {
-                                    if (_this._sessionCameraStarted.get(session))
-                                        _this._commandQueue.push(function () { return delegate.stopCamera(); }, session);
-                                }
-                                _this._sessionCameraStarted.set(session, false);
+                            session.on['ar.vuforia.objectTrackerDeactivateDataSet'] = function (_a, event) {
+                                var id = _a.id;
+                                return commandQueue.push(function () {
+                                    if (delegate.objectTrackerDeactivateDataSet(id)) {
+                                        activatedDataSets.delete(id);
+                                        session.send('ar.vuforia.objectTrackerDeactivateDataSetEvent', { id: id });
+                                        return;
+                                    }
+                                    return Promise.reject("Unable to deactivate DataSet (#{id})");
+                                }, _this._controllingSession === session);
                             };
-                            session.on['ar.vuforia.startObjectTracker'] = function (message, event) {
-                                if (session === _this._controllingSession) {
-                                    if (!_this._sessionObjectTrackerStarted.get(session))
-                                        _this._commandQueue.push(function () { return delegate.startObjectTracker(); }), session;
-                                }
-                                _this._sessionObjectTrackerStarted.set(session, true);
+                            session.on['ar.vuforia.dataSetFetch'] = function (_a, event) {
+                                var id = _a.id;
+                                return commandQueue.push(function () {
+                                    return delegate.dataSetFetch(id);
+                                }, _this._controllingSession === session);
                             };
-                            session.on['ar.vuforia.stopObjectTracker'] = function (message, event) {
-                                if (session === _this._controllingSession) {
-                                    if (_this._sessionObjectTrackerStarted.get(session))
-                                        _this._commandQueue.push(function () { return delegate.stopObjectTracker(); }, session);
-                                }
-                                _this._sessionObjectTrackerStarted.set(session, false);
-                            };
-                            session.on['ar.vuforia.hintMaxSimultaneousImageTargets'] = function (_a) {
-                                var max = _a.max;
-                                if (session === _this._controllingSession) {
-                                    _this._commandQueue.push(function () { return delegate.hintMaxSimultaneousImageTargets(max); }, session);
-                                }
-                                _this._sessionMaxSimultaneousImageTargets.set(session, max);
-                            };
-                            session.on['ar.vuforia.loadDataSet'] = function (_a, event) {
-                                var url = _a.url;
-                                if (session === _this._controllingSession) {
-                                    if (!loadedDataSets.has(url))
-                                        _this._commandQueue.push(function () { return delegate.loadDataSet(url); }, session);
-                                }
-                                loadedDataSets.add(url);
-                            };
-                            session.on['ar.vuforia.unloadDataSet'] = function (_a, event) {
-                                var url = _a.url;
-                                if (session === _this._controllingSession) {
-                                    if (loadedDataSets.has(url))
-                                        _this._commandQueue.push(function () { return delegate.unloadDataSet(url); }, session);
-                                }
-                                loadedDataSets.delete(url);
-                                activatedDataSets.delete(url);
-                            };
-                            session.on['ar.vuforia.activateDataSet'] = function (_a, event) {
-                                var url = _a.url;
-                                if (session === _this._controllingSession) {
-                                    if (!loadedDataSets.has(url))
-                                        _this._commandQueue.push(function () { return delegate.loadDataSet(url); }, session);
-                                    if (!activatedDataSets.has(url))
-                                        _this._commandQueue.push(function () { return delegate.activateDataSet(url); }, session);
-                                }
-                                loadedDataSets.add(url);
-                                activatedDataSets.add(url);
-                            };
-                            session.on['ar.vuforia.deactivateDataSet'] = function (_a, event) {
-                                var url = _a.url;
-                                if (session === _this._controllingSession) {
-                                    if (activatedDataSets.has(url))
-                                        _this._commandQueue.push(function () { return delegate.deactivateDataSet(url); }, session);
-                                }
-                                activatedDataSets.delete(url);
+                            session.on['ar.vuforia.dataSetLoad'] = function (_a, event) {
+                                var id = _a.id;
+                                return commandQueue.push(function () {
+                                    return delegate.dataSetLoad(id);
+                                }, _this._controllingSession === session);
                             };
                             session.closeEvent.addEventListener(function () {
-                                _this._commandQueue.push(function () { return delegate.stopObjectTracker(); }, session);
-                                loadedDataSets.forEach(function (url) {
-                                    _this._commandQueue.push(function () { return delegate.deactivateDataSet(url); }, session);
-                                    _this._commandQueue.push(function () { return delegate.unloadDataSet(url); }, session);
-                                });
-                                _this._controllingSession = null;
+                                if (_this._controllingSession === session) {
+                                    commandQueue.clear();
+                                    commandQueue.push(function () {
+                                        _this._cleanupSession(session);
+                                        setTimeout(function () {
+                                            _this._ensureControllingSession();
+                                        }, 2000);
+                                    }, true);
+                                    _this._controllingSession = null;
+                                }
+                                else {
+                                    _this._cleanupSession(session);
+                                }
                             });
                         });
+                        focusService.sessionFocusEvent.addEventListener(function (_a) {
+                            var current = _a.current;
+                            if (_this._sessionInitOptions.get(current)) {
+                                _this._setControllingSession(current);
+                            }
+                        });
                     }
-                    sessionService.manager.on['ar.vuforia.errorEvent'] = function (err, event) {
-                        var error = null;
-                        switch (err.type) {
-                            case VuforiaErrorType.InitError:
-                                error = new VuforiaInitError(err.message, err.data.code);
-                                break;
-                            case VuforiaErrorType.LoadDataSetError:
-                                error = new VuforiaLoadDataSetError(err.message);
-                                break;
-                            case VuforiaErrorType.UnloadDataSetError:
-                                error = new VuforiaUnloadDataSetError(err.message);
-                                break;
-                            case VuforiaErrorType.ActivateDataSetError:
-                                error = new VuforiaActivateDataSetError(err.message);
-                                break;
-                            default:
-                                error = new Error(err.message);
-                                break;
-                        }
-                        sessionService.errorEvent.raiseEvent(error);
-                    };
-                    sessionService.manager.on['ar.vuforia.dataSetLoadEvent'] = function (msg, event) {
-                        var url = msg.url, trackables = msg.trackables;
-                        var dataSet = _this._dataSetMap.get(url);
-                        dataSet._resolveTrackables(trackables);
-                    };
-                    focusService.sessionFocusEvent.addEventListener(function (session) {
-                        if (_this._sessionInitOptions.has(session)) {
-                            _this._initVuforia(session);
-                        }
-                    });
-                    delegate.errorEvent.addEventListener(function (msg) {
-                        var session = _this._commandQueue.currentUserData;
-                        if (msg.type === VuforiaErrorType.InitError) {
-                            _this._sessionInitOptions.delete(session);
-                            _this._controllingSession = null;
-                            _this._isInitialized = false;
-                            _this._commandQueue.clear();
-                        }
-                        session.send('ar.vuforia.errorEvent', msg);
-                    });
-                    delegate.dataSetLoadEvent.addEventListener(function (msg) {
-                        var session = _this._commandQueue.currentUserData;
-                        session.send('ar.vuforia.dataSetLoadEvent', msg);
-                    });
                 }
                 ;
-                VuforiaService.prototype.isSupported = function () {
-                    return this.sessionService.manager.request('ar.vuforia.isSupported');
+                VuforiaService.prototype.isAvailable = function () {
+                    return this.sessionService.manager.request('ar.vuforia.isAvailable').then(function (message) {
+                        return message.available;
+                    });
                 };
                 VuforiaService.prototype.init = function (options) {
-                    this.sessionService.manager.send('ar.vuforia.init', options);
-                };
-                VuforiaService.prototype.deinit = function () {
-                    this.sessionService.manager.send('ar.vuforia.deinit');
-                };
-                VuforiaService.prototype.startCamera = function () {
-                    this.sessionService.manager.send('ar.vuforia.startCamera');
-                };
-                VuforiaService.prototype.stopCamera = function () {
-                    this.sessionService.manager.send('ar.vuforia.stopCamera');
-                };
-                VuforiaService.prototype.startObjectTracker = function () {
-                    this.sessionService.manager.send('ar.vuforia.startObjectTracker');
-                };
-                VuforiaService.prototype.stopObjectTracker = function () {
-                    this.sessionService.manager.send('ar.vuforia.stopObjectTracker');
-                };
-                VuforiaService.prototype.hintMaxSimultaneousImageTargets = function (max) {
-                    this.sessionService.manager.send('ar.vuforia.hintMaxSimultaneousImageTargets', { max: max });
-                };
-                VuforiaService.prototype.createDataSet = function (url) {
-                    url = utils_1.resolveURL(url);
-                    var dataSet = new VuforiaDataSet(url, this.sessionService.manager);
-                    this._dataSetMap.set(url, dataSet);
-                    return dataSet;
-                };
-                VuforiaService.prototype._initVuforia = function (session) {
                     var _this = this;
-                    var queue = this._commandQueue;
-                    var initOptions = this._sessionInitOptions.get(session);
-                    var maxSimultaneousImageTargets = this._sessionMaxSimultaneousImageTargets.get(session);
-                    var cameraStarted = this._sessionCameraStarted.get(session);
-                    var objectTrackerStarted = this._sessionObjectTrackerStarted.get(session);
-                    var loadedDataSets = this._sessionLoadedDataSets.get(session);
-                    var activatedDataSets = this._sessionActivatedDataSets.get(session);
-                    var delegate = this.delegate;
-                    if (this._isInitialized) {
-                        queue.clear();
-                        queue.push(function () {
-                            return delegate.deinit().then(function () {
-                                _this._isInitialized = false;
-                            });
-                        }, this._controllingSession);
+                    return this.sessionService.manager.request('ar.vuforia.init', options).then(function () {
+                        return new VuforiaAPI(_this.sessionService.manager);
+                    });
+                };
+                VuforiaService.prototype._ensureControllingSession = function () {
+                    if (this._controllingSession === null) {
+                        this._selectControllingSession();
                     }
+                };
+                VuforiaService.prototype._selectControllingSession = function () {
+                    var focusSession = this.focusService.getSession();
+                    if (this._sessionInitOptions.get(focusSession)) {
+                        this._setControllingSession(focusSession);
+                        return;
+                    }
+                    for (var _i = 0, _a = this.sessionService.managedSessions; _i < _a.length; _i++) {
+                        var session = _a[_i];
+                        if (this._sessionInitOptions.get(session)) {
+                            this._setControllingSession(session);
+                            return;
+                        }
+                    }
+                    this._setControllingSession(this.sessionService.manager);
+                };
+                VuforiaService.prototype._setControllingSession = function (session) {
+                    var _this = this;
+                    var currentSession = this._controllingSession;
+                    if (currentSession) {
+                        var commandQueue = this._sessionCommandQueue.get(currentSession);
+                        commandQueue.push(function () {
+                            return _this._pauseSession(currentSession);
+                        }, true).then(function () {
+                            _this._resumeSession(session);
+                        });
+                    }
+                    else {
+                        this._resumeSession(session);
+                    }
+                };
+                VuforiaService.prototype._resumeSession = function (session) {
+                    if (this._controllingSession)
+                        throw new Error('VuforiaService: Attempted to resume a session while a session is still in control');
                     this._controllingSession = session;
-                    queue.push(function () {
-                        _this._isInitialized = true;
-                        return delegate.init(initOptions || {});
-                    }, session);
-                    if (cameraStarted)
-                        queue.push(function () { return delegate.startCamera(); }, session);
-                    if (objectTrackerStarted)
-                        queue.push(function () { return delegate.startObjectTracker(); }, session);
-                    queue.push(function () { return delegate.hintMaxSimultaneousImageTargets(maxSimultaneousImageTargets || 1); }, session);
-                    loadedDataSets.forEach(function (url) {
-                        queue.push(function () { return delegate.loadDataSet(url); }, session);
+                    var initOptions = this._sessionInitOptions.get(session);
+                    if (!initOptions) {
+                        throw new Error('VuforiaService: Attempted to resume a session without initialization options');
+                    }
+                    var isInitialized = this._sessionIsInitialized.get(session);
+                    var commandQueue = this._sessionCommandQueue.get(session);
+                    if (isInitialized) {
+                        this._init(session).then(function () {
+                            commandQueue.execute();
+                        }).catch(function (err) {
+                            session.sendError(err);
+                        });
+                    }
+                    else {
+                        commandQueue.execute(); // this should call _init
+                    }
+                };
+                VuforiaService.prototype._pauseSession = function (session) {
+                    var _this = this;
+                    if (this._controllingSession !== session)
+                        throw Error('VuforiaService: Attempted to pause a session which is not in control');
+                    this._controllingSession = null;
+                    var commandQueue = this._sessionCommandQueue.get(session);
+                    return commandQueue.push(function () {
+                        return _this._deinit(session);
+                    }, true);
+                };
+                VuforiaService.prototype._cleanupSession = function (session) {
+                    // If session is in control, deactivate active datasets / trackables, and destroy them
+                    // If session is not in control, destroy its datasets / trackables
+                    var _this = this;
+                    if (this._controllingSession === session) {
+                        var commandQueue = this._sessionCommandQueue.get(session);
+                        commandQueue.push(function () {
+                            return new Promise(function (resolve) {
+                                var remove = _this.delegate.stateUpdateEvent.addEventListener(function () {
+                                    var activatedDataSets = _this._sessionActivatedDataSets.get(session);
+                                    activatedDataSets.forEach(function (id) {
+                                        _this.delegate.objectTrackerDeactivateDataSet(id);
+                                    });
+                                    _this._sessionActivatedDataSets.delete(session);
+                                    var createdDataSets = _this._sessionCreatedDataSets.get(session);
+                                    createdDataSets.forEach(function (id) {
+                                        _this.delegate.objectTrackerDestroyDataSet(id);
+                                    });
+                                    _this._sessionCreatedDataSets.delete(session);
+                                    remove();
+                                });
+                            });
+                        }, true);
+                    }
+                };
+                VuforiaService.prototype._init = function (session) {
+                    var _this = this;
+                    var options = this._sessionInitOptions.get(session);
+                    return this.delegate.init(options).then(function (initResult) {
+                        if (initResult !== VuforiaInitResult.SUCCESS) {
+                            return Promise.reject("Vuforia init failed: " + VuforiaInitResult[initResult]);
+                        }
+                        // must initialize trackers before initializing the camera device
+                        if (!_this.delegate.objectTrackerInit()) {
+                            return Promise.reject("Vuforia init failed: Unable to initialize ObjectTracker");
+                        }
+                        // restore active datasets & trackables
+                        var activatedDataSets = _this._sessionActivatedDataSets.get(session);
+                        var success = true;
+                        activatedDataSets.forEach(function (id) {
+                            success = success && _this.delegate.objectTrackerActivateDataSet(id);
+                            if (success) {
+                                session.send('ar.vuforia.objectTrackerActivateDataSetEvent', { id: id });
+                            }
+                        });
+                        if (!success) {
+                            return Promise.reject("Vuforia init failed: Unable to restore active datasets");
+                        }
+                        // todo: also activate datasets / trackables created by other sessions
+                        // (if this fails, then vuforia has probably started forbidding datasets created 
+                        // by one developer account to work while using a license key from a different
+                        // developer account, so no need to return a rejected promise in that case)
+                        if (!_this.delegate.cameraDeviceInitAndStart()) {
+                            return Promise.reject("Vuforia init failed: Unable to complete initialization");
+                        }
+                        // trackers get started after camera is initialized and started
+                        if (!_this.delegate.objectTrackerStart()) {
+                            return Promise.reject("Vuforia init failed: Unable to start ObjectTracker");
+                        }
+                        _this._sessionIsInitialized.set(session, true);
+                    }).catch(function (err) {
+                        _this._sessionInitOptions.set(session, null);
+                        _this._sessionIsInitialized.set(session, false);
+                        _this._deinit(session);
+                        _this._ensureControllingSession();
+                        return Promise.reject(err);
                     });
-                    activatedDataSets.forEach(function (url) {
-                        queue.push(function () { return delegate.activateDataSet(url); }, session);
+                };
+                VuforiaService.prototype._deinit = function (session) {
+                    // Deactivate any activated datasets, stop trackers, and deinit. 
+                    // Don't destroy created resources in case we to use them to restore state. 
+                    var _this = this;
+                    // not sure if the following is necessary
+                    var activatedDataSets = this._sessionActivatedDataSets.get(session);
+                    activatedDataSets.forEach(function (id) {
+                        _this.delegate.objectTrackerDeactivateDataSet(id);
+                        session.send('ar.vuforia.objectTrackerDeactivateDataSetEvent', { id: id });
                     });
+                    // may need to call stop on the trackers / camera device first?
+                    // const errors:Array<string> = [];
+                    // if (!this.delegate.objectTrackerDeinit()) {
+                    //     errors.push("Unable to deinitialize ObjectTracker");
+                    // } 
+                    // if (!this.delegate.cameraDeviceDeinit()) {
+                    //     errors.push("Unable to deinitialize CameraDevice");
+                    // }
+                    this.delegate.deinit();
+                    // if (errors.length > 0) {
+                    //     return Promise.reject(errors.join('\n'));
+                    // }
                 };
                 VuforiaService = __decorate([
                     aurelia_dependency_injection_1.inject(session_1.SessionService, focus_1.FocusService, reality_1.RealityService, VuforiaServiceDelegate)
@@ -491,37 +414,88 @@ System.register(['aurelia-dependency-injection', './config', './focus', './reali
                 return VuforiaService;
             }());
             exports_1("VuforiaService", VuforiaService);
+            VuforiaAPI = (function () {
+                function VuforiaAPI(manager) {
+                    this.manager = manager;
+                    this.objectTracker = new VuforiaObjectTracker(manager);
+                }
+                return VuforiaAPI;
+            }());
+            exports_1("VuforiaAPI", VuforiaAPI);
+            VuforiaTracker = (function () {
+                function VuforiaTracker() {
+                }
+                return VuforiaTracker;
+            }());
+            exports_1("VuforiaTracker", VuforiaTracker);
+            /**
+             * Vuforia Object Tracker
+             */
+            VuforiaObjectTracker = (function (_super) {
+                __extends(VuforiaObjectTracker, _super);
+                function VuforiaObjectTracker(manager) {
+                    var _this = this;
+                    _super.call(this);
+                    this.manager = manager;
+                    this._dataSetMap = new Map();
+                    this.dataSetActivateEvent = new utils_1.Event();
+                    this.dataSetDeactivateEvent = new utils_1.Event();
+                    manager.on['ar.vuforia.objectTrackerActivateDataSetEvent'] = function (_a, event) {
+                        var id = _a.id;
+                        var dataSet = _this._dataSetMap.get(id);
+                        dataSet._onActivate();
+                        _this.dataSetActivateEvent.raiseEvent(dataSet);
+                    };
+                    manager.on['ar.vuforia.objectTrackerDeactivateDataSetEvent'] = function (_a, event) {
+                        var id = _a.id;
+                        var dataSet = _this._dataSetMap.get(id);
+                        dataSet._onDeactivate();
+                        _this.dataSetDeactivateEvent.raiseEvent(dataSet);
+                    };
+                }
+                VuforiaObjectTracker.prototype.createDataSet = function (url) {
+                    var _this = this;
+                    return this.manager.request('ar.vuforia.objectTrackerCreateDataSet', { url: url }).then(function (message) {
+                        return new VuforiaDataSet(message.dataSetId, _this.manager);
+                    });
+                };
+                VuforiaObjectTracker.prototype.activateDataSet = function (dataSet) {
+                    return this.manager.request('ar.vuforia.objectTrackerActivateDataSet', { id: dataSet.id });
+                };
+                VuforiaObjectTracker.prototype.deactivateDataSet = function (dataSet) {
+                    return this.manager.request('ar.vuforia.objectTrackerDeactivateDataSet', { id: dataSet.id });
+                };
+                return VuforiaObjectTracker;
+            }(VuforiaTracker));
+            exports_1("VuforiaObjectTracker", VuforiaObjectTracker);
             /**
              * A vuforia data set. TODO
              */
             VuforiaDataSet = (function () {
-                function VuforiaDataSet(url, manager) {
-                    var _this = this;
-                    this.url = url;
+                function VuforiaDataSet(id, manager) {
+                    this.id = id;
                     this.manager = manager;
-                    this._loaded = false;
-                    this._activated = false;
-                    this._trackablesPromise = new Promise(function (resolve, reject) { _this._resolveTrackables = resolve; });
+                    this._isLoaded = false;
+                    this._isActive = false;
                 }
-                Object.defineProperty(VuforiaDataSet.prototype, "loaded", {
-                    get: function () { return this._loaded; },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(VuforiaDataSet.prototype, "activated", {
-                    get: function () { return this._activated; },
-                    enumerable: true,
-                    configurable: true
-                });
-                VuforiaDataSet.prototype.load = function () { this._loaded = true; this.manager.send('ar.vuforia.loadDataSet', { url: this.url }); };
-                VuforiaDataSet.prototype.unload = function () { this._loaded = false; this._activated = false; this.manager.send('ar.vuforia.unloadDataSet', { url: this.url }); };
-                VuforiaDataSet.prototype.activate = function () { this._loaded = true; this._activated = true; this.manager.send('ar.vuforia.activateDataSet', { url: this.url }); };
-                VuforiaDataSet.prototype.deactivate = function () { this._activated = false; this.manager.send('ar.vuforia.deactivateDataSet', { url: this.url }); };
-                Object.defineProperty(VuforiaDataSet.prototype, "trackablesPromise", {
-                    get: function () { return this._trackablesPromise; },
-                    enumerable: true,
-                    configurable: true
-                });
+                VuforiaDataSet.prototype._onActivate = function () {
+                    this._isActive = true;
+                };
+                VuforiaDataSet.prototype._onDeactivate = function () {
+                    this._isActive = false;
+                };
+                VuforiaDataSet.prototype.fetch = function () {
+                    return this.manager.request('ar.vuforia.dataSetFetch', { id: this.id }).then(function () { });
+                };
+                VuforiaDataSet.prototype.load = function () {
+                    return this.manager.request('ar.vuforia.dataSetLoad', { id: this.id });
+                };
+                VuforiaDataSet.prototype.isActive = function () {
+                    return this._isActive;
+                };
+                VuforiaDataSet.prototype.getTrackables = function () {
+                    return this._trackables;
+                };
                 return VuforiaDataSet;
             }());
             exports_1("VuforiaDataSet", VuforiaDataSet);

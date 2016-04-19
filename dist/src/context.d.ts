@@ -1,13 +1,12 @@
 import { Entity, EntityCollection, Cartesian3, Quaternion, JulianDate, ReferenceFrame } from './cesium/cesium-imports';
+import { DeviceService } from './device';
 import { SessionService } from './session';
 import { RealityService, FrameState } from './reality';
 import { Event } from './utils';
-import { CameraService } from './camera';
-import { ViewportService } from './viewport';
 /**
- * Describes the state of an entity at a particular time relative to a particular reference frame
+ * Describes the pose of an entity at a particular time relative to a particular reference frame
  */
-export interface EntityState {
+export interface EntityPose {
     position: Cartesian3;
     orientation: Quaternion;
     time: JulianDate;
@@ -47,8 +46,7 @@ export declare enum PoseStatus {
 export declare class ContextService {
     private sessionService;
     private realityService;
-    private cameraService;
-    private viewportService;
+    private deviceService;
     /**
      * An event that is raised when all remotely managed entities are are up-to-date for
      * the current frame. It is suggested that all modifications to locally managed entities
@@ -65,54 +63,45 @@ export declare class ContextService {
      */
     entities: EntityCollection;
     /**
-     * The current time (not valid until the first update event)
-     */
-    time: JulianDate;
-    /**
-     * An origin positioned near the eye which doesn't change very often,
-     * aligned with the East-North-Up coordinate system.
-     */
-    localOriginEastNorthUp: Entity;
-    /**
-     * An origin positioned near the eye which doesn't change very often,
-     * aligned with the East-Up-South coordinate system. This useful for
-     * converting to the Y-Up convention used in some libraries, such as
-     * three.js.
-     */
-    localOriginEastUpSouth: Entity;
-    /**
      * An event that fires when the local origin changes.
      */
     localOriginChangeEvent: Event<void>;
     /**
-     * The default origin to use when calling `getEntityState`. By default,
-     * this is `this.localOriginEastNorthUp`.
+     * An entity representing the location and orientation of the user.
      */
-    defaultReferenceFrame: Entity;
+    user: Entity;
     /**
-     * An entity representing the current device which is running Argon.
-     */
-    device: Entity;
-    /**
-     * An entity representing the 'eye' through which the user sees (usually the
-     * camera on the current device for a video-see-through realty). The scene
-     * should always be rendered from this viewpoint.
-     */
-    eye: Entity;
-    /**
-     * An origin positioned at the eye, aligned with the local East-North-Up
+     * An entity positioned near the user, aligned with the local East-North-Up
      * coordinate system.
      */
-    eyeOriginEastNorthUp: Entity;
+    localOriginEastNorthUp: Entity;
+    /**
+     * An entity positioned near the user, aligned with the East-Up-South
+     * coordinate system. This useful for converting to the Y-Up convention
+     * used in some libraries, such as three.js.
+     */
+    localOriginEastUpSouth: Entity;
+    private _time;
+    private _defaultReferenceFrame;
+    private _entityPoseCache;
+    private _entityPoseMap;
     private _subscribedEntities;
-    private _entityStateMap;
     private _updatingEntities;
     private _knownEntities;
-    constructor(sessionService: SessionService, realityService: RealityService, cameraService: CameraService, viewportService: ViewportService);
+    constructor(sessionService: SessionService, realityService: RealityService, deviceService: DeviceService);
+    /**
+     * Get the current time (not valid until the first update event)
+     */
+    getTime(): JulianDate;
     /**
      * Set the default reference frame for `getCurrentEntityState`.
      */
     setDefaultReferenceFrame(origin: Entity): void;
+    /**
+     * Get the default reference frame to use when calling `getEntityPose`.
+     * By default, this is the `localOriginEastNorthUp` reference frame.
+     */
+    getDefaultReferenceFrame(): Entity;
     /**
      * Adds an entity to this session's set of tracked entities.
      *
@@ -121,7 +110,7 @@ export declare class ContextService {
      */
     subscribeToEntityById(id: string): Entity;
     /**
-     * Gets the state of an entity at the current context time relative to a reference frame.
+     * Gets the current pose of an entity, relative to a given reference frame.
      *
      * @param entity - The entity whose state is to be queried.
      * @param referenceFrame - The intended reference frame. Defaults to `this.defaultReferenceFrame`.
@@ -129,9 +118,11 @@ export declare class ContextService {
      * object with the fields `position` and `orientation`, both of type
      * `Cartesian3`. Otherwise undefined.
      */
-    getCurrentEntityState(entity: Entity, referenceFrame?: ReferenceFrame | Entity): EntityState;
+    getEntityPose(entity: Entity, referenceFrame?: ReferenceFrame | Entity): EntityPose;
+    private getCurrentEntityState(entity, referenceFrame);
     private _update(state);
     private _updateEntity(id, state);
     private _updateOrigin(state);
-    private _sendUpdateForSession(parentState, session, entityPoseCache);
+    private _sendUpdateForSession(parentState, session);
+    private _addEntityAndAncestorsToPoseMap(poseMap, id, time);
 }

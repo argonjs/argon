@@ -10,16 +10,16 @@ System.register([], function(exports_1, context_1) {
              */
             (function (Role) {
                 /*
-                 * An application recieves state update events from a manager.
+                 * An application can augment a reality view.
                  */
                 Role[Role["APPLICATION"] = "Application"] = "APPLICATION";
                 /*
-                 * A reality provides state update events to a manager.
+                 * A reality view is a representation of reality.
                  */
-                Role[Role["REALITY"] = "Reality"] = "REALITY";
+                Role[Role["REALITY_VIEW"] = "RealityView"] = "REALITY_VIEW";
                 /*
-                 * A manager recieves state update events from a reality and
-                 * sends state update events to applications.
+                 * The manager mediates access to sensors / trackers
+                 * and keeps track of known entities in the world.
                  */
                 Role[Role["MANAGER"] = "Manager"] = "MANAGER";
             })(Role || (Role = {}));

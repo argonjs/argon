@@ -2,22 +2,20 @@ import { JulianDate, ReferenceFrame } from './cesium/cesium-imports';
 import { TimerService } from './timer';
 import { FocusService } from './focus';
 import { SessionPort, SessionService } from './session';
-import { CameraService, Camera } from './camera';
 import { DeviceService } from './device';
 import { MessagePortLike, Event } from './utils';
-import { ViewportService, Viewport } from './viewport';
 /**
-* Represents a Reality
+* Represents a view of Reality
 */
-export interface Reality {
+export interface RealityView {
     type: string;
     id?: string;
     [option: string]: any;
 }
 /**
- * Describes the position, orientation, and referenceFrame of an entity.
+ * A which describes the position, orientation, and referenceFrame of an entity.
  */
-export interface EntityPose {
+export interface SerializedEntityPose {
     position?: {
         x: number;
         y: number;
@@ -32,53 +30,80 @@ export interface EntityPose {
     referenceFrame: ReferenceFrame | string;
 }
 /**
- * A map of entity ids and their associated poses.
+ * A JSON map of entity ids and their associated poses.
  */
-export interface EntityPoseMap {
-    EYE?: EntityPose;
-    [id: string]: EntityPose;
+export interface SerializedEntityPoseMap {
+    [id: string]: SerializedEntityPose;
 }
 /**
- * Describes the minimal frame state that is provided by a reality.
+ * Viewport is expressed using a right-handed coordinate system with the origin
+ * at the bottom left corner.
  */
-export interface MinimalFrameState {
+export interface Viewport {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+}
+export declare enum SubviewType {
+    SINGULAR,
+    LEFTEYE,
+    RIGHTEYE,
+    OTHER,
+}
+/**
+ * The serialized rendering parameters for a particular subview
+ */
+export interface SerializedSubview {
+    type: SubviewType;
+    projectionMatrix: number[];
+    pose?: SerializedEntityPose;
+    viewport?: Viewport;
+}
+/**
+ * The serialized view parameters describe how the application should render each frame
+ */
+export interface SerializedViewParameters {
+    /**
+     * The primary viewport to render into. In a DOM environment, the bottom left corner of the document element
+     * (document.documentElement) should be considered the origin.
+     */
+    viewport: Viewport;
+    /**
+     * The primary pose for this view.
+     */
+    pose: SerializedEntityPose;
+    /**
+     * The list of subviews to render.
+     */
+    subviews: SerializedSubview[];
+}
+/**
+ * Describes the serialized frame state.
+ */
+export interface SerializedFrameState {
     frameNumber: number;
     time: JulianDate;
-    entities?: EntityPoseMap;
-    camera?: Camera;
-    viewport?: Viewport;
+    view: SerializedViewParameters;
+    entities?: SerializedEntityPoseMap;
 }
 /**
  * Describes the complete frame state which is emitted by the RealityService.
  */
-export interface FrameState extends MinimalFrameState {
-    reality: Reality;
-    entities: EntityPoseMap;
-    camera: Camera;
-    viewport: Viewport;
+export interface FrameState extends SerializedFrameState {
+    reality: RealityView;
+    entities: SerializedEntityPoseMap;
 }
 export declare abstract class RealitySetupHandler {
     abstract type: string;
-    abstract setup(reality: Reality, port: MessagePortLike): void;
+    abstract setup(reality: RealityView, port: MessagePortLike): void;
 }
 /**
 * Manages reality
 */
 export declare class RealityService {
-    handlers: RealitySetupHandler[];
     private sessionService;
-    private cameraService;
-    private deviceService;
     private focusService;
-    private viewportService;
-    /**
-     * The current reality.
-     */
-    current: Reality;
-    /**
-     * The desired reality.
-     */
-    desired: Reality;
     /**
      * An event that is raised when a reality control port is opened.
      */
@@ -87,7 +112,8 @@ export declare class RealityService {
      * An event that is raised when the current reality is changed.
      */
     changeEvent: Event<{
-        previous: Reality;
+        previous: RealityView;
+        current: RealityView;
     }>;
     /**
      * An event that is raised when the current reality emits the next frame state.
@@ -98,13 +124,25 @@ export declare class RealityService {
     /**
      * Manager-only. A map from a managed session to the desired reality
      */
-    desiredRealityMap: WeakMap<SessionPort, Reality>;
+    desiredRealityMap: WeakMap<SessionPort, RealityView>;
     /**
      * Manager-only. A map from a desired reality to the session which requested it
      */
-    desiredRealityMapInverse: WeakMap<Reality, SessionPort>;
+    desiredRealityMapInverse: WeakMap<RealityView, SessionPort>;
     private _realitySession;
-    constructor(handlers: RealitySetupHandler[], sessionService: SessionService, cameraService: CameraService, deviceService: DeviceService, focusService: FocusService, viewportService: ViewportService);
+    private _default;
+    private _current;
+    private _desired;
+    private _handlers;
+    constructor(sessionService: SessionService, focusService: FocusService);
+    /**
+     * Manager-only. Register a reality setup handler
+     */
+    registerHandler(handler: RealitySetupHandler): void;
+    /**
+     * Get the current reality view
+     */
+    getCurrent(): RealityView;
     /**
     * Manager-only. Check if a type of reality is supported.
     * @param type reality type
@@ -118,13 +156,21 @@ export declare class RealityService {
         type: string;
     }): void;
     /**
+     * Get the desired reality
+     */
+    getDesired(): RealityView;
+    /**
+     * Set the default reality. Manager-only.
+     */
+    setDefault(reality: RealityView): void;
+    /**
     * Manager-only. Selects the best reality based on the realites
     * requested by all managed sessions. Can be overriden for customized selection.
     *
     * @returns The reality chosen for this context. May be undefined if no
     * realities have been requested.
     */
-    onSelectReality(): Reality;
+    onSelectReality(): RealityView;
     private _setNextReality(reality);
     private _getHandler(type);
     private _setCurrent(reality);
@@ -132,8 +178,9 @@ export declare class RealityService {
 }
 export declare class EmptyRealitySetupHandler implements RealitySetupHandler {
     private sessionService;
+    private deviceService;
     private timer;
     type: string;
-    constructor(sessionService: SessionService, timer: TimerService);
-    setup(reality: Reality, port: MessagePortLike): void;
+    constructor(sessionService: SessionService, deviceService: DeviceService, timer: TimerService);
+    setup(reality: RealityView, port: MessagePortLike): void;
 }

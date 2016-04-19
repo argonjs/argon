@@ -7,7 +7,7 @@
         "emitDecoratorMetadata": false,
         "experimentalDecorators": true,
         "allowSyntheticDefaultImports": true,
-        "pretty": true
+        "pretty": false
     },
     "filesGlob": [
         "src/*.ts",
@@ -21,18 +21,16 @@
         "jspm_packages/npm/aurelia-logging@1.0.0-beta.1.1.2/aurelia-logging.d.ts",
         "jspm_packages/npm/aurelia-metadata@1.0.0-beta.1.1.5/aurelia-metadata.d.ts",
         "jspm_packages/npm/aurelia-pal@1.0.0-beta.1.1.1/aurelia-pal.d.ts",
-        "src/mode.ts",
-        "src/reality.ts",
         "src/session.ts",
-        "src/camera.ts",
-        "src/utils.ts",
-        "src/viewport.ts",
+        "src/timer.ts",
+        "src/config.ts",
+        "src/view.ts",
         "src/vuforia.ts",
         "src/argon.ts",
-        "src/config.ts",
         "src/context.ts",
         "src/device.ts",
         "src/focus.ts",
-        "src/timer.ts"
+        "src/reality.ts",
+        "src/utils.ts"
     ]
 }

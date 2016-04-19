@@ -1,5 +1,5 @@
 import 'aurelia-polyfills'
-import {Container} from 'aurelia-dependency-injection'
+import * as DI from 'aurelia-dependency-injection'
 import * as Cesium from './cesium/cesium-imports'
 
 import {
@@ -11,31 +11,26 @@ import {
     WKWebViewConnectService
 } from './session'
 
-import {CameraService} from './camera'
 import {Configuration, Role} from './config'
 import {ContextService} from './context'
 import {DeviceService} from './device'
 import {FocusService} from './focus'
-import {InteractionModeService} from './mode'
 import {RealityService, RealitySetupHandler, EmptyRealitySetupHandler, FrameState} from './reality'
 import {TimerService} from './timer'
 import {Event} from './utils'
+import {ViewService} from './view'
 import {VuforiaService, VuforiaRealitySetupHandler} from './vuforia'
-import {ViewportService} from './viewport'
 
-
-export {Container, Cesium}
-export * from './camera'
+export {DI, Cesium}
 export * from './config'
 export * from './context'
 export * from './device'
 export * from './focus'
-export * from './mode'
 export * from './reality'
 export * from './session'
 export * from './timer'
 export * from './utils'
-export * from './viewport'
+export * from './view'
 export * from './vuforia'
 
 /**
@@ -45,17 +40,12 @@ export class ArgonSystem {
 
     static instance: ArgonSystem;
 
-    constructor(config: Configuration, public container = new Container()) {
+    constructor(config: Configuration, public container = new DI.Container()) {
         if (!ArgonSystem.instance) ArgonSystem.instance = this;
-
-        if (!config.defaultReality) config.defaultReality = { type: 'empty' }
 
         container.registerInstance('config', config);
         container.registerInstance(Role, config.role);
         container.registerInstance(ArgonSystem, this);
-
-        container.registerSingleton(RealitySetupHandler, EmptyRealitySetupHandler);
-        container.registerSingleton(RealitySetupHandler, VuforiaRealitySetupHandler);
 
         if (config.role === Role.MANAGER) {
             container.registerSingleton(
@@ -84,16 +74,21 @@ export class ArgonSystem {
             );
         }
 
+        if (config.role === Role.MANAGER) {
+            this.reality.registerHandler(container.get(EmptyRealitySetupHandler));
+            this.reality.registerHandler(container.get(VuforiaRealitySetupHandler));
+
+            if (typeof document !== 'undefined') {
+                this.reality.setDefault({ type: 'empty' })
+            }
+        }
+
         // ensure the entire object graph is instantiated before connecting to the manager. 
         for (const key of Object.keys(ArgonSystem.prototype)) {
             this[key];
         }
 
         this.session.connect();
-    }
-
-    public get camera(): CameraService {
-        return this.container.get(CameraService);
     }
 
     public get context(): ContextService {
@@ -108,10 +103,6 @@ export class ArgonSystem {
         return this.container.get(FocusService);
     }
 
-    public get interactionMode(): InteractionModeService {
-        return this.container.get(InteractionModeService);
-    }
-
     public get reality(): RealityService {
         return this.container.get(RealityService);
     }
@@ -124,13 +115,15 @@ export class ArgonSystem {
         return this.container.get(TimerService);
     }
 
-    public get viewport(): ViewportService {
-        return this.container.get(ViewportService);
+    public get view(): ViewService {
+        return this.container.get(ViewService);
     }
 
     public get vuforia(): VuforiaService {
         return this.container.get(VuforiaService);
     }
+
+    // events
 
     public get updateEvent(): Event<FrameState> {
         return this.context.updateEvent;
@@ -149,7 +142,7 @@ export class ArgonSystem {
     }
 }
 
-export function init(options: { config?: Configuration, container?: Container } = {}) {
+export function init(options: { config?: Configuration, container?: DI.Container } = {}) {
     let role: Role;
     if (typeof window === 'undefined') {
         role = Role.MANAGER
@@ -158,12 +151,12 @@ export function init(options: { config?: Configuration, container?: Container } 
     } else {
         role = Role.MANAGER
     }
-    const config = Object.assign({ role, enableIncomingUpdateEvents: role === Role.APPLICATION }, options.config);
+    const config = Object.assign(<Configuration>{ role }, options.config);
     return new ArgonSystem(config, options.container);
 }
 
-export function initReality(options: { config?: Configuration, container?: Container } = {}) {
-    const config = Object.assign({ role: Role.REALITY }, { enableRealityControlPort: true }, options.config);
+export function initReality(options: { config?: Configuration, container?: DI.Container } = {}) {
+    const config = Object.assign(<Configuration>{ role: Role.REALITY_VIEW, realityViewSupportsControlPort: true }, options.config);
     return new ArgonSystem(config, options.container);
 }
 

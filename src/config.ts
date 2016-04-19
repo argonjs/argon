@@ -4,11 +4,13 @@
  * Describes the session configuration
  */
 export interface Configuration {
-    role: Role;
+    role?: Role;
     userData?: any;
-    enableRealityControlPort?: boolean;
-    enableIncomingUpdateEvents?: boolean;
-    defaultReality?: { type: string, [option: string]: any };
+    // app options
+    appProvidesCustomView?: boolean;
+    // reality view options
+    realityViewSupportsControlPort?: boolean;
+    realityViewSupportsCustomView?: boolean;
 }
 
 
@@ -18,18 +20,18 @@ export interface Configuration {
 export enum Role {
 
     /*
-     * An application recieves state update events from a manager.
+     * An application can augment a reality view.
      */
     APPLICATION = "Application" as any,
 
     /*
-     * A reality provides state update events to a manager.
+     * A reality view is a representation of reality.
      */
-    REALITY = "Reality" as any,
+    REALITY_VIEW = "RealityView" as any,
 
     /*
-     * A manager recieves state update events from a reality and
-     * sends state update events to applications.
+     * The manager mediates access to sensors / trackers 
+     * and keeps track of known entities in the world.
      */
     MANAGER = "Manager" as any
 }

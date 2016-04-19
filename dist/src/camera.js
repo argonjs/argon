@@ -1,4 +1,4 @@
-System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './session', './viewport', './utils'], function(exports_1, context_1) {
+System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './session', './view', './utils'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -7,7 +7,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
         else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
-    var aurelia_dependency_injection_1, cesium_imports_1, session_1, viewport_1, utils_1;
+    var aurelia_dependency_injection_1, cesium_imports_1, session_1, view_1, utils_1;
     var CameraService;
     return {
         setters:[
@@ -20,8 +20,8 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
             function (session_1_1) {
                 session_1 = session_1_1;
             },
-            function (viewport_1_1) {
-                viewport_1 = viewport_1_1;
+            function (view_1_1) {
+                view_1 = view_1_1;
             },
             function (utils_1_1) {
                 utils_1 = utils_1_1;
@@ -75,9 +75,11 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                  * Set the current camera state. Called internally.
                  */
                 CameraService.prototype._setCamera = function (camera) {
-                    if (this._currentJSON !== JSON.stringify(camera)) {
+                    var json = JSON.stringify(camera);
+                    if (this._currentJSON !== json) {
                         var previous = this.current;
                         this.current = camera;
+                        this._currentJSON = json;
                         if (camera.type === 'perspective') {
                             var perspectiveCamera = camera;
                             if (!perspectiveCamera.fovX && !perspectiveCamera.fovY) {
@@ -87,7 +89,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                             var frustum = this.currentFrustum;
                             var aspect = frustum.aspectRatio = perspectiveCamera.fovX && perspectiveCamera.fovY ?
                                 Math.tan(perspectiveCamera.fovX * 0.5) / Math.tan(perspectiveCamera.fovY * 0.5) :
-                                this.viewportService.current.width / this.viewportService.current.height;
+                                this.viewportService.element.clientWidth / this.viewportService.element.clientWidth;
                             if (aspect > 1) {
                                 if (!perspectiveCamera.fovX)
                                     perspectiveCamera.fovX = 2 * Math.atan(Math.tan(perspectiveCamera.fovY * 0.5) * aspect);
@@ -105,7 +107,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                     }
                 };
                 CameraService = __decorate([
-                    aurelia_dependency_injection_1.inject(session_1.SessionService, viewport_1.ViewportService)
+                    aurelia_dependency_injection_1.inject(session_1.SessionService, view_1.ViewService)
                 ], CameraService);
                 return CameraService;
             }());

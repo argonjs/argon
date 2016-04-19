@@ -29,6 +29,7 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                 utils_1 = utils_1_1;
             }],
         execute: function() {
+            ;
             /**
              * Provides two-way communication between sessions, either
              * Application and Manager, or Reality and Manager.
@@ -101,27 +102,35 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                             return;
                         var id = evt.data[0];
                         var topic = evt.data[1];
-                        var message = evt.data[2];
+                        var message = evt.data[2] || {};
                         var expectsResponse = evt.data[3];
                         var handler = _this.on[topic];
                         if (handler && !expectsResponse) {
-                            handler(message, evt);
+                            var response = handler(message, evt);
+                            if (response)
+                                console.warn("Handler for " + topic + " returned an unexpected response");
                         }
                         else if (handler) {
-                            Promise.resolve(handler(message, evt)).then(function (response) {
-                                if (_this._isClosed)
-                                    return;
-                                _this.send(topic + ':resolve:' + id, response);
-                            }).catch(function (error) {
-                                if (_this._isClosed)
-                                    return;
-                                var errorMessage;
-                                if (typeof error === 'string')
-                                    errorMessage = error;
-                                else if (typeof error.message === 'string')
-                                    errorMessage = error.message;
-                                _this.send(topic + ':reject:' + id, { errorMessage: errorMessage });
-                            });
+                            var response = handler(message, evt);
+                            if (typeof response === 'undefined') {
+                                _this.send(topic + ':resolve:' + id);
+                            }
+                            else {
+                                Promise.resolve(response).then(function (response) {
+                                    if (_this._isClosed)
+                                        return;
+                                    _this.send(topic + ':resolve:' + id, response);
+                                }).catch(function (error) {
+                                    if (_this._isClosed)
+                                        return;
+                                    var errorMessage;
+                                    if (typeof error === 'string')
+                                        errorMessage = error;
+                                    else if (typeof error.message === 'string')
+                                        errorMessage = error.message;
+                                    _this.send(topic + ':reject:' + id, { reason: errorMessage });
+                                });
+                            }
                         }
                         else {
                             var error = { message: 'Unable to handle message ' + topic };
@@ -165,11 +174,11 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                 SessionPort.prototype.request = function (topic, message) {
                     var _this = this;
                     if (!this._isOpened || this._isClosed)
-                        return Promise.reject(new Error('Session.request: Session must be open to make requests'));
+                        throw new Error('Session.request: Session must be open to make requests');
                     var id = cesium_imports_1.createGuid();
                     var resolveTopic = topic + ':resolve:' + id;
                     var rejectTopic = topic + ':reject:' + id;
-                    this.messagePort.postMessage([id, topic, message, true]);
+                    this.messagePort.postMessage([id, topic, message || {}, true]);
                     return new Promise(function (resolve, reject) {
                         _this.on[resolveTopic] = function (message) {
                             delete _this.on[resolveTopic];
@@ -179,7 +188,8 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                         _this.on[rejectTopic] = function (message) {
                             delete _this.on[resolveTopic];
                             delete _this.on[rejectTopic];
-                            reject(message);
+                            console.warn("Request '" + topic + "' rejected with reason:\n" + message.reason);
+                            reject(new Error(message.reason));
                         };
                     });
                 };
@@ -335,10 +345,10 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                     return this.configuration.role === config_1.Role.APPLICATION;
                 };
                 /**
-                 * Returns true if this session is a Reality
+                 * Returns true if this session is a Reality view
                  */
-                SessionService.prototype.isReality = function () {
-                    return this.configuration.role === config_1.Role.REALITY;
+                SessionService.prototype.isRealityView = function () {
+                    return this.configuration.role === config_1.Role.REALITY_VIEW;
                 };
                 /**
                  * Throws an error if this session is not a manager
@@ -346,6 +356,13 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                 SessionService.prototype.ensureIsManager = function () {
                     if (!this.isManager)
                         throw new Error('An manager-only API was accessed in a non-manager session.');
+                };
+                /**
+                 * Throws an error if this session is not a reality
+                 */
+                SessionService.prototype.ensureIsReality = function () {
+                    if (!this.isRealityView)
+                        throw new Error('An reality-only API was accessed in a non-reality session.');
                 };
                 SessionService = __decorate([
                     aurelia_dependency_injection_1.inject('config', ConnectService, SessionPortFactory, utils_1.MessageChannelFactory)

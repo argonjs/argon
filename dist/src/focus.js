@@ -38,12 +38,13 @@ System.register(['aurelia-dependency-injection', './session', './utils'], functi
                     this.blurEvent = new utils_1.Event();
                     this._hasFocus = false;
                     this._sessionFocusEvent = new utils_1.Event();
-                    sessionService.manager.on['ar.focus.state'] = function (state) {
-                        _this._setFocus(state);
+                    sessionService.manager.on['ar.focus.state'] = function (message) {
+                        _this._setFocus(message.state);
                     };
                     if (sessionService.isManager()) {
                         setTimeout(function () {
-                            _this._setFocus(true);
+                            if (!_this._session)
+                                _this.setSession(_this.sessionService.manager);
                         });
                     }
                 }
@@ -66,17 +67,13 @@ System.register(['aurelia-dependency-injection', './session', './utils'], functi
                     enumerable: true,
                     configurable: true
                 });
-                Object.defineProperty(FocusService.prototype, "currentSession", {
-                    /**
-                     * Manager-only. The managed session which currently has focus.
-                     */
-                    get: function () {
-                        this.sessionService.ensureIsManager();
-                        return this._session;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
+                /**
+                 * Manager-only. The managed session which currently has focus.
+                 */
+                FocusService.prototype.getSession = function () {
+                    this.sessionService.ensureIsManager();
+                    return this._session;
+                };
                 /**
                  *  Manager-only. Grant focus to a managed session.
                  */
@@ -85,11 +82,28 @@ System.register(['aurelia-dependency-injection', './session', './utils'], functi
                     var previousFocussedSession = this._session;
                     if (previousFocussedSession !== session) {
                         if (previousFocussedSession)
-                            previousFocussedSession.send('ar.focus.state', false);
-                        session.send('ar.focus.state', true);
+                            previousFocussedSession.send('ar.focus.state', { state: false });
+                        if (session)
+                            session.send('ar.focus.state', { state: true });
                         this._session = session;
-                        this.sessionFocusEvent.raiseEvent(session);
+                        this.sessionFocusEvent.raiseEvent({
+                            previous: previousFocussedSession,
+                            current: session
+                        });
                     }
+                };
+                FocusService.prototype.whenSessionHasFocus = function (session) {
+                    var _this = this;
+                    this.sessionService.ensureIsManager();
+                    return new Promise(function (resolve) {
+                        var remove = _this.sessionFocusEvent.addEventListener(function (_a) {
+                            var current = _a.current;
+                            if (current === session) {
+                                remove();
+                                resolve();
+                            }
+                        });
+                    });
                 };
                 FocusService.prototype._setFocus = function (state) {
                     if (this._hasFocus !== state) {

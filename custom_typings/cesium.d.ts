@@ -1134,7 +1134,7 @@ declare module 'Cesium' {
         static computePerspectiveFieldOfView(fovY: number, aspectRatio: number, near: number, far: number, result: Matrix4);
         static computeOrthographicOffCenter(left: number, right: number, bottom: number, top: number, near: number, far: number, result: Matrix4);
         static computePerspectiveOffCenter(left: number, right: number, bottom: number, top: number, near: number, far: number, result: Matrix4);
-        static computeInfinitePerspectiveOffCenter(left: number, right: number, bottom: number, top: number, near: number, far: number, result: Matrix4);
+        static computeInfinitePerspectiveOffCenter(left: number, right: number, bottom: number, top: number, near: number, result: Matrix4);
         static computeViewportTransformation(viewport: any, nearDepthRange: number, farDepthRange: number, result: Matrix4);
         static toArray(matrix: Matrix4, result?: number[]): number[];
         static getElementIndex(row: number, column: number): number;

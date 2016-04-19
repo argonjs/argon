@@ -31,28 +31,29 @@ export class FocusService {
         this.sessionService.ensureIsManager();
         return this._sessionFocusEvent;
     }
-    private _sessionFocusEvent = new Event<SessionPort>();
-
-    /**
-     * Manager-only. The managed session which currently has focus. 
-     */
-    public get currentSession() {
-        this.sessionService.ensureIsManager();
-        return this._session
-    }
+    private _sessionFocusEvent = new Event<{ previous: SessionPort, current: SessionPort }>();
 
     private _session: SessionPort;
 
     constructor(private sessionService: SessionService) {
-        sessionService.manager.on['ar.focus.state'] = (state: boolean) => {
-            this._setFocus(state);
+        sessionService.manager.on['ar.focus.state'] = (message: { state: boolean }) => {
+            this._setFocus(message.state);
         }
 
         if (sessionService.isManager()) {
             setTimeout(() => {
-                this._setFocus(true);
+                if (!this._session)
+                    this.setSession(this.sessionService.manager);
             })
         }
+    }
+
+    /**
+     * Manager-only. The managed session which currently has focus. 
+     */
+    public getSession() {
+        this.sessionService.ensureIsManager();
+        return this._session
     }
 
     /**
@@ -63,11 +64,26 @@ export class FocusService {
         const previousFocussedSession = this._session;
         if (previousFocussedSession !== session) {
             if (previousFocussedSession)
-                previousFocussedSession.send('ar.focus.state', false);
-            session.send('ar.focus.state', true);
+                previousFocussedSession.send('ar.focus.state', { state: false });
+            if (session) session.send('ar.focus.state', { state: true });
             this._session = session;
-            this.sessionFocusEvent.raiseEvent(session);
+            this.sessionFocusEvent.raiseEvent({
+                previous: previousFocussedSession,
+                current: session
+            });
         }
+    }
+
+    public whenSessionHasFocus(session: SessionPort) {
+        this.sessionService.ensureIsManager();
+        return new Promise((resolve) => {
+            const remove = this.sessionFocusEvent.addEventListener(({current}) => {
+                if (current === session) {
+                    remove();
+                    resolve();
+                }
+            });
+        });
     }
 
     private _setFocus(state) {

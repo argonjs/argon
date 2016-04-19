@@ -1,4 +1,4 @@
-import {EntityPose} from './reality'
+import {inject} from 'aurelia-dependency-injection'
 import {
     Entity,
     CesiumMath,
@@ -30,37 +30,25 @@ export class DeviceService {
         this.entity.position = sampledDevicePosition;
         this.entity.orientation = sampledDeviceOrientation;
 
-        const eyePosition = new ConstantPositionProperty(Cartesian3.ZERO, this.entity);
-        const eyeOrientation = new ConstantProperty(Quaternion.IDENTITY);
-        this.eyeEntity.position = eyePosition;
-        this.eyeEntity.orientation = eyeOrientation;
+        const interfacePosition = new ConstantPositionProperty(Cartesian3.ZERO, this.entity);
+        const interfaceOrientation = new ConstantProperty(Quaternion.IDENTITY);
+        this.interfaceEntity.position = interfacePosition;
+        this.interfaceEntity.orientation = interfaceOrientation;
     }
 
     public entity = new Entity({ id: 'DEVICE', name: 'device' });
-    public eyeEntity = new Entity({ id: 'EYE', name: 'eye' });
+    public interfaceEntity = new Entity({ id: 'DEVICE_INTERFACE', name: 'device_interface' });
 
     /**
-    * Return the pose of this device
-    * @param time time of 
-    desired pose
-    * @return The pose of this device
+    * Update the pose with latest sensor data
     */
-    public getPose(time): EntityPose {
-        return calculatePose(this.entity, time);
-    }
-
-    /**
-    * Return the pose of this device's eye
-    * @param time time of desired pose
-    * @return the pose of this device's eye
-    */
-    public getEyePose(time): EntityPose {
+    public update() {
+        // TODO: use web-based geolocation and geoorientation apis if available
         if (typeof window !== 'undefined') {
             const interfaceRotation = -window.orientation || 0;
-            const eyeOrientation = <ConstantProperty>this.eyeEntity.orientation;
-            eyeOrientation.setValue(Quaternion.fromAxisAngle(Cartesian3.UNIT_Z, interfaceRotation));
+            const interfaceOrientation = <ConstantProperty>this.interfaceEntity.orientation;
+            interfaceOrientation.setValue(Quaternion.fromAxisAngle(Cartesian3.UNIT_Z, interfaceRotation));
         }
-        return calculatePose(this.eyeEntity, time);
     }
 
 }

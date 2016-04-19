@@ -5,11 +5,14 @@ import {Configuration, Role} from './config'
 import {Event, MessageChannelFactory, MessagePortLike, MessageChannelLike} from './utils';
 import {ContextService} from './context'
 
+export interface Message {
+    [key: string]: any
+};
 
 /**
  * A callback for message events.  
  */
-export type MessageHandler = (message: any, event: MessageEvent) => void | any;
+export type MessageHandler = (message: Message, event: MessageEvent) => void | Promise<void | Message>;
 
 /**
  * Describes a map from message topic to MessageHandler.
@@ -121,23 +124,29 @@ export class SessionPort {
             if (this._isClosed) return;
             const id = evt.data[0];
             const topic = evt.data[1];
-            const message = evt.data[2];
+            const message = evt.data[2] || {};
             const expectsResponse = evt.data[3];
             const handler = this.on[topic];
 
             if (handler && !expectsResponse) {
-                handler(message, evt);
+                const response = handler(message, evt);
+                if (response) console.warn("Handler for " + topic + " returned an unexpected response");
             } else if (handler) {
-                Promise.resolve(handler(message, evt)).then(response => {
-                    if (this._isClosed) return;
-                    this.send(topic + ':resolve:' + id, response)
-                }).catch(error => {
-                    if (this._isClosed) return;
-                    let errorMessage: string;
-                    if (typeof error === 'string') errorMessage = error;
-                    else if (typeof error.message === 'string') errorMessage = error.message;
-                    this.send(topic + ':reject:' + id, { errorMessage })
-                })
+                const response = handler(message, evt);
+                if (typeof response === 'undefined') {
+                    this.send(topic + ':resolve:' + id);
+                } else {
+                    Promise.resolve(response).then(response => {
+                        if (this._isClosed) return;
+                        this.send(topic + ':resolve:' + id, response)
+                    }).catch(error => {
+                        if (this._isClosed) return;
+                        let errorMessage: string;
+                        if (typeof error === 'string') errorMessage = error;
+                        else if (typeof error.message === 'string') errorMessage = error.message;
+                        this.send(topic + ':reject:' + id, { reason: errorMessage })
+                    })
+                }
             } else {
                 const error: ErrorMessage = { message: 'Unable to handle message ' + topic }
                 this.send(SessionPort.ERROR, error);
@@ -153,11 +162,11 @@ export class SessionPort {
      * @return Return true if the message is posted successfully,
      * return false if the session is closed.
      */
-    send(topic: string, message?: {}): boolean {
+    send(topic: string, message?: void | Message): boolean {
         if (!this._isOpened) throw new Error('Session.send: Session must be open to send messages');
         if (this._isClosed) return false;
         const id = createGuid();
-        this.messagePort.postMessage([id, topic, message])
+        this.messagePort.postMessage([id, topic, message]);
         return true;
     }
 
@@ -178,23 +187,24 @@ export class SessionPort {
      * @return if the session is not opened or is closed, return a rejected promise,
      * Otherwise, the returned promise is resolved or rejected based on the response.
      */
-    request(topic: string, message?: {}): PromiseLike<any> {
+    request(topic: string, message?: Message): Promise<void | Message> {
         if (!this._isOpened || this._isClosed)
-            return Promise.reject(new Error('Session.request: Session must be open to make requests'));
+            throw new Error('Session.request: Session must be open to make requests');
         const id = createGuid();
         const resolveTopic = topic + ':resolve:' + id;
         const rejectTopic = topic + ':reject:' + id;
-        this.messagePort.postMessage([id, topic, message, true]);
+        this.messagePort.postMessage([id, topic, message || {}, true]);
         return new Promise((resolve, reject) => {
             this.on[resolveTopic] = (message) => {
                 delete this.on[resolveTopic];
                 delete this.on[rejectTopic];
                 resolve(message);
             }
-            this.on[rejectTopic] = (message) => {
+            this.on[rejectTopic] = (message: { reason: string }) => {
                 delete this.on[resolveTopic];
                 delete this.on[rejectTopic];
-                reject(message);
+                console.warn("Request '" + topic + "' rejected with reason:\n" + message.reason);
+                reject(new Error(message.reason));
             }
         })
     }
@@ -350,10 +360,10 @@ export class SessionService {
     }
 
     /**
-     * Returns true if this session is a Reality
+     * Returns true if this session is a Reality view
      */
-    public isReality() {
-        return this.configuration.role === Role.REALITY;
+    public isRealityView() {
+        return this.configuration.role === Role.REALITY_VIEW;
     }
 
     /**
@@ -362,6 +372,14 @@ export class SessionService {
     public ensureIsManager() {
         if (!this.isManager)
             throw new Error('An manager-only API was accessed in a non-manager session.')
+    }
+
+    /**
+     * Throws an error if this session is not a reality
+     */
+    public ensureIsReality() {
+        if (!this.isRealityView)
+            throw new Error('An reality-only API was accessed in a non-reality session.')
     }
 }
 

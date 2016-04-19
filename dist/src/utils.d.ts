@@ -1,4 +1,4 @@
-import { EntityPose } from './reality';
+import { SerializedEntityPose } from './reality';
 import { Entity, JulianDate, Quaternion, Cartesian3, ReferenceFrame } from './cesium/cesium-imports';
 /**
  * A callback for removing the event listener.
@@ -39,13 +39,12 @@ export declare class Event<T> {
  * @param time The time for which to retrieve the value.
  * @return An EntityPose object with orientation, position and referenceFrame.
  */
-export declare function calculatePose(entity: Entity, time: JulianDate): EntityPose;
+export declare function calculatePose(entity: Entity, time: JulianDate): SerializedEntityPose;
 /**
 * TODO.
 */
 export declare class CommandQueue {
     private _queue;
-    private _currentUserData;
     private _currentCommandPending;
     /**
      * An error event.
@@ -56,20 +55,18 @@ export declare class CommandQueue {
      */
     constructor();
     /**
-     * Push the command and the data needed to run the command to the command queue.
+     * Push a command to the command queue.
      * @param command Any command ready to be pushed into the command queue.
-     * @param userData Any data needed to run the command.
      */
-    push(command: () => any | Thenable<any>, userData?: any): void;
+    push<TResult>(command: () => TResult, execute?: boolean): Promise<TResult>;
+    /**
+     * Execute the command queue
+     */
+    execute(): void;
     /**
      * Clear commandQueue.
      */
     clear(): void;
-    /**
-     * Get current user data.
-     * @return Current userData.
-     */
-    readonly currentUserData: any;
     private _executeNextCommand();
 }
 /**

@@ -1,4 +1,4 @@
-System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './session', './reality', './utils', './camera', './viewport'], function(exports_1, context_1) {
+System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './config', './device', './session', './reality', './utils'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -7,7 +7,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
         else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
-    var aurelia_dependency_injection_1, cesium_imports_1, session_1, reality_1, utils_1, camera_1, viewport_1;
+    var aurelia_dependency_injection_1, cesium_imports_1, config_1, device_1, session_1, reality_1, utils_1;
     var PoseStatus, scratchDate, scratchCartesian3, scratchQuaternion, scratchOriginCartesian3, ContextService;
     function _stringFromReferenceFrame(referenceFrame) {
         var rf = referenceFrame;
@@ -21,6 +21,12 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
             function (cesium_imports_1_1) {
                 cesium_imports_1 = cesium_imports_1_1;
             },
+            function (config_1_1) {
+                config_1 = config_1_1;
+            },
+            function (device_1_1) {
+                device_1 = device_1_1;
+            },
             function (session_1_1) {
                 session_1 = session_1_1;
             },
@@ -29,12 +35,6 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
             },
             function (utils_1_1) {
                 utils_1 = utils_1_1;
-            },
-            function (camera_1_1) {
-                camera_1 = camera_1_1;
-            },
-            function (viewport_1_1) {
-                viewport_1 = viewport_1_1;
             }],
         execute: function() {
             /**
@@ -74,12 +74,11 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
              *    to be focused on.
              */
             ContextService = (function () {
-                function ContextService(sessionService, realityService, cameraService, viewportService) {
+                function ContextService(sessionService, realityService, deviceService) {
                     var _this = this;
                     this.sessionService = sessionService;
                     this.realityService = realityService;
-                    this.cameraService = cameraService;
-                    this.viewportService = viewportService;
+                    this.deviceService = deviceService;
                     /**
                      * An event that is raised when all remotely managed entities are are up-to-date for
                      * the current frame. It is suggested that all modifications to locally managed entities
@@ -96,73 +95,49 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                      */
                     this.entities = new cesium_imports_1.EntityCollection();
                     /**
-                     * The current time (not valid until the first update event)
-                     */
-                    this.time = new cesium_imports_1.JulianDate(0, 0);
-                    /**
-                     * An origin positioned near the eye which doesn't change very often,
-                     * aligned with the East-North-Up coordinate system.
-                     */
-                    this.localOriginEastNorthUp = new cesium_imports_1.Entity({
-                        name: 'origin',
-                        position: new cesium_imports_1.ConstantPositionProperty(),
-                        orientation: new cesium_imports_1.ConstantProperty()
-                    });
-                    /**
-                     * An origin positioned near the eye which doesn't change very often,
-                     * aligned with the East-Up-South coordinate system. This useful for
-                     * converting to the Y-Up convention used in some libraries, such as
-                     * three.js.
-                     */
-                    this.localOriginEastUpSouth = new cesium_imports_1.Entity({
-                        name: 'originEastUpSouth',
-                        position: new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, this.localOriginEastNorthUp),
-                        orientation: new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_X, Math.PI / 2))
-                    });
-                    /**
                      * An event that fires when the local origin changes.
                      */
                     this.localOriginChangeEvent = new utils_1.Event();
                     /**
-                     * The default origin to use when calling `getEntityState`. By default,
-                     * this is `this.localOriginEastNorthUp`.
+                     * An entity representing the location and orientation of the user.
                      */
-                    this.defaultReferenceFrame = this.localOriginEastNorthUp;
-                    /**
-                     * An entity representing the current device which is running Argon.
-                     */
-                    this.device = new cesium_imports_1.Entity({
-                        id: 'DEVICE',
-                        name: 'device',
+                    this.user = new cesium_imports_1.Entity({
+                        id: 'USER',
+                        name: 'user',
                         position: new cesium_imports_1.ConstantPositionProperty(),
                         orientation: new cesium_imports_1.ConstantProperty()
                     });
                     /**
-                     * An entity representing the 'eye' through which the user sees (usually the
-                     * camera on the current device for a video-see-through realty). The scene
-                     * should always be rendered from this viewpoint.
-                     */
-                    this.eye = new cesium_imports_1.Entity({
-                        id: 'EYE',
-                        name: 'eye',
-                        position: new cesium_imports_1.ConstantPositionProperty(),
-                        orientation: new cesium_imports_1.ConstantProperty()
-                    });
-                    /**
-                     * An origin positioned at the eye, aligned with the local East-North-Up
+                     * An entity positioned near the user, aligned with the local East-North-Up
                      * coordinate system.
                      */
-                    this.eyeOriginEastNorthUp = new cesium_imports_1.Entity({
-                        name: 'eyeOrigin',
+                    this.localOriginEastNorthUp = new cesium_imports_1.Entity({
+                        name: 'localOriginENU',
                         position: new cesium_imports_1.ConstantPositionProperty(),
                         orientation: new cesium_imports_1.ConstantProperty()
                     });
+                    /**
+                     * An entity positioned near the user, aligned with the East-Up-South
+                     * coordinate system. This useful for converting to the Y-Up convention
+                     * used in some libraries, such as three.js.
+                     */
+                    this.localOriginEastUpSouth = new cesium_imports_1.Entity({
+                        name: 'localOriginEUS',
+                        position: new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, this.localOriginEastNorthUp),
+                        orientation: new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_X, Math.PI / 2))
+                    });
+                    // the current time (based on the current reality view, not valid until first update event)
+                    this._time = new cesium_imports_1.JulianDate(0, 0);
+                    // The default origin to use when calling `getEntityPose`.
+                    this._defaultReferenceFrame = this.localOriginEastNorthUp;
+                    this._entityPoseCache = {};
+                    this._entityPoseMap = new Map();
                     this._subscribedEntities = new WeakMap();
-                    this._entityStateMap = new Map();
                     this._updatingEntities = new Set();
                     this._knownEntities = new Set();
-                    this.entities.add(this.device);
-                    this.entities.add(this.eye);
+                    this.entities.add(this.user);
+                    this.entities.add(deviceService.entity);
+                    this.entities.add(deviceService.interfaceEntity);
                     if (this.sessionService.isManager()) {
                         this.realityService.frameEvent.addEventListener(function (state) {
                             _this._update(state);
@@ -183,10 +158,23 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                     });
                 }
                 /**
+                 * Get the current time (not valid until the first update event)
+                 */
+                ContextService.prototype.getTime = function () {
+                    return this._time;
+                };
+                /**
                  * Set the default reference frame for `getCurrentEntityState`.
                  */
                 ContextService.prototype.setDefaultReferenceFrame = function (origin) {
-                    this.defaultReferenceFrame = origin;
+                    this._defaultReferenceFrame = origin;
+                };
+                /**
+                 * Get the default reference frame to use when calling `getEntityPose`.
+                 * By default, this is the `localOriginEastNorthUp` reference frame.
+                 */
+                ContextService.prototype.getDefaultReferenceFrame = function () {
+                    return this._defaultReferenceFrame;
                 };
                 /**
                  * Adds an entity to this session's set of tracked entities.
@@ -199,7 +187,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                     return this.entities.getOrCreateEntity(id);
                 };
                 /**
-                 * Gets the state of an entity at the current context time relative to a reference frame.
+                 * Gets the current pose of an entity, relative to a given reference frame.
                  *
                  * @param entity - The entity whose state is to be queried.
                  * @param referenceFrame - The intended reference frame. Defaults to `this.defaultReferenceFrame`.
@@ -207,30 +195,30 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                  * object with the fields `position` and `orientation`, both of type
                  * `Cartesian3`. Otherwise undefined.
                  */
-                ContextService.prototype.getCurrentEntityState = function (entity, referenceFrame) {
-                    if (referenceFrame === void 0) { referenceFrame = this.defaultReferenceFrame; }
-                    var time = this.time;
+                ContextService.prototype.getEntityPose = function (entity, referenceFrame) {
+                    if (referenceFrame === void 0) { referenceFrame = this._defaultReferenceFrame; }
+                    var time = this._time;
                     var key = entity.id + _stringFromReferenceFrame(referenceFrame);
-                    var entityState = this._entityStateMap.get(key);
-                    if (entityState && cesium_imports_1.JulianDate.equals(entityState.time, time))
-                        return entityState;
-                    if (!cesium_imports_1.defined(entityState)) {
-                        entityState = {
+                    var entityPose = this._entityPoseMap.get(key);
+                    if (entityPose && cesium_imports_1.JulianDate.equals(entityPose.time, time))
+                        return entityPose;
+                    if (!cesium_imports_1.defined(entityPose)) {
+                        entityPose = {
                             position: new cesium_imports_1.Cartesian3,
                             orientation: new cesium_imports_1.Quaternion,
                             time: cesium_imports_1.JulianDate.clone(time),
                             poseStatus: PoseStatus.UNKNOWN
                         };
-                        this._entityStateMap.set(key, entityState);
+                        this._entityPoseMap.set(key, entityPose);
                     }
                     else {
-                        cesium_imports_1.JulianDate.clone(time, entityState.time);
+                        cesium_imports_1.JulianDate.clone(time, entityPose.time);
                     }
-                    var position = utils_1.getEntityPositionInReferenceFrame(entity, time, referenceFrame, entityState.position);
-                    var orientation = utils_1.getEntityOrientationInReferenceFrame(entity, time, referenceFrame, entityState.orientation);
+                    var position = utils_1.getEntityPositionInReferenceFrame(entity, time, referenceFrame, entityPose.position);
+                    var orientation = utils_1.getEntityOrientationInReferenceFrame(entity, time, referenceFrame, entityPose.orientation);
                     var hasPose = position && orientation;
                     var poseStatus = 0;
-                    var previousStatus = entityState.poseStatus;
+                    var previousStatus = entityPose.poseStatus;
                     if (hasPose) {
                         poseStatus |= PoseStatus.KNOWN;
                     }
@@ -243,13 +231,19 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                     else if (!hasPose && previousStatus & PoseStatus.KNOWN) {
                         poseStatus |= PoseStatus.LOST;
                     }
-                    entityState.poseStatus = poseStatus;
-                    return entityState;
+                    entityPose.poseStatus = poseStatus;
+                    return entityPose;
+                };
+                ContextService.prototype.getCurrentEntityState = function (entity, referenceFrame) {
+                    console.warn('getCurrentEntityState is deprecated. Use getEntityPose instead.');
+                    return this.getEntityPose(entity, referenceFrame);
                 };
                 ContextService.prototype._update = function (state) {
                     var _this = this;
-                    this.viewportService._setViewport(state.viewport);
-                    this.cameraService._setCamera(state.camera);
+                    state.entities['USER'] = state.view.pose;
+                    state.view.subviews.forEach(function (subview, index) {
+                        state.entities['ar.view_' + index] = subview.pose || state.view.pose;
+                    });
                     this._knownEntities.clear();
                     for (var id in state.entities) {
                         this._updateEntity(id, state);
@@ -263,15 +257,15 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                         }
                     });
                     this._updateOrigin(state);
-                    var entityPoseCache = {};
                     if (this.sessionService.isManager()) {
+                        this._entityPoseCache = {};
                         for (var _i = 0, _a = this.sessionService.managedSessions; _i < _a.length; _i++) {
                             var session = _a[_i];
-                            if (session.info.enableIncomingUpdateEvents)
-                                this._sendUpdateForSession(state, session, entityPoseCache);
+                            if (session.info.role === config_1.Role.APPLICATION)
+                                this._sendUpdateForSession(state, session);
                         }
                     }
-                    cesium_imports_1.JulianDate.clone(state.time, this.time);
+                    cesium_imports_1.JulianDate.clone(state.time, this._time);
                     this.updateEvent.raiseEvent(state);
                     this.renderEvent.raiseEvent(state);
                 };
@@ -296,46 +290,52 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                     return entity;
                 };
                 ContextService.prototype._updateOrigin = function (state) {
-                    var eyeRootFrame = utils_1.getRootReferenceFrame(this.eye);
-                    var eyePosition = this.eye.position.getValueInReferenceFrame(state.time, eyeRootFrame, scratchCartesian3);
-                    var eyeENUPositionProperty = this.eyeOriginEastNorthUp.position;
-                    eyeENUPositionProperty.setValue(eyePosition, eyeRootFrame);
+                    var userRootFrame = utils_1.getRootReferenceFrame(this.user);
+                    var userPosition = this.user.position.getValueInReferenceFrame(state.time, userRootFrame, scratchCartesian3);
+                    var userENUPositionProperty = this.localOriginEastNorthUp.position;
+                    userENUPositionProperty.setValue(userPosition, userRootFrame);
                     var localENUFrame = this.localOriginEastNorthUp.position.referenceFrame;
                     var localENUPosition = this.localOriginEastNorthUp.position.getValueInReferenceFrame(state.time, localENUFrame, scratchOriginCartesian3);
-                    if (!localENUPosition || localENUFrame !== eyeRootFrame ||
-                        cesium_imports_1.Cartesian3.magnitudeSquared(cesium_imports_1.Cartesian3.subtract(eyePosition, localENUPosition, scratchOriginCartesian3)) > 25000000) {
+                    if (!localENUPosition || localENUFrame !== userRootFrame ||
+                        cesium_imports_1.Cartesian3.magnitudeSquared(cesium_imports_1.Cartesian3.subtract(userPosition, localENUPosition, scratchOriginCartesian3)) > 25000000) {
                         var localENUPositionProperty = this.localOriginEastNorthUp.position;
                         var localENUOrientationProperty = this.localOriginEastNorthUp.orientation;
-                        localENUPositionProperty.setValue(eyePosition, eyeRootFrame);
-                        var enuOrientation = utils_1.getEntityOrientationInReferenceFrame(this.localOriginEastNorthUp, state.time, eyeRootFrame, scratchQuaternion);
+                        localENUPositionProperty.setValue(userPosition, userRootFrame);
+                        var enuOrientation = utils_1.getEntityOrientationInReferenceFrame(this.localOriginEastNorthUp, state.time, userRootFrame, scratchQuaternion);
                         localENUOrientationProperty.setValue(enuOrientation);
                         this.localOriginChangeEvent.raiseEvent(undefined);
                     }
                 };
-                ContextService.prototype._sendUpdateForSession = function (parentState, session, entityPoseCache) {
-                    var sessionEntities = {};
+                ContextService.prototype._sendUpdateForSession = function (parentState, session) {
+                    var sessionPoseMap = {};
                     for (var id in parentState.entities) {
-                        sessionEntities[id] = parentState.entities[id];
+                        sessionPoseMap[id] = parentState.entities[id];
                     }
                     for (var id in this._subscribedEntities.get(session)) {
-                        if (!cesium_imports_1.defined(entityPoseCache[id])) {
-                            var entity = this.entities.getById(id);
-                            entityPoseCache[id] = utils_1.calculatePose(entity, parentState.time);
-                        }
-                        sessionEntities[id] = entityPoseCache[id];
+                        this._addEntityAndAncestorsToPoseMap(sessionPoseMap, id, parentState.time);
                     }
                     var sessionState = {
+                        reality: parentState.reality,
                         time: parentState.time,
                         frameNumber: parentState.frameNumber,
-                        reality: parentState.reality,
-                        camera: parentState.camera,
-                        viewport: parentState.viewport,
-                        entities: sessionEntities
+                        view: parentState.view,
+                        entities: sessionPoseMap
                     };
                     session.send('ar.context.update', sessionState);
                 };
+                ContextService.prototype._addEntityAndAncestorsToPoseMap = function (poseMap, id, time) {
+                    if (!cesium_imports_1.defined(this._entityPoseCache[id])) {
+                        var entity = this.entities.getById(id);
+                        this._entityPoseCache[id] = utils_1.calculatePose(entity, time);
+                        if (entity.position.referenceFrame instanceof cesium_imports_1.Entity) {
+                            var refId = _stringFromReferenceFrame(entity.position.referenceFrame);
+                            this._addEntityAndAncestorsToPoseMap(poseMap, refId, time);
+                        }
+                    }
+                    poseMap[id] = this._entityPoseCache[id];
+                };
                 ContextService = __decorate([
-                    aurelia_dependency_injection_1.inject(session_1.SessionService, reality_1.RealityService, camera_1.CameraService, viewport_1.ViewportService)
+                    aurelia_dependency_injection_1.inject(session_1.SessionService, reality_1.RealityService, device_1.DeviceService)
                 ], ContextService);
                 return ContextService;
             }());

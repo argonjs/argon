@@ -201,13 +201,29 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
                     });
                 }
                 /**
-                 * Push the command and the data needed to run the command to the command queue.
+                 * Push a command to the command queue.
                  * @param command Any command ready to be pushed into the command queue.
-                 * @param userData Any data needed to run the command.
                  */
-                CommandQueue.prototype.push = function (command, userData) {
-                    this._queue.push({ command: command, userData: userData });
-                    if (this._queue.length === 1 && this._currentCommandPending === null) {
+                CommandQueue.prototype.push = function (command, execute) {
+                    var _this = this;
+                    var result = new Promise(function (resolve, reject) {
+                        _this._queue.push({
+                            execute: function () {
+                                var result = Promise.resolve().then(command);
+                                resolve(result);
+                                return result;
+                            }, reject: reject
+                        });
+                    });
+                    if (execute)
+                        this.execute();
+                    return result;
+                };
+                /**
+                 * Execute the command queue
+                 */
+                CommandQueue.prototype.execute = function () {
+                    if (this._queue.length > 0 && this._currentCommandPending === null) {
                         Promise.resolve().then(this._executeNextCommand.bind(this));
                     }
                 };
@@ -215,30 +231,19 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
                  * Clear commandQueue.
                  */
                 CommandQueue.prototype.clear = function () {
+                    this._queue.forEach(function (item) {
+                        item.reject("Unable to execute.");
+                    });
                     this._queue = [];
                 };
-                Object.defineProperty(CommandQueue.prototype, "currentUserData", {
-                    /**
-                     * Get current user data.
-                     * @return Current userData.
-                     */
-                    get: function () {
-                        return this._currentUserData;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
                 CommandQueue.prototype._executeNextCommand = function () {
                     var _this = this;
                     var item = this._queue.shift();
                     if (!item) {
-                        this._currentUserData = null;
                         this._currentCommandPending = null;
                         return;
                     }
-                    var command = item.command, userData = item.userData;
-                    this._currentUserData = userData;
-                    this._currentCommandPending = new Promise(function (resolve, reject) { return resolve(command()); })
+                    this._currentCommandPending = item.execute()
                         .then(this._executeNextCommand.bind(this))
                         .catch(function (error) {
                         _this.errorEvent.raiseEvent(error);

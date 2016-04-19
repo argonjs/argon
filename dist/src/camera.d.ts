@@ -1,6 +1,6 @@
 import { PerspectiveFrustum } from './cesium/cesium-imports';
 import { SessionService, SessionPort } from './session';
-import { ViewportService } from './viewport';
+import { ViewService } from './view';
 import { Event } from './utils';
 /**
  * Represents a type of Camera.
@@ -54,7 +54,7 @@ export declare class CameraService {
      */
     desiredCameraMap: WeakMap<SessionPort, Camera>;
     private _currentJSON;
-    constructor(sessionService: SessionService, viewportService: ViewportService);
+    constructor(sessionService: SessionService, viewportService: ViewService);
     /**
      * Get the suggested camera state
      */

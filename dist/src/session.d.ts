@@ -1,9 +1,12 @@
 import { Configuration } from './config';
 import { Event, MessageChannelFactory, MessagePortLike, MessageChannelLike } from './utils';
+export interface Message {
+    [key: string]: any;
+}
 /**
  * A callback for message events.
  */
-export declare type MessageHandler = (message: any, event: MessageEvent) => void | any;
+export declare type MessageHandler = (message: Message, event: MessageEvent) => void | Promise<void | Message>;
 /**
  * Describes a map from message topic to MessageHandler.
  */
@@ -70,7 +73,7 @@ export declare class SessionPort {
      * @return Return true if the message is posted successfully,
      * return false if the session is closed.
      */
-    send(topic: string, message?: {}): boolean;
+    send(topic: string, message?: void | Message): boolean;
     /**
      * Send an error message.
      * @param errorMessage An error message.
@@ -85,7 +88,7 @@ export declare class SessionPort {
      * @return if the session is not opened or is closed, return a rejected promise,
      * Otherwise, the returned promise is resolved or rejected based on the response.
      */
-    request(topic: string, message?: {}): PromiseLike<any>;
+    request(topic: string, message?: Message): Promise<void | Message>;
     /**
      * Close the connection to the remote session.
      */
@@ -163,13 +166,17 @@ export declare class SessionService {
      */
     isApplication(): boolean;
     /**
-     * Returns true if this session is a Reality
+     * Returns true if this session is a Reality view
      */
-    isReality(): boolean;
+    isRealityView(): boolean;
     /**
      * Throws an error if this session is not a manager
      */
     ensureIsManager(): void;
+    /**
+     * Throws an error if this session is not a reality
+     */
+    ensureIsReality(): void;
 }
 /**
  * Connect this session to itself as the manager.

@@ -1,59 +1,118 @@
 import {inject, All} from 'aurelia-dependency-injection'
-import {defined, JulianDate, ReferenceFrame, createGuid} from './cesium/cesium-imports'
+import {defined, Matrix4, JulianDate, ReferenceFrame, createGuid} from './cesium/cesium-imports'
 import {TimerService} from './timer'
 import {Role} from './config'
 import {FocusService} from './focus'
 import {SessionPort, SessionService} from './session'
-import {CameraService, Camera} from './camera'
 import {DeviceService} from './device'
 import {MessagePortLike, Event, calculatePose} from './utils'
-import {ViewportService, Viewport} from './viewport'
 
 /**
-* Represents a Reality
+* Represents a view of Reality
 */
-export interface Reality {
+export interface RealityView {
     type: string;
     id?: string;
     [option: string]: any
 }
 
 /**
- * Describes the position, orientation, and referenceFrame of an entity.
+ * A which describes the position, orientation, and referenceFrame of an entity.
  */
-export interface EntityPose {
+export interface SerializedEntityPose {
     position?: { x: number, y: number, z: number },
     orientation?: { x: number, y: number, z: number, w: number },
     referenceFrame: ReferenceFrame | string,
 }
 
 /**
- * A map of entity ids and their associated poses.
+ * A JSON map of entity ids and their associated poses.
  */
-export interface EntityPoseMap {
-    EYE?: EntityPose,
-    [id: string]: EntityPose
+export interface SerializedEntityPoseMap {
+    [id: string]: SerializedEntityPose
 }
 
 /**
- * Describes the minimal frame state that is provided by a reality.
+ * Viewport is expressed using a right-handed coordinate system with the origin
+ * at the bottom left corner.
  */
-export interface MinimalFrameState {
+export interface Viewport {
+    x: number,
+    y: number,
+    width: number,
+    height: number
+}
+
+export enum SubviewType {
+    /*
+     * Identities a subview for a handheld display.
+     */
+    SINGULAR = "Singular" as any,
+
+    /*
+     * Identifies a subview for the left eye (when the user is wearing an HMD or Viewer)
+     */
+    LEFTEYE = "LeftEye" as any,
+
+    /*
+     * Identifies a subview for the right eye (when the user is wearing an HMD or Viewer)
+     */
+    RIGHTEYE = "RightEye" as any,
+
+    /*
+     * Identifies a subview for a custom view configuration
+     */
+    OTHER = "Other" as any,
+}
+
+/**
+ * The serialized rendering parameters for a particular subview
+ */
+export interface SerializedSubview {
+    type: SubviewType,
+    projectionMatrix: number[],
+    // TODO: use viewVolume instead of projectionMatrix as described here // http://www.codeproject.com/Articles/42848/A-New-Perspective-on-Viewing
+    pose?: SerializedEntityPose, // if undefined, the primary pose should be assumed
+    viewport?: Viewport // if undefined, the primary viewport should be assumed
+}
+
+/**
+ * The serialized view parameters describe how the application should render each frame
+ */
+export interface SerializedViewParameters {
+    /**
+     * The primary viewport to render into. In a DOM environment, the bottom left corner of the document element 
+     * (document.documentElement) should be considered the origin. 
+     */
+    viewport: Viewport,
+
+    /**
+     * The primary pose for this view. 
+     */
+    pose: SerializedEntityPose
+
+    /**
+     * The list of subviews to render.
+     */
+    subviews: SerializedSubview[]
+}
+
+/**
+ * Describes the serialized frame state.
+ */
+export interface SerializedFrameState {
     frameNumber: number,
     time: JulianDate,
-    entities?: EntityPoseMap
-    camera?: Camera,
-    viewport?: Viewport,
+    view: SerializedViewParameters,
+    entities?: SerializedEntityPoseMap
 }
 
 /**
  * Describes the complete frame state which is emitted by the RealityService.
  */
-export interface FrameState extends MinimalFrameState {
-    reality: Reality,
-    entities: EntityPoseMap
-    camera: Camera,
-    viewport: Viewport
+export interface FrameState extends SerializedFrameState {
+    reality: RealityView,
+    entities: SerializedEntityPoseMap
 }
 
 
@@ -61,31 +120,15 @@ export abstract class RealitySetupHandler {
 
     abstract type: string;
 
-    abstract setup(reality: Reality, port: MessagePortLike): void;
+    abstract setup(reality: RealityView, port: MessagePortLike): void;
 
 }
 
 /**
 * Manages reality 
 */
-@inject(All.of(RealitySetupHandler),
-    SessionService,
-    CameraService,
-    DeviceService,
-    FocusService,
-    ViewportService,
-    TimerService)
+@inject(SessionService, FocusService)
 export class RealityService {
-
-    /**
-     * The current reality.
-     */
-    public current: Reality = null;
-
-    /**
-     * The desired reality.
-     */
-    public desired: Reality = null;
 
     /**
      * An event that is raised when a reality control port is opened.
@@ -95,7 +138,7 @@ export class RealityService {
     /**
      * An event that is raised when the current reality is changed.
      */
-    public changeEvent = new Event<{ previous: Reality }>();
+    public changeEvent = new Event<{ previous: RealityView, current: RealityView }>();
 
     /**
      * An event that is raised when the current reality emits the next frame state.
@@ -107,23 +150,31 @@ export class RealityService {
     /**
      * Manager-only. A map from a managed session to the desired reality
      */
-    public desiredRealityMap = new WeakMap<SessionPort, Reality>();
+    public desiredRealityMap = new WeakMap<SessionPort, RealityView>();
 
     /**
      * Manager-only. A map from a desired reality to the session which requested it
      */
-    public desiredRealityMapInverse = new WeakMap<Reality, SessionPort>();
+    public desiredRealityMapInverse = new WeakMap<RealityView, SessionPort>();
 
     // Manager-only. The port which connects the manager to the current reality
     private _realitySession: SessionPort;
 
+    // The default reality
+    private _default: RealityView = null;
+
+    // The current reality
+    private _current: RealityView = null;
+
+    // The desired reality
+    private _desired: RealityView = null;
+
+    // RealitySetupHandlers
+    private _handlers: RealitySetupHandler[] = [];
+
     constructor(
-        public handlers: RealitySetupHandler[],
         private sessionService: SessionService,
-        private cameraService: CameraService,
-        private deviceService: DeviceService,
-        private focusService: FocusService,
-        private viewportService: ViewportService) {
+        private focusService: FocusService) {
 
         if (sessionService.isManager()) {
             sessionService.connectEvent.addEventListener((session) => {
@@ -150,7 +201,7 @@ export class RealityService {
                 }
 
                 session.on['ar.reality.message'] = (message) => {
-                    if (this.desiredRealityMapInverse.get(this.current) === session) {
+                    if (this.desiredRealityMapInverse.get(this._current) === session) {
                         this._realitySession.send('ar.reality.message', message);
                     }
                 }
@@ -158,7 +209,7 @@ export class RealityService {
 
             sessionService.manager.connectEvent.addEventListener(() => {
                 setTimeout(() => {
-                    if (!this.desired) this._setNextReality(this.onSelectReality())
+                    if (!this._desired) this._setNextReality(this.onSelectReality())
                 })
             });
         }
@@ -188,6 +239,21 @@ export class RealityService {
     }
 
     /**
+     * Manager-only. Register a reality setup handler
+     */
+    public registerHandler(handler: RealitySetupHandler) {
+        this.sessionService.ensureIsManager();
+        this._handlers.push(handler);
+    }
+
+    /**
+     * Get the current reality view
+     */
+    public getCurrent(): RealityView {
+        return this._current;
+    }
+
+    /**
     * Manager-only. Check if a type of reality is supported. 
     * @param type reality type
     * @return true if a handler exists and false otherwise
@@ -202,8 +268,24 @@ export class RealityService {
      */
     public setDesired(reality: { type: string }) {
         if (reality && !reality['id']) reality['id'] = createGuid();
-        this.desired = reality;
+        this._desired = reality;
         this.sessionService.manager.send('ar.reality.desired', { reality });
+    }
+
+    /** 
+     * Get the desired reality
+     */
+    public getDesired(): RealityView {
+        return this._desired;
+    }
+
+    /**
+     * Set the default reality. Manager-only. 
+     */
+    public setDefault(reality: RealityView) {
+        this.sessionService.ensureIsManager();
+        this._default = reality;
+        this._default.id = 'default';
     }
 
     /**
@@ -213,14 +295,14 @@ export class RealityService {
     * @returns The reality chosen for this context. May be undefined if no
     * realities have been requested.
     */
-    public onSelectReality(): Reality {
+    public onSelectReality(): RealityView {
 
         this.sessionService.ensureIsManager();
 
         let selectedReality = this.desiredRealityMap.get(this.sessionService.manager);
 
         if (!selectedReality) {
-            selectedReality = this.desiredRealityMap.get(this.focusService.currentSession);
+            selectedReality = this.desiredRealityMap.get(this.focusService.getSession());
         }
 
         if (!selectedReality) {
@@ -237,36 +319,26 @@ export class RealityService {
         return selectedReality;
     }
 
-    private _setNextReality(reality: Reality) {
+    private _setNextReality(reality: RealityView) {
         console.log('Setting reality: ' + JSON.stringify(reality))
-        if (this.current && reality && this.current.id === reality.id) return;
-        if (this.current && !reality) return;
-        if (!this.current && !reality) {
-            reality = this.sessionService.configuration.defaultReality;
+        if (this._current && reality && this._current.id === reality.id) return;
+        if (this._current && !reality) return;
+        if (!this._current && !reality) {
+            reality = this._default;
             if (!reality) return;
-            reality.id = 'default';
         }
 
         const realitySession = this.sessionService.addManagedSessionPort();
 
-        realitySession.on['ar.reality.frameState'] = (state: MinimalFrameState) => {
+        realitySession.on['ar.reality.frameState'] = (state: SerializedFrameState) => {
 
             const frameState: FrameState = {
                 reality,
                 frameNumber: state.frameNumber,
                 time: state.time,
-                viewport: state.viewport || this.viewportService.getSuggested(),
-                camera: state.camera || this.cameraService.getSuggested(),
+                view: state.view,
                 entities: state.entities || {}
             };
-
-            if (!defined(frameState.entities['DEVICE'])) {
-                frameState.entities['DEVICE'] = this.deviceService.getPose(frameState.time);
-            }
-
-            if (!defined(frameState.entities['EYE'])) {
-                frameState.entities['EYE'] = this.deviceService.getEyePose(frameState.time);
-            }
 
             this.frameEvent.raiseEvent(frameState);
         }
@@ -276,9 +348,13 @@ export class RealityService {
             owner.send('ar.reality.message', message);
         }
 
+        realitySession.on['ar.reality.needsVideoBackground'] = (message) => {
+
+        }
+
         realitySession.connectEvent.addEventListener(() => {
             const previousRealitySession = this._realitySession;
-            const previousReality = this.current;
+            const previousReality = this._current;
 
             this._realitySession = realitySession;
             this._setCurrent(reality)
@@ -287,13 +363,13 @@ export class RealityService {
                 previousRealitySession.close();
             }
 
-            if (realitySession.info.role !== Role.REALITY) {
+            if (realitySession.info.role !== Role.REALITY_VIEW) {
                 realitySession.sendError({ message: "Expected a reality session" });
                 realitySession.close();
                 return;
             }
 
-            if (realitySession.info.enableRealityControlPort) {
+            if (realitySession.info.realityViewSupportsControlPort) {
                 const ownerSession = this.desiredRealityMapInverse.get(reality) || this.sessionService.manager;
                 const channel = this.sessionService.createMessageChannel();
                 realitySession.send('ar.reality.connect');
@@ -313,7 +389,7 @@ export class RealityService {
 
     private _getHandler(type: string) {
         let found: RealitySetupHandler = undefined;
-        for (const handler of this.handlers) {
+        for (const handler of this._handlers) {
             if (handler.type === type) {
                 found = handler;
                 break;
@@ -322,16 +398,16 @@ export class RealityService {
         return found;
     }
 
-    private _setCurrent(reality: Reality) {
-        if (!this.current || this.current.id !== reality.id) {
-            const previous = this.current;
-            this.current = reality;
-            this.changeEvent.raiseEvent({ previous });
+    private _setCurrent(reality: RealityView) {
+        if (!this._current || this._current.id !== reality.id) {
+            const previous = this._current;
+            this._current = reality;
+            this.changeEvent.raiseEvent({ previous, current: reality });
             console.log('Reality changed to: ' + JSON.stringify(reality));
         }
     }
 
-    private _executeRealitySetupHandler(reality: Reality, port: MessagePortLike) {
+    private _executeRealitySetupHandler(reality: RealityView, port: MessagePortLike) {
         this.sessionService.ensureIsManager();
         const handler = this._getHandler(reality.type);
         if (!handler) throw new Error('Unable to setup unsupported reality type: ' + reality.type);
@@ -340,22 +416,46 @@ export class RealityService {
 
 }
 
-@inject(SessionService, TimerService)
+@inject(SessionService, DeviceService, TimerService)
 export class EmptyRealitySetupHandler implements RealitySetupHandler {
 
     public type = 'empty';
 
-    constructor(private sessionService: SessionService, private timer: TimerService) { }
+    constructor(
+        private sessionService: SessionService,
+        private deviceService: DeviceService,
+        private timer: TimerService) {
+    }
 
-    public setup(reality: Reality, port: MessagePortLike) {
+    public setup(reality: RealityView, port: MessagePortLike) {
         const remoteRealitySession = this.sessionService.createSessionPort();
         let doUpdate = true;
         remoteRealitySession.connectEvent.addEventListener(() => {
             const update = (time: JulianDate, frameNumber: number) => {
                 if (doUpdate) {
-                    const frameState: MinimalFrameState = {
+                    this.deviceService.update();
+                    const w = document.documentElement.clientWidth;
+                    const h = document.documentElement.clientHeight;
+                    const frameState: SerializedFrameState = {
                         time,
-                        frameNumber
+                        frameNumber,
+                        view: {
+                            viewport: {
+                                x: 0,
+                                y: 0,
+                                width: w,
+                                height: h
+                            },
+                            pose: calculatePose(this.deviceService.interfaceEntity, time),
+                            subviews: [
+                                {
+                                    type: SubviewType.SINGULAR,
+                                    projectionMatrix: Matrix4.computePerspectiveFieldOfView(
+                                        Math.PI / 3, w / h, 0.2, 10000000000, <any>[]
+                                    )
+                                }
+                            ]
+                        }
                     }
                     remoteRealitySession.send('ar.reality.frameState', frameState);
                     this.timer.requestFrame(update);
@@ -366,6 +466,6 @@ export class EmptyRealitySetupHandler implements RealitySetupHandler {
         remoteRealitySession.closeEvent.addEventListener(() => {
             doUpdate = false;
         });
-        remoteRealitySession.open(port, { role: Role.REALITY });
+        remoteRealitySession.open(port, { role: Role.REALITY_VIEW });
     }
 }

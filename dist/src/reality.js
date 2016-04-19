@@ -1,4 +1,4 @@
-System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './timer', './config', './focus', './session', './camera', './device', './utils', './viewport'], function(exports_1, context_1) {
+System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './timer', './config', './focus', './session', './device', './utils'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -7,8 +7,8 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './t
         else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
-    var aurelia_dependency_injection_1, cesium_imports_1, timer_1, config_1, focus_1, session_1, camera_1, device_1, utils_1, viewport_1;
-    var RealitySetupHandler, RealityService, EmptyRealitySetupHandler;
+    var aurelia_dependency_injection_1, cesium_imports_1, timer_1, config_1, focus_1, session_1, device_1, utils_1;
+    var SubviewType, RealitySetupHandler, RealityService, EmptyRealitySetupHandler;
     return {
         setters:[
             function (aurelia_dependency_injection_1_1) {
@@ -29,19 +29,32 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './t
             function (session_1_1) {
                 session_1 = session_1_1;
             },
-            function (camera_1_1) {
-                camera_1 = camera_1_1;
-            },
             function (device_1_1) {
                 device_1 = device_1_1;
             },
             function (utils_1_1) {
                 utils_1 = utils_1_1;
-            },
-            function (viewport_1_1) {
-                viewport_1 = viewport_1_1;
             }],
         execute: function() {
+            (function (SubviewType) {
+                /*
+                 * Identities a subview for a handheld display.
+                 */
+                SubviewType[SubviewType["SINGULAR"] = "Singular"] = "SINGULAR";
+                /*
+                 * Identifies a subview for the left eye (when the user is wearing an HMD or Viewer)
+                 */
+                SubviewType[SubviewType["LEFTEYE"] = "LeftEye"] = "LEFTEYE";
+                /*
+                 * Identifies a subview for the right eye (when the user is wearing an HMD or Viewer)
+                 */
+                SubviewType[SubviewType["RIGHTEYE"] = "RightEye"] = "RIGHTEYE";
+                /*
+                 * Identifies a subview for a custom view configuration
+                 */
+                SubviewType[SubviewType["OTHER"] = "Other"] = "OTHER";
+            })(SubviewType || (SubviewType = {}));
+            exports_1("SubviewType", SubviewType);
             RealitySetupHandler = (function () {
                 function RealitySetupHandler() {
                 }
@@ -52,22 +65,10 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './t
             * Manages reality
             */
             RealityService = (function () {
-                function RealityService(handlers, sessionService, cameraService, deviceService, focusService, viewportService) {
+                function RealityService(sessionService, focusService) {
                     var _this = this;
-                    this.handlers = handlers;
                     this.sessionService = sessionService;
-                    this.cameraService = cameraService;
-                    this.deviceService = deviceService;
                     this.focusService = focusService;
-                    this.viewportService = viewportService;
-                    /**
-                     * The current reality.
-                     */
-                    this.current = null;
-                    /**
-                     * The desired reality.
-                     */
-                    this.desired = null;
                     /**
                      * An event that is raised when a reality control port is opened.
                      */
@@ -90,6 +91,14 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './t
                      * Manager-only. A map from a desired reality to the session which requested it
                      */
                     this.desiredRealityMapInverse = new WeakMap();
+                    // The default reality
+                    this._default = null;
+                    // The current reality
+                    this._current = null;
+                    // The desired reality
+                    this._desired = null;
+                    // RealitySetupHandlers
+                    this._handlers = [];
                     if (sessionService.isManager()) {
                         sessionService.connectEvent.addEventListener(function (session) {
                             session.closeEvent.addEventListener(function () {
@@ -115,14 +124,14 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './t
                                 _this._setNextReality(_this.onSelectReality());
                             };
                             session.on['ar.reality.message'] = function (message) {
-                                if (_this.desiredRealityMapInverse.get(_this.current) === session) {
+                                if (_this.desiredRealityMapInverse.get(_this._current) === session) {
                                     _this._realitySession.send('ar.reality.message', message);
                                 }
                             };
                         });
                         sessionService.manager.connectEvent.addEventListener(function () {
                             setTimeout(function () {
-                                if (!_this.desired)
+                                if (!_this._desired)
                                     _this._setNextReality(_this.onSelectReality());
                             });
                         });
@@ -146,6 +155,19 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './t
                     };
                 }
                 /**
+                 * Manager-only. Register a reality setup handler
+                 */
+                RealityService.prototype.registerHandler = function (handler) {
+                    this.sessionService.ensureIsManager();
+                    this._handlers.push(handler);
+                };
+                /**
+                 * Get the current reality view
+                 */
+                RealityService.prototype.getCurrent = function () {
+                    return this._current;
+                };
+                /**
                 * Manager-only. Check if a type of reality is supported.
                 * @param type reality type
                 * @return true if a handler exists and false otherwise
@@ -160,8 +182,22 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './t
                 RealityService.prototype.setDesired = function (reality) {
                     if (reality && !reality['id'])
                         reality['id'] = cesium_imports_1.createGuid();
-                    this.desired = reality;
+                    this._desired = reality;
                     this.sessionService.manager.send('ar.reality.desired', { reality: reality });
+                };
+                /**
+                 * Get the desired reality
+                 */
+                RealityService.prototype.getDesired = function () {
+                    return this._desired;
+                };
+                /**
+                 * Set the default reality. Manager-only.
+                 */
+                RealityService.prototype.setDefault = function (reality) {
+                    this.sessionService.ensureIsManager();
+                    this._default = reality;
+                    this._default.id = 'default';
                 };
                 /**
                 * Manager-only. Selects the best reality based on the realites
@@ -174,7 +210,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './t
                     this.sessionService.ensureIsManager();
                     var selectedReality = this.desiredRealityMap.get(this.sessionService.manager);
                     if (!selectedReality) {
-                        selectedReality = this.desiredRealityMap.get(this.focusService.currentSession);
+                        selectedReality = this.desiredRealityMap.get(this.focusService.getSession());
                     }
                     if (!selectedReality) {
                         // TODO: sort and select based on some kind of ranking system
@@ -192,15 +228,14 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './t
                 RealityService.prototype._setNextReality = function (reality) {
                     var _this = this;
                     console.log('Setting reality: ' + JSON.stringify(reality));
-                    if (this.current && reality && this.current.id === reality.id)
+                    if (this._current && reality && this._current.id === reality.id)
                         return;
-                    if (this.current && !reality)
+                    if (this._current && !reality)
                         return;
-                    if (!this.current && !reality) {
-                        reality = this.sessionService.configuration.defaultReality;
+                    if (!this._current && !reality) {
+                        reality = this._default;
                         if (!reality)
                             return;
-                        reality.id = 'default';
                     }
                     var realitySession = this.sessionService.addManagedSessionPort();
                     realitySession.on['ar.reality.frameState'] = function (state) {
@@ -208,36 +243,31 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './t
                             reality: reality,
                             frameNumber: state.frameNumber,
                             time: state.time,
-                            viewport: state.viewport || _this.viewportService.getSuggested(),
-                            camera: state.camera || _this.cameraService.getSuggested(),
+                            view: state.view,
                             entities: state.entities || {}
                         };
-                        if (!cesium_imports_1.defined(frameState.entities['DEVICE'])) {
-                            frameState.entities['DEVICE'] = _this.deviceService.getPose(frameState.time);
-                        }
-                        if (!cesium_imports_1.defined(frameState.entities['EYE'])) {
-                            frameState.entities['EYE'] = _this.deviceService.getEyePose(frameState.time);
-                        }
                         _this.frameEvent.raiseEvent(frameState);
                     };
                     realitySession.on['ar.reality.message'] = function (message) {
                         var owner = _this.desiredRealityMapInverse.get(reality) || _this.sessionService.manager;
                         owner.send('ar.reality.message', message);
                     };
+                    realitySession.on['ar.reality.needsVideoBackground'] = function (message) {
+                    };
                     realitySession.connectEvent.addEventListener(function () {
                         var previousRealitySession = _this._realitySession;
-                        var previousReality = _this.current;
+                        var previousReality = _this._current;
                         _this._realitySession = realitySession;
                         _this._setCurrent(reality);
                         if (previousRealitySession) {
                             previousRealitySession.close();
                         }
-                        if (realitySession.info.role !== config_1.Role.REALITY) {
+                        if (realitySession.info.role !== config_1.Role.REALITY_VIEW) {
                             realitySession.sendError({ message: "Expected a reality session" });
                             realitySession.close();
                             return;
                         }
-                        if (realitySession.info.enableRealityControlPort) {
+                        if (realitySession.info.realityViewSupportsControlPort) {
                             var ownerSession = _this.desiredRealityMapInverse.get(reality) || _this.sessionService.manager;
                             var channel = _this.sessionService.createMessageChannel();
                             realitySession.send('ar.reality.connect');
@@ -254,7 +284,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './t
                 };
                 RealityService.prototype._getHandler = function (type) {
                     var found = undefined;
-                    for (var _i = 0, _a = this.handlers; _i < _a.length; _i++) {
+                    for (var _i = 0, _a = this._handlers; _i < _a.length; _i++) {
                         var handler = _a[_i];
                         if (handler.type === type) {
                             found = handler;
@@ -264,10 +294,10 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './t
                     return found;
                 };
                 RealityService.prototype._setCurrent = function (reality) {
-                    if (!this.current || this.current.id !== reality.id) {
-                        var previous = this.current;
-                        this.current = reality;
-                        this.changeEvent.raiseEvent({ previous: previous });
+                    if (!this._current || this._current.id !== reality.id) {
+                        var previous = this._current;
+                        this._current = reality;
+                        this.changeEvent.raiseEvent({ previous: previous, current: reality });
                         console.log('Reality changed to: ' + JSON.stringify(reality));
                     }
                 };
@@ -279,14 +309,15 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './t
                     handler.setup(reality, port);
                 };
                 RealityService = __decorate([
-                    aurelia_dependency_injection_1.inject(aurelia_dependency_injection_1.All.of(RealitySetupHandler), session_1.SessionService, camera_1.CameraService, device_1.DeviceService, focus_1.FocusService, viewport_1.ViewportService, timer_1.TimerService)
+                    aurelia_dependency_injection_1.inject(session_1.SessionService, focus_1.FocusService)
                 ], RealityService);
                 return RealityService;
             }());
             exports_1("RealityService", RealityService);
             EmptyRealitySetupHandler = (function () {
-                function EmptyRealitySetupHandler(sessionService, timer) {
+                function EmptyRealitySetupHandler(sessionService, deviceService, timer) {
                     this.sessionService = sessionService;
+                    this.deviceService = deviceService;
                     this.timer = timer;
                     this.type = 'empty';
                 }
@@ -297,9 +328,27 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './t
                     remoteRealitySession.connectEvent.addEventListener(function () {
                         var update = function (time, frameNumber) {
                             if (doUpdate) {
+                                _this.deviceService.update();
+                                var w = document.documentElement.clientWidth;
+                                var h = document.documentElement.clientHeight;
                                 var frameState = {
                                     time: time,
-                                    frameNumber: frameNumber
+                                    frameNumber: frameNumber,
+                                    view: {
+                                        viewport: {
+                                            x: 0,
+                                            y: 0,
+                                            width: w,
+                                            height: h
+                                        },
+                                        pose: utils_1.calculatePose(_this.deviceService.interfaceEntity, time),
+                                        subviews: [
+                                            {
+                                                type: SubviewType.SINGULAR,
+                                                projectionMatrix: cesium_imports_1.Matrix4.computePerspectiveFieldOfView(Math.PI / 3, w / h, 0.2, 10000000000, [])
+                                            }
+                                        ]
+                                    }
                                 };
                                 remoteRealitySession.send('ar.reality.frameState', frameState);
                                 _this.timer.requestFrame(update);
@@ -310,10 +359,10 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './t
                     remoteRealitySession.closeEvent.addEventListener(function () {
                         doUpdate = false;
                     });
-                    remoteRealitySession.open(port, { role: config_1.Role.REALITY });
+                    remoteRealitySession.open(port, { role: config_1.Role.REALITY_VIEW });
                 };
                 EmptyRealitySetupHandler = __decorate([
-                    aurelia_dependency_injection_1.inject(session_1.SessionService, timer_1.TimerService)
+                    aurelia_dependency_injection_1.inject(session_1.SessionService, device_1.DeviceService, timer_1.TimerService)
                 ], EmptyRealitySetupHandler);
                 return EmptyRealitySetupHandler;
             }());

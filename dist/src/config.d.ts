@@ -2,17 +2,14 @@
  * Describes the session configuration
  */
 export interface Configuration {
-    role: Role;
+    role?: Role;
     userData?: any;
-    enableRealityControlPort?: boolean;
-    enableIncomingUpdateEvents?: boolean;
-    defaultReality?: {
-        type: string;
-        [option: string]: any;
-    };
+    appProvidesCustomView?: boolean;
+    realityViewSupportsControlPort?: boolean;
+    realityViewSupportsCustomView?: boolean;
 }
 export declare enum Role {
     APPLICATION,
-    REALITY,
+    REALITY_VIEW,
     MANAGER,
 }
