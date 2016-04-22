@@ -3,7 +3,18 @@ import {
 } from './cesium/cesium-imports'
 
 /**
- * Provides timer service
+ * Provides timer service mainly to EmptyRealitySetupHandler class.
+ * Updates time and frameNumber of animation frames.
+ *
+ * @example An example where requestFrame method is called
+ * ```  
+ * var app = Argon.init();
+ * const update = (time: JulianDate, frameNumber: number) => {
+ *      app.viewport.element.innerHTML = (new Date()).toString();
+ *      this.timer.requestFrame(update);
+ * }
+ * this.timer.requestFrame(update);
+ * ```
  */
 export class TimerService {
 

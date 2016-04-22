@@ -34,6 +34,18 @@ export interface ErrorMessage {
 /**
  * Provides two-way communication between sessions, either 
  * Application and Manager, or Reality and Manager.
+ * @example An example of constructing a SessionPort
+ *```
+ * var app = Argon.init();
+ * const remoteRealitySession = app.Session.createSessionPort();
+ * remoteRealitySession.connectEvent.addEventListener(() => {
+ *     remoteRealitySession.send('Message');
+ * });
+ * remoteRealitySession.closeEvent.addEventListener(() => {
+ *     console.log("Session port is closed");
+ * });
+ * remoteRealitySession.open(port, { role: Role.REALITY });
+ *```
  */
 export class SessionPort {
 
@@ -246,6 +258,18 @@ export abstract class ConnectService {
     abstract connect(sessionService: SessionService): void;
 }
 
+/**
+ * A SessionService class to manage ports of the session.
+ * @example An example of SessionService class
+ *```
+ * var app = Argon.init();
+ * app.session.manager.on['message'] = () => {
+ *     console.log("received message "message"");
+ *     const messageChannel = this.sessionService.createMessageChannel();
+ *     const realityControlSession = this.sessionService.createSessionPort();
+ * }
+ *```
+ */
 @inject('config', ConnectService, SessionPortFactory, MessageChannelFactory)
 export class SessionService {
 

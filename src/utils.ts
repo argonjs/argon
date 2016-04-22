@@ -21,6 +21,17 @@ export type RemoveCallback = () => void;
 
 /**
  * Provides the ability raise and subscribe to an event.
+ * @example An example where addEventListener method is called
+ * ```
+ * var app = Argon.init();
+ * var remove = event.addEventListener(function(message) {
+ *     condole.log("received message:" + message);
+ *     remove();
+ * });
+ * event.raiseEvent("Rasied Event");
+ * //Should print:
+ * // received message: Raised Event
+ * ```
  */
 export class Event<T> {
 
@@ -63,7 +74,8 @@ export class Event<T> {
 }
 
 /**
- * Create an EntityPose of the Cesium Entity based on Cesium Julian Date.
+ * Create an EntityPose of the Cesium Entity based on Cesium Julian Date. 
+ * @example An example to send update for session
  * @param entity The entity to get position. 
  * @param time The time for which to retrieve the value.
  * @return An EntityPose object with orientation, position and referenceFrame.
@@ -80,7 +92,9 @@ export function calculatePose(entity: Entity, time: JulianDate): SerializedEntit
 }
 
 /**
-* TODO.
+* A queue to hold all commands
+* The class is mainly used in Vuforia Service
+* @example An example from Vuforia Service showing how command queue is used 
 */
 export class CommandQueue {
     private _queue: Array<{ execute: Function, reject: (reason: any) => void }> = [];
@@ -101,8 +115,9 @@ export class CommandQueue {
     }
 
     /**
-     * Push a command to the command queue.
+     * Push the command and the data needed to run the command to the command queue.
      * @param command Any command ready to be pushed into the command queue.
+     * @param userData Any data needed to run the command.
      */
     public push<TResult>(command: () => TResult, execute?: boolean): Promise<TResult> {
         const result = new Promise<TResult>((resolve, reject) => {
@@ -181,7 +196,6 @@ const scratchCartesianPositionFIXED = new Cartesian3
 const scratchMatrix4 = new Matrix4
 const scratchMatrix3 = new Matrix3
 
-
 /**
  * Gets the value of the Position property at the provided time and in the provided reference frame.
  * @param entity The entity to get position. 
@@ -189,6 +203,7 @@ const scratchMatrix3 = new Matrix3
  * @param referenceFrame The desired referenceFrame of the result.
  * @param result The object to store the value into.
  * @return The modified result parameter.
+ * @example An example showing how the method can be called
  */
 export function getEntityPositionInReferenceFrame(
     entity: Entity,
@@ -205,6 +220,7 @@ export function getEntityPositionInReferenceFrame(
  * @param referenceFrame The desired referenceFrame of the result.
  * @param result The object to store the value into.
  * @return The modified result parameter.
+ * @example An example showing how the method can be called
  */
 export function getEntityOrientationInReferenceFrame(
     entity: Entity,
@@ -274,6 +290,11 @@ export function parseURL(inURL: string) {
 
 /**
  * A minimal MessageEvent interface.
+ * @example use message channel factory to create a message
+ * ```
+ * var app = Argon.init();
+ * var messageChannel = new MessageChannelFactory.create();
+ * ```
  */
 export declare class MessageEventLike {
     constructor(data: any);
