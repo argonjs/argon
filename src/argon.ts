@@ -8,7 +8,8 @@ import {
     LoopbackConnectService,
     DOMConnectService,
     DebugConnectService,
-    WKWebViewConnectService
+    WKWebViewConnectService,
+    AndroidConnectService,
 } from './session'
 
 import {Configuration, Role} from './config'
@@ -56,6 +57,11 @@ export class ArgonSystem {
             container.registerSingleton(
                 ConnectService,
                 WKWebViewConnectService
+            )
+        } else if (AndroidConnectService.isAvailable()) {
+            container.registerSingleton(
+                ConnectService,
+                AndroidConnectService
             )
         } else if (DebugConnectService.isAvailable()) {
             container.registerSingleton(
