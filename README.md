@@ -47,6 +47,22 @@ npm run test
 npm run build
 ```
 
+### Generating the Documentation
+
+To generate a local copy of the documentation, execute:
+
+```sh
+npm run typedoc
+```
+
+The documentation will be placed in the `docs` folder, and can be viewed by accessing the `docs/index.html` page with your browser.
+
+If you wish to publish the documentation to the `gh-pages` branch on your github account you can run the following:
+
+```sh
+npm run gh-pages
+```
+
 ### Potential Problems
 
 On Debian based systems, node.js has a name conflict with another module and as a result npm will not work properly. To fix this, run the following:
