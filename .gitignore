@@ -4,3 +4,6 @@ jspm_packages
 typings
 docs
 .vscode/tasks.json
+
+# Istanbul coverage reports
+coverage
