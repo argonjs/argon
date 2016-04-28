@@ -368,7 +368,7 @@ define("2", ["exports", "3"], function(exports, _aureliaPal) {
 });
 
 })();
-$__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1, context_1) {
+$__System.register("4", ["a", "5", "6", "7", "8", "9"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
@@ -385,8 +385,7 @@ $__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1,
   };
   var aurelia_dependency_injection_1,
       cesium_imports_1,
-      config_1,
-      device_1,
+      common_1,
       session_1,
       reality_1,
       utils_1;
@@ -405,10 +404,8 @@ $__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1,
       aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
     }, function(cesium_imports_1_1) {
       cesium_imports_1 = cesium_imports_1_1;
-    }, function(config_1_1) {
-      config_1 = config_1_1;
-    }, function(device_1_1) {
-      device_1 = device_1_1;
+    }, function(common_1_1) {
+      common_1 = common_1_1;
     }, function(session_1_1) {
       session_1 = session_1_1;
     }, function(reality_1_1) {
@@ -419,9 +416,8 @@ $__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1,
     execute: function() {
       (function(PoseStatus) {
         PoseStatus[PoseStatus["KNOWN"] = 1] = "KNOWN";
-        PoseStatus[PoseStatus["UNKNOWN"] = 2] = "UNKNOWN";
-        PoseStatus[PoseStatus["FOUND"] = 4] = "FOUND";
-        PoseStatus[PoseStatus["LOST"] = 8] = "LOST";
+        PoseStatus[PoseStatus["FOUND"] = 2] = "FOUND";
+        PoseStatus[PoseStatus["LOST"] = 4] = "LOST";
       })(PoseStatus || (PoseStatus = {}));
       exports_1("PoseStatus", PoseStatus);
       scratchDate = new cesium_imports_1.JulianDate(0, 0);
@@ -429,11 +425,10 @@ $__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1,
       scratchQuaternion = new cesium_imports_1.Quaternion(0, 0);
       scratchOriginCartesian3 = new cesium_imports_1.Cartesian3(0, 0);
       ContextService = (function() {
-        function ContextService(sessionService, realityService, deviceService) {
+        function ContextService(sessionService, realityService) {
           var _this = this;
           this.sessionService = sessionService;
           this.realityService = realityService;
-          this.deviceService = deviceService;
           this.updateEvent = new utils_1.Event();
           this.renderEvent = new utils_1.Event();
           this.entities = new cesium_imports_1.EntityCollection();
@@ -447,7 +442,7 @@ $__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1,
           this.localOriginEastNorthUp = new cesium_imports_1.Entity({
             name: 'localOriginENU',
             position: new cesium_imports_1.ConstantPositionProperty(),
-            orientation: new cesium_imports_1.ConstantProperty()
+            orientation: new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY)
           });
           this.localOriginEastUpSouth = new cesium_imports_1.Entity({
             name: 'localOriginEUS',
@@ -462,8 +457,6 @@ $__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1,
           this._updatingEntities = new Set();
           this._knownEntities = new Set();
           this.entities.add(this.user);
-          this.entities.add(deviceService.entity);
-          this.entities.add(deviceService.interfaceEntity);
           if (this.sessionService.isManager()) {
             this.realityService.frameEvent.addEventListener(function(state) {
               _this._update(state);
@@ -474,11 +467,11 @@ $__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1,
             };
           }
           this.sessionService.connectEvent.addEventListener(function(session) {
+            _this._subscribedEntities.set(session, new Set());
             session.on['ar.context.subscribe'] = function(_a) {
               var id = _a.id;
-              var subscriptions = _this._subscribedEntities.get(session) || [];
-              if (subscriptions.indexOf(id) === -1)
-                subscriptions.push(id);
+              var subscriptions = _this._subscribedEntities.get(session);
+              subscriptions.add(id);
             };
           });
         }
@@ -509,7 +502,7 @@ $__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1,
               position: new cesium_imports_1.Cartesian3,
               orientation: new cesium_imports_1.Quaternion,
               time: cesium_imports_1.JulianDate.clone(time),
-              poseStatus: PoseStatus.UNKNOWN
+              poseStatus: 0
             };
             this._entityPoseMap.set(key, entityPose);
           } else {
@@ -522,10 +515,8 @@ $__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1,
           var previousStatus = entityPose.poseStatus;
           if (hasPose) {
             poseStatus |= PoseStatus.KNOWN;
-          } else {
-            poseStatus |= PoseStatus.UNKNOWN;
           }
-          if (hasPose && previousStatus & PoseStatus.UNKNOWN) {
+          if (hasPose && !(previousStatus & PoseStatus.KNOWN)) {
             poseStatus |= PoseStatus.FOUND;
           } else if (!hasPose && previousStatus & PoseStatus.KNOWN) {
             poseStatus |= PoseStatus.LOST;
@@ -561,7 +552,7 @@ $__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1,
             for (var _i = 0,
                 _a = this.sessionService.managedSessions; _i < _a.length; _i++) {
               var session = _a[_i];
-              if (session.info.role === config_1.Role.APPLICATION)
+              if (session.info.role === common_1.Role.APPLICATION)
                 this._sendUpdateForSession(state, session);
             }
           }
@@ -571,45 +562,69 @@ $__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1,
         };
         ContextService.prototype._updateEntity = function(id, state) {
           var entityPose = state.entities[id];
-          var referenceFrame = (typeof entityPose.referenceFrame === 'number') ? entityPose.referenceFrame : this.entities.getById(entityPose.referenceFrame);
+          if (!entityPose)
+            return;
+          var referenceFrame;
+          if (entityPose.r) {
+            if (typeof entityPose.r === 'number') {
+              referenceFrame = entityPose.r;
+            } else {
+              referenceFrame = this.entities.getById(entityPose.r);
+            }
+          } else {
+            referenceFrame = cesium_imports_1.ReferenceFrame.FIXED;
+          }
           if (!cesium_imports_1.defined(referenceFrame)) {
-            referenceFrame = this._updateEntity(entityPose.referenceFrame, state);
+            referenceFrame = this._updateEntity(entityPose.r, state);
           }
+          var positionValue = (entityPose.p === 0 ? cesium_imports_1.Cartesian3.ZERO : entityPose.p);
+          var orientationValue = entityPose.o === 0 ? cesium_imports_1.Quaternion.IDENTITY : entityPose.o;
           var entity = this.entities.getOrCreateEntity(id);
-          if (entity.position instanceof cesium_imports_1.ConstantPositionProperty === false || entity.orientation instanceof cesium_imports_1.ConstantProperty === false) {
-            entity.position = new cesium_imports_1.ConstantPositionProperty(entityPose.position, referenceFrame);
-            entity.orientation = new cesium_imports_1.ConstantProperty(entityPose.orientation);
-          }
           var entityPosition = entity.position;
           var entityOrientation = entity.orientation;
-          entityPosition.setValue(entityPose.position, referenceFrame);
-          entityOrientation.setValue(entityPose.orientation);
+          if (!cesium_imports_1.defined(entityPosition)) {
+            entity.position = new cesium_imports_1.ConstantPositionProperty(positionValue, referenceFrame);
+          } else if (entityPosition instanceof cesium_imports_1.ConstantPositionProperty) {
+            entityPosition.setValue(positionValue, referenceFrame);
+          } else if (entityPosition instanceof cesium_imports_1.SampledPositionProperty) {
+            entityPosition.addSample(state.time, positionValue);
+          }
+          if (!cesium_imports_1.defined(entityOrientation)) {
+            entity.orientation = new cesium_imports_1.ConstantProperty(orientationValue);
+          } else if (entityOrientation instanceof cesium_imports_1.ConstantProperty) {
+            entityOrientation.setValue(orientationValue);
+          } else if (entityOrientation instanceof cesium_imports_1.SampledProperty) {
+            entityOrientation.addSample(state.time, orientationValue);
+          }
           return entity;
         };
         ContextService.prototype._updateOrigin = function(state) {
           var userRootFrame = utils_1.getRootReferenceFrame(this.user);
           var userPosition = this.user.position.getValueInReferenceFrame(state.time, userRootFrame, scratchCartesian3);
-          var userENUPositionProperty = this.localOriginEastNorthUp.position;
-          userENUPositionProperty.setValue(userPosition, userRootFrame);
           var localENUFrame = this.localOriginEastNorthUp.position.referenceFrame;
           var localENUPosition = this.localOriginEastNorthUp.position.getValueInReferenceFrame(state.time, localENUFrame, scratchOriginCartesian3);
           if (!localENUPosition || localENUFrame !== userRootFrame || cesium_imports_1.Cartesian3.magnitudeSquared(cesium_imports_1.Cartesian3.subtract(userPosition, localENUPosition, scratchOriginCartesian3)) > 25000000) {
             var localENUPositionProperty = this.localOriginEastNorthUp.position;
             var localENUOrientationProperty = this.localOriginEastNorthUp.orientation;
             localENUPositionProperty.setValue(userPosition, userRootFrame);
-            var enuOrientation = utils_1.getEntityOrientationInReferenceFrame(this.localOriginEastNorthUp, state.time, userRootFrame, scratchQuaternion);
-            localENUOrientationProperty.setValue(enuOrientation);
+            if (localENUFrame === cesium_imports_1.ReferenceFrame.FIXED) {
+              var enuOrientation = cesium_imports_1.Transforms.headingPitchRollQuaternion(userPosition, 0, 0, 0, undefined, scratchQuaternion);
+              localENUOrientationProperty.setValue(enuOrientation);
+            } else {
+              localENUOrientationProperty.setValue(cesium_imports_1.Quaternion.IDENTITY);
+            }
             this.localOriginChangeEvent.raiseEvent(undefined);
           }
         };
         ContextService.prototype._sendUpdateForSession = function(parentState, session) {
+          var _this = this;
           var sessionPoseMap = {};
           for (var id in parentState.entities) {
             sessionPoseMap[id] = parentState.entities[id];
           }
-          for (var id in this._subscribedEntities.get(session)) {
-            this._addEntityAndAncestorsToPoseMap(sessionPoseMap, id, parentState.time);
-          }
+          this._subscribedEntities.get(session).forEach(function(id) {
+            _this._addEntityAndAncestorsToPoseMap(sessionPoseMap, id, parentState.time);
+          });
           var sessionState = {
             reality: parentState.reality,
             time: parentState.time,
@@ -622,7 +637,9 @@ $__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1,
         ContextService.prototype._addEntityAndAncestorsToPoseMap = function(poseMap, id, time) {
           if (!cesium_imports_1.defined(this._entityPoseCache[id])) {
             var entity = this.entities.getById(id);
-            this._entityPoseCache[id] = utils_1.calculatePose(entity, time);
+            if (!entity)
+              return;
+            this._entityPoseCache[id] = utils_1.getSerializedEntityPose(entity, time);
             if (entity.position.referenceFrame instanceof cesium_imports_1.Entity) {
               var refId = _stringFromReferenceFrame(entity.position.referenceFrame);
               this._addEntityAndAncestorsToPoseMap(poseMap, refId, time);
@@ -630,7 +647,7 @@ $__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1,
           }
           poseMap[id] = this._entityPoseCache[id];
         };
-        ContextService = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, reality_1.RealityService, device_1.DeviceService)], ContextService);
+        ContextService = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, reality_1.RealityService)], ContextService);
         return ContextService;
       }());
       exports_1("ContextService", ContextService);
@@ -638,7 +655,7 @@ $__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1,
   };
 });
 
-$__System.register("c", ["b", "8", "4", "a"], function(exports_1, context_1) {
+$__System.register("b", ["a", "7", "4", "9"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
@@ -764,7 +781,7 @@ $__System.register("c", ["b", "8", "4", "a"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("d", ["5"], function(exports_1, context_1) {
+$__System.register("c", ["5"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var cesium_imports_1;
@@ -817,7 +834,7 @@ $__System.register("d", ["5"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("e", ["b", "8", "a"], function(exports_1, context_1) {
+$__System.register("d", ["a", "7", "9"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
@@ -928,7 +945,7 @@ $__System.register("e", ["b", "8", "a"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("7", ["5"], function(exports_1, context_1) {
+$__System.register("e", ["5"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var cesium_imports_1;
@@ -941,17 +958,19 @@ $__System.register("7", ["5"], function(exports_1, context_1) {
       DeviceService = (function() {
         function DeviceService() {
           this.entity = new cesium_imports_1.Entity({
-            id: 'DEVICE',
+            id: 'ar.device',
             name: 'device'
           });
           this.interfaceEntity = new cesium_imports_1.Entity({
-            id: 'DEVICE_INTERFACE',
+            id: 'ar.device.interface',
             name: 'device_interface'
           });
-          var sampledDevicePosition = new cesium_imports_1.SampledPositionProperty();
+          var sampledDevicePosition = new cesium_imports_1.SampledPositionProperty(null);
           sampledDevicePosition.forwardExtrapolationType = cesium_imports_1.ExtrapolationType.HOLD;
+          sampledDevicePosition.backwardExtrapolationType = cesium_imports_1.ExtrapolationType.HOLD;
           var sampledDeviceOrientation = new cesium_imports_1.SampledProperty(cesium_imports_1.Quaternion);
           sampledDeviceOrientation.forwardExtrapolationType = cesium_imports_1.ExtrapolationType.HOLD;
+          sampledDeviceOrientation.backwardExtrapolationType = cesium_imports_1.ExtrapolationType.HOLD;
           this.entity.position = sampledDevicePosition;
           this.entity.orientation = sampledDeviceOrientation;
           var interfacePosition = new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, this.entity);
@@ -973,7 +992,7 @@ $__System.register("7", ["5"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("9", ["b", "5", "d", "6", "e", "8", "7", "a"], function(exports_1, context_1) {
+$__System.register("8", ["a", "5", "c", "6", "d", "7", "e", "9"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
@@ -991,13 +1010,12 @@ $__System.register("9", ["b", "5", "d", "6", "e", "8", "7", "a"], function(expor
   var aurelia_dependency_injection_1,
       cesium_imports_1,
       timer_1,
-      config_1,
+      common_1,
       focus_1,
       session_1,
       device_1,
       utils_1;
-  var SubviewType,
-      RealitySetupHandler,
+  var RealitySetupHandler,
       RealityService,
       EmptyRealitySetupHandler;
   return {
@@ -1007,8 +1025,8 @@ $__System.register("9", ["b", "5", "d", "6", "e", "8", "7", "a"], function(expor
       cesium_imports_1 = cesium_imports_1_1;
     }, function(timer_1_1) {
       timer_1 = timer_1_1;
-    }, function(config_1_1) {
-      config_1 = config_1_1;
+    }, function(common_1_1) {
+      common_1 = common_1_1;
     }, function(focus_1_1) {
       focus_1 = focus_1_1;
     }, function(session_1_1) {
@@ -1019,13 +1037,6 @@ $__System.register("9", ["b", "5", "d", "6", "e", "8", "7", "a"], function(expor
       utils_1 = utils_1_1;
     }],
     execute: function() {
-      (function(SubviewType) {
-        SubviewType[SubviewType["SINGULAR"] = "Singular"] = "SINGULAR";
-        SubviewType[SubviewType["LEFTEYE"] = "LeftEye"] = "LEFTEYE";
-        SubviewType[SubviewType["RIGHTEYE"] = "RightEye"] = "RIGHTEYE";
-        SubviewType[SubviewType["OTHER"] = "Other"] = "OTHER";
-      })(SubviewType || (SubviewType = {}));
-      exports_1("SubviewType", SubviewType);
       RealitySetupHandler = (function() {
         function RealitySetupHandler() {}
         return RealitySetupHandler;
@@ -1178,7 +1189,7 @@ $__System.register("9", ["b", "5", "d", "6", "e", "8", "7", "a"], function(expor
             if (previousRealitySession) {
               previousRealitySession.close();
             }
-            if (realitySession.info.role !== config_1.Role.REALITY_VIEW) {
+            if (realitySession.info.role !== common_1.Role.REALITY_VIEW) {
               realitySession.sendError({message: "Expected a reality session"});
               realitySession.close();
               return;
@@ -1259,9 +1270,9 @@ $__System.register("9", ["b", "5", "d", "6", "e", "8", "7", "a"], function(expor
                       width: w,
                       height: h
                     },
-                    pose: utils_1.calculatePose(_this.deviceService.interfaceEntity, time),
+                    pose: utils_1.getSerializedEntityPose(_this.deviceService.interfaceEntity, time),
                     subviews: [{
-                      type: SubviewType.SINGULAR,
+                      type: common_1.SubviewType.SINGULAR,
                       projectionMatrix: cesium_imports_1.Matrix4.computePerspectiveFieldOfView(Math.PI / 3, w / h, 0.2, 10000000000, [])
                     }]
                   }
@@ -1275,7 +1286,7 @@ $__System.register("9", ["b", "5", "d", "6", "e", "8", "7", "a"], function(expor
           remoteRealitySession.closeEvent.addEventListener(function() {
             doUpdate = false;
           });
-          remoteRealitySession.open(port, {role: config_1.Role.REALITY_VIEW});
+          remoteRealitySession.open(port, {role: common_1.Role.REALITY_VIEW});
         };
         EmptyRealitySetupHandler = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, device_1.DeviceService, timer_1.TimerService)], EmptyRealitySetupHandler);
         return EmptyRealitySetupHandler;
@@ -1583,7 +1594,7 @@ define("3", ["exports"], function(exports) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("b", ["exports", "f", "3"], function(exports, _aureliaMetadata, _aureliaPal) {
+define("a", ["exports", "f", "3"], function(exports, _aureliaMetadata, _aureliaPal) {
   'use strict';
   exports.__esModule = true;
   var _classInvokers;
@@ -2078,7 +2089,8 @@ define("b", ["exports", "f", "3"], function(exports, _aureliaMetadata, _aureliaP
 $__System.register("6", [], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
-  var Role;
+  var Role,
+      SubviewType;
   return {
     setters: [],
     execute: function() {
@@ -2088,11 +2100,18 @@ $__System.register("6", [], function(exports_1, context_1) {
         Role[Role["MANAGER"] = "Manager"] = "MANAGER";
       })(Role || (Role = {}));
       exports_1("Role", Role);
+      (function(SubviewType) {
+        SubviewType[SubviewType["SINGULAR"] = "Singular"] = "SINGULAR";
+        SubviewType[SubviewType["LEFTEYE"] = "LeftEye"] = "LEFTEYE";
+        SubviewType[SubviewType["RIGHTEYE"] = "RightEye"] = "RIGHTEYE";
+        SubviewType[SubviewType["OTHER"] = "Other"] = "OTHER";
+      })(SubviewType || (SubviewType = {}));
+      exports_1("SubviewType", SubviewType);
     }
   };
 });
 
-$__System.register("8", ["5", "b", "6", "a"], function(exports_1, context_1) {
+$__System.register("7", ["5", "a", "6", "9"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __extends = (this && this.__extends) || function(d, b) {
@@ -2118,7 +2137,7 @@ $__System.register("8", ["5", "b", "6", "a"], function(exports_1, context_1) {
   };
   var cesium_imports_1,
       aurelia_dependency_injection_1,
-      config_1,
+      common_1,
       utils_1;
   var SessionPort,
       SessionPortFactory,
@@ -2133,8 +2152,8 @@ $__System.register("8", ["5", "b", "6", "a"], function(exports_1, context_1) {
       cesium_imports_1 = cesium_imports_1_1;
     }, function(aurelia_dependency_injection_1_1) {
       aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
-    }, function(config_1_1) {
-      config_1 = config_1_1;
+    }, function(common_1_1) {
+      common_1 = common_1_1;
     }, function(utils_1_1) {
       utils_1 = utils_1_1;
     }],
@@ -2151,6 +2170,8 @@ $__System.register("8", ["5", "b", "6", "a"], function(exports_1, context_1) {
           this._isConnected = false;
           this._isClosed = false;
           this.on[SessionPort.OPEN] = function(info) {
+            if (!info)
+              throw new Error('Session did not provide configuration info');
             _this.info = info;
             _this.connectEvent.raiseEvent(null);
             _this._isConnected = true;
@@ -2176,13 +2197,18 @@ $__System.register("8", ["5", "b", "6", "a"], function(exports_1, context_1) {
           configurable: true
         });
         ;
+        SessionPort.prototype.isConnected = function() {
+          return this._isConnected;
+        };
         SessionPort.prototype.open = function(messagePort, options) {
           var _this = this;
-          this.messagePort = messagePort;
           if (this._isOpened)
             throw new Error('Session.open: Session can only be opened once');
           if (this._isClosed)
             throw new Error('Session.open: Session has already been closed');
+          if (!options)
+            throw new Error('Session.open: Session options must be provided');
+          this.messagePort = messagePort;
           this._isOpened = true;
           this.send(SessionPort.OPEN, options);
           this.messagePort.onmessage = function(evt) {
@@ -2265,6 +2291,7 @@ $__System.register("8", ["5", "b", "6", "a"], function(exports_1, context_1) {
             this.send(SessionPort.CLOSE);
           }
           this._isClosed = true;
+          this._isConnected = false;
           if (this.messagePort && this.messagePort.close)
             this.messagePort.close();
           this.closeEvent.raiseEvent(null);
@@ -2353,13 +2380,13 @@ $__System.register("8", ["5", "b", "6", "a"], function(exports_1, context_1) {
           return this.messageChannelFactory.create();
         };
         SessionService.prototype.isManager = function() {
-          return this.configuration.role === config_1.Role.MANAGER;
+          return this.configuration.role === common_1.Role.MANAGER;
         };
         SessionService.prototype.isApplication = function() {
-          return this.configuration.role === config_1.Role.APPLICATION;
+          return this.configuration.role === common_1.Role.APPLICATION;
         };
         SessionService.prototype.isRealityView = function() {
-          return this.configuration.role === config_1.Role.REALITY_VIEW;
+          return this.configuration.role === common_1.Role.REALITY_VIEW;
         };
         SessionService.prototype.ensureIsManager = function() {
           if (!this.isManager)
@@ -2456,7 +2483,7 @@ $__System.register("8", ["5", "b", "6", "a"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("10", ["b", "6", "e", "9", "8", "a"], function(exports_1, context_1) {
+$__System.register("10", ["a", "6", "d", "8", "7", "9"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __extends = (this && this.__extends) || function(d, b) {
@@ -2481,7 +2508,7 @@ $__System.register("10", ["b", "6", "e", "9", "8", "a"], function(exports_1, con
     return c > 3 && r && Object.defineProperty(target, key, r), r;
   };
   var aurelia_dependency_injection_1,
-      config_1,
+      common_1,
       focus_1,
       reality_1,
       session_1,
@@ -2499,8 +2526,8 @@ $__System.register("10", ["b", "6", "e", "9", "8", "a"], function(exports_1, con
   return {
     setters: [function(aurelia_dependency_injection_1_1) {
       aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
-    }, function(config_1_1) {
-      config_1 = config_1_1;
+    }, function(common_1_1) {
+      common_1 = common_1_1;
     }, function(focus_1_1) {
       focus_1 = focus_1_1;
     }, function(reality_1_1) {
@@ -2605,7 +2632,7 @@ $__System.register("10", ["b", "6", "e", "9", "8", "a"], function(exports_1, con
           remoteRealitySession.closeEvent.addEventListener(function() {
             remove();
           });
-          remoteRealitySession.open(port, {role: config_1.Role.REALITY_VIEW});
+          remoteRealitySession.open(port, {role: common_1.Role.REALITY_VIEW});
         };
         VuforiaRealitySetupHandler = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, VuforiaServiceDelegate)], VuforiaRealitySetupHandler);
         return VuforiaRealitySetupHandler;
@@ -2619,14 +2646,19 @@ $__System.register("10", ["b", "6", "e", "9", "8", "a"], function(exports_1, con
           this.realityService = realityService;
           this.delegate = delegate;
           this._controllingSession = null;
-          this._sessionIsInitialized = new WeakMap();
+          this._sessionSwitcherCommandQueue = new utils_1.CommandQueue();
           this._sessionCommandQueue = new WeakMap();
           this._sessionInitOptions = new WeakMap();
+          this._sessionInitPromise = new WeakMap();
+          this._sessionIsInitialized = new WeakMap();
           this._sessionObjectTrackerStarted = new WeakMap();
           this._sessionCreatedDataSets = new WeakMap();
           this._sessionActivatedDataSets = new WeakMap();
           this._isInitialized = false;
           if (sessionService.isManager()) {
+            this._sessionSwitcherCommandQueue.errorEvent.addEventListener(function(err) {
+              _this.sessionService.errorEvent.raiseEvent(err);
+            });
             sessionService.connectEvent.addEventListener(function(session) {
               var commandQueue = new utils_1.CommandQueue();
               commandQueue.errorEvent.addEventListener(function(err) {
@@ -2644,13 +2676,18 @@ $__System.register("10", ["b", "6", "e", "9", "8", "a"], function(exports_1, con
               session.on['ar.vuforia.init'] = function(options, event) {
                 if (!delegate.isAvailable())
                   return Promise.reject("Vuforia is not supported");
+                if (_this._sessionIsInitialized.get(session))
+                  return Promise.reject("Vuforia has already been initialized");
                 _this._sessionInitOptions.set(session, options);
                 var result = commandQueue.push(function() {
-                  return _this._init(session);
+                  return _this._init(session).then(function() {
+                    _this._sessionIsInitialized.set(session, true);
+                  });
                 }, _this._controllingSession === session);
                 if (_this.focusService.getSession() === session) {
                   _this._setControllingSession(session);
                 }
+                _this._sessionInitPromise.set(session, result);
                 return result;
               };
               session.on['ar.vuforia.objectTrackerCreateDataSet'] = function(_a, event) {
@@ -2659,7 +2696,7 @@ $__System.register("10", ["b", "6", "e", "9", "8", "a"], function(exports_1, con
                   var id = delegate.objectTrackerCreateDataSet(url);
                   if (id) {
                     createdDataSets.add(id);
-                    return Promise.resolve(id);
+                    return Promise.resolve({id: id});
                   }
                   return Promise.reject('Unable to create DataSet');
                 }, _this._controllingSession === session);
@@ -2672,7 +2709,7 @@ $__System.register("10", ["b", "6", "e", "9", "8", "a"], function(exports_1, con
                     session.send('ar.vuforia.objectTrackerActivateDataSetEvent', {id: id});
                     return;
                   }
-                  return Promise.reject("Unable to activate DataSet (#{id})");
+                  return Promise.reject("Unable to activate DataSet (" + id + ")");
                 }, _this._controllingSession === session);
               };
               session.on['ar.vuforia.objectTrackerDeactivateDataSet'] = function(_a, event) {
@@ -2683,7 +2720,7 @@ $__System.register("10", ["b", "6", "e", "9", "8", "a"], function(exports_1, con
                     session.send('ar.vuforia.objectTrackerDeactivateDataSetEvent', {id: id});
                     return;
                   }
-                  return Promise.reject("Unable to deactivate DataSet (#{id})");
+                  return Promise.reject("Unable to deactivate DataSet (" + id + ")");
                 }, _this._controllingSession === session);
               };
               session.on['ar.vuforia.dataSetFetch'] = function(_a, event) {
@@ -2704,10 +2741,9 @@ $__System.register("10", ["b", "6", "e", "9", "8", "a"], function(exports_1, con
                   commandQueue.push(function() {
                     _this._cleanupSession(session);
                     setTimeout(function() {
-                      _this._ensureControllingSession();
+                      _this._ensureActiveSession();
                     }, 2000);
                   }, true);
-                  _this._controllingSession = null;
                 } else {
                   _this._cleanupSession(session);
                 }
@@ -2733,10 +2769,11 @@ $__System.register("10", ["b", "6", "e", "9", "8", "a"], function(exports_1, con
             return new VuforiaAPI(_this.sessionService.manager);
           });
         };
-        VuforiaService.prototype._ensureControllingSession = function() {
-          if (this._controllingSession === null) {
-            this._selectControllingSession();
-          }
+        VuforiaService.prototype._ensureActiveSession = function() {
+          console.log("VuforiaService: Ensuring an active session is in control.");
+          if (this._controllingSession && this._controllingSession.isConnected())
+            return;
+          this._selectControllingSession();
         };
         VuforiaService.prototype._selectControllingSession = function() {
           var focusSession = this.focusService.getSession();
@@ -2752,74 +2789,70 @@ $__System.register("10", ["b", "6", "e", "9", "8", "a"], function(exports_1, con
               return;
             }
           }
-          this._setControllingSession(this.sessionService.manager);
+          if (this._sessionInitOptions.get(this.sessionService.manager))
+            this._setControllingSession(this.sessionService.manager);
         };
         VuforiaService.prototype._setControllingSession = function(session) {
           var _this = this;
-          var currentSession = this._controllingSession;
-          if (currentSession) {
-            var commandQueue = this._sessionCommandQueue.get(currentSession);
-            commandQueue.push(function() {
-              return _this._pauseSession(currentSession);
-            }, true).then(function() {
-              _this._resumeSession(session);
+          if (this._controllingSession === session)
+            return;
+          console.log("VuforiaService: Setting controlling session to " + session.info.name);
+          this._sessionSwitcherCommandQueue.clear();
+          this._sessionSwitcherCommandQueue.push(function() {
+            return _this._pauseSession().then(function() {
+              return _this._resumeSession(session);
             });
-          } else {
-            this._resumeSession(session);
-          }
+          }, true);
         };
         VuforiaService.prototype._resumeSession = function(session) {
           if (this._controllingSession)
-            throw new Error('VuforiaService: Attempted to resume a session while a session is still in control');
-          this._controllingSession = session;
+            throw new Error('Attempted to resume a session while a session is still in control');
+          if (session)
+            console.log("VuforiaService: Resuming session " + session.info.name);
           var initOptions = this._sessionInitOptions.get(session);
           if (!initOptions) {
-            throw new Error('VuforiaService: Attempted to resume a session without initialization options');
+            throw new Error('Attempted to resume a session without initialization options');
           }
-          var isInitialized = this._sessionIsInitialized.get(session);
+          this._controllingSession = session;
           var commandQueue = this._sessionCommandQueue.get(session);
-          if (isInitialized) {
-            this._init(session).then(function() {
+          if (this._sessionIsInitialized.get(session)) {
+            return this._init(session).then(function() {
               commandQueue.execute();
             }).catch(function(err) {
               session.sendError(err);
             });
           } else {
             commandQueue.execute();
+            return this._sessionInitPromise.get(session);
           }
         };
-        VuforiaService.prototype._pauseSession = function(session) {
+        VuforiaService.prototype._pauseSession = function() {
           var _this = this;
-          if (this._controllingSession !== session)
-            throw Error('VuforiaService: Attempted to pause a session which is not in control');
-          this._controllingSession = null;
+          var session = this._controllingSession;
+          if (!session)
+            return Promise.resolve(undefined);
+          console.log("VuforiaService: Pausing session " + session.info.name);
           var commandQueue = this._sessionCommandQueue.get(session);
           return commandQueue.push(function() {
+            commandQueue.pause();
+            _this._controllingSession = null;
             return _this._deinit(session);
           }, true);
         };
         VuforiaService.prototype._cleanupSession = function(session) {
           var _this = this;
-          if (this._controllingSession === session) {
-            var commandQueue = this._sessionCommandQueue.get(session);
-            commandQueue.push(function() {
-              return new Promise(function(resolve) {
-                var remove = _this.delegate.stateUpdateEvent.addEventListener(function() {
-                  var activatedDataSets = _this._sessionActivatedDataSets.get(session);
-                  activatedDataSets.forEach(function(id) {
-                    _this.delegate.objectTrackerDeactivateDataSet(id);
-                  });
-                  _this._sessionActivatedDataSets.delete(session);
-                  var createdDataSets = _this._sessionCreatedDataSets.get(session);
-                  createdDataSets.forEach(function(id) {
-                    _this.delegate.objectTrackerDestroyDataSet(id);
-                  });
-                  _this._sessionCreatedDataSets.delete(session);
-                  remove();
-                });
-              });
-            }, true);
-          }
+          this._sessionInitOptions.delete(session);
+          var createdDataSets = this._sessionCreatedDataSets.get(session);
+          console.log('VuforiaService: Deactivating datasets for session ' + session.info.name);
+          this._sessionActivatedDataSets.get(session).forEach(function(id) {
+            _this.delegate.objectTrackerDeactivateDataSet(id);
+          });
+          this._sessionActivatedDataSets.delete(session);
+          console.log('VuforiaService: Destroying objects for session ' + session.info.name);
+          createdDataSets.forEach(function(id) {
+            _this.delegate.objectTrackerDestroyDataSet(id);
+          });
+          this._sessionCreatedDataSets.delete(session);
         };
         VuforiaService.prototype._init = function(session) {
           var _this = this;
@@ -2831,9 +2864,8 @@ $__System.register("10", ["b", "6", "e", "9", "8", "a"], function(exports_1, con
             if (!_this.delegate.objectTrackerInit()) {
               return Promise.reject("Vuforia init failed: Unable to initialize ObjectTracker");
             }
-            var activatedDataSets = _this._sessionActivatedDataSets.get(session);
             var success = true;
-            activatedDataSets.forEach(function(id) {
+            _this._sessionActivatedDataSets.get(session).forEach(function(id) {
               success = success && _this.delegate.objectTrackerActivateDataSet(id);
               if (success) {
                 session.send('ar.vuforia.objectTrackerActivateDataSetEvent', {id: id});
@@ -2848,22 +2880,23 @@ $__System.register("10", ["b", "6", "e", "9", "8", "a"], function(exports_1, con
             if (!_this.delegate.objectTrackerStart()) {
               return Promise.reject("Vuforia init failed: Unable to start ObjectTracker");
             }
-            _this._sessionIsInitialized.set(session, true);
           }).catch(function(err) {
             _this._sessionInitOptions.set(session, null);
             _this._sessionIsInitialized.set(session, false);
             _this._deinit(session);
-            _this._ensureControllingSession();
+            _this._ensureActiveSession();
             return Promise.reject(err);
           });
         };
         VuforiaService.prototype._deinit = function(session) {
           var _this = this;
           var activatedDataSets = this._sessionActivatedDataSets.get(session);
-          activatedDataSets.forEach(function(id) {
-            _this.delegate.objectTrackerDeactivateDataSet(id);
-            session.send('ar.vuforia.objectTrackerDeactivateDataSetEvent', {id: id});
-          });
+          if (activatedDataSets) {
+            activatedDataSets.forEach(function(id) {
+              _this.delegate.objectTrackerDeactivateDataSet(id);
+              session.send('ar.vuforia.objectTrackerDeactivateDataSetEvent', {id: id});
+            });
+          }
           this.delegate.deinit();
         };
         VuforiaService = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, focus_1.FocusService, reality_1.RealityService, VuforiaServiceDelegate)], VuforiaService);
@@ -2907,8 +2940,13 @@ $__System.register("10", ["b", "6", "e", "9", "8", "a"], function(exports_1, con
         }
         VuforiaObjectTracker.prototype.createDataSet = function(url) {
           var _this = this;
+          if (url && window.document) {
+            url = utils_1.resolveURL(url);
+          }
           return this.manager.request('ar.vuforia.objectTrackerCreateDataSet', {url: url}).then(function(message) {
-            return new VuforiaDataSet(message.dataSetId, _this.manager);
+            var dataSet = new VuforiaDataSet(message.id, _this.manager);
+            _this._dataSetMap.set(message.id, dataSet);
+            return dataSet;
           });
         };
         VuforiaObjectTracker.prototype.activateDataSet = function(dataSet) {
@@ -2937,7 +2975,11 @@ $__System.register("10", ["b", "6", "e", "9", "8", "a"], function(exports_1, con
           return this.manager.request('ar.vuforia.dataSetFetch', {id: this.id}).then(function() {});
         };
         VuforiaDataSet.prototype.load = function() {
-          return this.manager.request('ar.vuforia.dataSetLoad', {id: this.id});
+          var _this = this;
+          return this.manager.request('ar.vuforia.dataSetLoad', {id: this.id}).then(function(trackables) {
+            _this._trackables = trackables;
+            return trackables;
+          });
         };
         VuforiaDataSet.prototype.isActive = function() {
           return this._isActive;
@@ -13809,7 +13851,7 @@ $__System.register("5", ["44", "11", "3b", "24", "3c", "19", "1a", "1d", "23", "
   };
 });
 
-$__System.register("a", ["15", "5"], function(exports_1, context_1) {
+$__System.register("9", ["15", "5"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var Event_1,
@@ -13822,17 +13864,6 @@ $__System.register("a", ["15", "5"], function(exports_1, context_1) {
       urlParser,
       MessageChannelLike,
       MessageChannelFactory;
-  function calculatePose(entity, time) {
-    var entityPosition = entity.position;
-    var referenceFrame = entityPosition.referenceFrame;
-    var referenceFrameID = typeof referenceFrame === 'number' ? referenceFrame : referenceFrame.id;
-    return {
-      referenceFrame: referenceFrameID,
-      position: entity.position.getValueInReferenceFrame(time, referenceFrame, {}),
-      orientation: entity.orientation.getValue(time, {})
-    };
-  }
-  exports_1("calculatePose", calculatePose);
   function getAncestorReferenceFrames(frame) {
     var frames = [];
     while (frame !== undefined && frame !== null) {
@@ -13869,6 +13900,17 @@ $__System.register("a", ["15", "5"], function(exports_1, context_1) {
     return cesium_imports_1.OrientationProperty.convertToReferenceFrame(time, orientation, entityFrame, referenceFrame, result);
   }
   exports_1("getEntityOrientationInReferenceFrame", getEntityOrientationInReferenceFrame);
+  function getSerializedEntityPose(entity, time, referenceFrame) {
+    referenceFrame = cesium_imports_1.defined(referenceFrame) ? referenceFrame : getRootReferenceFrame(entity);
+    var p = getEntityPositionInReferenceFrame(entity, time, referenceFrame, {});
+    var o = getEntityOrientationInReferenceFrame(entity, time, referenceFrame, {});
+    return cesium_imports_1.defined(p) && cesium_imports_1.defined(o) ? {
+      p: cesium_imports_1.Cartesian3.ZERO.equalsEpsilon(p, cesium_imports_1.CesiumMath.EPSILON9) ? 0 : p,
+      o: cesium_imports_1.Quaternion.IDENTITY.equalsEpsilon(o, cesium_imports_1.CesiumMath.EPSILON9) ? 0 : o,
+      r: typeof referenceFrame === 'number' ? referenceFrame : referenceFrame.id
+    } : undefined;
+  }
+  exports_1("getSerializedEntityPose", getSerializedEntityPose);
   function resolveURL(inURL) {
     if (!urlParser)
       throw new Error("resolveURL requires DOM api");
@@ -13933,6 +13975,7 @@ $__System.register("a", ["15", "5"], function(exports_1, context_1) {
           var _this = this;
           this._queue = [];
           this._currentCommandPending = null;
+          this._paused = true;
           this.errorEvent = new Event();
           this.errorEvent.addEventListener(function(error) {
             if (_this.errorEvent.numberOfListeners === 1)
@@ -13943,12 +13986,17 @@ $__System.register("a", ["15", "5"], function(exports_1, context_1) {
           var _this = this;
           var result = new Promise(function(resolve, reject) {
             _this._queue.push({
+              command: command,
+              reject: reject,
               execute: function() {
+                console.log('CommandQueue: Executing command ' + command.toString());
                 var result = Promise.resolve().then(command);
+                result.then(function() {
+                  console.log('CommandQueue: DONE ' + command.toString());
+                });
                 resolve(result);
                 return result;
-              },
-              reject: reject
+              }
             });
           });
           if (execute)
@@ -13956,9 +14004,16 @@ $__System.register("a", ["15", "5"], function(exports_1, context_1) {
           return result;
         };
         CommandQueue.prototype.execute = function() {
-          if (this._queue.length > 0 && this._currentCommandPending === null) {
-            Promise.resolve().then(this._executeNextCommand.bind(this));
-          }
+          var _this = this;
+          this._paused = false;
+          Promise.resolve().then(function() {
+            if (_this._queue.length > 0 && _this._currentCommandPending === null) {
+              _this._executeNextCommand();
+            }
+          });
+        };
+        CommandQueue.prototype.pause = function() {
+          this._paused = true;
         };
         CommandQueue.prototype.clear = function() {
           this._queue.forEach(function(item) {
@@ -13968,11 +14023,12 @@ $__System.register("a", ["15", "5"], function(exports_1, context_1) {
         };
         CommandQueue.prototype._executeNextCommand = function() {
           var _this = this;
-          var item = this._queue.shift();
-          if (!item) {
-            this._currentCommandPending = null;
+          this._currentCommandPending = null;
+          if (this._paused)
             return;
-          }
+          var item = this._queue.shift();
+          if (!item)
+            return;
           this._currentCommandPending = item.execute().then(this._executeNextCommand.bind(this)).catch(function(error) {
             _this.errorEvent.raiseEvent(error);
             _this._executeNextCommand();
@@ -14052,13 +14108,13 @@ $__System.register("a", ["15", "5"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("1", ["2", "b", "5", "8", "6", "4", "7", "e", "9", "d", "c", "10", "a"], function(exports_1, context_1) {
+$__System.register("1", ["2", "a", "5", "7", "6", "4", "e", "d", "8", "c", "b", "10", "9"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var DI,
       Cesium,
       session_1,
-      config_1,
+      common_1,
       context_2,
       device_1,
       focus_1,
@@ -14073,11 +14129,11 @@ $__System.register("1", ["2", "b", "5", "8", "6", "4", "7", "e", "9", "d", "c", 
     }
     var role;
     if (typeof window === 'undefined') {
-      role = config_1.Role.MANAGER;
+      role = common_1.Role.MANAGER;
     } else if (navigator.userAgent.indexOf('Argon') > 0 || window.top !== window) {
-      role = config_1.Role.APPLICATION;
+      role = common_1.Role.APPLICATION;
     } else {
-      role = config_1.Role.MANAGER;
+      role = common_1.Role.MANAGER;
     }
     var config = Object.assign({role: role}, options.config);
     return new ArgonSystem(config, options.container);
@@ -14088,7 +14144,7 @@ $__System.register("1", ["2", "b", "5", "8", "6", "4", "7", "e", "9", "d", "c", 
       options = {};
     }
     var config = Object.assign({
-      role: config_1.Role.REALITY_VIEW,
+      role: common_1.Role.REALITY_VIEW,
       realityViewSupportsControlPort: true
     }, options.config);
     return new ArgonSystem(config, options.container);
@@ -14117,9 +14173,9 @@ $__System.register("1", ["2", "b", "5", "8", "6", "4", "7", "e", "9", "d", "c", 
     }, function(session_1_1) {
       session_1 = session_1_1;
       exportStar_1(session_1_1);
-    }, function(config_1_1) {
-      config_1 = config_1_1;
-      exportStar_1(config_1_1);
+    }, function(common_1_1) {
+      common_1 = common_1_1;
+      exportStar_1(common_1_1);
     }, function(context_2_1) {
       context_2 = context_2_1;
       exportStar_1(context_2_1);
@@ -14156,9 +14212,9 @@ $__System.register("1", ["2", "b", "5", "8", "6", "4", "7", "e", "9", "d", "c", 
           if (!ArgonSystem.instance)
             ArgonSystem.instance = this;
           container.registerInstance('config', config);
-          container.registerInstance(config_1.Role, config.role);
+          container.registerInstance(common_1.Role, config.role);
           container.registerInstance(ArgonSystem, this);
-          if (config.role === config_1.Role.MANAGER) {
+          if (config.role === common_1.Role.MANAGER) {
             container.registerSingleton(session_1.ConnectService, session_1.LoopbackConnectService);
           } else if (session_1.WKWebViewConnectService.isAvailable()) {
             container.registerSingleton(session_1.ConnectService, session_1.WKWebViewConnectService);
@@ -14169,7 +14225,7 @@ $__System.register("1", ["2", "b", "5", "8", "6", "4", "7", "e", "9", "d", "c", 
           } else {
             container.registerSingleton(session_1.ConnectService, session_1.LoopbackConnectService);
           }
-          if (config.role === config_1.Role.MANAGER) {
+          if (config.role === common_1.Role.MANAGER) {
             this.reality.registerHandler(container.get(reality_1.EmptyRealitySetupHandler));
             this.reality.registerHandler(container.get(vuforia_1.VuforiaRealitySetupHandler));
             if (typeof document !== 'undefined') {

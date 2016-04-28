@@ -1,4 +1,4 @@
-System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './config', './utils'], function(exports_1, context_1) {
+System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './common', './utils'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __extends = (this && this.__extends) || function (d, b) {
@@ -12,7 +12,7 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
         else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
-    var cesium_imports_1, aurelia_dependency_injection_1, config_1, utils_1;
+    var cesium_imports_1, aurelia_dependency_injection_1, common_1, utils_1;
     var SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, WKWebViewConnectService;
     return {
         setters:[
@@ -22,8 +22,8 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
             function (aurelia_dependency_injection_1_1) {
                 aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
             },
-            function (config_1_1) {
-                config_1 = config_1_1;
+            function (common_1_1) {
+                common_1 = common_1_1;
             },
             function (utils_1_1) {
                 utils_1 = utils_1_1;
@@ -54,6 +54,8 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                     this._isConnected = false;
                     this._isClosed = false;
                     this.on[SessionPort.OPEN] = function (info) {
+                        if (!info)
+                            throw new Error('Session did not provide configuration info');
                         _this.info = info;
                         _this.connectEvent.raiseEvent(null);
                         _this._isConnected = true;
@@ -83,6 +85,9 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                     configurable: true
                 });
                 ;
+                SessionPort.prototype.isConnected = function () {
+                    return this._isConnected;
+                };
                 /**
                  * Establish a connection to another session via the provided MessagePort.
                  * @param messagePort the message port to post and receive messages.
@@ -90,11 +95,13 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                  */
                 SessionPort.prototype.open = function (messagePort, options) {
                     var _this = this;
-                    this.messagePort = messagePort;
                     if (this._isOpened)
                         throw new Error('Session.open: Session can only be opened once');
                     if (this._isClosed)
                         throw new Error('Session.open: Session has already been closed');
+                    if (!options)
+                        throw new Error('Session.open: Session options must be provided');
+                    this.messagePort = messagePort;
                     this._isOpened = true;
                     this.send(SessionPort.OPEN, options);
                     this.messagePort.onmessage = function (evt) {
@@ -203,6 +210,7 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                         this.send(SessionPort.CLOSE);
                     }
                     this._isClosed = true;
+                    this._isConnected = false;
                     if (this.messagePort && this.messagePort.close)
                         this.messagePort.close();
                     this.closeEvent.raiseEvent(null);
@@ -336,19 +344,19 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                  * Returns true if this session is the manager
                  */
                 SessionService.prototype.isManager = function () {
-                    return this.configuration.role === config_1.Role.MANAGER;
+                    return this.configuration.role === common_1.Role.MANAGER;
                 };
                 /**
                  * Returns true if this session is an application
                  */
                 SessionService.prototype.isApplication = function () {
-                    return this.configuration.role === config_1.Role.APPLICATION;
+                    return this.configuration.role === common_1.Role.APPLICATION;
                 };
                 /**
                  * Returns true if this session is a Reality view
                  */
                 SessionService.prototype.isRealityView = function () {
-                    return this.configuration.role === config_1.Role.REALITY_VIEW;
+                    return this.configuration.role === common_1.Role.REALITY_VIEW;
                 };
                 /**
                  * Throws an error if this session is not a manager

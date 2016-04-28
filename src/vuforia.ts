@@ -1,9 +1,9 @@
 import {inject} from 'aurelia-dependency-injection'
 import {defined, createGuid, JulianDate} from './cesium/cesium-imports'
-import {Role} from './config'
+import {Role, RealityView, SerializedFrameState, SerializedEntityPoseMap} from './common'
 import {ContextService} from './context'
 import {FocusService} from './focus'
-import {RealityService, RealityView, RealitySetupHandler, SerializedFrameState, SerializedEntityPoseMap} from './reality'
+import {RealityService, RealitySetupHandler} from './reality'
 import {SessionService, SessionPort} from './session'
 import {Event, MessagePortLike, CommandQueue, resolveURL} from './utils'
 
@@ -127,10 +127,13 @@ export class VuforiaRealitySetupHandler implements RealitySetupHandler {
 export class VuforiaService {
 
     private _controllingSession: SessionPort = null;
-
-    private _sessionIsInitialized = new WeakMap<SessionPort, boolean>();
+    private _sessionSwitcherCommandQueue = new CommandQueue();
     private _sessionCommandQueue = new WeakMap<SessionPort, CommandQueue>();
+
     private _sessionInitOptions = new WeakMap<SessionPort, VuforiaInitOptions>();
+    private _sessionInitPromise = new WeakMap<SessionPort, Promise<any>>();
+    private _sessionIsInitialized = new WeakMap<SessionPort, boolean>();
+
     private _sessionObjectTrackerStarted = new WeakMap<SessionPort, boolean>();
     private _sessionCreatedDataSets = new WeakMap<SessionPort, Set<string>>();
     private _sessionActivatedDataSets = new WeakMap<SessionPort, Set<string>>();
@@ -144,6 +147,11 @@ export class VuforiaService {
         private delegate: VuforiaServiceDelegate) {
 
         if (sessionService.isManager()) {
+
+            this._sessionSwitcherCommandQueue.errorEvent.addEventListener((err) => {
+                this.sessionService.errorEvent.raiseEvent(err);
+            })
+
             sessionService.connectEvent.addEventListener((session) => {
 
                 const commandQueue = new CommandQueue();
@@ -165,14 +173,21 @@ export class VuforiaService {
 
                 session.on['ar.vuforia.init'] = (options: VuforiaInitOptions, event) => {
                     if (!delegate.isAvailable()) return Promise.reject("Vuforia is not supported");
+                    if (this._sessionIsInitialized.get(session)) return Promise.reject("Vuforia has already been initialized");
+
                     this._sessionInitOptions.set(session, options);
+
                     const result = commandQueue.push(() => {
-                        return this._init(session);
+                        return this._init(session).then(() => {
+                            this._sessionIsInitialized.set(session, true);
+                        })
                     }, this._controllingSession === session);
 
                     if (this.focusService.getSession() === session) {
                         this._setControllingSession(session);
                     }
+
+                    this._sessionInitPromise.set(session, result);
 
                     return result;
                 }
@@ -182,7 +197,7 @@ export class VuforiaService {
                         const id = delegate.objectTrackerCreateDataSet(url);
                         if (id) {
                             createdDataSets.add(id);
-                            return Promise.resolve(id);
+                            return Promise.resolve({ id });
                         }
                         return Promise.reject('Unable to create DataSet');
                     }, this._controllingSession === session);
@@ -195,7 +210,7 @@ export class VuforiaService {
                             session.send('ar.vuforia.objectTrackerActivateDataSetEvent', { id });
                             return;
                         }
-                        return Promise.reject(`Unable to activate DataSet (#{id})`);
+                        return Promise.reject(`Unable to activate DataSet (${id})`);
                     }, this._controllingSession === session);
                 }
 
@@ -206,7 +221,7 @@ export class VuforiaService {
                             session.send('ar.vuforia.objectTrackerDeactivateDataSetEvent', { id });
                             return;
                         }
-                        return Promise.reject(`Unable to deactivate DataSet (#{id})`);
+                        return Promise.reject(`Unable to deactivate DataSet (${id})`);
                     }, this._controllingSession === session);
                 }
 
@@ -223,20 +238,17 @@ export class VuforiaService {
                 }
 
                 session.closeEvent.addEventListener(() => {
-
                     if (this._controllingSession === session) {
                         commandQueue.clear();
                         commandQueue.push(() => {
                             this._cleanupSession(session);
                             setTimeout(() => {
-                                this._ensureControllingSession();
+                                this._ensureActiveSession();
                             }, 2000);
                         }, true);
-                        this._controllingSession = null;
                     } else {
                         this._cleanupSession(session);
                     }
-
                 });
 
             });
@@ -256,16 +268,17 @@ export class VuforiaService {
         });
     }
 
-    public init(options: VuforiaInitOptions): PromiseLike<VuforiaAPI> {
+    public init(options: VuforiaInitOptions): Promise<VuforiaAPI> {
         return this.sessionService.manager.request('ar.vuforia.init', options).then(() => {
             return new VuforiaAPI(this.sessionService.manager);
         });
     }
 
-    private _ensureControllingSession() {
-        if (this._controllingSession === null) {
-            this._selectControllingSession();
-        }
+    private _ensureActiveSession() {
+        console.log("VuforiaService: Ensuring an active session is in control.")
+        if (this._controllingSession && this._controllingSession.isConnected())
+            return;
+        this._selectControllingSession();
     }
 
     private _selectControllingSession() {
@@ -283,86 +296,77 @@ export class VuforiaService {
             }
         }
 
-        this._setControllingSession(this.sessionService.manager);
+        if (this._sessionInitOptions.get(this.sessionService.manager))
+            this._setControllingSession(this.sessionService.manager);
     }
 
-    private _setControllingSession(session: SessionPort) {
-        const currentSession = this._controllingSession;
-        if (currentSession) {
-            const commandQueue = this._sessionCommandQueue.get(currentSession);
-            commandQueue.push(() => {
-                return this._pauseSession(currentSession);
-            }, true).then(() => {
-                this._resumeSession(session);
-            });
-        } else {
-            this._resumeSession(session);
-        }
+    private _setControllingSession(session: SessionPort): void {
+        if (this._controllingSession === session) return;
+
+        console.log("VuforiaService: Setting controlling session to " + session.info.name)
+        this._sessionSwitcherCommandQueue.clear();
+        this._sessionSwitcherCommandQueue.push(() => {
+            return this._pauseSession().then(() => {
+                return this._resumeSession(session);
+            })
+        }, true);
     }
 
-    private _resumeSession(session: SessionPort) {
-        if (this._controllingSession) throw new Error('VuforiaService: Attempted to resume a session while a session is still in control')
-        this._controllingSession = session;
+    private _resumeSession(session: SessionPort): Promise<void> {
+        if (this._controllingSession) throw new Error('Attempted to resume a session while a session is still in control')
 
+        if (session) console.log("VuforiaService: Resuming session " + session.info.name);
 
         const initOptions = this._sessionInitOptions.get(session);
         if (!initOptions) {
-            throw new Error('VuforiaService: Attempted to resume a session without initialization options');
+            throw new Error('Attempted to resume a session without initialization options');
         }
 
-        const isInitialized = this._sessionIsInitialized.get(session);
-
+        this._controllingSession = session;
         const commandQueue = this._sessionCommandQueue.get(session);
-        if (isInitialized) {
-            this._init(session).then(() => {
+        if (this._sessionIsInitialized.get(session)) {
+            return this._init(session).then(() => {
                 commandQueue.execute();
             }).catch((err) => {
                 session.sendError(err);
             });
         } else {
-            commandQueue.execute(); // this should call _init
+            commandQueue.execute();
+            return this._sessionInitPromise.get(session);
         }
     }
 
-    private _pauseSession(session: SessionPort) {
-        if (this._controllingSession !== session) throw Error('VuforiaService: Attempted to pause a session which is not in control');
-        this._controllingSession = null;
+    private _pauseSession(): Promise<void> {
+        const session = this._controllingSession;
+        if (!session) return Promise.resolve(undefined);
 
+        console.log("VuforiaService: Pausing session " + session.info.name);
         const commandQueue = this._sessionCommandQueue.get(session);
         return commandQueue.push(() => {
+            commandQueue.pause();
+            this._controllingSession = null;
             return this._deinit(session);
         }, true);
     }
 
     private _cleanupSession(session: SessionPort) {
-        // If session is in control, deactivate active datasets / trackables, and destroy them
-        // If session is not in control, destroy its datasets / trackables
+        // delete session init options
+        this._sessionInitOptions.delete(session);
+        const createdDataSets = this._sessionCreatedDataSets.get(session);
 
-        if (this._controllingSession === session) {
-            const commandQueue = this._sessionCommandQueue.get(session);
-            commandQueue.push(() => {
+        // Deactivate session datasets / trackables
+        console.log('VuforiaService: Deactivating datasets for session ' + session.info.name);
+        this._sessionActivatedDataSets.get(session).forEach((id) => {
+            this.delegate.objectTrackerDeactivateDataSet(id);
+        })
+        this._sessionActivatedDataSets.delete(session);
 
-                return new Promise((resolve) => {
-                    const remove = this.delegate.stateUpdateEvent.addEventListener(() => {
-
-                        const activatedDataSets = this._sessionActivatedDataSets.get(session);
-                        activatedDataSets.forEach((id) => {
-                            this.delegate.objectTrackerDeactivateDataSet(id);
-                        })
-                        this._sessionActivatedDataSets.delete(session);
-
-                        const createdDataSets = this._sessionCreatedDataSets.get(session);
-                        createdDataSets.forEach((id) => {
-                            this.delegate.objectTrackerDestroyDataSet(id);
-                        })
-                        this._sessionCreatedDataSets.delete(session);
-
-                        remove();
-                    });
-                });
-
-            }, true);
-        }
+        // destroy session objects                   
+        console.log('VuforiaService: Destroying objects for session ' + session.info.name);
+        createdDataSets.forEach((id) => {
+            this.delegate.objectTrackerDestroyDataSet(id);
+        })
+        this._sessionCreatedDataSets.delete(session);
     }
 
     private _init(session: SessionPort) {
@@ -381,10 +385,8 @@ export class VuforiaService {
             }
 
             // restore active datasets & trackables
-
-            const activatedDataSets = this._sessionActivatedDataSets.get(session);
             let success = true;
-            activatedDataSets.forEach((id) => {
+            this._sessionActivatedDataSets.get(session).forEach((id) => {
                 success = success && this.delegate.objectTrackerActivateDataSet(id);
                 if (success) {
                     session.send('ar.vuforia.objectTrackerActivateDataSetEvent', { id });
@@ -410,14 +412,12 @@ export class VuforiaService {
                 return Promise.reject("Vuforia init failed: Unable to start ObjectTracker");
             }
 
-            this._sessionIsInitialized.set(session, true);
-
         }).catch((err) => {
 
             this._sessionInitOptions.set(session, null);
             this._sessionIsInitialized.set(session, false);
             this._deinit(session);
-            this._ensureControllingSession();
+            this._ensureActiveSession();
 
             return Promise.reject(err);
         });
@@ -425,16 +425,18 @@ export class VuforiaService {
 
     private _deinit(session: SessionPort) {
         // Deactivate any activated datasets, stop trackers, and deinit. 
-        // Don't destroy created resources in case we to use them to restore state. 
+        // Don't actually destroy created resources so we can use them to restore state. 
 
-        // not sure if the following is necessary
         const activatedDataSets = this._sessionActivatedDataSets.get(session);
-        activatedDataSets.forEach((id) => {
-            this.delegate.objectTrackerDeactivateDataSet(id);
-            session.send('ar.vuforia.objectTrackerDeactivateDataSetEvent', { id });
-        });
+        if (activatedDataSets) {
+            activatedDataSets.forEach((id) => {
+                this.delegate.objectTrackerDeactivateDataSet(id);
+                session.send('ar.vuforia.objectTrackerDeactivateDataSetEvent', { id });
+            });
+        }
 
-        // may need to call stop on the trackers / camera device first?
+        // right now the delegate.deinit() call deinitiailizes trackers and camera device for us. 
+        // May want to move here instead?
         // const errors:Array<string> = [];
         // if (!this.delegate.objectTrackerDeinit()) {
         //     errors.push("Unable to deinitialize ObjectTracker");
@@ -490,17 +492,22 @@ export class VuforiaObjectTracker extends VuforiaTracker {
     public dataSetActivateEvent = new Event<VuforiaDataSet>();
     public dataSetDeactivateEvent = new Event<VuforiaDataSet>();
 
-    public createDataSet(url?: string): PromiseLike<VuforiaDataSet> {
-        return this.manager.request('ar.vuforia.objectTrackerCreateDataSet', { url }).then((message: { dataSetId: string }) => {
-            return new VuforiaDataSet(message.dataSetId, this.manager);
+    public createDataSet(url?: string): Promise<VuforiaDataSet> {
+        if (url && window.document) {
+            url = resolveURL(url);
+        }
+        return this.manager.request('ar.vuforia.objectTrackerCreateDataSet', { url }).then((message: { id: string }) => {
+            const dataSet = new VuforiaDataSet(message.id, this.manager);
+            this._dataSetMap.set(message.id, dataSet);
+            return dataSet;
         })
     }
 
-    public activateDataSet(dataSet: VuforiaDataSet): PromiseLike<void> {
+    public activateDataSet(dataSet: VuforiaDataSet): Promise<void> {
         return this.manager.request('ar.vuforia.objectTrackerActivateDataSet', { id: dataSet.id });
     }
 
-    public deactivateDataSet(dataSet: VuforiaDataSet): PromiseLike<void> {
+    public deactivateDataSet(dataSet: VuforiaDataSet): Promise<void> {
         return this.manager.request('ar.vuforia.objectTrackerDeactivateDataSet', { id: dataSet.id });
     }
 }
@@ -515,8 +522,8 @@ export class VuforiaDataSet {
     private _isActive = false;
     private _trackables: VuforiaTrackables;
 
-    private _fetchResponse: PromiseLike<void>
-    private _loadResponse: PromiseLike<VuforiaTrackables>
+    private _fetchResponse: Promise<void>
+    private _loadResponse: Promise<VuforiaTrackables>
 
     constructor(public id: string, private manager: SessionPort) { }
 
@@ -528,12 +535,15 @@ export class VuforiaDataSet {
         this._isActive = false;
     }
 
-    public fetch(): PromiseLike<void> {
+    public fetch(): Promise<void> {
         return this.manager.request('ar.vuforia.dataSetFetch', { id: this.id }).then(() => { });
     }
 
-    public load(): PromiseLike<VuforiaTrackables> {
-        return this.manager.request('ar.vuforia.dataSetLoad', { id: this.id });
+    public load(): Promise<VuforiaTrackables> {
+        return this.manager.request('ar.vuforia.dataSetLoad', { id: this.id }).then((trackables: VuforiaTrackables) => {
+            this._trackables = trackables;
+            return trackables;
+        });
     }
 
     public isActive() {
@@ -551,7 +561,6 @@ export class VuforiaDataSet {
 export interface VuforiaTrackables {
     [name: string]: {
         id: string,
-        name: string,
-        size?: number[]
+        size?: { x: number, y: number, z: number }
     }
 }

@@ -2,6 +2,7 @@
  * Describes the session configuration
  */
 export interface Configuration {
+    name?: string;
     role?: Role;
     userData?: any;
     appProvidesCustomView?: boolean;

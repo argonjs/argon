@@ -11,7 +11,7 @@ import {
     WKWebViewConnectService
 } from './session'
 
-import {Configuration, Role} from './config'
+import {Configuration, Role} from './common'
 import {ContextService} from './context'
 import {DeviceService} from './device'
 import {FocusService} from './focus'
@@ -22,7 +22,7 @@ import {ViewService} from './view'
 import {VuforiaService, VuforiaRealitySetupHandler} from './vuforia'
 
 export {DI, Cesium}
-export * from './config'
+export * from './common'
 export * from './context'
 export * from './device'
 export * from './focus'

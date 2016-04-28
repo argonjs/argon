@@ -1,4 +1,4 @@
-import { SerializedEntityPose } from './reality';
+import { SerializedEntityPose } from './common';
 import { Entity, JulianDate, Quaternion, Cartesian3, ReferenceFrame } from './cesium/cesium-imports';
 /**
  * A callback for removing the event listener.
@@ -34,18 +34,12 @@ export declare class Event<T> {
     raiseEvent(data: T): void;
 }
 /**
- * Create an EntityPose of the Cesium Entity based on Cesium Julian Date.
- * @param entity The entity to get position.
- * @param time The time for which to retrieve the value.
- * @return An EntityPose object with orientation, position and referenceFrame.
- */
-export declare function calculatePose(entity: Entity, time: JulianDate): SerializedEntityPose;
-/**
 * TODO.
 */
 export declare class CommandQueue {
     private _queue;
     private _currentCommandPending;
+    private _paused;
     /**
      * An error event.
      */
@@ -63,6 +57,10 @@ export declare class CommandQueue {
      * Execute the command queue
      */
     execute(): void;
+    /**
+     * Puase the command queue (currently executing commands will still complete)
+     */
+    pause(): void;
     /**
      * Clear commandQueue.
      */
@@ -99,6 +97,15 @@ export declare function getEntityPositionInReferenceFrame(entity: Entity, time: 
  * @return The modified result parameter.
  */
 export declare function getEntityOrientationInReferenceFrame(entity: Entity, time: JulianDate, referenceFrame: ReferenceFrame | Entity, result: Quaternion): Quaternion;
+/**
+ * Create a SerializedEntityPose from a source entity.
+ * @param entity The entity which the serialized pose represents.
+ * @param time The time which to retrieve the pose.
+ * @param referenceFrame The reference frame to use for generating the pose.
+ *  By default, uses the root reference frame of the entity.
+ * @return An EntityPose object with orientation, position and referenceFrame.
+ */
+export declare function getSerializedEntityPose(entity: Entity, time: JulianDate, referenceFrame?: ReferenceFrame | Entity): SerializedEntityPose;
 /**
  * If urlParser does not have a value, throw error message "resolveURL requires DOM api".
  * If inURL is undefined, throw error message "expected inURL".

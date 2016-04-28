@@ -1,4 +1,4 @@
-System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './timer', './config', './focus', './session', './device', './utils'], function(exports_1, context_1) {
+System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './timer', './common', './focus', './session', './device', './utils'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -7,8 +7,8 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './t
         else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
-    var aurelia_dependency_injection_1, cesium_imports_1, timer_1, config_1, focus_1, session_1, device_1, utils_1;
-    var SubviewType, RealitySetupHandler, RealityService, EmptyRealitySetupHandler;
+    var aurelia_dependency_injection_1, cesium_imports_1, timer_1, common_1, focus_1, session_1, device_1, utils_1;
+    var RealitySetupHandler, RealityService, EmptyRealitySetupHandler;
     return {
         setters:[
             function (aurelia_dependency_injection_1_1) {
@@ -20,8 +20,8 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './t
             function (timer_1_1) {
                 timer_1 = timer_1_1;
             },
-            function (config_1_1) {
-                config_1 = config_1_1;
+            function (common_1_1) {
+                common_1 = common_1_1;
             },
             function (focus_1_1) {
                 focus_1 = focus_1_1;
@@ -36,25 +36,9 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './t
                 utils_1 = utils_1_1;
             }],
         execute: function() {
-            (function (SubviewType) {
-                /*
-                 * Identities a subview for a handheld display.
-                 */
-                SubviewType[SubviewType["SINGULAR"] = "Singular"] = "SINGULAR";
-                /*
-                 * Identifies a subview for the left eye (when the user is wearing an HMD or Viewer)
-                 */
-                SubviewType[SubviewType["LEFTEYE"] = "LeftEye"] = "LEFTEYE";
-                /*
-                 * Identifies a subview for the right eye (when the user is wearing an HMD or Viewer)
-                 */
-                SubviewType[SubviewType["RIGHTEYE"] = "RightEye"] = "RIGHTEYE";
-                /*
-                 * Identifies a subview for a custom view configuration
-                 */
-                SubviewType[SubviewType["OTHER"] = "Other"] = "OTHER";
-            })(SubviewType || (SubviewType = {}));
-            exports_1("SubviewType", SubviewType);
+            /**
+             * Abstract class for a reality setup handler
+             */
             RealitySetupHandler = (function () {
                 function RealitySetupHandler() {
                 }
@@ -62,7 +46,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './t
             }());
             exports_1("RealitySetupHandler", RealitySetupHandler);
             /**
-            * Manages reality
+            * A service which manages the reality view
             */
             RealityService = (function () {
                 function RealityService(sessionService, focusService) {
@@ -262,7 +246,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './t
                         if (previousRealitySession) {
                             previousRealitySession.close();
                         }
-                        if (realitySession.info.role !== config_1.Role.REALITY_VIEW) {
+                        if (realitySession.info.role !== common_1.Role.REALITY_VIEW) {
                             realitySession.sendError({ message: "Expected a reality session" });
                             realitySession.close();
                             return;
@@ -341,10 +325,10 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './t
                                             width: w,
                                             height: h
                                         },
-                                        pose: utils_1.calculatePose(_this.deviceService.interfaceEntity, time),
+                                        pose: utils_1.getSerializedEntityPose(_this.deviceService.interfaceEntity, time),
                                         subviews: [
                                             {
-                                                type: SubviewType.SINGULAR,
+                                                type: common_1.SubviewType.SINGULAR,
                                                 projectionMatrix: cesium_imports_1.Matrix4.computePerspectiveFieldOfView(Math.PI / 3, w / h, 0.2, 10000000000, [])
                                             }
                                         ]
@@ -359,7 +343,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './t
                     remoteRealitySession.closeEvent.addEventListener(function () {
                         doUpdate = false;
                     });
-                    remoteRealitySession.open(port, { role: config_1.Role.REALITY_VIEW });
+                    remoteRealitySession.open(port, { role: common_1.Role.REALITY_VIEW });
                 };
                 EmptyRealitySetupHandler = __decorate([
                     aurelia_dependency_injection_1.inject(session_1.SessionService, device_1.DeviceService, timer_1.TimerService)

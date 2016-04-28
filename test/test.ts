@@ -16,7 +16,6 @@ describe('Argon', () => {
             expect(app).to.be.an.instanceOf(Argon.ArgonSystem);
             expect(app.context).to.exist;
             expect(app.vuforia).to.exist;
-            expect(app.context.entities.getById('DEVICE')).to.be.ok;
         });
     })
 
@@ -358,12 +357,12 @@ describe('Context', () => {
     })
 
     describe('#getEntityPose', () => {
-        it('poseStatus should have PoseStatus.UNKNOWN when pose is not known', (done) => {
+        it('poseStatus should not have KNOWN bit set when pose is undefined', (done) => {
             const {context} = createSystem();
             const entity = new Argon.Cesium.Entity;
             const removeListener = context.updateEvent.addEventListener(()=>{
                 const state = context.getEntityPose(entity);
-                expect(state.poseStatus & Argon.PoseStatus.UNKNOWN).to.be.ok;
+                expect(state.poseStatus & Argon.PoseStatus.KNOWN).to.equal(0);
                 removeListener();
                 done();
             })
@@ -382,7 +381,7 @@ describe('Context', () => {
                 done();
             })
         })
-        it('poseStatus should have PoseStatus.LOST & PoseStatus.UNKNOWN when pose is lost', (done) => {
+        it('poseStatus should have PoseStatus.LOST when pose is lost', (done) => {
             const {context} = createSystem();
             const entity = new Argon.Cesium.Entity({
                 position: new Argon.Cesium.ConstantPositionProperty(Argon.Cesium.Cartesian3.ZERO, context.getDefaultReferenceFrame()),
@@ -395,12 +394,10 @@ describe('Context', () => {
                     expect(state.poseStatus & Argon.PoseStatus.FOUND).to.be.ok;
                     expect(state.poseStatus & Argon.PoseStatus.KNOWN).to.be.ok;
                     expect(state.poseStatus & Argon.PoseStatus.LOST).to.not.be.ok;
-                    expect(state.poseStatus & Argon.PoseStatus.UNKNOWN).to.not.be.ok;
                     (<Argon.Cesium.ConstantPositionProperty>entity.position).setValue(undefined);
                     found = true;
                 } else {
                     expect(state.poseStatus & Argon.PoseStatus.LOST).to.be.ok;
-                    expect(state.poseStatus & Argon.PoseStatus.UNKNOWN).to.be.ok;
                     expect(state.poseStatus & Argon.PoseStatus.FOUND).to.not.be.ok;
                     expect(state.poseStatus & Argon.PoseStatus.KNOWN).to.not.be.ok;
                     removeListener();

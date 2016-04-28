@@ -17,12 +17,14 @@ System.register(['./cesium/cesium-imports'], function(exports_1, context_1) {
                 * Initialize the DeviceService
                 */
                 function DeviceService() {
-                    this.entity = new cesium_imports_1.Entity({ id: 'DEVICE', name: 'device' });
-                    this.interfaceEntity = new cesium_imports_1.Entity({ id: 'DEVICE_INTERFACE', name: 'device_interface' });
-                    var sampledDevicePosition = new cesium_imports_1.SampledPositionProperty();
+                    this.entity = new cesium_imports_1.Entity({ id: 'ar.device', name: 'device' });
+                    this.interfaceEntity = new cesium_imports_1.Entity({ id: 'ar.device.interface', name: 'device_interface' });
+                    var sampledDevicePosition = new cesium_imports_1.SampledPositionProperty(null);
                     sampledDevicePosition.forwardExtrapolationType = cesium_imports_1.ExtrapolationType.HOLD;
+                    sampledDevicePosition.backwardExtrapolationType = cesium_imports_1.ExtrapolationType.HOLD;
                     var sampledDeviceOrientation = new cesium_imports_1.SampledProperty(cesium_imports_1.Quaternion);
                     sampledDeviceOrientation.forwardExtrapolationType = cesium_imports_1.ExtrapolationType.HOLD;
+                    sampledDeviceOrientation.backwardExtrapolationType = cesium_imports_1.ExtrapolationType.HOLD;
                     this.entity.position = sampledDevicePosition;
                     this.entity.orientation = sampledDeviceOrientation;
                     var interfacePosition = new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, this.entity);

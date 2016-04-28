@@ -1,105 +1,25 @@
-import { JulianDate, ReferenceFrame } from './cesium/cesium-imports';
 import { TimerService } from './timer';
+import { SerializedFrameState, RealityView, SerializedEntityPoseMap } from './common';
 import { FocusService } from './focus';
 import { SessionPort, SessionService } from './session';
 import { DeviceService } from './device';
 import { MessagePortLike, Event } from './utils';
 /**
-* Represents a view of Reality
-*/
-export interface RealityView {
-    type: string;
-    id?: string;
-    [option: string]: any;
-}
-/**
- * A which describes the position, orientation, and referenceFrame of an entity.
- */
-export interface SerializedEntityPose {
-    position?: {
-        x: number;
-        y: number;
-        z: number;
-    };
-    orientation?: {
-        x: number;
-        y: number;
-        z: number;
-        w: number;
-    };
-    referenceFrame: ReferenceFrame | string;
-}
-/**
- * A JSON map of entity ids and their associated poses.
- */
-export interface SerializedEntityPoseMap {
-    [id: string]: SerializedEntityPose;
-}
-/**
- * Viewport is expressed using a right-handed coordinate system with the origin
- * at the bottom left corner.
- */
-export interface Viewport {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-}
-export declare enum SubviewType {
-    SINGULAR,
-    LEFTEYE,
-    RIGHTEYE,
-    OTHER,
-}
-/**
- * The serialized rendering parameters for a particular subview
- */
-export interface SerializedSubview {
-    type: SubviewType;
-    projectionMatrix: number[];
-    pose?: SerializedEntityPose;
-    viewport?: Viewport;
-}
-/**
- * The serialized view parameters describe how the application should render each frame
- */
-export interface SerializedViewParameters {
-    /**
-     * The primary viewport to render into. In a DOM environment, the bottom left corner of the document element
-     * (document.documentElement) should be considered the origin.
-     */
-    viewport: Viewport;
-    /**
-     * The primary pose for this view.
-     */
-    pose: SerializedEntityPose;
-    /**
-     * The list of subviews to render.
-     */
-    subviews: SerializedSubview[];
-}
-/**
- * Describes the serialized frame state.
- */
-export interface SerializedFrameState {
-    frameNumber: number;
-    time: JulianDate;
-    view: SerializedViewParameters;
-    entities?: SerializedEntityPoseMap;
-}
-/**
- * Describes the complete frame state which is emitted by the RealityService.
+ * Describes a complete frame state which is emitted by the RealityService.
  */
 export interface FrameState extends SerializedFrameState {
     reality: RealityView;
     entities: SerializedEntityPoseMap;
 }
+/**
+ * Abstract class for a reality setup handler
+ */
 export declare abstract class RealitySetupHandler {
     abstract type: string;
     abstract setup(reality: RealityView, port: MessagePortLike): void;
 }
 /**
-* Manages reality
+* A service which manages the reality view
 */
 export declare class RealityService {
     private sessionService;

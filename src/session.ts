@@ -1,7 +1,7 @@
 import * as Cesium from 'Cesium';
 import {createGuid} from './cesium/cesium-imports';
 import {inject} from 'aurelia-dependency-injection';
-import {Configuration, Role} from './config'
+import {Configuration, Role} from './common'
 import {Event, MessageChannelFactory, MessagePortLike, MessageChannelLike} from './utils';
 import {ContextService} from './context'
 
@@ -86,6 +86,7 @@ export class SessionPort {
     constructor() {
 
         this.on[SessionPort.OPEN] = (info: Configuration) => {
+            if (!info) throw new Error('Session did not provide configuration info');
             this.info = info;
             this.connectEvent.raiseEvent(null);
             this._isConnected = true;
@@ -105,17 +106,20 @@ export class SessionPort {
 
     }
 
+    public isConnected() {
+        return this._isConnected;
+    }
+
     /**
      * Establish a connection to another session via the provided MessagePort.
      * @param messagePort the message port to post and receive messages.
      * @param options the configuration which describes this system.
      */
     open(messagePort: MessagePortLike, options: Configuration) {
-        this.messagePort = messagePort;
-
         if (this._isOpened) throw new Error('Session.open: Session can only be opened once');
         if (this._isClosed) throw new Error('Session.open: Session has already been closed');
-
+        if (!options) throw new Error('Session.open: Session options must be provided');
+        this.messagePort = messagePort;
         this._isOpened = true;
 
         this.send(SessionPort.OPEN, options);
@@ -218,6 +222,7 @@ export class SessionPort {
             this.send(SessionPort.CLOSE);
         }
         this._isClosed = true;
+        this._isConnected = false;
         if (this.messagePort && this.messagePort.close)
             this.messagePort.close();
         this.closeEvent.raiseEvent(null);

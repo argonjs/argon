@@ -1,4 +1,4 @@
-import { Configuration } from './config';
+import { Configuration } from './common';
 import { Event, MessageChannelFactory, MessagePortLike, MessageChannelLike } from './utils';
 export interface Message {
     [key: string]: any;
@@ -60,6 +60,7 @@ export declare class SessionPort {
     private _isConnected;
     private _isClosed;
     constructor();
+    isConnected(): boolean;
     /**
      * Establish a connection to another session via the provided MessagePort.
      * @param messagePort the message port to post and receive messages.

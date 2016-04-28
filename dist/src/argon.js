@@ -1,19 +1,19 @@
-System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/cesium-imports', './session', './config', './context', './device', './focus', './reality', './timer', './view', './vuforia', './utils'], function(exports_1, context_1) {
+System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/cesium-imports', './session', './common', './context', './device', './focus', './reality', './timer', './view', './vuforia', './utils'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var DI, Cesium, session_1, config_1, context_2, device_1, focus_1, reality_1, timer_1, view_1, vuforia_1;
+    var DI, Cesium, session_1, common_1, context_2, device_1, focus_1, reality_1, timer_1, view_1, vuforia_1;
     var ArgonSystem;
     function init(options) {
         if (options === void 0) { options = {}; }
         var role;
         if (typeof window === 'undefined') {
-            role = config_1.Role.MANAGER;
+            role = common_1.Role.MANAGER;
         }
         else if (navigator.userAgent.indexOf('Argon') > 0 || window.top !== window) {
-            role = config_1.Role.APPLICATION;
+            role = common_1.Role.APPLICATION;
         }
         else {
-            role = config_1.Role.MANAGER;
+            role = common_1.Role.MANAGER;
         }
         var config = Object.assign({ role: role }, options.config);
         return new ArgonSystem(config, options.container);
@@ -21,7 +21,7 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
     exports_1("init", init);
     function initReality(options) {
         if (options === void 0) { options = {}; }
-        var config = Object.assign({ role: config_1.Role.REALITY_VIEW, realityViewSupportsControlPort: true }, options.config);
+        var config = Object.assign({ role: common_1.Role.REALITY_VIEW, realityViewSupportsControlPort: true }, options.config);
         return new ArgonSystem(config, options.container);
     }
     exports_1("initReality", initReality);
@@ -52,9 +52,9 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
                 session_1 = session_1_1;
                 exportStar_1(session_1_1);
             },
-            function (config_1_1) {
-                config_1 = config_1_1;
-                exportStar_1(config_1_1);
+            function (common_1_1) {
+                common_1 = common_1_1;
+                exportStar_1(common_1_1);
             },
             function (context_2_1) {
                 context_2 = context_2_1;
@@ -100,9 +100,9 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
                     if (!ArgonSystem.instance)
                         ArgonSystem.instance = this;
                     container.registerInstance('config', config);
-                    container.registerInstance(config_1.Role, config.role);
+                    container.registerInstance(common_1.Role, config.role);
                     container.registerInstance(ArgonSystem, this);
-                    if (config.role === config_1.Role.MANAGER) {
+                    if (config.role === common_1.Role.MANAGER) {
                         container.registerSingleton(session_1.ConnectService, session_1.LoopbackConnectService);
                     }
                     else if (session_1.WKWebViewConnectService.isAvailable()) {
@@ -117,7 +117,7 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
                     else {
                         container.registerSingleton(session_1.ConnectService, session_1.LoopbackConnectService);
                     }
-                    if (config.role === config_1.Role.MANAGER) {
+                    if (config.role === common_1.Role.MANAGER) {
                         this.reality.registerHandler(container.get(reality_1.EmptyRealitySetupHandler));
                         this.reality.registerHandler(container.get(vuforia_1.VuforiaRealitySetupHandler));
                         if (typeof document !== 'undefined') {

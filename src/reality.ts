@@ -1,131 +1,30 @@
 import {inject, All} from 'aurelia-dependency-injection'
-import {defined, Matrix4, JulianDate, ReferenceFrame, createGuid} from './cesium/cesium-imports'
+import {createGuid, defined, Entity, Cartesian3, Quaternion, CesiumMath, Matrix4, JulianDate, ReferenceFrame } from './cesium/cesium-imports'
 import {TimerService} from './timer'
-import {Role} from './config'
+import {Role, SubviewType, SerializedFrameState, RealityView, SerializedEntityPoseMap} from './common'
 import {FocusService} from './focus'
 import {SessionPort, SessionService} from './session'
 import {DeviceService} from './device'
-import {MessagePortLike, Event, calculatePose} from './utils'
+import {MessagePortLike, Event, getSerializedEntityPose} from './utils'
 
 /**
-* Represents a view of Reality
-*/
-export interface RealityView {
-    type: string;
-    id?: string;
-    [option: string]: any
-}
-
-/**
- * A which describes the position, orientation, and referenceFrame of an entity.
- */
-export interface SerializedEntityPose {
-    position?: { x: number, y: number, z: number },
-    orientation?: { x: number, y: number, z: number, w: number },
-    referenceFrame: ReferenceFrame | string,
-}
-
-/**
- * A JSON map of entity ids and their associated poses.
- */
-export interface SerializedEntityPoseMap {
-    [id: string]: SerializedEntityPose
-}
-
-/**
- * Viewport is expressed using a right-handed coordinate system with the origin
- * at the bottom left corner.
- */
-export interface Viewport {
-    x: number,
-    y: number,
-    width: number,
-    height: number
-}
-
-export enum SubviewType {
-    /*
-     * Identities a subview for a handheld display.
-     */
-    SINGULAR = "Singular" as any,
-
-    /*
-     * Identifies a subview for the left eye (when the user is wearing an HMD or Viewer)
-     */
-    LEFTEYE = "LeftEye" as any,
-
-    /*
-     * Identifies a subview for the right eye (when the user is wearing an HMD or Viewer)
-     */
-    RIGHTEYE = "RightEye" as any,
-
-    /*
-     * Identifies a subview for a custom view configuration
-     */
-    OTHER = "Other" as any,
-}
-
-/**
- * The serialized rendering parameters for a particular subview
- */
-export interface SerializedSubview {
-    type: SubviewType,
-    projectionMatrix: number[],
-    // TODO: use viewVolume instead of projectionMatrix as described here // http://www.codeproject.com/Articles/42848/A-New-Perspective-on-Viewing
-    pose?: SerializedEntityPose, // if undefined, the primary pose should be assumed
-    viewport?: Viewport // if undefined, the primary viewport should be assumed
-}
-
-/**
- * The serialized view parameters describe how the application should render each frame
- */
-export interface SerializedViewParameters {
-    /**
-     * The primary viewport to render into. In a DOM environment, the bottom left corner of the document element 
-     * (document.documentElement) should be considered the origin. 
-     */
-    viewport: Viewport,
-
-    /**
-     * The primary pose for this view. 
-     */
-    pose: SerializedEntityPose
-
-    /**
-     * The list of subviews to render.
-     */
-    subviews: SerializedSubview[]
-}
-
-/**
- * Describes the serialized frame state.
- */
-export interface SerializedFrameState {
-    frameNumber: number,
-    time: JulianDate,
-    view: SerializedViewParameters,
-    entities?: SerializedEntityPoseMap
-}
-
-/**
- * Describes the complete frame state which is emitted by the RealityService.
+ * Describes a complete frame state which is emitted by the RealityService.
  */
 export interface FrameState extends SerializedFrameState {
     reality: RealityView,
     entities: SerializedEntityPoseMap
 }
 
-
+/**
+ * Abstract class for a reality setup handler
+ */
 export abstract class RealitySetupHandler {
-
     abstract type: string;
-
     abstract setup(reality: RealityView, port: MessagePortLike): void;
-
 }
 
 /**
-* Manages reality 
+* A service which manages the reality view
 */
 @inject(SessionService, FocusService)
 export class RealityService {
@@ -446,7 +345,7 @@ export class EmptyRealitySetupHandler implements RealitySetupHandler {
                                 width: w,
                                 height: h
                             },
-                            pose: calculatePose(this.deviceService.interfaceEntity, time),
+                            pose: getSerializedEntityPose(this.deviceService.interfaceEntity, time),
                             subviews: [
                                 {
                                     type: SubviewType.SINGULAR,

@@ -1,7 +1,8 @@
 import {resolver, Container} from 'aurelia-dependency-injection';
-import {SerializedEntityPose} from './reality'
+import {SerializedEntityPose} from './common'
 import CesiumEvent from 'Cesium/Source/Core/Event';
 import {
+    defined,
     Entity,
     JulianDate,
     Ellipsoid,
@@ -11,7 +12,8 @@ import {
     ReferenceFrame,
     Transforms,
     Matrix3,
-    Matrix4
+    Matrix4,
+    CesiumMath
 } from './cesium/cesium-imports'
 
 /**
@@ -63,28 +65,12 @@ export class Event<T> {
 }
 
 /**
- * Create an EntityPose of the Cesium Entity based on Cesium Julian Date.
- * @param entity The entity to get position. 
- * @param time The time for which to retrieve the value.
- * @return An EntityPose object with orientation, position and referenceFrame.
- */
-export function calculatePose(entity: Entity, time: JulianDate): SerializedEntityPose {
-    const entityPosition = entity.position;
-    const referenceFrame = entityPosition.referenceFrame;
-    const referenceFrameID = typeof referenceFrame === 'number' ? referenceFrame : referenceFrame.id;
-    return {
-        referenceFrame: referenceFrameID,
-        position: entity.position.getValueInReferenceFrame(time, referenceFrame, <Cartesian3>{}),
-        orientation: entity.orientation.getValue(time, <Quaternion>{})
-    }
-}
-
-/**
 * TODO.
 */
 export class CommandQueue {
-    private _queue: Array<{ execute: Function, reject: (reason: any) => void }> = [];
+    private _queue: Array<{ command: Function, execute: Function, reject: (reason: any) => void }> = [];
     private _currentCommandPending: Promise<any> = null;
+    private _paused = true;
 
     /**
      * An error event.
@@ -107,11 +93,15 @@ export class CommandQueue {
     public push<TResult>(command: () => TResult, execute?: boolean): Promise<TResult> {
         const result = new Promise<TResult>((resolve, reject) => {
             this._queue.push({
+                command,
+                reject,
                 execute: () => {
+                    console.log('CommandQueue: Executing command ' + command.toString());
                     const result = Promise.resolve().then(command);
+                    result.then(() => { console.log('CommandQueue: DONE ' + command.toString()) });
                     resolve(result);
                     return result;
-                }, reject
+                }
             });
         });
         if (execute) this.execute();
@@ -122,9 +112,19 @@ export class CommandQueue {
      * Execute the command queue
      */
     public execute() {
-        if (this._queue.length > 0 && this._currentCommandPending === null) {
-            Promise.resolve().then(this._executeNextCommand.bind(this));
-        }
+        this._paused = false;
+        Promise.resolve().then(() => {
+            if (this._queue.length > 0 && this._currentCommandPending === null) {
+                this._executeNextCommand();
+            }
+        });
+    }
+
+    /**
+     * Puase the command queue (currently executing commands will still complete)
+     */
+    public pause() {
+        this._paused = true;
     }
 
     /**
@@ -138,11 +138,11 @@ export class CommandQueue {
     }
 
     private _executeNextCommand() {
+        this._currentCommandPending = null;
+        if (this._paused) return;
         const item = this._queue.shift();
-        if (!item) {
-            this._currentCommandPending = null;
-            return;
-        }
+        if (!item) return;
+
         this._currentCommandPending = item.execute()
             .then(this._executeNextCommand.bind(this))
             .catch((error) => {
@@ -228,8 +228,27 @@ export function getEntityOrientationInReferenceFrame(
 }
 
 
-const urlParser = typeof document !== 'undefined' ? document.createElement("a") : undefined
+/**
+ * Create a SerializedEntityPose from a source entity. 
+ * @param entity The entity which the serialized pose represents. 
+ * @param time The time which to retrieve the pose.
+ * @param referenceFrame The reference frame to use for generating the pose. 
+ *  By default, uses the root reference frame of the entity.  
+ * @return An EntityPose object with orientation, position and referenceFrame.
+ */
+export function getSerializedEntityPose(entity: Entity, time: JulianDate, referenceFrame?: ReferenceFrame | Entity): SerializedEntityPose {
+    referenceFrame = defined(referenceFrame) ? referenceFrame : getRootReferenceFrame(entity);
+    const p = getEntityPositionInReferenceFrame(entity, time, referenceFrame, <Cartesian3>{});
+    const o = getEntityOrientationInReferenceFrame(entity, time, referenceFrame, <Quaternion>{});
+    return defined(p) && defined(o) ? {
+        p: Cartesian3.ZERO.equalsEpsilon(p, CesiumMath.EPSILON9) ? 0 : p,
+        o: Quaternion.IDENTITY.equalsEpsilon(o, CesiumMath.EPSILON9) ? 0 : o,
+        r: typeof referenceFrame === 'number' ? referenceFrame : referenceFrame.id
+    } : undefined;
+}
 
+
+const urlParser = typeof document !== 'undefined' ? document.createElement("a") : undefined
 
 /**
  * If urlParser does not have a value, throw error message "resolveURL requires DOM api".

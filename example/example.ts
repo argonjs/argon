@@ -3,12 +3,12 @@ import * as Argon from 'argon'
 
 declare const THREE: any;
 
-const app = Argon.init();
+export const app = Argon.init();
 
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera();
-const user = new THREE.Object3D();
-const userLocation = new THREE.Object3D;
+export const scene = new THREE.Scene();
+export const camera = new THREE.PerspectiveCamera();
+export const user = new THREE.Object3D();
+export const userLocation = new THREE.Object3D;
 scene.add(camera);
 scene.add(user);
 scene.add(userLocation);
@@ -16,9 +16,42 @@ scene.add(userLocation);
 const renderer = new THREE.WebGLRenderer({ alpha: true, logarithmicDepthBuffer: true });
 app.view.element.appendChild(renderer.domElement);
 
-app.context.setDefaultReferenceFrame(app.context.localOriginEastUpSouth);
+// app.context.setDefaultReferenceFrame(app.context.localOriginEastUpSouth);
+app.context.setDefaultReferenceFrame(app.context.localOriginEastNorthUp);
 
-app.vuforia.init({}).then((api)=>{
+const geometry = new THREE.SphereGeometry( 30, 32, 32 );
+
+export const xMaterial = new THREE.MeshBasicMaterial( {color: 0xff0000} );
+
+export const westSphere = new THREE.Mesh( geometry, xMaterial );
+westSphere.position.x = -200;
+scene.add( westSphere );
+export const eastSphere = new THREE.Mesh( geometry, xMaterial );
+eastSphere.position.x = 200;
+scene.add( eastSphere );
+
+export const yMaterial = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+
+export const downSphere = new THREE.Mesh( geometry, yMaterial );
+downSphere.position.y = -200;
+scene.add( downSphere );
+export const upSphere = new THREE.Mesh( geometry, yMaterial );
+upSphere.position.y = 200;
+scene.add( upSphere );
+
+export const zMaterial = new THREE.MeshBasicMaterial( {color: 0x0000ff} );
+
+export const northSphere = new THREE.Mesh( geometry, zMaterial );
+northSphere.position.z = -200;
+scene.add( northSphere );
+export const southSphere = new THREE.Mesh( geometry, zMaterial );
+southSphere.position.z = 200;
+scene.add( southSphere );
+
+
+app.vuforia.init({
+	licenseKey: "AXRIsu7/////AAAAAaYn+sFgpkAomH+Z+tK/Wsc8D+x60P90Nz8Oh0J8onzjVUIP5RbYjdDfyatmpnNgib3xGo1v8iWhkU1swiCaOM9V2jmpC4RZommwQzlgFbBRfZjV8DY3ggx9qAq8mijhN7nMzFDMgUhOlRWeN04VOcJGVUxnKn+R+oot1XTF5OlJZk3oXK2UfGkZo5DzSYafIVA0QS3Qgcx6j2qYAa/SZcPqiReiDM9FpaiObwxV3/xYJhXPUGVxI4wMcDI0XBWtiPR2yO9jAnv+x8+p88xqlMH8GHDSUecG97NbcTlPB0RayGGg1F6Y7v0/nQyk1OIp7J8VQ2YrTK25kKHST0Ny2s3M234SgvNCvnUHfAKFQ5KV"
+}).then((api)=>{
     api.objectTracker.createDataSet('dataset/StonesAndChips.xml').then( (dataSet)=>{
 
         dataSet.load().then(()=>{
@@ -27,9 +60,22 @@ app.vuforia.init({}).then((api)=>{
             const stonesEntity = app.context.subscribeToEntityById(trackables['stones'].id)
             const stonesObject = new THREE.Object3D;
             scene.add(stonesObject);
-
-            const box = new THREE.Mesh(new THREE.BoxGeometry(50, 50, 50), new THREE.MeshNormalMaterial())
-            box.position.z = 25
+            
+            var targetSize = trackables['stones'].size
+            
+            var boxGeometry = new THREE.BoxGeometry(50, 50, 50);
+            var material = new THREE.MeshNormalMaterial()
+            material.side = THREE.DoubleSide;
+            const box = new THREE.Mesh(boxGeometry, material);
+            box.position.z = 25;
+            box.position.y = 50;
+            
+            
+            var axisHelper = new THREE.AxisHelper( 10 );
+            stonesObject.add( axisHelper );
+            axisHelper.position.z = 50;
+            
+            console.log('Subscribes to stones trackable with id ' + trackables['stones'].id);
 
             app.context.updateEvent.addEventListener((frameState) => {
                 const stonesPose = app.context.getEntityPose(stonesEntity);
@@ -42,7 +88,7 @@ app.vuforia.init({}).then((api)=>{
                 if (stonesPose.poseStatus & Argon.PoseStatus.FOUND) {
                     stonesObject.add(box);
                 } else if (stonesPose.poseStatus & Argon.PoseStatus.LOST) {
-                    stonesObject.remove(box);
+                    // stonesObject.remove(box);
                 }
             })
         });
@@ -76,38 +122,6 @@ app.renderEvent.addEventListener(() => {
         renderer.render(scene, camera);
     }
 })
-
-var geometry = new THREE.SphereGeometry( 30, 32, 32 );
-
-var material = new THREE.MeshBasicMaterial( {color: 0x0000ff} );
-var northSphere = new THREE.Mesh( geometry, material );
-northSphere.position.z = -200;
-scene.add( northSphere );
-
-var material = new THREE.MeshBasicMaterial( {color: 0x0000ff} );
-var southSphere = new THREE.Mesh( geometry, material );
-southSphere.position.z = 200;
-scene.add( southSphere );
-
-var material = new THREE.MeshBasicMaterial( {color: 0xff0000} );
-var westSphere = new THREE.Mesh( geometry, material );
-westSphere.position.x = -200;
-scene.add( westSphere );
-
-var material = new THREE.MeshBasicMaterial( {color: 0xff0000} );
-var eastSphere = new THREE.Mesh( geometry, material );
-eastSphere.position.x = 200;
-scene.add( eastSphere );
-
-var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-var downSphere = new THREE.Mesh( geometry, material );
-downSphere.position.y = -200;
-scene.add( downSphere );
-
-var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-var upSphere = new THREE.Mesh( geometry, material );
-upSphere.position.y = 200;
-scene.add( upSphere );
 
 // // creating 6 divs to indicate the x y z positioning
 // const divXpos = document.createElement('div')

@@ -8,7 +8,7 @@ SystemJS.config({
     typescriptOptions: {
         "tsconfig": true,
         "typeCheck": false,
-        "sourceMap": false
+        "inlineSourceMap": true
     },
 
     map: {

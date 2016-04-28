@@ -1,10 +1,9 @@
 import {inject} from 'aurelia-dependency-injection'
 import {Entity, Matrix4} from './cesium/cesium-imports'
-import {SerializedEntityPose} from './reality'
+import {Viewport, SubviewType, SerializedEntityPose, SerializedViewParameters} from './common'
 import {SessionService, SessionPort} from './session'
 import {EntityPose, ContextService} from './context'
 import {Event} from './utils'
-import {SerializedViewParameters, SubviewType, Viewport} from './reality'
 
 /**
  * The rendering paramters for a particular subview

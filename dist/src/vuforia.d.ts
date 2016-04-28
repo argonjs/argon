@@ -1,5 +1,6 @@
+import { RealityView, SerializedFrameState } from './common';
 import { FocusService } from './focus';
-import { RealityService, RealityView, RealitySetupHandler, SerializedFrameState } from './reality';
+import { RealityService, RealitySetupHandler } from './reality';
 import { SessionService, SessionPort } from './session';
 import { Event, MessagePortLike } from './utils';
 /**
@@ -101,21 +102,23 @@ export declare class VuforiaService {
     private realityService;
     private delegate;
     private _controllingSession;
-    private _sessionIsInitialized;
+    private _sessionSwitcherCommandQueue;
     private _sessionCommandQueue;
     private _sessionInitOptions;
+    private _sessionInitPromise;
+    private _sessionIsInitialized;
     private _sessionObjectTrackerStarted;
     private _sessionCreatedDataSets;
     private _sessionActivatedDataSets;
     private _isInitialized;
     constructor(sessionService: SessionService, focusService: FocusService, realityService: RealityService, delegate: VuforiaServiceDelegate);
     isAvailable(): Promise<boolean>;
-    init(options: VuforiaInitOptions): PromiseLike<VuforiaAPI>;
-    private _ensureControllingSession();
+    init(options: VuforiaInitOptions): Promise<VuforiaAPI>;
+    private _ensureActiveSession();
     private _selectControllingSession();
     private _setControllingSession(session);
     private _resumeSession(session);
-    private _pauseSession(session);
+    private _pauseSession();
     private _cleanupSession(session);
     private _init(session);
     private _deinit(session);
@@ -137,9 +140,9 @@ export declare class VuforiaObjectTracker extends VuforiaTracker {
     constructor(manager: SessionPort);
     dataSetActivateEvent: Event<VuforiaDataSet>;
     dataSetDeactivateEvent: Event<VuforiaDataSet>;
-    createDataSet(url?: string): PromiseLike<VuforiaDataSet>;
-    activateDataSet(dataSet: VuforiaDataSet): PromiseLike<void>;
-    deactivateDataSet(dataSet: VuforiaDataSet): PromiseLike<void>;
+    createDataSet(url?: string): Promise<VuforiaDataSet>;
+    activateDataSet(dataSet: VuforiaDataSet): Promise<void>;
+    deactivateDataSet(dataSet: VuforiaDataSet): Promise<void>;
 }
 /**
  * A vuforia data set. TODO
@@ -155,8 +158,8 @@ export declare class VuforiaDataSet {
     constructor(id: string, manager: SessionPort);
     _onActivate(): void;
     _onDeactivate(): void;
-    fetch(): PromiseLike<void>;
-    load(): PromiseLike<VuforiaTrackables>;
+    fetch(): Promise<void>;
+    load(): Promise<VuforiaTrackables>;
     isActive(): boolean;
     getTrackables(): VuforiaTrackables;
 }
@@ -166,7 +169,10 @@ export declare class VuforiaDataSet {
 export interface VuforiaTrackables {
     [name: string]: {
         id: string;
-        name: string;
-        size?: number[];
+        size?: {
+            x: number;
+            y: number;
+            z: number;
+        };
     };
 }

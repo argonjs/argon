@@ -12,8 +12,6 @@ import {
     defined
 } from './cesium/cesium-imports'
 
-import {calculatePose} from './utils'
-
 /**
 * Provides pose state for the device.
 */
@@ -23,10 +21,12 @@ export class DeviceService {
     * Initialize the DeviceService
     */
     constructor() {
-        const sampledDevicePosition = new SampledPositionProperty();
+        const sampledDevicePosition = new SampledPositionProperty(null);
         sampledDevicePosition.forwardExtrapolationType = ExtrapolationType.HOLD;
+        sampledDevicePosition.backwardExtrapolationType = ExtrapolationType.HOLD;
         const sampledDeviceOrientation = new SampledProperty(Quaternion);
         sampledDeviceOrientation.forwardExtrapolationType = ExtrapolationType.HOLD;
+        sampledDeviceOrientation.backwardExtrapolationType = ExtrapolationType.HOLD;
         this.entity.position = sampledDevicePosition;
         this.entity.orientation = sampledDeviceOrientation;
 
@@ -36,8 +36,8 @@ export class DeviceService {
         this.interfaceEntity.orientation = interfaceOrientation;
     }
 
-    public entity = new Entity({ id: 'DEVICE', name: 'device' });
-    public interfaceEntity = new Entity({ id: 'DEVICE_INTERFACE', name: 'device_interface' });
+    public entity = new Entity({ id: 'ar.device', name: 'device' });
+    public interfaceEntity = new Entity({ id: 'ar.device.interface', name: 'device_interface' });
 
     /**
     * Update the pose with latest sensor data

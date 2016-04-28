@@ -4,23 +4,6 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
     var Event_1, cesium_imports_1;
     var Event, CommandQueue, scratchCartesianPositionFIXED, scratchMatrix4, scratchMatrix3, urlParser, MessageChannelLike, MessageChannelFactory;
     /**
-     * Create an EntityPose of the Cesium Entity based on Cesium Julian Date.
-     * @param entity The entity to get position.
-     * @param time The time for which to retrieve the value.
-     * @return An EntityPose object with orientation, position and referenceFrame.
-     */
-    function calculatePose(entity, time) {
-        var entityPosition = entity.position;
-        var referenceFrame = entityPosition.referenceFrame;
-        var referenceFrameID = typeof referenceFrame === 'number' ? referenceFrame : referenceFrame.id;
-        return {
-            referenceFrame: referenceFrameID,
-            position: entity.position.getValueInReferenceFrame(time, referenceFrame, {}),
-            orientation: entity.orientation.getValue(time, {})
-        };
-    }
-    exports_1("calculatePose", calculatePose);
-    /**
      * Get array of ancestor reference frames of a Cesium Entity.
      * @param frame A Cesium Entity to get ancestor reference frames.
      * @param frames An array of reference frames of the Cesium Entity.
@@ -83,6 +66,25 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
         return cesium_imports_1.OrientationProperty.convertToReferenceFrame(time, orientation, entityFrame, referenceFrame, result);
     }
     exports_1("getEntityOrientationInReferenceFrame", getEntityOrientationInReferenceFrame);
+    /**
+     * Create a SerializedEntityPose from a source entity.
+     * @param entity The entity which the serialized pose represents.
+     * @param time The time which to retrieve the pose.
+     * @param referenceFrame The reference frame to use for generating the pose.
+     *  By default, uses the root reference frame of the entity.
+     * @return An EntityPose object with orientation, position and referenceFrame.
+     */
+    function getSerializedEntityPose(entity, time, referenceFrame) {
+        referenceFrame = cesium_imports_1.defined(referenceFrame) ? referenceFrame : getRootReferenceFrame(entity);
+        var p = getEntityPositionInReferenceFrame(entity, time, referenceFrame, {});
+        var o = getEntityOrientationInReferenceFrame(entity, time, referenceFrame, {});
+        return cesium_imports_1.defined(p) && cesium_imports_1.defined(o) ? {
+            p: cesium_imports_1.Cartesian3.ZERO.equalsEpsilon(p, cesium_imports_1.CesiumMath.EPSILON9) ? 0 : p,
+            o: cesium_imports_1.Quaternion.IDENTITY.equalsEpsilon(o, cesium_imports_1.CesiumMath.EPSILON9) ? 0 : o,
+            r: typeof referenceFrame === 'number' ? referenceFrame : referenceFrame.id
+        } : undefined;
+    }
+    exports_1("getSerializedEntityPose", getSerializedEntityPose);
     /**
      * If urlParser does not have a value, throw error message "resolveURL requires DOM api".
      * If inURL is undefined, throw error message "expected inURL".
@@ -191,6 +193,7 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
                     var _this = this;
                     this._queue = [];
                     this._currentCommandPending = null;
+                    this._paused = true;
                     /**
                      * An error event.
                      */
@@ -208,11 +211,15 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
                     var _this = this;
                     var result = new Promise(function (resolve, reject) {
                         _this._queue.push({
+                            command: command,
+                            reject: reject,
                             execute: function () {
+                                console.log('CommandQueue: Executing command ' + command.toString());
                                 var result = Promise.resolve().then(command);
+                                result.then(function () { console.log('CommandQueue: DONE ' + command.toString()); });
                                 resolve(result);
                                 return result;
-                            }, reject: reject
+                            }
                         });
                     });
                     if (execute)
@@ -223,9 +230,19 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
                  * Execute the command queue
                  */
                 CommandQueue.prototype.execute = function () {
-                    if (this._queue.length > 0 && this._currentCommandPending === null) {
-                        Promise.resolve().then(this._executeNextCommand.bind(this));
-                    }
+                    var _this = this;
+                    this._paused = false;
+                    Promise.resolve().then(function () {
+                        if (_this._queue.length > 0 && _this._currentCommandPending === null) {
+                            _this._executeNextCommand();
+                        }
+                    });
+                };
+                /**
+                 * Puase the command queue (currently executing commands will still complete)
+                 */
+                CommandQueue.prototype.pause = function () {
+                    this._paused = true;
                 };
                 /**
                  * Clear commandQueue.
@@ -238,11 +255,12 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
                 };
                 CommandQueue.prototype._executeNextCommand = function () {
                     var _this = this;
-                    var item = this._queue.shift();
-                    if (!item) {
-                        this._currentCommandPending = null;
+                    this._currentCommandPending = null;
+                    if (this._paused)
                         return;
-                    }
+                    var item = this._queue.shift();
+                    if (!item)
+                        return;
                     this._currentCommandPending = item.execute()
                         .then(this._executeNextCommand.bind(this))
                         .catch(function (error) {

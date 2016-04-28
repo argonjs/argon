@@ -1,5 +1,4 @@
 import { Entity, EntityCollection, Cartesian3, Quaternion, JulianDate, ReferenceFrame } from './cesium/cesium-imports';
-import { DeviceService } from './device';
 import { SessionService } from './session';
 import { RealityService, FrameState } from './reality';
 import { Event } from './utils';
@@ -13,18 +12,15 @@ export interface EntityPose {
     poseStatus: PoseStatus;
 }
 /**
-* A bitmask that describes the position and orientation of an EntityState.
-* A valid pose status is one of the following:
-*   KNOWN - the pose of the entity state is known.
-*   UNKNOWN - the pose of the entity state is unknown.
-*   KNOWN & FOUND - the pose was UNKNOWN when the entity state was last queried, and is now KNOWN
-*   LOST & UNKNOWN - the pose was KNOWN when the entity state was last queried, and is now UNKNOWN
+* A bitmask that provides metadata about the pose of an EntityPose.
+*   KNOWN - the pose of the entity state is defined.
+*   KNOWN & FOUND - the pose was undefined when the entity state was last queried, and is now defined.
+*   LOST - the pose was defined when the entity state was last queried, and is now undefined
 */
 export declare enum PoseStatus {
     KNOWN = 1,
-    UNKNOWN = 2,
-    FOUND = 4,
-    LOST = 8,
+    FOUND = 2,
+    LOST = 4,
 }
 /**
  * Provides a means of querying the current state of reality.
@@ -46,7 +42,6 @@ export declare enum PoseStatus {
 export declare class ContextService {
     private sessionService;
     private realityService;
-    private deviceService;
     /**
      * An event that is raised when all remotely managed entities are are up-to-date for
      * the current frame. It is suggested that all modifications to locally managed entities
@@ -88,7 +83,7 @@ export declare class ContextService {
     private _subscribedEntities;
     private _updatingEntities;
     private _knownEntities;
-    constructor(sessionService: SessionService, realityService: RealityService, deviceService: DeviceService);
+    constructor(sessionService: SessionService, realityService: RealityService);
     /**
      * Get the current time (not valid until the first update event)
      */

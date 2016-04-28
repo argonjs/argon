@@ -1,8 +1,8 @@
 import { Entity, Matrix4 } from './cesium/cesium-imports';
+import { Viewport, SubviewType } from './common';
 import { SessionService, SessionPort } from './session';
 import { EntityPose, ContextService } from './context';
 import { Event } from './utils';
-import { SubviewType, Viewport } from './reality';
 /**
  * The rendering paramters for a particular subview
  */
