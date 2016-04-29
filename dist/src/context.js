@@ -97,8 +97,8 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     this.user = new cesium_imports_1.Entity({
                         id: 'USER',
                         name: 'user',
-                        position: new cesium_imports_1.ConstantPositionProperty(),
-                        orientation: new cesium_imports_1.ConstantProperty()
+                        position: new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, null),
+                        orientation: new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY)
                     });
                     /**
                      * An entity positioned near the user, aligned with the local East-North-Up
@@ -106,7 +106,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                      */
                     this.localOriginEastNorthUp = new cesium_imports_1.Entity({
                         name: 'localOriginENU',
-                        position: new cesium_imports_1.ConstantPositionProperty(),
+                        position: new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, null),
                         orientation: new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY)
                     });
                     /**
@@ -311,7 +311,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                         var localENUPositionProperty = this.localOriginEastNorthUp.position;
                         var localENUOrientationProperty = this.localOriginEastNorthUp.orientation;
                         localENUPositionProperty.setValue(userPosition, userRootFrame);
-                        if (localENUFrame === cesium_imports_1.ReferenceFrame.FIXED) {
+                        if (userRootFrame === cesium_imports_1.ReferenceFrame.FIXED) {
                             var enuOrientation = cesium_imports_1.Transforms.headingPitchRollQuaternion(userPosition, 0, 0, 0, undefined, scratchQuaternion);
                             localENUOrientationProperty.setValue(enuOrientation);
                         }

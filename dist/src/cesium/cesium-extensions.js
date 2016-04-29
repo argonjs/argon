@@ -17,7 +17,7 @@ System.register(['./cesium-imports.ts'], function(exports_1, context_1) {
     }
     function removeOldSamples(property, maxNumSamples) {
         if (maxNumSamples === undefined)
-            maxNumSamples = 10;
+            return;
         var removeCount = property._times.length - maxNumSamples;
         if (removeCount > 0) {
             property._times.splice(0, removeCount);

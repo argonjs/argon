@@ -325,7 +325,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './t
                                             width: w,
                                             height: h
                                         },
-                                        pose: utils_1.getSerializedEntityPose(_this.deviceService.interfaceEntity, time),
+                                        pose: utils_1.getSerializedEntityPose(_this.deviceService.entity, time),
                                         subviews: [
                                             {
                                                 type: common_1.SubviewType.SINGULAR,

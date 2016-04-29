@@ -19,18 +19,10 @@ System.register(['./cesium/cesium-imports'], function(exports_1, context_1) {
                 function DeviceService() {
                     this.entity = new cesium_imports_1.Entity({ id: 'ar.device', name: 'device' });
                     this.interfaceEntity = new cesium_imports_1.Entity({ id: 'ar.device.interface', name: 'device_interface' });
-                    var sampledDevicePosition = new cesium_imports_1.SampledPositionProperty(null);
-                    sampledDevicePosition.forwardExtrapolationType = cesium_imports_1.ExtrapolationType.HOLD;
-                    sampledDevicePosition.backwardExtrapolationType = cesium_imports_1.ExtrapolationType.HOLD;
-                    var sampledDeviceOrientation = new cesium_imports_1.SampledProperty(cesium_imports_1.Quaternion);
-                    sampledDeviceOrientation.forwardExtrapolationType = cesium_imports_1.ExtrapolationType.HOLD;
-                    sampledDeviceOrientation.backwardExtrapolationType = cesium_imports_1.ExtrapolationType.HOLD;
-                    this.entity.position = sampledDevicePosition;
-                    this.entity.orientation = sampledDeviceOrientation;
-                    var interfacePosition = new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, this.entity);
-                    var interfaceOrientation = new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY);
-                    this.interfaceEntity.position = interfacePosition;
-                    this.interfaceEntity.orientation = interfaceOrientation;
+                    this.entity.position = new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, null);
+                    this.entity.orientation = new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY);
+                    this.interfaceEntity.position = new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, this.entity);
+                    this.interfaceEntity.orientation = new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY);
                 }
                 /**
                 * Update the pose with latest sensor data
