@@ -10,6 +10,7 @@
       "Cesium": "github:aelatgt/cesium@referenceFrames",
       "aurelia-dependency-injection": "npm:aurelia-dependency-injection@^1.0.0-beta.1.1.4",
       "aurelia-polyfills": "npm:aurelia-polyfills@^1.0.0-beta.1.0.0",
+      "json": "github:systemjs/plugin-json@^0.1.2",
       "ts": "github:frankwallis/plugin-typescript@^2.5.9"
     },
     "devDependencies": {
@@ -84,6 +85,7 @@
   "devDependencies": {
     "browser-sync": "^2.11.0",
     "jspm": "^0.17.0-beta.13",
+    "node-static": "^0.7.7",
     "tsconfig-glob": "^0.2.1",
     "typedoc": "^0.3.12",
     "typescript": "^1.9.0-dev.20160303",
@@ -92,9 +94,10 @@
   "scripts": {
     "tsconfig": "tsconfig .",
     "format": "tsfmt -r",
-    "build": "tsconfig . && tsfmt -r && tsc && jspm build src/argon.ts dist/argon.umd.js --format umd --global-name Argon --skip-source-maps",
+    "build": "tsconfig . && tsfmt -r && tsc && jspm build src/argon.ts dist/argon.umd.js --format umd --global-name Argon",
     "browser-sync": "browser-sync  start --server --directory --startPath \"index.html\" --files \"src/**\"",
     "test": "npm run browser-sync",
+    "static": "static -p 3000",
     "typedoc": "typedoc --out docs --gaID UA-63191442-2 --name argon.js --readme README.md --target ES5 --module commonjs --experimentalDecorators --excludeNotExported --excludeExternals --ignoreCompilerErrors -p src src/argon.ts src/camera.ts src/config.ts src/context.ts src/focus.ts src/mode.ts src/device.ts src/reality.ts src/viewport.ts src/session.ts src/timer.ts src/utils.ts src/vuforia.ts typings/browser.d.ts jspm_packages/npm/aurelia-dependency-injection@1.0.0-beta.1.1.4/aurelia-dependency-injection.d.ts jspm_packages/npm/aurelia-logging@1.0.0-beta.1.1.2/aurelia-logging.d.ts jspm_packages/npm/aurelia-metadata@1.0.0-beta.1.1.5/aurelia-metadata.d.ts jspm_packages/npm/aurelia-pal@1.0.0-beta.1.1.1/aurelia-pal.d.ts jspm_packages/npm/aurelia-polyfills@1.0.0-beta.1.0.0/aurelia-polyfills.d.ts"
   }
 }
