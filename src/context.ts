@@ -97,8 +97,8 @@ export class ContextService {
     public user: Entity = new Entity({
         id: 'USER',
         name: 'user',
-        position: new ConstantPositionProperty(),
-        orientation: new ConstantProperty()
+        position: new ConstantPositionProperty(Cartesian3.ZERO, null),
+        orientation: new ConstantProperty(Quaternion.IDENTITY)
     });
 
     /**
@@ -107,7 +107,7 @@ export class ContextService {
      */
     public localOriginEastNorthUp: Entity = new Entity({
         name: 'localOriginENU',
-        position: new ConstantPositionProperty(),
+        position: new ConstantPositionProperty(Cartesian3.ZERO, null),
         orientation: new ConstantProperty(Quaternion.IDENTITY)
     });
 
@@ -359,7 +359,7 @@ export class ContextService {
             const localENUPositionProperty = <ConstantPositionProperty>this.localOriginEastNorthUp.position;
             const localENUOrientationProperty = <ConstantProperty>this.localOriginEastNorthUp.orientation;
             localENUPositionProperty.setValue(userPosition, userRootFrame);
-            if (localENUFrame === ReferenceFrame.FIXED) {
+            if (userRootFrame === ReferenceFrame.FIXED) {
                 const enuOrientation = Transforms.headingPitchRollQuaternion(userPosition, 0, 0, 0, undefined, scratchQuaternion);
                 localENUOrientationProperty.setValue(enuOrientation);
             } else {
