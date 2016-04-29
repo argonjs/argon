@@ -8,8 +8,8 @@ Matrix4['prototype'].length = 16;
 
 var __slice = Array.prototype.slice
 
-var after = function(fn: Function, after: Function) {
-    return function() {
+var after = function<T extends Function>(fn: T, after: Function) : T {
+    return <T><any>function() {
         var result = fn.apply(this, arguments)
         after.call(this, result)
         return result
@@ -36,7 +36,7 @@ SampledPositionProperty.prototype.removeSamplesBeforeDate = function(time) {
 }
 
 function removeOldSamples(property: any, maxNumSamples: number) {
-    if (maxNumSamples === undefined) maxNumSamples = 10
+    if (maxNumSamples === undefined) return;
     var removeCount = property._times.length - maxNumSamples
     if (removeCount > 0) {
         property._times.splice(0, removeCount)
