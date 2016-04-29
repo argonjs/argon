@@ -1,16 +1,33 @@
 SystemJS.config({
-    packageConfigPaths: [
-        "npm:@*/*.json",
-        "npm:*.json",
-        "github:*/*.json"
-    ],
-    transpiler: 'ts',
+    transpiler: "ts",
     typescriptOptions: {
         "tsconfig": true,
         "typeCheck": false,
         "inlineSourceMap": true
     },
+    packages: {
+        "src": {
+            "defaultExtension": "ts",
+            "meta": {
+                "*.ts": {
+                    "loader": "ts"
+                }
+            }
+        },
+        "example": {
+            "map": {
+                "argon": "dist/argon.umd.js"
+            }
+        }
+    }
+});
 
+SystemJS.config({
+    packageConfigPaths: [
+        "npm:@*/*.json",
+        "npm:*.json",
+        "github:*/*.json"
+    ],
     map: {
         "Cesium": "github:aelatgt/cesium@referenceFrames",
         "aurelia-dependency-injection": "npm:aurelia-dependency-injection@1.0.0-beta.1.1.4",
@@ -21,25 +38,12 @@ SystemJS.config({
         "buffer": "github:jspm/nodelibs-buffer@0.2.0-alpha",
         "chai": "npm:chai@3.5.0",
         "css": "github:systemjs/plugin-css@0.1.20",
+        "json": "github:systemjs/plugin-json@0.1.2",
         "mocha": "npm:mocha@2.4.5",
         "process": "github:jspm/nodelibs-process@0.2.0-alpha",
         "ts": "github:frankwallis/plugin-typescript@2.6.0"
     },
-
     packages: {
-        "src": {
-            "defaultExtension": "ts",
-            "meta": {
-                "*.ts": {
-                "loader": "ts"
-                }
-            }
-        },
-        "example": {
-            "map": {
-                "argon": "dist/argon.umd.js"
-            }
-        },
         "github:jspm/nodelibs-buffer@0.2.0-alpha": {
             "map": {
                 "buffer-browserify": "npm:buffer@4.5.0"
