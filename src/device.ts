@@ -1,15 +1,10 @@
 import {inject} from 'aurelia-dependency-injection'
 import {
     Entity,
-    CesiumMath,
     ConstantPositionProperty,
     ConstantProperty,
-    SampledPositionProperty,
-    SampledProperty,
-    ExtrapolationType,
     Cartesian3,
-    Quaternion,
-    defined
+    Quaternion
 } from './cesium/cesium-imports'
 
 /**
@@ -21,19 +16,10 @@ export class DeviceService {
     * Initialize the DeviceService
     */
     constructor() {
-        const sampledDevicePosition = new SampledPositionProperty(null);
-        sampledDevicePosition.forwardExtrapolationType = ExtrapolationType.HOLD;
-        sampledDevicePosition.backwardExtrapolationType = ExtrapolationType.HOLD;
-        const sampledDeviceOrientation = new SampledProperty(Quaternion);
-        sampledDeviceOrientation.forwardExtrapolationType = ExtrapolationType.HOLD;
-        sampledDeviceOrientation.backwardExtrapolationType = ExtrapolationType.HOLD;
-        this.entity.position = sampledDevicePosition;
-        this.entity.orientation = sampledDeviceOrientation;
-
-        const interfacePosition = new ConstantPositionProperty(Cartesian3.ZERO, this.entity);
-        const interfaceOrientation = new ConstantProperty(Quaternion.IDENTITY);
-        this.interfaceEntity.position = interfacePosition;
-        this.interfaceEntity.orientation = interfaceOrientation;
+        this.entity.position = new ConstantPositionProperty(Cartesian3.ZERO, null);
+        this.entity.orientation = new ConstantProperty(Quaternion.IDENTITY);
+        this.interfaceEntity.position = new ConstantPositionProperty(Cartesian3.ZERO, this.entity);
+        this.interfaceEntity.orientation = new ConstantProperty(Quaternion.IDENTITY);
     }
 
     public entity = new Entity({ id: 'ar.device', name: 'device' });
