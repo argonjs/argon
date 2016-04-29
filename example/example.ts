@@ -29,39 +29,39 @@ const geometry = new THREE.SphereGeometry( 30, 32, 32 );
 
 let mat = new THREE.MeshBasicMaterial( {color: 0xff0000} );
 
-export const westSphere = new THREE.Mesh( geometry, mat );
-westSphere.position.x = -200;
-scene.add( westSphere );
+export const negXSphere = new THREE.Mesh( geometry, mat );
+negXSphere.position.x = -200;
+scene.add( negXSphere );
 
 mat = new THREE.MeshBasicMaterial( {color: 0xff5555} );
 
-export const eastSphere = new THREE.Mesh( geometry, mat );
-eastSphere.position.x = 200;
-scene.add( eastSphere );
+export const posXSphere = new THREE.Mesh( geometry, mat );
+posXSphere.position.x = 200;
+scene.add( posXSphere );
 
 mat = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
 
-export const downSphere = new THREE.Mesh( geometry, mat );
-downSphere.position.y = -200;
-scene.add( downSphere );
+export const negYSphere = new THREE.Mesh( geometry, mat );
+negYSphere.position.y = -200;
+scene.add( negYSphere );
 
 mat = new THREE.MeshBasicMaterial( {color: 0xaaffaa} );
 
-export const upSphere = new THREE.Mesh( geometry, mat );
-upSphere.position.y = 200;
-scene.add( upSphere );
+export const posYSphere = new THREE.Mesh( geometry, mat );
+posYSphere.position.y = 200;
+scene.add( posYSphere );
 
 mat = new THREE.MeshBasicMaterial( {color: 0x0000ff} );
 
-export const northSphere = new THREE.Mesh( geometry, mat );
-northSphere.position.z = -200;
-scene.add( northSphere );
+export const negZSphere = new THREE.Mesh( geometry, mat );
+negZSphere.position.z = -200;
+scene.add( negZSphere );
 
 mat = new THREE.MeshBasicMaterial( {color: 0x5555ff} );
 
-export const southSphere = new THREE.Mesh( geometry, mat );
-southSphere.position.z = 200;
-scene.add( southSphere );
+export const posZSphere = new THREE.Mesh( geometry, mat );
+posZSphere.position.z = 200;
+scene.add( posZSphere );
 
 const robotariumEntity = app.context.entities.add(<any>{
     id: 'robotarium',
