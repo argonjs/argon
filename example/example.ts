@@ -29,39 +29,48 @@ const geometry = new THREE.SphereGeometry( 30, 32, 32 );
 
 let mat = new THREE.MeshBasicMaterial( {color: 0xff0000} );
 
-export const negXSphere = new THREE.Mesh( geometry, mat );
-negXSphere.position.x = -200;
-scene.add( negXSphere );
-
-mat = new THREE.MeshBasicMaterial( {color: 0xff5555} );
-
 export const posXSphere = new THREE.Mesh( geometry, mat );
 posXSphere.position.x = 200;
 scene.add( posXSphere );
 
+mat = new THREE.MeshBasicMaterial( {color: 0xffaaaa} );
+
+export const negXSphere = new THREE.Mesh( geometry, mat );
+negXSphere.position.x = -200;
+scene.add( negXSphere );
+
 mat = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-
-export const negYSphere = new THREE.Mesh( geometry, mat );
-negYSphere.position.y = -200;
-scene.add( negYSphere );
-
-mat = new THREE.MeshBasicMaterial( {color: 0xaaffaa} );
 
 export const posYSphere = new THREE.Mesh( geometry, mat );
 posYSphere.position.y = 200;
 scene.add( posYSphere );
 
+mat = new THREE.MeshBasicMaterial( {color: 0xaaffaa} );
+
+export const negYSphere = new THREE.Mesh( geometry, mat );
+negYSphere.position.y = -200;
+scene.add( negYSphere );
+
 mat = new THREE.MeshBasicMaterial( {color: 0x0000ff} );
+
+export const posZSphere = new THREE.Mesh( geometry, mat );
+posZSphere.position.z = 200;
+scene.add( posZSphere );
+
+mat = new THREE.MeshBasicMaterial( {color: 0xaaaaff} );
 
 export const negZSphere = new THREE.Mesh( geometry, mat );
 negZSphere.position.z = -200;
 scene.add( negZSphere );
 
-mat = new THREE.MeshBasicMaterial( {color: 0x5555ff} );
+            
+var axisHelper = new THREE.AxisHelper( 10 );
+scene.add( axisHelper );
+axisHelper.position.z = 50;
 
-export const posZSphere = new THREE.Mesh( geometry, mat );
-posZSphere.position.z = 200;
-scene.add( posZSphere );
+var axisHelper = new THREE.AxisHelper( 10 );
+scene.add( axisHelper );
+axisHelper.position.y = -50;
 
 // var textShapes = THREE.FontUtils.generateShapes( "PosZ", options );
 // var text = new THREE.ShapeGeometry( textShapes );
@@ -96,10 +105,6 @@ app.vuforia.init({
             const box = new THREE.Mesh(boxGeometry, material);
             box.position.z = 25;
             box.position.y = 50;
-            
-            var axisHelper = new THREE.AxisHelper( 10 );
-            stonesObject.add( axisHelper );
-            axisHelper.position.z = 50;
             
             console.log('Subscribes to stones trackable with id ' + trackables['stones'].id);
             
