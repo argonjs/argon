@@ -22,8 +22,8 @@ const robots:Set<string> = new Set<string>();
 const renderer = new THREE.WebGLRenderer({ alpha: true, logarithmicDepthBuffer: true });
 app.view.element.appendChild(renderer.domElement);
 
-// app.context.setDefaultReferenceFrame(app.context.localOriginEastUpSouth);
-app.context.setDefaultReferenceFrame(app.context.localOriginEastNorthUp);
+app.context.setDefaultReferenceFrame(app.context.localOriginEastUpSouth);
+// app.context.setDefaultReferenceFrame(app.context.localOriginEastNorthUp);
 
 const geometry = new THREE.SphereGeometry( 30, 32, 32 );
 
@@ -62,6 +62,11 @@ mat = new THREE.MeshBasicMaterial( {color: 0x5555ff} );
 export const posZSphere = new THREE.Mesh( geometry, mat );
 posZSphere.position.z = 200;
 scene.add( posZSphere );
+
+// var textShapes = THREE.FontUtils.generateShapes( "PosZ", options );
+// var text = new THREE.ShapeGeometry( textShapes );
+// var textMesh = new THREE.Mesh( text, new THREE.MeshBasicMaterial( { color: 0xff0000 } ) ) ;
+// scene.add(textMesh);
 
 const robotariumEntity = app.context.entities.add(<any>{
     id: 'robotarium',
