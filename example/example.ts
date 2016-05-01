@@ -22,8 +22,8 @@ const robots:Set<string> = new Set<string>();
 const renderer = new THREE.WebGLRenderer({ alpha: true, logarithmicDepthBuffer: true });
 app.view.element.appendChild(renderer.domElement);
 
-app.context.setDefaultReferenceFrame(app.context.localOriginEastUpSouth);
-// app.context.setDefaultReferenceFrame(app.context.localOriginEastNorthUp);
+// app.context.setDefaultReferenceFrame(app.context.localOriginEastUpSouth);
+app.context.setDefaultReferenceFrame(app.context.localOriginEastNorthUp);
 
 const geometry = new THREE.SphereGeometry( 30, 32, 32 );
 
@@ -105,13 +105,17 @@ app.vuforia.init({
             const box = new THREE.Mesh(boxGeometry, material);
             box.position.z = 25;
             box.position.y = 50;
+                        
+            var axisHelper = new THREE.AxisHelper( 10 );
+            stonesObject.add( axisHelper );
+            axisHelper.position.y = -50;
             
             console.log('Subscribes to stones trackable with id ' + trackables['stones'].id);
             
             robotariumEntity.position.setValue(Argon.Cesium.Cartesian3.ZERO, stonesEntity);
             robotariumEntity.orientation.setValue(Argon.Cesium.Quaternion.IDENTITY);
 
-            app.context.updateEvent.addEventListener((frameState) => {
+            app.context.updateEvent.addEventListener(() => {
                 const stonesPose = app.context.getEntityPose(stonesEntity);
 
                 if (stonesPose.poseStatus & Argon.PoseStatus.KNOWN) {
@@ -122,7 +126,7 @@ app.vuforia.init({
                 if (stonesPose.poseStatus & Argon.PoseStatus.FOUND) {
                     stonesObject.add(box);
                 } else if (stonesPose.poseStatus & Argon.PoseStatus.LOST) {
-                    // stonesObject.remove(box);
+                    stonesObject.remove(box);
                 }
                 
                 

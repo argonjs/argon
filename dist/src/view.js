@@ -80,8 +80,8 @@ System.register(['aurelia-dependency-injection', './session', './context', './ut
                             };
                         });
                     }
-                    this.contextService.renderEvent.addEventListener(function (state) {
-                        _this._setViewParameters(state.view);
+                    this.contextService.renderEvent.addEventListener(function () {
+                        _this._setViewParameters(_this.contextService.state.view);
                     });
                 }
                 ViewService.prototype.getSubviews = function (referenceFrame) {

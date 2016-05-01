@@ -8,14 +8,6 @@ import {DeviceService} from './device'
 import {MessagePortLike, Event, getSerializedEntityPose} from './utils'
 
 /**
- * Describes a complete frame state which is emitted by the RealityService.
- */
-export interface FrameState extends SerializedFrameState {
-    reality: RealityView,
-    entities: SerializedEntityPoseMap
-}
-
-/**
  * Abstract class for a reality setup handler
  */
 export abstract class RealitySetupHandler {
@@ -44,7 +36,7 @@ export class RealityService {
      * This event contains pose updates for the entities that are managed by 
      * the current reality.
      */
-    public frameEvent = new Event<FrameState>();
+    public frameEvent = new Event<SerializedFrameState>();
 
     /**
      * Manager-only. A map from a managed session to the desired reality
@@ -230,16 +222,7 @@ export class RealityService {
         const realitySession = this.sessionService.addManagedSessionPort();
 
         realitySession.on['ar.reality.frameState'] = (state: SerializedFrameState) => {
-
-            const frameState: FrameState = {
-                reality,
-                frameNumber: state.frameNumber,
-                time: state.time,
-                view: state.view,
-                entities: state.entities || {}
-            };
-
-            this.frameEvent.raiseEvent(frameState);
+            this.frameEvent.raiseEvent(state);
         }
 
         realitySession.on['ar.reality.message'] = (message) => {
@@ -330,14 +313,14 @@ export class EmptyRealitySetupHandler implements RealitySetupHandler {
         const remoteRealitySession = this.sessionService.createSessionPort();
         let doUpdate = true;
         remoteRealitySession.connectEvent.addEventListener(() => {
-            const update = (time: JulianDate, frameNumber: number) => {
+            const update = (time: JulianDate, index: number) => {
                 if (doUpdate) {
                     this.deviceService.update();
                     const w = document.documentElement.clientWidth;
                     const h = document.documentElement.clientHeight;
                     const frameState: SerializedFrameState = {
                         time,
-                        frameNumber,
+                        index,
                         view: {
                             viewport: {
                                 x: 0,

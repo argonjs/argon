@@ -15,7 +15,7 @@ import {Configuration, Role} from './common'
 import {ContextService} from './context'
 import {DeviceService} from './device'
 import {FocusService} from './focus'
-import {RealityService, RealitySetupHandler, EmptyRealitySetupHandler, FrameState} from './reality'
+import {RealityService, RealitySetupHandler, EmptyRealitySetupHandler} from './reality'
 import {TimerService} from './timer'
 import {Event} from './utils'
 import {ViewService} from './view'
@@ -125,11 +125,11 @@ export class ArgonSystem {
 
     // events
 
-    public get updateEvent(): Event<FrameState> {
+    public get updateEvent(): Event<void> {
         return this.context.updateEvent;
     }
 
-    public get renderEvent(): Event<FrameState> {
+    public get renderEvent(): Event<void> {
         return this.context.renderEvent;
     }
 

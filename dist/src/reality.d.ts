@@ -1,16 +1,9 @@
 import { TimerService } from './timer';
-import { SerializedFrameState, RealityView, SerializedEntityPoseMap } from './common';
+import { SerializedFrameState, RealityView } from './common';
 import { FocusService } from './focus';
 import { SessionPort, SessionService } from './session';
 import { DeviceService } from './device';
 import { MessagePortLike, Event } from './utils';
-/**
- * Describes a complete frame state which is emitted by the RealityService.
- */
-export interface FrameState extends SerializedFrameState {
-    reality: RealityView;
-    entities: SerializedEntityPoseMap;
-}
 /**
  * Abstract class for a reality setup handler
  */
@@ -40,7 +33,7 @@ export declare class RealityService {
      * This event contains pose updates for the entities that are managed by
      * the current reality.
      */
-    frameEvent: Event<FrameState>;
+    frameEvent: Event<SerializedFrameState>;
     /**
      * Manager-only. A map from a managed session to the desired reality
      */

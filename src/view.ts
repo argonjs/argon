@@ -110,8 +110,8 @@ export class ViewService {
             })
         }
 
-        this.contextService.renderEvent.addEventListener((state) => {
-            this._setViewParameters(state.view);
+        this.contextService.renderEvent.addEventListener(() => {
+            this._setViewParameters(this.contextService.state.view);
         })
     }
 

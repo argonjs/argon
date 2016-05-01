@@ -39,7 +39,6 @@ System.register(['./cesium/cesium-imports'], function(exports_1, context_1) {
                     }
                     else {
                         requestAnimationFramePoly(function (time) {
-                            console.log('raf fired ' + time);
                             var frameTime = cesium_imports_1.JulianDate.fromDate(new Date(time));
                             callback(frameTime, _this.getNextFrameNumber(callback));
                         });

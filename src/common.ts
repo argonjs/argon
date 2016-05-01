@@ -132,7 +132,7 @@ export interface SerializedViewParameters {
  * Describes the serialized frame state.
  */
 export interface SerializedFrameState {
-    frameNumber: number,
+    index: number,
     time: { dayNumber: number, secondsOfDay: number }, // JulianDate
     view: SerializedViewParameters,
     entities?: SerializedEntityPoseMap

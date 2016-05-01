@@ -1,7 +1,17 @@
 import { Entity, EntityCollection, Cartesian3, Quaternion, JulianDate, ReferenceFrame } from './cesium/cesium-imports';
+import { RealityView, SerializedFrameState, SerializedEntityPoseMap } from './common';
 import { SessionService } from './session';
-import { RealityService, FrameState } from './reality';
+import { RealityService } from './reality';
+import { TimerService } from './timer';
 import { Event } from './utils';
+/**
+ * Describes a complete frame state which is sent to child sessions
+ */
+export interface FrameState extends SerializedFrameState {
+    reality: RealityView;
+    entities: SerializedEntityPoseMap;
+    sendTime: JulianDate;
+}
 /**
  * Describes the pose of an entity at a particular time relative to a particular reference frame
  */
@@ -42,17 +52,18 @@ export declare enum PoseStatus {
 export declare class ContextService {
     private sessionService;
     private realityService;
+    private timerService;
     /**
      * An event that is raised when all remotely managed entities are are up-to-date for
      * the current frame. It is suggested that all modifications to locally managed entities
      * should occur within this event.
      */
-    updateEvent: Event<FrameState>;
+    updateEvent: Event<void>;
     /**
      * An event that is raised when it is an approriate time to render graphics.
      * This event fires after the update event.
      */
-    renderEvent: Event<FrameState>;
+    renderEvent: Event<void>;
     /**
      * The set of entities that this session is aware of.
      */
@@ -76,6 +87,14 @@ export declare class ContextService {
      * used in some libraries, such as three.js.
      */
     localOriginEastUpSouth: Entity;
+    /**
+     * Get the current time (not valid until the first update event)
+     */
+    readonly time: JulianDate;
+    /**
+     *  Used internally. Return the last frame state.
+     */
+    readonly state: FrameState;
     private _time;
     private _defaultReferenceFrame;
     private _entityPoseCache;
@@ -83,7 +102,10 @@ export declare class ContextService {
     private _subscribedEntities;
     private _updatingEntities;
     private _knownEntities;
-    constructor(sessionService: SessionService, realityService: RealityService);
+    private _state;
+    private _didUpdateContext;
+    private _onTick;
+    constructor(sessionService: SessionService, realityService: RealityService, timerService: TimerService);
     /**
      * Get the current time (not valid until the first update event)
      */
@@ -117,7 +139,7 @@ export declare class ContextService {
     private getCurrentEntityState(entity, referenceFrame);
     private _update(state);
     private _updateEntity(id, state);
-    private _updateOrigin(state);
+    private _updateLocalOrigin(state);
     private _sendUpdateForSession(parentState, session);
     private _addEntityAndAncestorsToPoseMap(poseMap, id, time);
 }

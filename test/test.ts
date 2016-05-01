@@ -84,10 +84,9 @@ describe('RealityService', () => {
             realityService.setDefault({type:'empty'})
             
             const removeListener = realityService.frameEvent.addEventListener((state) => {
-                expect(state.reality.type).to.equal('empty');
+                expect(realityService.getCurrent().type === 'empty')
                 expect(state.time).to.haveOwnProperty('dayNumber');
                 expect(state.time).to.haveOwnProperty('secondsOfDay');
-                expect(state.frameNumber).to.be.a('number');
                 expect(realityService.getDesired()).to.be.null;
                 removeListener();
                 done();
@@ -348,8 +347,8 @@ describe('Context', () => {
         })
         it('should emit update events with default reality', (done) => {
             const {context} = createSystem();
-            const removeListener = context.updateEvent.addEventListener((frameState) => {
-                expect(frameState.reality.type).to.equal('empty');
+            const removeListener = context.updateEvent.addEventListener(() => {
+                expect(context.state.reality.type).to.equal('empty');
                 removeListener();
                 done();
             })

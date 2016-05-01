@@ -25,7 +25,6 @@ export class TimerService {
             })
         } else {
             requestAnimationFramePoly((time: number) => {
-                console.log('raf fired ' + time);
                 const frameTime = JulianDate.fromDate(new Date(time));
                 callback(frameTime, this.getNextFrameNumber(callback));
             })

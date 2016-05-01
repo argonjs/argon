@@ -223,14 +223,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './t
                     }
                     var realitySession = this.sessionService.addManagedSessionPort();
                     realitySession.on['ar.reality.frameState'] = function (state) {
-                        var frameState = {
-                            reality: reality,
-                            frameNumber: state.frameNumber,
-                            time: state.time,
-                            view: state.view,
-                            entities: state.entities || {}
-                        };
-                        _this.frameEvent.raiseEvent(frameState);
+                        _this.frameEvent.raiseEvent(state);
                     };
                     realitySession.on['ar.reality.message'] = function (message) {
                         var owner = _this.desiredRealityMapInverse.get(reality) || _this.sessionService.manager;
@@ -310,14 +303,14 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './t
                     var remoteRealitySession = this.sessionService.createSessionPort();
                     var doUpdate = true;
                     remoteRealitySession.connectEvent.addEventListener(function () {
-                        var update = function (time, frameNumber) {
+                        var update = function (time, index) {
                             if (doUpdate) {
                                 _this.deviceService.update();
                                 var w = document.documentElement.clientWidth;
                                 var h = document.documentElement.clientHeight;
                                 var frameState = {
                                     time: time,
-                                    frameNumber: frameNumber,
+                                    index: index,
                                     view: {
                                         viewport: {
                                             x: 0,
@@ -325,7 +318,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './t
                                             width: w,
                                             height: h
                                         },
-                                        pose: utils_1.getSerializedEntityPose(_this.deviceService.entity, time),
+                                        pose: utils_1.getSerializedEntityPose(_this.deviceService.interfaceEntity, time),
                                         subviews: [
                                             {
                                                 type: common_1.SubviewType.SINGULAR,

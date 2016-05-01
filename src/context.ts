@@ -2,6 +2,7 @@ import {inject} from 'aurelia-dependency-injection'
 import {
     Entity,
     EntityCollection,
+    ExtrapolationType,
     ConstantPositionProperty,
     ConstantProperty,
     PerspectiveFrustum,
@@ -15,10 +16,20 @@ import {
     createGuid,
     defined
 } from './cesium/cesium-imports'
-import {Role, SerializedEntityPoseMap} from './common'
+import {Role, RealityView, SerializedFrameState, SerializedEntityPoseMap} from './common'
 import {SessionService, SessionPort} from './session'
-import {RealityService, FrameState, } from './reality'
+import {RealityService} from './reality'
+import {TimerService} from './timer'
 import {Event, getRootReferenceFrame, getSerializedEntityPose, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame} from './utils'
+
+/**
+ * Describes a complete frame state which is sent to child sessions
+ */
+export interface FrameState extends SerializedFrameState {
+    reality: RealityView,
+    entities: SerializedEntityPoseMap,
+    sendTime: JulianDate, // the time this state was sent
+}
 
 /**
  * Describes the pose of an entity at a particular time relative to a particular reference frame
@@ -42,7 +53,6 @@ export enum PoseStatus {
     LOST = 4
 }
 
-
 const scratchDate = new JulianDate(0, 0);
 const scratchCartesian3 = new Cartesian3(0, 0);
 const scratchQuaternion = new Quaternion(0, 0);
@@ -65,7 +75,7 @@ const scratchOriginCartesian3 = new Cartesian3(0, 0);
  *  * `ar.context.update` - Indicates to this context that the session wants
  *    to be focused on.
  */
-@inject(SessionService, RealityService)
+@inject(SessionService, RealityService, TimerService)
 export class ContextService {
 
     /**
@@ -73,13 +83,13 @@ export class ContextService {
      * the current frame. It is suggested that all modifications to locally managed entities 
      * should occur within this event. 
      */
-    public updateEvent = new Event<FrameState>();
+    public updateEvent = new Event<void>();
 
     /**
      * An event that is raised when it is an approriate time to render graphics. 
      * This event fires after the update event. 
      */
-    public renderEvent = new Event<FrameState>();
+    public renderEvent = new Event<void>();
 
     /**
      * The set of entities that this session is aware of.
@@ -95,7 +105,7 @@ export class ContextService {
      * An entity representing the location and orientation of the user. 
      */
     public user: Entity = new Entity({
-        id: 'USER',
+        id: 'ar.user',
         name: 'user',
         position: new ConstantPositionProperty(Cartesian3.ZERO, null),
         orientation: new ConstantProperty(Quaternion.IDENTITY)
@@ -106,6 +116,7 @@ export class ContextService {
      * coordinate system.
      */
     public localOriginEastNorthUp: Entity = new Entity({
+        id: 'ar.localENU',
         name: 'localOriginENU',
         position: new ConstantPositionProperty(Cartesian3.ZERO, null),
         orientation: new ConstantProperty(Quaternion.IDENTITY)
@@ -117,10 +128,25 @@ export class ContextService {
      * used in some libraries, such as three.js.
      */
     public localOriginEastUpSouth: Entity = new Entity({
+        id: 'ar.localEUS',
         name: 'localOriginEUS',
         position: new ConstantPositionProperty(Cartesian3.ZERO, this.localOriginEastNorthUp),
         orientation: new ConstantProperty(Quaternion.fromAxisAngle(Cartesian3.UNIT_X, Math.PI / 2))
     });
+
+    /**
+     * Get the current time (not valid until the first update event)
+     */
+    public get time() {
+        return this._time;
+    }
+
+    /**
+     *  Used internally. Return the last frame state.
+     */
+    public get state() {
+        return this._state;
+    }
 
     // the current time (based on the current reality view, not valid until first update event)
     private _time = new JulianDate(0, 0);
@@ -135,15 +161,36 @@ export class ContextService {
     private _updatingEntities = new Set<string>();
     private _knownEntities = new Set<string>();
 
+    private _state: FrameState; // the last frame state
+    private _didUpdateContext = false;
+
+    private _onTick = () => {
+        this.timerService.requestFrame(this._onTick);
+        if (!this._didUpdateContext) return;
+        // have the user update thier scenegraph
+        // and render their scene
+        this.updateEvent.raiseEvent(undefined);
+        this.renderEvent.raiseEvent(undefined);
+        this._didUpdateContext = false;
+    };
+
     constructor(
         private sessionService: SessionService,
-        private realityService: RealityService) {
+        private realityService: RealityService,
+        private timerService: TimerService) {
 
         this.entities.add(this.user);
 
         if (this.sessionService.isManager()) {
             this.realityService.frameEvent.addEventListener((state) => {
-                this._update(state);
+                this._update({
+                    reality: this.realityService.getCurrent(),
+                    index: state.index,
+                    time: state.time,
+                    view: state.view,
+                    entities: state.entities || {},
+                    sendTime: JulianDate.now()
+                });
             });
         } else {
             this.sessionService.manager.on['ar.context.update'] = (state: FrameState) => {
@@ -161,8 +208,9 @@ export class ContextService {
             }
 
         })
-    }
 
+        this.timerService.requestFrame(this._onTick);
+    }
 
     /**
      * Get the current time (not valid until the first update event)
@@ -266,13 +314,16 @@ export class ContextService {
     }
 
     private _update(state: FrameState) {
+        // our user entity is defined by the current view pose (the current reality must provide this)
+        state.entities[this.user.id] = state.view.pose;
 
-        state.entities['USER'] = state.view.pose;
-
+        // save our subview poses to be updated as entities
         state.view.subviews.forEach((subview, index) => {
+            // if the subview pose is undefined, assume it is the same as the view pose
             state.entities['ar.view_' + index] = subview.pose || state.view.pose;
         });
 
+        // update the entities the manager knows about
         this._knownEntities.clear();
         for (const id in state.entities) {
             this._updateEntity(id, state);
@@ -280,15 +331,21 @@ export class ContextService {
             this._knownEntities.add(id);
         }
 
+        // if the mangager didn't send us an update for a particular entity,
+        // assume the manager no longer knows about it
         this._updatingEntities.forEach((id) => {
             if (!this._knownEntities.has(id)) {
-                this.entities.getById(id).position = undefined;
+                const entity = this.entities.getById(id);
+                entity.position = undefined;
+                entity.orientation = undefined;
                 this._updatingEntities.delete(id);
             }
         })
 
-        this._updateOrigin(state);
+        // update our local origin
+        this._updateLocalOrigin(state);
 
+        // if this session is the manager, we need to update our child sessions
         if (this.sessionService.isManager()) {
             this._entityPoseCache = {};
             for (const session of this.sessionService.managedSessions) {
@@ -297,19 +354,22 @@ export class ContextService {
             }
         }
 
+        // update our state and let the timer know we have updated
+        this._state = state;
+        this._didUpdateContext = true;
         JulianDate.clone(<JulianDate>state.time, this._time);
-        this.updateEvent.raiseEvent(state);
-        this.renderEvent.raiseEvent(state);
-
     }
 
     private _updateEntity(id: string, state: FrameState) {
         const entityPose = state.entities[id];
-        if (!entityPose) return;
+        if (!entityPose) {
+            this.entities.getOrCreateEntity(id);
+            return;
+        }
 
         let referenceFrame;
 
-        if (entityPose.r) {
+        if (defined(entityPose.r)) {
             if (typeof entityPose.r === 'number') {
                 referenceFrame = entityPose.r;
             } else {
@@ -327,29 +387,41 @@ export class ContextService {
         const orientationValue = entityPose.o === 0 ? Quaternion.IDENTITY : entityPose.o;
 
         const entity = this.entities.getOrCreateEntity(id);
-        const entityPosition = entity.position;
-        const entityOrientation = entity.orientation;
+        let entityPosition = entity.position;
+        let entityOrientation = entity.orientation;
 
-        if (!defined(entityPosition)) {
-            entity.position = new ConstantPositionProperty(positionValue, referenceFrame);
-        } else if (entityPosition instanceof ConstantPositionProperty) {
+        if (!defined(entityPosition) || entityPosition.referenceFrame !== referenceFrame) {
+            entityPosition = new SampledPositionProperty(referenceFrame);
+            (entityPosition as SampledPositionProperty).forwardExtrapolationType = ExtrapolationType.HOLD;
+            (entityPosition as SampledPositionProperty).forwardExtrapolationDuration = 3 / 60;
+            entityPosition['maxNumSamples'] = 10; // using our extension to limit memory consumption
+            entity.position = entityPosition;
+        }
+
+        if (entityPosition instanceof ConstantPositionProperty) {
             entityPosition.setValue(positionValue, referenceFrame)
         } else if (entityPosition instanceof SampledPositionProperty) {
-            entityPosition.addSample(<JulianDate>state.time, positionValue);
+            entityPosition.addSample(JulianDate.clone(<JulianDate>state.time), positionValue);
         }
 
         if (!defined(entityOrientation)) {
-            entity.orientation = new ConstantProperty(orientationValue);
-        } else if (entityOrientation instanceof ConstantProperty) {
+            entityOrientation = new SampledProperty(Quaternion);
+            (entityOrientation as SampledProperty).forwardExtrapolationType = ExtrapolationType.HOLD;
+            (entityOrientation as SampledProperty).forwardExtrapolationDuration = 3 / 60;
+            entityOrientation['maxNumSamples'] = 10; // using our extension to limit memory consumption
+            entity.orientation = entityOrientation;
+        }
+
+        if (entityOrientation instanceof ConstantProperty) {
             entityOrientation.setValue(orientationValue);
         } else if (entityOrientation instanceof SampledProperty) {
-            entityOrientation.addSample(<JulianDate>state.time, orientationValue);
+            entityOrientation.addSample(JulianDate.clone(<JulianDate>state.time), orientationValue);
         }
 
         return entity;
     }
 
-    private _updateOrigin(state: FrameState) {
+    private _updateLocalOrigin(state: FrameState) {
         const userRootFrame = getRootReferenceFrame(this.user);
         const userPosition = this.user.position.getValueInReferenceFrame(<JulianDate>state.time, userRootFrame, scratchCartesian3);
         const localENUFrame = this.localOriginEastNorthUp.position.referenceFrame;
@@ -383,10 +455,11 @@ export class ContextService {
 
         const sessionState: FrameState = {
             reality: parentState.reality,
+            index: parentState.index,
             time: parentState.time,
-            frameNumber: parentState.frameNumber,
             view: parentState.view,
-            entities: sessionPoseMap
+            entities: sessionPoseMap,
+            sendTime: JulianDate.now()
         };
 
         session.send('ar.context.update', sessionState);

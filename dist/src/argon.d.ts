@@ -6,7 +6,7 @@ import { Configuration } from './common';
 import { ContextService } from './context';
 import { DeviceService } from './device';
 import { FocusService } from './focus';
-import { RealityService, FrameState } from './reality';
+import { RealityService } from './reality';
 import { TimerService } from './timer';
 import { Event } from './utils';
 import { ViewService } from './view';
@@ -37,8 +37,8 @@ export declare class ArgonSystem {
     readonly timer: TimerService;
     readonly view: ViewService;
     readonly vuforia: VuforiaService;
-    readonly updateEvent: Event<FrameState>;
-    readonly renderEvent: Event<FrameState>;
+    readonly updateEvent: Event<void>;
+    readonly renderEvent: Event<void>;
     readonly focusEvent: Event<void>;
     readonly blurEvent: Event<void>;
 }
