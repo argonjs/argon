@@ -345,7 +345,7 @@ export class EmptyRealitySetupHandler implements RealitySetupHandler {
                                 width: w,
                                 height: h
                             },
-                            pose: getSerializedEntityPose(this.deviceService.entity, time),
+                            pose: getSerializedEntityPose(this.deviceService.interfaceEntity, time),
                             subviews: [
                                 {
                                     type: SubviewType.SINGULAR,
