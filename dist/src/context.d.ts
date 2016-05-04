@@ -103,7 +103,7 @@ export declare class ContextService {
     private _updatingEntities;
     private _knownEntities;
     private _state;
-    private _didUpdateContext;
+    private _didUpdateState;
     private _onTick;
     constructor(sessionService: SessionService, realityService: RealityService, timerService: TimerService);
     /**

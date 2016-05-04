@@ -2,7 +2,7 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var Event_1, cesium_imports_1;
-    var Event, CommandQueue, scratchCartesianPositionFIXED, scratchMatrix4, scratchMatrix3, urlParser, MessageChannelLike, MessageChannelFactory;
+    var Event, CommandQueue, scratchCartesianPositionFIXED, scratchMatrix4, scratchMatrix3, urlParser, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory;
     /**
      * Get array of ancestor reference frames of a Cesium Entity.
      * @param frame A Cesium Entity to get ancestor reference frames.
@@ -334,6 +334,41 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
             }());
             exports_1("MessageChannelLike", MessageChannelLike);
             /**
+             * A synchronous MessageChannel.
+             */
+            SynchronousMessageChannel = (function () {
+                /**
+                 * Create a MessageChannelLike instance.
+                 */
+                function SynchronousMessageChannel() {
+                    var messageChannel = this;
+                    messageChannel.port1 = {
+                        onmessage: undefined,
+                        postMessage: function (data) {
+                            if (messageChannel.port2.onmessage)
+                                messageChannel.port2.onmessage({ data: data });
+                        },
+                        close: function () {
+                            messageChannel.port1.onmessage = null;
+                            messageChannel.port2.onmessage = null;
+                        }
+                    };
+                    messageChannel.port2 = {
+                        onmessage: undefined,
+                        postMessage: function (data) {
+                            if (messageChannel.port1.onmessage)
+                                messageChannel.port1.onmessage({ data: data });
+                        },
+                        close: function () {
+                            messageChannel.port1.onmessage = null;
+                            messageChannel.port2.onmessage = null;
+                        }
+                    };
+                }
+                return SynchronousMessageChannel;
+            }());
+            exports_1("SynchronousMessageChannel", SynchronousMessageChannel);
+            /**
              * A factory which creates MessageChannel or MessageChannelLike instances, depending on
              * wheter or not MessageChannel is avaialble in the execution context.
              */
@@ -348,6 +383,12 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
                         return new MessageChannel();
                     else
                         return new MessageChannelLike();
+                };
+                /**
+                 * Create a SynchronousMessageChannel instance.
+                 */
+                MessageChannelFactory.prototype.createSynchronous = function () {
+                    return new SynchronousMessageChannel();
                 };
                 return MessageChannelFactory;
             }());

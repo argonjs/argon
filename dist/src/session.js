@@ -341,6 +341,13 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                     return this.messageChannelFactory.create();
                 };
                 /**
+                 * Creates a synchronous message channel.
+                 * @return a new SynchronousMessageChannel instance
+                 */
+                SessionService.prototype.createSynchronousMessageChannel = function () {
+                    return this.messageChannelFactory.createSynchronous();
+                };
+                /**
                  * Returns true if this session is the manager
                  */
                 SessionService.prototype.isManager = function () {
@@ -483,7 +490,7 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                  * @param sessionService The session service instance.
                  */
                 WKWebViewConnectService.prototype.connect = function (sessionService) {
-                    var messageChannel = sessionService.createMessageChannel();
+                    var messageChannel = sessionService.createSynchronousMessageChannel();
                     messageChannel.port2.onmessage = function (event) {
                         webkit.messageHandlers.argon.postMessage(JSON.stringify(event.data));
                     };

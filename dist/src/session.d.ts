@@ -1,5 +1,5 @@
 import { Configuration } from './common';
-import { Event, MessageChannelFactory, MessagePortLike, MessageChannelLike } from './utils';
+import { Event, MessageChannelFactory, MessagePortLike, MessageChannelLike, SynchronousMessageChannel } from './utils';
 export interface Message {
     [key: string]: any;
 }
@@ -158,6 +158,11 @@ export declare class SessionService {
      * @return a new MessageChannel instance
      */
     createMessageChannel(): MessageChannelLike;
+    /**
+     * Creates a synchronous message channel.
+     * @return a new SynchronousMessageChannel instance
+     */
+    createSynchronousMessageChannel(): SynchronousMessageChannel;
     /**
      * Returns true if this session is the manager
      */

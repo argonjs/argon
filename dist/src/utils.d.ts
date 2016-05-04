@@ -174,6 +174,23 @@ export declare class MessageChannelLike {
     constructor();
 }
 /**
+ * A synchronous MessageChannel.
+ */
+export declare class SynchronousMessageChannel {
+    /**
+     * The first port.
+     */
+    port1: MessagePortLike;
+    /**
+     * The second port.
+     */
+    port2: MessagePortLike;
+    /**
+     * Create a MessageChannelLike instance.
+     */
+    constructor();
+}
+/**
  * A factory which creates MessageChannel or MessageChannelLike instances, depending on
  * wheter or not MessageChannel is avaialble in the execution context.
  */
@@ -182,4 +199,8 @@ export declare class MessageChannelFactory {
      * Create a MessageChannel (or MessageChannelLike) instance.
      */
     create(): MessageChannelLike;
+    /**
+     * Create a SynchronousMessageChannel instance.
+     */
+    createSynchronous(): SynchronousMessageChannel;
 }

@@ -134,16 +134,15 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     this._subscribedEntities = new WeakMap();
                     this._updatingEntities = new Set();
                     this._knownEntities = new Set();
-                    this._didUpdateContext = false;
+                    this._didUpdateState = false;
                     this._onTick = function () {
-                        _this.timerService.requestFrame(_this._onTick);
-                        if (!_this._didUpdateContext)
+                        if (!_this._didUpdateState)
                             return;
                         // have the user update thier scenegraph
                         // and render their scene
                         _this.updateEvent.raiseEvent(undefined);
                         _this.renderEvent.raiseEvent(undefined);
-                        _this._didUpdateContext = false;
+                        _this._didUpdateState = false;
                     };
                     this.entities.add(this.user);
                     if (this.sessionService.isManager()) {
@@ -171,7 +170,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                             subscriptions.add(id);
                         };
                     });
-                    this.timerService.requestFrame(this._onTick);
+                    // this.timerService.requestFrame(this._onTick);
                 }
                 Object.defineProperty(ContextService.prototype, "time", {
                     /**
@@ -308,10 +307,13 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                                 this._sendUpdateForSession(state, session);
                         }
                     }
-                    // update our state and let the timer know we have updated
+                    // save our state 
                     this._state = state;
-                    this._didUpdateContext = true;
                     cesium_imports_1.JulianDate.clone(state.time, this._time);
+                    // let the animation callback know we have a new state
+                    this._didUpdateState = true;
+                    // request the animation frame
+                    this.timerService.requestFrame(this._onTick);
                 };
                 ContextService.prototype._updateEntity = function (id, state) {
                     var entityPose = state.entities[id];

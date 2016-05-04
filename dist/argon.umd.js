@@ -462,14 +462,13 @@ $__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1,
           this._subscribedEntities = new WeakMap();
           this._updatingEntities = new Set();
           this._knownEntities = new Set();
-          this._didUpdateContext = false;
+          this._didUpdateState = false;
           this._onTick = function() {
-            _this.timerService.requestFrame(_this._onTick);
-            if (!_this._didUpdateContext)
+            if (!_this._didUpdateState)
               return;
             _this.updateEvent.raiseEvent(undefined);
             _this.renderEvent.raiseEvent(undefined);
-            _this._didUpdateContext = false;
+            _this._didUpdateState = false;
           };
           this.entities.add(this.user);
           if (this.sessionService.isManager()) {
@@ -496,7 +495,6 @@ $__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1,
               subscriptions.add(id);
             };
           });
-          this.timerService.requestFrame(this._onTick);
         }
         Object.defineProperty(ContextService.prototype, "time", {
           get: function() {
@@ -596,8 +594,9 @@ $__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1,
             }
           }
           this._state = state;
-          this._didUpdateContext = true;
           cesium_imports_1.JulianDate.clone(state.time, this._time);
+          this._didUpdateState = true;
+          this.timerService.requestFrame(this._onTick);
         };
         ContextService.prototype._updateEntity = function(id, state) {
           var entityPose = state.entities[id];
@@ -2415,6 +2414,9 @@ $__System.register("7", ["5", "b", "6", "a"], function(exports_1, context_1) {
         SessionService.prototype.createMessageChannel = function() {
           return this.messageChannelFactory.create();
         };
+        SessionService.prototype.createSynchronousMessageChannel = function() {
+          return this.messageChannelFactory.createSynchronous();
+        };
         SessionService.prototype.isManager = function() {
           return this.configuration.role === common_1.Role.MANAGER;
         };
@@ -2502,7 +2504,7 @@ $__System.register("7", ["5", "b", "6", "a"], function(exports_1, context_1) {
           return typeof window !== 'undefined' && window['webkit'] && window['webkit'].messageHandlers;
         };
         WKWebViewConnectService.prototype.connect = function(sessionService) {
-          var messageChannel = sessionService.createMessageChannel();
+          var messageChannel = sessionService.createSynchronousMessageChannel();
           messageChannel.port2.onmessage = function(event) {
             webkit.messageHandlers.argon.postMessage(JSON.stringify(event.data));
           };
@@ -14012,6 +14014,7 @@ $__System.register("a", ["15", "5"], function(exports_1, context_1) {
       scratchMatrix3,
       urlParser,
       MessageChannelLike,
+      SynchronousMessageChannel,
       MessageChannelFactory;
   function getAncestorReferenceFrames(frame) {
     var frames = [];
@@ -14242,6 +14245,35 @@ $__System.register("a", ["15", "5"], function(exports_1, context_1) {
         return MessageChannelLike;
       }());
       exports_1("MessageChannelLike", MessageChannelLike);
+      SynchronousMessageChannel = (function() {
+        function SynchronousMessageChannel() {
+          var messageChannel = this;
+          messageChannel.port1 = {
+            onmessage: undefined,
+            postMessage: function(data) {
+              if (messageChannel.port2.onmessage)
+                messageChannel.port2.onmessage({data: data});
+            },
+            close: function() {
+              messageChannel.port1.onmessage = null;
+              messageChannel.port2.onmessage = null;
+            }
+          };
+          messageChannel.port2 = {
+            onmessage: undefined,
+            postMessage: function(data) {
+              if (messageChannel.port1.onmessage)
+                messageChannel.port1.onmessage({data: data});
+            },
+            close: function() {
+              messageChannel.port1.onmessage = null;
+              messageChannel.port2.onmessage = null;
+            }
+          };
+        }
+        return SynchronousMessageChannel;
+      }());
+      exports_1("SynchronousMessageChannel", SynchronousMessageChannel);
       MessageChannelFactory = (function() {
         function MessageChannelFactory() {}
         MessageChannelFactory.prototype.create = function() {
@@ -14249,6 +14281,9 @@ $__System.register("a", ["15", "5"], function(exports_1, context_1) {
             return new MessageChannel();
           else
             return new MessageChannelLike();
+        };
+        MessageChannelFactory.prototype.createSynchronous = function() {
+          return new SynchronousMessageChannel();
         };
         return MessageChannelFactory;
       }());
