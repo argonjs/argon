@@ -162,20 +162,6 @@ export class ContextService {
     private _knownEntities = new Set<string>();
 
     private _state: FrameState; // the last frame state
-    private _didUpdateState = false;
-
-    private _onTick = () => {
-        if (!this._didUpdateState) return;
-        // have the user update thier scenegraph    
-        // and render their scene
-        // const now = JulianDate.now();
-        // const diff = JulianDate.secondsDifference(now, this._state.sendTime);
-        // const time = JulianDate.addSeconds(<JulianDate>this._state.time, diff, this._time);
-        JulianDate.clone(<JulianDate>this._state.time, this._time);
-        this.updateEvent.raiseEvent(undefined);
-        this.renderEvent.raiseEvent(undefined);
-        this._didUpdateState = false;
-    };
 
     constructor(
         private sessionService: SessionService,
@@ -357,10 +343,10 @@ export class ContextService {
 
         // save our state 
         this._state = state;
-        // let the animation callback know we have a new state
-        this._didUpdateState = true;
-        // request the animation frame
-        this.timerService.requestFrame(this._onTick);
+        JulianDate.clone(<JulianDate>this._state.time, this._time);
+        // raise an event for the user update and render the scene
+        this.updateEvent.raiseEvent(undefined);
+        this.renderEvent.raiseEvent(undefined);
     }
 
     private _updateEntity(id: string, state: FrameState) {
