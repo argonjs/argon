@@ -96,8 +96,6 @@ export class ViewService {
                     transform: translateZ(0px);
                     left: 0px;
                     bottom: 0px;
-                    width: inherit !important;
-                    height: inherit !important;
                 }
             `, 1);
         }
