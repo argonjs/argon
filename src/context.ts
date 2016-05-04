@@ -162,16 +162,19 @@ export class ContextService {
     private _knownEntities = new Set<string>();
 
     private _state: FrameState; // the last frame state
-    private _didUpdateContext = false;
+    private _didUpdateState = false;
 
     private _onTick = () => {
-        this.timerService.requestFrame(this._onTick);
-        if (!this._didUpdateContext) return;
-        // have the user update thier scenegraph
+        if (!this._didUpdateState) return;
+        // have the user update thier scenegraph    
         // and render their scene
+        // const now = JulianDate.now();
+        // const diff = JulianDate.secondsDifference(now, this._state.sendTime);
+        // const time = JulianDate.addSeconds(<JulianDate>this._state.time, diff, this._time);
+        JulianDate.clone(<JulianDate>this._state.time, this._time);
         this.updateEvent.raiseEvent(undefined);
         this.renderEvent.raiseEvent(undefined);
-        this._didUpdateContext = false;
+        this._didUpdateState = false;
     };
 
     constructor(
@@ -208,8 +211,6 @@ export class ContextService {
             }
 
         })
-
-        this.timerService.requestFrame(this._onTick);
     }
 
     /**
@@ -354,10 +355,12 @@ export class ContextService {
             }
         }
 
-        // update our state and let the timer know we have updated
+        // save our state 
         this._state = state;
-        this._didUpdateContext = true;
-        JulianDate.clone(<JulianDate>state.time, this._time);
+        // let the animation callback know we have a new state
+        this._didUpdateState = true;
+        // request the animation frame
+        this.timerService.requestFrame(this._onTick);
     }
 
     private _updateEntity(id: string, state: FrameState) {
@@ -393,7 +396,7 @@ export class ContextService {
         if (!defined(entityPosition) || entityPosition.referenceFrame !== referenceFrame) {
             entityPosition = new SampledPositionProperty(referenceFrame);
             (entityPosition as SampledPositionProperty).forwardExtrapolationType = ExtrapolationType.HOLD;
-            (entityPosition as SampledPositionProperty).forwardExtrapolationDuration = 3 / 60;
+            (entityPosition as SampledPositionProperty).forwardExtrapolationDuration = 5 / 60;
             entityPosition['maxNumSamples'] = 10; // using our extension to limit memory consumption
             entity.position = entityPosition;
         }
@@ -407,7 +410,7 @@ export class ContextService {
         if (!defined(entityOrientation)) {
             entityOrientation = new SampledProperty(Quaternion);
             (entityOrientation as SampledProperty).forwardExtrapolationType = ExtrapolationType.HOLD;
-            (entityOrientation as SampledProperty).forwardExtrapolationDuration = 3 / 60;
+            (entityOrientation as SampledProperty).forwardExtrapolationDuration = 5 / 60;
             entityOrientation['maxNumSamples'] = 10; // using our extension to limit memory consumption
             entity.orientation = entityOrientation;
         }
