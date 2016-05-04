@@ -134,16 +134,6 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     this._subscribedEntities = new WeakMap();
                     this._updatingEntities = new Set();
                     this._knownEntities = new Set();
-                    this._didUpdateState = false;
-                    this._onTick = function () {
-                        if (!_this._didUpdateState)
-                            return;
-                        // have the user update thier scenegraph
-                        // and render their scene
-                        _this.updateEvent.raiseEvent(undefined);
-                        _this.renderEvent.raiseEvent(undefined);
-                        _this._didUpdateState = false;
-                    };
                     this.entities.add(this.user);
                     if (this.sessionService.isManager()) {
                         this.realityService.frameEvent.addEventListener(function (state) {
@@ -170,7 +160,6 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                             subscriptions.add(id);
                         };
                     });
-                    // this.timerService.requestFrame(this._onTick);
                 }
                 Object.defineProperty(ContextService.prototype, "time", {
                     /**
@@ -309,11 +298,10 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     }
                     // save our state 
                     this._state = state;
-                    cesium_imports_1.JulianDate.clone(state.time, this._time);
-                    // let the animation callback know we have a new state
-                    this._didUpdateState = true;
-                    // request the animation frame
-                    this.timerService.requestFrame(this._onTick);
+                    cesium_imports_1.JulianDate.clone(this._state.time, this._time);
+                    // raise an event for the user update and render the scene
+                    this.updateEvent.raiseEvent(undefined);
+                    this.renderEvent.raiseEvent(undefined);
                 };
                 ContextService.prototype._updateEntity = function (id, state) {
                     var entityPose = state.entities[id];
@@ -344,7 +332,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     if (!cesium_imports_1.defined(entityPosition) || entityPosition.referenceFrame !== referenceFrame) {
                         entityPosition = new cesium_imports_1.SampledPositionProperty(referenceFrame);
                         entityPosition.forwardExtrapolationType = cesium_imports_1.ExtrapolationType.HOLD;
-                        entityPosition.forwardExtrapolationDuration = 3 / 60;
+                        entityPosition.forwardExtrapolationDuration = 5 / 60;
                         entityPosition['maxNumSamples'] = 10; // using our extension to limit memory consumption
                         entity.position = entityPosition;
                     }
@@ -357,7 +345,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     if (!cesium_imports_1.defined(entityOrientation)) {
                         entityOrientation = new cesium_imports_1.SampledProperty(cesium_imports_1.Quaternion);
                         entityOrientation.forwardExtrapolationType = cesium_imports_1.ExtrapolationType.HOLD;
-                        entityOrientation.forwardExtrapolationDuration = 3 / 60;
+                        entityOrientation.forwardExtrapolationDuration = 5 / 60;
                         entityOrientation['maxNumSamples'] = 10; // using our extension to limit memory consumption
                         entity.orientation = entityOrientation;
                     }

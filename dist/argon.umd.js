@@ -462,14 +462,6 @@ $__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1,
           this._subscribedEntities = new WeakMap();
           this._updatingEntities = new Set();
           this._knownEntities = new Set();
-          this._didUpdateState = false;
-          this._onTick = function() {
-            if (!_this._didUpdateState)
-              return;
-            _this.updateEvent.raiseEvent(undefined);
-            _this.renderEvent.raiseEvent(undefined);
-            _this._didUpdateState = false;
-          };
           this.entities.add(this.user);
           if (this.sessionService.isManager()) {
             this.realityService.frameEvent.addEventListener(function(state) {
@@ -594,9 +586,9 @@ $__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1,
             }
           }
           this._state = state;
-          cesium_imports_1.JulianDate.clone(state.time, this._time);
-          this._didUpdateState = true;
-          this.timerService.requestFrame(this._onTick);
+          cesium_imports_1.JulianDate.clone(this._state.time, this._time);
+          this.updateEvent.raiseEvent(undefined);
+          this.renderEvent.raiseEvent(undefined);
         };
         ContextService.prototype._updateEntity = function(id, state) {
           var entityPose = state.entities[id];
@@ -625,7 +617,7 @@ $__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1,
           if (!cesium_imports_1.defined(entityPosition) || entityPosition.referenceFrame !== referenceFrame) {
             entityPosition = new cesium_imports_1.SampledPositionProperty(referenceFrame);
             entityPosition.forwardExtrapolationType = cesium_imports_1.ExtrapolationType.HOLD;
-            entityPosition.forwardExtrapolationDuration = 3 / 60;
+            entityPosition.forwardExtrapolationDuration = 5 / 60;
             entityPosition['maxNumSamples'] = 10;
             entity.position = entityPosition;
           }
@@ -637,7 +629,7 @@ $__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1,
           if (!cesium_imports_1.defined(entityOrientation)) {
             entityOrientation = new cesium_imports_1.SampledProperty(cesium_imports_1.Quaternion);
             entityOrientation.forwardExtrapolationType = cesium_imports_1.ExtrapolationType.HOLD;
-            entityOrientation.forwardExtrapolationDuration = 3 / 60;
+            entityOrientation.forwardExtrapolationDuration = 5 / 60;
             entityOrientation['maxNumSamples'] = 10;
             entity.orientation = entityOrientation;
           }
@@ -772,7 +764,7 @@ $__System.register("c", ["b", "7", "4", "a"], function(exports_1, context_1) {
             document.head.appendChild(style);
             var sheet = style.sheet;
             sheet.insertRule("\n                #argon {\n                    position: fixed;\n                    transform: translateZ(0px);\n                    z-index: -9999;\n                    left: 0px;\n                    bottom: 0px;\n                    width: 100%;\n                    height: 100%;\n                    margin: 0;\n                    border: 0;\n                    padding: 0;\n                }\n            ", 0);
-            sheet.insertRule("\n                #argon > * {\n                    position: absolute;\n                    transform: translateZ(0px);\n                    left: 0px;\n                    bottom: 0px;\n                    width: inherit !important;\n                    height: inherit !important;\n                }\n            ", 1);
+            sheet.insertRule("\n                #argon > * {\n                    position: absolute;\n                    transform: translateZ(0px);\n                    left: 0px;\n                    bottom: 0px;\n                }\n            ", 1);
           }
           if (this.sessionService.isManager()) {
             this.sessionService.connectEvent.addEventListener(function(session) {

@@ -103,8 +103,6 @@ export declare class ContextService {
     private _updatingEntities;
     private _knownEntities;
     private _state;
-    private _didUpdateState;
-    private _onTick;
     constructor(sessionService: SessionService, realityService: RealityService, timerService: TimerService);
     /**
      * Get the current time (not valid until the first update event)
