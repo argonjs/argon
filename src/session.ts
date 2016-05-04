@@ -2,7 +2,7 @@ import * as Cesium from 'Cesium';
 import {createGuid} from './cesium/cesium-imports';
 import {inject} from 'aurelia-dependency-injection';
 import {Configuration, Role} from './common'
-import {Event, MessageChannelFactory, MessagePortLike, MessageChannelLike} from './utils';
+import {Event, MessageChannelFactory, MessagePortLike, MessageChannelLike, SynchronousMessageChannel} from './utils';
 import {ContextService} from './context'
 
 export interface Message {
@@ -351,6 +351,14 @@ export class SessionService {
     }
 
     /**
+     * Creates a synchronous message channel.
+     * @return a new SynchronousMessageChannel instance
+     */
+    public createSynchronousMessageChannel() {
+        return this.messageChannelFactory.createSynchronous();
+    }
+
+    /**
      * Returns true if this session is the manager
      */
     public isManager() {
@@ -480,7 +488,7 @@ export class WKWebViewConnectService extends ConnectService {
      * @param sessionService The session service instance.
      */
     connect(sessionService: SessionService) {
-        const messageChannel = sessionService.createMessageChannel();
+        const messageChannel = sessionService.createSynchronousMessageChannel();
         messageChannel.port2.onmessage = (event) => {
             webkit.messageHandlers.argon.postMessage(JSON.stringify(event.data));
         }

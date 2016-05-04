@@ -393,6 +393,54 @@ export class MessageChannelLike {
     }
 }
 
+
+/**
+ * A synchronous MessageChannel. 
+ */
+export class SynchronousMessageChannel {
+
+    /**
+     * The first port.
+     */
+    public port1: MessagePortLike;
+
+    /**
+     * The second port.
+     */
+    public port2: MessagePortLike;
+
+    /**
+     * Create a MessageChannelLike instance. 
+     */
+    constructor() {
+        const messageChannel = this;
+
+        messageChannel.port1 = {
+            onmessage: undefined,
+            postMessage(data: any) {
+                if (messageChannel.port2.onmessage)
+                    messageChannel.port2.onmessage({ data });
+            },
+            close() {
+                messageChannel.port1.onmessage = null;
+                messageChannel.port2.onmessage = null;
+            }
+        }
+
+        messageChannel.port2 = <MessagePortLike>{
+            onmessage: undefined,
+            postMessage(data: any) {
+                if (messageChannel.port1.onmessage)
+                    messageChannel.port1.onmessage({ data });
+            },
+            close() {
+                messageChannel.port1.onmessage = null;
+                messageChannel.port2.onmessage = null;
+            }
+        }
+    }
+}
+
 /**
  * A factory which creates MessageChannel or MessageChannelLike instances, depending on
  * wheter or not MessageChannel is avaialble in the execution context. 
@@ -405,5 +453,12 @@ export class MessageChannelFactory {
     public create(): MessageChannelLike {
         if (typeof MessageChannel !== 'undefined') return new MessageChannel()
         else return new MessageChannelLike();
+    }
+
+    /**
+     * Create a SynchronousMessageChannel instance.
+     */
+    public createSynchronous(): SynchronousMessageChannel {
+        return new SynchronousMessageChannel()
     }
 }
