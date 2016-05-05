@@ -395,6 +395,7 @@ $__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1,
       scratchCartesian3,
       scratchQuaternion,
       scratchOriginCartesian3,
+      negX90,
       ContextService;
   function _stringFromReferenceFrame(referenceFrame) {
     var rf = referenceFrame;
@@ -427,6 +428,7 @@ $__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1,
       scratchCartesian3 = new cesium_imports_1.Cartesian3(0, 0);
       scratchQuaternion = new cesium_imports_1.Quaternion(0, 0);
       scratchOriginCartesian3 = new cesium_imports_1.Cartesian3(0, 0);
+      negX90 = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_X, -cesium_imports_1.CesiumMath.PI_OVER_TWO);
       ContextService = (function() {
         function ContextService(sessionService, realityService, timerService) {
           var _this = this;
@@ -607,7 +609,8 @@ $__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1,
             referenceFrame = cesium_imports_1.ReferenceFrame.FIXED;
           }
           if (!cesium_imports_1.defined(referenceFrame)) {
-            referenceFrame = this._updateEntity(entityPose.r, state);
+            this._updateEntity(entityPose.r, state);
+            referenceFrame = this.entities.getById(entityPose.r);
           }
           var positionValue = (entityPose.p === 0 ? cesium_imports_1.Cartesian3.ZERO : entityPose.p);
           var orientationValue = entityPose.o === 0 ? cesium_imports_1.Quaternion.IDENTITY : entityPose.o;
@@ -653,7 +656,7 @@ $__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1,
               var enuOrientation = cesium_imports_1.Transforms.headingPitchRollQuaternion(userPosition, 0, 0, 0, undefined, scratchQuaternion);
               localENUOrientationProperty.setValue(enuOrientation);
             } else {
-              localENUOrientationProperty.setValue(cesium_imports_1.Quaternion.IDENTITY);
+              localENUOrientationProperty.setValue(negX90);
             }
             this.localOriginChangeEvent.raiseEvent(undefined);
           }

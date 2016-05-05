@@ -3,6 +3,7 @@ import {
     Entity,
     EntityCollection,
     ExtrapolationType,
+    CesiumMath,
     ConstantPositionProperty,
     ConstantProperty,
     PerspectiveFrustum,
@@ -57,6 +58,8 @@ const scratchDate = new JulianDate(0, 0);
 const scratchCartesian3 = new Cartesian3(0, 0);
 const scratchQuaternion = new Quaternion(0, 0);
 const scratchOriginCartesian3 = new Cartesian3(0, 0);
+
+const negX90 = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, -CesiumMath.PI_OVER_TWO)
 
 /**
  * Provides a means of querying the current state of reality. 
@@ -425,7 +428,7 @@ export class ContextService {
                 const enuOrientation = Transforms.headingPitchRollQuaternion(userPosition, 0, 0, 0, undefined, scratchQuaternion);
                 localENUOrientationProperty.setValue(enuOrientation);
             } else {
-                localENUOrientationProperty.setValue(Quaternion.IDENTITY);
+                localENUOrientationProperty.setValue(negX90);
             }
             this.localOriginChangeEvent.raiseEvent(undefined);
         }

@@ -19,7 +19,11 @@ const robots:Set<string> = new Set<string>();
 
 // console.log(robotariumData);
 
-const renderer = new THREE.WebGLRenderer({ alpha: true, logarithmicDepthBuffer: true });
+const renderer = new THREE.WebGLRenderer({ 
+    alpha: true, 
+    logarithmicDepthBuffer: true
+});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 app.view.element.appendChild(renderer.domElement);
 
 // app.context.setDefaultReferenceFrame(app.context.localOriginEastUpSouth);
@@ -31,45 +35,45 @@ let mat = new THREE.MeshBasicMaterial( {color: 0xff0000} );
 
 export const posXSphere = new THREE.Mesh( geometry, mat );
 posXSphere.position.x = 200;
-scene.add( posXSphere );
+userLocation.add( posXSphere );
 
 mat = new THREE.MeshBasicMaterial( {color: 0xffaaaa} );
 
 export const negXSphere = new THREE.Mesh( geometry, mat );
 negXSphere.position.x = -200;
-scene.add( negXSphere );
+userLocation.add( negXSphere );
 
 mat = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
 
 export const posYSphere = new THREE.Mesh( geometry, mat );
 posYSphere.position.y = 200;
-scene.add( posYSphere );
+userLocation.add( posYSphere );
 
 mat = new THREE.MeshBasicMaterial( {color: 0xaaffaa} );
 
 export const negYSphere = new THREE.Mesh( geometry, mat );
 negYSphere.position.y = -200;
-scene.add( negYSphere );
+userLocation.add( negYSphere );
 
 mat = new THREE.MeshBasicMaterial( {color: 0x0000ff} );
 
 export const posZSphere = new THREE.Mesh( geometry, mat );
 posZSphere.position.z = 200;
-scene.add( posZSphere );
+userLocation.add( posZSphere );
 
 mat = new THREE.MeshBasicMaterial( {color: 0xaaaaff} );
 
 export const negZSphere = new THREE.Mesh( geometry, mat );
 negZSphere.position.z = -200;
-scene.add( negZSphere );
+userLocation.add( negZSphere );
 
             
 var axisHelper = new THREE.AxisHelper( 10 );
-scene.add( axisHelper );
+userLocation.add( axisHelper );
 axisHelper.position.z = 50;
 
 var axisHelper = new THREE.AxisHelper( 10 );
-scene.add( axisHelper );
+userLocation.add( axisHelper );
 axisHelper.position.y = -50;
 
 // var textShapes = THREE.FontUtils.generateShapes( "PosZ", options );
@@ -108,7 +112,6 @@ app.vuforia.init({
                         
             var axisHelper = new THREE.AxisHelper( 10 );
             stonesObject.add( axisHelper );
-            axisHelper.position.y = -50;
             
             console.log('Subscribes to stones trackable with id ' + trackables['stones'].id);
             
@@ -168,7 +171,7 @@ app.updateEvent.addEventListener(() => {
         userLocation.position.copy(userPose.position);
     }
 })
-
+    
 app.renderEvent.addEventListener(() => {
     const viewport = app.view.getViewport();
     renderer.setSize(viewport.width, viewport.height);
@@ -177,7 +180,7 @@ app.renderEvent.addEventListener(() => {
         camera.position.copy(subview.pose.position);
         camera.quaternion.copy(subview.pose.orientation);
         camera.projectionMatrix.fromArray(subview.projectionMatrix);
-        const {x,y,width,height} = subview.viewport;
+        let {x,y,width,height} = subview.viewport;
         renderer.setViewport(x,y,width,height);
         renderer.setScissor(x,y,width,height);
         renderer.setScissorTest(true);

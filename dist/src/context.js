@@ -8,7 +8,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
     var aurelia_dependency_injection_1, cesium_imports_1, common_1, session_1, reality_1, timer_1, utils_1;
-    var PoseStatus, scratchDate, scratchCartesian3, scratchQuaternion, scratchOriginCartesian3, ContextService;
+    var PoseStatus, scratchDate, scratchCartesian3, scratchQuaternion, scratchOriginCartesian3, negX90, ContextService;
     function _stringFromReferenceFrame(referenceFrame) {
         var rf = referenceFrame;
         return cesium_imports_1.defined(rf.id) ? rf.id : '' + rf;
@@ -53,6 +53,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
             scratchCartesian3 = new cesium_imports_1.Cartesian3(0, 0);
             scratchQuaternion = new cesium_imports_1.Quaternion(0, 0);
             scratchOriginCartesian3 = new cesium_imports_1.Cartesian3(0, 0);
+            negX90 = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_X, -cesium_imports_1.CesiumMath.PI_OVER_TWO);
             /**
              * Provides a means of querying the current state of reality.
              *
@@ -322,7 +323,8 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                         referenceFrame = cesium_imports_1.ReferenceFrame.FIXED;
                     }
                     if (!cesium_imports_1.defined(referenceFrame)) {
-                        referenceFrame = this._updateEntity(entityPose.r, state);
+                        this._updateEntity(entityPose.r, state);
+                        referenceFrame = this.entities.getById(entityPose.r);
                     }
                     var positionValue = (entityPose.p === 0 ? cesium_imports_1.Cartesian3.ZERO : entityPose.p);
                     var orientationValue = entityPose.o === 0 ? cesium_imports_1.Quaternion.IDENTITY : entityPose.o;
@@ -372,7 +374,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                             localENUOrientationProperty.setValue(enuOrientation);
                         }
                         else {
-                            localENUOrientationProperty.setValue(cesium_imports_1.Quaternion.IDENTITY);
+                            localENUOrientationProperty.setValue(negX90);
                         }
                         this.localOriginChangeEvent.raiseEvent(undefined);
                     }
