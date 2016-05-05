@@ -369,7 +369,8 @@ export class ContextService {
         }
 
         if (!defined(referenceFrame)) {
-            referenceFrame = this._updateEntity(<string>entityPose.r, state);
+            this._updateEntity(<string>entityPose.r, state);
+            referenceFrame = this.entities.getById(entityPose.r);
         }
 
         const positionValue = <Cartesian3>(entityPose.p === 0 ? Cartesian3.ZERO : entityPose.p);
