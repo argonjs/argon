@@ -2,7 +2,7 @@
   "name": "argon",
   "version": "0.3.1",
   "main": "dist/argon.umd.js",
-  "typings": "dist/src/argon.d.ts",
+  "typings": "dist/argon.umd.d.ts",
   "jspm": {
     "main": "dist/src/argon.js",
     "format": "register",
@@ -28,7 +28,7 @@
     "overrides": {
       "github:frankwallis/plugin-typescript@2.6.0": {
         "dependencies": {
-          "typescript": "npm:typescript@1.9.0-dev.20160226"
+          "typescript": "npm:typescript@1.9.0-dev.20160504"
         }
       },
       "npm:mocha@2.4.5": {
@@ -88,7 +88,7 @@
     "node-static": "^0.7.7",
     "tsconfig-glob": "^0.2.1",
     "typedoc": "^0.3.12",
-    "typescript": "^1.9.0-dev.20160303",
+    "typescript": "^1.9.0-dev.20160504",
     "typescript-formatter": "^2.1.0"
   },
   "scripts": {
