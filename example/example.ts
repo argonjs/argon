@@ -7,6 +7,12 @@ declare const THREE: any;
 
 export const app = Argon.init();
 
+app.reality.setDesired({
+    type:'hosted',
+    name: 'My Custom Reality',
+    url: Argon.resolveURL('custom_reality.html')
+})
+
 export const scene = new THREE.Scene();
 export const camera = new THREE.PerspectiveCamera();
 export const user = new THREE.Object3D();

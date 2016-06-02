@@ -13,7 +13,7 @@ System.register(['aurelia-dependency-injection', './common', './focus', './reali
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
     var aurelia_dependency_injection_1, common_1, focus_1, reality_1, session_1, utils_1;
-    var VuforiaInitResult, VuforiaServiceDelegateBase, VuforiaServiceDelegate, VuforiaRealitySetupHandler, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, VuforiaDataSet;
+    var VuforiaInitResult, VuforiaServiceDelegateBase, VuforiaServiceDelegate, LiveVideoRealityLoader, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, VuforiaDataSet;
     return {
         setters:[
             function (aurelia_dependency_injection_1_1) {
@@ -102,13 +102,14 @@ System.register(['aurelia-dependency-injection', './common', './focus', './reali
                 return VuforiaServiceDelegate;
             }(VuforiaServiceDelegateBase));
             exports_1("VuforiaServiceDelegate", VuforiaServiceDelegate);
-            VuforiaRealitySetupHandler = (function () {
-                function VuforiaRealitySetupHandler(sessionService, delegate) {
+            LiveVideoRealityLoader = (function () {
+                function LiveVideoRealityLoader(sessionService, delegate) {
                     this.sessionService = sessionService;
                     this.delegate = delegate;
-                    this.type = 'vuforia';
+                    this.type = 'live-video';
                 }
-                VuforiaRealitySetupHandler.prototype.setup = function (reality, port) {
+                LiveVideoRealityLoader.prototype.load = function (reality) {
+                    var realitySession = this.sessionService.addManagedSessionPort();
                     var remoteRealitySession = this.sessionService.createSessionPort();
                     var remove = this.delegate.stateUpdateEvent.addEventListener(function (frameState) {
                         remoteRealitySession.send('ar.reality.frameState', frameState);
@@ -116,14 +117,17 @@ System.register(['aurelia-dependency-injection', './common', './focus', './reali
                     remoteRealitySession.closeEvent.addEventListener(function () {
                         remove();
                     });
-                    remoteRealitySession.open(port, { role: common_1.Role.REALITY_VIEW });
+                    var messageChannel = this.sessionService.createSynchronousMessageChannel();
+                    realitySession.open(messageChannel.port1, this.sessionService.configuration);
+                    remoteRealitySession.open(messageChannel.port2, { role: common_1.Role.REALITY_VIEW });
+                    return realitySession;
                 };
-                VuforiaRealitySetupHandler = __decorate([
+                LiveVideoRealityLoader = __decorate([
                     aurelia_dependency_injection_1.inject(session_1.SessionService, VuforiaServiceDelegate)
-                ], VuforiaRealitySetupHandler);
-                return VuforiaRealitySetupHandler;
+                ], LiveVideoRealityLoader);
+                return LiveVideoRealityLoader;
             }());
-            exports_1("VuforiaRealitySetupHandler", VuforiaRealitySetupHandler);
+            exports_1("LiveVideoRealityLoader", LiveVideoRealityLoader);
             /**
              * Mediates requests to the Vuforia API. Handles the following requests:
              * // TODO
@@ -145,7 +149,7 @@ System.register(['aurelia-dependency-injection', './common', './focus', './reali
                     this._sessionCreatedDataSets = new WeakMap();
                     this._sessionActivatedDataSets = new WeakMap();
                     this._isInitialized = false;
-                    if (sessionService.isManager()) {
+                    if (sessionService.isManager) {
                         this._sessionSwitcherCommandQueue.errorEvent.addEventListener(function (err) {
                             _this.sessionService.errorEvent.raiseEvent(err);
                         });

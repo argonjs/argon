@@ -1,8 +1,8 @@
 import { RealityView, SerializedFrameState } from './common';
 import { FocusService } from './focus';
-import { RealityService, RealitySetupHandler } from './reality';
+import { RealityService, RealityLoader } from './reality';
 import { SessionService, SessionPort } from './session';
-import { Event, MessagePortLike } from './utils';
+import { Event } from './utils';
 /**
  * The set of options accepted by Vuforia for initialization.
  */
@@ -85,12 +85,12 @@ export declare class VuforiaServiceDelegate extends VuforiaServiceDelegateBase {
     dataSetFetch(id: string): Promise<void>;
     dataSetLoad(id: string): Promise<VuforiaTrackables>;
 }
-export declare class VuforiaRealitySetupHandler implements RealitySetupHandler {
+export declare class LiveVideoRealityLoader implements RealityLoader {
     private sessionService;
     private delegate;
     type: string;
     constructor(sessionService: SessionService, delegate: VuforiaServiceDelegate);
-    setup(reality: RealityView, port: MessagePortLike): void;
+    load(reality: RealityView): SessionPort;
 }
 /**
  * Mediates requests to the Vuforia API. Handles the following requests:

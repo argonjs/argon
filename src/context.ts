@@ -173,7 +173,7 @@ export class ContextService {
 
         this.entities.add(this.user);
 
-        if (this.sessionService.isManager()) {
+        if (this.sessionService.isManager) {
             this.realityService.frameEvent.addEventListener((state) => {
                 this._update({
                     reality: this.realityService.getCurrent(),
@@ -184,22 +184,22 @@ export class ContextService {
                     sendTime: JulianDate.now()
                 });
             });
+
+            this.sessionService.connectEvent.addEventListener((session) => {
+
+                this._subscribedEntities.set(session, new Set<string>());
+
+                session.on['ar.context.subscribe'] = ({id}) => {
+                    const subscriptions = this._subscribedEntities.get(session);
+                    subscriptions.add(id);
+                }
+
+            })
         } else {
             this.sessionService.manager.on['ar.context.update'] = (state: FrameState) => {
                 this._update(state);
             }
         }
-
-        this.sessionService.connectEvent.addEventListener((session) => {
-
-            this._subscribedEntities.set(session, new Set<string>());
-
-            session.on['ar.context.subscribe'] = ({id}) => {
-                const subscriptions = this._subscribedEntities.get(session);
-                subscriptions.add(id);
-            }
-
-        })
     }
 
     /**
@@ -336,7 +336,7 @@ export class ContextService {
         this._updateLocalOrigin(state);
 
         // if this session is the manager, we need to update our child sessions
-        if (this.sessionService.isManager()) {
+        if (this.sessionService.isManager) {
             this._entityPoseCache = {};
             for (const session of this.sessionService.managedSessions) {
                 if (session.info.role === Role.APPLICATION)

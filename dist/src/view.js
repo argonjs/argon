@@ -73,7 +73,7 @@ System.register(['aurelia-dependency-injection', './session', './context', './ut
                         sheet.insertRule("\n                #argon {\n                    position: fixed;\n                    transform: translateZ(0px);\n                    z-index: -9999;\n                    left: 0px;\n                    bottom: 0px;\n                    width: 100%;\n                    height: 100%;\n                    margin: 0;\n                    border: 0;\n                    padding: 0;\n                }\n            ", 0);
                         sheet.insertRule("\n                #argon > * {\n                    position: absolute;\n                    transform: translateZ(0px);\n                    left: 0px;\n                    bottom: 0px;\n                }\n            ", 1);
                     }
-                    if (this.sessionService.isManager()) {
+                    if (this.sessionService.isManager) {
                         this.sessionService.connectEvent.addEventListener(function (session) {
                             session.on['ar.viewport.desired'] = function (viewport) {
                                 _this.desiredViewportMap.set(session, viewport);

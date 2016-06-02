@@ -122,7 +122,7 @@ export class SessionPort {
         this.messagePort = messagePort;
         this._isOpened = true;
 
-        this.send(SessionPort.OPEN, options);
+        this.send(SessionPort.OPEN, options)
 
         this.messagePort.onmessage = (evt: MessageEvent) => {
             if (this._isClosed) return;
@@ -152,8 +152,12 @@ export class SessionPort {
                     })
                 }
             } else {
-                const error: ErrorMessage = { message: 'Unable to handle message ' + topic }
-                this.send(SessionPort.ERROR, error);
+                const errorMessage = 'Unable to handle message ' + topic;
+                if (expectsResponse) {
+                    this.send(topic + ':reject:' + id, { reason: errorMessage })
+                } else {
+                    this.send(SessionPort.ERROR, { message: errorMessage });
+                }
                 throw new Error('No handlers are available for topic ' + topic);
             }
         }
@@ -181,6 +185,7 @@ export class SessionPort {
      * otherwise, return false.
      */
     sendError(errorMessage: ErrorMessage): boolean {
+        console.log('Sending error to session "' + this.info.name + "' : " + JSON.stringify(errorMessage));
         return this.send(SessionPort.ERROR, errorMessage);
     }
 
@@ -218,11 +223,11 @@ export class SessionPort {
      */
     close() {
         if (this._isClosed) return;
+        this._isClosed = true;
+        this._isConnected = false;
         if (this._isOpened) {
             this.send(SessionPort.CLOSE);
         }
-        this._isClosed = true;
-        this._isConnected = false;
         if (this.messagePort && this.messagePort.close)
             this.messagePort.close();
         this.closeEvent.raiseEvent(null);
@@ -265,10 +270,9 @@ export class SessionService {
     public errorEvent = new Event<Error>();
 
     /**
-     * Manager-only. An event that is raised when a managed session is opened.
+     * An event that is raised when a managed session is opened.
      */
     public get connectEvent() {
-        this.ensureIsManager();
         return this._connectEvent;
     };
     private _connectEvent = new Event<SessionPort>();
@@ -361,21 +365,21 @@ export class SessionService {
     /**
      * Returns true if this session is the manager
      */
-    public isManager() {
+    get isManager() {
         return this.configuration.role === Role.MANAGER;
     }
 
     /**
      * Returns true if this session is an application
      */
-    public isApplication() {
+    get isApplication() {
         return this.configuration.role === Role.APPLICATION;
     }
 
     /**
      * Returns true if this session is a Reality view
      */
-    public isRealityView() {
+    get isRealityView() {
         return this.configuration.role === Role.REALITY_VIEW;
     }
 
@@ -393,6 +397,14 @@ export class SessionService {
     public ensureIsReality() {
         if (!this.isRealityView)
             throw new Error('An reality-only API was accessed in a non-reality session.')
+    }
+
+    /**
+     * Throws an error if this session is a reality
+     */
+    public ensureNotReality() {
+        if (this.isRealityView)
+            throw new Error('An non-reality API was accessed in a reality session.')
     }
 }
 

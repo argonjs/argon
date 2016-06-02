@@ -8,7 +8,7 @@ import { Event } from './utils';
  */
 export interface Subview {
     type: SubviewType;
-    projectionMatrix: number[];
+    projectionMatrix: ArrayLike<number>;
     pose: EntityPose;
     viewport: Viewport;
 }

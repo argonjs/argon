@@ -140,8 +140,13 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                             }
                         }
                         else {
-                            var error = { message: 'Unable to handle message ' + topic };
-                            _this.send(SessionPort.ERROR, error);
+                            var errorMessage = 'Unable to handle message ' + topic;
+                            if (expectsResponse) {
+                                _this.send(topic + ':reject:' + id, { reason: errorMessage });
+                            }
+                            else {
+                                _this.send(SessionPort.ERROR, { message: errorMessage });
+                            }
                             throw new Error('No handlers are available for topic ' + topic);
                         }
                     };
@@ -169,6 +174,7 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                  * otherwise, return false.
                  */
                 SessionPort.prototype.sendError = function (errorMessage) {
+                    console.log('Sending error to session "' + this.info.name + "' : " + JSON.stringify(errorMessage));
                     return this.send(SessionPort.ERROR, errorMessage);
                 };
                 /**
@@ -206,11 +212,11 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                 SessionPort.prototype.close = function () {
                     if (this._isClosed)
                         return;
+                    this._isClosed = true;
+                    this._isConnected = false;
                     if (this._isOpened) {
                         this.send(SessionPort.CLOSE);
                     }
-                    this._isClosed = true;
-                    this._isConnected = false;
                     if (this.messagePort && this.messagePort.close)
                         this.messagePort.close();
                     this.closeEvent.raiseEvent(null);
@@ -270,10 +276,9 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                 }
                 Object.defineProperty(SessionService.prototype, "connectEvent", {
                     /**
-                     * Manager-only. An event that is raised when a managed session is opened.
+                     * An event that is raised when a managed session is opened.
                      */
                     get: function () {
-                        this.ensureIsManager();
                         return this._connectEvent;
                     },
                     enumerable: true,
@@ -347,24 +352,36 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                 SessionService.prototype.createSynchronousMessageChannel = function () {
                     return this.messageChannelFactory.createSynchronous();
                 };
-                /**
-                 * Returns true if this session is the manager
-                 */
-                SessionService.prototype.isManager = function () {
-                    return this.configuration.role === common_1.Role.MANAGER;
-                };
-                /**
-                 * Returns true if this session is an application
-                 */
-                SessionService.prototype.isApplication = function () {
-                    return this.configuration.role === common_1.Role.APPLICATION;
-                };
-                /**
-                 * Returns true if this session is a Reality view
-                 */
-                SessionService.prototype.isRealityView = function () {
-                    return this.configuration.role === common_1.Role.REALITY_VIEW;
-                };
+                Object.defineProperty(SessionService.prototype, "isManager", {
+                    /**
+                     * Returns true if this session is the manager
+                     */
+                    get: function () {
+                        return this.configuration.role === common_1.Role.MANAGER;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(SessionService.prototype, "isApplication", {
+                    /**
+                     * Returns true if this session is an application
+                     */
+                    get: function () {
+                        return this.configuration.role === common_1.Role.APPLICATION;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(SessionService.prototype, "isRealityView", {
+                    /**
+                     * Returns true if this session is a Reality view
+                     */
+                    get: function () {
+                        return this.configuration.role === common_1.Role.REALITY_VIEW;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 /**
                  * Throws an error if this session is not a manager
                  */
@@ -378,6 +395,13 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                 SessionService.prototype.ensureIsReality = function () {
                     if (!this.isRealityView)
                         throw new Error('An reality-only API was accessed in a non-reality session.');
+                };
+                /**
+                 * Throws an error if this session is a reality
+                 */
+                SessionService.prototype.ensureNotReality = function () {
+                    if (this.isRealityView)
+                        throw new Error('An non-reality API was accessed in a reality session.');
                 };
                 SessionService = __decorate([
                     aurelia_dependency_injection_1.inject('config', ConnectService, SessionPortFactory, utils_1.MessageChannelFactory)

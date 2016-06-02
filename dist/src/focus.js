@@ -41,7 +41,7 @@ System.register(['aurelia-dependency-injection', './session', './utils'], functi
                     sessionService.manager.on['ar.focus.state'] = function (message) {
                         _this._setFocus(message.state);
                     };
-                    if (sessionService.isManager()) {
+                    if (sessionService.isManager) {
                         setTimeout(function () {
                             if (!_this._session)
                                 _this.setSession(_this.sessionService.manager);

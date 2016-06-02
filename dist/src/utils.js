@@ -342,22 +342,38 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
                  */
                 function SynchronousMessageChannel() {
                     var messageChannel = this;
+                    var pendingMessages1 = [];
+                    var onmessage1 = function (message) {
+                        pendingMessages1.push(message);
+                    };
                     messageChannel.port1 = {
-                        onmessage: undefined,
+                        get onmessage() { return onmessage1; },
+                        set onmessage(func) {
+                            onmessage1 = func;
+                            pendingMessages1.forEach(function (data) { return func(data); });
+                            pendingMessages1 = [];
+                        },
                         postMessage: function (data) {
-                            if (messageChannel.port2.onmessage)
-                                messageChannel.port2.onmessage({ data: data });
+                            messageChannel.port2.onmessage({ data: data });
                         },
                         close: function () {
                             messageChannel.port1.onmessage = null;
                             messageChannel.port2.onmessage = null;
                         }
                     };
+                    var pendingMessages2 = [];
+                    var onmessage2 = function (message) {
+                        pendingMessages2.push(message);
+                    };
                     messageChannel.port2 = {
-                        onmessage: undefined,
+                        get onmessage() { return onmessage2; },
+                        set onmessage(func) {
+                            onmessage2 = func;
+                            pendingMessages2.forEach(function (data) { return func(data); });
+                            pendingMessages2 = [];
+                        },
                         postMessage: function (data) {
-                            if (messageChannel.port1.onmessage)
-                                messageChannel.port1.onmessage({ data: data });
+                            messageChannel.port1.onmessage({ data: data });
                         },
                         close: function () {
                             messageChannel.port1.onmessage = null;

@@ -122,7 +122,7 @@ export declare class SessionService {
      */
     errorEvent: Event<Error>;
     /**
-     * Manager-only. An event that is raised when a managed session is opened.
+     * An event that is raised when a managed session is opened.
      */
     readonly connectEvent: Event<SessionPort>;
     private _connectEvent;
@@ -166,15 +166,15 @@ export declare class SessionService {
     /**
      * Returns true if this session is the manager
      */
-    isManager(): boolean;
+    readonly isManager: boolean;
     /**
      * Returns true if this session is an application
      */
-    isApplication(): boolean;
+    readonly isApplication: boolean;
     /**
      * Returns true if this session is a Reality view
      */
-    isRealityView(): boolean;
+    readonly isRealityView: boolean;
     /**
      * Throws an error if this session is not a manager
      */
@@ -183,6 +183,10 @@ export declare class SessionService {
      * Throws an error if this session is not a reality
      */
     ensureIsReality(): void;
+    /**
+     * Throws an error if this session is a reality
+     */
+    ensureNotReality(): void;
 }
 /**
  * Connect this session to itself as the manager.

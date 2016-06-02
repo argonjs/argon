@@ -80,7 +80,7 @@ describe('RealityService', () => {
             const realityService:Argon.RealityService = container.get(Argon.RealityService);
             const sessionService:Argon.SessionService = container.get(Argon.SessionService);
             
-            realityService.registerHandler(container.get(Argon.EmptyRealitySetupHandler));
+            realityService.registerLoader(container.get(Argon.EmptyRealityLoader));
             realityService.setDefault({type:'empty'})
             
             const removeListener = realityService.frameEvent.addEventListener((state) => {
@@ -101,12 +101,21 @@ describe('RealityService', () => {
 
         it('should support setting a custom reality', (done) => {
             
-            class CustomRealitySetupHandler implements Argon.RealitySetupHandler {
+            class CustomRealitySetupHandler implements Argon.RealityLoader {
                 public type = 'custom_type';
                 
-                public setup(reality : Argon.RealityView, port : Argon.MessagePortLike) {
+                public load(reality : Argon.RealityView) {
+                    const realitySession = sessionService.addManagedSessionPort();
                     const remoteRealitySession = sessionService.createSessionPort();
-                    remoteRealitySession.open(port, { role: Argon.Role.REALITY_VIEW });
+                    const messageChannel = sessionService.createMessageChannel();
+                    remoteRealitySession.open(messageChannel.port1, { role: Argon.Role.REALITY_VIEW });
+                    const connectedSession = new Promise((resolve, reject)=>{
+                        realitySession.connectEvent.addEventListener(()=>{
+                            resolve(realitySession);
+                        })
+                    })                    
+                    realitySession.open(messageChannel.port2, sessionService.configuration);
+                    return connectedSession;
                 }
             }
             
@@ -116,7 +125,7 @@ describe('RealityService', () => {
             const realityService:Argon.RealityService = container.get(Argon.RealityService);
             const sessionService:Argon.SessionService = container.get(Argon.SessionService);
             
-            realityService.registerHandler(container.get(CustomRealitySetupHandler));
+            realityService.registerLoader(container.get(CustomRealitySetupHandler));
 
             const removeListener = realityService.changeEvent.addEventListener(() => {
                 expect(realityService.getCurrent().type).to.equal('custom_type');
@@ -194,7 +203,31 @@ describe('SessionPort', () => {
         it('should open a messagechannel between two sessions', (done) => {
             const session = new Argon.SessionPort();
             const remoteSession = new Argon.SessionPort();
-            const messageChannel = new MessageChannel;
+            const messageChannel = new Argon.MessageChannelLike;
+            let connectCount = 0;
+            session.connectEvent.addEventListener(() => {
+                expect(session.info.role).to.equal(Argon.Role.MANAGER);
+                expect(session.info.userData.test).to.equal('def');
+                checkDone();
+            })
+            remoteSession.connectEvent.addEventListener(() => {
+                expect(remoteSession.info.role).to.equal(Argon.Role.APPLICATION);
+                expect(remoteSession.info.userData.test).to.equal('abc');
+                checkDone();
+            })
+            session.open(messageChannel.port1, { role: Argon.Role.APPLICATION, userData: { test: 'abc' } });
+            remoteSession.open(messageChannel.port2, { role: Argon.Role.MANAGER, userData: { test: 'def' } });
+
+            function checkDone() {
+                connectCount++;
+                if (connectCount == 2) done();
+            }
+        });
+        
+        it('should open a syncronous messagechannel between two sessions', (done) => {
+            const session = new Argon.SessionPort();
+            const remoteSession = new Argon.SessionPort();
+            const messageChannel = new Argon.SynchronousMessageChannel;
             let connectCount = 0;
             session.connectEvent.addEventListener(() => {
                 expect(session.info.role).to.equal(Argon.Role.MANAGER);
@@ -218,6 +251,7 @@ describe('SessionPort', () => {
 
 
     describe('#send', () => {
+        
         it('should send messages between two sessions', (done) => {
             const session = new Argon.SessionPort();
             const remoteSession = new Argon.SessionPort();
@@ -430,15 +464,15 @@ describe('VuforiaService', () => {
             const {vuforia} = createManagerWithVuforiaDelegate(Argon.VuforiaServiceDelegate);
             expect(vuforia).to.be.instanceof(Argon.VuforiaService);
         });
-        it('should add a vuforia reality handler to the reality service', () => {
+        it('should add a live-video reality handler to the reality service', () => {
             const {reality} = createManagerWithVuforiaDelegate(Argon.VuforiaServiceDelegate);
-            expect(reality.isSupported('vuforia')).to.be.true;
+            expect(reality.isSupported('live-video')).to.be.true;
         })
-        it('should load the vuforia reality when the vuforia reality is the default', (done) => {
+        it('should load the live-video reality when it is the default', (done) => {
             const {vuforia, reality} = createManagerWithVuforiaDelegate(Argon.VuforiaServiceDelegate);
-            reality.setDefault({type:'vuforia'})
+            reality.setDefault({type:'live-video'})
             reality.changeEvent.addEventListener(() => {
-                expect(reality.getCurrent().type).to.equal('vuforia');
+                expect(reality.getCurrent().type).to.equal('live-video');
                 done();
             })
         })

@@ -10,7 +10,7 @@ import {Event} from './utils'
  */
 export interface Subview {
     type: SubviewType,
-    projectionMatrix: number[],
+    projectionMatrix: ArrayLike<number>,
     pose: EntityPose,
     viewport: Viewport
 }
@@ -100,7 +100,7 @@ export class ViewService {
             `, 1);
         }
 
-        if (this.sessionService.isManager()) {
+        if (this.sessionService.isManager) {
             this.sessionService.connectEvent.addEventListener((session) => {
                 session.on['ar.viewport.desired'] = (viewport: Viewport) => {
                     this.desiredViewportMap.set(session, viewport);
@@ -120,7 +120,7 @@ export class ViewService {
             subviews[index] = {
                 type: subview.type,
                 pose: this.contextService.getEntityPose(viewEntity, referenceFrame),
-                projectionMatrix: subview.projectionMatrix,
+                projectionMatrix: <ArrayLike<number>>subview.projectionMatrix,
                 viewport: subview.viewport || this._current.viewport
             }
         })

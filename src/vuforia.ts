@@ -3,7 +3,7 @@ import {defined, createGuid, JulianDate} from './cesium/cesium-imports'
 import {Role, RealityView, SerializedFrameState, SerializedEntityPoseMap} from './common'
 import {ContextService} from './context'
 import {FocusService} from './focus'
-import {RealityService, RealitySetupHandler} from './reality'
+import {RealityService, RealityLoader} from './reality'
 import {SessionService, SessionPort} from './session'
 import {Event, MessagePortLike, CommandQueue, resolveURL} from './utils'
 
@@ -99,12 +99,13 @@ export class VuforiaServiceDelegate extends VuforiaServiceDelegateBase {
 }
 
 @inject(SessionService, VuforiaServiceDelegate)
-export class VuforiaRealitySetupHandler implements RealitySetupHandler {
-    public type = 'vuforia';
+export class LiveVideoRealityLoader implements RealityLoader {
+    public type = 'live-video';
 
     constructor(private sessionService: SessionService, private delegate: VuforiaServiceDelegate) { }
 
-    public setup(reality: RealityView, port: MessagePortLike): void {
+    public load(reality: RealityView) {
+        const realitySession = this.sessionService.addManagedSessionPort();
         const remoteRealitySession = this.sessionService.createSessionPort();
 
         const remove = this.delegate.stateUpdateEvent.addEventListener((frameState) => {
@@ -115,7 +116,10 @@ export class VuforiaRealitySetupHandler implements RealitySetupHandler {
             remove();
         });
 
-        remoteRealitySession.open(port, { role: Role.REALITY_VIEW });
+        const messageChannel = this.sessionService.createSynchronousMessageChannel();
+        realitySession.open(messageChannel.port1, this.sessionService.configuration);
+        remoteRealitySession.open(messageChannel.port2, { role: Role.REALITY_VIEW });
+        return realitySession;
     }
 }
 
@@ -146,7 +150,7 @@ export class VuforiaService {
         private realityService: RealityService,
         private delegate: VuforiaServiceDelegate) {
 
-        if (sessionService.isManager()) {
+        if (sessionService.isManager) {
 
             this._sessionSwitcherCommandQueue.errorEvent.addEventListener((err) => {
                 this.sessionService.errorEvent.raiseEvent(err);

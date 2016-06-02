@@ -1,15 +1,16 @@
+import { ReferenceFrame } from './cesium/cesium-imports';
 import { TimerService } from './timer';
 import { SerializedFrameState, RealityView } from './common';
 import { FocusService } from './focus';
 import { SessionPort, SessionService } from './session';
 import { DeviceService } from './device';
-import { MessagePortLike, Event } from './utils';
+import { Event } from './utils';
 /**
  * Abstract class for a reality setup handler
  */
-export declare abstract class RealitySetupHandler {
+export declare abstract class RealityLoader {
     abstract type: string;
-    abstract setup(reality: RealityView, port: MessagePortLike): void;
+    abstract load(reality: RealityView): Promise<SessionPort> | SessionPort;
 }
 /**
 * A service which manages the reality view
@@ -42,16 +43,25 @@ export declare class RealityService {
      * Manager-only. A map from a desired reality to the session which requested it
      */
     desiredRealityMapInverse: WeakMap<RealityView, SessionPort>;
+    /**
+     * Manager-only. An event that is raised when a session changes it's desired reality.
+     */
+    sessionDesiredRealityChangeEvent: Event<{
+        session: SessionPort;
+        previous: RealityView;
+        current: RealityView;
+    }>;
     private _realitySession;
+    private _realitySessionPromise;
     private _default;
     private _current;
     private _desired;
-    private _handlers;
+    private _loaders;
     constructor(sessionService: SessionService, focusService: FocusService);
     /**
-     * Manager-only. Register a reality setup handler
+     * Manager-only. Register a reality loader
      */
-    registerHandler(handler: RealitySetupHandler): void;
+    registerLoader(handler: RealityLoader): void;
     /**
      * Get the current reality view
      */
@@ -65,13 +75,19 @@ export declare class RealityService {
     /**
      * Set the desired reality.
      */
-    setDesired(reality: {
-        type: string;
-    }): void;
+    setDesired(reality: RealityView): void;
     /**
      * Get the desired reality
      */
     getDesired(): RealityView;
+    /**
+     * Set the optional reference frames for this app
+     */
+    setOptionalReferenceFrames(referenceFrames: (ReferenceFrame | string)[]): void;
+    /**
+     * Set the optional reference frames for this app
+     */
+    setRequiredReferenceFrames(referenceFrames: (ReferenceFrame | string)[]): void;
     /**
      * Set the default reality. Manager-only.
      */
@@ -85,15 +101,15 @@ export declare class RealityService {
     */
     onSelectReality(): RealityView;
     private _setNextReality(reality);
-    private _getHandler(type);
+    private _getLoader(type);
     private _setCurrent(reality);
-    private _executeRealitySetupHandler(reality, port);
+    private _executeRealityLoader(reality);
 }
-export declare class EmptyRealitySetupHandler implements RealitySetupHandler {
+export declare class EmptyRealityLoader implements RealityLoader {
     private sessionService;
     private deviceService;
     private timer;
     type: string;
     constructor(sessionService: SessionService, deviceService: DeviceService, timer: TimerService);
-    setup(reality: RealityView, port: MessagePortLike): void;
+    load(reality: RealityView): SessionPort;
 }

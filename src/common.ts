@@ -1,3 +1,4 @@
+import {Matrix4} from './cesium/cesium-imports'
 
 /**
  * Describes the session configuration
@@ -10,7 +11,12 @@ export interface Configuration {
     appProvidesCustomView?: boolean;
     // reality view options
     realityViewSupportsControlPort?: boolean;
-    realityViewSupportsCustomView?: boolean;
+    realityViewSupportsCustomViewport?: boolean;
+    realityViewSupportsCustomSubviews?: boolean;
+    realityViewReferenceFrames?: (number | string)[];
+    // manager options
+    managerPublicKey?: string | Promise<string>;
+    managerPrivateKey?: string | Promise<string>;
 }
 
 /*
@@ -40,7 +46,7 @@ export enum Role {
 */
 export interface RealityView {
     type: string;
-    id?: string;
+    name: string;
     [option: string]: any
 }
 
@@ -101,7 +107,7 @@ export interface SerializedEntityPoseMap {
  */
 export interface SerializedSubview {
     type: SubviewType,
-    projectionMatrix: number[],
+    projectionMatrix: ArrayLike<number> | Matrix4,
     // TODO: use viewVolume instead of projectionMatrix as described here // http://www.codeproject.com/Articles/42848/A-New-Perspective-on-Viewing
     pose?: SerializedEntityPose, // if undefined, the primary pose should be assumed
     viewport?: Viewport // if undefined, the primary viewport should be assumed

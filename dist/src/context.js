@@ -136,7 +136,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     this._updatingEntities = new Set();
                     this._knownEntities = new Set();
                     this.entities.add(this.user);
-                    if (this.sessionService.isManager()) {
+                    if (this.sessionService.isManager) {
                         this.realityService.frameEvent.addEventListener(function (state) {
                             _this._update({
                                 reality: _this.realityService.getCurrent(),
@@ -147,20 +147,20 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                                 sendTime: cesium_imports_1.JulianDate.now()
                             });
                         });
+                        this.sessionService.connectEvent.addEventListener(function (session) {
+                            _this._subscribedEntities.set(session, new Set());
+                            session.on['ar.context.subscribe'] = function (_a) {
+                                var id = _a.id;
+                                var subscriptions = _this._subscribedEntities.get(session);
+                                subscriptions.add(id);
+                            };
+                        });
                     }
                     else {
                         this.sessionService.manager.on['ar.context.update'] = function (state) {
                             _this._update(state);
                         };
                     }
-                    this.sessionService.connectEvent.addEventListener(function (session) {
-                        _this._subscribedEntities.set(session, new Set());
-                        session.on['ar.context.subscribe'] = function (_a) {
-                            var id = _a.id;
-                            var subscriptions = _this._subscribedEntities.get(session);
-                            subscriptions.add(id);
-                        };
-                    });
                 }
                 Object.defineProperty(ContextService.prototype, "time", {
                     /**
@@ -289,7 +289,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     // update our local origin
                     this._updateLocalOrigin(state);
                     // if this session is the manager, we need to update our child sessions
-                    if (this.sessionService.isManager()) {
+                    if (this.sessionService.isManager) {
                         this._entityPoseCache = {};
                         for (var _i = 0, _a = this.sessionService.managedSessions; _i < _a.length; _i++) {
                             var session = _a[_i];

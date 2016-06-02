@@ -15,11 +15,11 @@ import {Configuration, Role} from './common'
 import {ContextService} from './context'
 import {DeviceService} from './device'
 import {FocusService} from './focus'
-import {RealityService, RealitySetupHandler, EmptyRealitySetupHandler} from './reality'
+import {RealityService, RealityLoader, EmptyRealityLoader} from './reality'
 import {TimerService} from './timer'
 import {Event} from './utils'
 import {ViewService} from './view'
-import {VuforiaService, VuforiaRealitySetupHandler} from './vuforia'
+import {VuforiaService, LiveVideoRealityLoader} from './vuforia'
 
 export {DI, Cesium}
 export * from './common'
@@ -44,7 +44,6 @@ export class ArgonSystem {
         if (!ArgonSystem.instance) ArgonSystem.instance = this;
 
         container.registerInstance('config', config);
-        container.registerInstance(Role, config.role);
         container.registerInstance(ArgonSystem, this);
 
         if (config.role === Role.MANAGER) {
@@ -75,11 +74,11 @@ export class ArgonSystem {
         }
 
         if (config.role === Role.MANAGER) {
-            this.reality.registerHandler(container.get(EmptyRealitySetupHandler));
-            this.reality.registerHandler(container.get(VuforiaRealitySetupHandler));
+            this.reality.registerLoader(container.get(EmptyRealityLoader));
+            this.reality.registerLoader(container.get(LiveVideoRealityLoader));
 
             if (typeof document !== 'undefined') {
-                this.reality.setDefault({ type: 'empty' })
+                this.reality.setDefault({ type: 'empty', name: 'Empty Reality' })
             }
         }
 

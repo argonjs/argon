@@ -415,11 +415,19 @@ export class SynchronousMessageChannel {
     constructor() {
         const messageChannel = this;
 
+        let pendingMessages1 = []
+        let onmessage1 = function(message) {
+            pendingMessages1.push(message);
+        }
         messageChannel.port1 = {
-            onmessage: undefined,
+            get onmessage() { return onmessage1 },
+            set onmessage(func) {
+                onmessage1 = func;
+                pendingMessages1.forEach((data) => func(data))
+                pendingMessages1 = [];
+            },
             postMessage(data: any) {
-                if (messageChannel.port2.onmessage)
-                    messageChannel.port2.onmessage({ data });
+                messageChannel.port2.onmessage({ data });
             },
             close() {
                 messageChannel.port1.onmessage = null;
@@ -427,11 +435,19 @@ export class SynchronousMessageChannel {
             }
         }
 
+        let pendingMessages2 = []
+        let onmessage2 = function(message) {
+            pendingMessages2.push(message);
+        }
         messageChannel.port2 = <MessagePortLike>{
-            onmessage: undefined,
+            get onmessage() { return onmessage2 },
+            set onmessage(func) {
+                onmessage2 = func;
+                pendingMessages2.forEach((data) => func(data))
+                pendingMessages2 = [];
+            },
             postMessage(data: any) {
-                if (messageChannel.port1.onmessage)
-                    messageChannel.port1.onmessage({ data });
+                messageChannel.port1.onmessage({ data });
             },
             close() {
                 messageChannel.port1.onmessage = null;

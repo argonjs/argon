@@ -40,7 +40,7 @@ export class FocusService {
             this._setFocus(message.state);
         }
 
-        if (sessionService.isManager()) {
+        if (sessionService.isManager) {
             setTimeout(() => {
                 if (!this._session)
                     this.setSession(this.sessionService.manager);

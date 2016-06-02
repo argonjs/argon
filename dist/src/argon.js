@@ -100,7 +100,6 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
                     if (!ArgonSystem.instance)
                         ArgonSystem.instance = this;
                     container.registerInstance('config', config);
-                    container.registerInstance(common_1.Role, config.role);
                     container.registerInstance(ArgonSystem, this);
                     if (config.role === common_1.Role.MANAGER) {
                         container.registerSingleton(session_1.ConnectService, session_1.LoopbackConnectService);
@@ -118,10 +117,10 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
                         container.registerSingleton(session_1.ConnectService, session_1.LoopbackConnectService);
                     }
                     if (config.role === common_1.Role.MANAGER) {
-                        this.reality.registerHandler(container.get(reality_1.EmptyRealitySetupHandler));
-                        this.reality.registerHandler(container.get(vuforia_1.VuforiaRealitySetupHandler));
+                        this.reality.registerLoader(container.get(reality_1.EmptyRealityLoader));
+                        this.reality.registerLoader(container.get(vuforia_1.LiveVideoRealityLoader));
                         if (typeof document !== 'undefined') {
-                            this.reality.setDefault({ type: 'empty' });
+                            this.reality.setDefault({ type: 'empty', name: 'Empty Reality' });
                         }
                     }
                     // ensure the entire object graph is instantiated before connecting to the manager. 

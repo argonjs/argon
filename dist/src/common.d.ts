@@ -1,3 +1,4 @@
+import { Matrix4 } from './cesium/cesium-imports';
 /**
  * Describes the session configuration
  */
@@ -7,7 +8,11 @@ export interface Configuration {
     userData?: any;
     appProvidesCustomView?: boolean;
     realityViewSupportsControlPort?: boolean;
-    realityViewSupportsCustomView?: boolean;
+    realityViewSupportsCustomViewport?: boolean;
+    realityViewSupportsCustomSubviews?: boolean;
+    realityViewReferenceFrames?: (number | string)[];
+    managerPublicKey?: string | Promise<string>;
+    managerPrivateKey?: string | Promise<string>;
 }
 export declare enum Role {
     APPLICATION,
@@ -19,7 +24,7 @@ export declare enum Role {
 */
 export interface RealityView {
     type: string;
-    id?: string;
+    name: string;
     [option: string]: any;
 }
 /**
@@ -69,7 +74,7 @@ export interface SerializedEntityPoseMap {
  */
 export interface SerializedSubview {
     type: SubviewType;
-    projectionMatrix: number[];
+    projectionMatrix: ArrayLike<number> | Matrix4;
     pose?: SerializedEntityPose;
     viewport?: Viewport;
 }
