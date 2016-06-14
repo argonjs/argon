@@ -1,17 +1,18 @@
 {
   "name": "argon",
   "main": "dist/src/argon.d.ts",
-  "ambientDependencies": {
-    "cesium": "file:custom_typings/cesium.d.ts",
-    "es6-collections": "github:DefinitelyTyped/DefinitelyTyped/es6-collections/es6-collections.d.ts#923c5431d9447db9d5cf41adc5914e3c94c1ff10",
-    "es6-promise": "github:DefinitelyTyped/DefinitelyTyped/es6-promise/es6-promise.d.ts#923c5431d9447db9d5cf41adc5914e3c94c1ff10"
-  },
   "devDependencies": {
     "argon": "file:dist/src/argon.d.ts"
   },
-  "ambientDevDependencies": {
+  "globalDevDependencies": {
     "chai": "github:DefinitelyTyped/DefinitelyTyped/chai/chai.d.ts#1914a00b3c740348dae407ee0d2be89b0b58ad7f",
     "mocha": "github:DefinitelyTyped/DefinitelyTyped/mocha/mocha.d.ts#d6dd320291705694ba8e1a79497a908e9f5e6617",
     "systemjs": "github:DefinitelyTyped/DefinitelyTyped/systemjs/systemjs.d.ts#83af898254689400de8fb6495c34119ae57ec3fe"
+  },
+  "globalDependencies": {  
+    "cesium": "file:custom_typings/cesium.d.ts",
+    "mobile-detect": "registry:dt/mobile-detect#1.2.0+20160316155526",
+    "es6-collections": "github:DefinitelyTyped/DefinitelyTyped/es6-collections/es6-collections.d.ts#923c5431d9447db9d5cf41adc5914e3c94c1ff10",
+    "es6-promise": "github:DefinitelyTyped/DefinitelyTyped/es6-promise/es6-promise.d.ts#923c5431d9447db9d5cf41adc5914e3c94c1ff10"
   }
 }

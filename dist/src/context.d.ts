@@ -1,4 +1,4 @@
-import { Entity, EntityCollection, Cartesian3, Quaternion, JulianDate, ReferenceFrame } from './cesium/cesium-imports';
+import { Entity, EntityCollection, CompositeEntityCollection, Cartesian3, Quaternion, JulianDate, ReferenceFrame } from './cesium/cesium-imports';
 import { RealityView, SerializedFrameState, SerializedEntityPoseMap } from './common';
 import { SessionService } from './session';
 import { RealityService } from './reality';
@@ -65,9 +65,18 @@ export declare class ContextService {
      */
     renderEvent: Event<void>;
     /**
+     * The set of entities representing well-known reference frames.
+     * These are assumed to be readily available to applications.
+     */
+    wellKnownReferenceFrames: EntityCollection;
+    /**
+     * The set of subscribed entities.
+     */
+    subscribedEntities: EntityCollection;
+    /**
      * The set of entities that this session is aware of.
      */
-    entities: EntityCollection;
+    entities: CompositeEntityCollection;
     /**
      * An event that fires when the local origin changes.
      */

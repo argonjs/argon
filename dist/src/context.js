@@ -89,9 +89,18 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                      */
                     this.renderEvent = new utils_1.Event();
                     /**
+                     * The set of entities representing well-known reference frames.
+                     * These are assumed to be readily available to applications.
+                     */
+                    this.wellKnownReferenceFrames = new cesium_imports_1.EntityCollection();
+                    /**
+                     * The set of subscribed entities.
+                     */
+                    this.subscribedEntities = new cesium_imports_1.EntityCollection();
+                    /**
                      * The set of entities that this session is aware of.
                      */
-                    this.entities = new cesium_imports_1.EntityCollection();
+                    this.entities = new cesium_imports_1.CompositeEntityCollection();
                     /**
                      * An event that fires when the local origin changes.
                      */
@@ -135,8 +144,10 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     this._subscribedEntities = new WeakMap();
                     this._updatingEntities = new Set();
                     this._knownEntities = new Set();
-                    this.entities.add(this.user);
-                    if (this.sessionService.isManager) {
+                    this.entities.addCollection(this.wellKnownReferenceFrames);
+                    this.entities.addCollection(this.subscribedEntities);
+                    this.subscribedEntities.add(this.user);
+                    if (this.sessionService.isManager || this.sessionService.isRealityView) {
                         this.realityService.frameEvent.addEventListener(function (state) {
                             _this._update({
                                 reality: _this.realityService.getCurrent(),
@@ -209,7 +220,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                  */
                 ContextService.prototype.subscribeToEntityById = function (id) {
                     this.sessionService.manager.send('ar.context.subscribe', { id: id });
-                    return this.entities.getOrCreateEntity(id);
+                    return this.subscribedEntities.getOrCreateEntity(id);
                 };
                 /**
                  * Gets the current pose of an entity, relative to a given reference frame.
@@ -223,10 +234,8 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                 ContextService.prototype.getEntityPose = function (entity, referenceFrame) {
                     if (referenceFrame === void 0) { referenceFrame = this._defaultReferenceFrame; }
                     var time = this._time;
-                    var key = entity.id + _stringFromReferenceFrame(referenceFrame);
+                    var key = entity.id + '@' + _stringFromReferenceFrame(referenceFrame);
                     var entityPose = this._entityPoseMap.get(key);
-                    if (entityPose && cesium_imports_1.JulianDate.equals(entityPose.time, time))
-                        return entityPose;
                     if (!cesium_imports_1.defined(entityPose)) {
                         entityPose = {
                             position: new cesium_imports_1.Cartesian3,
@@ -280,7 +289,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     // assume the manager no longer knows about it
                     this._updatingEntities.forEach(function (id) {
                         if (!_this._knownEntities.has(id)) {
-                            var entity = _this.entities.getById(id);
+                            var entity = _this.subscribedEntities.getById(id);
                             entity.position = undefined;
                             entity.orientation = undefined;
                             _this._updatingEntities.delete(id);
@@ -307,7 +316,9 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                 ContextService.prototype._updateEntity = function (id, state) {
                     var entityPose = state.entities[id];
                     if (!entityPose) {
-                        this.entities.getOrCreateEntity(id);
+                        if (!this.wellKnownReferenceFrames.getById(id)) {
+                            this.subscribedEntities.getOrCreateEntity(id);
+                        }
                         return;
                     }
                     var referenceFrame;
@@ -328,14 +339,11 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     }
                     var positionValue = (entityPose.p === 0 ? cesium_imports_1.Cartesian3.ZERO : entityPose.p);
                     var orientationValue = entityPose.o === 0 ? cesium_imports_1.Quaternion.IDENTITY : entityPose.o;
-                    var entity = this.entities.getOrCreateEntity(id);
+                    var entity = this.subscribedEntities.getOrCreateEntity(id);
                     var entityPosition = entity.position;
                     var entityOrientation = entity.orientation;
                     if (!cesium_imports_1.defined(entityPosition) || entityPosition.referenceFrame !== referenceFrame) {
-                        entityPosition = new cesium_imports_1.SampledPositionProperty(referenceFrame);
-                        entityPosition.forwardExtrapolationType = cesium_imports_1.ExtrapolationType.HOLD;
-                        entityPosition.forwardExtrapolationDuration = 5 / 60;
-                        entityPosition['maxNumSamples'] = 10; // using our extension to limit memory consumption
+                        entityPosition = new cesium_imports_1.ConstantPositionProperty(positionValue, referenceFrame);
                         entity.position = entityPosition;
                     }
                     if (entityPosition instanceof cesium_imports_1.ConstantPositionProperty) {
@@ -374,7 +382,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                             localENUOrientationProperty.setValue(enuOrientation);
                         }
                         else {
-                            localENUOrientationProperty.setValue(negX90);
+                            localENUOrientationProperty.setValue(cesium_imports_1.Quaternion.IDENTITY);
                         }
                         this.localOriginChangeEvent.raiseEvent(undefined);
                     }
@@ -400,7 +408,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                 };
                 ContextService.prototype._addEntityAndAncestorsToPoseMap = function (poseMap, id, time) {
                     if (!cesium_imports_1.defined(this._entityPoseCache[id])) {
-                        var entity = this.entities.getById(id);
+                        var entity = this.subscribedEntities.getById(id);
                         if (!entity)
                             return;
                         this._entityPoseCache[id] = utils_1.getSerializedEntityPose(entity, time);

@@ -81,7 +81,7 @@ describe('RealityService', () => {
             const sessionService:Argon.SessionService = container.get(Argon.SessionService);
             
             realityService.registerLoader(container.get(Argon.EmptyRealityLoader));
-            realityService.setDefault({type:'empty'})
+            realityService.setDefault({type:'empty', name:'My Custom Reality'})
             
             const removeListener = realityService.frameEvent.addEventListener((state) => {
                 expect(realityService.getCurrent().type === 'empty')
@@ -134,7 +134,7 @@ describe('RealityService', () => {
             });
             
             sessionService.connect();
-            realityService.setDesired({type: 'custom_type'});
+            realityService.setDesired({type: 'custom_type', name:'My Custom Reality'});
         });
 
         it('should raise an error for unsupported realities', (done) => {
@@ -150,7 +150,7 @@ describe('RealityService', () => {
             })
             
             sessionService.connect();
-            realityService.setDesired({ type: 'unsupported' });
+            realityService.setDesired({ type: 'unsupported', name:'My Custom Reality'});
         });
 
     });
@@ -470,7 +470,7 @@ describe('VuforiaService', () => {
         })
         it('should load the live-video reality when it is the default', (done) => {
             const {vuforia, reality} = createManagerWithVuforiaDelegate(Argon.VuforiaServiceDelegate);
-            reality.setDefault({type:'live-video'})
+            reality.setDefault({type:'live-video', name:'My Custom Reality'})
             reality.changeEvent.addEventListener(() => {
                 expect(reality.getCurrent().type).to.equal('live-video');
                 done();

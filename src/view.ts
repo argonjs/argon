@@ -10,7 +10,7 @@ import {Event} from './utils'
  */
 export interface Subview {
     type: SubviewType,
-    projectionMatrix: ArrayLike<number>,
+    projectionMatrix: Array<number>,
     pose: EntityPose,
     viewport: Viewport
 }
@@ -120,7 +120,7 @@ export class ViewService {
             subviews[index] = {
                 type: subview.type,
                 pose: this.contextService.getEntityPose(viewEntity, referenceFrame),
-                projectionMatrix: <ArrayLike<number>>subview.projectionMatrix,
+                projectionMatrix: <Array<number>>subview.projectionMatrix,
                 viewport: subview.viewport || this._current.viewport
             }
         })
@@ -161,6 +161,22 @@ export class ViewService {
      */
     public isOwner() {
 
+    }
+
+    /**
+     * Returns a suggested viewport
+     */
+    public getSuggestedViewport() {
+        if (window && document && document.documentElement) {
+            return {
+                x: 0,
+                y: 0,
+                width: document.documentElement.clientWidth,
+                height: document.documentElement.clientHeight
+            }
+        } else {
+            return undefined;
+        }
     }
 
     private _setViewParameters(view: SerializedViewParameters) {

@@ -1,7 +1,7 @@
-System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/cesium-imports', './session', './common', './context', './device', './focus', './reality', './timer', './view', './vuforia', './utils'], function(exports_1, context_1) {
+System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/cesium-imports', './session', './common', './context', './device', './focus', './reality', './timer', './view', './vuforia', './realities/empty', './realities/live_video', './utils'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var DI, Cesium, session_1, common_1, context_2, device_1, focus_1, reality_1, timer_1, view_1, vuforia_1;
+    var DI, Cesium, session_1, common_1, context_2, device_1, focus_1, reality_1, timer_1, view_1, vuforia_1, empty_1, live_video_1;
     var ArgonSystem;
     function init(options) {
         if (options === void 0) { options = {}; }
@@ -21,7 +21,10 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
     exports_1("init", init);
     function initReality(options) {
         if (options === void 0) { options = {}; }
-        var config = Object.assign({ role: common_1.Role.REALITY_VIEW, realityViewSupportsControlPort: true }, options.config);
+        var config = Object.assign({
+            role: common_1.Role.REALITY_VIEW,
+            'reality.supportsControlPort': true
+        }, options.config);
         return new ArgonSystem(config, options.container);
     }
     exports_1("initReality", initReality);
@@ -30,7 +33,9 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
         'init': true,
         'initReality': true,
         'DI': true,
-        'Cesium': true
+        'Cesium': true,
+        'EmptyRealityLoader': true,
+        'LiveVideoRealityLoader': true
     };
     function exportStar_1(m) {
         var exports = {};
@@ -84,12 +89,20 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
                 vuforia_1 = vuforia_1_1;
                 exportStar_1(vuforia_1_1);
             },
+            function (empty_1_1) {
+                empty_1 = empty_1_1;
+            },
+            function (live_video_1_1) {
+                live_video_1 = live_video_1_1;
+            },
             function (utils_1_1) {
                 exportStar_1(utils_1_1);
             }],
         execute: function() {
             exports_1("DI", DI);
             exports_1("Cesium", Cesium);
+            exports_1("EmptyRealityLoader", empty_1.EmptyRealityLoader);
+            exports_1("LiveVideoRealityLoader", live_video_1.LiveVideoRealityLoader);
             /**
              * A composition root which instantiates the object graph based on a provided configuration
              */
@@ -110,15 +123,9 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
                     else if (session_1.DebugConnectService.isAvailable()) {
                         container.registerSingleton(session_1.ConnectService, session_1.DebugConnectService);
                     }
-                    else if (session_1.DebugConnectService.isAvailable()) {
-                        container.registerSingleton(session_1.ConnectService, session_1.DOMConnectService);
-                    }
-                    else {
-                        container.registerSingleton(session_1.ConnectService, session_1.LoopbackConnectService);
-                    }
                     if (config.role === common_1.Role.MANAGER) {
-                        this.reality.registerLoader(container.get(reality_1.EmptyRealityLoader));
-                        this.reality.registerLoader(container.get(vuforia_1.LiveVideoRealityLoader));
+                        this.reality.registerLoader(container.get(empty_1.EmptyRealityLoader));
+                        this.reality.registerLoader(container.get(live_video_1.LiveVideoRealityLoader));
                         if (typeof document !== 'undefined') {
                             this.reality.setDefault({ type: 'empty', name: 'Empty Reality' });
                         }

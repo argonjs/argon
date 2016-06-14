@@ -25,10 +25,8 @@ export interface MessageHandlerMap {
  * Describes an error message. 
  */
 export interface ErrorMessage {
-    /**
-     * A string which describes the error message.
-     */
     message: string
+    stack?: string
 }
 
 /**
@@ -43,9 +41,7 @@ export class SessionPort {
      */
     public get connectEvent() {
         if (this._isConnected)
-            console.warn(`Probable developer error. 
-                The connectEvent only fires once and the 
-                session is already connected.`)
+            throw new Error('The connectEvent only fires once and the session is already connected.')
         return this._connectEvent;
     };
     private _connectEvent = new Event<void>();
@@ -86,10 +82,11 @@ export class SessionPort {
     constructor() {
 
         this.on[SessionPort.OPEN] = (info: Configuration) => {
-            if (!info) throw new Error('Session did not provide configuration info');
+            if (!info) throw new Error('Session did not provide a configuration');
+            if (this._isConnected) throw new Error('Session has already connected!');
             this.info = info;
-            this.connectEvent.raiseEvent(null);
             this._isConnected = true;
+            this._connectEvent.raiseEvent(null);
         }
 
         this.on[SessionPort.CLOSE] = (message) => {
@@ -97,7 +94,9 @@ export class SessionPort {
         }
 
         this.on[SessionPort.ERROR] = (error: ErrorMessage) => {
-            this.errorEvent.raiseEvent(new Error(error.message));
+            const e = new Error("Session Error: " + error.message);
+            if (error.stack) e['stack'] = error.stack;
+            this.errorEvent.raiseEvent(e);
         }
 
         this.errorEvent.addEventListener((error) => {
@@ -106,23 +105,17 @@ export class SessionPort {
 
     }
 
-    public isConnected() {
-        return this._isConnected;
-    }
-
     /**
      * Establish a connection to another session via the provided MessagePort.
      * @param messagePort the message port to post and receive messages.
      * @param options the configuration which describes this system.
      */
     open(messagePort: MessagePortLike, options: Configuration) {
-        if (this._isOpened) throw new Error('Session.open: Session can only be opened once');
-        if (this._isClosed) throw new Error('Session.open: Session has already been closed');
-        if (!options) throw new Error('Session.open: Session options must be provided');
+        if (this._isOpened) throw new Error('Session can only be opened once');
+        if (this._isClosed) throw new Error('Session has already been closed');
+        if (!options) throw new Error('Session options must be provided');
         this.messagePort = messagePort;
         this._isOpened = true;
-
-        this.send(SessionPort.OPEN, options)
 
         this.messagePort.onmessage = (evt: MessageEvent) => {
             if (this._isClosed) return;
@@ -133,8 +126,13 @@ export class SessionPort {
             const handler = this.on[topic];
 
             if (handler && !expectsResponse) {
-                const response = handler(message, evt);
-                if (response) console.warn("Handler for " + topic + " returned an unexpected response");
+                try {
+                    const response = handler(message, evt);
+                    if (response) console.warn("Handler for " + topic + " returned an unexpected response");
+                } catch (e) {
+                    this.sendError(e);
+                    this.errorEvent.raiseEvent(e);
+                }
             } else if (handler) {
                 const response = handler(message, evt);
                 if (typeof response === 'undefined') {
@@ -156,11 +154,13 @@ export class SessionPort {
                 if (expectsResponse) {
                     this.send(topic + ':reject:' + id, { reason: errorMessage })
                 } else {
-                    this.send(SessionPort.ERROR, { message: errorMessage });
+                    this.sendError({ message: errorMessage });
                 }
-                throw new Error('No handlers are available for topic ' + topic);
+                this.errorEvent.raiseEvent(new Error('No handlers are available for topic ' + topic));
             }
         }
+
+        this.send(SessionPort.OPEN, options)
     }
 
     /**
@@ -171,7 +171,7 @@ export class SessionPort {
      * return false if the session is closed.
      */
     send(topic: string, message?: void | Message): boolean {
-        if (!this._isOpened) throw new Error('Session.send: Session must be open to send messages');
+        if (!this._isOpened) throw new Error('Session must be open to send messages');
         if (this._isClosed) return false;
         const id = createGuid();
         this.messagePort.postMessage([id, topic, message]);
@@ -184,8 +184,14 @@ export class SessionPort {
      * @return Return true if the error message is sent successfully,
      * otherwise, return false.
      */
-    sendError(errorMessage: ErrorMessage): boolean {
-        console.log('Sending error to session "' + this.info.name + "' : " + JSON.stringify(errorMessage));
+    sendError(e: ErrorMessage | Error): boolean {
+        let errorMessage: ErrorMessage = e;
+        if (errorMessage instanceof Error) {
+            errorMessage = {
+                message: errorMessage.message,
+                stack: errorMessage['stack']
+            }
+        }
         return this.send(SessionPort.ERROR, errorMessage);
     }
 
@@ -198,12 +204,11 @@ export class SessionPort {
      */
     request(topic: string, message?: Message): Promise<void | Message> {
         if (!this._isOpened || this._isClosed)
-            throw new Error('Session.request: Session must be open to make requests');
+            throw new Error('Session must be open to make requests');
         const id = createGuid();
         const resolveTopic = topic + ':resolve:' + id;
         const rejectTopic = topic + ':reject:' + id;
-        this.messagePort.postMessage([id, topic, message || {}, true]);
-        return new Promise((resolve, reject) => {
+        const result = new Promise((resolve, reject) => {
             this.on[resolveTopic] = (message) => {
                 delete this.on[resolveTopic];
                 delete this.on[rejectTopic];
@@ -216,6 +221,8 @@ export class SessionPort {
                 reject(new Error(message.reason));
             }
         })
+        this.messagePort.postMessage([id, topic, message || {}, true]);
+        return result;
     }
 
     /**
@@ -231,6 +238,18 @@ export class SessionPort {
         if (this.messagePort && this.messagePort.close)
             this.messagePort.close();
         this.closeEvent.raiseEvent(null);
+    }
+
+    get isOpened() {
+        return this._isOpened;
+    }
+
+    get isConnected() {
+        return this._isConnected;
+    }
+
+    get isClosed() {
+        return this._isClosed;
     }
 }
 
@@ -308,7 +327,11 @@ export class SessionService {
      * Called internally by the composition root (ArgonSystem).
      */
     public connect() {
-        this.connectService.connect(this);
+        if (this.connectService && this.connectService.connect) {
+            this.connectService.connect(this);
+        } else {
+            console.warn('Argon: Unable to connect to a manager session; a connect service is not available');
+        }
     }
 
     /**
@@ -331,7 +354,7 @@ export class SessionService {
         });
         session.closeEvent.addEventListener(() => {
             const index = this.managedSessions.indexOf(session);
-            if (index > -1) this.managedSessions.splice(index);
+            if (index > -1) this.managedSessions.splice(index, 1);
         });
         return session;
     }
@@ -363,21 +386,22 @@ export class SessionService {
     }
 
     /**
-     * Returns true if this session is the manager
+     * Returns true if this session is the Manager
      */
     get isManager() {
         return this.configuration.role === Role.MANAGER;
     }
 
     /**
-     * Returns true if this session is an application
+     * Returns true if this session is an Application, meaning, 
+     * it is running within a Manager. 
      */
     get isApplication() {
         return this.configuration.role === Role.APPLICATION;
     }
 
     /**
-     * Returns true if this session is a Reality view
+     * Returns true if this session is a Reality View
      */
     get isRealityView() {
         return this.configuration.role === Role.REALITY_VIEW;
@@ -418,7 +442,7 @@ export class LoopbackConnectService extends ConnectService {
      * @param sessionService The session service instance.
      */
     connect(sessionService: SessionService) {
-        const messageChannel = sessionService.createMessageChannel();
+        const messageChannel = sessionService.createSynchronousMessageChannel();
         const messagePort = messageChannel.port1;
         messageChannel.port2.onmessage = (evt) => {
             messageChannel.port2.postMessage(evt.data)

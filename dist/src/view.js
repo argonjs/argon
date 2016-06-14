@@ -126,6 +126,22 @@ System.register(['aurelia-dependency-injection', './session', './context', './ut
                  */
                 ViewService.prototype.isOwner = function () {
                 };
+                /**
+                 * Returns a suggested viewport
+                 */
+                ViewService.prototype.getSuggestedViewport = function () {
+                    if (window && document && document.documentElement) {
+                        return {
+                            x: 0,
+                            y: 0,
+                            width: document.documentElement.clientWidth,
+                            height: document.documentElement.clientHeight
+                        };
+                    }
+                    else {
+                        return undefined;
+                    }
+                };
                 ViewService.prototype._setViewParameters = function (view) {
                     var viewportJSON = JSON.stringify(view.viewport);
                     var previousViewport = this._current && this._current.viewport;

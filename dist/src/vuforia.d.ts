@@ -1,6 +1,6 @@
-import { RealityView, SerializedFrameState } from './common';
+import { SerializedFrameState } from './common';
 import { FocusService } from './focus';
-import { RealityService, RealityLoader } from './reality';
+import { RealityService } from './reality';
 import { SessionService, SessionPort } from './session';
 import { Event } from './utils';
 /**
@@ -84,13 +84,6 @@ export declare class VuforiaServiceDelegate extends VuforiaServiceDelegateBase {
     objectTrackerDeactivateDataSet(id: string): boolean;
     dataSetFetch(id: string): Promise<void>;
     dataSetLoad(id: string): Promise<VuforiaTrackables>;
-}
-export declare class LiveVideoRealityLoader implements RealityLoader {
-    private sessionService;
-    private delegate;
-    type: string;
-    constructor(sessionService: SessionService, delegate: VuforiaServiceDelegate);
-    load(reality: RealityView): SessionPort;
 }
 /**
  * Mediates requests to the Vuforia API. Handles the following requests:

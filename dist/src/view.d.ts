@@ -66,5 +66,14 @@ export declare class ViewService {
      * Returns true if this application has control over the view.
      */
     isOwner(): void;
+    /**
+     * Returns a suggested viewport
+     */
+    getSuggestedViewport(): {
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+    };
     private _setViewParameters(view);
 }

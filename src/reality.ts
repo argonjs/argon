@@ -83,7 +83,9 @@ export class RealityService {
             });
         } else if (sessionService.isRealityView) {
             this.frameEvent.addEventListener((frameState) => {
-                this.sessionService.manager.send('ar.reality.frameState', frameState);
+                if (this.sessionService.manager.isConnected) {
+                    this.sessionService.manager.send('ar.reality.frameState', frameState);
+                }
             })
         }
 
@@ -112,15 +114,16 @@ export class RealityService {
 
         sessionService.manager.on['ar.reality.connect'] = ({id}: { id: string }) => {
             const realityControlSession = this.sessionService.createSessionPort();
-            const messageChannel = this.sessionService.createMessageChannel();
+            const messageChannel = this.sessionService.createSynchronousMessageChannel();
 
-            const MESSAGE_KEY = 'ar.reality.message.' + id;
+            const ROUTE_MESSAGE_KEY = 'ar.reality.message.route.' + id;
+            const SEND_MESSAGE_KEY = 'ar.reality.message.send.' + id;
 
             messageChannel.port1.onmessage = (msg: MessageEvent) => {
-                this.sessionService.manager.send(MESSAGE_KEY, msg);
+                this.sessionService.manager.send(ROUTE_MESSAGE_KEY, msg.data);
             }
 
-            this.sessionService.manager.on[MESSAGE_KEY] = (message) => {
+            this.sessionService.manager.on[SEND_MESSAGE_KEY] = (message) => {
                 messageChannel.port1.postMessage(message);
             }
 
@@ -130,7 +133,7 @@ export class RealityService {
 
             this.sessionService.manager.closeEvent.addEventListener(() => {
                 realityControlSession.close();
-                delete this.sessionService.manager.on[MESSAGE_KEY];
+                delete this.sessionService.manager.on[SEND_MESSAGE_KEY];
             });
 
             realityControlSession.open(messageChannel.port2, this.sessionService.configuration);
@@ -168,7 +171,11 @@ export class RealityService {
     public setDesired(reality: RealityView) {
         this.sessionService.ensureNotReality();
         this._desired = reality;
-        this.sessionService.manager.send('ar.reality.desired', { reality });
+        if (this.sessionService.isManager) {
+            this._setNextReality(reality);
+        } else {
+            this.sessionService.manager.send('ar.reality.desired', { reality });
+        }
     }
 
     /** 
@@ -232,12 +239,16 @@ export class RealityService {
     }
 
     private _setNextReality(reality: RealityView) {
-        console.log('Setting reality: ' + JSON.stringify(reality))
         if (this._current && reality && this._current === reality) return;
         if (this._current && !reality) return;
         if (!this._current && !reality) {
             reality = this._default;
             if (!reality) return;
+        }
+
+        if (!this.isSupported(reality.type)) {
+            this.sessionService.errorEvent.raiseEvent(new Error('Reality of type "' + reality.type + '" is not available on this platform'))
+            return;
         }
 
         const realitySessionPromise = Promise.resolve<SessionPort>(this._executeRealityLoader(reality));
@@ -247,19 +258,16 @@ export class RealityService {
 
             if (this._realitySessionPromise !== realitySessionPromise) return;
 
-            if (!realitySession.isConnected()) throw new Error('Expected a connected session');
+            if (!realitySession.isConnected) throw new Error('Expected a connected session');
 
             if (realitySession.info.role !== Role.REALITY_VIEW) {
                 realitySession.sendError({ message: "Expected a reality session" });
                 realitySession.close();
-                throw new Error('The application "' + realitySession.info.name + '" cannot be loaded as a reality');
+                throw new Error('The application "' + realitySession.info.name + '" does not support being loaded as a reality');
             }
 
             const previousRealitySession = this._realitySession;
             const previousReality = this._current;
-
-            this._realitySession = realitySession;
-            this._setCurrent(reality);
 
             if (previousRealitySession) {
                 previousRealitySession.close();
@@ -269,30 +277,33 @@ export class RealityService {
                 this.frameEvent.raiseEvent(state);
             }
 
-            if (realitySession.info.realityViewSupportsControlPort) {
+            this._realitySession = realitySession;
+            this._setCurrent(reality);
+
+            if (realitySession.info['reality.supportsControlPort']) {
                 const ownerSession = this.desiredRealityMapInverse.get(reality) || this.sessionService.manager;
 
                 const id = createGuid();
-                const MESSAGE_KEY = 'ar.reality.message.' + id;
+                const ROUTE_MESSAGE_KEY = 'ar.reality.message.route.' + id;
+                const SEND_MESSAGE_KEY = 'ar.reality.message.send.' + id;
 
-                realitySession.on[MESSAGE_KEY] = (message) => {
-                    ownerSession.send(MESSAGE_KEY, message);
+                realitySession.on[ROUTE_MESSAGE_KEY] = (message) => {
+                    ownerSession.send(SEND_MESSAGE_KEY, message);
                 }
 
-                ownerSession.on[MESSAGE_KEY] = (message) => {
-                    realitySession.send(MESSAGE_KEY, message);
+                ownerSession.on[ROUTE_MESSAGE_KEY] = (message) => {
+                    realitySession.send(SEND_MESSAGE_KEY, message);
                 }
 
                 realitySession.send('ar.reality.connect', { id });
                 ownerSession.send('ar.reality.connect', { id });
 
                 realitySession.closeEvent.addEventListener(() => {
-                    delete ownerSession.on[MESSAGE_KEY];
+                    delete ownerSession.on[ROUTE_MESSAGE_KEY];
                     console.log('Reality session closed: ' + JSON.stringify(reality));
                     this._setNextReality(this.onSelectReality());
                 });
             }
-
         }).catch((error) => {
             this.sessionService.errorEvent.raiseEvent(error);
         })
@@ -325,62 +336,4 @@ export class RealityService {
         return loader.load(reality);
     }
 
-}
-
-@inject(SessionService, DeviceService, TimerService)
-export class EmptyRealityLoader implements RealityLoader {
-
-    public type = 'empty';
-
-    constructor(
-        private sessionService: SessionService,
-        private deviceService: DeviceService,
-        private timer: TimerService) {
-    }
-
-    public load(reality: RealityView) {
-        const realitySession = this.sessionService.addManagedSessionPort();
-        const remoteRealitySession = this.sessionService.createSessionPort();
-        let doUpdate = true;
-        remoteRealitySession.connectEvent.addEventListener(() => {
-            const update = (time: JulianDate, index: number) => {
-                if (doUpdate) {
-                    this.deviceService.update();
-                    const w = document.documentElement.clientWidth;
-                    const h = document.documentElement.clientHeight;
-                    const frameState: SerializedFrameState = {
-                        time,
-                        index,
-                        view: {
-                            viewport: {
-                                x: 0,
-                                y: 0,
-                                width: w,
-                                height: h
-                            },
-                            pose: getSerializedEntityPose(this.deviceService.interfaceEntity, time),
-                            subviews: [
-                                {
-                                    type: SubviewType.SINGULAR,
-                                    projectionMatrix: Matrix4.computePerspectiveFieldOfView(
-                                        Math.PI / 3, w / h, 0.2, 10000000000, <any>[]
-                                    )
-                                }
-                            ]
-                        }
-                    }
-                    remoteRealitySession.send('ar.reality.frameState', frameState);
-                    this.timer.requestFrame(update);
-                }
-            }
-            this.timer.requestFrame(update);
-        })
-        remoteRealitySession.closeEvent.addEventListener(() => {
-            doUpdate = false;
-        });
-        const messageChannel = this.sessionService.createSynchronousMessageChannel();
-        realitySession.open(messageChannel.port1, this.sessionService.configuration);
-        remoteRealitySession.open(messageChannel.port2, { role: Role.REALITY_VIEW, name: 'empty' });
-        return realitySession;
-    }
 }

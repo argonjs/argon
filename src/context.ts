@@ -2,6 +2,7 @@ import {inject} from 'aurelia-dependency-injection'
 import {
     Entity,
     EntityCollection,
+    CompositeEntityCollection,
     ExtrapolationType,
     CesiumMath,
     ConstantPositionProperty,
@@ -95,9 +96,20 @@ export class ContextService {
     public renderEvent = new Event<void>();
 
     /**
-     * The set of entities that this session is aware of.
+     * The set of entities representing well-known reference frames. 
+     * These are assumed to be readily available to applications. 
      */
-    public entities = new EntityCollection();
+    public wellKnownReferenceFrames = new EntityCollection();
+
+    /**
+     * The set of subscribed entities.
+     */
+    public subscribedEntities = new EntityCollection();
+
+    /**
+     * The set of entities that this session is aware of. 
+     */
+    public entities = new CompositeEntityCollection();
 
     /**
      * An event that fires when the local origin changes.
@@ -171,9 +183,12 @@ export class ContextService {
         private realityService: RealityService,
         private timerService: TimerService) {
 
-        this.entities.add(this.user);
+        this.entities.addCollection(this.wellKnownReferenceFrames);
+        this.entities.addCollection(this.subscribedEntities);
 
-        if (this.sessionService.isManager) {
+        this.subscribedEntities.add(this.user);
+
+        if (this.sessionService.isManager || this.sessionService.isRealityView) {
             this.realityService.frameEvent.addEventListener((state) => {
                 this._update({
                     reality: this.realityService.getCurrent(),
@@ -232,7 +247,7 @@ export class ContextService {
      */
     public subscribeToEntityById(id: string): Entity {
         this.sessionService.manager.send('ar.context.subscribe', { id })
-        return this.entities.getOrCreateEntity(id);
+        return this.subscribedEntities.getOrCreateEntity(id);
     }
 
     /**
@@ -247,11 +262,8 @@ export class ContextService {
     public getEntityPose(entity: Entity, referenceFrame: ReferenceFrame | Entity = this._defaultReferenceFrame): EntityPose {
         const time = this._time;
 
-        const key = entity.id + _stringFromReferenceFrame(referenceFrame);
+        const key = entity.id + '@' + _stringFromReferenceFrame(referenceFrame);
         let entityPose = this._entityPoseMap.get(key);
-
-        if (entityPose && JulianDate.equals(entityPose.time, time))
-            return entityPose;
 
         if (!defined(entityPose)) {
             entityPose = {
@@ -325,7 +337,7 @@ export class ContextService {
         // assume the manager no longer knows about it
         this._updatingEntities.forEach((id) => {
             if (!this._knownEntities.has(id)) {
-                const entity = this.entities.getById(id);
+                const entity = this.subscribedEntities.getById(id);
                 entity.position = undefined;
                 entity.orientation = undefined;
                 this._updatingEntities.delete(id);
@@ -355,7 +367,9 @@ export class ContextService {
     private _updateEntity(id: string, state: FrameState) {
         const entityPose = state.entities[id];
         if (!entityPose) {
-            this.entities.getOrCreateEntity(id);
+            if (!this.wellKnownReferenceFrames.getById(id)) {
+                this.subscribedEntities.getOrCreateEntity(id);
+            }
             return;
         }
 
@@ -379,15 +393,12 @@ export class ContextService {
         const positionValue = <Cartesian3>(entityPose.p === 0 ? Cartesian3.ZERO : entityPose.p);
         const orientationValue = entityPose.o === 0 ? Quaternion.IDENTITY : entityPose.o;
 
-        const entity = this.entities.getOrCreateEntity(id);
+        const entity = this.subscribedEntities.getOrCreateEntity(id);
         let entityPosition = entity.position;
         let entityOrientation = entity.orientation;
 
         if (!defined(entityPosition) || entityPosition.referenceFrame !== referenceFrame) {
-            entityPosition = new SampledPositionProperty(referenceFrame);
-            (entityPosition as SampledPositionProperty).forwardExtrapolationType = ExtrapolationType.HOLD;
-            (entityPosition as SampledPositionProperty).forwardExtrapolationDuration = 5 / 60;
-            entityPosition['maxNumSamples'] = 10; // using our extension to limit memory consumption
+            entityPosition = new ConstantPositionProperty(positionValue, referenceFrame);
             entity.position = entityPosition;
         }
 
@@ -428,7 +439,7 @@ export class ContextService {
                 const enuOrientation = Transforms.headingPitchRollQuaternion(userPosition, 0, 0, 0, undefined, scratchQuaternion);
                 localENUOrientationProperty.setValue(enuOrientation);
             } else {
-                localENUOrientationProperty.setValue(negX90);
+                localENUOrientationProperty.setValue(Quaternion.IDENTITY);
             }
             this.localOriginChangeEvent.raiseEvent(undefined);
         }
@@ -460,7 +471,7 @@ export class ContextService {
 
     private _addEntityAndAncestorsToPoseMap(poseMap: SerializedEntityPoseMap, id: string, time: JulianDate) {
         if (!defined(this._entityPoseCache[id])) {
-            const entity = this.entities.getById(id);
+            const entity = this.subscribedEntities.getById(id);
             if (!entity) return;
             this._entityPoseCache[id] = getSerializedEntityPose(entity, time);
             if (entity.position.referenceFrame instanceof Entity) {

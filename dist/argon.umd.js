@@ -1,7 +1,7 @@
-!function(e){function r(e,r,o){return 4===arguments.length?t.apply(this,arguments):void n(e,{declarative:!0,deps:r,declare:o})}function t(e,r,t,o){n(e,{declarative:!1,deps:r,executingRequire:t,execute:o})}function n(e,r){r.name=e,e in p||(p[e]=r),r.normalizedDeps=r.deps}function o(e,r){if(r[e.groupIndex]=r[e.groupIndex]||[],-1==v.call(r[e.groupIndex],e)){r[e.groupIndex].push(e);for(var t=0,n=e.normalizedDeps.length;n>t;t++){var a=e.normalizedDeps[t],u=p[a];if(u&&!u.evaluated){var d=e.groupIndex+(u.declarative!=e.declarative);if(void 0===u.groupIndex||u.groupIndex<d){if(void 0!==u.groupIndex&&(r[u.groupIndex].splice(v.call(r[u.groupIndex],u),1),0==r[u.groupIndex].length))throw new TypeError("Mixed dependency cycle detected");u.groupIndex=d}o(u,r)}}}}function a(e){var r=p[e];r.groupIndex=0;var t=[];o(r,t);for(var n=!!r.declarative==t.length%2,a=t.length-1;a>=0;a--){for(var u=t[a],i=0;i<u.length;i++){var s=u[i];n?d(s):l(s)}n=!n}}function u(e){return x[e]||(x[e]={name:e,dependencies:[],exports:{},importers:[]})}function d(r){if(!r.module){var t=r.module=u(r.name),n=r.module.exports,o=r.declare.call(e,function(e,r){if(t.locked=!0,"object"==typeof e)for(var o in e)n[o]=e[o];else n[e]=r;for(var a=0,u=t.importers.length;u>a;a++){var d=t.importers[a];if(!d.locked)for(var i=0;i<d.dependencies.length;++i)d.dependencies[i]===t&&d.setters[i](n)}return t.locked=!1,r},r.name);t.setters=o.setters,t.execute=o.execute;for(var a=0,i=r.normalizedDeps.length;i>a;a++){var l,s=r.normalizedDeps[a],c=p[s],v=x[s];v?l=v.exports:c&&!c.declarative?l=c.esModule:c?(d(c),v=c.module,l=v.exports):l=f(s),v&&v.importers?(v.importers.push(t),t.dependencies.push(v)):t.dependencies.push(null),t.setters[a]&&t.setters[a](l)}}}function i(e){var r,t=p[e];if(t)t.declarative?c(e,[]):t.evaluated||l(t),r=t.module.exports;else if(r=f(e),!r)throw new Error("Unable to load dependency "+e+".");return(!t||t.declarative)&&r&&r.__useDefault?r["default"]:r}function l(r){if(!r.module){var t={},n=r.module={exports:t,id:r.name};if(!r.executingRequire)for(var o=0,a=r.normalizedDeps.length;a>o;o++){var u=r.normalizedDeps[o],d=p[u];d&&l(d)}r.evaluated=!0;var c=r.execute.call(e,function(e){for(var t=0,n=r.deps.length;n>t;t++)if(r.deps[t]==e)return i(r.normalizedDeps[t]);throw new TypeError("Module "+e+" not declared as a dependency.")},t,n);c&&(n.exports=c),t=n.exports,t&&t.__esModule?r.esModule=t:r.esModule=s(t)}}function s(r){if(r===e)return r;var t={};if("object"==typeof r||"function"==typeof r)if(g){var n;for(var o in r)(n=Object.getOwnPropertyDescriptor(r,o))&&h(t,o,n)}else{var a=r&&r.hasOwnProperty;for(var o in r)(!a||r.hasOwnProperty(o))&&(t[o]=r[o])}return t["default"]=r,h(t,"__useDefault",{value:!0}),t}function c(r,t){var n=p[r];if(n&&!n.evaluated&&n.declarative){t.push(r);for(var o=0,a=n.normalizedDeps.length;a>o;o++){var u=n.normalizedDeps[o];-1==v.call(t,u)&&(p[u]?c(u,t):f(u))}n.evaluated||(n.evaluated=!0,n.module.execute.call(e))}}function f(e){if(D[e])return D[e];if("@node/"==e.substr(0,6))return y(e.substr(6));var r=p[e];if(!r)throw"Module "+e+" not present.";return a(e),c(e,[]),p[e]=void 0,r.declarative&&h(r.module.exports,"__esModule",{value:!0}),D[e]=r.declarative?r.module.exports:r.esModule}var p={},v=Array.prototype.indexOf||function(e){for(var r=0,t=this.length;t>r;r++)if(this[r]===e)return r;return-1},g=!0;try{Object.getOwnPropertyDescriptor({a:0},"a")}catch(m){g=!1}var h;!function(){try{Object.defineProperty({},"a",{})&&(h=Object.defineProperty)}catch(e){h=function(e,r,t){try{e[r]=t.value||t.get.call(e)}catch(n){}}}}();var x={},y="undefined"!=typeof System&&System._nodeRequire||"undefined"!=typeof require&&require.resolve&&"undefined"!=typeof process&&require,D={"@empty":{}};return function(e,n,o){return function(a){a(function(a){for(var u={_nodeRequire:y,register:r,registerDynamic:t,get:f,set:function(e,r){D[e]=r},newModule:function(e){return e}},d=0;d<n.length;d++)(function(e,r){r&&r.__esModule?D[e]=r:D[e]=s(r)})(n[d],arguments[d]);o(u);var i=f(e[0]);if(e.length>1)for(var d=1;d<e.length;d++)f(e[d]);return i.__useDefault?i["default"]:i})}}}("undefined"!=typeof self?self:global)
+!function(e){function r(e,r,o){return 4===arguments.length?t.apply(this,arguments):void n(e,{declarative:!0,deps:r,declare:o})}function t(e,r,t,o){n(e,{declarative:!1,deps:r,executingRequire:t,execute:o})}function n(e,r){r.name=e,e in v||(v[e]=r),r.normalizedDeps=r.deps}function o(e,r){if(r[e.groupIndex]=r[e.groupIndex]||[],-1==g.call(r[e.groupIndex],e)){r[e.groupIndex].push(e);for(var t=0,n=e.normalizedDeps.length;n>t;t++){var a=e.normalizedDeps[t],u=v[a];if(u&&!u.evaluated){var d=e.groupIndex+(u.declarative!=e.declarative);if(void 0===u.groupIndex||u.groupIndex<d){if(void 0!==u.groupIndex&&(r[u.groupIndex].splice(g.call(r[u.groupIndex],u),1),0==r[u.groupIndex].length))throw new TypeError("Mixed dependency cycle detected");u.groupIndex=d}o(u,r)}}}}function a(e){var r=v[e];r.groupIndex=0;var t=[];o(r,t);for(var n=!!r.declarative==t.length%2,a=t.length-1;a>=0;a--){for(var u=t[a],i=0;i<u.length;i++){var s=u[i];n?d(s):l(s)}n=!n}}function u(e){return y[e]||(y[e]={name:e,dependencies:[],exports:{},importers:[]})}function d(r){if(!r.module){var t=r.module=u(r.name),n=r.module.exports,o=r.declare.call(e,function(e,r){if(t.locked=!0,"object"==typeof e)for(var o in e)n[o]=e[o];else n[e]=r;for(var a=0,u=t.importers.length;u>a;a++){var d=t.importers[a];if(!d.locked)for(var i=0;i<d.dependencies.length;++i)d.dependencies[i]===t&&d.setters[i](n)}return t.locked=!1,r},r.name);t.setters=o.setters,t.execute=o.execute;for(var a=0,i=r.normalizedDeps.length;i>a;a++){var l,s=r.normalizedDeps[a],c=v[s],f=y[s];f?l=f.exports:c&&!c.declarative?l=c.esModule:c?(d(c),f=c.module,l=f.exports):l=p(s),f&&f.importers?(f.importers.push(t),t.dependencies.push(f)):t.dependencies.push(null),t.setters[a]&&t.setters[a](l)}}}function i(e){var r,t=v[e];if(t)t.declarative?f(e,[]):t.evaluated||l(t),r=t.module.exports;else if(r=p(e),!r)throw new Error("Unable to load dependency "+e+".");return(!t||t.declarative)&&r&&r.__useDefault?r["default"]:r}function l(r){if(!r.module){var t={},n=r.module={exports:t,id:r.name};if(!r.executingRequire)for(var o=0,a=r.normalizedDeps.length;a>o;o++){var u=r.normalizedDeps[o],d=v[u];d&&l(d)}r.evaluated=!0;var c=r.execute.call(e,function(e){for(var t=0,n=r.deps.length;n>t;t++)if(r.deps[t]==e)return i(r.normalizedDeps[t]);throw new TypeError("Module "+e+" not declared as a dependency.")},t,n);c&&(n.exports=c),t=n.exports,t&&t.__esModule?r.esModule=t:r.esModule=s(t)}}function s(r){var t={};if(("object"==typeof r||"function"==typeof r)&&r!==e)if(m)for(var n in r)"default"!==n&&c(t,r,n);else{var o=r&&r.hasOwnProperty;for(var n in r)"default"===n||o&&!r.hasOwnProperty(n)||(t[n]=r[n])}return t["default"]=r,x(t,"__useDefault",{value:!0}),t}function c(e,r,t){try{var n;(n=Object.getOwnPropertyDescriptor(r,t))&&x(e,t,n)}catch(o){return e[t]=r[t],!1}}function f(r,t){var n=v[r];if(n&&!n.evaluated&&n.declarative){t.push(r);for(var o=0,a=n.normalizedDeps.length;a>o;o++){var u=n.normalizedDeps[o];-1==g.call(t,u)&&(v[u]?f(u,t):p(u))}n.evaluated||(n.evaluated=!0,n.module.execute.call(e))}}function p(e){if(I[e])return I[e];if("@node/"==e.substr(0,6))return D(e.substr(6));var r=v[e];if(!r)throw"Module "+e+" not present.";return a(e),f(e,[]),v[e]=void 0,r.declarative&&x(r.module.exports,"__esModule",{value:!0}),I[e]=r.declarative?r.module.exports:r.esModule}var v={},g=Array.prototype.indexOf||function(e){for(var r=0,t=this.length;t>r;r++)if(this[r]===e)return r;return-1},m=!0;try{Object.getOwnPropertyDescriptor({a:0},"a")}catch(h){m=!1}var x;!function(){try{Object.defineProperty({},"a",{})&&(x=Object.defineProperty)}catch(e){x=function(e,r,t){try{e[r]=t.value||t.get.call(e)}catch(n){}}}}();var y={},D="undefined"!=typeof System&&System._nodeRequire||"undefined"!=typeof require&&require.resolve&&"undefined"!=typeof process&&require,I={"@empty":{}};return function(e,n,o,a){return function(u){u(function(u){for(var d={_nodeRequire:D,register:r,registerDynamic:t,get:p,set:function(e,r){I[e]=r},newModule:function(e){return e}},i=0;i<n.length;i++)(function(e,r){r&&r.__esModule?I[e]=r:I[e]=s(r)})(n[i],arguments[i]);a(d);var l=p(e[0]);if(e.length>1)for(var i=1;i<e.length;i++)p(e[i]);return o?l["default"]:l})}}}("undefined"!=typeof self?self:global)
 
-(["1"], [], function($__System) {
-
+(["1"], [], false, function($__System) {
+var require = this.require, exports = this.exports, module = this.module;
 !function(e){function n(e,n){e=e.replace(l,"");var r=e.match(u),t=(r[1].split(",")[n]||"require").replace(s,""),i=p[t]||(p[t]=new RegExp(a+t+f,"g"));i.lastIndex=0;for(var o,c=[];o=i.exec(e);)c.push(o[2]||o[3]);return c}function r(e,n,t,o){if("object"==typeof e&&!(e instanceof Array))return r.apply(null,Array.prototype.splice.call(arguments,1,arguments.length-1));if("string"==typeof e&&"function"==typeof n&&(e=[e]),!(e instanceof Array)){if("string"==typeof e){var l=i.get(e);return l.__useDefault?l["default"]:l}throw new TypeError("Invalid require")}for(var a=[],f=0;f<e.length;f++)a.push(i["import"](e[f],o));Promise.all(a).then(function(e){n&&n.apply(null,e)},t)}function t(t,l,a){"string"!=typeof t&&(a=l,l=t,t=null),l instanceof Array||(a=l,l=["require","exports","module"].splice(0,a.length)),"function"!=typeof a&&(a=function(e){return function(){return e}}(a)),void 0===l[l.length-1]&&l.pop();var f,u,s;-1!=(f=o.call(l,"require"))&&(l.splice(f,1),t||(l=l.concat(n(a.toString(),f)))),-1!=(u=o.call(l,"exports"))&&l.splice(u,1),-1!=(s=o.call(l,"module"))&&l.splice(s,1);var p={name:t,deps:l,execute:function(n,t,o){for(var p=[],c=0;c<l.length;c++)p.push(n(l[c]));o.uri=o.id,o.config=function(){},-1!=s&&p.splice(s,0,o),-1!=u&&p.splice(u,0,t),-1!=f&&p.splice(f,0,function(e,t,l){return"string"==typeof e&&"function"!=typeof t?n(e):r.call(i,e,t,l,o.id)});var d=a.apply(-1==u?e:t,p);return"undefined"==typeof d&&o&&(d=o.exports),"undefined"!=typeof d?d:void 0}};if(t)c.anonDefine||c.isBundle?c.anonDefine&&c.anonDefine.name&&(c.anonDefine=null):c.anonDefine=p,c.isBundle=!0,i.registerDynamic(p.name,p.deps,!1,p.execute);else{if(c.anonDefine&&!c.anonDefine.name)throw new Error("Multiple anonymous defines in module "+t);c.anonDefine=p}}var i=$__System,o=Array.prototype.indexOf||function(e){for(var n=0,r=this.length;r>n;n++)if(this[n]===e)return n;return-1},l=/(\/\*([\s\S]*?)\*\/|([^:]|^)\/\/(.*)$)/gm,a="(?:^|[^$_a-zA-Z\\xA0-\\uFFFF.])",f="\\s*\\(\\s*(\"([^\"]+)\"|'([^']+)')\\s*\\)",u=/\(([^\)]*)\)/,s=/^\s+|\s+$/g,p={};t.amd={};var c={isBundle:!1,anonDefine:null};i.amdDefine=t,i.amdRequire=r}("undefined"!=typeof self?self:global);
 (function() {
 var define = $__System.amdDefine;
@@ -368,340 +368,7 @@ define("2", ["exports", "3"], function(exports, _aureliaPal) {
 });
 
 })();
-$__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1, context_1) {
-  "use strict";
-  var __moduleName = context_1 && context_1.id;
-  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
-    var c = arguments.length,
-        r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
-        d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
-      r = Reflect.decorate(decorators, target, key, desc);
-    else
-      for (var i = decorators.length - 1; i >= 0; i--)
-        if (d = decorators[i])
-          r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-  };
-  var aurelia_dependency_injection_1,
-      cesium_imports_1,
-      common_1,
-      session_1,
-      reality_1,
-      timer_1,
-      utils_1;
-  var PoseStatus,
-      scratchDate,
-      scratchCartesian3,
-      scratchQuaternion,
-      scratchOriginCartesian3,
-      negX90,
-      ContextService;
-  function _stringFromReferenceFrame(referenceFrame) {
-    var rf = referenceFrame;
-    return cesium_imports_1.defined(rf.id) ? rf.id : '' + rf;
-  }
-  return {
-    setters: [function(aurelia_dependency_injection_1_1) {
-      aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
-    }, function(cesium_imports_1_1) {
-      cesium_imports_1 = cesium_imports_1_1;
-    }, function(common_1_1) {
-      common_1 = common_1_1;
-    }, function(session_1_1) {
-      session_1 = session_1_1;
-    }, function(reality_1_1) {
-      reality_1 = reality_1_1;
-    }, function(timer_1_1) {
-      timer_1 = timer_1_1;
-    }, function(utils_1_1) {
-      utils_1 = utils_1_1;
-    }],
-    execute: function() {
-      (function(PoseStatus) {
-        PoseStatus[PoseStatus["KNOWN"] = 1] = "KNOWN";
-        PoseStatus[PoseStatus["FOUND"] = 2] = "FOUND";
-        PoseStatus[PoseStatus["LOST"] = 4] = "LOST";
-      })(PoseStatus || (PoseStatus = {}));
-      exports_1("PoseStatus", PoseStatus);
-      scratchDate = new cesium_imports_1.JulianDate(0, 0);
-      scratchCartesian3 = new cesium_imports_1.Cartesian3(0, 0);
-      scratchQuaternion = new cesium_imports_1.Quaternion(0, 0);
-      scratchOriginCartesian3 = new cesium_imports_1.Cartesian3(0, 0);
-      negX90 = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_X, -cesium_imports_1.CesiumMath.PI_OVER_TWO);
-      ContextService = (function() {
-        function ContextService(sessionService, realityService, timerService) {
-          var _this = this;
-          this.sessionService = sessionService;
-          this.realityService = realityService;
-          this.timerService = timerService;
-          this.updateEvent = new utils_1.Event();
-          this.renderEvent = new utils_1.Event();
-          this.entities = new cesium_imports_1.EntityCollection();
-          this.localOriginChangeEvent = new utils_1.Event();
-          this.user = new cesium_imports_1.Entity({
-            id: 'ar.user',
-            name: 'user',
-            position: new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, null),
-            orientation: new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY)
-          });
-          this.localOriginEastNorthUp = new cesium_imports_1.Entity({
-            id: 'ar.localENU',
-            name: 'localOriginENU',
-            position: new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, null),
-            orientation: new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY)
-          });
-          this.localOriginEastUpSouth = new cesium_imports_1.Entity({
-            id: 'ar.localEUS',
-            name: 'localOriginEUS',
-            position: new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, this.localOriginEastNorthUp),
-            orientation: new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_X, Math.PI / 2))
-          });
-          this._time = new cesium_imports_1.JulianDate(0, 0);
-          this._defaultReferenceFrame = this.localOriginEastNorthUp;
-          this._entityPoseCache = {};
-          this._entityPoseMap = new Map();
-          this._subscribedEntities = new WeakMap();
-          this._updatingEntities = new Set();
-          this._knownEntities = new Set();
-          this.entities.add(this.user);
-          if (this.sessionService.isManager) {
-            this.realityService.frameEvent.addEventListener(function(state) {
-              _this._update({
-                reality: _this.realityService.getCurrent(),
-                index: state.index,
-                time: state.time,
-                view: state.view,
-                entities: state.entities || {},
-                sendTime: cesium_imports_1.JulianDate.now()
-              });
-            });
-            this.sessionService.connectEvent.addEventListener(function(session) {
-              _this._subscribedEntities.set(session, new Set());
-              session.on['ar.context.subscribe'] = function(_a) {
-                var id = _a.id;
-                var subscriptions = _this._subscribedEntities.get(session);
-                subscriptions.add(id);
-              };
-            });
-          } else {
-            this.sessionService.manager.on['ar.context.update'] = function(state) {
-              _this._update(state);
-            };
-          }
-        }
-        Object.defineProperty(ContextService.prototype, "time", {
-          get: function() {
-            return this._time;
-          },
-          enumerable: true,
-          configurable: true
-        });
-        Object.defineProperty(ContextService.prototype, "state", {
-          get: function() {
-            return this._state;
-          },
-          enumerable: true,
-          configurable: true
-        });
-        ContextService.prototype.getTime = function() {
-          return this._time;
-        };
-        ContextService.prototype.setDefaultReferenceFrame = function(origin) {
-          this._defaultReferenceFrame = origin;
-        };
-        ContextService.prototype.getDefaultReferenceFrame = function() {
-          return this._defaultReferenceFrame;
-        };
-        ContextService.prototype.subscribeToEntityById = function(id) {
-          this.sessionService.manager.send('ar.context.subscribe', {id: id});
-          return this.entities.getOrCreateEntity(id);
-        };
-        ContextService.prototype.getEntityPose = function(entity, referenceFrame) {
-          if (referenceFrame === void 0) {
-            referenceFrame = this._defaultReferenceFrame;
-          }
-          var time = this._time;
-          var key = entity.id + _stringFromReferenceFrame(referenceFrame);
-          var entityPose = this._entityPoseMap.get(key);
-          if (entityPose && cesium_imports_1.JulianDate.equals(entityPose.time, time))
-            return entityPose;
-          if (!cesium_imports_1.defined(entityPose)) {
-            entityPose = {
-              position: new cesium_imports_1.Cartesian3,
-              orientation: new cesium_imports_1.Quaternion,
-              time: cesium_imports_1.JulianDate.clone(time),
-              poseStatus: 0
-            };
-            this._entityPoseMap.set(key, entityPose);
-          } else {
-            cesium_imports_1.JulianDate.clone(time, entityPose.time);
-          }
-          var position = utils_1.getEntityPositionInReferenceFrame(entity, time, referenceFrame, entityPose.position);
-          var orientation = utils_1.getEntityOrientationInReferenceFrame(entity, time, referenceFrame, entityPose.orientation);
-          var hasPose = position && orientation;
-          var poseStatus = 0;
-          var previousStatus = entityPose.poseStatus;
-          if (hasPose) {
-            poseStatus |= PoseStatus.KNOWN;
-          }
-          if (hasPose && !(previousStatus & PoseStatus.KNOWN)) {
-            poseStatus |= PoseStatus.FOUND;
-          } else if (!hasPose && previousStatus & PoseStatus.KNOWN) {
-            poseStatus |= PoseStatus.LOST;
-          }
-          entityPose.poseStatus = poseStatus;
-          return entityPose;
-        };
-        ContextService.prototype.getCurrentEntityState = function(entity, referenceFrame) {
-          console.warn('getCurrentEntityState is deprecated. Use getEntityPose instead.');
-          return this.getEntityPose(entity, referenceFrame);
-        };
-        ContextService.prototype._update = function(state) {
-          var _this = this;
-          state.entities[this.user.id] = state.view.pose;
-          state.view.subviews.forEach(function(subview, index) {
-            state.entities['ar.view_' + index] = subview.pose || state.view.pose;
-          });
-          this._knownEntities.clear();
-          for (var id in state.entities) {
-            this._updateEntity(id, state);
-            this._updatingEntities.add(id);
-            this._knownEntities.add(id);
-          }
-          this._updatingEntities.forEach(function(id) {
-            if (!_this._knownEntities.has(id)) {
-              var entity = _this.entities.getById(id);
-              entity.position = undefined;
-              entity.orientation = undefined;
-              _this._updatingEntities.delete(id);
-            }
-          });
-          this._updateLocalOrigin(state);
-          if (this.sessionService.isManager) {
-            this._entityPoseCache = {};
-            for (var _i = 0,
-                _a = this.sessionService.managedSessions; _i < _a.length; _i++) {
-              var session = _a[_i];
-              if (session.info.role === common_1.Role.APPLICATION)
-                this._sendUpdateForSession(state, session);
-            }
-          }
-          this._state = state;
-          cesium_imports_1.JulianDate.clone(this._state.time, this._time);
-          this.updateEvent.raiseEvent(undefined);
-          this.renderEvent.raiseEvent(undefined);
-        };
-        ContextService.prototype._updateEntity = function(id, state) {
-          var entityPose = state.entities[id];
-          if (!entityPose) {
-            this.entities.getOrCreateEntity(id);
-            return;
-          }
-          var referenceFrame;
-          if (cesium_imports_1.defined(entityPose.r)) {
-            if (typeof entityPose.r === 'number') {
-              referenceFrame = entityPose.r;
-            } else {
-              referenceFrame = this.entities.getById(entityPose.r);
-            }
-          } else {
-            referenceFrame = cesium_imports_1.ReferenceFrame.FIXED;
-          }
-          if (!cesium_imports_1.defined(referenceFrame)) {
-            this._updateEntity(entityPose.r, state);
-            referenceFrame = this.entities.getById(entityPose.r);
-          }
-          var positionValue = (entityPose.p === 0 ? cesium_imports_1.Cartesian3.ZERO : entityPose.p);
-          var orientationValue = entityPose.o === 0 ? cesium_imports_1.Quaternion.IDENTITY : entityPose.o;
-          var entity = this.entities.getOrCreateEntity(id);
-          var entityPosition = entity.position;
-          var entityOrientation = entity.orientation;
-          if (!cesium_imports_1.defined(entityPosition) || entityPosition.referenceFrame !== referenceFrame) {
-            entityPosition = new cesium_imports_1.SampledPositionProperty(referenceFrame);
-            entityPosition.forwardExtrapolationType = cesium_imports_1.ExtrapolationType.HOLD;
-            entityPosition.forwardExtrapolationDuration = 5 / 60;
-            entityPosition['maxNumSamples'] = 10;
-            entity.position = entityPosition;
-          }
-          if (entityPosition instanceof cesium_imports_1.ConstantPositionProperty) {
-            entityPosition.setValue(positionValue, referenceFrame);
-          } else if (entityPosition instanceof cesium_imports_1.SampledPositionProperty) {
-            entityPosition.addSample(cesium_imports_1.JulianDate.clone(state.time), positionValue);
-          }
-          if (!cesium_imports_1.defined(entityOrientation)) {
-            entityOrientation = new cesium_imports_1.SampledProperty(cesium_imports_1.Quaternion);
-            entityOrientation.forwardExtrapolationType = cesium_imports_1.ExtrapolationType.HOLD;
-            entityOrientation.forwardExtrapolationDuration = 5 / 60;
-            entityOrientation['maxNumSamples'] = 10;
-            entity.orientation = entityOrientation;
-          }
-          if (entityOrientation instanceof cesium_imports_1.ConstantProperty) {
-            entityOrientation.setValue(orientationValue);
-          } else if (entityOrientation instanceof cesium_imports_1.SampledProperty) {
-            entityOrientation.addSample(cesium_imports_1.JulianDate.clone(state.time), orientationValue);
-          }
-          return entity;
-        };
-        ContextService.prototype._updateLocalOrigin = function(state) {
-          var userRootFrame = utils_1.getRootReferenceFrame(this.user);
-          var userPosition = this.user.position.getValueInReferenceFrame(state.time, userRootFrame, scratchCartesian3);
-          var localENUFrame = this.localOriginEastNorthUp.position.referenceFrame;
-          var localENUPosition = this.localOriginEastNorthUp.position.getValueInReferenceFrame(state.time, localENUFrame, scratchOriginCartesian3);
-          if (!localENUPosition || localENUFrame !== userRootFrame || cesium_imports_1.Cartesian3.magnitudeSquared(cesium_imports_1.Cartesian3.subtract(userPosition, localENUPosition, scratchOriginCartesian3)) > 25000000) {
-            var localENUPositionProperty = this.localOriginEastNorthUp.position;
-            var localENUOrientationProperty = this.localOriginEastNorthUp.orientation;
-            localENUPositionProperty.setValue(userPosition, userRootFrame);
-            if (userRootFrame === cesium_imports_1.ReferenceFrame.FIXED) {
-              var enuOrientation = cesium_imports_1.Transforms.headingPitchRollQuaternion(userPosition, 0, 0, 0, undefined, scratchQuaternion);
-              localENUOrientationProperty.setValue(enuOrientation);
-            } else {
-              localENUOrientationProperty.setValue(negX90);
-            }
-            this.localOriginChangeEvent.raiseEvent(undefined);
-          }
-        };
-        ContextService.prototype._sendUpdateForSession = function(parentState, session) {
-          var _this = this;
-          var sessionPoseMap = {};
-          for (var id in parentState.entities) {
-            sessionPoseMap[id] = parentState.entities[id];
-          }
-          this._subscribedEntities.get(session).forEach(function(id) {
-            _this._addEntityAndAncestorsToPoseMap(sessionPoseMap, id, parentState.time);
-          });
-          var sessionState = {
-            reality: parentState.reality,
-            index: parentState.index,
-            time: parentState.time,
-            view: parentState.view,
-            entities: sessionPoseMap,
-            sendTime: cesium_imports_1.JulianDate.now()
-          };
-          session.send('ar.context.update', sessionState);
-        };
-        ContextService.prototype._addEntityAndAncestorsToPoseMap = function(poseMap, id, time) {
-          if (!cesium_imports_1.defined(this._entityPoseCache[id])) {
-            var entity = this.entities.getById(id);
-            if (!entity)
-              return;
-            this._entityPoseCache[id] = utils_1.getSerializedEntityPose(entity, time);
-            if (entity.position.referenceFrame instanceof cesium_imports_1.Entity) {
-              var refId = _stringFromReferenceFrame(entity.position.referenceFrame);
-              this._addEntityAndAncestorsToPoseMap(poseMap, refId, time);
-            }
-          }
-          poseMap[id] = this._entityPoseCache[id];
-        };
-        ContextService = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, reality_1.RealityService, timer_1.TimerService)], ContextService);
-        return ContextService;
-      }());
-      exports_1("ContextService", ContextService);
-    }
-  };
-});
-
-$__System.register("c", ["b", "7", "4", "a"], function(exports_1, context_1) {
+$__System.register("4", ["8", "5", "6", "7"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
@@ -803,6 +470,18 @@ $__System.register("c", ["b", "7", "4", "a"], function(exports_1, context_1) {
         ViewService.prototype.requestOwnership = function() {};
         ViewService.prototype.releaseOwnership = function() {};
         ViewService.prototype.isOwner = function() {};
+        ViewService.prototype.getSuggestedViewport = function() {
+          if (window && document && document.documentElement) {
+            return {
+              x: 0,
+              y: 0,
+              width: document.documentElement.clientWidth,
+              height: document.documentElement.clientHeight
+            };
+          } else {
+            return undefined;
+          }
+        };
         ViewService.prototype._setViewParameters = function(view) {
           var viewportJSON = JSON.stringify(view.viewport);
           var previousViewport = this._current && this._current.viewport;
@@ -827,7 +506,983 @@ $__System.register("c", ["b", "7", "4", "a"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("9", ["5"], function(exports_1, context_1) {
+$__System.register("6", ["8", "9", "a", "5", "b", "c", "7"], function(exports_1, context_1) {
+  "use strict";
+  var __moduleName = context_1 && context_1.id;
+  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
+    var c = arguments.length,
+        r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+        d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
+      r = Reflect.decorate(decorators, target, key, desc);
+    else
+      for (var i = decorators.length - 1; i >= 0; i--)
+        if (d = decorators[i])
+          r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+  };
+  var aurelia_dependency_injection_1,
+      cesium_imports_1,
+      common_1,
+      session_1,
+      reality_1,
+      timer_1,
+      utils_1;
+  var PoseStatus,
+      scratchDate,
+      scratchCartesian3,
+      scratchQuaternion,
+      scratchOriginCartesian3,
+      negX90,
+      ContextService;
+  function _stringFromReferenceFrame(referenceFrame) {
+    var rf = referenceFrame;
+    return cesium_imports_1.defined(rf.id) ? rf.id : '' + rf;
+  }
+  return {
+    setters: [function(aurelia_dependency_injection_1_1) {
+      aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
+    }, function(cesium_imports_1_1) {
+      cesium_imports_1 = cesium_imports_1_1;
+    }, function(common_1_1) {
+      common_1 = common_1_1;
+    }, function(session_1_1) {
+      session_1 = session_1_1;
+    }, function(reality_1_1) {
+      reality_1 = reality_1_1;
+    }, function(timer_1_1) {
+      timer_1 = timer_1_1;
+    }, function(utils_1_1) {
+      utils_1 = utils_1_1;
+    }],
+    execute: function() {
+      (function(PoseStatus) {
+        PoseStatus[PoseStatus["KNOWN"] = 1] = "KNOWN";
+        PoseStatus[PoseStatus["FOUND"] = 2] = "FOUND";
+        PoseStatus[PoseStatus["LOST"] = 4] = "LOST";
+      })(PoseStatus || (PoseStatus = {}));
+      exports_1("PoseStatus", PoseStatus);
+      scratchDate = new cesium_imports_1.JulianDate(0, 0);
+      scratchCartesian3 = new cesium_imports_1.Cartesian3(0, 0);
+      scratchQuaternion = new cesium_imports_1.Quaternion(0, 0);
+      scratchOriginCartesian3 = new cesium_imports_1.Cartesian3(0, 0);
+      negX90 = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_X, -cesium_imports_1.CesiumMath.PI_OVER_TWO);
+      ContextService = (function() {
+        function ContextService(sessionService, realityService, timerService) {
+          var _this = this;
+          this.sessionService = sessionService;
+          this.realityService = realityService;
+          this.timerService = timerService;
+          this.updateEvent = new utils_1.Event();
+          this.renderEvent = new utils_1.Event();
+          this.wellKnownReferenceFrames = new cesium_imports_1.EntityCollection();
+          this.subscribedEntities = new cesium_imports_1.EntityCollection();
+          this.entities = new cesium_imports_1.CompositeEntityCollection();
+          this.localOriginChangeEvent = new utils_1.Event();
+          this.user = new cesium_imports_1.Entity({
+            id: 'ar.user',
+            name: 'user',
+            position: new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, null),
+            orientation: new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY)
+          });
+          this.localOriginEastNorthUp = new cesium_imports_1.Entity({
+            id: 'ar.localENU',
+            name: 'localOriginENU',
+            position: new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, null),
+            orientation: new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY)
+          });
+          this.localOriginEastUpSouth = new cesium_imports_1.Entity({
+            id: 'ar.localEUS',
+            name: 'localOriginEUS',
+            position: new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, this.localOriginEastNorthUp),
+            orientation: new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_X, Math.PI / 2))
+          });
+          this._time = new cesium_imports_1.JulianDate(0, 0);
+          this._defaultReferenceFrame = this.localOriginEastNorthUp;
+          this._entityPoseCache = {};
+          this._entityPoseMap = new Map();
+          this._subscribedEntities = new WeakMap();
+          this._updatingEntities = new Set();
+          this._knownEntities = new Set();
+          this.entities.addCollection(this.wellKnownReferenceFrames);
+          this.entities.addCollection(this.subscribedEntities);
+          this.subscribedEntities.add(this.user);
+          if (this.sessionService.isManager || this.sessionService.isRealityView) {
+            this.realityService.frameEvent.addEventListener(function(state) {
+              _this._update({
+                reality: _this.realityService.getCurrent(),
+                index: state.index,
+                time: state.time,
+                view: state.view,
+                entities: state.entities || {},
+                sendTime: cesium_imports_1.JulianDate.now()
+              });
+            });
+            this.sessionService.connectEvent.addEventListener(function(session) {
+              _this._subscribedEntities.set(session, new Set());
+              session.on['ar.context.subscribe'] = function(_a) {
+                var id = _a.id;
+                var subscriptions = _this._subscribedEntities.get(session);
+                subscriptions.add(id);
+              };
+            });
+          } else {
+            this.sessionService.manager.on['ar.context.update'] = function(state) {
+              _this._update(state);
+            };
+          }
+        }
+        Object.defineProperty(ContextService.prototype, "time", {
+          get: function() {
+            return this._time;
+          },
+          enumerable: true,
+          configurable: true
+        });
+        Object.defineProperty(ContextService.prototype, "state", {
+          get: function() {
+            return this._state;
+          },
+          enumerable: true,
+          configurable: true
+        });
+        ContextService.prototype.getTime = function() {
+          return this._time;
+        };
+        ContextService.prototype.setDefaultReferenceFrame = function(origin) {
+          this._defaultReferenceFrame = origin;
+        };
+        ContextService.prototype.getDefaultReferenceFrame = function() {
+          return this._defaultReferenceFrame;
+        };
+        ContextService.prototype.subscribeToEntityById = function(id) {
+          this.sessionService.manager.send('ar.context.subscribe', {id: id});
+          return this.subscribedEntities.getOrCreateEntity(id);
+        };
+        ContextService.prototype.getEntityPose = function(entity, referenceFrame) {
+          if (referenceFrame === void 0) {
+            referenceFrame = this._defaultReferenceFrame;
+          }
+          var time = this._time;
+          var key = entity.id + '@' + _stringFromReferenceFrame(referenceFrame);
+          var entityPose = this._entityPoseMap.get(key);
+          if (!cesium_imports_1.defined(entityPose)) {
+            entityPose = {
+              position: new cesium_imports_1.Cartesian3,
+              orientation: new cesium_imports_1.Quaternion,
+              time: cesium_imports_1.JulianDate.clone(time),
+              poseStatus: 0
+            };
+            this._entityPoseMap.set(key, entityPose);
+          } else {
+            cesium_imports_1.JulianDate.clone(time, entityPose.time);
+          }
+          var position = utils_1.getEntityPositionInReferenceFrame(entity, time, referenceFrame, entityPose.position);
+          var orientation = utils_1.getEntityOrientationInReferenceFrame(entity, time, referenceFrame, entityPose.orientation);
+          var hasPose = position && orientation;
+          var poseStatus = 0;
+          var previousStatus = entityPose.poseStatus;
+          if (hasPose) {
+            poseStatus |= PoseStatus.KNOWN;
+          }
+          if (hasPose && !(previousStatus & PoseStatus.KNOWN)) {
+            poseStatus |= PoseStatus.FOUND;
+          } else if (!hasPose && previousStatus & PoseStatus.KNOWN) {
+            poseStatus |= PoseStatus.LOST;
+          }
+          entityPose.poseStatus = poseStatus;
+          return entityPose;
+        };
+        ContextService.prototype.getCurrentEntityState = function(entity, referenceFrame) {
+          console.warn('getCurrentEntityState is deprecated. Use getEntityPose instead.');
+          return this.getEntityPose(entity, referenceFrame);
+        };
+        ContextService.prototype._update = function(state) {
+          var _this = this;
+          state.entities[this.user.id] = state.view.pose;
+          state.view.subviews.forEach(function(subview, index) {
+            state.entities['ar.view_' + index] = subview.pose || state.view.pose;
+          });
+          this._knownEntities.clear();
+          for (var id in state.entities) {
+            this._updateEntity(id, state);
+            this._updatingEntities.add(id);
+            this._knownEntities.add(id);
+          }
+          this._updatingEntities.forEach(function(id) {
+            if (!_this._knownEntities.has(id)) {
+              var entity = _this.subscribedEntities.getById(id);
+              entity.position = undefined;
+              entity.orientation = undefined;
+              _this._updatingEntities.delete(id);
+            }
+          });
+          this._updateLocalOrigin(state);
+          if (this.sessionService.isManager) {
+            this._entityPoseCache = {};
+            for (var _i = 0,
+                _a = this.sessionService.managedSessions; _i < _a.length; _i++) {
+              var session = _a[_i];
+              if (session.info.role === common_1.Role.APPLICATION)
+                this._sendUpdateForSession(state, session);
+            }
+          }
+          this._state = state;
+          cesium_imports_1.JulianDate.clone(this._state.time, this._time);
+          this.updateEvent.raiseEvent(undefined);
+          this.renderEvent.raiseEvent(undefined);
+        };
+        ContextService.prototype._updateEntity = function(id, state) {
+          var entityPose = state.entities[id];
+          if (!entityPose) {
+            if (!this.wellKnownReferenceFrames.getById(id)) {
+              this.subscribedEntities.getOrCreateEntity(id);
+            }
+            return;
+          }
+          var referenceFrame;
+          if (cesium_imports_1.defined(entityPose.r)) {
+            if (typeof entityPose.r === 'number') {
+              referenceFrame = entityPose.r;
+            } else {
+              referenceFrame = this.entities.getById(entityPose.r);
+            }
+          } else {
+            referenceFrame = cesium_imports_1.ReferenceFrame.FIXED;
+          }
+          if (!cesium_imports_1.defined(referenceFrame)) {
+            this._updateEntity(entityPose.r, state);
+            referenceFrame = this.entities.getById(entityPose.r);
+          }
+          var positionValue = (entityPose.p === 0 ? cesium_imports_1.Cartesian3.ZERO : entityPose.p);
+          var orientationValue = entityPose.o === 0 ? cesium_imports_1.Quaternion.IDENTITY : entityPose.o;
+          var entity = this.subscribedEntities.getOrCreateEntity(id);
+          var entityPosition = entity.position;
+          var entityOrientation = entity.orientation;
+          if (!cesium_imports_1.defined(entityPosition) || entityPosition.referenceFrame !== referenceFrame) {
+            entityPosition = new cesium_imports_1.ConstantPositionProperty(positionValue, referenceFrame);
+            entity.position = entityPosition;
+          }
+          if (entityPosition instanceof cesium_imports_1.ConstantPositionProperty) {
+            entityPosition.setValue(positionValue, referenceFrame);
+          } else if (entityPosition instanceof cesium_imports_1.SampledPositionProperty) {
+            entityPosition.addSample(cesium_imports_1.JulianDate.clone(state.time), positionValue);
+          }
+          if (!cesium_imports_1.defined(entityOrientation)) {
+            entityOrientation = new cesium_imports_1.SampledProperty(cesium_imports_1.Quaternion);
+            entityOrientation.forwardExtrapolationType = cesium_imports_1.ExtrapolationType.HOLD;
+            entityOrientation.forwardExtrapolationDuration = 5 / 60;
+            entityOrientation['maxNumSamples'] = 10;
+            entity.orientation = entityOrientation;
+          }
+          if (entityOrientation instanceof cesium_imports_1.ConstantProperty) {
+            entityOrientation.setValue(orientationValue);
+          } else if (entityOrientation instanceof cesium_imports_1.SampledProperty) {
+            entityOrientation.addSample(cesium_imports_1.JulianDate.clone(state.time), orientationValue);
+          }
+          return entity;
+        };
+        ContextService.prototype._updateLocalOrigin = function(state) {
+          var userRootFrame = utils_1.getRootReferenceFrame(this.user);
+          var userPosition = this.user.position.getValueInReferenceFrame(state.time, userRootFrame, scratchCartesian3);
+          var localENUFrame = this.localOriginEastNorthUp.position.referenceFrame;
+          var localENUPosition = this.localOriginEastNorthUp.position.getValueInReferenceFrame(state.time, localENUFrame, scratchOriginCartesian3);
+          if (!localENUPosition || localENUFrame !== userRootFrame || cesium_imports_1.Cartesian3.magnitudeSquared(cesium_imports_1.Cartesian3.subtract(userPosition, localENUPosition, scratchOriginCartesian3)) > 25000000) {
+            var localENUPositionProperty = this.localOriginEastNorthUp.position;
+            var localENUOrientationProperty = this.localOriginEastNorthUp.orientation;
+            localENUPositionProperty.setValue(userPosition, userRootFrame);
+            if (userRootFrame === cesium_imports_1.ReferenceFrame.FIXED) {
+              var enuOrientation = cesium_imports_1.Transforms.headingPitchRollQuaternion(userPosition, 0, 0, 0, undefined, scratchQuaternion);
+              localENUOrientationProperty.setValue(enuOrientation);
+            } else {
+              localENUOrientationProperty.setValue(cesium_imports_1.Quaternion.IDENTITY);
+            }
+            this.localOriginChangeEvent.raiseEvent(undefined);
+          }
+        };
+        ContextService.prototype._sendUpdateForSession = function(parentState, session) {
+          var _this = this;
+          var sessionPoseMap = {};
+          for (var id in parentState.entities) {
+            sessionPoseMap[id] = parentState.entities[id];
+          }
+          this._subscribedEntities.get(session).forEach(function(id) {
+            _this._addEntityAndAncestorsToPoseMap(sessionPoseMap, id, parentState.time);
+          });
+          var sessionState = {
+            reality: parentState.reality,
+            index: parentState.index,
+            time: parentState.time,
+            view: parentState.view,
+            entities: sessionPoseMap,
+            sendTime: cesium_imports_1.JulianDate.now()
+          };
+          session.send('ar.context.update', sessionState);
+        };
+        ContextService.prototype._addEntityAndAncestorsToPoseMap = function(poseMap, id, time) {
+          if (!cesium_imports_1.defined(this._entityPoseCache[id])) {
+            var entity = this.subscribedEntities.getById(id);
+            if (!entity)
+              return;
+            this._entityPoseCache[id] = utils_1.getSerializedEntityPose(entity, time);
+            if (entity.position.referenceFrame instanceof cesium_imports_1.Entity) {
+              var refId = _stringFromReferenceFrame(entity.position.referenceFrame);
+              this._addEntityAndAncestorsToPoseMap(poseMap, refId, time);
+            }
+          }
+          poseMap[id] = this._entityPoseCache[id];
+        };
+        ContextService = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, reality_1.RealityService, timer_1.TimerService)], ContextService);
+        return ContextService;
+      }());
+      exports_1("ContextService", ContextService);
+    }
+  };
+});
+
+$__System.registerDynamic("d", [], true, function($__require, exports, module) {
+  ;
+  var define,
+      global = this,
+      GLOBAL = this;
+  (function(define, undefined) {
+    define(function() {
+      'use strict';
+      var impl = {};
+      impl.mobileDetectRules = {
+        "phones": {
+          "iPhone": "\\biPhone\\b|\\biPod\\b",
+          "BlackBerry": "BlackBerry|\\bBB10\\b|rim[0-9]+",
+          "HTC": "HTC|HTC.*(Sensation|Evo|Vision|Explorer|6800|8100|8900|A7272|S510e|C110e|Legend|Desire|T8282)|APX515CKT|Qtek9090|APA9292KT|HD_mini|Sensation.*Z710e|PG86100|Z715e|Desire.*(A8181|HD)|ADR6200|ADR6400L|ADR6425|001HT|Inspire 4G|Android.*\\bEVO\\b|T-Mobile G1|Z520m",
+          "Nexus": "Nexus One|Nexus S|Galaxy.*Nexus|Android.*Nexus.*Mobile|Nexus 4|Nexus 5|Nexus 6",
+          "Dell": "Dell.*Streak|Dell.*Aero|Dell.*Venue|DELL.*Venue Pro|Dell Flash|Dell Smoke|Dell Mini 3iX|XCD28|XCD35|\\b001DL\\b|\\b101DL\\b|\\bGS01\\b",
+          "Motorola": "Motorola|DROIDX|DROID BIONIC|\\bDroid\\b.*Build|Android.*Xoom|HRI39|MOT-|A1260|A1680|A555|A853|A855|A953|A955|A956|Motorola.*ELECTRIFY|Motorola.*i1|i867|i940|MB200|MB300|MB501|MB502|MB508|MB511|MB520|MB525|MB526|MB611|MB612|MB632|MB810|MB855|MB860|MB861|MB865|MB870|ME501|ME502|ME511|ME525|ME600|ME632|ME722|ME811|ME860|ME863|ME865|MT620|MT710|MT716|MT720|MT810|MT870|MT917|Motorola.*TITANIUM|WX435|WX445|XT300|XT301|XT311|XT316|XT317|XT319|XT320|XT390|XT502|XT530|XT531|XT532|XT535|XT603|XT610|XT611|XT615|XT681|XT701|XT702|XT711|XT720|XT800|XT806|XT860|XT862|XT875|XT882|XT883|XT894|XT901|XT907|XT909|XT910|XT912|XT928|XT926|XT915|XT919|XT925|XT1021|\\bMoto E\\b",
+          "Samsung": "Samsung|SM-G9250|GT-19300|SGH-I337|BGT-S5230|GT-B2100|GT-B2700|GT-B2710|GT-B3210|GT-B3310|GT-B3410|GT-B3730|GT-B3740|GT-B5510|GT-B5512|GT-B5722|GT-B6520|GT-B7300|GT-B7320|GT-B7330|GT-B7350|GT-B7510|GT-B7722|GT-B7800|GT-C3010|GT-C3011|GT-C3060|GT-C3200|GT-C3212|GT-C3212I|GT-C3262|GT-C3222|GT-C3300|GT-C3300K|GT-C3303|GT-C3303K|GT-C3310|GT-C3322|GT-C3330|GT-C3350|GT-C3500|GT-C3510|GT-C3530|GT-C3630|GT-C3780|GT-C5010|GT-C5212|GT-C6620|GT-C6625|GT-C6712|GT-E1050|GT-E1070|GT-E1075|GT-E1080|GT-E1081|GT-E1085|GT-E1087|GT-E1100|GT-E1107|GT-E1110|GT-E1120|GT-E1125|GT-E1130|GT-E1160|GT-E1170|GT-E1175|GT-E1180|GT-E1182|GT-E1200|GT-E1210|GT-E1225|GT-E1230|GT-E1390|GT-E2100|GT-E2120|GT-E2121|GT-E2152|GT-E2220|GT-E2222|GT-E2230|GT-E2232|GT-E2250|GT-E2370|GT-E2550|GT-E2652|GT-E3210|GT-E3213|GT-I5500|GT-I5503|GT-I5700|GT-I5800|GT-I5801|GT-I6410|GT-I6420|GT-I7110|GT-I7410|GT-I7500|GT-I8000|GT-I8150|GT-I8160|GT-I8190|GT-I8320|GT-I8330|GT-I8350|GT-I8530|GT-I8700|GT-I8703|GT-I8910|GT-I9000|GT-I9001|GT-I9003|GT-I9010|GT-I9020|GT-I9023|GT-I9070|GT-I9082|GT-I9100|GT-I9103|GT-I9220|GT-I9250|GT-I9300|GT-I9305|GT-I9500|GT-I9505|GT-M3510|GT-M5650|GT-M7500|GT-M7600|GT-M7603|GT-M8800|GT-M8910|GT-N7000|GT-S3110|GT-S3310|GT-S3350|GT-S3353|GT-S3370|GT-S3650|GT-S3653|GT-S3770|GT-S3850|GT-S5210|GT-S5220|GT-S5229|GT-S5230|GT-S5233|GT-S5250|GT-S5253|GT-S5260|GT-S5263|GT-S5270|GT-S5300|GT-S5330|GT-S5350|GT-S5360|GT-S5363|GT-S5369|GT-S5380|GT-S5380D|GT-S5560|GT-S5570|GT-S5600|GT-S5603|GT-S5610|GT-S5620|GT-S5660|GT-S5670|GT-S5690|GT-S5750|GT-S5780|GT-S5830|GT-S5839|GT-S6102|GT-S6500|GT-S7070|GT-S7200|GT-S7220|GT-S7230|GT-S7233|GT-S7250|GT-S7500|GT-S7530|GT-S7550|GT-S7562|GT-S7710|GT-S8000|GT-S8003|GT-S8500|GT-S8530|GT-S8600|SCH-A310|SCH-A530|SCH-A570|SCH-A610|SCH-A630|SCH-A650|SCH-A790|SCH-A795|SCH-A850|SCH-A870|SCH-A890|SCH-A930|SCH-A950|SCH-A970|SCH-A990|SCH-I100|SCH-I110|SCH-I400|SCH-I405|SCH-I500|SCH-I510|SCH-I515|SCH-I600|SCH-I730|SCH-I760|SCH-I770|SCH-I830|SCH-I910|SCH-I920|SCH-I959|SCH-LC11|SCH-N150|SCH-N300|SCH-R100|SCH-R300|SCH-R351|SCH-R400|SCH-R410|SCH-T300|SCH-U310|SCH-U320|SCH-U350|SCH-U360|SCH-U365|SCH-U370|SCH-U380|SCH-U410|SCH-U430|SCH-U450|SCH-U460|SCH-U470|SCH-U490|SCH-U540|SCH-U550|SCH-U620|SCH-U640|SCH-U650|SCH-U660|SCH-U700|SCH-U740|SCH-U750|SCH-U810|SCH-U820|SCH-U900|SCH-U940|SCH-U960|SCS-26UC|SGH-A107|SGH-A117|SGH-A127|SGH-A137|SGH-A157|SGH-A167|SGH-A177|SGH-A187|SGH-A197|SGH-A227|SGH-A237|SGH-A257|SGH-A437|SGH-A517|SGH-A597|SGH-A637|SGH-A657|SGH-A667|SGH-A687|SGH-A697|SGH-A707|SGH-A717|SGH-A727|SGH-A737|SGH-A747|SGH-A767|SGH-A777|SGH-A797|SGH-A817|SGH-A827|SGH-A837|SGH-A847|SGH-A867|SGH-A877|SGH-A887|SGH-A897|SGH-A927|SGH-B100|SGH-B130|SGH-B200|SGH-B220|SGH-C100|SGH-C110|SGH-C120|SGH-C130|SGH-C140|SGH-C160|SGH-C170|SGH-C180|SGH-C200|SGH-C207|SGH-C210|SGH-C225|SGH-C230|SGH-C417|SGH-C450|SGH-D307|SGH-D347|SGH-D357|SGH-D407|SGH-D415|SGH-D780|SGH-D807|SGH-D980|SGH-E105|SGH-E200|SGH-E315|SGH-E316|SGH-E317|SGH-E335|SGH-E590|SGH-E635|SGH-E715|SGH-E890|SGH-F300|SGH-F480|SGH-I200|SGH-I300|SGH-I320|SGH-I550|SGH-I577|SGH-I600|SGH-I607|SGH-I617|SGH-I627|SGH-I637|SGH-I677|SGH-I700|SGH-I717|SGH-I727|SGH-i747M|SGH-I777|SGH-I780|SGH-I827|SGH-I847|SGH-I857|SGH-I896|SGH-I897|SGH-I900|SGH-I907|SGH-I917|SGH-I927|SGH-I937|SGH-I997|SGH-J150|SGH-J200|SGH-L170|SGH-L700|SGH-M110|SGH-M150|SGH-M200|SGH-N105|SGH-N500|SGH-N600|SGH-N620|SGH-N625|SGH-N700|SGH-N710|SGH-P107|SGH-P207|SGH-P300|SGH-P310|SGH-P520|SGH-P735|SGH-P777|SGH-Q105|SGH-R210|SGH-R220|SGH-R225|SGH-S105|SGH-S307|SGH-T109|SGH-T119|SGH-T139|SGH-T209|SGH-T219|SGH-T229|SGH-T239|SGH-T249|SGH-T259|SGH-T309|SGH-T319|SGH-T329|SGH-T339|SGH-T349|SGH-T359|SGH-T369|SGH-T379|SGH-T409|SGH-T429|SGH-T439|SGH-T459|SGH-T469|SGH-T479|SGH-T499|SGH-T509|SGH-T519|SGH-T539|SGH-T559|SGH-T589|SGH-T609|SGH-T619|SGH-T629|SGH-T639|SGH-T659|SGH-T669|SGH-T679|SGH-T709|SGH-T719|SGH-T729|SGH-T739|SGH-T746|SGH-T749|SGH-T759|SGH-T769|SGH-T809|SGH-T819|SGH-T839|SGH-T919|SGH-T929|SGH-T939|SGH-T959|SGH-T989|SGH-U100|SGH-U200|SGH-U800|SGH-V205|SGH-V206|SGH-X100|SGH-X105|SGH-X120|SGH-X140|SGH-X426|SGH-X427|SGH-X475|SGH-X495|SGH-X497|SGH-X507|SGH-X600|SGH-X610|SGH-X620|SGH-X630|SGH-X700|SGH-X820|SGH-X890|SGH-Z130|SGH-Z150|SGH-Z170|SGH-ZX10|SGH-ZX20|SHW-M110|SPH-A120|SPH-A400|SPH-A420|SPH-A460|SPH-A500|SPH-A560|SPH-A600|SPH-A620|SPH-A660|SPH-A700|SPH-A740|SPH-A760|SPH-A790|SPH-A800|SPH-A820|SPH-A840|SPH-A880|SPH-A900|SPH-A940|SPH-A960|SPH-D600|SPH-D700|SPH-D710|SPH-D720|SPH-I300|SPH-I325|SPH-I330|SPH-I350|SPH-I500|SPH-I600|SPH-I700|SPH-L700|SPH-M100|SPH-M220|SPH-M240|SPH-M300|SPH-M305|SPH-M320|SPH-M330|SPH-M350|SPH-M360|SPH-M370|SPH-M380|SPH-M510|SPH-M540|SPH-M550|SPH-M560|SPH-M570|SPH-M580|SPH-M610|SPH-M620|SPH-M630|SPH-M800|SPH-M810|SPH-M850|SPH-M900|SPH-M910|SPH-M920|SPH-M930|SPH-N100|SPH-N200|SPH-N240|SPH-N300|SPH-N400|SPH-Z400|SWC-E100|SCH-i909|GT-N7100|GT-N7105|SCH-I535|SM-N900A|SGH-I317|SGH-T999L|GT-S5360B|GT-I8262|GT-S6802|GT-S6312|GT-S6310|GT-S5312|GT-S5310|GT-I9105|GT-I8510|GT-S6790N|SM-G7105|SM-N9005|GT-S5301|GT-I9295|GT-I9195|SM-C101|GT-S7392|GT-S7560|GT-B7610|GT-I5510|GT-S7582|GT-S7530E|GT-I8750|SM-G9006V|SM-G9008V|SM-G9009D|SM-G900A|SM-G900D|SM-G900F|SM-G900H|SM-G900I|SM-G900J|SM-G900K|SM-G900L|SM-G900M|SM-G900P|SM-G900R4|SM-G900S|SM-G900T|SM-G900V|SM-G900W8|SHV-E160K|SCH-P709|SCH-P729|SM-T2558|GT-I9205|SM-G9350",
+          "LG": "\\bLG\\b;|LG[- ]?(C800|C900|E400|E610|E900|E-900|F160|F180K|F180L|F180S|730|855|L160|LS740|LS840|LS970|LU6200|MS690|MS695|MS770|MS840|MS870|MS910|P500|P700|P705|VM696|AS680|AS695|AX840|C729|E970|GS505|272|C395|E739BK|E960|L55C|L75C|LS696|LS860|P769BK|P350|P500|P509|P870|UN272|US730|VS840|VS950|LN272|LN510|LS670|LS855|LW690|MN270|MN510|P509|P769|P930|UN200|UN270|UN510|UN610|US670|US740|US760|UX265|UX840|VN271|VN530|VS660|VS700|VS740|VS750|VS910|VS920|VS930|VX9200|VX11000|AX840A|LW770|P506|P925|P999|E612|D955|D802|MS323)",
+          "Sony": "SonyST|SonyLT|SonyEricsson|SonyEricssonLT15iv|LT18i|E10i|LT28h|LT26w|SonyEricssonMT27i|C5303|C6902|C6903|C6906|C6943|D2533",
+          "Asus": "Asus.*Galaxy|PadFone.*Mobile",
+          "Micromax": "Micromax.*\\b(A210|A92|A88|A72|A111|A110Q|A115|A116|A110|A90S|A26|A51|A35|A54|A25|A27|A89|A68|A65|A57|A90)\\b",
+          "Palm": "PalmSource|Palm",
+          "Vertu": "Vertu|Vertu.*Ltd|Vertu.*Ascent|Vertu.*Ayxta|Vertu.*Constellation(F|Quest)?|Vertu.*Monika|Vertu.*Signature",
+          "Pantech": "PANTECH|IM-A850S|IM-A840S|IM-A830L|IM-A830K|IM-A830S|IM-A820L|IM-A810K|IM-A810S|IM-A800S|IM-T100K|IM-A725L|IM-A780L|IM-A775C|IM-A770K|IM-A760S|IM-A750K|IM-A740S|IM-A730S|IM-A720L|IM-A710K|IM-A690L|IM-A690S|IM-A650S|IM-A630K|IM-A600S|VEGA PTL21|PT003|P8010|ADR910L|P6030|P6020|P9070|P4100|P9060|P5000|CDM8992|TXT8045|ADR8995|IS11PT|P2030|P6010|P8000|PT002|IS06|CDM8999|P9050|PT001|TXT8040|P2020|P9020|P2000|P7040|P7000|C790",
+          "Fly": "IQ230|IQ444|IQ450|IQ440|IQ442|IQ441|IQ245|IQ256|IQ236|IQ255|IQ235|IQ245|IQ275|IQ240|IQ285|IQ280|IQ270|IQ260|IQ250",
+          "Wiko": "KITE 4G|HIGHWAY|GETAWAY|STAIRWAY|DARKSIDE|DARKFULL|DARKNIGHT|DARKMOON|SLIDE|WAX 4G|RAINBOW|BLOOM|SUNSET|GOA|LENNY|BARRY|IGGY|OZZY|CINK FIVE|CINK PEAX|CINK PEAX 2|CINK SLIM|CINK SLIM 2|CINK +|CINK KING|CINK PEAX|CINK SLIM|SUBLIM",
+          "iMobile": "i-mobile (IQ|i-STYLE|idea|ZAA|Hitz)",
+          "SimValley": "\\b(SP-80|XT-930|SX-340|XT-930|SX-310|SP-360|SP60|SPT-800|SP-120|SPT-800|SP-140|SPX-5|SPX-8|SP-100|SPX-8|SPX-12)\\b",
+          "Wolfgang": "AT-B24D|AT-AS50HD|AT-AS40W|AT-AS55HD|AT-AS45q2|AT-B26D|AT-AS50Q",
+          "Alcatel": "Alcatel",
+          "Nintendo": "Nintendo 3DS",
+          "Amoi": "Amoi",
+          "INQ": "INQ",
+          "GenericPhone": "Tapatalk|PDA;|SAGEM|\\bmmp\\b|pocket|\\bpsp\\b|symbian|Smartphone|smartfon|treo|up.browser|up.link|vodafone|\\bwap\\b|nokia|Series40|Series60|S60|SonyEricsson|N900|MAUI.*WAP.*Browser"
+        },
+        "tablets": {
+          "iPad": "iPad|iPad.*Mobile",
+          "NexusTablet": "Android.*Nexus[\\s]+(7|9|10)",
+          "SamsungTablet": "SAMSUNG.*Tablet|Galaxy.*Tab|SC-01C|GT-P1000|GT-P1003|GT-P1010|GT-P3105|GT-P6210|GT-P6800|GT-P6810|GT-P7100|GT-P7300|GT-P7310|GT-P7500|GT-P7510|SCH-I800|SCH-I815|SCH-I905|SGH-I957|SGH-I987|SGH-T849|SGH-T859|SGH-T869|SPH-P100|GT-P3100|GT-P3108|GT-P3110|GT-P5100|GT-P5110|GT-P6200|GT-P7320|GT-P7511|GT-N8000|GT-P8510|SGH-I497|SPH-P500|SGH-T779|SCH-I705|SCH-I915|GT-N8013|GT-P3113|GT-P5113|GT-P8110|GT-N8010|GT-N8005|GT-N8020|GT-P1013|GT-P6201|GT-P7501|GT-N5100|GT-N5105|GT-N5110|SHV-E140K|SHV-E140L|SHV-E140S|SHV-E150S|SHV-E230K|SHV-E230L|SHV-E230S|SHW-M180K|SHW-M180L|SHW-M180S|SHW-M180W|SHW-M300W|SHW-M305W|SHW-M380K|SHW-M380S|SHW-M380W|SHW-M430W|SHW-M480K|SHW-M480S|SHW-M480W|SHW-M485W|SHW-M486W|SHW-M500W|GT-I9228|SCH-P739|SCH-I925|GT-I9200|GT-P5200|GT-P5210|GT-P5210X|SM-T311|SM-T310|SM-T310X|SM-T210|SM-T210R|SM-T211|SM-P600|SM-P601|SM-P605|SM-P900|SM-P901|SM-T217|SM-T217A|SM-T217S|SM-P6000|SM-T3100|SGH-I467|XE500|SM-T110|GT-P5220|GT-I9200X|GT-N5110X|GT-N5120|SM-P905|SM-T111|SM-T2105|SM-T315|SM-T320|SM-T320X|SM-T321|SM-T520|SM-T525|SM-T530NU|SM-T230NU|SM-T330NU|SM-T900|XE500T1C|SM-P605V|SM-P905V|SM-T337V|SM-T537V|SM-T707V|SM-T807V|SM-P600X|SM-P900X|SM-T210X|SM-T230|SM-T230X|SM-T325|GT-P7503|SM-T531|SM-T330|SM-T530|SM-T705|SM-T705C|SM-T535|SM-T331|SM-T800|SM-T700|SM-T537|SM-T807|SM-P907A|SM-T337A|SM-T537A|SM-T707A|SM-T807A|SM-T237|SM-T807P|SM-P607T|SM-T217T|SM-T337T|SM-T807T|SM-T116NQ|SM-P550|SM-T350|SM-T550|SM-T9000|SM-P9000|SM-T705Y|SM-T805|GT-P3113|SM-T710|SM-T810|SM-T815|SM-T360|SM-T533|SM-T113|SM-T335|SM-T715|SM-T560|SM-T670|SM-T677|SM-T377|SM-T567|SM-T357T|SM-T555|SM-T561",
+          "Kindle": "Kindle|Silk.*Accelerated|Android.*\\b(KFOT|KFTT|KFJWI|KFJWA|KFOTE|KFSOWI|KFTHWI|KFTHWA|KFAPWI|KFAPWA|WFJWAE|KFSAWA|KFSAWI|KFASWI)\\b",
+          "SurfaceTablet": "Windows NT [0-9.]+; ARM;.*(Tablet|ARMBJS)",
+          "HPTablet": "HP Slate (7|8|10)|HP ElitePad 900|hp-tablet|EliteBook.*Touch|HP 8|Slate 21|HP SlateBook 10",
+          "AsusTablet": "^.*PadFone((?!Mobile).)*$|Transformer|TF101|TF101G|TF300T|TF300TG|TF300TL|TF700T|TF700KL|TF701T|TF810C|ME171|ME301T|ME302C|ME371MG|ME370T|ME372MG|ME172V|ME173X|ME400C|Slider SL101|\\bK00F\\b|\\bK00C\\b|\\bK00E\\b|\\bK00L\\b|TX201LA|ME176C|ME102A|\\bM80TA\\b|ME372CL|ME560CG|ME372CG|ME302KL| K010 | K017 |ME572C|ME103K|ME170C|ME171C|\\bME70C\\b|ME581C|ME581CL|ME8510C|ME181C",
+          "BlackBerryTablet": "PlayBook|RIM Tablet",
+          "HTCtablet": "HTC_Flyer_P512|HTC Flyer|HTC Jetstream|HTC-P715a|HTC EVO View 4G|PG41200|PG09410",
+          "MotorolaTablet": "xoom|sholest|MZ615|MZ605|MZ505|MZ601|MZ602|MZ603|MZ604|MZ606|MZ607|MZ608|MZ609|MZ615|MZ616|MZ617",
+          "NookTablet": "Android.*Nook|NookColor|nook browser|BNRV200|BNRV200A|BNTV250|BNTV250A|BNTV400|BNTV600|LogicPD Zoom2",
+          "AcerTablet": "Android.*; \\b(A100|A101|A110|A200|A210|A211|A500|A501|A510|A511|A700|A701|W500|W500P|W501|W501P|W510|W511|W700|G100|G100W|B1-A71|B1-710|B1-711|A1-810|A1-811|A1-830)\\b|W3-810|\\bA3-A10\\b|\\bA3-A11\\b",
+          "ToshibaTablet": "Android.*(AT100|AT105|AT200|AT205|AT270|AT275|AT300|AT305|AT1S5|AT500|AT570|AT700|AT830)|TOSHIBA.*FOLIO",
+          "LGTablet": "\\bL-06C|LG-V909|LG-V900|LG-V700|LG-V510|LG-V500|LG-V410|LG-V400|LG-VK810\\b",
+          "FujitsuTablet": "Android.*\\b(F-01D|F-02F|F-05E|F-10D|M532|Q572)\\b",
+          "PrestigioTablet": "PMP3170B|PMP3270B|PMP3470B|PMP7170B|PMP3370B|PMP3570C|PMP5870C|PMP3670B|PMP5570C|PMP5770D|PMP3970B|PMP3870C|PMP5580C|PMP5880D|PMP5780D|PMP5588C|PMP7280C|PMP7280C3G|PMP7280|PMP7880D|PMP5597D|PMP5597|PMP7100D|PER3464|PER3274|PER3574|PER3884|PER5274|PER5474|PMP5097CPRO|PMP5097|PMP7380D|PMP5297C|PMP5297C_QUAD|PMP812E|PMP812E3G|PMP812F|PMP810E|PMP880TD|PMT3017|PMT3037|PMT3047|PMT3057|PMT7008|PMT5887|PMT5001|PMT5002",
+          "LenovoTablet": "Lenovo TAB|Idea(Tab|Pad)( A1|A10| K1|)|ThinkPad([ ]+)?Tablet|Lenovo.*(S2109|S2110|S5000|S6000|K3011|A3000|A3500|A1000|A2107|A2109|A1107|A5500|A7600|B6000|B8000|B8080)(-|)(FL|F|HV|H|)",
+          "DellTablet": "Venue 11|Venue 8|Venue 7|Dell Streak 10|Dell Streak 7",
+          "YarvikTablet": "Android.*\\b(TAB210|TAB211|TAB224|TAB250|TAB260|TAB264|TAB310|TAB360|TAB364|TAB410|TAB411|TAB420|TAB424|TAB450|TAB460|TAB461|TAB464|TAB465|TAB467|TAB468|TAB07-100|TAB07-101|TAB07-150|TAB07-151|TAB07-152|TAB07-200|TAB07-201-3G|TAB07-210|TAB07-211|TAB07-212|TAB07-214|TAB07-220|TAB07-400|TAB07-485|TAB08-150|TAB08-200|TAB08-201-3G|TAB08-201-30|TAB09-100|TAB09-211|TAB09-410|TAB10-150|TAB10-201|TAB10-211|TAB10-400|TAB10-410|TAB13-201|TAB274EUK|TAB275EUK|TAB374EUK|TAB462EUK|TAB474EUK|TAB9-200)\\b",
+          "MedionTablet": "Android.*\\bOYO\\b|LIFE.*(P9212|P9514|P9516|S9512)|LIFETAB",
+          "ArnovaTablet": "AN10G2|AN7bG3|AN7fG3|AN8G3|AN8cG3|AN7G3|AN9G3|AN7dG3|AN7dG3ST|AN7dG3ChildPad|AN10bG3|AN10bG3DT|AN9G2",
+          "IntensoTablet": "INM8002KP|INM1010FP|INM805ND|Intenso Tab|TAB1004",
+          "IRUTablet": "M702pro",
+          "MegafonTablet": "MegaFon V9|\\bZTE V9\\b|Android.*\\bMT7A\\b",
+          "EbodaTablet": "E-Boda (Supreme|Impresspeed|Izzycomm|Essential)",
+          "AllViewTablet": "Allview.*(Viva|Alldro|City|Speed|All TV|Frenzy|Quasar|Shine|TX1|AX1|AX2)",
+          "ArchosTablet": "\\b(101G9|80G9|A101IT)\\b|Qilive 97R|Archos5|\\bARCHOS (70|79|80|90|97|101|FAMILYPAD|)(b|)(G10| Cobalt| TITANIUM(HD|)| Xenon| Neon|XSK| 2| XS 2| PLATINUM| CARBON|GAMEPAD)\\b",
+          "AinolTablet": "NOVO7|NOVO8|NOVO10|Novo7Aurora|Novo7Basic|NOVO7PALADIN|novo9-Spark",
+          "SonyTablet": "Sony.*Tablet|Xperia Tablet|Sony Tablet S|SO-03E|SGPT12|SGPT13|SGPT114|SGPT121|SGPT122|SGPT123|SGPT111|SGPT112|SGPT113|SGPT131|SGPT132|SGPT133|SGPT211|SGPT212|SGPT213|SGP311|SGP312|SGP321|EBRD1101|EBRD1102|EBRD1201|SGP351|SGP341|SGP511|SGP512|SGP521|SGP541|SGP551|SGP621|SGP612|SOT31",
+          "PhilipsTablet": "\\b(PI2010|PI3000|PI3100|PI3105|PI3110|PI3205|PI3210|PI3900|PI4010|PI7000|PI7100)\\b",
+          "CubeTablet": "Android.*(K8GT|U9GT|U10GT|U16GT|U17GT|U18GT|U19GT|U20GT|U23GT|U30GT)|CUBE U8GT",
+          "CobyTablet": "MID1042|MID1045|MID1125|MID1126|MID7012|MID7014|MID7015|MID7034|MID7035|MID7036|MID7042|MID7048|MID7127|MID8042|MID8048|MID8127|MID9042|MID9740|MID9742|MID7022|MID7010",
+          "MIDTablet": "M9701|M9000|M9100|M806|M1052|M806|T703|MID701|MID713|MID710|MID727|MID760|MID830|MID728|MID933|MID125|MID810|MID732|MID120|MID930|MID800|MID731|MID900|MID100|MID820|MID735|MID980|MID130|MID833|MID737|MID960|MID135|MID860|MID736|MID140|MID930|MID835|MID733|MID4X10",
+          "MSITablet": "MSI \\b(Primo 73K|Primo 73L|Primo 81L|Primo 77|Primo 93|Primo 75|Primo 76|Primo 73|Primo 81|Primo 91|Primo 90|Enjoy 71|Enjoy 7|Enjoy 10)\\b",
+          "SMiTTablet": "Android.*(\\bMID\\b|MID-560|MTV-T1200|MTV-PND531|MTV-P1101|MTV-PND530)",
+          "RockChipTablet": "Android.*(RK2818|RK2808A|RK2918|RK3066)|RK2738|RK2808A",
+          "FlyTablet": "IQ310|Fly Vision",
+          "bqTablet": "Android.*(bq)?.*(Elcano|Curie|Edison|Maxwell|Kepler|Pascal|Tesla|Hypatia|Platon|Newton|Livingstone|Cervantes|Avant|Aquaris E10)|Maxwell.*Lite|Maxwell.*Plus",
+          "HuaweiTablet": "MediaPad|MediaPad 7 Youth|IDEOS S7|S7-201c|S7-202u|S7-101|S7-103|S7-104|S7-105|S7-106|S7-201|S7-Slim",
+          "NecTablet": "\\bN-06D|\\bN-08D",
+          "PantechTablet": "Pantech.*P4100",
+          "BronchoTablet": "Broncho.*(N701|N708|N802|a710)",
+          "VersusTablet": "TOUCHPAD.*[78910]|\\bTOUCHTAB\\b",
+          "ZyncTablet": "z1000|Z99 2G|z99|z930|z999|z990|z909|Z919|z900",
+          "PositivoTablet": "TB07STA|TB10STA|TB07FTA|TB10FTA",
+          "NabiTablet": "Android.*\\bNabi",
+          "KoboTablet": "Kobo Touch|\\bK080\\b|\\bVox\\b Build|\\bArc\\b Build",
+          "DanewTablet": "DSlide.*\\b(700|701R|702|703R|704|802|970|971|972|973|974|1010|1012)\\b",
+          "TexetTablet": "NaviPad|TB-772A|TM-7045|TM-7055|TM-9750|TM-7016|TM-7024|TM-7026|TM-7041|TM-7043|TM-7047|TM-8041|TM-9741|TM-9747|TM-9748|TM-9751|TM-7022|TM-7021|TM-7020|TM-7011|TM-7010|TM-7023|TM-7025|TM-7037W|TM-7038W|TM-7027W|TM-9720|TM-9725|TM-9737W|TM-1020|TM-9738W|TM-9740|TM-9743W|TB-807A|TB-771A|TB-727A|TB-725A|TB-719A|TB-823A|TB-805A|TB-723A|TB-715A|TB-707A|TB-705A|TB-709A|TB-711A|TB-890HD|TB-880HD|TB-790HD|TB-780HD|TB-770HD|TB-721HD|TB-710HD|TB-434HD|TB-860HD|TB-840HD|TB-760HD|TB-750HD|TB-740HD|TB-730HD|TB-722HD|TB-720HD|TB-700HD|TB-500HD|TB-470HD|TB-431HD|TB-430HD|TB-506|TB-504|TB-446|TB-436|TB-416|TB-146SE|TB-126SE",
+          "PlaystationTablet": "Playstation.*(Portable|Vita)",
+          "TrekstorTablet": "ST10416-1|VT10416-1|ST70408-1|ST702xx-1|ST702xx-2|ST80208|ST97216|ST70104-2|VT10416-2|ST10216-2A|SurfTab",
+          "PyleAudioTablet": "\\b(PTBL10CEU|PTBL10C|PTBL72BC|PTBL72BCEU|PTBL7CEU|PTBL7C|PTBL92BC|PTBL92BCEU|PTBL9CEU|PTBL9CUK|PTBL9C)\\b",
+          "AdvanTablet": "Android.* \\b(E3A|T3X|T5C|T5B|T3E|T3C|T3B|T1J|T1F|T2A|T1H|T1i|E1C|T1-E|T5-A|T4|E1-B|T2Ci|T1-B|T1-D|O1-A|E1-A|T1-A|T3A|T4i)\\b ",
+          "DanyTechTablet": "Genius Tab G3|Genius Tab S2|Genius Tab Q3|Genius Tab G4|Genius Tab Q4|Genius Tab G-II|Genius TAB GII|Genius TAB GIII|Genius Tab S1",
+          "GalapadTablet": "Android.*\\bG1\\b",
+          "MicromaxTablet": "Funbook|Micromax.*\\b(P250|P560|P360|P362|P600|P300|P350|P500|P275)\\b",
+          "KarbonnTablet": "Android.*\\b(A39|A37|A34|ST8|ST10|ST7|Smart Tab3|Smart Tab2)\\b",
+          "AllFineTablet": "Fine7 Genius|Fine7 Shine|Fine7 Air|Fine8 Style|Fine9 More|Fine10 Joy|Fine11 Wide",
+          "PROSCANTablet": "\\b(PEM63|PLT1023G|PLT1041|PLT1044|PLT1044G|PLT1091|PLT4311|PLT4311PL|PLT4315|PLT7030|PLT7033|PLT7033D|PLT7035|PLT7035D|PLT7044K|PLT7045K|PLT7045KB|PLT7071KG|PLT7072|PLT7223G|PLT7225G|PLT7777G|PLT7810K|PLT7849G|PLT7851G|PLT7852G|PLT8015|PLT8031|PLT8034|PLT8036|PLT8080K|PLT8082|PLT8088|PLT8223G|PLT8234G|PLT8235G|PLT8816K|PLT9011|PLT9045K|PLT9233G|PLT9735|PLT9760G|PLT9770G)\\b",
+          "YONESTablet": "BQ1078|BC1003|BC1077|RK9702|BC9730|BC9001|IT9001|BC7008|BC7010|BC708|BC728|BC7012|BC7030|BC7027|BC7026",
+          "ChangJiaTablet": "TPC7102|TPC7103|TPC7105|TPC7106|TPC7107|TPC7201|TPC7203|TPC7205|TPC7210|TPC7708|TPC7709|TPC7712|TPC7110|TPC8101|TPC8103|TPC8105|TPC8106|TPC8203|TPC8205|TPC8503|TPC9106|TPC9701|TPC97101|TPC97103|TPC97105|TPC97106|TPC97111|TPC97113|TPC97203|TPC97603|TPC97809|TPC97205|TPC10101|TPC10103|TPC10106|TPC10111|TPC10203|TPC10205|TPC10503",
+          "GUTablet": "TX-A1301|TX-M9002|Q702|kf026",
+          "PointOfViewTablet": "TAB-P506|TAB-navi-7-3G-M|TAB-P517|TAB-P-527|TAB-P701|TAB-P703|TAB-P721|TAB-P731N|TAB-P741|TAB-P825|TAB-P905|TAB-P925|TAB-PR945|TAB-PL1015|TAB-P1025|TAB-PI1045|TAB-P1325|TAB-PROTAB[0-9]+|TAB-PROTAB25|TAB-PROTAB26|TAB-PROTAB27|TAB-PROTAB26XL|TAB-PROTAB2-IPS9|TAB-PROTAB30-IPS9|TAB-PROTAB25XXL|TAB-PROTAB26-IPS10|TAB-PROTAB30-IPS10",
+          "OvermaxTablet": "OV-(SteelCore|NewBase|Basecore|Baseone|Exellen|Quattor|EduTab|Solution|ACTION|BasicTab|TeddyTab|MagicTab|Stream|TB-08|TB-09)",
+          "HCLTablet": "HCL.*Tablet|Connect-3G-2.0|Connect-2G-2.0|ME Tablet U1|ME Tablet U2|ME Tablet G1|ME Tablet X1|ME Tablet Y2|ME Tablet Sync",
+          "DPSTablet": "DPS Dream 9|DPS Dual 7",
+          "VistureTablet": "V97 HD|i75 3G|Visture V4( HD)?|Visture V5( HD)?|Visture V10",
+          "CrestaTablet": "CTP(-)?810|CTP(-)?818|CTP(-)?828|CTP(-)?838|CTP(-)?888|CTP(-)?978|CTP(-)?980|CTP(-)?987|CTP(-)?988|CTP(-)?989",
+          "MediatekTablet": "\\bMT8125|MT8389|MT8135|MT8377\\b",
+          "ConcordeTablet": "Concorde([ ]+)?Tab|ConCorde ReadMan",
+          "GoCleverTablet": "GOCLEVER TAB|A7GOCLEVER|M1042|M7841|M742|R1042BK|R1041|TAB A975|TAB A7842|TAB A741|TAB A741L|TAB M723G|TAB M721|TAB A1021|TAB I921|TAB R721|TAB I720|TAB T76|TAB R70|TAB R76.2|TAB R106|TAB R83.2|TAB M813G|TAB I721|GCTA722|TAB I70|TAB I71|TAB S73|TAB R73|TAB R74|TAB R93|TAB R75|TAB R76.1|TAB A73|TAB A93|TAB A93.2|TAB T72|TAB R83|TAB R974|TAB R973|TAB A101|TAB A103|TAB A104|TAB A104.2|R105BK|M713G|A972BK|TAB A971|TAB R974.2|TAB R104|TAB R83.3|TAB A1042",
+          "ModecomTablet": "FreeTAB 9000|FreeTAB 7.4|FreeTAB 7004|FreeTAB 7800|FreeTAB 2096|FreeTAB 7.5|FreeTAB 1014|FreeTAB 1001 |FreeTAB 8001|FreeTAB 9706|FreeTAB 9702|FreeTAB 7003|FreeTAB 7002|FreeTAB 1002|FreeTAB 7801|FreeTAB 1331|FreeTAB 1004|FreeTAB 8002|FreeTAB 8014|FreeTAB 9704|FreeTAB 1003",
+          "VoninoTablet": "\\b(Argus[ _]?S|Diamond[ _]?79HD|Emerald[ _]?78E|Luna[ _]?70C|Onyx[ _]?S|Onyx[ _]?Z|Orin[ _]?HD|Orin[ _]?S|Otis[ _]?S|SpeedStar[ _]?S|Magnet[ _]?M9|Primus[ _]?94[ _]?3G|Primus[ _]?94HD|Primus[ _]?QS|Android.*\\bQ8\\b|Sirius[ _]?EVO[ _]?QS|Sirius[ _]?QS|Spirit[ _]?S)\\b",
+          "ECSTablet": "V07OT2|TM105A|S10OT1|TR10CS1",
+          "StorexTablet": "eZee[_']?(Tab|Go)[0-9]+|TabLC7|Looney Tunes Tab",
+          "VodafoneTablet": "SmartTab([ ]+)?[0-9]+|SmartTabII10|SmartTabII7",
+          "EssentielBTablet": "Smart[ ']?TAB[ ]+?[0-9]+|Family[ ']?TAB2",
+          "RossMoorTablet": "RM-790|RM-997|RMD-878G|RMD-974R|RMT-705A|RMT-701|RME-601|RMT-501|RMT-711",
+          "iMobileTablet": "i-mobile i-note",
+          "TolinoTablet": "tolino tab [0-9.]+|tolino shine",
+          "AudioSonicTablet": "\\bC-22Q|T7-QC|T-17B|T-17P\\b",
+          "AMPETablet": "Android.* A78 ",
+          "SkkTablet": "Android.* (SKYPAD|PHOENIX|CYCLOPS)",
+          "TecnoTablet": "TECNO P9",
+          "JXDTablet": "Android.* \\b(F3000|A3300|JXD5000|JXD3000|JXD2000|JXD300B|JXD300|S5800|S7800|S602b|S5110b|S7300|S5300|S602|S603|S5100|S5110|S601|S7100a|P3000F|P3000s|P101|P200s|P1000m|P200m|P9100|P1000s|S6600b|S908|P1000|P300|S18|S6600|S9100)\\b",
+          "iJoyTablet": "Tablet (Spirit 7|Essentia|Galatea|Fusion|Onix 7|Landa|Titan|Scooby|Deox|Stella|Themis|Argon|Unique 7|Sygnus|Hexen|Finity 7|Cream|Cream X2|Jade|Neon 7|Neron 7|Kandy|Scape|Saphyr 7|Rebel|Biox|Rebel|Rebel 8GB|Myst|Draco 7|Myst|Tab7-004|Myst|Tadeo Jones|Tablet Boing|Arrow|Draco Dual Cam|Aurix|Mint|Amity|Revolution|Finity 9|Neon 9|T9w|Amity 4GB Dual Cam|Stone 4GB|Stone 8GB|Andromeda|Silken|X2|Andromeda II|Halley|Flame|Saphyr 9,7|Touch 8|Planet|Triton|Unique 10|Hexen 10|Memphis 4GB|Memphis 8GB|Onix 10)",
+          "FX2Tablet": "FX2 PAD7|FX2 PAD10",
+          "XoroTablet": "KidsPAD 701|PAD[ ]?712|PAD[ ]?714|PAD[ ]?716|PAD[ ]?717|PAD[ ]?718|PAD[ ]?720|PAD[ ]?721|PAD[ ]?722|PAD[ ]?790|PAD[ ]?792|PAD[ ]?900|PAD[ ]?9715D|PAD[ ]?9716DR|PAD[ ]?9718DR|PAD[ ]?9719QR|PAD[ ]?9720QR|TelePAD1030|Telepad1032|TelePAD730|TelePAD731|TelePAD732|TelePAD735Q|TelePAD830|TelePAD9730|TelePAD795|MegaPAD 1331|MegaPAD 1851|MegaPAD 2151",
+          "ViewsonicTablet": "ViewPad 10pi|ViewPad 10e|ViewPad 10s|ViewPad E72|ViewPad7|ViewPad E100|ViewPad 7e|ViewSonic VB733|VB100a",
+          "OdysTablet": "LOOX|XENO10|ODYS[ -](Space|EVO|Xpress|NOON)|\\bXELIO\\b|Xelio10Pro|XELIO7PHONETAB|XELIO10EXTREME|XELIOPT2|NEO_QUAD10",
+          "CaptivaTablet": "CAPTIVA PAD",
+          "IconbitTablet": "NetTAB|NT-3702|NT-3702S|NT-3702S|NT-3603P|NT-3603P|NT-0704S|NT-0704S|NT-3805C|NT-3805C|NT-0806C|NT-0806C|NT-0909T|NT-0909T|NT-0907S|NT-0907S|NT-0902S|NT-0902S",
+          "TeclastTablet": "T98 4G|\\bP80\\b|\\bX90HD\\b|X98 Air|X98 Air 3G|\\bX89\\b|P80 3G|\\bX80h\\b|P98 Air|\\bX89HD\\b|P98 3G|\\bP90HD\\b|P89 3G|X98 3G|\\bP70h\\b|P79HD 3G|G18d 3G|\\bP79HD\\b|\\bP89s\\b|\\bA88\\b|\\bP10HD\\b|\\bP19HD\\b|G18 3G|\\bP78HD\\b|\\bA78\\b|\\bP75\\b|G17s 3G|G17h 3G|\\bP85t\\b|\\bP90\\b|\\bP11\\b|\\bP98t\\b|\\bP98HD\\b|\\bG18d\\b|\\bP85s\\b|\\bP11HD\\b|\\bP88s\\b|\\bA80HD\\b|\\bA80se\\b|\\bA10h\\b|\\bP89\\b|\\bP78s\\b|\\bG18\\b|\\bP85\\b|\\bA70h\\b|\\bA70\\b|\\bG17\\b|\\bP18\\b|\\bA80s\\b|\\bA11s\\b|\\bP88HD\\b|\\bA80h\\b|\\bP76s\\b|\\bP76h\\b|\\bP98\\b|\\bA10HD\\b|\\bP78\\b|\\bP88\\b|\\bA11\\b|\\bA10t\\b|\\bP76a\\b|\\bP76t\\b|\\bP76e\\b|\\bP85HD\\b|\\bP85a\\b|\\bP86\\b|\\bP75HD\\b|\\bP76v\\b|\\bA12\\b|\\bP75a\\b|\\bA15\\b|\\bP76Ti\\b|\\bP81HD\\b|\\bA10\\b|\\bT760VE\\b|\\bT720HD\\b|\\bP76\\b|\\bP73\\b|\\bP71\\b|\\bP72\\b|\\bT720SE\\b|\\bC520Ti\\b|\\bT760\\b|\\bT720VE\\b|T720-3GE|T720-WiFi",
+          "OndaTablet": "\\b(V975i|Vi30|VX530|V701|Vi60|V701s|Vi50|V801s|V719|Vx610w|VX610W|V819i|Vi10|VX580W|Vi10|V711s|V813|V811|V820w|V820|Vi20|V711|VI30W|V712|V891w|V972|V819w|V820w|Vi60|V820w|V711|V813s|V801|V819|V975s|V801|V819|V819|V818|V811|V712|V975m|V101w|V961w|V812|V818|V971|V971s|V919|V989|V116w|V102w|V973|Vi40)\\b[\\s]+",
+          "JaytechTablet": "TPC-PA762",
+          "BlaupunktTablet": "Endeavour 800NG|Endeavour 1010",
+          "DigmaTablet": "\\b(iDx10|iDx9|iDx8|iDx7|iDxD7|iDxD8|iDsQ8|iDsQ7|iDsQ8|iDsD10|iDnD7|3TS804H|iDsQ11|iDj7|iDs10)\\b",
+          "EvolioTablet": "ARIA_Mini_wifi|Aria[ _]Mini|Evolio X10|Evolio X7|Evolio X8|\\bEvotab\\b|\\bNeura\\b",
+          "LavaTablet": "QPAD E704|\\bIvoryS\\b|E-TAB IVORY|\\bE-TAB\\b",
+          "AocTablet": "MW0811|MW0812|MW0922|MTK8382",
+          "MpmanTablet": "MP11 OCTA|MP10 OCTA|MPQC1114|MPQC1004|MPQC994|MPQC974|MPQC973|MPQC804|MPQC784|MPQC780|\\bMPG7\\b|MPDCG75|MPDCG71|MPDC1006|MP101DC|MPDC9000|MPDC905|MPDC706HD|MPDC706|MPDC705|MPDC110|MPDC100|MPDC99|MPDC97|MPDC88|MPDC8|MPDC77|MP709|MID701|MID711|MID170|MPDC703|MPQC1010",
+          "CelkonTablet": "CT695|CT888|CT[\\s]?910|CT7 Tab|CT9 Tab|CT3 Tab|CT2 Tab|CT1 Tab|C820|C720|\\bCT-1\\b",
+          "WolderTablet": "miTab \\b(DIAMOND|SPACE|BROOKLYN|NEO|FLY|MANHATTAN|FUNK|EVOLUTION|SKY|GOCAR|IRON|GENIUS|POP|MINT|EPSILON|BROADWAY|JUMP|HOP|LEGEND|NEW AGE|LINE|ADVANCE|FEEL|FOLLOW|LIKE|LINK|LIVE|THINK|FREEDOM|CHICAGO|CLEVELAND|BALTIMORE-GH|IOWA|BOSTON|SEATTLE|PHOENIX|DALLAS|IN 101|MasterChef)\\b",
+          "MiTablet": "\\bMI PAD\\b|\\bHM NOTE 1W\\b",
+          "NibiruTablet": "Nibiru M1|Nibiru Jupiter One",
+          "NexoTablet": "NEXO NOVA|NEXO 10|NEXO AVIO|NEXO FREE|NEXO GO|NEXO EVO|NEXO 3G|NEXO SMART|NEXO KIDDO|NEXO MOBI",
+          "LeaderTablet": "TBLT10Q|TBLT10I|TBL-10WDKB|TBL-10WDKBO2013|TBL-W230V2|TBL-W450|TBL-W500|SV572|TBLT7I|TBA-AC7-8G|TBLT79|TBL-8W16|TBL-10W32|TBL-10WKB|TBL-W100",
+          "UbislateTablet": "UbiSlate[\\s]?7C",
+          "PocketBookTablet": "Pocketbook",
+          "Hudl": "Hudl HT7S3|Hudl 2",
+          "TelstraTablet": "T-Hub2",
+          "GenericTablet": "Android.*\\b97D\\b|Tablet(?!.*PC)|BNTV250A|MID-WCDMA|LogicPD Zoom2|\\bA7EB\\b|CatNova8|A1_07|CT704|CT1002|\\bM721\\b|rk30sdk|\\bEVOTAB\\b|M758A|ET904|ALUMIUM10|Smartfren Tab|Endeavour 1010|Tablet-PC-4|Tagi Tab|\\bM6pro\\b|CT1020W|arc 10HD|\\bJolla\\b|\\bTP750\\b"
+        },
+        "oss": {
+          "AndroidOS": "Android",
+          "BlackBerryOS": "blackberry|\\bBB10\\b|rim tablet os",
+          "PalmOS": "PalmOS|avantgo|blazer|elaine|hiptop|palm|plucker|xiino",
+          "SymbianOS": "Symbian|SymbOS|Series60|Series40|SYB-[0-9]+|\\bS60\\b",
+          "WindowsMobileOS": "Windows CE.*(PPC|Smartphone|Mobile|[0-9]{3}x[0-9]{3})|Window Mobile|Windows Phone [0-9.]+|WCE;",
+          "WindowsPhoneOS": "Windows Phone 10.0|Windows Phone 8.1|Windows Phone 8.0|Windows Phone OS|XBLWP7|ZuneWP7|Windows NT 6.[23]; ARM;",
+          "iOS": "\\biPhone.*Mobile|\\biPod|\\biPad",
+          "MeeGoOS": "MeeGo",
+          "MaemoOS": "Maemo",
+          "JavaOS": "J2ME\/|\\bMIDP\\b|\\bCLDC\\b",
+          "webOS": "webOS|hpwOS",
+          "badaOS": "\\bBada\\b",
+          "BREWOS": "BREW"
+        },
+        "uas": {
+          "Chrome": "\\bCrMo\\b|CriOS|Android.*Chrome\/[.0-9]* (Mobile)?",
+          "Dolfin": "\\bDolfin\\b",
+          "Opera": "Opera.*Mini|Opera.*Mobi|Android.*Opera|Mobile.*OPR\/[0-9.]+|Coast\/[0-9.]+",
+          "Skyfire": "Skyfire",
+          "IE": "IEMobile|MSIEMobile",
+          "Firefox": "fennec|firefox.*maemo|(Mobile|Tablet).*Firefox|Firefox.*Mobile",
+          "Bolt": "bolt",
+          "TeaShark": "teashark",
+          "Blazer": "Blazer",
+          "Safari": "Version.*Mobile.*Safari|Safari.*Mobile|MobileSafari",
+          "Tizen": "Tizen",
+          "UCBrowser": "UC.*Browser|UCWEB",
+          "baiduboxapp": "baiduboxapp",
+          "baidubrowser": "baidubrowser",
+          "DiigoBrowser": "DiigoBrowser",
+          "Puffin": "Puffin",
+          "Mercury": "\\bMercury\\b",
+          "ObigoBrowser": "Obigo",
+          "NetFront": "NF-Browser",
+          "GenericBrowser": "NokiaBrowser|OviBrowser|OneBrowser|TwonkyBeamBrowser|SEMC.*Browser|FlyFlow|Minimo|NetFront|Novarra-Vision|MQQBrowser|MicroMessenger"
+        },
+        "props": {
+          "Mobile": "Mobile\/[VER]",
+          "Build": "Build\/[VER]",
+          "Version": "Version\/[VER]",
+          "VendorID": "VendorID\/[VER]",
+          "iPad": "iPad.*CPU[a-z ]+[VER]",
+          "iPhone": "iPhone.*CPU[a-z ]+[VER]",
+          "iPod": "iPod.*CPU[a-z ]+[VER]",
+          "Kindle": "Kindle\/[VER]",
+          "Chrome": ["Chrome\/[VER]", "CriOS\/[VER]", "CrMo\/[VER]"],
+          "Coast": ["Coast\/[VER]"],
+          "Dolfin": "Dolfin\/[VER]",
+          "Firefox": "Firefox\/[VER]",
+          "Fennec": "Fennec\/[VER]",
+          "IE": ["IEMobile\/[VER];", "IEMobile [VER]", "MSIE [VER];", "Trident\/[0-9.]+;.*rv:[VER]"],
+          "NetFront": "NetFront\/[VER]",
+          "NokiaBrowser": "NokiaBrowser\/[VER]",
+          "Opera": [" OPR\/[VER]", "Opera Mini\/[VER]", "Version\/[VER]"],
+          "Opera Mini": "Opera Mini\/[VER]",
+          "Opera Mobi": "Version\/[VER]",
+          "UC Browser": "UC Browser[VER]",
+          "MQQBrowser": "MQQBrowser\/[VER]",
+          "MicroMessenger": "MicroMessenger\/[VER]",
+          "baiduboxapp": "baiduboxapp\/[VER]",
+          "baidubrowser": "baidubrowser\/[VER]",
+          "Iron": "Iron\/[VER]",
+          "Safari": ["Version\/[VER]", "Safari\/[VER]"],
+          "Skyfire": "Skyfire\/[VER]",
+          "Tizen": "Tizen\/[VER]",
+          "Webkit": "webkit[ \/][VER]",
+          "Gecko": "Gecko\/[VER]",
+          "Trident": "Trident\/[VER]",
+          "Presto": "Presto\/[VER]",
+          "iOS": " \\bi?OS\\b [VER][ ;]{1}",
+          "Android": "Android [VER]",
+          "BlackBerry": ["BlackBerry[\\w]+\/[VER]", "BlackBerry.*Version\/[VER]", "Version\/[VER]"],
+          "BREW": "BREW [VER]",
+          "Java": "Java\/[VER]",
+          "Windows Phone OS": ["Windows Phone OS [VER]", "Windows Phone [VER]"],
+          "Windows Phone": "Windows Phone [VER]",
+          "Windows CE": "Windows CE\/[VER]",
+          "Windows NT": "Windows NT [VER]",
+          "Symbian": ["SymbianOS\/[VER]", "Symbian\/[VER]"],
+          "webOS": ["webOS\/[VER]", "hpwOS\/[VER];"]
+        },
+        "utils": {
+          "Bot": "Googlebot|facebookexternalhit|AdsBot-Google|Google Keyword Suggestion|Facebot|YandexBot|bingbot|ia_archiver|AhrefsBot|Ezooms|GSLFbot|WBSearchBot|Twitterbot|TweetmemeBot|Twikle|PaperLiBot|Wotbox|UnwindFetchor|Exabot|MJ12bot|YandexImages|TurnitinBot|Pingdom",
+          "MobileBot": "Googlebot-Mobile|AdsBot-Google-Mobile|YahooSeeker\/M1A1-R2D2",
+          "DesktopMode": "WPDesktop",
+          "TV": "SonyDTV|HbbTV",
+          "WebKit": "(webkit)[ \/]([\\w.]+)",
+          "Console": "\\b(Nintendo|Nintendo WiiU|Nintendo 3DS|PLAYSTATION|Xbox)\\b",
+          "Watch": "SM-V700"
+        }
+      };
+      impl.detectMobileBrowsers = {
+        fullPattern: /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i,
+        shortPattern: /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i,
+        tabletPattern: /android|ipad|playbook|silk/i
+      };
+      var hasOwnProp = Object.prototype.hasOwnProperty,
+          isArray;
+      impl.FALLBACK_PHONE = 'UnknownPhone';
+      impl.FALLBACK_TABLET = 'UnknownTablet';
+      impl.FALLBACK_MOBILE = 'UnknownMobile';
+      isArray = ('isArray' in Array) ? Array.isArray : function(value) {
+        return Object.prototype.toString.call(value) === '[object Array]';
+      };
+      function equalIC(a, b) {
+        return a != null && b != null && a.toLowerCase() === b.toLowerCase();
+      }
+      function containsIC(array, value) {
+        var valueLC,
+            i,
+            len = array.length;
+        if (!len || !value) {
+          return false;
+        }
+        valueLC = value.toLowerCase();
+        for (i = 0; i < len; ++i) {
+          if (valueLC === array[i].toLowerCase()) {
+            return true;
+          }
+        }
+        return false;
+      }
+      function convertPropsToRegExp(object) {
+        for (var key in object) {
+          if (hasOwnProp.call(object, key)) {
+            object[key] = new RegExp(object[key], 'i');
+          }
+        }
+      }
+      (function init() {
+        var key,
+            values,
+            value,
+            i,
+            len,
+            verPos,
+            mobileDetectRules = impl.mobileDetectRules;
+        for (key in mobileDetectRules.props) {
+          if (hasOwnProp.call(mobileDetectRules.props, key)) {
+            values = mobileDetectRules.props[key];
+            if (!isArray(values)) {
+              values = [values];
+            }
+            len = values.length;
+            for (i = 0; i < len; ++i) {
+              value = values[i];
+              verPos = value.indexOf('[VER]');
+              if (verPos >= 0) {
+                value = value.substring(0, verPos) + '([\\w._\\+]+)' + value.substring(verPos + 5);
+              }
+              values[i] = new RegExp(value, 'i');
+            }
+            mobileDetectRules.props[key] = values;
+          }
+        }
+        convertPropsToRegExp(mobileDetectRules.oss);
+        convertPropsToRegExp(mobileDetectRules.phones);
+        convertPropsToRegExp(mobileDetectRules.tablets);
+        convertPropsToRegExp(mobileDetectRules.uas);
+        convertPropsToRegExp(mobileDetectRules.utils);
+        mobileDetectRules.oss0 = {
+          WindowsPhoneOS: mobileDetectRules.oss.WindowsPhoneOS,
+          WindowsMobileOS: mobileDetectRules.oss.WindowsMobileOS
+        };
+      }());
+      impl.findMatch = function(rules, userAgent) {
+        for (var key in rules) {
+          if (hasOwnProp.call(rules, key)) {
+            if (rules[key].test(userAgent)) {
+              return key;
+            }
+          }
+        }
+        return null;
+      };
+      impl.findMatches = function(rules, userAgent) {
+        var result = [];
+        for (var key in rules) {
+          if (hasOwnProp.call(rules, key)) {
+            if (rules[key].test(userAgent)) {
+              result.push(key);
+            }
+          }
+        }
+        return result;
+      };
+      impl.getVersionStr = function(propertyName, userAgent) {
+        var props = impl.mobileDetectRules.props,
+            patterns,
+            i,
+            len,
+            match;
+        if (hasOwnProp.call(props, propertyName)) {
+          patterns = props[propertyName];
+          len = patterns.length;
+          for (i = 0; i < len; ++i) {
+            match = patterns[i].exec(userAgent);
+            if (match !== null) {
+              return match[1];
+            }
+          }
+        }
+        return null;
+      };
+      impl.getVersion = function(propertyName, userAgent) {
+        var version = impl.getVersionStr(propertyName, userAgent);
+        return version ? impl.prepareVersionNo(version) : NaN;
+      };
+      impl.prepareVersionNo = function(version) {
+        var numbers;
+        numbers = version.split(/[a-z._ \/\-]/i);
+        if (numbers.length === 1) {
+          version = numbers[0];
+        }
+        if (numbers.length > 1) {
+          version = numbers[0] + '.';
+          numbers.shift();
+          version += numbers.join('');
+        }
+        return Number(version);
+      };
+      impl.isMobileFallback = function(userAgent) {
+        return impl.detectMobileBrowsers.fullPattern.test(userAgent) || impl.detectMobileBrowsers.shortPattern.test(userAgent.substr(0, 4));
+      };
+      impl.isTabletFallback = function(userAgent) {
+        return impl.detectMobileBrowsers.tabletPattern.test(userAgent);
+      };
+      impl.prepareDetectionCache = function(cache, userAgent, maxPhoneWidth) {
+        if (cache.mobile !== undefined) {
+          return;
+        }
+        var phone,
+            tablet,
+            phoneSized;
+        tablet = impl.findMatch(impl.mobileDetectRules.tablets, userAgent);
+        if (tablet) {
+          cache.mobile = cache.tablet = tablet;
+          cache.phone = null;
+          return;
+        }
+        phone = impl.findMatch(impl.mobileDetectRules.phones, userAgent);
+        if (phone) {
+          cache.mobile = cache.phone = phone;
+          cache.tablet = null;
+          return;
+        }
+        if (impl.isMobileFallback(userAgent)) {
+          phoneSized = MobileDetect.isPhoneSized(maxPhoneWidth);
+          if (phoneSized === undefined) {
+            cache.mobile = impl.FALLBACK_MOBILE;
+            cache.tablet = cache.phone = null;
+          } else if (phoneSized) {
+            cache.mobile = cache.phone = impl.FALLBACK_PHONE;
+            cache.tablet = null;
+          } else {
+            cache.mobile = cache.tablet = impl.FALLBACK_TABLET;
+            cache.phone = null;
+          }
+        } else if (impl.isTabletFallback(userAgent)) {
+          cache.mobile = cache.tablet = impl.FALLBACK_TABLET;
+          cache.phone = null;
+        } else {
+          cache.mobile = cache.tablet = cache.phone = null;
+        }
+      };
+      impl.mobileGrade = function(t) {
+        var $isMobile = t.mobile() !== null;
+        if (t.os('iOS') && t.version('iPad') >= 4.3 || t.os('iOS') && t.version('iPhone') >= 3.1 || t.os('iOS') && t.version('iPod') >= 3.1 || (t.version('Android') > 2.1 && t.is('Webkit')) || t.version('Windows Phone OS') >= 7.0 || t.is('BlackBerry') && t.version('BlackBerry') >= 6.0 || t.match('Playbook.*Tablet') || (t.version('webOS') >= 1.4 && t.match('Palm|Pre|Pixi')) || t.match('hp.*TouchPad') || (t.is('Firefox') && t.version('Firefox') >= 12) || (t.is('Chrome') && t.is('AndroidOS') && t.version('Android') >= 4.0) || (t.is('Skyfire') && t.version('Skyfire') >= 4.1 && t.is('AndroidOS') && t.version('Android') >= 2.3) || (t.is('Opera') && t.version('Opera Mobi') > 11 && t.is('AndroidOS')) || t.is('MeeGoOS') || t.is('Tizen') || t.is('Dolfin') && t.version('Bada') >= 2.0 || ((t.is('UC Browser') || t.is('Dolfin')) && t.version('Android') >= 2.3) || (t.match('Kindle Fire') || t.is('Kindle') && t.version('Kindle') >= 3.0) || t.is('AndroidOS') && t.is('NookTablet') || t.version('Chrome') >= 11 && !$isMobile || t.version('Safari') >= 5.0 && !$isMobile || t.version('Firefox') >= 4.0 && !$isMobile || t.version('MSIE') >= 7.0 && !$isMobile || t.version('Opera') >= 10 && !$isMobile) {
+          return 'A';
+        }
+        if (t.os('iOS') && t.version('iPad') < 4.3 || t.os('iOS') && t.version('iPhone') < 3.1 || t.os('iOS') && t.version('iPod') < 3.1 || t.is('Blackberry') && t.version('BlackBerry') >= 5 && t.version('BlackBerry') < 6 || (t.version('Opera Mini') >= 5.0 && t.version('Opera Mini') <= 6.5 && (t.version('Android') >= 2.3 || t.is('iOS'))) || t.match('NokiaN8|NokiaC7|N97.*Series60|Symbian/3') || t.version('Opera Mobi') >= 11 && t.is('SymbianOS')) {
+          return 'B';
+        }
+        if (t.version('BlackBerry') < 5.0 || t.match('MSIEMobile|Windows CE.*Mobile') || t.version('Windows Mobile') <= 5.2) {
+          return 'C';
+        }
+        return 'C';
+      };
+      impl.detectOS = function(ua) {
+        return impl.findMatch(impl.mobileDetectRules.oss0, ua) || impl.findMatch(impl.mobileDetectRules.oss, ua);
+      };
+      impl.getDeviceSmallerSide = function() {
+        return window.screen.width < window.screen.height ? window.screen.width : window.screen.height;
+      };
+      function MobileDetect(userAgent, maxPhoneWidth) {
+        this.ua = userAgent || '';
+        this._cache = {};
+        this.maxPhoneWidth = maxPhoneWidth || 600;
+      }
+      MobileDetect.prototype = {
+        constructor: MobileDetect,
+        mobile: function() {
+          impl.prepareDetectionCache(this._cache, this.ua, this.maxPhoneWidth);
+          return this._cache.mobile;
+        },
+        phone: function() {
+          impl.prepareDetectionCache(this._cache, this.ua, this.maxPhoneWidth);
+          return this._cache.phone;
+        },
+        tablet: function() {
+          impl.prepareDetectionCache(this._cache, this.ua, this.maxPhoneWidth);
+          return this._cache.tablet;
+        },
+        userAgent: function() {
+          if (this._cache.userAgent === undefined) {
+            this._cache.userAgent = impl.findMatch(impl.mobileDetectRules.uas, this.ua);
+          }
+          return this._cache.userAgent;
+        },
+        userAgents: function() {
+          if (this._cache.userAgents === undefined) {
+            this._cache.userAgents = impl.findMatches(impl.mobileDetectRules.uas, this.ua);
+          }
+          return this._cache.userAgents;
+        },
+        os: function() {
+          if (this._cache.os === undefined) {
+            this._cache.os = impl.detectOS(this.ua);
+          }
+          return this._cache.os;
+        },
+        version: function(key) {
+          return impl.getVersion(key, this.ua);
+        },
+        versionStr: function(key) {
+          return impl.getVersionStr(key, this.ua);
+        },
+        is: function(key) {
+          return containsIC(this.userAgents(), key) || equalIC(key, this.os()) || equalIC(key, this.phone()) || equalIC(key, this.tablet()) || containsIC(impl.findMatches(impl.mobileDetectRules.utils, this.ua), key);
+        },
+        match: function(pattern) {
+          if (!(pattern instanceof RegExp)) {
+            pattern = new RegExp(pattern, 'i');
+          }
+          return pattern.test(this.ua);
+        },
+        isPhoneSized: function(maxPhoneWidth) {
+          return MobileDetect.isPhoneSized(maxPhoneWidth || this.maxPhoneWidth);
+        },
+        mobileGrade: function() {
+          if (this._cache.grade === undefined) {
+            this._cache.grade = impl.mobileGrade(this);
+          }
+          return this._cache.grade;
+        }
+      };
+      if (typeof window !== 'undefined' && window.screen) {
+        MobileDetect.isPhoneSized = function(maxPhoneWidth) {
+          return maxPhoneWidth < 0 ? undefined : impl.getDeviceSmallerSide() <= maxPhoneWidth;
+        };
+      } else {
+        MobileDetect.isPhoneSized = function() {};
+      }
+      MobileDetect._impl = impl;
+      return MobileDetect;
+    });
+  })((function(undefined) {
+    if (typeof module !== 'undefined' && module.exports) {
+      return function(factory) {
+        module.exports = factory();
+      };
+    } else if (typeof define === 'function' && define.amd) {
+      return define;
+    } else if (typeof window !== 'undefined') {
+      return function(factory) {
+        window.MobileDetect = factory();
+      };
+    } else {
+      throw new Error('unknown environment');
+    }
+  })());
+  return module.exports;
+});
+
+$__System.register("e", ["8", "9", "6", "d"], function(exports_1, context_1) {
+  "use strict";
+  var __moduleName = context_1 && context_1.id;
+  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
+    var c = arguments.length,
+        r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+        d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
+      r = Reflect.decorate(decorators, target, key, desc);
+    else
+      for (var i = decorators.length - 1; i >= 0; i--)
+        if (d = decorators[i])
+          r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+  };
+  var aurelia_dependency_injection_1,
+      cesium_imports_1,
+      context_2,
+      mobile_detect_1;
+  var DeviceService;
+  return {
+    setters: [function(aurelia_dependency_injection_1_1) {
+      aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
+    }, function(cesium_imports_1_1) {
+      cesium_imports_1 = cesium_imports_1_1;
+    }, function(context_2_1) {
+      context_2 = context_2_1;
+    }, function(mobile_detect_1_1) {
+      mobile_detect_1 = mobile_detect_1_1;
+    }],
+    execute: function() {
+      DeviceService = (function() {
+        function DeviceService(context) {
+          this.context = context;
+          this.locationEntity = new cesium_imports_1.Entity({
+            id: 'ar.device.location',
+            name: 'Device Location'
+          });
+          this.orientationEntity = new cesium_imports_1.Entity({
+            id: 'ar.device.orientation',
+            name: 'Device Orientation'
+          });
+          this.interfaceEntity = new cesium_imports_1.Entity({
+            id: 'ar.device.interface',
+            name: 'Device Interface'
+          });
+          this._scratchCartesian = new cesium_imports_1.Cartesian3;
+          this._scratchQuaternion1 = new cesium_imports_1.Quaternion;
+          this._scratchQuaternion2 = new cesium_imports_1.Quaternion;
+          this._x90Rot = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_X, cesium_imports_1.CesiumMath.PI_OVER_TWO);
+          this.locationEntity.position = new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, null);
+          this.locationEntity.orientation = new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY);
+          this.orientationEntity.position = new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, this.locationEntity);
+          this.orientationEntity.orientation = new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY);
+          this.interfaceEntity.position = new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, this.orientationEntity);
+          this.interfaceEntity.orientation = new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_X, -cesium_imports_1.CesiumMath.PI_OVER_TWO));
+          context.wellKnownReferenceFrames.add(this.locationEntity);
+          context.wellKnownReferenceFrames.add(this.orientationEntity);
+          context.wellKnownReferenceFrames.add(this.interfaceEntity);
+          if (typeof window !== 'undefined' && window.navigator) {
+            this._mobileDetect = new mobile_detect_1.default(window.navigator.userAgent);
+          }
+        }
+        DeviceService.prototype.update = function() {
+          var _this = this;
+          if (typeof window !== 'undefined') {
+            var interfaceOrientationProperty = this.interfaceEntity.orientation;
+            var interfaceOrientation = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_Z, (-window.orientation || 0) * cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE, this._scratchQuaternion1);
+            if (this._mobileDetect && !this._mobileDetect.mobile()) {
+              interfaceOrientation = cesium_imports_1.Quaternion.multiply(this._x90Rot, interfaceOrientation, interfaceOrientation);
+            }
+            interfaceOrientationProperty.setValue(interfaceOrientation);
+            if (!cesium_imports_1.defined(this._geolocationWatchId)) {
+              this._geolocationWatchId = navigator.geolocation.watchPosition(function(pos) {
+                if (_this.locationEntity.position instanceof cesium_imports_1.SampledPositionProperty === false) {
+                  var sampledPostionProperty = new cesium_imports_1.SampledPositionProperty(cesium_imports_1.ReferenceFrame.FIXED);
+                  sampledPostionProperty.forwardExtrapolationType = cesium_imports_1.ExtrapolationType.HOLD;
+                  sampledPostionProperty.backwardExtrapolationType = cesium_imports_1.ExtrapolationType.HOLD;
+                  sampledPostionProperty['maxNumSamples'] = 10;
+                  _this.locationEntity.position = sampledPostionProperty;
+                }
+                var positionTime = cesium_imports_1.JulianDate.fromDate(new Date(pos.timestamp));
+                var positionECEF = cesium_imports_1.Cartesian3.fromDegrees(pos.coords.longitude, pos.coords.latitude, pos.coords.altitude || 0, undefined, _this._scratchCartesian);
+                _this.locationEntity.position.addSample(positionTime, positionECEF);
+                var enuOrientation = cesium_imports_1.Transforms.headingPitchRollQuaternion(positionECEF, 0, 0, 0, undefined, _this._scratchQuaternion1);
+                _this.locationEntity.orientation.setValue(enuOrientation);
+              }, function(error) {
+                console.error(error);
+              }, {enableHighAccuracy: true});
+            }
+            if (!cesium_imports_1.defined(this._deviceorientationListener)) {
+              this._deviceorientationListener = function(e) {
+                if (!cesium_imports_1.defined(e.alpha)) {
+                  return;
+                }
+                var alpha = cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE * e.alpha;
+                var beta = cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE * e.beta;
+                var gamma = cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE * e.gamma;
+                var alphaQuat = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_Z, alpha, _this._scratchQuaternion1);
+                var betaQuat = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_X, beta, _this._scratchQuaternion2);
+                var alphaBetaQuat = cesium_imports_1.Quaternion.multiply(alphaQuat, betaQuat, _this._scratchQuaternion1);
+                var gammaQuat = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_Y, gamma, _this._scratchQuaternion2);
+                var alphaBetaGammaQuat = cesium_imports_1.Quaternion.multiply(alphaBetaQuat, gammaQuat, alphaBetaQuat);
+                _this.orientationEntity.orientation.setValue(alphaBetaGammaQuat);
+              };
+              window.addEventListener('deviceorientation', this._deviceorientationListener);
+            }
+          }
+        };
+        DeviceService = __decorate([aurelia_dependency_injection_1.inject(context_2.ContextService)], DeviceService);
+        return DeviceService;
+      }());
+      exports_1("DeviceService", DeviceService);
+    }
+  };
+});
+
+$__System.register("c", ["9"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var cesium_imports_1;
@@ -879,7 +1534,107 @@ $__System.register("9", ["5"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("d", ["b", "7", "a"], function(exports_1, context_1) {
+$__System.register("f", ["8", "9", "a", "5", "e", "c", "7"], function(exports_1, context_1) {
+  "use strict";
+  var __moduleName = context_1 && context_1.id;
+  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
+    var c = arguments.length,
+        r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+        d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
+      r = Reflect.decorate(decorators, target, key, desc);
+    else
+      for (var i = decorators.length - 1; i >= 0; i--)
+        if (d = decorators[i])
+          r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+  };
+  var aurelia_dependency_injection_1,
+      cesium_imports_1,
+      common_1,
+      session_1,
+      device_1,
+      timer_1,
+      utils_1;
+  var EmptyRealityLoader;
+  return {
+    setters: [function(aurelia_dependency_injection_1_1) {
+      aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
+    }, function(cesium_imports_1_1) {
+      cesium_imports_1 = cesium_imports_1_1;
+    }, function(common_1_1) {
+      common_1 = common_1_1;
+    }, function(session_1_1) {
+      session_1 = session_1_1;
+    }, function(device_1_1) {
+      device_1 = device_1_1;
+    }, function(timer_1_1) {
+      timer_1 = timer_1_1;
+    }, function(utils_1_1) {
+      utils_1 = utils_1_1;
+    }],
+    execute: function() {
+      EmptyRealityLoader = (function() {
+        function EmptyRealityLoader(sessionService, deviceService, timer) {
+          this.sessionService = sessionService;
+          this.deviceService = deviceService;
+          this.timer = timer;
+          this.type = 'empty';
+        }
+        EmptyRealityLoader.prototype.load = function(reality) {
+          var _this = this;
+          var realitySession = this.sessionService.addManagedSessionPort();
+          var remoteRealitySession = this.sessionService.createSessionPort();
+          var doUpdate = true;
+          remoteRealitySession.connectEvent.addEventListener(function() {
+            var update = function(time, index) {
+              if (doUpdate) {
+                _this.deviceService.update();
+                var w = document.documentElement.clientWidth;
+                var h = document.documentElement.clientHeight;
+                var frameState = {
+                  time: time,
+                  index: index,
+                  view: {
+                    viewport: {
+                      x: 0,
+                      y: 0,
+                      width: w,
+                      height: h
+                    },
+                    pose: utils_1.getSerializedEntityPose(_this.deviceService.interfaceEntity, time),
+                    subviews: [{
+                      type: common_1.SubviewType.SINGULAR,
+                      projectionMatrix: cesium_imports_1.Matrix4.computePerspectiveFieldOfView(Math.PI / 3, w / h, 0.2, 10000000000, [])
+                    }]
+                  }
+                };
+                remoteRealitySession.send('ar.reality.frameState', frameState);
+                _this.timer.requestFrame(update);
+              }
+            };
+            _this.timer.requestFrame(update);
+          });
+          remoteRealitySession.closeEvent.addEventListener(function() {
+            doUpdate = false;
+          });
+          var messageChannel = this.sessionService.createSynchronousMessageChannel();
+          realitySession.open(messageChannel.port1, this.sessionService.configuration);
+          remoteRealitySession.open(messageChannel.port2, {
+            role: common_1.Role.REALITY_VIEW,
+            name: 'empty'
+          });
+          return realitySession;
+        };
+        EmptyRealityLoader = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, device_1.DeviceService, timer_1.TimerService)], EmptyRealityLoader);
+        return EmptyRealityLoader;
+      }());
+      exports_1("EmptyRealityLoader", EmptyRealityLoader);
+    }
+  };
+});
+
+$__System.register("10", ["8", "5", "7"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
@@ -990,46 +1745,7 @@ $__System.register("d", ["b", "7", "a"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("e", ["5"], function(exports_1, context_1) {
-  "use strict";
-  var __moduleName = context_1 && context_1.id;
-  var cesium_imports_1;
-  var DeviceService;
-  return {
-    setters: [function(cesium_imports_1_1) {
-      cesium_imports_1 = cesium_imports_1_1;
-    }],
-    execute: function() {
-      DeviceService = (function() {
-        function DeviceService() {
-          this.entity = new cesium_imports_1.Entity({
-            id: 'ar.device',
-            name: 'device'
-          });
-          this.interfaceEntity = new cesium_imports_1.Entity({
-            id: 'ar.device.interface',
-            name: 'device_interface'
-          });
-          this.entity.position = new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, null);
-          this.entity.orientation = new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY);
-          this.interfaceEntity.position = new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, this.entity);
-          this.interfaceEntity.orientation = new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY);
-        }
-        DeviceService.prototype.update = function() {
-          if (typeof window !== 'undefined') {
-            var interfaceRotation = -window.orientation || 0;
-            var interfaceOrientation = this.interfaceEntity.orientation;
-            interfaceOrientation.setValue(cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_Z, interfaceRotation));
-          }
-        };
-        return DeviceService;
-      }());
-      exports_1("DeviceService", DeviceService);
-    }
-  };
-});
-
-$__System.register("8", ["b", "5", "9", "6", "d", "7", "e", "a"], function(exports_1, context_1) {
+$__System.register("b", ["8", "9", "a", "10", "5", "7"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
@@ -1046,30 +1762,23 @@ $__System.register("8", ["b", "5", "9", "6", "d", "7", "e", "a"], function(expor
   };
   var aurelia_dependency_injection_1,
       cesium_imports_1,
-      timer_1,
       common_1,
       focus_1,
       session_1,
-      device_1,
       utils_1;
   var RealityLoader,
-      RealityService,
-      EmptyRealityLoader;
+      RealityService;
   return {
     setters: [function(aurelia_dependency_injection_1_1) {
       aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
     }, function(cesium_imports_1_1) {
       cesium_imports_1 = cesium_imports_1_1;
-    }, function(timer_1_1) {
-      timer_1 = timer_1_1;
     }, function(common_1_1) {
       common_1 = common_1_1;
     }, function(focus_1_1) {
       focus_1 = focus_1_1;
     }, function(session_1_1) {
       session_1 = session_1_1;
-    }, function(device_1_1) {
-      device_1 = device_1_1;
     }, function(utils_1_1) {
       utils_1 = utils_1_1;
     }],
@@ -1103,7 +1812,8 @@ $__System.register("8", ["b", "5", "9", "6", "d", "7", "e", "a"], function(expor
             });
           } else if (sessionService.isRealityView) {
             this.frameEvent.addEventListener(function(frameState) {
-              _this.sessionService.manager.send('ar.reality.frameState', frameState);
+              if (_this.sessionService.manager.isConnected)
+                _this.sessionService.manager.send('ar.reality.frameState', frameState);
             });
           }
           sessionService.connectEvent.addEventListener(function(session) {
@@ -1135,12 +1845,13 @@ $__System.register("8", ["b", "5", "9", "6", "d", "7", "e", "a"], function(expor
           sessionService.manager.on['ar.reality.connect'] = function(_a) {
             var id = _a.id;
             var realityControlSession = _this.sessionService.createSessionPort();
-            var messageChannel = _this.sessionService.createMessageChannel();
-            var MESSAGE_KEY = 'ar.reality.message.' + id;
+            var messageChannel = _this.sessionService.createSynchronousMessageChannel();
+            var ROUTE_MESSAGE_KEY = 'ar.reality.message.route.' + id;
+            var SEND_MESSAGE_KEY = 'ar.reality.message.send.' + id;
             messageChannel.port1.onmessage = function(msg) {
-              _this.sessionService.manager.send(MESSAGE_KEY, msg);
+              _this.sessionService.manager.send(ROUTE_MESSAGE_KEY, msg.data);
             };
-            _this.sessionService.manager.on[MESSAGE_KEY] = function(message) {
+            _this.sessionService.manager.on[SEND_MESSAGE_KEY] = function(message) {
               messageChannel.port1.postMessage(message);
             };
             realityControlSession.connectEvent.addEventListener(function() {
@@ -1148,7 +1859,7 @@ $__System.register("8", ["b", "5", "9", "6", "d", "7", "e", "a"], function(expor
             });
             _this.sessionService.manager.closeEvent.addEventListener(function() {
               realityControlSession.close();
-              delete _this.sessionService.manager.on[MESSAGE_KEY];
+              delete _this.sessionService.manager.on[SEND_MESSAGE_KEY];
             });
             realityControlSession.open(messageChannel.port2, _this.sessionService.configuration);
           };
@@ -1167,7 +1878,11 @@ $__System.register("8", ["b", "5", "9", "6", "d", "7", "e", "a"], function(expor
         RealityService.prototype.setDesired = function(reality) {
           this.sessionService.ensureNotReality();
           this._desired = reality;
-          this.sessionService.manager.send('ar.reality.desired', {reality: reality});
+          if (this.sessionService.isManager) {
+            this._setNextReality(reality);
+          } else {
+            this.sessionService.manager.send('ar.reality.desired', {reality: reality});
+          }
         };
         RealityService.prototype.getDesired = function() {
           return this._desired;
@@ -1199,7 +1914,6 @@ $__System.register("8", ["b", "5", "9", "6", "d", "7", "e", "a"], function(expor
         };
         RealityService.prototype._setNextReality = function(reality) {
           var _this = this;
-          console.log('Setting reality: ' + JSON.stringify(reality));
           if (this._current && reality && this._current === reality)
             return;
           if (this._current && !reality)
@@ -1209,42 +1923,47 @@ $__System.register("8", ["b", "5", "9", "6", "d", "7", "e", "a"], function(expor
             if (!reality)
               return;
           }
+          if (!this.isSupported(reality.type)) {
+            this.sessionService.errorEvent.raiseEvent(new Error('Reality of type "' + reality.type + '" is not available on this platform'));
+            return;
+          }
           var realitySessionPromise = Promise.resolve(this._executeRealityLoader(reality));
           this._realitySessionPromise = realitySessionPromise;
           this._realitySessionPromise.then(function(realitySession) {
             if (_this._realitySessionPromise !== realitySessionPromise)
               return;
-            if (!realitySession.isConnected())
+            if (!realitySession.isConnected)
               throw new Error('Expected a connected session');
             if (realitySession.info.role !== common_1.Role.REALITY_VIEW) {
               realitySession.sendError({message: "Expected a reality session"});
               realitySession.close();
-              throw new Error('The application "' + realitySession.info.name + '" cannot be loaded as a reality');
+              throw new Error('The application "' + realitySession.info.name + '" does not support being loaded as a reality');
             }
             var previousRealitySession = _this._realitySession;
             var previousReality = _this._current;
-            _this._realitySession = realitySession;
-            _this._setCurrent(reality);
             if (previousRealitySession) {
               previousRealitySession.close();
             }
             realitySession.on['ar.reality.frameState'] = function(state) {
               _this.frameEvent.raiseEvent(state);
             };
-            if (realitySession.info.realityViewSupportsControlPort) {
+            _this._realitySession = realitySession;
+            _this._setCurrent(reality);
+            if (realitySession.info['reality.supportsControlPort']) {
               var ownerSession_1 = _this.desiredRealityMapInverse.get(reality) || _this.sessionService.manager;
               var id = cesium_imports_1.createGuid();
-              var MESSAGE_KEY_1 = 'ar.reality.message.' + id;
-              realitySession.on[MESSAGE_KEY_1] = function(message) {
-                ownerSession_1.send(MESSAGE_KEY_1, message);
+              var ROUTE_MESSAGE_KEY_1 = 'ar.reality.message.route.' + id;
+              var SEND_MESSAGE_KEY_1 = 'ar.reality.message.send.' + id;
+              realitySession.on[ROUTE_MESSAGE_KEY_1] = function(message) {
+                ownerSession_1.send(SEND_MESSAGE_KEY_1, message);
               };
-              ownerSession_1.on[MESSAGE_KEY_1] = function(message) {
-                realitySession.send(MESSAGE_KEY_1, message);
+              ownerSession_1.on[ROUTE_MESSAGE_KEY_1] = function(message) {
+                realitySession.send(SEND_MESSAGE_KEY_1, message);
               };
               realitySession.send('ar.reality.connect', {id: id});
               ownerSession_1.send('ar.reality.connect', {id: id});
               realitySession.closeEvent.addEventListener(function() {
-                delete ownerSession_1.on[MESSAGE_KEY_1];
+                delete ownerSession_1.on[ROUTE_MESSAGE_KEY_1];
                 console.log('Reality session closed: ' + JSON.stringify(reality));
                 _this._setNextReality(_this.onSelectReality());
               });
@@ -1287,69 +2006,13 @@ $__System.register("8", ["b", "5", "9", "6", "d", "7", "e", "a"], function(expor
         return RealityService;
       }());
       exports_1("RealityService", RealityService);
-      EmptyRealityLoader = (function() {
-        function EmptyRealityLoader(sessionService, deviceService, timer) {
-          this.sessionService = sessionService;
-          this.deviceService = deviceService;
-          this.timer = timer;
-          this.type = 'empty';
-        }
-        EmptyRealityLoader.prototype.load = function(reality) {
-          var _this = this;
-          var realitySession = this.sessionService.addManagedSessionPort();
-          var remoteRealitySession = this.sessionService.createSessionPort();
-          var doUpdate = true;
-          remoteRealitySession.connectEvent.addEventListener(function() {
-            var update = function(time, index) {
-              if (doUpdate) {
-                _this.deviceService.update();
-                var w = document.documentElement.clientWidth;
-                var h = document.documentElement.clientHeight;
-                var frameState = {
-                  time: time,
-                  index: index,
-                  view: {
-                    viewport: {
-                      x: 0,
-                      y: 0,
-                      width: w,
-                      height: h
-                    },
-                    pose: utils_1.getSerializedEntityPose(_this.deviceService.interfaceEntity, time),
-                    subviews: [{
-                      type: common_1.SubviewType.SINGULAR,
-                      projectionMatrix: cesium_imports_1.Matrix4.computePerspectiveFieldOfView(Math.PI / 3, w / h, 0.2, 10000000000, [])
-                    }]
-                  }
-                };
-                remoteRealitySession.send('ar.reality.frameState', frameState);
-                _this.timer.requestFrame(update);
-              }
-            };
-            _this.timer.requestFrame(update);
-          });
-          remoteRealitySession.closeEvent.addEventListener(function() {
-            doUpdate = false;
-          });
-          var messageChannel = this.sessionService.createSynchronousMessageChannel();
-          realitySession.open(messageChannel.port1, this.sessionService.configuration);
-          remoteRealitySession.open(messageChannel.port2, {
-            role: common_1.Role.REALITY_VIEW,
-            name: 'empty'
-          });
-          return realitySession;
-        };
-        EmptyRealityLoader = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, device_1.DeviceService, timer_1.TimerService)], EmptyRealityLoader);
-        return EmptyRealityLoader;
-      }());
-      exports_1("EmptyRealityLoader", EmptyRealityLoader);
     }
   };
 });
 
 (function() {
 var define = $__System.amdDefine;
-define("f", ["exports", "3"], function(exports, _aureliaPal) {
+define("11", ["exports", "3"], function(exports, _aureliaPal) {
   'use strict';
   exports.__esModule = true;
   var _extends = Object.assign || function(target) {
@@ -1645,7 +2308,7 @@ define("3", ["exports"], function(exports) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("b", ["exports", "f", "3"], function(exports, _aureliaMetadata, _aureliaPal) {
+define("8", ["exports", "11", "3"], function(exports, _aureliaMetadata, _aureliaPal) {
   'use strict';
   exports.__esModule = true;
   var _classInvokers;
@@ -2137,7 +2800,7 @@ define("b", ["exports", "f", "3"], function(exports, _aureliaMetadata, _aureliaP
 });
 
 })();
-$__System.register("6", [], function(exports_1, context_1) {
+$__System.register("a", [], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var Role,
@@ -2162,7 +2825,7 @@ $__System.register("6", [], function(exports_1, context_1) {
   };
 });
 
-$__System.register("7", ["5", "b", "6", "a"], function(exports_1, context_1) {
+$__System.register("5", ["9", "8", "a", "7"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __extends = (this && this.__extends) || function(d, b) {
@@ -2222,16 +2885,21 @@ $__System.register("7", ["5", "b", "6", "a"], function(exports_1, context_1) {
           this._isClosed = false;
           this.on[SessionPort.OPEN] = function(info) {
             if (!info)
-              throw new Error('Session did not provide configuration info');
+              throw new Error('Session did not provide a configuration');
+            if (_this._isConnected)
+              throw new Error('Session has already connected!');
             _this.info = info;
-            _this.connectEvent.raiseEvent(null);
             _this._isConnected = true;
+            _this._connectEvent.raiseEvent(null);
           };
           this.on[SessionPort.CLOSE] = function(message) {
             _this.close();
           };
           this.on[SessionPort.ERROR] = function(error) {
-            _this.errorEvent.raiseEvent(new Error(error.message));
+            var e = new Error("Session Error: " + error.message);
+            if (error.stack)
+              e['stack'] = error.stack;
+            _this.errorEvent.raiseEvent(e);
           };
           this.errorEvent.addEventListener(function(error) {
             if (_this.errorEvent.numberOfListeners === 1)
@@ -2241,27 +2909,23 @@ $__System.register("7", ["5", "b", "6", "a"], function(exports_1, context_1) {
         Object.defineProperty(SessionPort.prototype, "connectEvent", {
           get: function() {
             if (this._isConnected)
-              console.warn("Probable developer error. \n                The connectEvent only fires once and the \n                session is already connected.");
+              throw new Error('The connectEvent only fires once and the session is already connected.');
             return this._connectEvent;
           },
           enumerable: true,
           configurable: true
         });
         ;
-        SessionPort.prototype.isConnected = function() {
-          return this._isConnected;
-        };
         SessionPort.prototype.open = function(messagePort, options) {
           var _this = this;
           if (this._isOpened)
-            throw new Error('Session.open: Session can only be opened once');
+            throw new Error('Session can only be opened once');
           if (this._isClosed)
-            throw new Error('Session.open: Session has already been closed');
+            throw new Error('Session has already been closed');
           if (!options)
-            throw new Error('Session.open: Session options must be provided');
+            throw new Error('Session options must be provided');
           this.messagePort = messagePort;
           this._isOpened = true;
-          this.send(SessionPort.OPEN, options);
           this.messagePort.onmessage = function(evt) {
             if (_this._isClosed)
               return;
@@ -2271,9 +2935,14 @@ $__System.register("7", ["5", "b", "6", "a"], function(exports_1, context_1) {
             var expectsResponse = evt.data[3];
             var handler = _this.on[topic];
             if (handler && !expectsResponse) {
-              var response = handler(message, evt);
-              if (response)
-                console.warn("Handler for " + topic + " returned an unexpected response");
+              try {
+                var response = handler(message, evt);
+                if (response)
+                  console.warn("Handler for " + topic + " returned an unexpected response");
+              } catch (e) {
+                _this.sendError(e);
+                _this.errorEvent.raiseEvent(e);
+              }
             } else if (handler) {
               var response = handler(message, evt);
               if (typeof response === 'undefined') {
@@ -2299,34 +2968,40 @@ $__System.register("7", ["5", "b", "6", "a"], function(exports_1, context_1) {
               if (expectsResponse) {
                 _this.send(topic + ':reject:' + id, {reason: errorMessage});
               } else {
-                _this.send(SessionPort.ERROR, {message: errorMessage});
+                _this.sendError({message: errorMessage});
               }
-              throw new Error('No handlers are available for topic ' + topic);
+              _this.errorEvent.raiseEvent(new Error('No handlers are available for topic ' + topic));
             }
           };
+          this.send(SessionPort.OPEN, options);
         };
         SessionPort.prototype.send = function(topic, message) {
           if (!this._isOpened)
-            throw new Error('Session.send: Session must be open to send messages');
+            throw new Error('Session must be open to send messages');
           if (this._isClosed)
             return false;
           var id = cesium_imports_1.createGuid();
           this.messagePort.postMessage([id, topic, message]);
           return true;
         };
-        SessionPort.prototype.sendError = function(errorMessage) {
-          console.log('Sending error to session "' + this.info.name + "' : " + JSON.stringify(errorMessage));
+        SessionPort.prototype.sendError = function(e) {
+          var errorMessage = e;
+          if (errorMessage instanceof Error) {
+            errorMessage = {
+              message: errorMessage.message,
+              stack: errorMessage['stack']
+            };
+          }
           return this.send(SessionPort.ERROR, errorMessage);
         };
         SessionPort.prototype.request = function(topic, message) {
           var _this = this;
           if (!this._isOpened || this._isClosed)
-            throw new Error('Session.request: Session must be open to make requests');
+            throw new Error('Session must be open to make requests');
           var id = cesium_imports_1.createGuid();
           var resolveTopic = topic + ':resolve:' + id;
           var rejectTopic = topic + ':reject:' + id;
-          this.messagePort.postMessage([id, topic, message || {}, true]);
-          return new Promise(function(resolve, reject) {
+          var result = new Promise(function(resolve, reject) {
             _this.on[resolveTopic] = function(message) {
               delete _this.on[resolveTopic];
               delete _this.on[rejectTopic];
@@ -2339,6 +3014,8 @@ $__System.register("7", ["5", "b", "6", "a"], function(exports_1, context_1) {
               reject(new Error(message.reason));
             };
           });
+          this.messagePort.postMessage([id, topic, message || {}, true]);
+          return result;
         };
         SessionPort.prototype.close = function() {
           if (this._isClosed)
@@ -2352,6 +3029,27 @@ $__System.register("7", ["5", "b", "6", "a"], function(exports_1, context_1) {
             this.messagePort.close();
           this.closeEvent.raiseEvent(null);
         };
+        Object.defineProperty(SessionPort.prototype, "isOpened", {
+          get: function() {
+            return this._isOpened;
+          },
+          enumerable: true,
+          configurable: true
+        });
+        Object.defineProperty(SessionPort.prototype, "isConnected", {
+          get: function() {
+            return this._isConnected;
+          },
+          enumerable: true,
+          configurable: true
+        });
+        Object.defineProperty(SessionPort.prototype, "isClosed", {
+          get: function() {
+            return this._isClosed;
+          },
+          enumerable: true,
+          configurable: true
+        });
         SessionPort.OPEN = 'ar.session.open';
         SessionPort.CLOSE = 'ar.session.close';
         SessionPort.ERROR = 'ar.session.error';
@@ -2408,7 +3106,11 @@ $__System.register("7", ["5", "b", "6", "a"], function(exports_1, context_1) {
           configurable: true
         });
         SessionService.prototype.connect = function() {
-          this.connectService.connect(this);
+          if (this.connectService && this.connectService.connect) {
+            this.connectService.connect(this);
+          } else {
+            console.warn('Argon: Unable to connect to a manager session; a connect service is not available');
+          }
         };
         SessionService.prototype.addManagedSessionPort = function() {
           var _this = this;
@@ -2424,7 +3126,7 @@ $__System.register("7", ["5", "b", "6", "a"], function(exports_1, context_1) {
           session.closeEvent.addEventListener(function() {
             var index = _this.managedSessions.indexOf(session);
             if (index > -1)
-              _this.managedSessions.splice(index);
+              _this.managedSessions.splice(index, 1);
           });
           return session;
         };
@@ -2480,7 +3182,7 @@ $__System.register("7", ["5", "b", "6", "a"], function(exports_1, context_1) {
           _super.apply(this, arguments);
         }
         LoopbackConnectService.prototype.connect = function(sessionService) {
-          var messageChannel = sessionService.createMessageChannel();
+          var messageChannel = sessionService.createSynchronousMessageChannel();
           var messagePort = messageChannel.port1;
           messageChannel.port2.onmessage = function(evt) {
             messageChannel.port2.postMessage(evt.data);
@@ -2557,7 +3259,7 @@ $__System.register("7", ["5", "b", "6", "a"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("10", ["b", "6", "d", "8", "7", "a"], function(exports_1, context_1) {
+$__System.register("12", ["8", "10", "b", "5", "7"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __extends = (this && this.__extends) || function(d, b) {
@@ -2582,7 +3284,6 @@ $__System.register("10", ["b", "6", "d", "8", "7", "a"], function(exports_1, con
     return c > 3 && r && Object.defineProperty(target, key, r), r;
   };
   var aurelia_dependency_injection_1,
-      common_1,
       focus_1,
       reality_1,
       session_1,
@@ -2591,7 +3292,6 @@ $__System.register("10", ["b", "6", "d", "8", "7", "a"], function(exports_1, con
       VuforiaHint,
       VuforiaServiceDelegateBase,
       VuforiaServiceDelegate,
-      LiveVideoRealityLoader,
       VuforiaService,
       VuforiaAPI,
       VuforiaTracker,
@@ -2600,8 +3300,6 @@ $__System.register("10", ["b", "6", "d", "8", "7", "a"], function(exports_1, con
   return {
     setters: [function(aurelia_dependency_injection_1_1) {
       aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
-    }, function(common_1_1) {
-      common_1 = common_1_1;
     }, function(focus_1_1) {
       focus_1 = focus_1_1;
     }, function(reality_1_1) {
@@ -2692,30 +3390,6 @@ $__System.register("10", ["b", "6", "d", "8", "7", "a"], function(exports_1, con
         return VuforiaServiceDelegate;
       }(VuforiaServiceDelegateBase));
       exports_1("VuforiaServiceDelegate", VuforiaServiceDelegate);
-      LiveVideoRealityLoader = (function() {
-        function LiveVideoRealityLoader(sessionService, delegate) {
-          this.sessionService = sessionService;
-          this.delegate = delegate;
-          this.type = 'live-video';
-        }
-        LiveVideoRealityLoader.prototype.load = function(reality) {
-          var realitySession = this.sessionService.addManagedSessionPort();
-          var remoteRealitySession = this.sessionService.createSessionPort();
-          var remove = this.delegate.stateUpdateEvent.addEventListener(function(frameState) {
-            remoteRealitySession.send('ar.reality.frameState', frameState);
-          });
-          remoteRealitySession.closeEvent.addEventListener(function() {
-            remove();
-          });
-          var messageChannel = this.sessionService.createSynchronousMessageChannel();
-          realitySession.open(messageChannel.port1, this.sessionService.configuration);
-          remoteRealitySession.open(messageChannel.port2, {role: common_1.Role.REALITY_VIEW});
-          return realitySession;
-        };
-        LiveVideoRealityLoader = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, VuforiaServiceDelegate)], LiveVideoRealityLoader);
-        return LiveVideoRealityLoader;
-      }());
-      exports_1("LiveVideoRealityLoader", LiveVideoRealityLoader);
       VuforiaService = (function() {
         function VuforiaService(sessionService, focusService, realityService, delegate) {
           var _this = this;
@@ -2753,9 +3427,9 @@ $__System.register("10", ["b", "6", "d", "8", "7", "a"], function(exports_1, con
               };
               session.on['ar.vuforia.init'] = function(options, event) {
                 if (!delegate.isAvailable())
-                  return Promise.reject("Vuforia is not supported");
+                  throw new Error("Vuforia is not supported");
                 if (_this._sessionIsInitialized.get(session))
-                  return Promise.reject("Vuforia has already been initialized");
+                  throw new Error("Vuforia has already been initialized");
                 _this._sessionInitOptions.set(session, options);
                 var result = commandQueue.push(function() {
                   return _this._init(session).then(function() {
@@ -2776,7 +3450,7 @@ $__System.register("10", ["b", "6", "d", "8", "7", "a"], function(exports_1, con
                     createdDataSets.add(id);
                     return Promise.resolve({id: id});
                   }
-                  return Promise.reject('Unable to create DataSet');
+                  throw new Error('Unable to create DataSet');
                 }, _this._controllingSession === session);
               };
               session.on['ar.vuforia.objectTrackerActivateDataSet'] = function(_a, event) {
@@ -2787,7 +3461,7 @@ $__System.register("10", ["b", "6", "d", "8", "7", "a"], function(exports_1, con
                     session.send('ar.vuforia.objectTrackerActivateDataSetEvent', {id: id});
                     return;
                   }
-                  return Promise.reject("Unable to activate DataSet (" + id + ")");
+                  throw new Error("Unable to activate DataSet (" + id + ")");
                 }, _this._controllingSession === session);
               };
               session.on['ar.vuforia.objectTrackerDeactivateDataSet'] = function(_a, event) {
@@ -2798,7 +3472,7 @@ $__System.register("10", ["b", "6", "d", "8", "7", "a"], function(exports_1, con
                     session.send('ar.vuforia.objectTrackerDeactivateDataSetEvent', {id: id});
                     return;
                   }
-                  return Promise.reject("Unable to deactivate DataSet (" + id + ")");
+                  throw new Error("Unable to deactivate DataSet (" + id + ")");
                 }, _this._controllingSession === session);
               };
               session.on['ar.vuforia.dataSetFetch'] = function(_a, event) {
@@ -2849,7 +3523,7 @@ $__System.register("10", ["b", "6", "d", "8", "7", "a"], function(exports_1, con
         };
         VuforiaService.prototype._ensureActiveSession = function() {
           console.log("VuforiaService: Ensuring an active session is in control.");
-          if (this._controllingSession && this._controllingSession.isConnected())
+          if (this._controllingSession && this._controllingSession.isConnected)
             return;
           this._selectControllingSession();
         };
@@ -2919,6 +3593,8 @@ $__System.register("10", ["b", "6", "d", "8", "7", "a"], function(exports_1, con
         };
         VuforiaService.prototype._cleanupSession = function(session) {
           var _this = this;
+          if (!this._sessionInitOptions.has(session))
+            return;
           this._sessionInitOptions.delete(session);
           var createdDataSets = this._sessionCreatedDataSets.get(session);
           console.log('VuforiaService: Deactivating datasets for session ' + session.info.name);
@@ -2937,10 +3613,10 @@ $__System.register("10", ["b", "6", "d", "8", "7", "a"], function(exports_1, con
           var options = this._sessionInitOptions.get(session);
           return this.delegate.init(options).then(function(initResult) {
             if (initResult !== VuforiaInitResult.SUCCESS) {
-              return Promise.reject("Vuforia init failed: " + VuforiaInitResult[initResult]);
+              throw new Error("Vuforia init failed: " + VuforiaInitResult[initResult]);
             }
             if (!_this.delegate.objectTrackerInit()) {
-              return Promise.reject("Vuforia init failed: Unable to initialize ObjectTracker");
+              throw new Error("Vuforia init failed: Unable to initialize ObjectTracker");
             }
             var success = true;
             _this._sessionActivatedDataSets.get(session).forEach(function(id) {
@@ -2950,20 +3626,20 @@ $__System.register("10", ["b", "6", "d", "8", "7", "a"], function(exports_1, con
               }
             });
             if (!success) {
-              return Promise.reject("Vuforia init failed: Unable to restore active datasets");
+              throw new Error("Vuforia init failed: Unable to restore active datasets");
             }
             if (!_this.delegate.cameraDeviceInitAndStart()) {
-              return Promise.reject("Vuforia init failed: Unable to complete initialization");
+              throw new Error("Vuforia init failed: Unable to complete initialization");
             }
             if (!_this.delegate.objectTrackerStart()) {
-              return Promise.reject("Vuforia init failed: Unable to start ObjectTracker");
+              throw new Error("Vuforia init failed: Unable to start ObjectTracker");
             }
           }).catch(function(err) {
             _this._sessionInitOptions.set(session, null);
             _this._sessionIsInitialized.set(session, false);
             _this._deinit(session);
             _this._ensureActiveSession();
-            return Promise.reject(err);
+            throw err;
           });
         };
         VuforiaService.prototype._deinit = function(session) {
@@ -3072,9 +3748,71 @@ $__System.register("10", ["b", "6", "d", "8", "7", "a"], function(exports_1, con
   };
 });
 
+$__System.register("13", ["8", "a", "5", "12"], function(exports_1, context_1) {
+  "use strict";
+  var __moduleName = context_1 && context_1.id;
+  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
+    var c = arguments.length,
+        r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+        d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
+      r = Reflect.decorate(decorators, target, key, desc);
+    else
+      for (var i = decorators.length - 1; i >= 0; i--)
+        if (d = decorators[i])
+          r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+  };
+  var aurelia_dependency_injection_1,
+      common_1,
+      session_1,
+      vuforia_1;
+  var LiveVideoRealityLoader;
+  return {
+    setters: [function(aurelia_dependency_injection_1_1) {
+      aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
+    }, function(common_1_1) {
+      common_1 = common_1_1;
+    }, function(session_1_1) {
+      session_1 = session_1_1;
+    }, function(vuforia_1_1) {
+      vuforia_1 = vuforia_1_1;
+    }],
+    execute: function() {
+      LiveVideoRealityLoader = (function() {
+        function LiveVideoRealityLoader(sessionService, delegate) {
+          this.sessionService = sessionService;
+          this.delegate = delegate;
+          this.type = 'live-video';
+        }
+        LiveVideoRealityLoader.prototype.load = function(reality) {
+          var realitySession = this.sessionService.addManagedSessionPort();
+          var remoteRealitySession = this.sessionService.createSessionPort();
+          var remove = this.delegate.stateUpdateEvent.addEventListener(function(frameState) {
+            remoteRealitySession.send('ar.reality.frameState', frameState);
+          });
+          remoteRealitySession.closeEvent.addEventListener(function() {
+            remove();
+          });
+          var messageChannel = this.sessionService.createSynchronousMessageChannel();
+          realitySession.open(messageChannel.port1, this.sessionService.configuration);
+          remoteRealitySession.open(messageChannel.port2, {
+            role: common_1.Role.REALITY_VIEW,
+            name: 'live_video'
+          });
+          return realitySession;
+        };
+        LiveVideoRealityLoader = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, vuforia_1.VuforiaServiceDelegate)], LiveVideoRealityLoader);
+        return LiveVideoRealityLoader;
+      }());
+      exports_1("LiveVideoRealityLoader", LiveVideoRealityLoader);
+    }
+  };
+});
+
 (function() {
 var define = $__System.amdDefine;
-define("11", ["12", "13", "14", "15"], function(defined, defineProperties, DeveloperError, Event) {
+define("14", ["15", "16", "17", "18"], function(defined, defineProperties, DeveloperError, Event) {
   "use strict";
   function CallbackProperty(callback, isConstant) {
     this._callback = undefined;
@@ -3116,7 +3854,7 @@ define("11", ["12", "13", "14", "15"], function(defined, defineProperties, Devel
 })();
 (function() {
 var define = $__System.amdDefine;
-define("16", ["17"], function(freezeObject) {
+define("19", ["1a"], function(freezeObject) {
   "use strict";
   var ClockRange = {
     UNBOUNDED: 0,
@@ -3129,7 +3867,7 @@ define("16", ["17"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("18", ["12"], function(defined) {
+define("1b", ["15"], function(defined) {
   "use strict";
   var getTimestamp;
   if (typeof performance !== 'undefined' && defined(performance.now)) {
@@ -3147,7 +3885,7 @@ define("18", ["12"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("19", ["16", "1a", "1b", "12", "14", "15", "18", "1c"], function(ClockRange, ClockStep, defaultValue, defined, DeveloperError, Event, getTimestamp, JulianDate) {
+define("1c", ["19", "1d", "1e", "15", "17", "18", "1b", "1f"], function(ClockRange, ClockStep, defaultValue, defined, DeveloperError, Event, getTimestamp, JulianDate) {
   "use strict";
   function Clock(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
@@ -3234,7 +3972,7 @@ define("19", ["16", "1a", "1b", "12", "14", "15", "18", "1c"], function(ClockRan
 })();
 (function() {
 var define = $__System.amdDefine;
-define("1a", ["17"], function(freezeObject) {
+define("1d", ["1a"], function(freezeObject) {
   "use strict";
   var ClockStep = {
     TICK_DEPENDENT: 0,
@@ -3247,7 +3985,7 @@ define("1a", ["17"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("1d", ["1e", "12", "13", "14", "1f", "20", "21"], function(createGuid, defined, defineProperties, DeveloperError, CesiumMath, Entity, EntityCollection) {
+define("20", ["21", "15", "16", "17", "22", "23", "24"], function(createGuid, defined, defineProperties, DeveloperError, CesiumMath, Entity, EntityCollection) {
   "use strict";
   var entityOptionsScratch = {id: undefined};
   var entityIdScratch = new Array(2);
@@ -3564,7 +4302,7 @@ define("1d", ["1e", "12", "13", "14", "1f", "20", "21"], function(createGuid, de
 })();
 (function() {
 var define = $__System.amdDefine;
-define("22", ["12", "13", "14"], function(defined, defineProperties, DeveloperError) {
+define("25", ["15", "16", "17"], function(defined, defineProperties, DeveloperError) {
   "use strict";
   function AssociativeArray() {
     this._array = [];
@@ -3627,7 +4365,7 @@ define("22", ["12", "13", "14"], function(defined, defineProperties, DeveloperEr
 })();
 (function() {
 var define = $__System.amdDefine;
-define("1e", [], function() {
+define("21", [], function() {
   "use strict";
   function createGuid() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -3642,7 +4380,7 @@ define("1e", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("23", ["1b", "12", "13", "14", "15", "24"], function(defaultValue, defined, defineProperties, DeveloperError, Event, createPropertyDescriptor) {
+define("26", ["1e", "15", "16", "17", "18", "27"], function(defaultValue, defined, defineProperties, DeveloperError, Event, createPropertyDescriptor) {
   "use strict";
   function BillboardGraphics(options) {
     this._image = undefined;
@@ -3755,7 +4493,7 @@ define("23", ["1b", "12", "13", "14", "15", "24"], function(defaultValue, define
 })();
 (function() {
 var define = $__System.amdDefine;
-define("25", ["26", "1b", "12", "13", "14", "15", "27", "28"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, Event, ReferenceFrame, PositionProperty) {
+define("28", ["29", "1e", "15", "16", "17", "18", "2a", "2b"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, Event, ReferenceFrame, PositionProperty) {
   "use strict";
   function ConstantPositionProperty(value, referenceFrame) {
     this._definitionChanged = new Event();
@@ -3808,7 +4546,7 @@ define("25", ["26", "1b", "12", "13", "14", "15", "27", "28"], function(Cartesia
 })();
 (function() {
 var define = $__System.amdDefine;
-define("29", ["1b", "12", "13", "14", "15"], function(defaultValue, defined, defineProperties, DeveloperError, Event) {
+define("2c", ["1e", "15", "16", "17", "18"], function(defaultValue, defined, defineProperties, DeveloperError, Event) {
   "use strict";
   function ConstantProperty(value) {
     this._value = undefined;
@@ -3850,7 +4588,7 @@ define("29", ["1b", "12", "13", "14", "15"], function(defaultValue, defined, def
 })();
 (function() {
 var define = $__System.amdDefine;
-define("24", ["1b", "12", "29"], function(defaultValue, defined, ConstantProperty) {
+define("27", ["1e", "15", "2c"], function(defaultValue, defined, ConstantProperty) {
   "use strict";
   function createProperty(name, privateName, subscriptionName, configurable, createPropertyCallback) {
     return {
@@ -3893,7 +4631,7 @@ define("24", ["1b", "12", "29"], function(defaultValue, defined, ConstantPropert
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2a", ["24"], function(createPropertyDescriptor) {
+define("2d", ["27"], function(createPropertyDescriptor) {
   "use strict";
   function createRawProperty(value) {
     return value;
@@ -3907,7 +4645,7 @@ define("2a", ["24"], function(createPropertyDescriptor) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("20", ["26", "1e", "1b", "12", "13", "14", "15", "2b", "2c", "2d", "2e", "23", "@empty", "25", "@empty", "24", "2a", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "2f", "@empty", "@empty"], function(Cartesian3, createGuid, defaultValue, defined, defineProperties, DeveloperError, Event, Matrix3, Matrix4, Quaternion, Transforms, BillboardGraphics, BoxGraphics, ConstantPositionProperty, CorridorGraphics, createPropertyDescriptor, createRawPropertyDescriptor, CylinderGraphics, EllipseGraphics, EllipsoidGraphics, LabelGraphics, ModelGraphics, PathGraphics, PointGraphics, PolygonGraphics, PolylineGraphics, PolylineVolumeGraphics, Property, RectangleGraphics, WallGraphics) {
+define("23", ["29", "21", "1e", "15", "16", "17", "18", "2e", "2f", "30", "31", "26", "@empty", "28", "@empty", "27", "2d", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "32", "@empty", "@empty"], function(Cartesian3, createGuid, defaultValue, defined, defineProperties, DeveloperError, Event, Matrix3, Matrix4, Quaternion, Transforms, BillboardGraphics, BoxGraphics, ConstantPositionProperty, CorridorGraphics, createPropertyDescriptor, createRawPropertyDescriptor, CylinderGraphics, EllipseGraphics, EllipsoidGraphics, LabelGraphics, ModelGraphics, PathGraphics, PointGraphics, PolygonGraphics, PolylineGraphics, PolylineVolumeGraphics, Property, RectangleGraphics, WallGraphics) {
   "use strict";
   function createConstantPositionProperty(value) {
     return new ConstantPositionProperty(value);
@@ -4159,7 +4897,7 @@ define("20", ["26", "1e", "1b", "12", "13", "14", "15", "2b", "2c", "2d", "2e", 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("21", ["22", "1e", "12", "13", "14", "15", "30", "1c", "31", "32", "20"], function(AssociativeArray, createGuid, defined, defineProperties, DeveloperError, Event, Iso8601, JulianDate, RuntimeError, TimeInterval, Entity) {
+define("24", ["25", "21", "15", "16", "17", "18", "33", "1f", "34", "35", "23"], function(AssociativeArray, createGuid, defined, defineProperties, DeveloperError, Event, Iso8601, JulianDate, RuntimeError, TimeInterval, Entity) {
   "use strict";
   var entityOptionsScratch = {id: undefined};
   function fireChangedEvent(collection) {
@@ -4342,7 +5080,7 @@ define("21", ["22", "1e", "12", "13", "14", "15", "30", "1c", "31", "32", "20"],
 })();
 (function() {
 var define = $__System.amdDefine;
-define("33", ["26", "34", "1b", "12", "13", "14", "35"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, Ellipsoid) {
+define("36", ["29", "37", "1e", "15", "16", "17", "38"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, Ellipsoid) {
   "use strict";
   function GeographicProjection(ellipsoid) {
     this._ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
@@ -4387,7 +5125,7 @@ define("33", ["26", "34", "1b", "12", "13", "14", "35"], function(Cartesian3, Ca
 })();
 (function() {
 var define = $__System.amdDefine;
-define("36", ["1b", "12", "14", "1f"], function(defaultValue, defined, DeveloperError, CesiumMath) {
+define("39", ["1e", "15", "17", "22"], function(defaultValue, defined, DeveloperError, CesiumMath) {
   "use strict";
   var factorial = CesiumMath.factorial;
   function calculateCoefficientTerm(x, zIndices, xTable, derivOrder, termOrder, reservedIndices) {
@@ -4587,7 +5325,7 @@ define("36", ["1b", "12", "14", "1f"], function(defaultValue, defined, Developer
 })();
 (function() {
 var define = $__System.amdDefine;
-define("37", ["12", "13", "14", "2b", "2d", "27", "2e"], function(defined, defineProperties, DeveloperError, Matrix3, Quaternion, ReferenceFrame, Transforms) {
+define("3a", ["15", "16", "17", "2e", "30", "2a", "31"], function(defined, defineProperties, DeveloperError, Matrix3, Quaternion, ReferenceFrame, Transforms) {
   "use strict";
   var OrientationProperty = function() {
     DeveloperError.throwInstantiationError();
@@ -4716,7 +5454,7 @@ define("37", ["12", "13", "14", "2b", "2d", "27", "2e"], function(defined, defin
 })();
 (function() {
 var define = $__System.amdDefine;
-define("38", ["17"], function(freezeObject) {
+define("3b", ["1a"], function(freezeObject) {
   "use strict";
   var Intersect = {
     OUTSIDE: -1,
@@ -4729,7 +5467,7 @@ define("38", ["17"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("39", ["26", "12", "14", "17"], function(Cartesian3, defined, DeveloperError, freezeObject) {
+define("3c", ["29", "15", "17", "1a"], function(Cartesian3, defined, DeveloperError, freezeObject) {
   "use strict";
   function Plane(normal, distance) {
     if (!defined(normal)) {
@@ -4789,7 +5527,7 @@ define("39", ["26", "12", "14", "17"], function(Cartesian3, defined, DeveloperEr
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3a", ["26", "1b", "12", "14", "38", "39"], function(Cartesian3, defaultValue, defined, DeveloperError, Intersect, Plane) {
+define("3d", ["29", "1e", "15", "17", "3b", "3c"], function(Cartesian3, defaultValue, defined, DeveloperError, Intersect, Plane) {
   "use strict";
   function CullingVolume(planes) {
     this.planes = defaultValue(planes, []);
@@ -4848,7 +5586,7 @@ define("3a", ["26", "1b", "12", "14", "38", "39"], function(Cartesian3, defaultV
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3b", ["3c", "26", "3d", "1b", "12", "13", "14", "2c", "3a"], function(Cartesian2, Cartesian3, Cartesian4, defaultValue, defined, defineProperties, DeveloperError, Matrix4, CullingVolume) {
+define("3e", ["3f", "29", "40", "1e", "15", "16", "17", "2f", "3d"], function(Cartesian2, Cartesian3, Cartesian4, defaultValue, defined, defineProperties, DeveloperError, Matrix4, CullingVolume) {
   "use strict";
   function PerspectiveOffCenterFrustum() {
     this.left = undefined;
@@ -5054,7 +5792,7 @@ define("3b", ["3c", "26", "3d", "1b", "12", "13", "14", "2c", "3a"], function(Ca
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3e", ["12", "13", "14", "3b"], function(defined, defineProperties, DeveloperError, PerspectiveOffCenterFrustum) {
+define("41", ["15", "16", "17", "3e"], function(defined, defineProperties, DeveloperError, PerspectiveOffCenterFrustum) {
   "use strict";
   function PerspectiveFrustum() {
     this._offCenterFrustum = new PerspectiveOffCenterFrustum();
@@ -5153,7 +5891,7 @@ define("3e", ["12", "13", "14", "3b"], function(defined, defineProperties, Devel
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3f", ["12", "13", "14", "15", "2f"], function(defined, defineProperties, DeveloperError, Event, Property) {
+define("42", ["15", "16", "17", "18", "32"], function(defined, defineProperties, DeveloperError, Event, Property) {
   "use strict";
   function resolve(that) {
     var targetEntity = that._targetEntity;
@@ -5224,7 +5962,7 @@ define("3f", ["12", "13", "14", "15", "2f"], function(defined, defineProperties,
 })();
 (function() {
 var define = $__System.amdDefine;
-define("40", ["12", "13", "14", "15", "31", "2f"], function(defined, defineProperties, DeveloperError, Event, RuntimeError, Property) {
+define("43", ["15", "16", "17", "18", "34", "32"], function(defined, defineProperties, DeveloperError, Event, RuntimeError, Property) {
   "use strict";
   function resolveEntity(that) {
     var entityIsResolved = true;
@@ -5398,7 +6136,7 @@ define("40", ["12", "13", "14", "15", "31", "2f"], function(defined, definePrope
 })();
 (function() {
 var define = $__System.amdDefine;
-define("27", ["17"], function(freezeObject) {
+define("2a", ["1a"], function(freezeObject) {
   "use strict";
   var ReferenceFrame = {
     FIXED: 0,
@@ -5410,7 +6148,7 @@ define("27", ["17"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("28", ["26", "12", "13", "14", "2b", "2c", "2d", "27", "2e"], function(Cartesian3, defined, defineProperties, DeveloperError, Matrix3, Matrix4, Quaternion, ReferenceFrame, Transforms) {
+define("2b", ["29", "15", "16", "17", "2e", "2f", "30", "2a", "31"], function(Cartesian3, defined, defineProperties, DeveloperError, Matrix3, Matrix4, Quaternion, ReferenceFrame, Transforms) {
   "use strict";
   function PositionProperty() {
     DeveloperError.throwInstantiationError();
@@ -5563,7 +6301,7 @@ define("28", ["26", "12", "13", "14", "2b", "2c", "2d", "27", "2e"], function(Ca
 })();
 (function() {
 var define = $__System.amdDefine;
-define("32", ["1b", "12", "13", "14", "17", "1c"], function(defaultValue, defined, defineProperties, DeveloperError, freezeObject, JulianDate) {
+define("35", ["1e", "15", "16", "17", "1a", "1f"], function(defaultValue, defined, defineProperties, DeveloperError, freezeObject, JulianDate) {
   "use strict";
   function TimeInterval(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
@@ -5716,7 +6454,7 @@ define("32", ["1b", "12", "13", "14", "17", "1c"], function(defaultValue, define
 })();
 (function() {
 var define = $__System.amdDefine;
-define("30", ["17", "1c", "32"], function(freezeObject, JulianDate, TimeInterval) {
+define("33", ["1a", "1f", "35"], function(freezeObject, JulianDate, TimeInterval) {
   "use strict";
   var MINIMUM_VALUE = freezeObject(JulianDate.fromIso8601('0000-01-01T00:00:00Z'));
   var MAXIMUM_VALUE = freezeObject(JulianDate.fromIso8601('9999-12-31T24:00:00Z'));
@@ -5735,7 +6473,7 @@ define("30", ["17", "1c", "32"], function(freezeObject, JulianDate, TimeInterval
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2f", ["1b", "12", "13", "14", "30"], function(defaultValue, defined, defineProperties, DeveloperError, Iso8601) {
+define("32", ["1e", "15", "16", "17", "33"], function(defaultValue, defined, defineProperties, DeveloperError, Iso8601) {
   "use strict";
   function Property() {
     DeveloperError.throwInstantiationError();
@@ -5789,7 +6527,7 @@ define("2f", ["1b", "12", "13", "14", "30"], function(defaultValue, defined, def
 })();
 (function() {
 var define = $__System.amdDefine;
-define("41", ["26", "1b", "12", "13", "14", "15", "27", "28", "2f", "42"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, Event, ReferenceFrame, PositionProperty, Property, SampledProperty) {
+define("44", ["29", "1e", "15", "16", "17", "18", "2a", "2b", "32", "45"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, Event, ReferenceFrame, PositionProperty, Property, SampledProperty) {
   "use strict";
   function SampledPositionProperty(referenceFrame, numberOfDerivatives) {
     numberOfDerivatives = defaultValue(numberOfDerivatives, 0);
@@ -5901,7 +6639,7 @@ define("41", ["26", "1b", "12", "13", "14", "15", "27", "28", "2f", "42"], funct
 })();
 (function() {
 var define = $__System.amdDefine;
-define("15", ["12", "13", "14"], function(defined, defineProperties, DeveloperError) {
+define("18", ["15", "16", "17"], function(defined, defineProperties, DeveloperError) {
   "use strict";
   function Event() {
     this._listeners = [];
@@ -5977,7 +6715,7 @@ define("15", ["12", "13", "14"], function(defined, defineProperties, DeveloperEr
 })();
 (function() {
 var define = $__System.amdDefine;
-define("43", ["17"], function(freezeObject) {
+define("46", ["1a"], function(freezeObject) {
   "use strict";
   var ExtrapolationType = {
     NONE: 0,
@@ -5990,7 +6728,7 @@ define("43", ["17"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("44", ["12", "14"], function(defined, DeveloperError) {
+define("47", ["15", "17"], function(defined, DeveloperError) {
   "use strict";
   var LinearApproximation = {type: 'Linear'};
   LinearApproximation.getRequiredDataPoints = function(degree) {
@@ -6026,7 +6764,7 @@ define("44", ["12", "14"], function(defined, DeveloperError) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("42", ["45", "1b", "12", "13", "14", "15", "43", "1c", "44"], function(binarySearch, defaultValue, defined, defineProperties, DeveloperError, Event, ExtrapolationType, JulianDate, LinearApproximation) {
+define("45", ["48", "1e", "15", "16", "17", "18", "46", "1f", "47"], function(binarySearch, defaultValue, defined, defineProperties, DeveloperError, Event, ExtrapolationType, JulianDate, LinearApproximation) {
   "use strict";
   var PackableNumber = {
     packedLength: 1,
@@ -6475,7 +7213,7 @@ define("42", ["45", "1b", "12", "13", "14", "15", "43", "1c", "44"], function(bi
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3c", ["1b", "12", "14", "17", "1f"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
+define("3f", ["1e", "15", "17", "1a", "22"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
   "use strict";
   function Cartesian2(x, y) {
     this.x = defaultValue(x, 0.0);
@@ -6782,7 +7520,7 @@ define("3c", ["1b", "12", "14", "17", "1f"], function(defaultValue, defined, Dev
 })();
 (function() {
 var define = $__System.amdDefine;
-define("46", ["47", "45", "1b", "12", "48", "17", "1c", "49", "4a", "31", "4b", "4c"], function(when, binarySearch, defaultValue, defined, EarthOrientationParametersSample, freezeObject, JulianDate, LeapSecond, loadJson, RuntimeError, TimeConstants, TimeStandard) {
+define("49", ["4a", "48", "1e", "15", "4b", "1a", "1f", "4c", "4d", "34", "4e", "4f"], function(when, binarySearch, defaultValue, defined, EarthOrientationParametersSample, freezeObject, JulianDate, LeapSecond, loadJson, RuntimeError, TimeConstants, TimeStandard) {
   "use strict";
   function EarthOrientationParameters(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
@@ -7008,7 +7746,7 @@ define("46", ["47", "45", "1b", "12", "48", "17", "1c", "49", "4a", "31", "4b", 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("48", [], function() {
+define("4b", [], function() {
   "use strict";
   function EarthOrientationParametersSample(xPoleWander, yPoleWander, xPoleOffset, yPoleOffset, ut1MinusUtc) {
     this.xPoleWander = xPoleWander;
@@ -7023,7 +7761,7 @@ define("48", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("34", ["26", "1b", "12", "14", "17", "1f", "4d"], function(Cartesian3, defaultValue, defined, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
+define("37", ["29", "1e", "15", "17", "1a", "22", "50"], function(Cartesian3, defaultValue, defined, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
   "use strict";
   function Cartographic(longitude, latitude, height) {
     this.longitude = defaultValue(longitude, 0.0);
@@ -7125,7 +7863,7 @@ define("34", ["26", "1b", "12", "14", "17", "1f", "4d"], function(Cartesian3, de
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4d", ["26", "12", "14", "1f"], function(Cartesian3, defined, DeveloperError, CesiumMath) {
+define("50", ["29", "15", "17", "22"], function(Cartesian3, defined, DeveloperError, CesiumMath) {
   "use strict";
   var scaleToGeodeticSurfaceIntersection = new Cartesian3();
   var scaleToGeodeticSurfaceGradient = new Cartesian3();
@@ -7207,7 +7945,7 @@ define("4d", ["26", "12", "14", "1f"], function(Cartesian3, defined, DeveloperEr
 })();
 (function() {
 var define = $__System.amdDefine;
-define("35", ["26", "34", "1b", "12", "13", "14", "17", "1f", "4d"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
+define("38", ["29", "37", "1e", "15", "16", "17", "1a", "22", "50"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
   "use strict";
   function initialize(ellipsoid, x, y, z) {
     x = defaultValue(x, 0.0);
@@ -7445,7 +8183,7 @@ define("35", ["26", "34", "1b", "12", "13", "14", "17", "1f", "4d"], function(Ca
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4e", [], function() {
+define("51", [], function() {
   function URI(uri) {
     if (uri instanceof URI) {
       this.scheme = uri.scheme;
@@ -7593,7 +8331,7 @@ define("4e", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4f", ["4e", "12", "14", "require"], function(Uri, defined, DeveloperError, require) {
+define("52", ["51", "15", "17", "require"], function(Uri, defined, DeveloperError, require) {
   "use strict";
   var cesiumScriptRegex = /((?:.*\/)|^)cesium[\w-]*\.js(?:\W|$)/i;
   function getBaseUrlFromCesiumScript() {
@@ -7659,7 +8397,7 @@ define("4f", ["4e", "12", "14", "require"], function(Uri, defined, DeveloperErro
 })();
 (function() {
 var define = $__System.amdDefine;
-define("50", ["1b"], function(defaultValue) {
+define("53", ["1e"], function(defaultValue) {
   "use strict";
   function clone(object, deep) {
     if (object === null || typeof object !== 'object') {
@@ -7686,7 +8424,7 @@ define("50", ["1b"], function(defaultValue) {
 var define = $__System.amdDefine;
 (function(define) {
   'use strict';
-  define("47", [], function() {
+  define("4a", [], function() {
     var reduceArray,
         slice,
         undef;
@@ -8029,7 +8767,7 @@ var define = $__System.amdDefine;
 })();
 (function() {
 var define = $__System.amdDefine;
-define("51", [], function() {
+define("54", [], function() {
   "use strict";
   function parseResponseHeaders(headerString) {
     var headers = {};
@@ -8054,7 +8792,7 @@ define("51", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("52", ["12", "51"], function(defined, parseResponseHeaders) {
+define("55", ["15", "54"], function(defined, parseResponseHeaders) {
   "use strict";
   function RequestErrorEvent(statusCode, response, responseHeaders) {
     this.statusCode = statusCode;
@@ -8077,7 +8815,7 @@ define("52", ["12", "51"], function(defined, parseResponseHeaders) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("53", ["47", "1b", "12", "14", "52", "31"], function(when, defaultValue, defined, DeveloperError, RequestErrorEvent, RuntimeError) {
+define("56", ["4a", "1e", "15", "17", "55", "34"], function(when, defaultValue, defined, DeveloperError, RequestErrorEvent, RuntimeError) {
   "use strict";
   function loadWithXhr(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
@@ -8185,7 +8923,7 @@ define("53", ["47", "1b", "12", "14", "52", "31"], function(when, defaultValue, 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("54", ["53"], function(loadWithXhr) {
+define("57", ["56"], function(loadWithXhr) {
   "use strict";
   function loadText(url, headers) {
     return loadWithXhr({
@@ -8199,7 +8937,7 @@ define("54", ["53"], function(loadWithXhr) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4a", ["50", "12", "14", "54"], function(clone, defined, DeveloperError, loadText) {
+define("4d", ["53", "15", "17", "57"], function(clone, defined, DeveloperError, loadText) {
   "use strict";
   var defaultHeaders = {Accept: 'application/json,*/*;q=0.01'};
   function loadJson(url, headers) {
@@ -8222,7 +8960,7 @@ define("4a", ["50", "12", "14", "54"], function(clone, defined, DeveloperError, 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("55", ["47", "4f", "1b", "12", "56", "1c", "4a", "4c"], function(when, buildModuleUrl, defaultValue, defined, Iau2006XysSample, JulianDate, loadJson, TimeStandard) {
+define("58", ["4a", "52", "1e", "15", "59", "1f", "4d", "4f"], function(when, buildModuleUrl, defaultValue, defined, Iau2006XysSample, JulianDate, loadJson, TimeStandard) {
   "use strict";
   function Iau2006XysData(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
@@ -8377,7 +9115,7 @@ define("55", ["47", "4f", "1b", "12", "56", "1c", "4a", "4c"], function(when, bu
 })();
 (function() {
 var define = $__System.amdDefine;
-define("56", [], function() {
+define("59", [], function() {
   "use strict";
   function Iau2006XysSample(x, y, s) {
     this.x = x;
@@ -8390,7 +9128,7 @@ define("56", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("57", [], function() {
+define("5a", [], function() {
   function sprintf() {
     var regex = /%%|%(\d+\$)?([-+\'#0 ]*)(\*\d+\$|\*|\d+)?(\.(\*\d+\$|\*|\d+))?([scboxXuideEfFgG])/g;
     var a = arguments,
@@ -8539,7 +9277,7 @@ define("57", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("45", ["12", "14"], function(defined, DeveloperError) {
+define("48", ["15", "17"], function(defined, DeveloperError) {
   "use strict";
   function binarySearch(array, itemToFind, comparator) {
     if (!defined(array)) {
@@ -8576,7 +9314,7 @@ define("45", ["12", "14"], function(defined, DeveloperError) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("58", [], function() {
+define("5b", [], function() {
   "use strict";
   function GregorianDate(year, month, day, hour, minute, second, millisecond, isLeapSecond) {
     this.year = year;
@@ -8594,7 +9332,7 @@ define("58", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("59", ["14"], function(DeveloperError) {
+define("5c", ["17"], function(DeveloperError) {
   "use strict";
   function isLeapYear(year) {
     if (year === null || isNaN(year)) {
@@ -8608,7 +9346,7 @@ define("59", ["14"], function(DeveloperError) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("49", [], function() {
+define("4c", [], function() {
   "use strict";
   function LeapSecond(date, offset) {
     this.julianDate = date;
@@ -8620,7 +9358,7 @@ define("49", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4c", ["17"], function(freezeObject) {
+define("4f", ["1a"], function(freezeObject) {
   "use strict";
   var TimeStandard = {
     UTC: 0,
@@ -8632,7 +9370,7 @@ define("4c", ["17"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("1c", ["57", "45", "1b", "12", "14", "58", "59", "49", "4b", "4c"], function(sprintf, binarySearch, defaultValue, defined, DeveloperError, GregorianDate, isLeapYear, LeapSecond, TimeConstants, TimeStandard) {
+define("1f", ["5a", "48", "1e", "15", "17", "5b", "5c", "4c", "4e", "4f"], function(sprintf, binarySearch, defaultValue, defined, DeveloperError, GregorianDate, isLeapYear, LeapSecond, TimeConstants, TimeStandard) {
   "use strict";
   var gregorianDateScratch = new GregorianDate();
   var daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -9168,7 +9906,7 @@ define("1c", ["57", "45", "1b", "12", "14", "58", "59", "49", "4b", "4c"], funct
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3d", ["1b", "12", "14", "17", "1f"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
+define("40", ["1e", "15", "17", "1a", "22"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
   "use strict";
   function Cartesian4(x, y, z, w) {
     this.x = defaultValue(x, 0.0);
@@ -9523,7 +10261,7 @@ define("3d", ["1b", "12", "14", "17", "1f"], function(defaultValue, defined, Dev
 })();
 (function() {
 var define = $__System.amdDefine;
-define("31", ["12"], function(defined) {
+define("34", ["15"], function(defined) {
   "use strict";
   function RuntimeError(message) {
     this.name = 'RuntimeError';
@@ -9549,7 +10287,7 @@ define("31", ["12"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2c", ["26", "3d", "1b", "12", "14", "17", "1f", "2b", "31"], function(Cartesian3, Cartesian4, defaultValue, defined, DeveloperError, freezeObject, CesiumMath, Matrix3, RuntimeError) {
+define("2f", ["29", "40", "1e", "15", "17", "1a", "22", "2e", "34"], function(Cartesian3, Cartesian4, defaultValue, defined, DeveloperError, freezeObject, CesiumMath, Matrix3, RuntimeError) {
   "use strict";
   function Matrix4(column0Row0, column1Row0, column2Row0, column3Row0, column0Row1, column1Row1, column2Row1, column3Row1, column0Row2, column1Row2, column2Row2, column3Row2, column0Row3, column1Row3, column2Row3, column3Row3) {
     this[0] = defaultValue(column0Row0, 0.0);
@@ -10994,7 +11732,7 @@ define("2c", ["26", "3d", "1b", "12", "14", "17", "1f", "2b", "31"], function(Ca
 })();
 (function() {
 var define = $__System.amdDefine;
-define("13", ["12"], function(defined) {
+define("16", ["15"], function(defined) {
   "use strict";
   var definePropertyWorks = (function() {
     try {
@@ -11015,7 +11753,7 @@ define("13", ["12"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5a", ["12", "13"], function(defined, defineProperties) {
+define("5d", ["15", "16"], function(defined, defineProperties) {
   "use strict";
   var _supportsFullscreen;
   var _names = {
@@ -11153,7 +11891,7 @@ define("5a", ["12", "13"], function(defined, defineProperties) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5b", ["1b", "12", "5a"], function(defaultValue, defined, Fullscreen) {
+define("5e", ["1e", "15", "5d"], function(defaultValue, defined, Fullscreen) {
   "use strict";
   var theNavigator;
   if (typeof navigator !== 'undefined') {
@@ -11305,7 +12043,7 @@ define("5b", ["1b", "12", "5a"], function(defaultValue, defined, Fullscreen) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("26", ["1b", "12", "14", "17", "1f"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
+define("29", ["1e", "15", "17", "1a", "22"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
   "use strict";
   function Cartesian3(x, y, z) {
     this.x = defaultValue(x, 0.0);
@@ -11789,7 +12527,7 @@ define("26", ["1b", "12", "14", "17", "1f"], function(defaultValue, defined, Dev
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5c", [], function() {
+define("5f", [], function() {
   var MersenneTwister = function(seed) {
     if (seed == undefined) {
       seed = new Date().getTime();
@@ -11846,7 +12584,7 @@ define("5c", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("1b", ["17"], function(freezeObject) {
+define("1e", ["1a"], function(freezeObject) {
   "use strict";
   function defaultValue(a, b) {
     if (a !== undefined) {
@@ -11861,7 +12599,7 @@ define("1b", ["17"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("14", ["12"], function(defined) {
+define("17", ["15"], function(defined) {
   "use strict";
   function DeveloperError(message) {
     this.name = 'DeveloperError';
@@ -11890,7 +12628,7 @@ define("14", ["12"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("1f", ["5c", "1b", "12", "14"], function(MersenneTwister, defaultValue, defined, DeveloperError) {
+define("22", ["5f", "1e", "15", "17"], function(MersenneTwister, defaultValue, defined, DeveloperError) {
   "use strict";
   var CesiumMath = {};
   CesiumMath.EPSILON1 = 0.1;
@@ -12125,7 +12863,7 @@ define("1f", ["5c", "1b", "12", "14"], function(MersenneTwister, defaultValue, d
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2b", ["26", "1b", "12", "14", "17", "1f"], function(Cartesian3, defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
+define("2e", ["29", "1e", "15", "17", "1a", "22"], function(Cartesian3, defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
   "use strict";
   function Matrix3(column0Row0, column1Row0, column2Row0, column0Row1, column1Row1, column2Row1, column0Row2, column1Row2, column2Row2) {
     this[0] = defaultValue(column0Row0, 0.0);
@@ -12877,7 +13615,7 @@ define("2b", ["26", "1b", "12", "14", "17", "1f"], function(Cartesian3, defaultV
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2d", ["26", "1b", "12", "14", "5b", "17", "1f", "2b"], function(Cartesian3, defaultValue, defined, DeveloperError, FeatureDetection, freezeObject, CesiumMath, Matrix3) {
+define("30", ["29", "1e", "15", "17", "5e", "1a", "22", "2e"], function(Cartesian3, defaultValue, defined, DeveloperError, FeatureDetection, freezeObject, CesiumMath, Matrix3) {
   "use strict";
   function Quaternion(x, y, z, w) {
     this.x = defaultValue(x, 0.0);
@@ -13453,7 +14191,7 @@ define("2d", ["26", "1b", "12", "14", "5b", "17", "1f", "2b"], function(Cartesia
 })();
 (function() {
 var define = $__System.amdDefine;
-define("12", [], function() {
+define("15", [], function() {
   "use strict";
   function defined(value) {
     return value !== undefined;
@@ -13464,7 +14202,7 @@ define("12", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("17", ["12"], function(defined) {
+define("1a", ["15"], function(defined) {
   "use strict";
   var freezeObject = Object.freeze;
   if (!defined(freezeObject)) {
@@ -13478,7 +14216,7 @@ define("17", ["12"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4b", ["17"], function(freezeObject) {
+define("4e", ["1a"], function(freezeObject) {
   "use strict";
   var TimeConstants = {
     SECONDS_PER_MILLISECOND: 0.001,
@@ -13498,7 +14236,7 @@ define("4b", ["17"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2e", ["47", "3c", "26", "3d", "1b", "12", "14", "46", "48", "35", "55", "56", "1c", "1f", "2b", "2c", "2d", "4b"], function(when, Cartesian2, Cartesian3, Cartesian4, defaultValue, defined, DeveloperError, EarthOrientationParameters, EarthOrientationParametersSample, Ellipsoid, Iau2006XysData, Iau2006XysSample, JulianDate, CesiumMath, Matrix3, Matrix4, Quaternion, TimeConstants) {
+define("31", ["4a", "3f", "29", "40", "1e", "15", "17", "49", "4b", "38", "58", "59", "1f", "22", "2e", "2f", "30", "4e"], function(when, Cartesian2, Cartesian3, Cartesian4, defaultValue, defined, DeveloperError, EarthOrientationParameters, EarthOrientationParametersSample, Ellipsoid, Iau2006XysData, Iau2006XysSample, JulianDate, CesiumMath, Matrix3, Matrix4, Quaternion, TimeConstants) {
   "use strict";
   var Transforms = {};
   var eastNorthUpToFixedFrameNormal = new Cartesian3();
@@ -13892,7 +14630,7 @@ define("2e", ["47", "3c", "26", "3d", "1b", "12", "14", "46", "48", "35", "55", 
 });
 
 })();
-$__System.register("5d", ["5"], function(exports_1, context_1) {
+$__System.register("60", ["9"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var cesium_imports_ts_1;
@@ -13961,7 +14699,7 @@ $__System.register("5d", ["5"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("5", ["45", "11", "3c", "26", "3d", "19", "1a", "1d", "25", "29", "1e", "1b", "12", "14", "35", "20", "21", "15", "43", "33", "36", "1c", "1f", "2b", "2c", "37", "3e", "28", "2f", "2d", "3f", "27", "40", "41", "42", "2e", "5d"], function(exports_1, context_1) {
+$__System.register("9", ["48", "14", "3f", "29", "40", "1c", "1d", "20", "28", "2c", "21", "1e", "15", "17", "38", "23", "24", "18", "46", "36", "39", "1f", "22", "2e", "2f", "3a", "41", "2b", "32", "30", "42", "2a", "43", "44", "45", "31", "60"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   return {
@@ -14042,7 +14780,7 @@ $__System.register("5", ["45", "11", "3c", "26", "3d", "19", "1a", "1d", "25", "
   };
 });
 
-$__System.register("a", ["15", "5"], function(exports_1, context_1) {
+$__System.register("7", ["18", "9"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var Event_1,
@@ -14075,20 +14813,11 @@ $__System.register("a", ["15", "5"], function(exports_1, context_1) {
   exports_1("getEntityPositionInReferenceFrame", getEntityPositionInReferenceFrame);
   function getEntityOrientationInReferenceFrame(entity, time, referenceFrame, result) {
     var entityFrame = entity.position && entity.position.referenceFrame;
-    if (entityFrame === undefined)
+    if (!cesium_imports_1.defined(entityFrame))
       return undefined;
     var orientation = entity.orientation && entity.orientation.getValue(time, result);
-    if (!orientation) {
-      var entityPositionFIXED = getEntityPositionInReferenceFrame(entity, time, cesium_imports_1.ReferenceFrame.FIXED, scratchCartesianPositionFIXED);
-      if (!entityPositionFIXED)
-        return cesium_imports_1.Quaternion.clone(cesium_imports_1.Quaternion.IDENTITY, result);
-      if (cesium_imports_1.Cartesian3.ZERO.equals(entityPositionFIXED))
-        throw new Error('invalid cartographic position');
-      var transform = cesium_imports_1.Transforms.eastNorthUpToFixedFrame(entityPositionFIXED, cesium_imports_1.Ellipsoid.WGS84, scratchMatrix4);
-      var rotation = cesium_imports_1.Matrix4.getRotation(transform, scratchMatrix3);
-      var fixedOrientation = cesium_imports_1.Quaternion.fromRotationMatrix(rotation, result);
-      return cesium_imports_1.OrientationProperty.convertToReferenceFrame(time, fixedOrientation, cesium_imports_1.ReferenceFrame.FIXED, referenceFrame, result);
-    }
+    if (!cesium_imports_1.defined(orientation))
+      return undefined;
     return cesium_imports_1.OrientationProperty.convertToReferenceFrame(time, orientation, entityFrame, referenceFrame, result);
   }
   exports_1("getEntityOrientationInReferenceFrame", getEntityOrientationInReferenceFrame);
@@ -14181,11 +14910,7 @@ $__System.register("a", ["15", "5"], function(exports_1, context_1) {
               command: command,
               reject: reject,
               execute: function() {
-                console.log('CommandQueue: Executing command ' + command.toString());
                 var result = Promise.resolve().then(command);
-                result.then(function() {
-                  console.log('CommandQueue: DONE ' + command.toString());
-                });
                 resolve(result);
                 return result;
               }
@@ -14221,8 +14946,8 @@ $__System.register("a", ["15", "5"], function(exports_1, context_1) {
           var item = this._queue.shift();
           if (!item)
             return;
-          this._currentCommandPending = item.execute().then(this._executeNextCommand.bind(this)).catch(function(error) {
-            _this.errorEvent.raiseEvent(error);
+          this._currentCommandPending = item.execute().then(this._executeNextCommand.bind(this)).catch(function(e) {
+            _this.errorEvent.raiseEvent(e);
             _this._executeNextCommand();
           });
         };
@@ -14304,7 +15029,8 @@ $__System.register("a", ["15", "5"], function(exports_1, context_1) {
               pendingMessages1 = [];
             },
             postMessage: function(data) {
-              messageChannel.port2.onmessage({data: data});
+              if (messageChannel.port2.onmessage)
+                messageChannel.port2.onmessage({data: data});
             },
             close: function() {
               messageChannel.port1.onmessage = null;
@@ -14327,7 +15053,8 @@ $__System.register("a", ["15", "5"], function(exports_1, context_1) {
               pendingMessages2 = [];
             },
             postMessage: function(data) {
-              messageChannel.port1.onmessage({data: data});
+              if (messageChannel.port1.onmessage)
+                messageChannel.port1.onmessage({data: data});
             },
             close: function() {
               messageChannel.port1.onmessage = null;
@@ -14356,7 +15083,7 @@ $__System.register("a", ["15", "5"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("1", ["2", "b", "5", "7", "6", "4", "e", "d", "8", "9", "c", "10", "a"], function(exports_1, context_1) {
+$__System.register("1", ["2", "8", "9", "5", "a", "6", "e", "10", "b", "c", "4", "12", "f", "13", "7"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var DI,
@@ -14369,7 +15096,9 @@ $__System.register("1", ["2", "b", "5", "7", "6", "4", "e", "d", "8", "9", "c", 
       reality_1,
       timer_1,
       view_1,
-      vuforia_1;
+      vuforia_1,
+      empty_1,
+      live_video_1;
   var ArgonSystem;
   function init(options) {
     if (options === void 0) {
@@ -14393,7 +15122,7 @@ $__System.register("1", ["2", "b", "5", "7", "6", "4", "e", "d", "8", "9", "c", 
     }
     var config = Object.assign({
       role: common_1.Role.REALITY_VIEW,
-      realityViewSupportsControlPort: true
+      'reality.supportsControlPort': true
     }, options.config);
     return new ArgonSystem(config, options.container);
   }
@@ -14403,7 +15132,9 @@ $__System.register("1", ["2", "b", "5", "7", "6", "4", "e", "d", "8", "9", "c", 
     'init': true,
     'initReality': true,
     'DI': true,
-    'Cesium': true
+    'Cesium': true,
+    'EmptyRealityLoader': true,
+    'LiveVideoRealityLoader': true
   };
   function exportStar_1(m) {
     var exports = {};
@@ -14445,12 +15176,18 @@ $__System.register("1", ["2", "b", "5", "7", "6", "4", "e", "d", "8", "9", "c", 
     }, function(vuforia_1_1) {
       vuforia_1 = vuforia_1_1;
       exportStar_1(vuforia_1_1);
+    }, function(empty_1_1) {
+      empty_1 = empty_1_1;
+    }, function(live_video_1_1) {
+      live_video_1 = live_video_1_1;
     }, function(utils_1_1) {
       exportStar_1(utils_1_1);
     }],
     execute: function() {
       exports_1("DI", DI);
       exports_1("Cesium", Cesium);
+      exports_1("EmptyRealityLoader", empty_1.EmptyRealityLoader);
+      exports_1("LiveVideoRealityLoader", live_video_1.LiveVideoRealityLoader);
       ArgonSystem = (function() {
         function ArgonSystem(config, container) {
           if (container === void 0) {
@@ -14467,14 +15204,10 @@ $__System.register("1", ["2", "b", "5", "7", "6", "4", "e", "d", "8", "9", "c", 
             container.registerSingleton(session_1.ConnectService, session_1.WKWebViewConnectService);
           } else if (session_1.DebugConnectService.isAvailable()) {
             container.registerSingleton(session_1.ConnectService, session_1.DebugConnectService);
-          } else if (session_1.DebugConnectService.isAvailable()) {
-            container.registerSingleton(session_1.ConnectService, session_1.DOMConnectService);
-          } else {
-            container.registerSingleton(session_1.ConnectService, session_1.LoopbackConnectService);
           }
           if (config.role === common_1.Role.MANAGER) {
-            this.reality.registerLoader(container.get(reality_1.EmptyRealityLoader));
-            this.reality.registerLoader(container.get(vuforia_1.LiveVideoRealityLoader));
+            this.reality.registerLoader(container.get(empty_1.EmptyRealityLoader));
+            this.reality.registerLoader(container.get(live_video_1.LiveVideoRealityLoader));
             if (typeof document !== 'undefined') {
               this.reality.setDefault({
                 type: 'empty',
@@ -14589,4 +15322,3 @@ $__System.register("1", ["2", "b", "5", "7", "6", "4", "e", "d", "8", "9", "c", 
   else
     Argon = factory();
 });
-//# sourceMappingURL=argon.umd.js.map

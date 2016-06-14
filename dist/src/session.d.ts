@@ -17,10 +17,8 @@ export interface MessageHandlerMap {
  * Describes an error message.
  */
 export interface ErrorMessage {
-    /**
-     * A string which describes the error message.
-     */
     message: string;
+    stack?: string;
 }
 /**
  * Provides two-way communication between sessions, either
@@ -60,7 +58,6 @@ export declare class SessionPort {
     private _isConnected;
     private _isClosed;
     constructor();
-    isConnected(): boolean;
     /**
      * Establish a connection to another session via the provided MessagePort.
      * @param messagePort the message port to post and receive messages.
@@ -81,7 +78,7 @@ export declare class SessionPort {
      * @return Return true if the error message is sent successfully,
      * otherwise, return false.
      */
-    sendError(errorMessage: ErrorMessage): boolean;
+    sendError(e: ErrorMessage | Error): boolean;
     /**
      * Send a request and return a promise for the result.
      * @param topic the message topic.
@@ -94,6 +91,9 @@ export declare class SessionPort {
      * Close the connection to the remote session.
      */
     close(): void;
+    readonly isOpened: boolean;
+    readonly isConnected: boolean;
+    readonly isClosed: boolean;
 }
 export declare class SessionPortFactory {
     create(): SessionPort;
@@ -164,15 +164,16 @@ export declare class SessionService {
      */
     createSynchronousMessageChannel(): SynchronousMessageChannel;
     /**
-     * Returns true if this session is the manager
+     * Returns true if this session is the Manager
      */
     readonly isManager: boolean;
     /**
-     * Returns true if this session is an application
+     * Returns true if this session is an Application, meaning,
+     * it is running within a Manager.
      */
     readonly isApplication: boolean;
     /**
-     * Returns true if this session is a Reality view
+     * Returns true if this session is a Reality View
      */
     readonly isRealityView: boolean;
     /**

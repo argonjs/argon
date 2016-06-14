@@ -8,15 +8,13 @@ export interface Configuration {
     role?: Role;
     userData?: any;
     // app options
-    appProvidesCustomView?: boolean;
+    'app.supportsCustomView'?: boolean;
     // reality view options
-    realityViewSupportsControlPort?: boolean;
-    realityViewSupportsCustomViewport?: boolean;
-    realityViewSupportsCustomSubviews?: boolean;
-    realityViewReferenceFrames?: (number | string)[];
+    'reality.supportsControlPort'?: boolean;
+    'reality.supportsCustomViewport'?: boolean;
+    'reality.supportsCustomSubviews'?: boolean;
+    'reality.providedReferenceFrames'?: (number | string)[];
     // manager options
-    managerPublicKey?: string | Promise<string>;
-    managerPrivateKey?: string | Promise<string>;
 }
 
 /*
@@ -139,7 +137,7 @@ export interface SerializedViewParameters {
  */
 export interface SerializedFrameState {
     index: number,
-    time: { dayNumber: number, secondsOfDay: number }, // JulianDate
+    time: { dayNumber: number, secondsOfDay: number }, // JulianDate,
     view: SerializedViewParameters,
     entities?: SerializedEntityPoseMap
 }

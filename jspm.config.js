@@ -37,9 +37,13 @@ SystemJS.config({
         "aurelia-polyfills": "npm:aurelia-polyfills@1.0.0-beta.1.0.0",
         "buffer": "github:jspm/nodelibs-buffer@0.2.0-alpha",
         "chai": "npm:chai@3.5.0",
+        "child_process": "github:jspm/nodelibs-child_process@0.2.0-alpha",
         "css": "github:systemjs/plugin-css@0.1.20",
+        "fs": "github:jspm/nodelibs-fs@0.2.0-alpha",
         "json": "github:systemjs/plugin-json@0.1.2",
+        "mobile-detect": "npm:mobile-detect@1.3.2",
         "mocha": "npm:mocha@2.4.5",
+        "path": "github:jspm/nodelibs-path@0.2.0-alpha",
         "process": "github:jspm/nodelibs-process@0.2.0-alpha",
         "ts": "github:frankwallis/plugin-typescript@2.6.0"
     },

@@ -15,11 +15,14 @@ import {Configuration, Role} from './common'
 import {ContextService} from './context'
 import {DeviceService} from './device'
 import {FocusService} from './focus'
-import {RealityService, RealityLoader, EmptyRealityLoader} from './reality'
+import {RealityService, RealityLoader} from './reality'
 import {TimerService} from './timer'
 import {Event} from './utils'
 import {ViewService} from './view'
-import {VuforiaService, LiveVideoRealityLoader} from './vuforia'
+import {VuforiaService} from './vuforia'
+
+import {EmptyRealityLoader} from './realities/empty'
+import {LiveVideoRealityLoader} from './realities/live_video'
 
 export {DI, Cesium}
 export * from './common'
@@ -32,6 +35,10 @@ export * from './timer'
 export * from './utils'
 export * from './view'
 export * from './vuforia'
+export {
+EmptyRealityLoader,
+LiveVideoRealityLoader
+}
 
 /**
  * A composition root which instantiates the object graph based on a provided configuration
@@ -60,16 +67,6 @@ export class ArgonSystem {
             container.registerSingleton(
                 ConnectService,
                 DebugConnectService
-            );
-        } else if (DebugConnectService.isAvailable()) {
-            container.registerSingleton(
-                ConnectService,
-                DOMConnectService
-            );
-        } else {
-            container.registerSingleton(
-                ConnectService,
-                LoopbackConnectService
             );
         }
 
@@ -155,7 +152,10 @@ export function init(options: { config?: Configuration, container?: DI.Container
 }
 
 export function initReality(options: { config?: Configuration, container?: DI.Container } = {}) {
-    const config = Object.assign(<Configuration>{ role: Role.REALITY_VIEW, realityViewSupportsControlPort: true }, options.config);
+    const config = Object.assign(<Configuration>{
+        role: Role.REALITY_VIEW,
+        'reality.supportsControlPort': true
+    }, options.config);
     return new ArgonSystem(config, options.container);
 }
 

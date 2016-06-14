@@ -11,6 +11,7 @@
       "aurelia-dependency-injection": "npm:aurelia-dependency-injection@^1.0.0-beta.1.1.4",
       "aurelia-polyfills": "npm:aurelia-polyfills@^1.0.0-beta.1.0.0",
       "json": "github:systemjs/plugin-json@^0.1.2",
+      "mobile-detect": "npm:mobile-detect@^1.3.2",
       "ts": "github:frankwallis/plugin-typescript@^2.5.9"
     },
     "devDependencies": {
@@ -23,6 +24,9 @@
       "aurelia-metadata": "npm:aurelia-metadata@^1.0.0-beta.1.1.3",
       "aurelia-pal": "npm:aurelia-pal@^1.0.0-beta.1.1.1",
       "buffer": "github:jspm/nodelibs-buffer@^0.2.0-alpha",
+      "child_process": "github:jspm/nodelibs-child_process@^0.2.0-alpha",
+      "fs": "github:jspm/nodelibs-fs@^0.2.0-alpha",
+      "path": "github:jspm/nodelibs-path@^0.2.0-alpha",
       "process": "github:jspm/nodelibs-process@^0.2.0-alpha"
     },
     "overrides": {
@@ -51,7 +55,7 @@
         "registry": "github",
         "dependencies": {},
         "map": {
-          "./Source/DatajSources/BillboardGraphics": "@empty",
+          "./Source/DataSources/BillboardGraphics": "@empty",
           "./Source/DataSources/BoxGraphics": "@empty",
           "./Source/DataSources/CorridorGraphics": "@empty",
           "./Source/DataSources/CylinderGraphics": "@empty",
@@ -94,7 +98,7 @@
   "scripts": {
     "tsconfig": "tsconfig .",
     "format": "tsfmt -r",
-    "build": "tsconfig . && tsfmt -r && tsc && jspm build src/argon.ts dist/argon.umd.js --format umd --global-name Argon",
+    "build": "tsconfig . && tsfmt -r && tsc && jspm build src/argon.ts dist/argon.umd.js --format umd --global-name Argon --skip-source-maps",
     "browser-sync": "browser-sync  start --server --directory --startPath \"index.html\" --files \"src/**\"",
     "test": "npm run browser-sync",
     "static": "static -p 3000",

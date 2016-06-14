@@ -55,16 +55,21 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                     this._isClosed = false;
                     this.on[SessionPort.OPEN] = function (info) {
                         if (!info)
-                            throw new Error('Session did not provide configuration info');
+                            throw new Error('Session did not provide a configuration');
+                        if (_this._isConnected)
+                            throw new Error('Session has already connected!');
                         _this.info = info;
-                        _this.connectEvent.raiseEvent(null);
                         _this._isConnected = true;
+                        _this._connectEvent.raiseEvent(null);
                     };
                     this.on[SessionPort.CLOSE] = function (message) {
                         _this.close();
                     };
                     this.on[SessionPort.ERROR] = function (error) {
-                        _this.errorEvent.raiseEvent(new Error(error.message));
+                        var e = new Error("Session Error: " + error.message);
+                        if (error.stack)
+                            e['stack'] = error.stack;
+                        _this.errorEvent.raiseEvent(e);
                     };
                     this.errorEvent.addEventListener(function (error) {
                         if (_this.errorEvent.numberOfListeners === 1)
@@ -78,16 +83,13 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                      */
                     get: function () {
                         if (this._isConnected)
-                            console.warn("Probable developer error. \n                The connectEvent only fires once and the \n                session is already connected.");
+                            throw new Error('The connectEvent only fires once and the session is already connected.');
                         return this._connectEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
                 ;
-                SessionPort.prototype.isConnected = function () {
-                    return this._isConnected;
-                };
                 /**
                  * Establish a connection to another session via the provided MessagePort.
                  * @param messagePort the message port to post and receive messages.
@@ -96,14 +98,13 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                 SessionPort.prototype.open = function (messagePort, options) {
                     var _this = this;
                     if (this._isOpened)
-                        throw new Error('Session.open: Session can only be opened once');
+                        throw new Error('Session can only be opened once');
                     if (this._isClosed)
-                        throw new Error('Session.open: Session has already been closed');
+                        throw new Error('Session has already been closed');
                     if (!options)
-                        throw new Error('Session.open: Session options must be provided');
+                        throw new Error('Session options must be provided');
                     this.messagePort = messagePort;
                     this._isOpened = true;
-                    this.send(SessionPort.OPEN, options);
                     this.messagePort.onmessage = function (evt) {
                         if (_this._isClosed)
                             return;
@@ -113,9 +114,15 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                         var expectsResponse = evt.data[3];
                         var handler = _this.on[topic];
                         if (handler && !expectsResponse) {
-                            var response = handler(message, evt);
-                            if (response)
-                                console.warn("Handler for " + topic + " returned an unexpected response");
+                            try {
+                                var response = handler(message, evt);
+                                if (response)
+                                    console.warn("Handler for " + topic + " returned an unexpected response");
+                            }
+                            catch (e) {
+                                _this.sendError(e);
+                                _this.errorEvent.raiseEvent(e);
+                            }
                         }
                         else if (handler) {
                             var response = handler(message, evt);
@@ -145,11 +152,12 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                                 _this.send(topic + ':reject:' + id, { reason: errorMessage });
                             }
                             else {
-                                _this.send(SessionPort.ERROR, { message: errorMessage });
+                                _this.sendError({ message: errorMessage });
                             }
-                            throw new Error('No handlers are available for topic ' + topic);
+                            _this.errorEvent.raiseEvent(new Error('No handlers are available for topic ' + topic));
                         }
                     };
+                    this.send(SessionPort.OPEN, options);
                 };
                 /**
                  * Send a message
@@ -160,7 +168,7 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                  */
                 SessionPort.prototype.send = function (topic, message) {
                     if (!this._isOpened)
-                        throw new Error('Session.send: Session must be open to send messages');
+                        throw new Error('Session must be open to send messages');
                     if (this._isClosed)
                         return false;
                     var id = cesium_imports_1.createGuid();
@@ -173,8 +181,14 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                  * @return Return true if the error message is sent successfully,
                  * otherwise, return false.
                  */
-                SessionPort.prototype.sendError = function (errorMessage) {
-                    console.log('Sending error to session "' + this.info.name + "' : " + JSON.stringify(errorMessage));
+                SessionPort.prototype.sendError = function (e) {
+                    var errorMessage = e;
+                    if (errorMessage instanceof Error) {
+                        errorMessage = {
+                            message: errorMessage.message,
+                            stack: errorMessage['stack']
+                        };
+                    }
                     return this.send(SessionPort.ERROR, errorMessage);
                 };
                 /**
@@ -187,12 +201,11 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                 SessionPort.prototype.request = function (topic, message) {
                     var _this = this;
                     if (!this._isOpened || this._isClosed)
-                        throw new Error('Session.request: Session must be open to make requests');
+                        throw new Error('Session must be open to make requests');
                     var id = cesium_imports_1.createGuid();
                     var resolveTopic = topic + ':resolve:' + id;
                     var rejectTopic = topic + ':reject:' + id;
-                    this.messagePort.postMessage([id, topic, message || {}, true]);
-                    return new Promise(function (resolve, reject) {
+                    var result = new Promise(function (resolve, reject) {
                         _this.on[resolveTopic] = function (message) {
                             delete _this.on[resolveTopic];
                             delete _this.on[rejectTopic];
@@ -205,6 +218,8 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                             reject(new Error(message.reason));
                         };
                     });
+                    this.messagePort.postMessage([id, topic, message || {}, true]);
+                    return result;
                 };
                 /**
                  * Close the connection to the remote session.
@@ -221,6 +236,27 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                         this.messagePort.close();
                     this.closeEvent.raiseEvent(null);
                 };
+                Object.defineProperty(SessionPort.prototype, "isOpened", {
+                    get: function () {
+                        return this._isOpened;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(SessionPort.prototype, "isConnected", {
+                    get: function () {
+                        return this._isConnected;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(SessionPort.prototype, "isClosed", {
+                    get: function () {
+                        return this._isClosed;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 SessionPort.OPEN = 'ar.session.open';
                 SessionPort.CLOSE = 'ar.session.close';
                 SessionPort.ERROR = 'ar.session.error';
@@ -301,7 +337,12 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                  * Called internally by the composition root (ArgonSystem).
                  */
                 SessionService.prototype.connect = function () {
-                    this.connectService.connect(this);
+                    if (this.connectService && this.connectService.connect) {
+                        this.connectService.connect(this);
+                    }
+                    else {
+                        console.warn('Argon: Unable to connect to a manager session; a connect service is not available');
+                    }
                 };
                 /**
                  * Manager-only. Creates a session port that is managed by this service.
@@ -325,7 +366,7 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                     session.closeEvent.addEventListener(function () {
                         var index = _this.managedSessions.indexOf(session);
                         if (index > -1)
-                            _this.managedSessions.splice(index);
+                            _this.managedSessions.splice(index, 1);
                     });
                     return session;
                 };
@@ -354,7 +395,7 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                 };
                 Object.defineProperty(SessionService.prototype, "isManager", {
                     /**
-                     * Returns true if this session is the manager
+                     * Returns true if this session is the Manager
                      */
                     get: function () {
                         return this.configuration.role === common_1.Role.MANAGER;
@@ -364,7 +405,8 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                 });
                 Object.defineProperty(SessionService.prototype, "isApplication", {
                     /**
-                     * Returns true if this session is an application
+                     * Returns true if this session is an Application, meaning,
+                     * it is running within a Manager.
                      */
                     get: function () {
                         return this.configuration.role === common_1.Role.APPLICATION;
@@ -374,7 +416,7 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                 });
                 Object.defineProperty(SessionService.prototype, "isRealityView", {
                     /**
-                     * Returns true if this session is a Reality view
+                     * Returns true if this session is a Reality View
                      */
                     get: function () {
                         return this.configuration.role === common_1.Role.REALITY_VIEW;
@@ -422,7 +464,7 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                  * @param sessionService The session service instance.
                  */
                 LoopbackConnectService.prototype.connect = function (sessionService) {
-                    var messageChannel = sessionService.createMessageChannel();
+                    var messageChannel = sessionService.createSynchronousMessageChannel();
                     var messagePort = messageChannel.port1;
                     messageChannel.port2.onmessage = function (evt) {
                         messageChannel.port2.postMessage(evt.data);

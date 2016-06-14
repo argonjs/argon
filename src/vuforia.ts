@@ -98,31 +98,6 @@ export class VuforiaServiceDelegate extends VuforiaServiceDelegateBase {
     dataSetLoad(id: string): Promise<VuforiaTrackables> { return null }
 }
 
-@inject(SessionService, VuforiaServiceDelegate)
-export class LiveVideoRealityLoader implements RealityLoader {
-    public type = 'live-video';
-
-    constructor(private sessionService: SessionService, private delegate: VuforiaServiceDelegate) { }
-
-    public load(reality: RealityView) {
-        const realitySession = this.sessionService.addManagedSessionPort();
-        const remoteRealitySession = this.sessionService.createSessionPort();
-
-        const remove = this.delegate.stateUpdateEvent.addEventListener((frameState) => {
-            remoteRealitySession.send('ar.reality.frameState', frameState);
-        });
-
-        remoteRealitySession.closeEvent.addEventListener(() => {
-            remove();
-        });
-
-        const messageChannel = this.sessionService.createSynchronousMessageChannel();
-        realitySession.open(messageChannel.port1, this.sessionService.configuration);
-        remoteRealitySession.open(messageChannel.port2, { role: Role.REALITY_VIEW });
-        return realitySession;
-    }
-}
-
 /**
  * Mediates requests to the Vuforia API. Handles the following requests:
  * // TODO
@@ -176,8 +151,8 @@ export class VuforiaService {
                 }
 
                 session.on['ar.vuforia.init'] = (options: VuforiaInitOptions, event) => {
-                    if (!delegate.isAvailable()) return Promise.reject("Vuforia is not supported");
-                    if (this._sessionIsInitialized.get(session)) return Promise.reject("Vuforia has already been initialized");
+                    if (!delegate.isAvailable()) throw new Error("Vuforia is not supported");
+                    if (this._sessionIsInitialized.get(session)) throw new Error("Vuforia has already been initialized");
 
                     this._sessionInitOptions.set(session, options);
 
@@ -203,7 +178,7 @@ export class VuforiaService {
                             createdDataSets.add(id);
                             return Promise.resolve({ id });
                         }
-                        return Promise.reject('Unable to create DataSet');
+                        throw new Error('Unable to create DataSet');
                     }, this._controllingSession === session);
                 }
 
@@ -214,7 +189,7 @@ export class VuforiaService {
                             session.send('ar.vuforia.objectTrackerActivateDataSetEvent', { id });
                             return;
                         }
-                        return Promise.reject(`Unable to activate DataSet (${id})`);
+                        throw new Error(`Unable to activate DataSet (${id})`);
                     }, this._controllingSession === session);
                 }
 
@@ -225,7 +200,7 @@ export class VuforiaService {
                             session.send('ar.vuforia.objectTrackerDeactivateDataSetEvent', { id });
                             return;
                         }
-                        return Promise.reject(`Unable to deactivate DataSet (${id})`);
+                        throw new Error(`Unable to deactivate DataSet (${id})`);
                     }, this._controllingSession === session);
                 }
 
@@ -280,7 +255,7 @@ export class VuforiaService {
 
     private _ensureActiveSession() {
         console.log("VuforiaService: Ensuring an active session is in control.")
-        if (this._controllingSession && this._controllingSession.isConnected())
+        if (this._controllingSession && this._controllingSession.isConnected)
             return;
         this._selectControllingSession();
     }
@@ -331,7 +306,7 @@ export class VuforiaService {
         if (this._sessionIsInitialized.get(session)) {
             return this._init(session).then(() => {
                 commandQueue.execute();
-            }).catch((err) => {
+            }).catch((err: Error) => {
                 session.sendError(err);
             });
         } else {
@@ -354,6 +329,9 @@ export class VuforiaService {
     }
 
     private _cleanupSession(session: SessionPort) {
+
+        if (!this._sessionInitOptions.has(session)) return;
+
         // delete session init options
         this._sessionInitOptions.delete(session);
         const createdDataSets = this._sessionCreatedDataSets.get(session);
@@ -379,13 +357,13 @@ export class VuforiaService {
         return this.delegate.init(options).then((initResult: VuforiaInitResult) => {
 
             if (initResult !== VuforiaInitResult.SUCCESS) {
-                return Promise.reject("Vuforia init failed: " + VuforiaInitResult[initResult]);
+                throw new Error("Vuforia init failed: " + VuforiaInitResult[initResult]);
             }
 
             // must initialize trackers before initializing the camera device
 
             if (!this.delegate.objectTrackerInit()) {
-                return Promise.reject("Vuforia init failed: Unable to initialize ObjectTracker");
+                throw new Error("Vuforia init failed: Unable to initialize ObjectTracker");
             }
 
             // restore active datasets & trackables
@@ -398,7 +376,7 @@ export class VuforiaService {
             })
 
             if (!success) {
-                return Promise.reject("Vuforia init failed: Unable to restore active datasets");
+                throw new Error("Vuforia init failed: Unable to restore active datasets");
             }
 
             // todo: also activate datasets / trackables created by other sessions
@@ -407,13 +385,13 @@ export class VuforiaService {
             // developer account, so no need to return a rejected promise in that case)
 
             if (!this.delegate.cameraDeviceInitAndStart()) {
-                return Promise.reject("Vuforia init failed: Unable to complete initialization");
+                throw new Error("Vuforia init failed: Unable to complete initialization");
             }
 
             // trackers get started after camera is initialized and started
 
             if (!this.delegate.objectTrackerStart()) {
-                return Promise.reject("Vuforia init failed: Unable to start ObjectTracker");
+                throw new Error("Vuforia init failed: Unable to start ObjectTracker");
             }
 
         }).catch((err) => {
@@ -423,7 +401,7 @@ export class VuforiaService {
             this._deinit(session);
             this._ensureActiveSession();
 
-            return Promise.reject(err);
+            throw err;
         });
     }
 
@@ -453,7 +431,7 @@ export class VuforiaService {
 
         this.delegate.deinit();
         // if (errors.length > 0) {
-        //     return Promise.reject(errors.join('\n'));
+        //     throw new Error(errors.join('\n'));
         // }
     }
 

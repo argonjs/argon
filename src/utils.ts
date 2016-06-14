@@ -96,9 +96,9 @@ export class CommandQueue {
                 command,
                 reject,
                 execute: () => {
-                    console.log('CommandQueue: Executing command ' + command.toString());
+                    // console.log('CommandQueue: Executing command ' + command.toString());
                     const result = Promise.resolve().then(command);
-                    result.then(() => { console.log('CommandQueue: DONE ' + command.toString()) });
+                    // result.then(() => { console.log('CommandQueue: DONE ' + command.toString()) });
                     resolve(result);
                     return result;
                 }
@@ -145,8 +145,8 @@ export class CommandQueue {
 
         this._currentCommandPending = item.execute()
             .then(this._executeNextCommand.bind(this))
-            .catch((error) => {
-                this.errorEvent.raiseEvent(error);
+            .catch((e) => {
+                this.errorEvent.raiseEvent(e);
                 this._executeNextCommand();
             });
     }
@@ -212,21 +212,22 @@ export function getEntityOrientationInReferenceFrame(
     referenceFrame: ReferenceFrame | Entity,
     result: Quaternion): Quaternion {
     const entityFrame = entity.position && entity.position.referenceFrame
-    if (entityFrame === undefined) return undefined
+    if (!defined(entityFrame)) return undefined
     let orientation: Quaternion = entity.orientation && entity.orientation.getValue(time, result)
-    if (!orientation) {
-        // if not orientation is available, calculate an orientation based on position
-        const entityPositionFIXED = getEntityPositionInReferenceFrame(entity, time, ReferenceFrame.FIXED, scratchCartesianPositionFIXED)
-        if (!entityPositionFIXED) return Quaternion.clone(Quaternion.IDENTITY, result)
-        if (Cartesian3.ZERO.equals(entityPositionFIXED)) throw new Error('invalid cartographic position')
-        const transform = Transforms.eastNorthUpToFixedFrame(entityPositionFIXED, Ellipsoid.WGS84, scratchMatrix4);
-        const rotation = Matrix4.getRotation(transform, scratchMatrix3);
-        const fixedOrientation = Quaternion.fromRotationMatrix(rotation, result);
-        return OrientationProperty.convertToReferenceFrame(time, fixedOrientation, ReferenceFrame.FIXED, referenceFrame, result)
-    }
+    if (!defined(orientation)) return undefined;
     return OrientationProperty.convertToReferenceFrame(time, orientation, entityFrame, referenceFrame, result)
 }
 
+//  {
+//         // if no orientation is available, calculate an orientation based on position
+//         const entityPositionFIXED = getEntityPositionInReferenceFrame(entity, time, ReferenceFrame.FIXED, scratchCartesianPositionFIXED)
+//         if (!entityPositionFIXED) return Quaternion.clone(Quaternion.IDENTITY, result)
+//         if (Cartesian3.ZERO.equals(entityPositionFIXED)) throw new Error('invalid cartographic position')
+//         const transform = Transforms.eastNorthUpToFixedFrame(entityPositionFIXED, Ellipsoid.WGS84, scratchMatrix4);
+//         const rotation = Matrix4.getRotation(transform, scratchMatrix3);
+//         const fixedOrientation = Quaternion.fromRotationMatrix(rotation, result);
+//         return OrientationProperty.convertToReferenceFrame(time, fixedOrientation, ReferenceFrame.FIXED, referenceFrame, result)
+//     }
 
 /**
  * Create a SerializedEntityPose from a source entity. 
@@ -427,7 +428,8 @@ export class SynchronousMessageChannel {
                 pendingMessages1 = [];
             },
             postMessage(data: any) {
-                messageChannel.port2.onmessage({ data });
+                if (messageChannel.port2.onmessage)
+                    messageChannel.port2.onmessage({ data });
             },
             close() {
                 messageChannel.port1.onmessage = null;
@@ -447,7 +449,8 @@ export class SynchronousMessageChannel {
                 pendingMessages2 = [];
             },
             postMessage(data: any) {
-                messageChannel.port1.onmessage({ data });
+                if (messageChannel.port1.onmessage)
+                    messageChannel.port1.onmessage({ data });
             },
             close() {
                 messageChannel.port1.onmessage = null;

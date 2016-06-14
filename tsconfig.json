@@ -10,27 +10,31 @@
         "pretty": false
     },
     "filesGlob": [
-        "src/*.ts",
-        "typings/browser.d.ts",
+        "src/**/*.ts",
+        "typings/index.d.ts",
         "jspm_packages/npm/aurelia-*/**/*.d.ts"
     ],
     "files": [
         "jspm_packages/npm/aurelia-polyfills@1.0.0-beta.1.0.0/aurelia-polyfills.d.ts",
-        "typings/browser.d.ts",
+        "typings/index.d.ts",
         "jspm_packages/npm/aurelia-dependency-injection@1.0.0-beta.1.1.4/aurelia-dependency-injection.d.ts",
         "jspm_packages/npm/aurelia-logging@1.0.0-beta.1.1.2/aurelia-logging.d.ts",
         "jspm_packages/npm/aurelia-metadata@1.0.0-beta.1.1.5/aurelia-metadata.d.ts",
         "jspm_packages/npm/aurelia-pal@1.0.0-beta.1.1.1/aurelia-pal.d.ts",
-        "src/session.ts",
+        "src/focus.ts",
+        "src/realities/empty.ts",
+        "src/realities/live_video.ts",
+        "src/reality.ts",
+        "src/cesium/cesium-extensions.ts",
         "src/timer.ts",
-        "src/common.ts",
+        "src/utils.ts",
         "src/view.ts",
         "src/vuforia.ts",
         "src/argon.ts",
+        "src/cesium/cesium-imports.ts",
+        "src/common.ts",
         "src/context.ts",
         "src/device.ts",
-        "src/focus.ts",
-        "src/reality.ts",
-        "src/utils.ts"
+        "src/session.ts"
     ]
 }

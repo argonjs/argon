@@ -8,7 +8,7 @@ Matrix4['prototype'].length = 16;
 
 var __slice = Array.prototype.slice
 
-var after = function<T extends Function>(fn: T, after: Function) : T {
+var after = function <T extends Function>(fn: T, after: Function): T {
     return <T><any>function() {
         var result = fn.apply(this, arguments)
         after.call(this, result)

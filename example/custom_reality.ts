@@ -4,7 +4,9 @@ import * as Argon from '../src/argon'
 
 declare const THREE: any;
 
-export const app = Argon.init();
+window.Argon = Argon;
+
+export const app = Argon.initReality();
 
 export const scene = new THREE.Scene();
 export const camera = new THREE.PerspectiveCamera();
@@ -72,18 +74,24 @@ userLocation.add( axisHelper );
 axisHelper.position.y = -50;
 
 var perspectiveProjection = new Argon.Cesium.PerspectiveFrustum();
-perspectiveProjection.fovy = Math.PI / 2;
+perspectiveProjection.fov = Math.PI / 2;
+
+var scratchArray = [];
 
 function update(time:Argon.Cesium.JulianDate, index:number) {
+    app.device.update();
+    const viewport = app.view.getSuggestedViewport();
+    perspectiveProjection.aspectRatio = viewport.width / viewport.height;
+    const matrix = perspectiveProjection.infiniteProjectionMatrix;
     app.reality.frameEvent.raiseEvent({
         time,
         index,
         view: {
-            viewport: app.view.getViewport(),
-            pose: Argon.getSerializedEntityPose(app.device.entity, time),
+            viewport: app.view.getSuggestedViewport(),
+            pose: Argon.getSerializedEntityPose(app.device.interfaceEntity, time),
             subviews: [{
                 type: Argon.SubviewType.SINGULAR,
-                projectionMatrix: perspectiveProjection.infiniteProjectionMatrix
+                projectionMatrix: Argon.Cesium.Matrix4.toArray(matrix, scratchArray)
             }]
         }
     })
@@ -91,13 +99,30 @@ function update(time:Argon.Cesium.JulianDate, index:number) {
 }
 app.timer.requestFrame(update)
 
-app.updateEvent.addEventListener(() => {
-    const userPose = app.context.getEntityPose(app.context.user);
+// app.updateEvent.addEventListener(() => {
+//     const userPose = app.context.getEntityPose(app.context.user);
 
-    if (userPose.poseStatus & Argon.PoseStatus.KNOWN) {
-        user.position.copy(userPose.position);
-        user.quaternion.copy(userPose.orientation);
-        userLocation.position.copy(userPose.position);
+//     if (userPose.poseStatus & Argon.PoseStatus.KNOWN) {
+//         user.position.copy(userPose.position);
+//         user.quaternion.copy(userPose.orientation);
+//         userLocation.position.copy(userPose.position);
+//     }
+// })
+
+const scratchCartesian = new Argon.Cesium.Cartesian3;
+const scratchQuaternion = new Argon.Cesium.Quaternion;
+
+app.updateEvent.addEventListener(() => {
+    const t = app.context.time;
+    const rf = app.context.localOriginEastUpSouth;
+    const userEntity = app.context.user;
+    const position = userEntity.position.getValueInReferenceFrame(t, rf, scratchCartesian);
+    const orientation = userEntity.orientation.getValue(t, scratchQuaternion);
+
+    if (position && orientation) {
+        user.position.copy(position);
+        user.quaternion.copy(orientation);
+        userLocation.position.copy(position);
     }
 })
     
@@ -116,93 +141,3 @@ app.renderEvent.addEventListener(() => {
         renderer.render(scene, camera);
     }
 })
-
-// // creating 6 divs to indicate the x y z positioning
-// const divXpos = document.createElement('div')
-// const divXneg = document.createElement('div')
-// const divYpos = document.createElement('div')
-// const divYneg = document.createElement('div')
-// const divZpos = document.createElement('div')
-// const divZneg = document.createElement('div')
-
-// // programatically create a stylesheet for our direction divs
-// // and add it to the document
-// const style = document.createElement("style");
-// style.type = 'text/css';
-// document.head.appendChild(style);
-// const sheet = <CSSStyleSheet>style.sheet;
-// sheet.insertRule(`
-//     .direction {
-//         opacity: 0.5;
-//         width: 100px;
-//         height: 100px;
-//         border-radius: 50%;
-//         line-height: 100px;
-//         fontSize: 20px;
-//         text-align: center;
-//     }
-// `, 0);
-
-// // Put content in each one  (should do this as a couple of functions)
-// // for X
-// divXpos.className = 'direction'
-// divXpos.style.backgroundColor = "red"
-// divXpos.innerText = "Pos X = East"
-
-// divXneg.className = 'direction'
-// divXneg.style.backgroundColor = "red"
-// divXneg.innerText = "Neg X = West"
-
-// // for Y
-// divYpos.className = 'direction'
-// divYpos.style.backgroundColor = "blue"
-// divYpos.innerText = "Pos Y = Up"
-
-// divYneg.className = 'direction'
-// divYneg.style.backgroundColor = "blue"
-// divYneg.innerText = "Neg Y = Down"
-
-// //for Z
-// divZpos.className = 'direction'
-// divZpos.style.backgroundColor = "green"
-// divZpos.innerText = "Pos Z = South"
-
-// divZneg.className = 'direction'
-// divZneg.style.backgroundColor = "green"
-// divZneg.innerText = "Neg Z = North"
-
-// // create 6 CSS3DObjects in the scene graph
-// const cssObjectXpos = new THREE.CSS3DObject(divXpos)
-// const cssObjectXneg = new THREE.CSS3DObject(divXneg)
-// const cssObjectYpos = new THREE.CSS3DObject(divYpos)
-// const cssObjectYneg = new THREE.CSS3DObject(divYneg)
-// const cssObjectZpos = new THREE.CSS3DObject(divZpos)
-// const cssObjectZneg = new THREE.CSS3DObject(divZneg)
-
-// // the width and height is used to align things.
-// cssObjectXpos.position.x = 200.0
-// cssObjectXpos.rotation.y = - Math.PI / 2
-
-// cssObjectXneg.position.x = -200.0
-// cssObjectXneg.rotation.y = Math.PI / 2
-
-// // for Y
-// cssObjectYpos.position.y = 200.0
-// cssObjectYpos.rotation.x = Math.PI / 2
-
-// cssObjectYneg.position.y = - 200.0
-// cssObjectYneg.rotation.x = - Math.PI / 2
-
-// // for Z
-// cssObjectZpos.position.z = 200.0
-// cssObjectZpos.rotation.y = Math.PI
-
-// cssObjectZneg.position.z = -200.0
-// //no rotation need for this one
-
-// userLocation.add(cssObjectXpos)
-// userLocation.add(cssObjectXneg)
-// userLocation.add(cssObjectYpos)
-// userLocation.add(cssObjectYneg)
-// userLocation.add(cssObjectZpos)
-// userLocation.add(cssObjectZneg)

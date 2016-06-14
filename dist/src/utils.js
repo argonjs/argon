@@ -48,24 +48,24 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
      */
     function getEntityOrientationInReferenceFrame(entity, time, referenceFrame, result) {
         var entityFrame = entity.position && entity.position.referenceFrame;
-        if (entityFrame === undefined)
+        if (!cesium_imports_1.defined(entityFrame))
             return undefined;
         var orientation = entity.orientation && entity.orientation.getValue(time, result);
-        if (!orientation) {
-            // if not orientation is available, calculate an orientation based on position
-            var entityPositionFIXED = getEntityPositionInReferenceFrame(entity, time, cesium_imports_1.ReferenceFrame.FIXED, scratchCartesianPositionFIXED);
-            if (!entityPositionFIXED)
-                return cesium_imports_1.Quaternion.clone(cesium_imports_1.Quaternion.IDENTITY, result);
-            if (cesium_imports_1.Cartesian3.ZERO.equals(entityPositionFIXED))
-                throw new Error('invalid cartographic position');
-            var transform = cesium_imports_1.Transforms.eastNorthUpToFixedFrame(entityPositionFIXED, cesium_imports_1.Ellipsoid.WGS84, scratchMatrix4);
-            var rotation = cesium_imports_1.Matrix4.getRotation(transform, scratchMatrix3);
-            var fixedOrientation = cesium_imports_1.Quaternion.fromRotationMatrix(rotation, result);
-            return cesium_imports_1.OrientationProperty.convertToReferenceFrame(time, fixedOrientation, cesium_imports_1.ReferenceFrame.FIXED, referenceFrame, result);
-        }
+        if (!cesium_imports_1.defined(orientation))
+            return undefined;
         return cesium_imports_1.OrientationProperty.convertToReferenceFrame(time, orientation, entityFrame, referenceFrame, result);
     }
     exports_1("getEntityOrientationInReferenceFrame", getEntityOrientationInReferenceFrame);
+    //  {
+    //         // if no orientation is available, calculate an orientation based on position
+    //         const entityPositionFIXED = getEntityPositionInReferenceFrame(entity, time, ReferenceFrame.FIXED, scratchCartesianPositionFIXED)
+    //         if (!entityPositionFIXED) return Quaternion.clone(Quaternion.IDENTITY, result)
+    //         if (Cartesian3.ZERO.equals(entityPositionFIXED)) throw new Error('invalid cartographic position')
+    //         const transform = Transforms.eastNorthUpToFixedFrame(entityPositionFIXED, Ellipsoid.WGS84, scratchMatrix4);
+    //         const rotation = Matrix4.getRotation(transform, scratchMatrix3);
+    //         const fixedOrientation = Quaternion.fromRotationMatrix(rotation, result);
+    //         return OrientationProperty.convertToReferenceFrame(time, fixedOrientation, ReferenceFrame.FIXED, referenceFrame, result)
+    //     }
     /**
      * Create a SerializedEntityPose from a source entity.
      * @param entity The entity which the serialized pose represents.
@@ -214,9 +214,9 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
                             command: command,
                             reject: reject,
                             execute: function () {
-                                console.log('CommandQueue: Executing command ' + command.toString());
+                                // console.log('CommandQueue: Executing command ' + command.toString());
                                 var result = Promise.resolve().then(command);
-                                result.then(function () { console.log('CommandQueue: DONE ' + command.toString()); });
+                                // result.then(() => { console.log('CommandQueue: DONE ' + command.toString()) });
                                 resolve(result);
                                 return result;
                             }
@@ -263,8 +263,8 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
                         return;
                     this._currentCommandPending = item.execute()
                         .then(this._executeNextCommand.bind(this))
-                        .catch(function (error) {
-                        _this.errorEvent.raiseEvent(error);
+                        .catch(function (e) {
+                        _this.errorEvent.raiseEvent(e);
                         _this._executeNextCommand();
                     });
                 };
@@ -354,7 +354,8 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
                             pendingMessages1 = [];
                         },
                         postMessage: function (data) {
-                            messageChannel.port2.onmessage({ data: data });
+                            if (messageChannel.port2.onmessage)
+                                messageChannel.port2.onmessage({ data: data });
                         },
                         close: function () {
                             messageChannel.port1.onmessage = null;
@@ -373,7 +374,8 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
                             pendingMessages2 = [];
                         },
                         postMessage: function (data) {
-                            messageChannel.port1.onmessage({ data: data });
+                            if (messageChannel.port1.onmessage)
+                                messageChannel.port1.onmessage({ data: data });
                         },
                         close: function () {
                             messageChannel.port1.onmessage = null;

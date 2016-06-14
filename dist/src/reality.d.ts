@@ -1,9 +1,7 @@
 import { ReferenceFrame } from './cesium/cesium-imports';
-import { TimerService } from './timer';
 import { SerializedFrameState, RealityView } from './common';
 import { FocusService } from './focus';
 import { SessionPort, SessionService } from './session';
-import { DeviceService } from './device';
 import { Event } from './utils';
 /**
  * Abstract class for a reality setup handler
@@ -104,12 +102,4 @@ export declare class RealityService {
     private _getLoader(type);
     private _setCurrent(reality);
     private _executeRealityLoader(reality);
-}
-export declare class EmptyRealityLoader implements RealityLoader {
-    private sessionService;
-    private deviceService;
-    private timer;
-    type: string;
-    constructor(sessionService: SessionService, deviceService: DeviceService, timer: TimerService);
-    load(reality: RealityView): SessionPort;
 }

@@ -5,6 +5,8 @@ import robotariumData from './robotarium-data.json!';
 
 declare const THREE: any;
 
+window.Argon = Argon;
+
 export const app = Argon.init();
 
 app.reality.setDesired({
@@ -87,7 +89,7 @@ axisHelper.position.y = -50;
 // var textMesh = new THREE.Mesh( text, new THREE.MeshBasicMaterial( { color: 0xff0000 } ) ) ;
 // scene.add(textMesh);
 
-const robotariumEntity = app.context.entities.add(<any>{
+const robotariumEntity = app.context.subscribedEntities.add(<any>{
     id: 'robotarium',
     position: new Argon.Cesium.ConstantPositionProperty(),
     orientation: new Argon.Cesium.ConstantProperty(Argon.Cesium.Quaternion)
@@ -117,7 +119,7 @@ app.vuforia.init({
             box.position.y = 50;
                         
             var axisHelper = new THREE.AxisHelper( 10 );
-            stonesObject.add( axisHelper );
+            box.add( axisHelper );
             
             console.log('Subscribes to stones trackable with id ' + trackables['stones'].id);
             
@@ -199,7 +201,7 @@ function loadRobotariumData() {
     var now = Argon.Cesium.JulianDate.now();
     robotData.forEach((r)=>{
         if (!r.id) return;
-        const robotEntity = app.context.entities.getOrCreateEntity(r.id);
+        const robotEntity = app.context.subscribedEntities.getOrCreateEntity(r.id);
         if (!robotEntity.position || !robotEntity.orientation) {
             robotEntity.position = new Argon.Cesium.SampledPositionProperty(robotariumEntity);
             (robotEntity.position as Argon.Cesium.SampledPositionProperty).forwardExtrapolationType = Argon.Cesium.ExtrapolationType.HOLD;

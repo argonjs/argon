@@ -6,13 +6,11 @@ export interface Configuration {
     name?: string;
     role?: Role;
     userData?: any;
-    appProvidesCustomView?: boolean;
-    realityViewSupportsControlPort?: boolean;
-    realityViewSupportsCustomViewport?: boolean;
-    realityViewSupportsCustomSubviews?: boolean;
-    realityViewReferenceFrames?: (number | string)[];
-    managerPublicKey?: string | Promise<string>;
-    managerPrivateKey?: string | Promise<string>;
+    'app.supportsCustomView'?: boolean;
+    'reality.supportsControlPort'?: boolean;
+    'reality.supportsCustomViewport'?: boolean;
+    'reality.supportsCustomSubviews'?: boolean;
+    'reality.providedReferenceFrames'?: (number | string)[];
 }
 export declare enum Role {
     APPLICATION,
