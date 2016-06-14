@@ -99,30 +99,13 @@ function update(time:Argon.Cesium.JulianDate, index:number) {
 }
 app.timer.requestFrame(update)
 
-// app.updateEvent.addEventListener(() => {
-//     const userPose = app.context.getEntityPose(app.context.user);
-
-//     if (userPose.poseStatus & Argon.PoseStatus.KNOWN) {
-//         user.position.copy(userPose.position);
-//         user.quaternion.copy(userPose.orientation);
-//         userLocation.position.copy(userPose.position);
-//     }
-// })
-
-const scratchCartesian = new Argon.Cesium.Cartesian3;
-const scratchQuaternion = new Argon.Cesium.Quaternion;
-
 app.updateEvent.addEventListener(() => {
-    const t = app.context.time;
-    const rf = app.context.localOriginEastUpSouth;
-    const userEntity = app.context.user;
-    const position = userEntity.position.getValueInReferenceFrame(t, rf, scratchCartesian);
-    const orientation = userEntity.orientation.getValue(t, scratchQuaternion);
+    const userPose = app.context.getEntityPose(app.context.user);
 
-    if (position && orientation) {
-        user.position.copy(position);
-        user.quaternion.copy(orientation);
-        userLocation.position.copy(position);
+    if (userPose.poseStatus & Argon.PoseStatus.KNOWN) {
+        user.position.copy(userPose.position);
+        user.quaternion.copy(userPose.orientation);
+        userLocation.position.copy(userPose.position);
     }
 })
     
