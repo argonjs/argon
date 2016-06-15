@@ -61,16 +61,27 @@ export class DeviceService {
     private _deviceorientationListener;
 
     private _mobileDetect: MobileDetect;
-    
-    private _webkitCompassHeading:number;
-    private _alphaOffset:number;
+
+    private _webkitCompassHeading: number;
+    private _alphaOffset: number;
     private _headingDrift = 0;
 
-    /**
-    * Update the pose with latest sensor data
-    */
-    public update() {
+    private _idleTimeoutId: number;
 
+    protected onIdle() {
+        if (defined(this._geolocationWatchId)) {
+            navigator.geolocation.clearWatch(this._geolocationWatchId);
+            this._geolocationWatchId = undefined;
+        }
+
+        if (defined(this._deviceorientationListener)) {
+            window.removeEventListener('deviceorientation', this._deviceorientationListener);
+            this._deviceorientationListener = undefined;
+            this._alphaOffset = undefined;
+        }
+    }
+
+    protected onUpdate() {
         if (typeof window !== 'undefined') {
 
             const interfaceOrientationProperty = <ConstantProperty>this.interfaceEntity.orientation;
@@ -108,40 +119,40 @@ export class DeviceService {
 
             if (!defined(this._deviceorientationListener)) {
                 this._deviceorientationListener = (e: DeviceOrientationEvent) => {
-                    
+
                     let alphaDegrees = e.alpha;
-                    
+
                     if (!defined(alphaDegrees)) {
                         return;
                     }
-                    
+
                     if (e.absolute) {
                         this._alphaOffset = 0;
                     }
-                    
-                    let webkitCompassHeading:number = e['webkitCompassHeading'];
-                    const webkitCompassAccuracy:number = +e['webkitCompassAccuracy'];
-                    
+
+                    let webkitCompassHeading: number = e['webkitCompassHeading'];
+                    const webkitCompassAccuracy: number = +e['webkitCompassAccuracy'];
+
                     // when the phone is almost updside down, webkit flips the compass heading 
                     // (not documented anywhere, annoyingly)
                     // if (e.beta >= 130 || e.beta <= -130) webkitCompassHeading = undefined;
-                    
-                    if ((!defined(this._alphaOffset) || Math.abs(this._headingDrift) > 30) &&
+
+                    if ((!defined(this._alphaOffset) || Math.abs(this._headingDrift) > 5) &&
                         defined(webkitCompassHeading) &&
                         webkitCompassAccuracy >= 0 &&
                         webkitCompassAccuracy < 50 &&
-                        webkitCompassHeading >= 0 ) {
+                        webkitCompassHeading >= 0) {
                         if (!defined(this._alphaOffset)) {
                             this._alphaOffset = -webkitCompassHeading;
                         } else {
                             this._alphaOffset -= this._headingDrift;
                         }
                     }
-                    
+
                     if (!defined(this._alphaOffset)) {
                         return;
                     }
-                    
+
                     // TODO: deal with various browser quirks :\
                     // https://mobiforge.com/design-development/html5-mobile-web-device-orientation-events
                     const alpha = CesiumMath.RADIANS_PER_DEGREE * (e.alpha + (this._alphaOffset || 0));
@@ -165,12 +176,23 @@ export class DeviceService {
                     //     console.log(twist.w + ' ' + twistAngle * CesiumMath.DEGREES_PER_RADIAN + '\n' + webkitCompassHeading);
                     //     // this._headingDrift = webkitCompassHeading - heading * CesiumMath.DEGREES_PER_RADIAN;
                     // }
-                    
+
                 }
                 window.addEventListener('deviceorientation', this._deviceorientationListener)
             }
 
         }
+    }
+
+    /**
+    * Update the pose with latest sensor data
+    */
+    public update() {
+        if (defined(this._idleTimeoutId)) clearTimeout(this._idleTimeoutId);
+        this._idleTimeoutId = setTimeout(() => {
+            this.onIdle();
+        }, 2000);
+        this.onUpdate();
     }
 
 }
@@ -191,8 +213,7 @@ const twist = new Quaternion
    if the input quaternion is of non-unit length, the outputs are non-unit as well
    otherwise, outputs are both unit
 */
-function swingTwistDecomposition(q:Quaternion, direction:Cartesian3) : {swing:Quaternion, twist:Quaternion}
-{
+function swingTwistDecomposition(q: Quaternion, direction: Cartesian3): { swing: Quaternion, twist: Quaternion } {
     Cartesian3.clone(q, rotationAxis);
     Cartesian3.multiplyByScalar(direction, Cartesian3.dot(rotationAxis, direction), projection);
     twist.x = projection.x;
@@ -202,5 +223,5 @@ function swingTwistDecomposition(q:Quaternion, direction:Cartesian3) : {swing:Qu
     Quaternion.normalize(twist, twist);
     Quaternion.conjugate(twist, swing);
     Quaternion.multiply(q, swing, swing);
-    return {swing, twist};
+    return { swing, twist };
 }

@@ -90,7 +90,11 @@ export class SessionPort {
         }
 
         this.on[SessionPort.CLOSE] = (message) => {
-            this.close()
+            this._isClosed = true;
+            this._isConnected = false;
+            if (this.messagePort && this.messagePort.close)
+                this.messagePort.close();
+            this.closeEvent.raiseEvent(null);
         }
 
         this.on[SessionPort.ERROR] = (error: ErrorMessage) => {
@@ -230,11 +234,11 @@ export class SessionPort {
      */
     close() {
         if (this._isClosed) return;
-        this._isClosed = true;
-        this._isConnected = false;
         if (this._isOpened) {
             this.send(SessionPort.CLOSE);
         }
+        this._isClosed = true;
+        this._isConnected = false;
         if (this.messagePort && this.messagePort.close)
             this.messagePort.close();
         this.closeEvent.raiseEvent(null);

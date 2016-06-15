@@ -200,7 +200,31 @@ describe('SessionPort', () => {
     })
 
     describe('#open', () => {
-        it('should open a messagechannel between two sessions', (done) => {
+        it('should connect two sessions', (done) => {
+            const session = new Argon.SessionPort();
+            const remoteSession = new Argon.SessionPort();
+            const messageChannel = new MessageChannel;
+            let connectCount = 0;
+            session.connectEvent.addEventListener(() => {
+                expect(session.info.role).to.equal(Argon.Role.MANAGER);
+                expect(session.info.userData.test).to.equal('def');
+                checkDone();
+            })
+            remoteSession.connectEvent.addEventListener(() => {
+                expect(remoteSession.info.role).to.equal(Argon.Role.APPLICATION);
+                expect(remoteSession.info.userData.test).to.equal('abc');
+                checkDone();
+            })
+            session.open(messageChannel.port1, { role: Argon.Role.APPLICATION, userData: { test: 'abc' } });
+            remoteSession.open(messageChannel.port2, { role: Argon.Role.MANAGER, userData: { test: 'def' } });
+
+            function checkDone() {
+                connectCount++;
+                if (connectCount == 2) done();
+            }
+        });
+        
+        it('should connect two sessions (polyfill)', (done) => {
             const session = new Argon.SessionPort();
             const remoteSession = new Argon.SessionPort();
             const messageChannel = new Argon.MessageChannelLike;
@@ -224,7 +248,7 @@ describe('SessionPort', () => {
             }
         });
         
-        it('should open a syncronous messagechannel between two sessions', (done) => {
+        it('should connect two sessions (synchronous)', (done) => {
             const session = new Argon.SessionPort();
             const remoteSession = new Argon.SessionPort();
             const messageChannel = new Argon.SynchronousMessageChannel;
@@ -242,6 +266,69 @@ describe('SessionPort', () => {
             session.open(messageChannel.port1, { role: Argon.Role.APPLICATION, userData: { test: 'abc' } });
             remoteSession.open(messageChannel.port2, { role: Argon.Role.MANAGER, userData: { test: 'def' } });
 
+            function checkDone() {
+                connectCount++;
+                if (connectCount == 2) done();
+            }
+        });
+    });
+        
+    describe('#close', () => {
+        
+        it('should emit close events to both sessions', (done) => {
+            const session = new Argon.SessionPort();
+            const remoteSession = new Argon.SessionPort();
+            const messageChannel = new MessageChannel;
+            let connectCount = 0;
+            session.closeEvent.addEventListener(() => {
+                checkDone();
+            })
+            remoteSession.closeEvent.addEventListener(() => {
+                checkDone();
+            })
+            session.open(messageChannel.port1, { role: Argon.Role.APPLICATION });
+            remoteSession.open(messageChannel.port2, { role: Argon.Role.MANAGER });
+            session.close();
+            function checkDone() {
+                connectCount++;
+                if (connectCount == 2) done();
+            }
+        });
+        
+        it('should emit close events to both sessions (polyfill)', (done) => {
+            const session = new Argon.SessionPort();
+            const remoteSession = new Argon.SessionPort();
+            const messageChannel = new Argon.MessageChannelLike;
+            let connectCount = 0;
+            session.closeEvent.addEventListener(() => {
+                checkDone();
+            })
+            remoteSession.closeEvent.addEventListener(() => {
+                checkDone();
+            })
+            session.open(messageChannel.port1, { role: Argon.Role.APPLICATION });
+            remoteSession.open(messageChannel.port2, { role: Argon.Role.MANAGER });
+            session.close();
+            function checkDone() {
+                connectCount++;
+                if (connectCount == 2) done();
+            }
+        });
+        
+        it('should emit close events to both sessions (synchronous)', (done) => {
+            const session = new Argon.SessionPort();
+            const remoteSession = new Argon.SessionPort();
+            const messageChannel = new Argon.SynchronousMessageChannel;
+            let connectCount = 0;
+            session.closeEvent.addEventListener(() => {
+                checkDone();
+            })
+            remoteSession.closeEvent.addEventListener(() => {
+                checkDone();
+            })
+            session.open(messageChannel.port1, { role: Argon.Role.APPLICATION });
+            remoteSession.open(messageChannel.port2, { role: Argon.Role.MANAGER });
+            session.close();
             function checkDone() {
                 connectCount++;
                 if (connectCount == 2) done();
@@ -266,7 +353,21 @@ describe('SessionPort', () => {
             remoteSession.send('test.message', { hi: 42 });
         });
 
-        it('should send messages between two sessions (test 2)', (done) => {
+        it('should send messages between two sessions (polyfill)', (done) => {
+            const session = new Argon.SessionPort();
+            const remoteSession = new Argon.SessionPort();
+            const messageChannel = new Argon.MessageChannelLike();
+            let openCount = 0;
+            session.on['test.message'] = (message:{hi:number}, event) => {
+                expect(message.hi).to.equal(42);
+                done();
+            }
+            session.open(messageChannel.port1, { role: Argon.Role.APPLICATION });
+            remoteSession.open(messageChannel.port2, { role: Argon.Role.APPLICATION });
+            remoteSession.send('test.message', { hi: 42 });
+        });
+
+        it('should send messages between two sessions (synchronous)', (done) => {
             const session = new Argon.SessionPort();
             const remoteSession = new Argon.SessionPort();
             const messageChannel = new Argon.MessageChannelLike();

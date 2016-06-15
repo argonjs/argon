@@ -91,8 +91,9 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     }
                     else if (sessionService.isRealityView) {
                         this.frameEvent.addEventListener(function (frameState) {
-                            if (_this.sessionService.manager.isConnected)
+                            if (_this.sessionService.manager.isConnected) {
                                 _this.sessionService.manager.send('ar.reality.frameState', frameState);
+                            }
                         });
                     }
                     sessionService.connectEvent.addEventListener(function (session) {

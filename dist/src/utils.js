@@ -298,10 +298,11 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
                                 return _port1onmessage;
                             },
                             postMessage: function (data) {
-                                _port2ready.then(function () {
-                                    if (_portsOpen)
+                                if (_portsOpen) {
+                                    _port2ready.then(function () {
                                         messageChannel.port2.onmessage({ data: data });
-                                });
+                                    });
+                                }
                             },
                             close: function () {
                                 _portsOpen = false;
@@ -319,10 +320,11 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
                                 return _port2onmessage;
                             },
                             postMessage: function (data) {
-                                _port1ready.then(function () {
-                                    if (_portsOpen)
+                                if (_portsOpen) {
+                                    _port1ready.then(function () {
                                         messageChannel.port1.onmessage({ data: data });
-                                });
+                                    });
+                                }
                             },
                             close: function () {
                                 _portsOpen = false;

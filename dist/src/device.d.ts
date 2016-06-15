@@ -15,10 +15,17 @@ export declare class DeviceService {
     private _scratchCartesian;
     private _scratchQuaternion1;
     private _scratchQuaternion2;
+    private _scratchMatrix3;
     private _x90Rot;
     private _geolocationWatchId;
     private _deviceorientationListener;
     private _mobileDetect;
+    private _webkitCompassHeading;
+    private _alphaOffset;
+    private _headingDrift;
+    private _idleTimeoutId;
+    protected onIdle(): void;
+    protected onUpdate(): void;
     /**
     * Update the pose with latest sensor data
     */

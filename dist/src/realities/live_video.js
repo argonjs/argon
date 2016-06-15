@@ -25,19 +25,24 @@ System.register(['aurelia-dependency-injection', '../common', '../session', '../
             }],
         execute: function() {
             LiveVideoRealityLoader = (function () {
-                function LiveVideoRealityLoader(sessionService, delegate) {
+                function LiveVideoRealityLoader(sessionService, vuforiaDelegate) {
                     this.sessionService = sessionService;
-                    this.delegate = delegate;
+                    this.vuforiaDelegate = vuforiaDelegate;
                     this.type = 'live-video';
                 }
                 LiveVideoRealityLoader.prototype.load = function (reality) {
+                    var _this = this;
                     var realitySession = this.sessionService.addManagedSessionPort();
                     var remoteRealitySession = this.sessionService.createSessionPort();
-                    var remove = this.delegate.stateUpdateEvent.addEventListener(function (frameState) {
+                    this.vuforiaDelegate.videoEnabled = true;
+                    this.vuforiaDelegate.trackingEnabled = true;
+                    var remove = this.vuforiaDelegate.stateUpdateEvent.addEventListener(function (frameState) {
                         remoteRealitySession.send('ar.reality.frameState', frameState);
                     });
                     remoteRealitySession.closeEvent.addEventListener(function () {
                         remove();
+                        _this.vuforiaDelegate.videoEnabled = false;
+                        _this.vuforiaDelegate.trackingEnabled = false;
                     });
                     var messageChannel = this.sessionService.createSynchronousMessageChannel();
                     realitySession.open(messageChannel.port1, this.sessionService.configuration);

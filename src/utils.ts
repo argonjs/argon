@@ -358,10 +358,11 @@ export class MessageChannelLike {
                     return _port1onmessage;
                 },
                 postMessage(data: any) {
-                    _port2ready.then(() => {
-                        if (_portsOpen)
+                    if (_portsOpen) {
+                        _port2ready.then(() => {
                             messageChannel.port2.onmessage({ data });
-                    })
+                        })
+                    }
                 },
                 close() {
                     _portsOpen = false;
@@ -380,10 +381,11 @@ export class MessageChannelLike {
                     return _port2onmessage;
                 },
                 postMessage(data: any) {
-                    _port1ready.then(() => {
-                        if (_portsOpen)
+                    if (_portsOpen) {
+                        _port1ready.then(() => {
                             messageChannel.port1.onmessage({ data });
-                    })
+                        })
+                    }
                 },
                 close() {
                     _portsOpen = false;

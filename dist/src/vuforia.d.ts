@@ -1,6 +1,5 @@
 import { SerializedFrameState } from './common';
 import { FocusService } from './focus';
-import { RealityService } from './reality';
 import { SessionService, SessionPort } from './session';
 import { Event } from './utils';
 /**
@@ -46,7 +45,9 @@ export declare const enum VuforiaHint {
  * An abstract class representing the Vuforia API.
  */
 export declare abstract class VuforiaServiceDelegateBase {
-    abstract stateUpdateEvent: Event<SerializedFrameState>;
+    videoEnabled: boolean;
+    trackingEnabled: boolean;
+    stateUpdateEvent: Event<SerializedFrameState>;
     abstract isAvailable(): boolean;
     abstract setHint(hint: VuforiaHint, value: number): boolean;
     abstract init(options: VuforiaInitOptions): Promise<VuforiaInitResult>;
@@ -54,8 +55,6 @@ export declare abstract class VuforiaServiceDelegateBase {
     abstract cameraDeviceInitAndStart(): boolean;
     abstract cameraDeviceSetFlashTorchMode(on: boolean): boolean;
     abstract objectTrackerInit(): boolean;
-    abstract objectTrackerStart(): boolean;
-    abstract objectTrackerStop(): boolean;
     abstract objectTrackerCreateDataSet(url?: string): string;
     abstract objectTrackerDestroyDataSet(id: string): boolean;
     abstract objectTrackerActivateDataSet(id: string): boolean;
@@ -67,17 +66,13 @@ export declare abstract class VuforiaServiceDelegateBase {
  * An no-op implementation of VuforiaServiceDelegate.
  */
 export declare class VuforiaServiceDelegate extends VuforiaServiceDelegateBase {
-    stateUpdateEvent: Event<SerializedFrameState>;
     isAvailable(): boolean;
     setHint(hint: VuforiaHint, value: number): boolean;
     init(options: VuforiaInitOptions): Promise<VuforiaInitResult>;
     deinit(): void;
     cameraDeviceInitAndStart(): boolean;
-    cameraDeviceInit(): boolean;
     cameraDeviceSetFlashTorchMode(on: boolean): boolean;
     objectTrackerInit(): boolean;
-    objectTrackerStart(): boolean;
-    objectTrackerStop(): boolean;
     objectTrackerCreateDataSet(url?: string): string;
     objectTrackerDestroyDataSet(id: string): boolean;
     objectTrackerActivateDataSet(id: string): boolean;
@@ -92,7 +87,6 @@ export declare class VuforiaServiceDelegate extends VuforiaServiceDelegateBase {
 export declare class VuforiaService {
     private sessionService;
     private focusService;
-    private realityService;
     private delegate;
     private _controllingSession;
     private _sessionSwitcherCommandQueue;
@@ -104,7 +98,7 @@ export declare class VuforiaService {
     private _sessionCreatedDataSets;
     private _sessionActivatedDataSets;
     private _isInitialized;
-    constructor(sessionService: SessionService, focusService: FocusService, realityService: RealityService, delegate: VuforiaServiceDelegate);
+    constructor(sessionService: SessionService, focusService: FocusService, delegate: VuforiaServiceDelegate);
     isAvailable(): Promise<boolean>;
     init(options: VuforiaInitOptions): Promise<VuforiaAPI>;
     private _ensureActiveSession();

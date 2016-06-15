@@ -4,8 +4,8 @@ import { RealityLoader } from '../reality';
 import { VuforiaServiceDelegate } from '../vuforia';
 export declare class LiveVideoRealityLoader implements RealityLoader {
     private sessionService;
-    private delegate;
+    private vuforiaDelegate;
     type: string;
-    constructor(sessionService: SessionService, delegate: VuforiaServiceDelegate);
+    constructor(sessionService: SessionService, vuforiaDelegate: VuforiaServiceDelegate);
     load(reality: RealityView): SessionPort;
 }

@@ -63,7 +63,11 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                         _this._connectEvent.raiseEvent(null);
                     };
                     this.on[SessionPort.CLOSE] = function (message) {
-                        _this.close();
+                        _this._isClosed = true;
+                        _this._isConnected = false;
+                        if (_this.messagePort && _this.messagePort.close)
+                            _this.messagePort.close();
+                        _this.closeEvent.raiseEvent(null);
                     };
                     this.on[SessionPort.ERROR] = function (error) {
                         var e = new Error("Session Error: " + error.message);
@@ -227,11 +231,11 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                 SessionPort.prototype.close = function () {
                     if (this._isClosed)
                         return;
-                    this._isClosed = true;
-                    this._isConnected = false;
                     if (this._isOpened) {
                         this.send(SessionPort.CLOSE);
                     }
+                    this._isClosed = true;
+                    this._isConnected = false;
                     if (this.messagePort && this.messagePort.close)
                         this.messagePort.close();
                     this.closeEvent.raiseEvent(null);

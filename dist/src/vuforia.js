@@ -1,4 +1,4 @@
-System.register(['aurelia-dependency-injection', './focus', './reality', './session', './utils'], function(exports_1, context_1) {
+System.register(['aurelia-dependency-injection', './focus', './session', './utils'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __extends = (this && this.__extends) || function (d, b) {
@@ -12,7 +12,7 @@ System.register(['aurelia-dependency-injection', './focus', './reality', './sess
         else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
-    var aurelia_dependency_injection_1, focus_1, reality_1, session_1, utils_1;
+    var aurelia_dependency_injection_1, focus_1, session_1, utils_1;
     var VuforiaInitResult, VuforiaServiceDelegateBase, VuforiaServiceDelegate, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, VuforiaDataSet;
     return {
         setters:[
@@ -21,9 +21,6 @@ System.register(['aurelia-dependency-injection', './focus', './reality', './sess
             },
             function (focus_1_1) {
                 focus_1 = focus_1_1;
-            },
-            function (reality_1_1) {
-                reality_1 = reality_1_1;
             },
             function (session_1_1) {
                 session_1 = session_1_1;
@@ -65,6 +62,7 @@ System.register(['aurelia-dependency-injection', './focus', './reality', './sess
              */
             VuforiaServiceDelegateBase = (function () {
                 function VuforiaServiceDelegateBase() {
+                    this.stateUpdateEvent = new utils_1.Event();
                 }
                 return VuforiaServiceDelegateBase;
             }());
@@ -76,20 +74,14 @@ System.register(['aurelia-dependency-injection', './focus', './reality', './sess
                 __extends(VuforiaServiceDelegate, _super);
                 function VuforiaServiceDelegate() {
                     _super.apply(this, arguments);
-                    this.stateUpdateEvent = new utils_1.Event();
                 }
                 VuforiaServiceDelegate.prototype.isAvailable = function () { return false; };
                 VuforiaServiceDelegate.prototype.setHint = function (hint, value) { return true; };
                 VuforiaServiceDelegate.prototype.init = function (options) { return null; };
                 VuforiaServiceDelegate.prototype.deinit = function () { };
                 VuforiaServiceDelegate.prototype.cameraDeviceInitAndStart = function () { return true; };
-                VuforiaServiceDelegate.prototype.cameraDeviceInit = function () { return true; };
-                // cameraDeviceDeinit() : boolean { return true }
                 VuforiaServiceDelegate.prototype.cameraDeviceSetFlashTorchMode = function (on) { return true; };
                 VuforiaServiceDelegate.prototype.objectTrackerInit = function () { return true; };
-                // objectTrackerDeinit() : boolean { return true }
-                VuforiaServiceDelegate.prototype.objectTrackerStart = function () { return true; };
-                VuforiaServiceDelegate.prototype.objectTrackerStop = function () { return true; };
                 VuforiaServiceDelegate.prototype.objectTrackerCreateDataSet = function (url) { return null; };
                 VuforiaServiceDelegate.prototype.objectTrackerDestroyDataSet = function (id) { return true; };
                 VuforiaServiceDelegate.prototype.objectTrackerActivateDataSet = function (id) { return true; };
@@ -104,11 +96,10 @@ System.register(['aurelia-dependency-injection', './focus', './reality', './sess
              * // TODO
              */
             VuforiaService = (function () {
-                function VuforiaService(sessionService, focusService, realityService, delegate) {
+                function VuforiaService(sessionService, focusService, delegate) {
                     var _this = this;
                     this.sessionService = sessionService;
                     this.focusService = focusService;
-                    this.realityService = realityService;
                     this.delegate = delegate;
                     this._controllingSession = null;
                     this._sessionSwitcherCommandQueue = new utils_1.CommandQueue();
@@ -354,10 +345,6 @@ System.register(['aurelia-dependency-injection', './focus', './reality', './sess
                         if (!_this.delegate.cameraDeviceInitAndStart()) {
                             throw new Error("Vuforia init failed: Unable to complete initialization");
                         }
-                        // trackers get started after camera is initialized and started
-                        if (!_this.delegate.objectTrackerStart()) {
-                            throw new Error("Vuforia init failed: Unable to start ObjectTracker");
-                        }
                     }).catch(function (err) {
                         _this._sessionInitOptions.set(session, null);
                         _this._sessionIsInitialized.set(session, false);
@@ -392,7 +379,7 @@ System.register(['aurelia-dependency-injection', './focus', './reality', './sess
                     // }
                 };
                 VuforiaService = __decorate([
-                    aurelia_dependency_injection_1.inject(session_1.SessionService, focus_1.FocusService, reality_1.RealityService, VuforiaServiceDelegate)
+                    aurelia_dependency_injection_1.inject(session_1.SessionService, focus_1.FocusService, VuforiaServiceDelegate)
                 ], VuforiaService);
                 return VuforiaService;
             }());

@@ -1,9 +1,8 @@
 import {inject} from 'aurelia-dependency-injection'
 import {defined, createGuid, JulianDate} from './cesium/cesium-imports'
-import {Role, RealityView, SerializedFrameState, SerializedEntityPoseMap} from './common'
+import {Role, SerializedFrameState, SerializedEntityPoseMap} from './common'
 import {ContextService} from './context'
 import {FocusService} from './focus'
-import {RealityService, RealityLoader} from './reality'
 import {SessionService, SessionPort} from './session'
 import {Event, MessagePortLike, CommandQueue, resolveURL} from './utils'
 
@@ -53,18 +52,16 @@ export const enum VuforiaHint {
  * An abstract class representing the Vuforia API. 
  */
 export abstract class VuforiaServiceDelegateBase {
-    abstract stateUpdateEvent: Event<SerializedFrameState>;
+    videoEnabled: boolean;
+    trackingEnabled: boolean;
+    stateUpdateEvent: Event<SerializedFrameState> = new Event();
     abstract isAvailable(): boolean
     abstract setHint(hint: VuforiaHint, value: number): boolean;
     abstract init(options: VuforiaInitOptions): Promise<VuforiaInitResult>;
     abstract deinit(): void;
     abstract cameraDeviceInitAndStart(): boolean;
-    // abstract cameraDeviceDeinit() : boolean;
     abstract cameraDeviceSetFlashTorchMode(on: boolean): boolean;
     abstract objectTrackerInit(): boolean;
-    // abstract objectTrackerDeinit() : boolean;
-    abstract objectTrackerStart(): boolean;
-    abstract objectTrackerStop(): boolean;
     abstract objectTrackerCreateDataSet(url?: string): string;
     abstract objectTrackerDestroyDataSet(id: string): boolean;
     abstract objectTrackerActivateDataSet(id: string): boolean;
@@ -77,19 +74,13 @@ export abstract class VuforiaServiceDelegateBase {
  * An no-op implementation of VuforiaServiceDelegate.
  */
 export class VuforiaServiceDelegate extends VuforiaServiceDelegateBase {
-    stateUpdateEvent = new Event<SerializedFrameState>()
     isAvailable() { return false }
     setHint(hint: VuforiaHint, value: number): boolean { return true }
     init(options: VuforiaInitOptions): Promise<VuforiaInitResult> { return null }
     deinit(): void { }
     cameraDeviceInitAndStart(): boolean { return true }
-    cameraDeviceInit(): boolean { return true }
-    // cameraDeviceDeinit() : boolean { return true }
     cameraDeviceSetFlashTorchMode(on: boolean): boolean { return true }
     objectTrackerInit(): boolean { return true }
-    // objectTrackerDeinit() : boolean { return true }
-    objectTrackerStart(): boolean { return true }
-    objectTrackerStop(): boolean { return true }
     objectTrackerCreateDataSet(url?: string): string { return null }
     objectTrackerDestroyDataSet(id: string): boolean { return true }
     objectTrackerActivateDataSet(id: string): boolean { return true }
@@ -102,7 +93,7 @@ export class VuforiaServiceDelegate extends VuforiaServiceDelegateBase {
  * Mediates requests to the Vuforia API. Handles the following requests:
  * // TODO
  */
-@inject(SessionService, FocusService, RealityService, VuforiaServiceDelegate)
+@inject(SessionService, FocusService, VuforiaServiceDelegate)
 export class VuforiaService {
 
     private _controllingSession: SessionPort = null;
@@ -122,7 +113,6 @@ export class VuforiaService {
     constructor(
         private sessionService: SessionService,
         private focusService: FocusService,
-        private realityService: RealityService,
         private delegate: VuforiaServiceDelegate) {
 
         if (sessionService.isManager) {
@@ -386,12 +376,6 @@ export class VuforiaService {
 
             if (!this.delegate.cameraDeviceInitAndStart()) {
                 throw new Error("Vuforia init failed: Unable to complete initialization");
-            }
-
-            // trackers get started after camera is initialized and started
-
-            if (!this.delegate.objectTrackerStart()) {
-                throw new Error("Vuforia init failed: Unable to start ObjectTracker");
             }
 
         }).catch((err) => {

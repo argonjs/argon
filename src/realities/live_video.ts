@@ -11,18 +11,25 @@ import {VuforiaServiceDelegate} from '../vuforia'
 export class LiveVideoRealityLoader implements RealityLoader {
     public type = 'live-video';
 
-    constructor(private sessionService: SessionService, private delegate: VuforiaServiceDelegate) { }
+    constructor(
+        private sessionService: SessionService,
+        private vuforiaDelegate: VuforiaServiceDelegate) { }
 
     public load(reality: RealityView) {
         const realitySession = this.sessionService.addManagedSessionPort();
         const remoteRealitySession = this.sessionService.createSessionPort();
 
-        const remove = this.delegate.stateUpdateEvent.addEventListener((frameState) => {
+        this.vuforiaDelegate.videoEnabled = true;
+        this.vuforiaDelegate.trackingEnabled = true;
+
+        const remove = this.vuforiaDelegate.stateUpdateEvent.addEventListener((frameState) => {
             remoteRealitySession.send('ar.reality.frameState', frameState);
         });
 
         remoteRealitySession.closeEvent.addEventListener(() => {
             remove();
+            this.vuforiaDelegate.videoEnabled = false;
+            this.vuforiaDelegate.trackingEnabled = false;
         });
 
         const messageChannel = this.sessionService.createSynchronousMessageChannel();
