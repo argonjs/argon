@@ -1,4 +1,4 @@
-/// <reference path="../typings/browser.d.ts"/>
+/// <reference path="../typings/index.d.ts"/>
 // import * as Argon from 'argon'
 import * as Argon from '../src/argon'
 import robotariumData from './robotarium-data.json!';

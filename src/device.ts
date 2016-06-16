@@ -47,6 +47,9 @@ export class DeviceService {
             this._mobileDetect = new MobileDetect(window.navigator.userAgent);
         }
     }
+    
+    public locationUpdatesEnabled = true;
+    public orientationUpdatesEnabled = true;
 
     public locationEntity = new Entity({ id: 'ar.device.location', name: 'Device Location' });
     public orientationEntity = new Entity({ id: 'ar.device.orientation', name: 'Device Orientation' });
@@ -93,7 +96,7 @@ export class DeviceService {
             }
             interfaceOrientationProperty.setValue(interfaceOrientation);
 
-            if (!defined(this._geolocationWatchId)) {
+            if (!defined(this._geolocationWatchId) && this.locationUpdatesEnabled) {
                 this._geolocationWatchId = navigator.geolocation.watchPosition((pos) => {
 
                     if (this.locationEntity.position instanceof SampledPositionProperty === false) {
@@ -115,9 +118,12 @@ export class DeviceService {
                 }, {
                         enableHighAccuracy: true
                     })
+            } else if (defined(this._geolocationWatchId) && !this.locationUpdatesEnabled) {
+                navigator.geolocation.clearWatch(this._geolocationWatchId);
+                this._geolocationWatchId = undefined;
             }
 
-            if (!defined(this._deviceorientationListener)) {
+            if (!defined(this._deviceorientationListener) && this.orientationUpdatesEnabled) {
                 this._deviceorientationListener = (e: DeviceOrientationEvent) => {
 
                     let alphaDegrees = e.alpha;
@@ -179,6 +185,9 @@ export class DeviceService {
 
                 }
                 window.addEventListener('deviceorientation', this._deviceorientationListener)
+            } else if (defined(this._deviceorientationListener) && !this.orientationUpdatesEnabled) {
+                window.removeEventListener('deviceorientation', this._deviceorientationListener);
+                this._deviceorientationListener = undefined;
             }
 
         }
