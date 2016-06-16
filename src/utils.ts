@@ -181,7 +181,6 @@ const scratchCartesianPositionFIXED = new Cartesian3
 const scratchMatrix4 = new Matrix4
 const scratchMatrix3 = new Matrix3
 
-
 /**
  * Gets the value of the Position property at the provided time and in the provided reference frame.
  * @param entity The entity to get position. 
@@ -197,6 +196,11 @@ export function getEntityPositionInReferenceFrame(
     result: Cartesian3): Cartesian3 {
     return entity.position && entity.position.getValueInReferenceFrame(time, referenceFrame, result)
 }
+
+/**
+ * Alias of getEntityPositionInReferenceFrame
+ */
+export const getEntityPosition = getEntityPositionInReferenceFrame;
 
 /**
  * Get the value of the Orientation property at the provided time and in the provided reference frame.
@@ -217,6 +221,11 @@ export function getEntityOrientationInReferenceFrame(
     if (!defined(orientation)) return undefined;
     return OrientationProperty.convertToReferenceFrame(time, orientation, entityFrame, referenceFrame, result)
 }
+
+/**
+ * Alias of getEntityOrientationInReferenceFrame
+ */
+export const getEntityOrientation = getEntityOrientationInReferenceFrame;
 
 //  {
 //         // if no orientation is available, calculate an orientation based on position

@@ -147,7 +147,9 @@ export function init(options: { config?: Configuration, container?: DI.Container
     } else {
         role = Role.MANAGER
     }
-    const config = Object.assign(<Configuration>{ role }, options.config);
+    const config = Object.assign(<Configuration>{
+        role
+    }, options.config);
     return new ArgonSystem(config, options.container);
 }
 

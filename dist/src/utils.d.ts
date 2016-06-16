@@ -89,6 +89,10 @@ export declare function getRootReferenceFrame(frame: Entity): Entity | Reference
  */
 export declare function getEntityPositionInReferenceFrame(entity: Entity, time: JulianDate, referenceFrame: ReferenceFrame | Entity, result: Cartesian3): Cartesian3;
 /**
+ * Alias of getEntityPositionInReferenceFrame
+ */
+export declare const getEntityPosition: typeof getEntityPositionInReferenceFrame;
+/**
  * Get the value of the Orientation property at the provided time and in the provided reference frame.
  * @param entity The entity to get position.
  * @param time The time for which to retrieve the value.
@@ -97,6 +101,10 @@ export declare function getEntityPositionInReferenceFrame(entity: Entity, time: 
  * @return The modified result parameter.
  */
 export declare function getEntityOrientationInReferenceFrame(entity: Entity, time: JulianDate, referenceFrame: ReferenceFrame | Entity, result: Quaternion): Quaternion;
+/**
+ * Alias of getEntityOrientationInReferenceFrame
+ */
+export declare const getEntityOrientation: typeof getEntityOrientationInReferenceFrame;
 /**
  * Create a SerializedEntityPose from a source entity.
  * @param entity The entity which the serialized pose represents.

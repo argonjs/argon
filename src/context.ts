@@ -188,7 +188,7 @@ export class ContextService {
 
         this.subscribedEntities.add(this.user);
 
-        if (this.sessionService.isManager || this.sessionService.isRealityView) {
+        if (this.sessionService.isManager) {
             this.realityService.frameEvent.addEventListener((state) => {
                 this._update({
                     reality: this.realityService.getCurrent(),
@@ -315,6 +315,7 @@ export class ContextService {
         return this.getEntityPose(entity, referenceFrame);
     }
 
+    // TODO: This function is called a lot. Potential for optimization. 
     private _update(state: FrameState) {
         // our user entity is defined by the current view pose (the current reality must provide this)
         state.entities[this.user.id] = state.view.pose;
@@ -351,8 +352,7 @@ export class ContextService {
         if (this.sessionService.isManager) {
             this._entityPoseCache = {};
             for (const session of this.sessionService.managedSessions) {
-                if (session.info.role === Role.APPLICATION)
-                    this._sendUpdateForSession(state, session);
+                this._sendUpdateForSession(state, session);
             }
         }
 

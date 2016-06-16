@@ -95,6 +95,42 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                 });
                 ;
                 /**
+                 * Check if a protocol is supported by this session.
+                 */
+                SessionPort.prototype.supportsProtocol = function (name, versions) {
+                    if (!this._isConnected)
+                        throw new Error('Session has not yet connected');
+                    var protocols = this.info.protocols;
+                    if (!protocols)
+                        return false;
+                    var supported = false;
+                    var foundVersions = new Set();
+                    protocols.forEach(function (p) {
+                        if (p.indexOf(name) !== -1) {
+                            var v = (+p.split('@v')[1]) || 0;
+                            foundVersions.add(v);
+                        }
+                    });
+                    if (versions) {
+                        if (Array.isArray(versions)) {
+                            versions.forEach(function (v) {
+                                if (foundVersions.has(v)) {
+                                    supported = true;
+                                }
+                            });
+                        }
+                        else {
+                            if (foundVersions.has(versions)) {
+                                supported = true;
+                            }
+                        }
+                    }
+                    else if (!versions) {
+                        supported = true;
+                    }
+                    return supported;
+                };
+                /**
                  * Establish a connection to another session via the provided MessagePort.
                  * @param messagePort the message port to post and receive messages.
                  * @param options the configuration which describes this system.

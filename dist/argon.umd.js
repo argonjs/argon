@@ -433,8 +433,8 @@ $__System.register("4", ["8", "5", "6", "7"], function(exports_1, context_1) {
             style.type = 'text/css';
             document.head.appendChild(style);
             var sheet = style.sheet;
-            sheet.insertRule("\n                #argon {\n                    position: fixed;\n                    transform: translateZ(0px);\n                    z-index: -9999;\n                    left: 0px;\n                    bottom: 0px;\n                    width: 100%;\n                    height: 100%;\n                    margin: 0;\n                    border: 0;\n                    padding: 0;\n                }\n            ", 0);
-            sheet.insertRule("\n                #argon > * {\n                    position: absolute;\n                    transform: translateZ(0px);\n                    left: 0px;\n                    bottom: 0px;\n                }\n            ", 1);
+            sheet.insertRule("\n                #argon {\n                    position: fixed;\n                    transform: translateZ(0px);\n                    left: 0px;\n                    bottom: 0px;\n                    width: 100%;\n                    height: 100%;\n                    margin: 0;\n                    border: 0;\n                    padding: 0;\n                }\n            ", 0);
+            sheet.insertRule("\n                #argon > canvas {\n                    z-index: -1;\n                    position: absolute;\n                    transform: translateZ(0px);\n                    left: 0px;\n                    bottom: 0px;\n                }\n            ", 1);
           }
           if (this.sessionService.isManager) {
             this.sessionService.connectEvent.addEventListener(function(session) {
@@ -470,7 +470,7 @@ $__System.register("4", ["8", "5", "6", "7"], function(exports_1, context_1) {
         ViewService.prototype.requestOwnership = function() {};
         ViewService.prototype.releaseOwnership = function() {};
         ViewService.prototype.isOwner = function() {};
-        ViewService.prototype.getSuggestedViewport = function() {
+        ViewService.prototype.getMaximumViewport = function() {
           if (window && document && document.documentElement) {
             return {
               x: 0,
@@ -610,11 +610,15 @@ $__System.register("9", ["8", "a", "b", "c", "5", "7"], function(exports_1, cont
             var messageChannel = _this.sessionService.createSynchronousMessageChannel();
             var ROUTE_MESSAGE_KEY = 'ar.reality.message.route.' + id;
             var SEND_MESSAGE_KEY = 'ar.reality.message.send.' + id;
+            var CLOSE_SESSION_KEY = 'ar.reality.close.' + id;
             messageChannel.port1.onmessage = function(msg) {
               _this.sessionService.manager.send(ROUTE_MESSAGE_KEY, msg.data);
             };
             _this.sessionService.manager.on[SEND_MESSAGE_KEY] = function(message) {
               messageChannel.port1.postMessage(message);
+            };
+            _this.sessionService.manager.on[CLOSE_SESSION_KEY] = function(message) {
+              realityControlSession.close();
             };
             realityControlSession.connectEvent.addEventListener(function() {
               _this.connectEvent.raiseEvent(realityControlSession);
@@ -622,6 +626,7 @@ $__System.register("9", ["8", "a", "b", "c", "5", "7"], function(exports_1, cont
             _this.sessionService.manager.closeEvent.addEventListener(function() {
               realityControlSession.close();
               delete _this.sessionService.manager.on[SEND_MESSAGE_KEY];
+              delete _this.sessionService.manager.on[CLOSE_SESSION_KEY];
             });
             realityControlSession.open(messageChannel.port2, _this.sessionService.configuration);
           };
@@ -678,7 +683,7 @@ $__System.register("9", ["8", "a", "b", "c", "5", "7"], function(exports_1, cont
           var _this = this;
           if (this._current && reality && this._current === reality)
             return;
-          if (this._current && !reality)
+          if (this._current && !reality && this._realitySession)
             return;
           if (!this._current && !reality) {
             reality = this._default;
@@ -716,6 +721,7 @@ $__System.register("9", ["8", "a", "b", "c", "5", "7"], function(exports_1, cont
               var id = cesium_imports_1.createGuid();
               var ROUTE_MESSAGE_KEY_1 = 'ar.reality.message.route.' + id;
               var SEND_MESSAGE_KEY_1 = 'ar.reality.message.send.' + id;
+              var CLOSE_SESSION_KEY_1 = 'ar.reality.close.' + id;
               realitySession.on[ROUTE_MESSAGE_KEY_1] = function(message) {
                 ownerSession_1.send(SEND_MESSAGE_KEY_1, message);
               };
@@ -725,9 +731,15 @@ $__System.register("9", ["8", "a", "b", "c", "5", "7"], function(exports_1, cont
               realitySession.send('ar.reality.connect', {id: id});
               ownerSession_1.send('ar.reality.connect', {id: id});
               realitySession.closeEvent.addEventListener(function() {
+                ownerSession_1.send(CLOSE_SESSION_KEY_1);
+                _this._realitySession = undefined;
                 delete ownerSession_1.on[ROUTE_MESSAGE_KEY_1];
                 console.log('Reality session closed: ' + JSON.stringify(reality));
                 _this._setNextReality(_this.onSelectReality());
+              });
+              ownerSession_1.closeEvent.addEventListener(function() {
+                realitySession.send(CLOSE_SESSION_KEY_1);
+                realitySession.close();
               });
             }
           }).catch(function(error) {
@@ -772,7 +784,7 @@ $__System.register("9", ["8", "a", "b", "c", "5", "7"], function(exports_1, cont
   };
 });
 
-$__System.register("6", ["8", "a", "b", "5", "9", "d", "7"], function(exports_1, context_1) {
+$__System.register("6", ["8", "a", "5", "9", "d", "7"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
@@ -789,7 +801,6 @@ $__System.register("6", ["8", "a", "b", "5", "9", "d", "7"], function(exports_1,
   };
   var aurelia_dependency_injection_1,
       cesium_imports_1,
-      common_1,
       session_1,
       reality_1,
       timer_1,
@@ -810,8 +821,6 @@ $__System.register("6", ["8", "a", "b", "5", "9", "d", "7"], function(exports_1,
       aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
     }, function(cesium_imports_1_1) {
       cesium_imports_1 = cesium_imports_1_1;
-    }, function(common_1_1) {
-      common_1 = common_1_1;
     }, function(session_1_1) {
       session_1 = session_1_1;
     }, function(reality_1_1) {
@@ -873,7 +882,7 @@ $__System.register("6", ["8", "a", "b", "5", "9", "d", "7"], function(exports_1,
           this.entities.addCollection(this.wellKnownReferenceFrames);
           this.entities.addCollection(this.subscribedEntities);
           this.subscribedEntities.add(this.user);
-          if (this.sessionService.isManager || this.sessionService.isRealityView) {
+          if (this.sessionService.isManager) {
             this.realityService.frameEvent.addEventListener(function(state) {
               _this._update({
                 reality: _this.realityService.getCurrent(),
@@ -989,8 +998,7 @@ $__System.register("6", ["8", "a", "b", "5", "9", "d", "7"], function(exports_1,
             for (var _i = 0,
                 _a = this.sessionService.managedSessions; _i < _a.length; _i++) {
               var session = _a[_i];
-              if (session.info.role === common_1.Role.APPLICATION)
-                this._sendUpdateForSession(state, session);
+              this._sendUpdateForSession(state, session);
             }
           }
           this._state = state;
@@ -1684,6 +1692,8 @@ $__System.register("f", ["8", "a", "6", "e"], function(exports_1, context_1) {
       DeviceService = (function() {
         function DeviceService(context) {
           this.context = context;
+          this.locationUpdatesEnabled = true;
+          this.orientationUpdatesEnabled = true;
           this.locationEntity = new cesium_imports_1.Entity({
             id: 'ar.device.location',
             name: 'Device Location'
@@ -1735,7 +1745,7 @@ $__System.register("f", ["8", "a", "6", "e"], function(exports_1, context_1) {
               interfaceOrientation = cesium_imports_1.Quaternion.multiply(this._x90Rot, interfaceOrientation, interfaceOrientation);
             }
             interfaceOrientationProperty.setValue(interfaceOrientation);
-            if (!cesium_imports_1.defined(this._geolocationWatchId)) {
+            if (!cesium_imports_1.defined(this._geolocationWatchId) && this.locationUpdatesEnabled) {
               this._geolocationWatchId = navigator.geolocation.watchPosition(function(pos) {
                 if (_this.locationEntity.position instanceof cesium_imports_1.SampledPositionProperty === false) {
                   var sampledPostionProperty = new cesium_imports_1.SampledPositionProperty(cesium_imports_1.ReferenceFrame.FIXED);
@@ -1752,8 +1762,11 @@ $__System.register("f", ["8", "a", "6", "e"], function(exports_1, context_1) {
               }, function(error) {
                 console.error(error);
               }, {enableHighAccuracy: true});
+            } else if (cesium_imports_1.defined(this._geolocationWatchId) && !this.locationUpdatesEnabled) {
+              navigator.geolocation.clearWatch(this._geolocationWatchId);
+              this._geolocationWatchId = undefined;
             }
-            if (!cesium_imports_1.defined(this._deviceorientationListener)) {
+            if (!cesium_imports_1.defined(this._deviceorientationListener) && this.orientationUpdatesEnabled) {
               this._deviceorientationListener = function(e) {
                 var alphaDegrees = e.alpha;
                 if (!cesium_imports_1.defined(alphaDegrees)) {
@@ -1785,6 +1798,9 @@ $__System.register("f", ["8", "a", "6", "e"], function(exports_1, context_1) {
                 _this.orientationEntity.orientation.setValue(alphaBetaGammaQuat);
               };
               window.addEventListener('deviceorientation', this._deviceorientationListener);
+            } else if (cesium_imports_1.defined(this._deviceorientationListener) && !this.orientationUpdatesEnabled) {
+              window.removeEventListener('deviceorientation', this._deviceorientationListener);
+              this._deviceorientationListener = undefined;
             }
           }
         };
@@ -1913,6 +1929,7 @@ $__System.register("10", ["8", "a", "b", "5", "f", "d", "7"], function(exports_1
           var realitySession = this.sessionService.addManagedSessionPort();
           var remoteRealitySession = this.sessionService.createSessionPort();
           var doUpdate = true;
+          remoteRealitySession.on['ar.context.update'] = function() {};
           remoteRealitySession.connectEvent.addEventListener(function() {
             var update = function(time, index) {
               if (doUpdate) {
@@ -2982,6 +2999,37 @@ $__System.register("5", ["a", "8", "b", "7"], function(exports_1, context_1) {
           configurable: true
         });
         ;
+        SessionPort.prototype.supportsProtocol = function(name, versions) {
+          if (!this._isConnected)
+            throw new Error('Session has not yet connected');
+          var protocols = this.info.protocols;
+          if (!protocols)
+            return false;
+          var supported = false;
+          var foundVersions = new Set();
+          protocols.forEach(function(p) {
+            if (p.indexOf(name) !== -1) {
+              var v = (+p.split('@v')[1]) || 0;
+              foundVersions.add(v);
+            }
+          });
+          if (versions) {
+            if (Array.isArray(versions)) {
+              versions.forEach(function(v) {
+                if (foundVersions.has(v)) {
+                  supported = true;
+                }
+              });
+            } else {
+              if (foundVersions.has(versions)) {
+                supported = true;
+              }
+            }
+          } else if (!versions) {
+            supported = true;
+          }
+          return supported;
+        };
         SessionPort.prototype.open = function(messagePort, options) {
           var _this = this;
           if (this._isOpened)
@@ -3840,15 +3888,18 @@ $__System.register("13", ["8", "b", "5", "12"], function(exports_1, context_1) {
           var _this = this;
           var realitySession = this.sessionService.addManagedSessionPort();
           var remoteRealitySession = this.sessionService.createSessionPort();
-          this.vuforiaDelegate.videoEnabled = true;
-          this.vuforiaDelegate.trackingEnabled = true;
-          var remove = this.vuforiaDelegate.stateUpdateEvent.addEventListener(function(frameState) {
-            remoteRealitySession.send('ar.reality.frameState', frameState);
-          });
-          remoteRealitySession.closeEvent.addEventListener(function() {
-            remove();
-            _this.vuforiaDelegate.videoEnabled = false;
-            _this.vuforiaDelegate.trackingEnabled = false;
+          remoteRealitySession.on['ar.context.update'] = function() {};
+          remoteRealitySession.connectEvent.addEventListener(function() {
+            var remove = _this.vuforiaDelegate.stateUpdateEvent.addEventListener(function(frameState) {
+              remoteRealitySession.send('ar.reality.frameState', frameState);
+            });
+            _this.vuforiaDelegate.videoEnabled = true;
+            _this.vuforiaDelegate.trackingEnabled = true;
+            remoteRealitySession.closeEvent.addEventListener(function() {
+              remove();
+              _this.vuforiaDelegate.videoEnabled = false;
+              _this.vuforiaDelegate.trackingEnabled = false;
+            });
           });
           var messageChannel = this.sessionService.createSynchronousMessageChannel();
           realitySession.open(messageChannel.port1, this.sessionService.configuration);
@@ -5523,67 +5574,7 @@ define("3b", ["1a"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3c", ["29", "15", "17", "1a"], function(Cartesian3, defined, DeveloperError, freezeObject) {
-  "use strict";
-  function Plane(normal, distance) {
-    if (!defined(normal)) {
-      throw new DeveloperError('normal is required.');
-    }
-    if (!defined(distance)) {
-      throw new DeveloperError('distance is required.');
-    }
-    this.normal = Cartesian3.clone(normal);
-    this.distance = distance;
-  }
-  Plane.fromPointNormal = function(point, normal, result) {
-    if (!defined(point)) {
-      throw new DeveloperError('point is required.');
-    }
-    if (!defined(normal)) {
-      throw new DeveloperError('normal is required.');
-    }
-    var distance = -Cartesian3.dot(normal, point);
-    if (!defined(result)) {
-      return new Plane(normal, distance);
-    }
-    Cartesian3.clone(normal, result.normal);
-    result.distance = distance;
-    return result;
-  };
-  var scratchNormal = new Cartesian3();
-  Plane.fromCartesian4 = function(coefficients, result) {
-    if (!defined(coefficients)) {
-      throw new DeveloperError('coefficients is required.');
-    }
-    var normal = Cartesian3.fromCartesian4(coefficients, scratchNormal);
-    var distance = coefficients.w;
-    if (!defined(result)) {
-      return new Plane(normal, distance);
-    } else {
-      Cartesian3.clone(normal, result.normal);
-      result.distance = distance;
-      return result;
-    }
-  };
-  Plane.getPointDistance = function(plane, point) {
-    if (!defined(plane)) {
-      throw new DeveloperError('plane is required.');
-    }
-    if (!defined(point)) {
-      throw new DeveloperError('point is required.');
-    }
-    return Cartesian3.dot(plane.normal, point) + plane.distance;
-  };
-  Plane.ORIGIN_XY_PLANE = freezeObject(new Plane(Cartesian3.UNIT_Z, 0.0));
-  Plane.ORIGIN_YZ_PLANE = freezeObject(new Plane(Cartesian3.UNIT_X, 0.0));
-  Plane.ORIGIN_ZX_PLANE = freezeObject(new Plane(Cartesian3.UNIT_Y, 0.0));
-  return Plane;
-});
-
-})();
-(function() {
-var define = $__System.amdDefine;
-define("3d", ["29", "1e", "15", "17", "3b", "3c"], function(Cartesian3, defaultValue, defined, DeveloperError, Intersect, Plane) {
+define("3c", ["29", "1e", "15", "17", "3b", "3d"], function(Cartesian3, defaultValue, defined, DeveloperError, Intersect, Plane) {
   "use strict";
   function CullingVolume(planes) {
     this.planes = defaultValue(planes, []);
@@ -5642,7 +5633,7 @@ define("3d", ["29", "1e", "15", "17", "3b", "3c"], function(Cartesian3, defaultV
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3e", ["3f", "29", "40", "1e", "15", "16", "17", "2f", "3d"], function(Cartesian2, Cartesian3, Cartesian4, defaultValue, defined, defineProperties, DeveloperError, Matrix4, CullingVolume) {
+define("3e", ["3f", "29", "40", "1e", "15", "16", "17", "2f", "3c"], function(Cartesian2, Cartesian3, Cartesian4, defaultValue, defined, defineProperties, DeveloperError, Matrix4, CullingVolume) {
   "use strict";
   function PerspectiveOffCenterFrustum() {
     this.left = undefined;
@@ -7817,429 +7808,7 @@ define("4b", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("37", ["29", "1e", "15", "17", "1a", "22", "50"], function(Cartesian3, defaultValue, defined, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
-  "use strict";
-  function Cartographic(longitude, latitude, height) {
-    this.longitude = defaultValue(longitude, 0.0);
-    this.latitude = defaultValue(latitude, 0.0);
-    this.height = defaultValue(height, 0.0);
-  }
-  Cartographic.fromRadians = function(longitude, latitude, height, result) {
-    if (!defined(longitude)) {
-      throw new DeveloperError('longitude is required.');
-    }
-    if (!defined(latitude)) {
-      throw new DeveloperError('latitude is required.');
-    }
-    height = defaultValue(height, 0.0);
-    if (!defined(result)) {
-      return new Cartographic(longitude, latitude, height);
-    }
-    result.longitude = longitude;
-    result.latitude = latitude;
-    result.height = height;
-    return result;
-  };
-  Cartographic.fromDegrees = function(longitude, latitude, height, result) {
-    if (!defined(longitude)) {
-      throw new DeveloperError('longitude is required.');
-    }
-    if (!defined(latitude)) {
-      throw new DeveloperError('latitude is required.');
-    }
-    longitude = CesiumMath.toRadians(longitude);
-    latitude = CesiumMath.toRadians(latitude);
-    return Cartographic.fromRadians(longitude, latitude, height, result);
-  };
-  var cartesianToCartographicN = new Cartesian3();
-  var cartesianToCartographicP = new Cartesian3();
-  var cartesianToCartographicH = new Cartesian3();
-  var wgs84OneOverRadii = new Cartesian3(1.0 / 6378137.0, 1.0 / 6378137.0, 1.0 / 6356752.3142451793);
-  var wgs84OneOverRadiiSquared = new Cartesian3(1.0 / (6378137.0 * 6378137.0), 1.0 / (6378137.0 * 6378137.0), 1.0 / (6356752.3142451793 * 6356752.3142451793));
-  var wgs84CenterToleranceSquared = CesiumMath.EPSILON1;
-  Cartographic.fromCartesian = function(cartesian, ellipsoid, result) {
-    var oneOverRadii = defined(ellipsoid) ? ellipsoid.oneOverRadii : wgs84OneOverRadii;
-    var oneOverRadiiSquared = defined(ellipsoid) ? ellipsoid.oneOverRadiiSquared : wgs84OneOverRadiiSquared;
-    var centerToleranceSquared = defined(ellipsoid) ? ellipsoid._centerToleranceSquared : wgs84CenterToleranceSquared;
-    var p = scaleToGeodeticSurface(cartesian, oneOverRadii, oneOverRadiiSquared, centerToleranceSquared, cartesianToCartographicP);
-    if (!defined(p)) {
-      return undefined;
-    }
-    var n = Cartesian3.multiplyComponents(cartesian, oneOverRadiiSquared, cartesianToCartographicN);
-    n = Cartesian3.normalize(n, n);
-    var h = Cartesian3.subtract(cartesian, p, cartesianToCartographicH);
-    var longitude = Math.atan2(n.y, n.x);
-    var latitude = Math.asin(n.z);
-    var height = CesiumMath.sign(Cartesian3.dot(h, cartesian)) * Cartesian3.magnitude(h);
-    if (!defined(result)) {
-      return new Cartographic(longitude, latitude, height);
-    }
-    result.longitude = longitude;
-    result.latitude = latitude;
-    result.height = height;
-    return result;
-  };
-  Cartographic.clone = function(cartographic, result) {
-    if (!defined(cartographic)) {
-      return undefined;
-    }
-    if (!defined(result)) {
-      return new Cartographic(cartographic.longitude, cartographic.latitude, cartographic.height);
-    }
-    result.longitude = cartographic.longitude;
-    result.latitude = cartographic.latitude;
-    result.height = cartographic.height;
-    return result;
-  };
-  Cartographic.equals = function(left, right) {
-    return (left === right) || ((defined(left)) && (defined(right)) && (left.longitude === right.longitude) && (left.latitude === right.latitude) && (left.height === right.height));
-  };
-  Cartographic.equalsEpsilon = function(left, right, epsilon) {
-    if (typeof epsilon !== 'number') {
-      throw new DeveloperError('epsilon is required and must be a number.');
-    }
-    return (left === right) || ((defined(left)) && (defined(right)) && (Math.abs(left.longitude - right.longitude) <= epsilon) && (Math.abs(left.latitude - right.latitude) <= epsilon) && (Math.abs(left.height - right.height) <= epsilon));
-  };
-  Cartographic.ZERO = freezeObject(new Cartographic(0.0, 0.0, 0.0));
-  Cartographic.prototype.clone = function(result) {
-    return Cartographic.clone(this, result);
-  };
-  Cartographic.prototype.equals = function(right) {
-    return Cartographic.equals(this, right);
-  };
-  Cartographic.prototype.equalsEpsilon = function(right, epsilon) {
-    return Cartographic.equalsEpsilon(this, right, epsilon);
-  };
-  Cartographic.prototype.toString = function() {
-    return '(' + this.longitude + ', ' + this.latitude + ', ' + this.height + ')';
-  };
-  return Cartographic;
-});
-
-})();
-(function() {
-var define = $__System.amdDefine;
-define("50", ["29", "15", "17", "22"], function(Cartesian3, defined, DeveloperError, CesiumMath) {
-  "use strict";
-  var scaleToGeodeticSurfaceIntersection = new Cartesian3();
-  var scaleToGeodeticSurfaceGradient = new Cartesian3();
-  function scaleToGeodeticSurface(cartesian, oneOverRadii, oneOverRadiiSquared, centerToleranceSquared, result) {
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required.');
-    }
-    if (!defined(oneOverRadii)) {
-      throw new DeveloperError('oneOverRadii is required.');
-    }
-    if (!defined(oneOverRadiiSquared)) {
-      throw new DeveloperError('oneOverRadiiSquared is required.');
-    }
-    if (!defined(centerToleranceSquared)) {
-      throw new DeveloperError('centerToleranceSquared is required.');
-    }
-    var positionX = cartesian.x;
-    var positionY = cartesian.y;
-    var positionZ = cartesian.z;
-    var oneOverRadiiX = oneOverRadii.x;
-    var oneOverRadiiY = oneOverRadii.y;
-    var oneOverRadiiZ = oneOverRadii.z;
-    var x2 = positionX * positionX * oneOverRadiiX * oneOverRadiiX;
-    var y2 = positionY * positionY * oneOverRadiiY * oneOverRadiiY;
-    var z2 = positionZ * positionZ * oneOverRadiiZ * oneOverRadiiZ;
-    var squaredNorm = x2 + y2 + z2;
-    var ratio = Math.sqrt(1.0 / squaredNorm);
-    var intersection = Cartesian3.multiplyByScalar(cartesian, ratio, scaleToGeodeticSurfaceIntersection);
-    if (squaredNorm < centerToleranceSquared) {
-      return !isFinite(ratio) ? undefined : Cartesian3.clone(intersection, result);
-    }
-    var oneOverRadiiSquaredX = oneOverRadiiSquared.x;
-    var oneOverRadiiSquaredY = oneOverRadiiSquared.y;
-    var oneOverRadiiSquaredZ = oneOverRadiiSquared.z;
-    var gradient = scaleToGeodeticSurfaceGradient;
-    gradient.x = intersection.x * oneOverRadiiSquaredX * 2.0;
-    gradient.y = intersection.y * oneOverRadiiSquaredY * 2.0;
-    gradient.z = intersection.z * oneOverRadiiSquaredZ * 2.0;
-    var lambda = (1.0 - ratio) * Cartesian3.magnitude(cartesian) / (0.5 * Cartesian3.magnitude(gradient));
-    var correction = 0.0;
-    var func;
-    var denominator;
-    var xMultiplier;
-    var yMultiplier;
-    var zMultiplier;
-    var xMultiplier2;
-    var yMultiplier2;
-    var zMultiplier2;
-    var xMultiplier3;
-    var yMultiplier3;
-    var zMultiplier3;
-    do {
-      lambda -= correction;
-      xMultiplier = 1.0 / (1.0 + lambda * oneOverRadiiSquaredX);
-      yMultiplier = 1.0 / (1.0 + lambda * oneOverRadiiSquaredY);
-      zMultiplier = 1.0 / (1.0 + lambda * oneOverRadiiSquaredZ);
-      xMultiplier2 = xMultiplier * xMultiplier;
-      yMultiplier2 = yMultiplier * yMultiplier;
-      zMultiplier2 = zMultiplier * zMultiplier;
-      xMultiplier3 = xMultiplier2 * xMultiplier;
-      yMultiplier3 = yMultiplier2 * yMultiplier;
-      zMultiplier3 = zMultiplier2 * zMultiplier;
-      func = x2 * xMultiplier2 + y2 * yMultiplier2 + z2 * zMultiplier2 - 1.0;
-      denominator = x2 * xMultiplier3 * oneOverRadiiSquaredX + y2 * yMultiplier3 * oneOverRadiiSquaredY + z2 * zMultiplier3 * oneOverRadiiSquaredZ;
-      var derivative = -2.0 * denominator;
-      correction = func / derivative;
-    } while (Math.abs(func) > CesiumMath.EPSILON12);
-    if (!defined(result)) {
-      return new Cartesian3(positionX * xMultiplier, positionY * yMultiplier, positionZ * zMultiplier);
-    }
-    result.x = positionX * xMultiplier;
-    result.y = positionY * yMultiplier;
-    result.z = positionZ * zMultiplier;
-    return result;
-  }
-  return scaleToGeodeticSurface;
-});
-
-})();
-(function() {
-var define = $__System.amdDefine;
-define("38", ["29", "37", "1e", "15", "16", "17", "1a", "22", "50"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
-  "use strict";
-  function initialize(ellipsoid, x, y, z) {
-    x = defaultValue(x, 0.0);
-    y = defaultValue(y, 0.0);
-    z = defaultValue(z, 0.0);
-    if (x < 0.0 || y < 0.0 || z < 0.0) {
-      throw new DeveloperError('All radii components must be greater than or equal to zero.');
-    }
-    ellipsoid._radii = new Cartesian3(x, y, z);
-    ellipsoid._radiiSquared = new Cartesian3(x * x, y * y, z * z);
-    ellipsoid._radiiToTheFourth = new Cartesian3(x * x * x * x, y * y * y * y, z * z * z * z);
-    ellipsoid._oneOverRadii = new Cartesian3(x === 0.0 ? 0.0 : 1.0 / x, y === 0.0 ? 0.0 : 1.0 / y, z === 0.0 ? 0.0 : 1.0 / z);
-    ellipsoid._oneOverRadiiSquared = new Cartesian3(x === 0.0 ? 0.0 : 1.0 / (x * x), y === 0.0 ? 0.0 : 1.0 / (y * y), z === 0.0 ? 0.0 : 1.0 / (z * z));
-    ellipsoid._minimumRadius = Math.min(x, y, z);
-    ellipsoid._maximumRadius = Math.max(x, y, z);
-    ellipsoid._centerToleranceSquared = CesiumMath.EPSILON1;
-  }
-  function Ellipsoid(x, y, z) {
-    this._radii = undefined;
-    this._radiiSquared = undefined;
-    this._radiiToTheFourth = undefined;
-    this._oneOverRadii = undefined;
-    this._oneOverRadiiSquared = undefined;
-    this._minimumRadius = undefined;
-    this._maximumRadius = undefined;
-    this._centerToleranceSquared = undefined;
-    initialize(this, x, y, z);
-  }
-  defineProperties(Ellipsoid.prototype, {
-    radii: {get: function() {
-        return this._radii;
-      }},
-    radiiSquared: {get: function() {
-        return this._radiiSquared;
-      }},
-    radiiToTheFourth: {get: function() {
-        return this._radiiToTheFourth;
-      }},
-    oneOverRadii: {get: function() {
-        return this._oneOverRadii;
-      }},
-    oneOverRadiiSquared: {get: function() {
-        return this._oneOverRadiiSquared;
-      }},
-    minimumRadius: {get: function() {
-        return this._minimumRadius;
-      }},
-    maximumRadius: {get: function() {
-        return this._maximumRadius;
-      }}
-  });
-  Ellipsoid.clone = function(ellipsoid, result) {
-    if (!defined(ellipsoid)) {
-      return undefined;
-    }
-    var radii = ellipsoid._radii;
-    if (!defined(result)) {
-      return new Ellipsoid(radii.x, radii.y, radii.z);
-    }
-    Cartesian3.clone(radii, result._radii);
-    Cartesian3.clone(ellipsoid._radiiSquared, result._radiiSquared);
-    Cartesian3.clone(ellipsoid._radiiToTheFourth, result._radiiToTheFourth);
-    Cartesian3.clone(ellipsoid._oneOverRadii, result._oneOverRadii);
-    Cartesian3.clone(ellipsoid._oneOverRadiiSquared, result._oneOverRadiiSquared);
-    result._minimumRadius = ellipsoid._minimumRadius;
-    result._maximumRadius = ellipsoid._maximumRadius;
-    result._centerToleranceSquared = ellipsoid._centerToleranceSquared;
-    return result;
-  };
-  Ellipsoid.fromCartesian3 = function(cartesian, result) {
-    if (!defined(result)) {
-      result = new Ellipsoid();
-    }
-    if (!defined(cartesian)) {
-      return result;
-    }
-    initialize(result, cartesian.x, cartesian.y, cartesian.z);
-    return result;
-  };
-  Ellipsoid.WGS84 = freezeObject(new Ellipsoid(6378137.0, 6378137.0, 6356752.3142451793));
-  Ellipsoid.UNIT_SPHERE = freezeObject(new Ellipsoid(1.0, 1.0, 1.0));
-  Ellipsoid.MOON = freezeObject(new Ellipsoid(CesiumMath.LUNAR_RADIUS, CesiumMath.LUNAR_RADIUS, CesiumMath.LUNAR_RADIUS));
-  Ellipsoid.prototype.clone = function(result) {
-    return Ellipsoid.clone(this, result);
-  };
-  Ellipsoid.packedLength = Cartesian3.packedLength;
-  Ellipsoid.pack = function(value, array, startingIndex) {
-    if (!defined(value)) {
-      throw new DeveloperError('value is required');
-    }
-    if (!defined(array)) {
-      throw new DeveloperError('array is required');
-    }
-    startingIndex = defaultValue(startingIndex, 0);
-    Cartesian3.pack(value._radii, array, startingIndex);
-  };
-  Ellipsoid.unpack = function(array, startingIndex, result) {
-    if (!defined(array)) {
-      throw new DeveloperError('array is required');
-    }
-    startingIndex = defaultValue(startingIndex, 0);
-    var radii = Cartesian3.unpack(array, startingIndex);
-    return Ellipsoid.fromCartesian3(radii, result);
-  };
-  Ellipsoid.prototype.geocentricSurfaceNormal = Cartesian3.normalize;
-  Ellipsoid.prototype.geodeticSurfaceNormalCartographic = function(cartographic, result) {
-    if (!defined(cartographic)) {
-      throw new DeveloperError('cartographic is required.');
-    }
-    var longitude = cartographic.longitude;
-    var latitude = cartographic.latitude;
-    var cosLatitude = Math.cos(latitude);
-    var x = cosLatitude * Math.cos(longitude);
-    var y = cosLatitude * Math.sin(longitude);
-    var z = Math.sin(latitude);
-    if (!defined(result)) {
-      result = new Cartesian3();
-    }
-    result.x = x;
-    result.y = y;
-    result.z = z;
-    return Cartesian3.normalize(result, result);
-  };
-  Ellipsoid.prototype.geodeticSurfaceNormal = function(cartesian, result) {
-    if (!defined(result)) {
-      result = new Cartesian3();
-    }
-    result = Cartesian3.multiplyComponents(cartesian, this._oneOverRadiiSquared, result);
-    return Cartesian3.normalize(result, result);
-  };
-  var cartographicToCartesianNormal = new Cartesian3();
-  var cartographicToCartesianK = new Cartesian3();
-  Ellipsoid.prototype.cartographicToCartesian = function(cartographic, result) {
-    var n = cartographicToCartesianNormal;
-    var k = cartographicToCartesianK;
-    this.geodeticSurfaceNormalCartographic(cartographic, n);
-    Cartesian3.multiplyComponents(this._radiiSquared, n, k);
-    var gamma = Math.sqrt(Cartesian3.dot(n, k));
-    Cartesian3.divideByScalar(k, gamma, k);
-    Cartesian3.multiplyByScalar(n, cartographic.height, n);
-    if (!defined(result)) {
-      result = new Cartesian3();
-    }
-    return Cartesian3.add(k, n, result);
-  };
-  Ellipsoid.prototype.cartographicArrayToCartesianArray = function(cartographics, result) {
-    if (!defined(cartographics)) {
-      throw new DeveloperError('cartographics is required.');
-    }
-    var length = cartographics.length;
-    if (!defined(result)) {
-      result = new Array(length);
-    } else {
-      result.length = length;
-    }
-    for (var i = 0; i < length; i++) {
-      result[i] = this.cartographicToCartesian(cartographics[i], result[i]);
-    }
-    return result;
-  };
-  var cartesianToCartographicN = new Cartesian3();
-  var cartesianToCartographicP = new Cartesian3();
-  var cartesianToCartographicH = new Cartesian3();
-  Ellipsoid.prototype.cartesianToCartographic = function(cartesian, result) {
-    var p = this.scaleToGeodeticSurface(cartesian, cartesianToCartographicP);
-    if (!defined(p)) {
-      return undefined;
-    }
-    var n = this.geodeticSurfaceNormal(p, cartesianToCartographicN);
-    var h = Cartesian3.subtract(cartesian, p, cartesianToCartographicH);
-    var longitude = Math.atan2(n.y, n.x);
-    var latitude = Math.asin(n.z);
-    var height = CesiumMath.sign(Cartesian3.dot(h, cartesian)) * Cartesian3.magnitude(h);
-    if (!defined(result)) {
-      return new Cartographic(longitude, latitude, height);
-    }
-    result.longitude = longitude;
-    result.latitude = latitude;
-    result.height = height;
-    return result;
-  };
-  Ellipsoid.prototype.cartesianArrayToCartographicArray = function(cartesians, result) {
-    if (!defined(cartesians)) {
-      throw new DeveloperError('cartesians is required.');
-    }
-    var length = cartesians.length;
-    if (!defined(result)) {
-      result = new Array(length);
-    } else {
-      result.length = length;
-    }
-    for (var i = 0; i < length; ++i) {
-      result[i] = this.cartesianToCartographic(cartesians[i], result[i]);
-    }
-    return result;
-  };
-  Ellipsoid.prototype.scaleToGeodeticSurface = function(cartesian, result) {
-    return scaleToGeodeticSurface(cartesian, this._oneOverRadii, this._oneOverRadiiSquared, this._centerToleranceSquared, result);
-  };
-  Ellipsoid.prototype.scaleToGeocentricSurface = function(cartesian, result) {
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required.');
-    }
-    if (!defined(result)) {
-      result = new Cartesian3();
-    }
-    var positionX = cartesian.x;
-    var positionY = cartesian.y;
-    var positionZ = cartesian.z;
-    var oneOverRadiiSquared = this._oneOverRadiiSquared;
-    var beta = 1.0 / Math.sqrt((positionX * positionX) * oneOverRadiiSquared.x + (positionY * positionY) * oneOverRadiiSquared.y + (positionZ * positionZ) * oneOverRadiiSquared.z);
-    return Cartesian3.multiplyByScalar(cartesian, beta, result);
-  };
-  Ellipsoid.prototype.transformPositionToScaledSpace = function(position, result) {
-    if (!defined(result)) {
-      result = new Cartesian3();
-    }
-    return Cartesian3.multiplyComponents(position, this._oneOverRadii, result);
-  };
-  Ellipsoid.prototype.transformPositionFromScaledSpace = function(position, result) {
-    if (!defined(result)) {
-      result = new Cartesian3();
-    }
-    return Cartesian3.multiplyComponents(position, this._radii, result);
-  };
-  Ellipsoid.prototype.equals = function(right) {
-    return (this === right) || (defined(right) && Cartesian3.equals(this._radii, right._radii));
-  };
-  Ellipsoid.prototype.toString = function() {
-    return this._radii.toString();
-  };
-  return Ellipsoid;
-});
-
-})();
-(function() {
-var define = $__System.amdDefine;
-define("51", [], function() {
+define("50", [], function() {
   function URI(uri) {
     if (uri instanceof URI) {
       this.scheme = uri.scheme;
@@ -8387,7 +7956,7 @@ define("51", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("52", ["51", "15", "17", "require"], function(Uri, defined, DeveloperError, require) {
+define("51", ["50", "15", "17", "require"], function(Uri, defined, DeveloperError, require) {
   "use strict";
   var cesiumScriptRegex = /((?:.*\/)|^)cesium[\w-]*\.js(?:\W|$)/i;
   function getBaseUrlFromCesiumScript() {
@@ -8453,7 +8022,7 @@ define("52", ["51", "15", "17", "require"], function(Uri, defined, DeveloperErro
 })();
 (function() {
 var define = $__System.amdDefine;
-define("53", ["1e"], function(defaultValue) {
+define("52", ["1e"], function(defaultValue) {
   "use strict";
   function clone(object, deep) {
     if (object === null || typeof object !== 'object') {
@@ -8823,7 +8392,7 @@ var define = $__System.amdDefine;
 })();
 (function() {
 var define = $__System.amdDefine;
-define("54", [], function() {
+define("53", [], function() {
   "use strict";
   function parseResponseHeaders(headerString) {
     var headers = {};
@@ -8848,7 +8417,7 @@ define("54", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("55", ["15", "54"], function(defined, parseResponseHeaders) {
+define("54", ["15", "53"], function(defined, parseResponseHeaders) {
   "use strict";
   function RequestErrorEvent(statusCode, response, responseHeaders) {
     this.statusCode = statusCode;
@@ -8871,7 +8440,7 @@ define("55", ["15", "54"], function(defined, parseResponseHeaders) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("56", ["4a", "1e", "15", "17", "55", "34"], function(when, defaultValue, defined, DeveloperError, RequestErrorEvent, RuntimeError) {
+define("55", ["4a", "1e", "15", "17", "54", "34"], function(when, defaultValue, defined, DeveloperError, RequestErrorEvent, RuntimeError) {
   "use strict";
   function loadWithXhr(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
@@ -8979,7 +8548,7 @@ define("56", ["4a", "1e", "15", "17", "55", "34"], function(when, defaultValue, 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("57", ["56"], function(loadWithXhr) {
+define("56", ["55"], function(loadWithXhr) {
   "use strict";
   function loadText(url, headers) {
     return loadWithXhr({
@@ -8993,7 +8562,7 @@ define("57", ["56"], function(loadWithXhr) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4d", ["53", "15", "17", "57"], function(clone, defined, DeveloperError, loadText) {
+define("4d", ["52", "15", "17", "56"], function(clone, defined, DeveloperError, loadText) {
   "use strict";
   var defaultHeaders = {Accept: 'application/json,*/*;q=0.01'};
   function loadJson(url, headers) {
@@ -9016,7 +8585,7 @@ define("4d", ["53", "15", "17", "57"], function(clone, defined, DeveloperError, 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("58", ["4a", "52", "1e", "15", "59", "1f", "4d", "4f"], function(when, buildModuleUrl, defaultValue, defined, Iau2006XysSample, JulianDate, loadJson, TimeStandard) {
+define("57", ["4a", "51", "1e", "15", "58", "1f", "4d", "4f"], function(when, buildModuleUrl, defaultValue, defined, Iau2006XysSample, JulianDate, loadJson, TimeStandard) {
   "use strict";
   function Iau2006XysData(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
@@ -9171,7 +8740,7 @@ define("58", ["4a", "52", "1e", "15", "59", "1f", "4d", "4f"], function(when, bu
 })();
 (function() {
 var define = $__System.amdDefine;
-define("59", [], function() {
+define("58", [], function() {
   "use strict";
   function Iau2006XysSample(x, y, s) {
     this.x = x;
@@ -9184,7 +8753,1269 @@ define("59", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5a", [], function() {
+define("59", ["15", "16"], function(defined, defineProperties) {
+  "use strict";
+  var _supportsFullscreen;
+  var _names = {
+    requestFullscreen: undefined,
+    exitFullscreen: undefined,
+    fullscreenEnabled: undefined,
+    fullscreenElement: undefined,
+    fullscreenchange: undefined,
+    fullscreenerror: undefined
+  };
+  var Fullscreen = {};
+  defineProperties(Fullscreen, {
+    element: {get: function() {
+        if (!Fullscreen.supportsFullscreen()) {
+          return undefined;
+        }
+        return document[_names.fullscreenElement];
+      }},
+    changeEventName: {get: function() {
+        if (!Fullscreen.supportsFullscreen()) {
+          return undefined;
+        }
+        return _names.fullscreenchange;
+      }},
+    errorEventName: {get: function() {
+        if (!Fullscreen.supportsFullscreen()) {
+          return undefined;
+        }
+        return _names.fullscreenerror;
+      }},
+    enabled: {get: function() {
+        if (!Fullscreen.supportsFullscreen()) {
+          return undefined;
+        }
+        return document[_names.fullscreenEnabled];
+      }},
+    fullscreen: {get: function() {
+        if (!Fullscreen.supportsFullscreen()) {
+          return undefined;
+        }
+        return Fullscreen.element !== null;
+      }}
+  });
+  Fullscreen.supportsFullscreen = function() {
+    if (defined(_supportsFullscreen)) {
+      return _supportsFullscreen;
+    }
+    _supportsFullscreen = false;
+    var body = document.body;
+    if (typeof body.requestFullscreen === 'function') {
+      _names.requestFullscreen = 'requestFullscreen';
+      _names.exitFullscreen = 'exitFullscreen';
+      _names.fullscreenEnabled = 'fullscreenEnabled';
+      _names.fullscreenElement = 'fullscreenElement';
+      _names.fullscreenchange = 'fullscreenchange';
+      _names.fullscreenerror = 'fullscreenerror';
+      _supportsFullscreen = true;
+      return _supportsFullscreen;
+    }
+    var prefixes = ['webkit', 'moz', 'o', 'ms', 'khtml'];
+    var name;
+    for (var i = 0,
+        len = prefixes.length; i < len; ++i) {
+      var prefix = prefixes[i];
+      name = prefix + 'RequestFullscreen';
+      if (typeof body[name] === 'function') {
+        _names.requestFullscreen = name;
+        _supportsFullscreen = true;
+      } else {
+        name = prefix + 'RequestFullScreen';
+        if (typeof body[name] === 'function') {
+          _names.requestFullscreen = name;
+          _supportsFullscreen = true;
+        }
+      }
+      name = prefix + 'ExitFullscreen';
+      if (typeof document[name] === 'function') {
+        _names.exitFullscreen = name;
+      } else {
+        name = prefix + 'CancelFullScreen';
+        if (typeof document[name] === 'function') {
+          _names.exitFullscreen = name;
+        }
+      }
+      name = prefix + 'FullscreenEnabled';
+      if (defined(document[name])) {
+        _names.fullscreenEnabled = name;
+      } else {
+        name = prefix + 'FullScreenEnabled';
+        if (defined(document[name])) {
+          _names.fullscreenEnabled = name;
+        }
+      }
+      name = prefix + 'FullscreenElement';
+      if (defined(document[name])) {
+        _names.fullscreenElement = name;
+      } else {
+        name = prefix + 'FullScreenElement';
+        if (defined(document[name])) {
+          _names.fullscreenElement = name;
+        }
+      }
+      name = prefix + 'fullscreenchange';
+      if (defined(document['on' + name])) {
+        if (prefix === 'ms') {
+          name = 'MSFullscreenChange';
+        }
+        _names.fullscreenchange = name;
+      }
+      name = prefix + 'fullscreenerror';
+      if (defined(document['on' + name])) {
+        if (prefix === 'ms') {
+          name = 'MSFullscreenError';
+        }
+        _names.fullscreenerror = name;
+      }
+    }
+    return _supportsFullscreen;
+  };
+  Fullscreen.requestFullscreen = function(element) {
+    if (!Fullscreen.supportsFullscreen()) {
+      return;
+    }
+    element[_names.requestFullscreen]();
+  };
+  Fullscreen.exitFullscreen = function() {
+    if (!Fullscreen.supportsFullscreen()) {
+      return;
+    }
+    document[_names.exitFullscreen]();
+  };
+  return Fullscreen;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("5a", ["1e", "15", "59"], function(defaultValue, defined, Fullscreen) {
+  "use strict";
+  var theNavigator;
+  if (typeof navigator !== 'undefined') {
+    theNavigator = navigator;
+  } else {
+    theNavigator = {};
+  }
+  function extractVersion(versionString) {
+    var parts = versionString.split('.');
+    for (var i = 0,
+        len = parts.length; i < len; ++i) {
+      parts[i] = parseInt(parts[i], 10);
+    }
+    return parts;
+  }
+  var isChromeResult;
+  var chromeVersionResult;
+  function isChrome() {
+    if (!defined(isChromeResult)) {
+      isChromeResult = false;
+      var fields = (/ Chrome\/([\.0-9]+)/).exec(theNavigator.userAgent);
+      if (fields !== null) {
+        isChromeResult = true;
+        chromeVersionResult = extractVersion(fields[1]);
+      }
+    }
+    return isChromeResult;
+  }
+  function chromeVersion() {
+    return isChrome() && chromeVersionResult;
+  }
+  var isSafariResult;
+  var safariVersionResult;
+  function isSafari() {
+    if (!defined(isSafariResult)) {
+      isSafariResult = false;
+      if (!isChrome() && (/ Safari\/[\.0-9]+/).test(theNavigator.userAgent)) {
+        var fields = (/ Version\/([\.0-9]+)/).exec(theNavigator.userAgent);
+        if (fields !== null) {
+          isSafariResult = true;
+          safariVersionResult = extractVersion(fields[1]);
+        }
+      }
+    }
+    return isSafariResult;
+  }
+  function safariVersion() {
+    return isSafari() && safariVersionResult;
+  }
+  var isWebkitResult;
+  var webkitVersionResult;
+  function isWebkit() {
+    if (!defined(isWebkitResult)) {
+      isWebkitResult = false;
+      var fields = (/ AppleWebKit\/([\.0-9]+)(\+?)/).exec(theNavigator.userAgent);
+      if (fields !== null) {
+        isWebkitResult = true;
+        webkitVersionResult = extractVersion(fields[1]);
+        webkitVersionResult.isNightly = !!fields[2];
+      }
+    }
+    return isWebkitResult;
+  }
+  function webkitVersion() {
+    return isWebkit() && webkitVersionResult;
+  }
+  var isInternetExplorerResult;
+  var internetExplorerVersionResult;
+  function isInternetExplorer() {
+    if (!defined(isInternetExplorerResult)) {
+      isInternetExplorerResult = false;
+      var fields;
+      if (theNavigator.appName === 'Microsoft Internet Explorer') {
+        fields = /MSIE ([0-9]{1,}[\.0-9]{0,})/.exec(theNavigator.userAgent);
+        if (fields !== null) {
+          isInternetExplorerResult = true;
+          internetExplorerVersionResult = extractVersion(fields[1]);
+        }
+      } else if (theNavigator.appName === 'Netscape') {
+        fields = /Trident\/.*rv:([0-9]{1,}[\.0-9]{0,})/.exec(theNavigator.userAgent);
+        if (fields !== null) {
+          isInternetExplorerResult = true;
+          internetExplorerVersionResult = extractVersion(fields[1]);
+        }
+      }
+    }
+    return isInternetExplorerResult;
+  }
+  function internetExplorerVersion() {
+    return isInternetExplorer() && internetExplorerVersionResult;
+  }
+  var isFirefoxResult;
+  var firefoxVersionResult;
+  function isFirefox() {
+    if (!defined(isFirefoxResult)) {
+      isFirefoxResult = false;
+      var fields = /Firefox\/([\.0-9]+)/.exec(theNavigator.userAgent);
+      if (fields !== null) {
+        isFirefoxResult = true;
+        firefoxVersionResult = extractVersion(fields[1]);
+      }
+    }
+    return isFirefoxResult;
+  }
+  var isWindowsResult;
+  function isWindows() {
+    if (!defined(isWindowsResult)) {
+      isWindowsResult = /Windows/i.test(theNavigator.appVersion);
+    }
+    return isWindowsResult;
+  }
+  function firefoxVersion() {
+    return isFirefox() && firefoxVersionResult;
+  }
+  var hasPointerEvents;
+  function supportsPointerEvents() {
+    if (!defined(hasPointerEvents)) {
+      hasPointerEvents = typeof PointerEvent !== 'undefined' && (!defined(theNavigator.pointerEnabled) || theNavigator.pointerEnabled);
+    }
+    return hasPointerEvents;
+  }
+  var FeatureDetection = {
+    isChrome: isChrome,
+    chromeVersion: chromeVersion,
+    isSafari: isSafari,
+    safariVersion: safariVersion,
+    isWebkit: isWebkit,
+    webkitVersion: webkitVersion,
+    isInternetExplorer: isInternetExplorer,
+    internetExplorerVersion: internetExplorerVersion,
+    isFirefox: isFirefox,
+    firefoxVersion: firefoxVersion,
+    isWindows: isWindows,
+    hardwareConcurrency: defaultValue(theNavigator.hardwareConcurrency, 3),
+    supportsPointerEvents: supportsPointerEvents
+  };
+  FeatureDetection.supportsFullscreen = function() {
+    return Fullscreen.supportsFullscreen();
+  };
+  FeatureDetection.supportsTypedArrays = function() {
+    return typeof ArrayBuffer !== 'undefined';
+  };
+  FeatureDetection.supportsWebWorkers = function() {
+    return typeof Worker !== 'undefined';
+  };
+  return FeatureDetection;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("30", ["29", "1e", "15", "17", "5a", "1a", "22", "2e"], function(Cartesian3, defaultValue, defined, DeveloperError, FeatureDetection, freezeObject, CesiumMath, Matrix3) {
+  "use strict";
+  function Quaternion(x, y, z, w) {
+    this.x = defaultValue(x, 0.0);
+    this.y = defaultValue(y, 0.0);
+    this.z = defaultValue(z, 0.0);
+    this.w = defaultValue(w, 0.0);
+  }
+  var fromAxisAngleScratch = new Cartesian3();
+  Quaternion.fromAxisAngle = function(axis, angle, result) {
+    if (!defined(axis)) {
+      throw new DeveloperError('axis is required.');
+    }
+    if (typeof angle !== 'number') {
+      throw new DeveloperError('angle is required and must be a number.');
+    }
+    var halfAngle = angle / 2.0;
+    var s = Math.sin(halfAngle);
+    fromAxisAngleScratch = Cartesian3.normalize(axis, fromAxisAngleScratch);
+    var x = fromAxisAngleScratch.x * s;
+    var y = fromAxisAngleScratch.y * s;
+    var z = fromAxisAngleScratch.z * s;
+    var w = Math.cos(halfAngle);
+    if (!defined(result)) {
+      return new Quaternion(x, y, z, w);
+    }
+    result.x = x;
+    result.y = y;
+    result.z = z;
+    result.w = w;
+    return result;
+  };
+  var fromRotationMatrixNext = [1, 2, 0];
+  var fromRotationMatrixQuat = new Array(3);
+  Quaternion.fromRotationMatrix = function(matrix, result) {
+    if (!defined(matrix)) {
+      throw new DeveloperError('matrix is required.');
+    }
+    var root;
+    var x;
+    var y;
+    var z;
+    var w;
+    var m00 = matrix[Matrix3.COLUMN0ROW0];
+    var m11 = matrix[Matrix3.COLUMN1ROW1];
+    var m22 = matrix[Matrix3.COLUMN2ROW2];
+    var trace = m00 + m11 + m22;
+    if (trace > 0.0) {
+      root = Math.sqrt(trace + 1.0);
+      w = 0.5 * root;
+      root = 0.5 / root;
+      x = (matrix[Matrix3.COLUMN1ROW2] - matrix[Matrix3.COLUMN2ROW1]) * root;
+      y = (matrix[Matrix3.COLUMN2ROW0] - matrix[Matrix3.COLUMN0ROW2]) * root;
+      z = (matrix[Matrix3.COLUMN0ROW1] - matrix[Matrix3.COLUMN1ROW0]) * root;
+    } else {
+      var next = fromRotationMatrixNext;
+      var i = 0;
+      if (m11 > m00) {
+        i = 1;
+      }
+      if (m22 > m00 && m22 > m11) {
+        i = 2;
+      }
+      var j = next[i];
+      var k = next[j];
+      root = Math.sqrt(matrix[Matrix3.getElementIndex(i, i)] - matrix[Matrix3.getElementIndex(j, j)] - matrix[Matrix3.getElementIndex(k, k)] + 1.0);
+      var quat = fromRotationMatrixQuat;
+      quat[i] = 0.5 * root;
+      root = 0.5 / root;
+      w = (matrix[Matrix3.getElementIndex(k, j)] - matrix[Matrix3.getElementIndex(j, k)]) * root;
+      quat[j] = (matrix[Matrix3.getElementIndex(j, i)] + matrix[Matrix3.getElementIndex(i, j)]) * root;
+      quat[k] = (matrix[Matrix3.getElementIndex(k, i)] + matrix[Matrix3.getElementIndex(i, k)]) * root;
+      x = -quat[0];
+      y = -quat[1];
+      z = -quat[2];
+    }
+    if (!defined(result)) {
+      return new Quaternion(x, y, z, w);
+    }
+    result.x = x;
+    result.y = y;
+    result.z = z;
+    result.w = w;
+    return result;
+  };
+  var scratchHPRQuaternion = new Quaternion();
+  Quaternion.fromHeadingPitchRoll = function(heading, pitch, roll, result) {
+    if (!defined(heading)) {
+      throw new DeveloperError('heading is required.');
+    }
+    if (!defined(pitch)) {
+      throw new DeveloperError('pitch is required.');
+    }
+    if (!defined(roll)) {
+      throw new DeveloperError('roll is required.');
+    }
+    var rollQuaternion = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, roll, scratchHPRQuaternion);
+    var pitchQuaternion = Quaternion.fromAxisAngle(Cartesian3.UNIT_Y, -pitch, result);
+    result = Quaternion.multiply(pitchQuaternion, rollQuaternion, pitchQuaternion);
+    var headingQuaternion = Quaternion.fromAxisAngle(Cartesian3.UNIT_Z, -heading, scratchHPRQuaternion);
+    return Quaternion.multiply(headingQuaternion, result, result);
+  };
+  var sampledQuaternionAxis = new Cartesian3();
+  var sampledQuaternionRotation = new Cartesian3();
+  var sampledQuaternionTempQuaternion = new Quaternion();
+  var sampledQuaternionQuaternion0 = new Quaternion();
+  var sampledQuaternionQuaternion0Conjugate = new Quaternion();
+  Quaternion.packedLength = 4;
+  Quaternion.pack = function(value, array, startingIndex) {
+    if (!defined(value)) {
+      throw new DeveloperError('value is required');
+    }
+    if (!defined(array)) {
+      throw new DeveloperError('array is required');
+    }
+    startingIndex = defaultValue(startingIndex, 0);
+    array[startingIndex++] = value.x;
+    array[startingIndex++] = value.y;
+    array[startingIndex++] = value.z;
+    array[startingIndex] = value.w;
+  };
+  Quaternion.unpack = function(array, startingIndex, result) {
+    if (!defined(array)) {
+      throw new DeveloperError('array is required');
+    }
+    startingIndex = defaultValue(startingIndex, 0);
+    if (!defined(result)) {
+      result = new Quaternion();
+    }
+    result.x = array[startingIndex];
+    result.y = array[startingIndex + 1];
+    result.z = array[startingIndex + 2];
+    result.w = array[startingIndex + 3];
+    return result;
+  };
+  Quaternion.packedInterpolationLength = 3;
+  Quaternion.convertPackedArrayForInterpolation = function(packedArray, startingIndex, lastIndex, result) {
+    Quaternion.unpack(packedArray, lastIndex * 4, sampledQuaternionQuaternion0Conjugate);
+    Quaternion.conjugate(sampledQuaternionQuaternion0Conjugate, sampledQuaternionQuaternion0Conjugate);
+    for (var i = 0,
+        len = lastIndex - startingIndex + 1; i < len; i++) {
+      var offset = i * 3;
+      Quaternion.unpack(packedArray, (startingIndex + i) * 4, sampledQuaternionTempQuaternion);
+      Quaternion.multiply(sampledQuaternionTempQuaternion, sampledQuaternionQuaternion0Conjugate, sampledQuaternionTempQuaternion);
+      if (sampledQuaternionTempQuaternion.w < 0) {
+        Quaternion.negate(sampledQuaternionTempQuaternion, sampledQuaternionTempQuaternion);
+      }
+      Quaternion.computeAxis(sampledQuaternionTempQuaternion, sampledQuaternionAxis);
+      var angle = Quaternion.computeAngle(sampledQuaternionTempQuaternion);
+      result[offset] = sampledQuaternionAxis.x * angle;
+      result[offset + 1] = sampledQuaternionAxis.y * angle;
+      result[offset + 2] = sampledQuaternionAxis.z * angle;
+    }
+  };
+  Quaternion.unpackInterpolationResult = function(array, sourceArray, firstIndex, lastIndex, result) {
+    if (!defined(result)) {
+      result = new Quaternion();
+    }
+    Cartesian3.fromArray(array, 0, sampledQuaternionRotation);
+    var magnitude = Cartesian3.magnitude(sampledQuaternionRotation);
+    Quaternion.unpack(sourceArray, lastIndex * 4, sampledQuaternionQuaternion0);
+    if (magnitude === 0) {
+      Quaternion.clone(Quaternion.IDENTITY, sampledQuaternionTempQuaternion);
+    } else {
+      Quaternion.fromAxisAngle(sampledQuaternionRotation, magnitude, sampledQuaternionTempQuaternion);
+    }
+    return Quaternion.multiply(sampledQuaternionTempQuaternion, sampledQuaternionQuaternion0, result);
+  };
+  Quaternion.clone = function(quaternion, result) {
+    if (!defined(quaternion)) {
+      return undefined;
+    }
+    if (!defined(result)) {
+      return new Quaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
+    }
+    result.x = quaternion.x;
+    result.y = quaternion.y;
+    result.z = quaternion.z;
+    result.w = quaternion.w;
+    return result;
+  };
+  Quaternion.conjugate = function(quaternion, result) {
+    if (!defined(quaternion)) {
+      throw new DeveloperError('quaternion is required');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    result.x = -quaternion.x;
+    result.y = -quaternion.y;
+    result.z = -quaternion.z;
+    result.w = quaternion.w;
+    return result;
+  };
+  Quaternion.magnitudeSquared = function(quaternion) {
+    if (!defined(quaternion)) {
+      throw new DeveloperError('quaternion is required');
+    }
+    return quaternion.x * quaternion.x + quaternion.y * quaternion.y + quaternion.z * quaternion.z + quaternion.w * quaternion.w;
+  };
+  Quaternion.magnitude = function(quaternion) {
+    return Math.sqrt(Quaternion.magnitudeSquared(quaternion));
+  };
+  Quaternion.normalize = function(quaternion, result) {
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    var inverseMagnitude = 1.0 / Quaternion.magnitude(quaternion);
+    var x = quaternion.x * inverseMagnitude;
+    var y = quaternion.y * inverseMagnitude;
+    var z = quaternion.z * inverseMagnitude;
+    var w = quaternion.w * inverseMagnitude;
+    result.x = x;
+    result.y = y;
+    result.z = z;
+    result.w = w;
+    return result;
+  };
+  Quaternion.inverse = function(quaternion, result) {
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    var magnitudeSquared = Quaternion.magnitudeSquared(quaternion);
+    result = Quaternion.conjugate(quaternion, result);
+    return Quaternion.multiplyByScalar(result, 1.0 / magnitudeSquared, result);
+  };
+  Quaternion.add = function(left, right, result) {
+    if (!defined(left)) {
+      throw new DeveloperError('left is required');
+    }
+    if (!defined(right)) {
+      throw new DeveloperError('right is required');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    result.x = left.x + right.x;
+    result.y = left.y + right.y;
+    result.z = left.z + right.z;
+    result.w = left.w + right.w;
+    return result;
+  };
+  Quaternion.subtract = function(left, right, result) {
+    if (!defined(left)) {
+      throw new DeveloperError('left is required');
+    }
+    if (!defined(right)) {
+      throw new DeveloperError('right is required');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    result.x = left.x - right.x;
+    result.y = left.y - right.y;
+    result.z = left.z - right.z;
+    result.w = left.w - right.w;
+    return result;
+  };
+  Quaternion.negate = function(quaternion, result) {
+    if (!defined(quaternion)) {
+      throw new DeveloperError('quaternion is required');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    result.x = -quaternion.x;
+    result.y = -quaternion.y;
+    result.z = -quaternion.z;
+    result.w = -quaternion.w;
+    return result;
+  };
+  Quaternion.dot = function(left, right) {
+    if (!defined(left)) {
+      throw new DeveloperError('left is required');
+    }
+    if (!defined(right)) {
+      throw new DeveloperError('right is required');
+    }
+    return left.x * right.x + left.y * right.y + left.z * right.z + left.w * right.w;
+  };
+  Quaternion.multiply = function(left, right, result) {
+    if (!defined(left)) {
+      throw new DeveloperError('left is required');
+    }
+    if (!defined(right)) {
+      throw new DeveloperError('right is required');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    var leftX = left.x;
+    var leftY = left.y;
+    var leftZ = left.z;
+    var leftW = left.w;
+    var rightX = right.x;
+    var rightY = right.y;
+    var rightZ = right.z;
+    var rightW = right.w;
+    var x = leftW * rightX + leftX * rightW + leftY * rightZ - leftZ * rightY;
+    var y = leftW * rightY - leftX * rightZ + leftY * rightW + leftZ * rightX;
+    var z = leftW * rightZ + leftX * rightY - leftY * rightX + leftZ * rightW;
+    var w = leftW * rightW - leftX * rightX - leftY * rightY - leftZ * rightZ;
+    result.x = x;
+    result.y = y;
+    result.z = z;
+    result.w = w;
+    return result;
+  };
+  Quaternion.multiplyByScalar = function(quaternion, scalar, result) {
+    if (!defined(quaternion)) {
+      throw new DeveloperError('quaternion is required');
+    }
+    if (typeof scalar !== 'number') {
+      throw new DeveloperError('scalar is required and must be a number.');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    result.x = quaternion.x * scalar;
+    result.y = quaternion.y * scalar;
+    result.z = quaternion.z * scalar;
+    result.w = quaternion.w * scalar;
+    return result;
+  };
+  Quaternion.divideByScalar = function(quaternion, scalar, result) {
+    if (!defined(quaternion)) {
+      throw new DeveloperError('quaternion is required');
+    }
+    if (typeof scalar !== 'number') {
+      throw new DeveloperError('scalar is required and must be a number.');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    result.x = quaternion.x / scalar;
+    result.y = quaternion.y / scalar;
+    result.z = quaternion.z / scalar;
+    result.w = quaternion.w / scalar;
+    return result;
+  };
+  Quaternion.computeAxis = function(quaternion, result) {
+    if (!defined(quaternion)) {
+      throw new DeveloperError('quaternion is required');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    var w = quaternion.w;
+    if (Math.abs(w - 1.0) < CesiumMath.EPSILON6) {
+      result.x = result.y = result.z = 0;
+      return result;
+    }
+    var scalar = 1.0 / Math.sqrt(1.0 - (w * w));
+    result.x = quaternion.x * scalar;
+    result.y = quaternion.y * scalar;
+    result.z = quaternion.z * scalar;
+    return result;
+  };
+  Quaternion.computeAngle = function(quaternion) {
+    if (!defined(quaternion)) {
+      throw new DeveloperError('quaternion is required');
+    }
+    if (Math.abs(quaternion.w - 1.0) < CesiumMath.EPSILON6) {
+      return 0.0;
+    }
+    return 2.0 * Math.acos(quaternion.w);
+  };
+  var lerpScratch = new Quaternion();
+  Quaternion.lerp = function(start, end, t, result) {
+    if (!defined(start)) {
+      throw new DeveloperError('start is required.');
+    }
+    if (!defined(end)) {
+      throw new DeveloperError('end is required.');
+    }
+    if (typeof t !== 'number') {
+      throw new DeveloperError('t is required and must be a number.');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    lerpScratch = Quaternion.multiplyByScalar(end, t, lerpScratch);
+    result = Quaternion.multiplyByScalar(start, 1.0 - t, result);
+    return Quaternion.add(lerpScratch, result, result);
+  };
+  var slerpEndNegated = new Quaternion();
+  var slerpScaledP = new Quaternion();
+  var slerpScaledR = new Quaternion();
+  Quaternion.slerp = function(start, end, t, result) {
+    if (!defined(start)) {
+      throw new DeveloperError('start is required.');
+    }
+    if (!defined(end)) {
+      throw new DeveloperError('end is required.');
+    }
+    if (typeof t !== 'number') {
+      throw new DeveloperError('t is required and must be a number.');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    var dot = Quaternion.dot(start, end);
+    var r = end;
+    if (dot < 0.0) {
+      dot = -dot;
+      r = slerpEndNegated = Quaternion.negate(end, slerpEndNegated);
+    }
+    if (1.0 - dot < CesiumMath.EPSILON6) {
+      return Quaternion.lerp(start, r, t, result);
+    }
+    var theta = Math.acos(dot);
+    slerpScaledP = Quaternion.multiplyByScalar(start, Math.sin((1 - t) * theta), slerpScaledP);
+    slerpScaledR = Quaternion.multiplyByScalar(r, Math.sin(t * theta), slerpScaledR);
+    result = Quaternion.add(slerpScaledP, slerpScaledR, result);
+    return Quaternion.multiplyByScalar(result, 1.0 / Math.sin(theta), result);
+  };
+  Quaternion.log = function(quaternion, result) {
+    if (!defined(quaternion)) {
+      throw new DeveloperError('quaternion is required.');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    var theta = CesiumMath.acosClamped(quaternion.w);
+    var thetaOverSinTheta = 0.0;
+    if (theta !== 0.0) {
+      thetaOverSinTheta = theta / Math.sin(theta);
+    }
+    return Cartesian3.multiplyByScalar(quaternion, thetaOverSinTheta, result);
+  };
+  Quaternion.exp = function(cartesian, result) {
+    if (!defined(cartesian)) {
+      throw new DeveloperError('cartesian is required.');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    var theta = Cartesian3.magnitude(cartesian);
+    var sinThetaOverTheta = 0.0;
+    if (theta !== 0.0) {
+      sinThetaOverTheta = Math.sin(theta) / theta;
+    }
+    result.x = cartesian.x * sinThetaOverTheta;
+    result.y = cartesian.y * sinThetaOverTheta;
+    result.z = cartesian.z * sinThetaOverTheta;
+    result.w = Math.cos(theta);
+    return result;
+  };
+  var squadScratchCartesian0 = new Cartesian3();
+  var squadScratchCartesian1 = new Cartesian3();
+  var squadScratchQuaternion0 = new Quaternion();
+  var squadScratchQuaternion1 = new Quaternion();
+  Quaternion.computeInnerQuadrangle = function(q0, q1, q2, result) {
+    if (!defined(q0) || !defined(q1) || !defined(q2)) {
+      throw new DeveloperError('q0, q1, and q2 are required.');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    var qInv = Quaternion.conjugate(q1, squadScratchQuaternion0);
+    Quaternion.multiply(qInv, q2, squadScratchQuaternion1);
+    var cart0 = Quaternion.log(squadScratchQuaternion1, squadScratchCartesian0);
+    Quaternion.multiply(qInv, q0, squadScratchQuaternion1);
+    var cart1 = Quaternion.log(squadScratchQuaternion1, squadScratchCartesian1);
+    Cartesian3.add(cart0, cart1, cart0);
+    Cartesian3.multiplyByScalar(cart0, 0.25, cart0);
+    Cartesian3.negate(cart0, cart0);
+    Quaternion.exp(cart0, squadScratchQuaternion0);
+    return Quaternion.multiply(q1, squadScratchQuaternion0, result);
+  };
+  Quaternion.squad = function(q0, q1, s0, s1, t, result) {
+    if (!defined(q0) || !defined(q1) || !defined(s0) || !defined(s1)) {
+      throw new DeveloperError('q0, q1, s0, and s1 are required.');
+    }
+    if (typeof t !== 'number') {
+      throw new DeveloperError('t is required and must be a number.');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    var slerp0 = Quaternion.slerp(q0, q1, t, squadScratchQuaternion0);
+    var slerp1 = Quaternion.slerp(s0, s1, t, squadScratchQuaternion1);
+    return Quaternion.slerp(slerp0, slerp1, 2.0 * t * (1.0 - t), result);
+  };
+  var fastSlerpScratchQuaternion = new Quaternion();
+  var opmu = 1.90110745351730037;
+  var u = FeatureDetection.supportsTypedArrays() ? new Float32Array(8) : [];
+  var v = FeatureDetection.supportsTypedArrays() ? new Float32Array(8) : [];
+  var bT = FeatureDetection.supportsTypedArrays() ? new Float32Array(8) : [];
+  var bD = FeatureDetection.supportsTypedArrays() ? new Float32Array(8) : [];
+  for (var i = 0; i < 7; ++i) {
+    var s = i + 1.0;
+    var t = 2.0 * s + 1.0;
+    u[i] = 1.0 / (s * t);
+    v[i] = s / t;
+  }
+  u[7] = opmu / (8.0 * 17.0);
+  v[7] = opmu * 8.0 / 17.0;
+  Quaternion.fastSlerp = function(start, end, t, result) {
+    if (!defined(start)) {
+      throw new DeveloperError('start is required.');
+    }
+    if (!defined(end)) {
+      throw new DeveloperError('end is required.');
+    }
+    if (typeof t !== 'number') {
+      throw new DeveloperError('t is required and must be a number.');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    var x = Quaternion.dot(start, end);
+    var sign;
+    if (x >= 0) {
+      sign = 1.0;
+    } else {
+      sign = -1.0;
+      x = -x;
+    }
+    var xm1 = x - 1.0;
+    var d = 1.0 - t;
+    var sqrT = t * t;
+    var sqrD = d * d;
+    for (var i = 7; i >= 0; --i) {
+      bT[i] = (u[i] * sqrT - v[i]) * xm1;
+      bD[i] = (u[i] * sqrD - v[i]) * xm1;
+    }
+    var cT = sign * t * (1.0 + bT[0] * (1.0 + bT[1] * (1.0 + bT[2] * (1.0 + bT[3] * (1.0 + bT[4] * (1.0 + bT[5] * (1.0 + bT[6] * (1.0 + bT[7]))))))));
+    var cD = d * (1.0 + bD[0] * (1.0 + bD[1] * (1.0 + bD[2] * (1.0 + bD[3] * (1.0 + bD[4] * (1.0 + bD[5] * (1.0 + bD[6] * (1.0 + bD[7]))))))));
+    var temp = Quaternion.multiplyByScalar(start, cD, fastSlerpScratchQuaternion);
+    Quaternion.multiplyByScalar(end, cT, result);
+    return Quaternion.add(temp, result, result);
+  };
+  Quaternion.fastSquad = function(q0, q1, s0, s1, t, result) {
+    if (!defined(q0) || !defined(q1) || !defined(s0) || !defined(s1)) {
+      throw new DeveloperError('q0, q1, s0, and s1 are required.');
+    }
+    if (typeof t !== 'number') {
+      throw new DeveloperError('t is required and must be a number.');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    var slerp0 = Quaternion.fastSlerp(q0, q1, t, squadScratchQuaternion0);
+    var slerp1 = Quaternion.fastSlerp(s0, s1, t, squadScratchQuaternion1);
+    return Quaternion.fastSlerp(slerp0, slerp1, 2.0 * t * (1.0 - t), result);
+  };
+  Quaternion.equals = function(left, right) {
+    return (left === right) || ((defined(left)) && (defined(right)) && (left.x === right.x) && (left.y === right.y) && (left.z === right.z) && (left.w === right.w));
+  };
+  Quaternion.equalsEpsilon = function(left, right, epsilon) {
+    if (typeof epsilon !== 'number') {
+      throw new DeveloperError('epsilon is required and must be a number.');
+    }
+    return (left === right) || ((defined(left)) && (defined(right)) && (Math.abs(left.x - right.x) <= epsilon) && (Math.abs(left.y - right.y) <= epsilon) && (Math.abs(left.z - right.z) <= epsilon) && (Math.abs(left.w - right.w) <= epsilon));
+  };
+  Quaternion.ZERO = freezeObject(new Quaternion(0.0, 0.0, 0.0, 0.0));
+  Quaternion.IDENTITY = freezeObject(new Quaternion(0.0, 0.0, 0.0, 1.0));
+  Quaternion.prototype.clone = function(result) {
+    return Quaternion.clone(this, result);
+  };
+  Quaternion.prototype.equals = function(right) {
+    return Quaternion.equals(this, right);
+  };
+  Quaternion.prototype.equalsEpsilon = function(right, epsilon) {
+    return Quaternion.equalsEpsilon(this, right, epsilon);
+  };
+  Quaternion.prototype.toString = function() {
+    return '(' + this.x + ', ' + this.y + ', ' + this.z + ', ' + this.w + ')';
+  };
+  return Quaternion;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("31", ["4a", "3f", "29", "40", "1e", "15", "17", "49", "4b", "38", "57", "58", "1f", "22", "2e", "2f", "30", "4e"], function(when, Cartesian2, Cartesian3, Cartesian4, defaultValue, defined, DeveloperError, EarthOrientationParameters, EarthOrientationParametersSample, Ellipsoid, Iau2006XysData, Iau2006XysSample, JulianDate, CesiumMath, Matrix3, Matrix4, Quaternion, TimeConstants) {
+  "use strict";
+  var Transforms = {};
+  var eastNorthUpToFixedFrameNormal = new Cartesian3();
+  var eastNorthUpToFixedFrameTangent = new Cartesian3();
+  var eastNorthUpToFixedFrameBitangent = new Cartesian3();
+  Transforms.eastNorthUpToFixedFrame = function(origin, ellipsoid, result) {
+    if (!defined(origin)) {
+      throw new DeveloperError('origin is required.');
+    }
+    if (CesiumMath.equalsEpsilon(origin.x, 0.0, CesiumMath.EPSILON14) && CesiumMath.equalsEpsilon(origin.y, 0.0, CesiumMath.EPSILON14)) {
+      var sign = CesiumMath.sign(origin.z);
+      if (!defined(result)) {
+        return new Matrix4(0.0, -sign, 0.0, origin.x, 1.0, 0.0, 0.0, origin.y, 0.0, 0.0, sign, origin.z, 0.0, 0.0, 0.0, 1.0);
+      }
+      result[0] = 0.0;
+      result[1] = 1.0;
+      result[2] = 0.0;
+      result[3] = 0.0;
+      result[4] = -sign;
+      result[5] = 0.0;
+      result[6] = 0.0;
+      result[7] = 0.0;
+      result[8] = 0.0;
+      result[9] = 0.0;
+      result[10] = sign;
+      result[11] = 0.0;
+      result[12] = origin.x;
+      result[13] = origin.y;
+      result[14] = origin.z;
+      result[15] = 1.0;
+      return result;
+    }
+    var normal = eastNorthUpToFixedFrameNormal;
+    var tangent = eastNorthUpToFixedFrameTangent;
+    var bitangent = eastNorthUpToFixedFrameBitangent;
+    ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
+    ellipsoid.geodeticSurfaceNormal(origin, normal);
+    tangent.x = -origin.y;
+    tangent.y = origin.x;
+    tangent.z = 0.0;
+    Cartesian3.normalize(tangent, tangent);
+    Cartesian3.cross(normal, tangent, bitangent);
+    if (!defined(result)) {
+      return new Matrix4(tangent.x, bitangent.x, normal.x, origin.x, tangent.y, bitangent.y, normal.y, origin.y, tangent.z, bitangent.z, normal.z, origin.z, 0.0, 0.0, 0.0, 1.0);
+    }
+    result[0] = tangent.x;
+    result[1] = tangent.y;
+    result[2] = tangent.z;
+    result[3] = 0.0;
+    result[4] = bitangent.x;
+    result[5] = bitangent.y;
+    result[6] = bitangent.z;
+    result[7] = 0.0;
+    result[8] = normal.x;
+    result[9] = normal.y;
+    result[10] = normal.z;
+    result[11] = 0.0;
+    result[12] = origin.x;
+    result[13] = origin.y;
+    result[14] = origin.z;
+    result[15] = 1.0;
+    return result;
+  };
+  var northEastDownToFixedFrameNormal = new Cartesian3();
+  var northEastDownToFixedFrameTangent = new Cartesian3();
+  var northEastDownToFixedFrameBitangent = new Cartesian3();
+  Transforms.northEastDownToFixedFrame = function(origin, ellipsoid, result) {
+    if (!defined(origin)) {
+      throw new DeveloperError('origin is required.');
+    }
+    if (CesiumMath.equalsEpsilon(origin.x, 0.0, CesiumMath.EPSILON14) && CesiumMath.equalsEpsilon(origin.y, 0.0, CesiumMath.EPSILON14)) {
+      var sign = CesiumMath.sign(origin.z);
+      if (!defined(result)) {
+        return new Matrix4(-sign, 0.0, 0.0, origin.x, 0.0, 1.0, 0.0, origin.y, 0.0, 0.0, -sign, origin.z, 0.0, 0.0, 0.0, 1.0);
+      }
+      result[0] = -sign;
+      result[1] = 0.0;
+      result[2] = 0.0;
+      result[3] = 0.0;
+      result[4] = 0.0;
+      result[5] = 1.0;
+      result[6] = 0.0;
+      result[7] = 0.0;
+      result[8] = 0.0;
+      result[9] = 0.0;
+      result[10] = -sign;
+      result[11] = 0.0;
+      result[12] = origin.x;
+      result[13] = origin.y;
+      result[14] = origin.z;
+      result[15] = 1.0;
+      return result;
+    }
+    var normal = northEastDownToFixedFrameNormal;
+    var tangent = northEastDownToFixedFrameTangent;
+    var bitangent = northEastDownToFixedFrameBitangent;
+    ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
+    ellipsoid.geodeticSurfaceNormal(origin, normal);
+    tangent.x = -origin.y;
+    tangent.y = origin.x;
+    tangent.z = 0.0;
+    Cartesian3.normalize(tangent, tangent);
+    Cartesian3.cross(normal, tangent, bitangent);
+    if (!defined(result)) {
+      return new Matrix4(bitangent.x, tangent.x, -normal.x, origin.x, bitangent.y, tangent.y, -normal.y, origin.y, bitangent.z, tangent.z, -normal.z, origin.z, 0.0, 0.0, 0.0, 1.0);
+    }
+    result[0] = bitangent.x;
+    result[1] = bitangent.y;
+    result[2] = bitangent.z;
+    result[3] = 0.0;
+    result[4] = tangent.x;
+    result[5] = tangent.y;
+    result[6] = tangent.z;
+    result[7] = 0.0;
+    result[8] = -normal.x;
+    result[9] = -normal.y;
+    result[10] = -normal.z;
+    result[11] = 0.0;
+    result[12] = origin.x;
+    result[13] = origin.y;
+    result[14] = origin.z;
+    result[15] = 1.0;
+    return result;
+  };
+  Transforms.northUpEastToFixedFrame = function(origin, ellipsoid, result) {
+    if (!defined(origin)) {
+      throw new DeveloperError('origin is required.');
+    }
+    if (CesiumMath.equalsEpsilon(origin.x, 0.0, CesiumMath.EPSILON14) && CesiumMath.equalsEpsilon(origin.y, 0.0, CesiumMath.EPSILON14)) {
+      var sign = CesiumMath.sign(origin.z);
+      if (!defined(result)) {
+        return new Matrix4(-sign, 0.0, 0.0, origin.x, 0.0, 0.0, 1.0, origin.y, 0.0, sign, 0.0, origin.z, 0.0, 0.0, 0.0, 1.0);
+      }
+      result[0] = -sign;
+      result[1] = 0.0;
+      result[2] = 0.0;
+      result[3] = 0.0;
+      result[4] = 0.0;
+      result[5] = 0.0;
+      result[6] = sign;
+      result[7] = 0.0;
+      result[8] = 0.0;
+      result[9] = 1.0;
+      result[10] = 0.0;
+      result[11] = 0.0;
+      result[12] = origin.x;
+      result[13] = origin.y;
+      result[14] = origin.z;
+      result[15] = 1.0;
+      return result;
+    }
+    var normal = eastNorthUpToFixedFrameNormal;
+    var tangent = eastNorthUpToFixedFrameTangent;
+    var bitangent = eastNorthUpToFixedFrameBitangent;
+    ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
+    ellipsoid.geodeticSurfaceNormal(origin, normal);
+    tangent.x = -origin.y;
+    tangent.y = origin.x;
+    tangent.z = 0.0;
+    Cartesian3.normalize(tangent, tangent);
+    Cartesian3.cross(normal, tangent, bitangent);
+    if (!defined(result)) {
+      return new Matrix4(bitangent.x, normal.x, tangent.x, origin.x, bitangent.y, normal.y, tangent.y, origin.y, bitangent.z, normal.z, tangent.z, origin.z, 0.0, 0.0, 0.0, 1.0);
+    }
+    result[0] = bitangent.x;
+    result[1] = bitangent.y;
+    result[2] = bitangent.z;
+    result[3] = 0.0;
+    result[4] = normal.x;
+    result[5] = normal.y;
+    result[6] = normal.z;
+    result[7] = 0.0;
+    result[8] = tangent.x;
+    result[9] = tangent.y;
+    result[10] = tangent.z;
+    result[11] = 0.0;
+    result[12] = origin.x;
+    result[13] = origin.y;
+    result[14] = origin.z;
+    result[15] = 1.0;
+    return result;
+  };
+  var scratchHPRQuaternion = new Quaternion();
+  var scratchScale = new Cartesian3(1.0, 1.0, 1.0);
+  var scratchHPRMatrix4 = new Matrix4();
+  Transforms.headingPitchRollToFixedFrame = function(origin, heading, pitch, roll, ellipsoid, result) {
+    var hprQuaternion = Quaternion.fromHeadingPitchRoll(heading, pitch, roll, scratchHPRQuaternion);
+    var hprMatrix = Matrix4.fromTranslationQuaternionRotationScale(Cartesian3.ZERO, hprQuaternion, scratchScale, scratchHPRMatrix4);
+    result = Transforms.eastNorthUpToFixedFrame(origin, ellipsoid, result);
+    return Matrix4.multiply(result, hprMatrix, result);
+  };
+  var scratchENUMatrix4 = new Matrix4();
+  var scratchHPRMatrix3 = new Matrix3();
+  Transforms.headingPitchRollQuaternion = function(origin, heading, pitch, roll, ellipsoid, result) {
+    var transform = Transforms.headingPitchRollToFixedFrame(origin, heading, pitch, roll, ellipsoid, scratchENUMatrix4);
+    var rotation = Matrix4.getRotation(transform, scratchHPRMatrix3);
+    return Quaternion.fromRotationMatrix(rotation, result);
+  };
+  var gmstConstant0 = 6 * 3600 + 41 * 60 + 50.54841;
+  var gmstConstant1 = 8640184.812866;
+  var gmstConstant2 = 0.093104;
+  var gmstConstant3 = -6.2E-6;
+  var rateCoef = 1.1772758384668e-19;
+  var wgs84WRPrecessing = 7.2921158553E-5;
+  var twoPiOverSecondsInDay = CesiumMath.TWO_PI / 86400.0;
+  var dateInUtc = new JulianDate();
+  Transforms.computeTemeToPseudoFixedMatrix = function(date, result) {
+    if (!defined(date)) {
+      throw new DeveloperError('date is required.');
+    }
+    dateInUtc = JulianDate.addSeconds(date, -JulianDate.computeTaiMinusUtc(date), dateInUtc);
+    var utcDayNumber = dateInUtc.dayNumber;
+    var utcSecondsIntoDay = dateInUtc.secondsOfDay;
+    var t;
+    var diffDays = utcDayNumber - 2451545;
+    if (utcSecondsIntoDay >= 43200.0) {
+      t = (diffDays + 0.5) / TimeConstants.DAYS_PER_JULIAN_CENTURY;
+    } else {
+      t = (diffDays - 0.5) / TimeConstants.DAYS_PER_JULIAN_CENTURY;
+    }
+    var gmst0 = gmstConstant0 + t * (gmstConstant1 + t * (gmstConstant2 + t * gmstConstant3));
+    var angle = (gmst0 * twoPiOverSecondsInDay) % CesiumMath.TWO_PI;
+    var ratio = wgs84WRPrecessing + rateCoef * (utcDayNumber - 2451545.5);
+    var secondsSinceMidnight = (utcSecondsIntoDay + TimeConstants.SECONDS_PER_DAY * 0.5) % TimeConstants.SECONDS_PER_DAY;
+    var gha = angle + (ratio * secondsSinceMidnight);
+    var cosGha = Math.cos(gha);
+    var sinGha = Math.sin(gha);
+    if (!defined(result)) {
+      return new Matrix3(cosGha, sinGha, 0.0, -sinGha, cosGha, 0.0, 0.0, 0.0, 1.0);
+    }
+    result[0] = cosGha;
+    result[1] = -sinGha;
+    result[2] = 0.0;
+    result[3] = sinGha;
+    result[4] = cosGha;
+    result[5] = 0.0;
+    result[6] = 0.0;
+    result[7] = 0.0;
+    result[8] = 1.0;
+    return result;
+  };
+  Transforms.iau2006XysData = new Iau2006XysData();
+  Transforms.earthOrientationParameters = EarthOrientationParameters.NONE;
+  var ttMinusTai = 32.184;
+  var j2000ttDays = 2451545.0;
+  Transforms.preloadIcrfFixed = function(timeInterval) {
+    var startDayTT = timeInterval.start.dayNumber;
+    var startSecondTT = timeInterval.start.secondsOfDay + ttMinusTai;
+    var stopDayTT = timeInterval.stop.dayNumber;
+    var stopSecondTT = timeInterval.stop.secondsOfDay + ttMinusTai;
+    var xysPromise = Transforms.iau2006XysData.preload(startDayTT, startSecondTT, stopDayTT, stopSecondTT);
+    var eopPromise = Transforms.earthOrientationParameters.getPromiseToLoad();
+    return when.all([xysPromise, eopPromise]);
+  };
+  Transforms.computeIcrfToFixedMatrix = function(date, result) {
+    if (!defined(date)) {
+      throw new DeveloperError('date is required.');
+    }
+    if (!defined(result)) {
+      result = new Matrix3();
+    }
+    var fixedToIcrfMtx = Transforms.computeFixedToIcrfMatrix(date, result);
+    if (!defined(fixedToIcrfMtx)) {
+      return undefined;
+    }
+    return Matrix3.transpose(fixedToIcrfMtx, result);
+  };
+  var xysScratch = new Iau2006XysSample(0.0, 0.0, 0.0);
+  var eopScratch = new EarthOrientationParametersSample(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+  var rotation1Scratch = new Matrix3();
+  var rotation2Scratch = new Matrix3();
+  Transforms.computeFixedToIcrfMatrix = function(date, result) {
+    if (!defined(date)) {
+      throw new DeveloperError('date is required.');
+    }
+    if (!defined(result)) {
+      result = new Matrix3();
+    }
+    var eop = Transforms.earthOrientationParameters.compute(date, eopScratch);
+    if (!defined(eop)) {
+      return undefined;
+    }
+    var dayTT = date.dayNumber;
+    var secondTT = date.secondsOfDay + ttMinusTai;
+    var xys = Transforms.iau2006XysData.computeXysRadians(dayTT, secondTT, xysScratch);
+    if (!defined(xys)) {
+      return undefined;
+    }
+    var x = xys.x + eop.xPoleOffset;
+    var y = xys.y + eop.yPoleOffset;
+    var a = 1.0 / (1.0 + Math.sqrt(1.0 - x * x - y * y));
+    var rotation1 = rotation1Scratch;
+    rotation1[0] = 1.0 - a * x * x;
+    rotation1[3] = -a * x * y;
+    rotation1[6] = x;
+    rotation1[1] = -a * x * y;
+    rotation1[4] = 1 - a * y * y;
+    rotation1[7] = y;
+    rotation1[2] = -x;
+    rotation1[5] = -y;
+    rotation1[8] = 1 - a * (x * x + y * y);
+    var rotation2 = Matrix3.fromRotationZ(-xys.s, rotation2Scratch);
+    var matrixQ = Matrix3.multiply(rotation1, rotation2, rotation1Scratch);
+    var dateUt1day = date.dayNumber;
+    var dateUt1sec = date.secondsOfDay - JulianDate.computeTaiMinusUtc(date) + eop.ut1MinusUtc;
+    var daysSinceJ2000 = dateUt1day - 2451545;
+    var fractionOfDay = dateUt1sec / TimeConstants.SECONDS_PER_DAY;
+    var era = 0.7790572732640 + fractionOfDay + 0.00273781191135448 * (daysSinceJ2000 + fractionOfDay);
+    era = (era % 1.0) * CesiumMath.TWO_PI;
+    var earthRotation = Matrix3.fromRotationZ(era, rotation2Scratch);
+    var pfToIcrf = Matrix3.multiply(matrixQ, earthRotation, rotation1Scratch);
+    var cosxp = Math.cos(eop.xPoleWander);
+    var cosyp = Math.cos(eop.yPoleWander);
+    var sinxp = Math.sin(eop.xPoleWander);
+    var sinyp = Math.sin(eop.yPoleWander);
+    var ttt = (dayTT - j2000ttDays) + secondTT / TimeConstants.SECONDS_PER_DAY;
+    ttt /= 36525.0;
+    var sp = -47.0e-6 * ttt * CesiumMath.RADIANS_PER_DEGREE / 3600.0;
+    var cossp = Math.cos(sp);
+    var sinsp = Math.sin(sp);
+    var fToPfMtx = rotation2Scratch;
+    fToPfMtx[0] = cosxp * cossp;
+    fToPfMtx[1] = cosxp * sinsp;
+    fToPfMtx[2] = sinxp;
+    fToPfMtx[3] = -cosyp * sinsp + sinyp * sinxp * cossp;
+    fToPfMtx[4] = cosyp * cossp + sinyp * sinxp * sinsp;
+    fToPfMtx[5] = -sinyp * cosxp;
+    fToPfMtx[6] = -sinyp * sinsp - cosyp * sinxp * cossp;
+    fToPfMtx[7] = sinyp * cossp - cosyp * sinxp * sinsp;
+    fToPfMtx[8] = cosyp * cosxp;
+    return Matrix3.multiply(pfToIcrf, fToPfMtx, result);
+  };
+  var pointToWindowCoordinatesTemp = new Cartesian4();
+  Transforms.pointToWindowCoordinates = function(modelViewProjectionMatrix, viewportTransformation, point, result) {
+    result = Transforms.pointToGLWindowCoordinates(modelViewProjectionMatrix, viewportTransformation, point, result);
+    result.y = 2.0 * viewportTransformation[5] - result.y;
+    return result;
+  };
+  Transforms.pointToGLWindowCoordinates = function(modelViewProjectionMatrix, viewportTransformation, point, result) {
+    if (!defined(modelViewProjectionMatrix)) {
+      throw new DeveloperError('modelViewProjectionMatrix is required.');
+    }
+    if (!defined(viewportTransformation)) {
+      throw new DeveloperError('viewportTransformation is required.');
+    }
+    if (!defined(point)) {
+      throw new DeveloperError('point is required.');
+    }
+    if (!defined(result)) {
+      result = new Cartesian2();
+    }
+    var tmp = pointToWindowCoordinatesTemp;
+    Matrix4.multiplyByVector(modelViewProjectionMatrix, Cartesian4.fromElements(point.x, point.y, point.z, 1, tmp), tmp);
+    Cartesian4.multiplyByScalar(tmp, 1.0 / tmp.w, tmp);
+    Matrix4.multiplyByVector(viewportTransformation, tmp, tmp);
+    return Cartesian2.fromCartesian4(tmp, result);
+  };
+  var normalScratch = new Cartesian3();
+  var rightScratch = new Cartesian3();
+  var upScratch = new Cartesian3();
+  Transforms.rotationMatrixFromPositionVelocity = function(position, velocity, ellipsoid, result) {
+    if (!defined(position)) {
+      throw new DeveloperError('position is required.');
+    }
+    if (!defined(velocity)) {
+      throw new DeveloperError('velocity is required.');
+    }
+    var normal = defaultValue(ellipsoid, Ellipsoid.WGS84).geodeticSurfaceNormal(position, normalScratch);
+    var right = Cartesian3.cross(velocity, normal, rightScratch);
+    if (Cartesian3.equalsEpsilon(right, Cartesian3.ZERO, CesiumMath.EPSILON6)) {
+      right = Cartesian3.clone(Cartesian3.UNIT_X, right);
+    }
+    var up = Cartesian3.cross(right, velocity, upScratch);
+    Cartesian3.cross(velocity, up, right);
+    Cartesian3.negate(right, right);
+    if (!defined(result)) {
+      result = new Matrix3();
+    }
+    result[0] = velocity.x;
+    result[1] = velocity.y;
+    result[2] = velocity.z;
+    result[3] = right.x;
+    result[4] = right.y;
+    result[5] = right.z;
+    result[6] = up.x;
+    result[7] = up.y;
+    result[8] = up.z;
+    return result;
+  };
+  return Transforms;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("5b", [], function() {
   function sprintf() {
     var regex = /%%|%(\d+\$)?([-+\'#0 ]*)(\*\d+\$|\*|\d+)?(\.(\*\d+\$|\*|\d+))?([scboxXuideEfFgG])/g;
     var a = arguments,
@@ -9370,7 +10201,7 @@ define("48", ["15", "17"], function(defined, DeveloperError) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5b", [], function() {
+define("5c", [], function() {
   "use strict";
   function GregorianDate(year, month, day, hour, minute, second, millisecond, isLeapSecond) {
     this.year = year;
@@ -9388,7 +10219,7 @@ define("5b", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5c", ["17"], function(DeveloperError) {
+define("5d", ["17"], function(DeveloperError) {
   "use strict";
   function isLeapYear(year) {
     if (year === null || isNaN(year)) {
@@ -9414,19 +10245,7 @@ define("4c", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4f", ["1a"], function(freezeObject) {
-  "use strict";
-  var TimeStandard = {
-    UTC: 0,
-    TAI: 1
-  };
-  return freezeObject(TimeStandard);
-});
-
-})();
-(function() {
-var define = $__System.amdDefine;
-define("1f", ["5a", "48", "1e", "15", "17", "5b", "5c", "4c", "4e", "4f"], function(sprintf, binarySearch, defaultValue, defined, DeveloperError, GregorianDate, isLeapYear, LeapSecond, TimeConstants, TimeStandard) {
+define("1f", ["5b", "48", "1e", "15", "17", "5c", "5d", "4c", "4e", "4f"], function(sprintf, binarySearch, defaultValue, defined, DeveloperError, GregorianDate, isLeapYear, LeapSecond, TimeConstants, TimeStandard) {
   "use strict";
   var gregorianDateScratch = new GregorianDate();
   var daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -9962,6 +10781,2087 @@ define("1f", ["5a", "48", "1e", "15", "17", "5b", "5c", "4c", "4e", "4f"], funct
 })();
 (function() {
 var define = $__System.amdDefine;
+define("4e", ["1a"], function(freezeObject) {
+  "use strict";
+  var TimeConstants = {
+    SECONDS_PER_MILLISECOND: 0.001,
+    SECONDS_PER_MINUTE: 60.0,
+    MINUTES_PER_HOUR: 60.0,
+    HOURS_PER_DAY: 24.0,
+    SECONDS_PER_HOUR: 3600.0,
+    MINUTES_PER_DAY: 1440.0,
+    SECONDS_PER_DAY: 86400.0,
+    DAYS_PER_JULIAN_CENTURY: 36525.0,
+    PICOSECOND: 0.000000001,
+    MODIFIED_JULIAN_DATE_DIFFERENCE: 2400000.5
+  };
+  return freezeObject(TimeConstants);
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("4f", ["1a"], function(freezeObject) {
+  "use strict";
+  var TimeStandard = {
+    UTC: 0,
+    TAI: 1
+  };
+  return freezeObject(TimeStandard);
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("5e", ["29", "15", "17", "1f", "22", "2e", "4e", "4f"], function(Cartesian3, defined, DeveloperError, JulianDate, CesiumMath, Matrix3, TimeConstants, TimeStandard) {
+  "use strict";
+  var Simon1994PlanetaryPositions = {};
+  function computeTdbMinusTtSpice(daysSinceJ2000InTerrestrialTime) {
+    var g = 6.239996 + (0.0172019696544) * daysSinceJ2000InTerrestrialTime;
+    return 1.657e-3 * Math.sin(g + 1.671e-2 * Math.sin(g));
+  }
+  var TdtMinusTai = 32.184;
+  var J2000d = 2451545;
+  function taiToTdb(date, result) {
+    result = JulianDate.addSeconds(date, TdtMinusTai, result);
+    var days = JulianDate.totalDays(result) - J2000d;
+    result = JulianDate.addSeconds(result, computeTdbMinusTtSpice(days), result);
+    return result;
+  }
+  var epoch = new JulianDate(2451545, 0, TimeStandard.TAI);
+  var GravitationalParameterOfEarth = 3.98600435e14;
+  var GravitationalParameterOfSun = GravitationalParameterOfEarth * (1.0 + 0.012300034) * 328900.56;
+  var MetersPerKilometer = 1000.0;
+  var RadiansPerDegree = CesiumMath.RADIANS_PER_DEGREE;
+  var RadiansPerArcSecond = CesiumMath.RADIANS_PER_ARCSECOND;
+  var MetersPerAstronomicalUnit = 1.49597870e+11;
+  var perifocalToEquatorial = new Matrix3();
+  function elementsToCartesian(semimajorAxis, eccentricity, inclination, longitudeOfPerigee, longitudeOfNode, meanLongitude, gravitationalParameter, result) {
+    if (inclination < 0.0) {
+      inclination = -inclination;
+      longitudeOfNode += CesiumMath.PI;
+    }
+    if (inclination < 0 || inclination > CesiumMath.PI) {
+      throw new DeveloperError('The inclination is out of range. Inclination must be greater than or equal to zero and less than or equal to Pi radians.');
+    }
+    var radiusOfPeriapsis = semimajorAxis * (1.0 - eccentricity);
+    var argumentOfPeriapsis = longitudeOfPerigee - longitudeOfNode;
+    var rightAscensionOfAscendingNode = longitudeOfNode;
+    var trueAnomaly = meanAnomalyToTrueAnomaly(meanLongitude - longitudeOfPerigee, eccentricity);
+    var type = chooseOrbit(eccentricity, 0.0);
+    if (type === 'Hyperbolic' && Math.abs(CesiumMath.negativePiToPi(trueAnomaly)) >= Math.acos(-1.0 / eccentricity)) {
+      throw new DeveloperError('The true anomaly of the hyperbolic orbit lies outside of the bounds of the hyperbola.');
+    }
+    perifocalToCartesianMatrix(argumentOfPeriapsis, inclination, rightAscensionOfAscendingNode, perifocalToEquatorial);
+    var semilatus = radiusOfPeriapsis * (1.0 + eccentricity);
+    var costheta = Math.cos(trueAnomaly);
+    var sintheta = Math.sin(trueAnomaly);
+    var denom = (1.0 + eccentricity * costheta);
+    if (denom <= CesiumMath.Epsilon10) {
+      throw new DeveloperError('elements cannot be converted to cartesian');
+    }
+    var radius = semilatus / denom;
+    if (!defined(result)) {
+      result = new Cartesian3(radius * costheta, radius * sintheta, 0.0);
+    } else {
+      result.x = radius * costheta;
+      result.y = radius * sintheta;
+      result.z = 0.0;
+    }
+    return Matrix3.multiplyByVector(perifocalToEquatorial, result, result);
+  }
+  function chooseOrbit(eccentricity, tolerance) {
+    if (eccentricity < 0) {
+      throw new DeveloperError('eccentricity cannot be negative.');
+    } else if (eccentricity <= tolerance) {
+      return 'Circular';
+    } else if (eccentricity < 1.0 - tolerance) {
+      return 'Elliptical';
+    } else if (eccentricity <= 1.0 + tolerance) {
+      return 'Parabolic';
+    } else {
+      return 'Hyperbolic';
+    }
+  }
+  function meanAnomalyToTrueAnomaly(meanAnomaly, eccentricity) {
+    if (eccentricity < 0.0 || eccentricity >= 1.0) {
+      throw new DeveloperError('eccentricity out of range.');
+    }
+    var eccentricAnomaly = meanAnomalyToEccentricAnomaly(meanAnomaly, eccentricity);
+    return eccentricAnomalyToTrueAnomaly(eccentricAnomaly, eccentricity);
+  }
+  var maxIterationCount = 50;
+  var keplerEqConvergence = CesiumMath.EPSILON8;
+  function meanAnomalyToEccentricAnomaly(meanAnomaly, eccentricity) {
+    if (eccentricity < 0.0 || eccentricity >= 1.0) {
+      throw new DeveloperError('eccentricity out of range.');
+    }
+    var revs = Math.floor(meanAnomaly / CesiumMath.TWO_PI);
+    meanAnomaly -= revs * CesiumMath.TWO_PI;
+    var iterationValue = meanAnomaly + (eccentricity * Math.sin(meanAnomaly)) / (1.0 - Math.sin(meanAnomaly + eccentricity) + Math.sin(meanAnomaly));
+    var eccentricAnomaly = Number.MAX_VALUE;
+    var count;
+    for (count = 0; count < maxIterationCount && Math.abs(eccentricAnomaly - iterationValue) > keplerEqConvergence; ++count) {
+      eccentricAnomaly = iterationValue;
+      var NRfunction = eccentricAnomaly - eccentricity * Math.sin(eccentricAnomaly) - meanAnomaly;
+      var dNRfunction = 1 - eccentricity * Math.cos(eccentricAnomaly);
+      iterationValue = eccentricAnomaly - NRfunction / dNRfunction;
+    }
+    if (count >= maxIterationCount) {
+      throw new DeveloperError('Kepler equation did not converge');
+    }
+    eccentricAnomaly = iterationValue + revs * CesiumMath.TWO_PI;
+    return eccentricAnomaly;
+  }
+  function eccentricAnomalyToTrueAnomaly(eccentricAnomaly, eccentricity) {
+    if (eccentricity < 0.0 || eccentricity >= 1.0) {
+      throw new DeveloperError('eccentricity out of range.');
+    }
+    var revs = Math.floor(eccentricAnomaly / CesiumMath.TWO_PI);
+    eccentricAnomaly -= revs * CesiumMath.TWO_PI;
+    var trueAnomalyX = Math.cos(eccentricAnomaly) - eccentricity;
+    var trueAnomalyY = Math.sin(eccentricAnomaly) * Math.sqrt(1 - eccentricity * eccentricity);
+    var trueAnomaly = Math.atan2(trueAnomalyY, trueAnomalyX);
+    trueAnomaly = CesiumMath.zeroToTwoPi(trueAnomaly);
+    if (eccentricAnomaly < 0) {
+      trueAnomaly -= CesiumMath.TWO_PI;
+    }
+    trueAnomaly += revs * CesiumMath.TWO_PI;
+    return trueAnomaly;
+  }
+  function perifocalToCartesianMatrix(argumentOfPeriapsis, inclination, rightAscension, result) {
+    if (inclination < 0 || inclination > CesiumMath.PI) {
+      throw new DeveloperError('inclination out of range');
+    }
+    var cosap = Math.cos(argumentOfPeriapsis);
+    var sinap = Math.sin(argumentOfPeriapsis);
+    var cosi = Math.cos(inclination);
+    var sini = Math.sin(inclination);
+    var cosraan = Math.cos(rightAscension);
+    var sinraan = Math.sin(rightAscension);
+    if (!defined(result)) {
+      result = new Matrix3(cosraan * cosap - sinraan * sinap * cosi, -cosraan * sinap - sinraan * cosap * cosi, sinraan * sini, sinraan * cosap + cosraan * sinap * cosi, -sinraan * sinap + cosraan * cosap * cosi, -cosraan * sini, sinap * sini, cosap * sini, cosi);
+    } else {
+      result[0] = cosraan * cosap - sinraan * sinap * cosi;
+      result[1] = sinraan * cosap + cosraan * sinap * cosi;
+      result[2] = sinap * sini;
+      result[3] = -cosraan * sinap - sinraan * cosap * cosi;
+      result[4] = -sinraan * sinap + cosraan * cosap * cosi;
+      result[5] = cosap * sini;
+      result[6] = sinraan * sini;
+      result[7] = -cosraan * sini;
+      result[8] = cosi;
+    }
+    return result;
+  }
+  var semiMajorAxis0 = 1.0000010178 * MetersPerAstronomicalUnit;
+  var meanLongitude0 = 100.46645683 * RadiansPerDegree;
+  var meanLongitude1 = 1295977422.83429 * RadiansPerArcSecond;
+  var p1u = 16002;
+  var p2u = 21863;
+  var p3u = 32004;
+  var p4u = 10931;
+  var p5u = 14529;
+  var p6u = 16368;
+  var p7u = 15318;
+  var p8u = 32794;
+  var Ca1 = 64 * 1e-7 * MetersPerAstronomicalUnit;
+  var Ca2 = -152 * 1e-7 * MetersPerAstronomicalUnit;
+  var Ca3 = 62 * 1e-7 * MetersPerAstronomicalUnit;
+  var Ca4 = -8 * 1e-7 * MetersPerAstronomicalUnit;
+  var Ca5 = 32 * 1e-7 * MetersPerAstronomicalUnit;
+  var Ca6 = -41 * 1e-7 * MetersPerAstronomicalUnit;
+  var Ca7 = 19 * 1e-7 * MetersPerAstronomicalUnit;
+  var Ca8 = -11 * 1e-7 * MetersPerAstronomicalUnit;
+  var Sa1 = -150 * 1e-7 * MetersPerAstronomicalUnit;
+  var Sa2 = -46 * 1e-7 * MetersPerAstronomicalUnit;
+  var Sa3 = 68 * 1e-7 * MetersPerAstronomicalUnit;
+  var Sa4 = 54 * 1e-7 * MetersPerAstronomicalUnit;
+  var Sa5 = 14 * 1e-7 * MetersPerAstronomicalUnit;
+  var Sa6 = 24 * 1e-7 * MetersPerAstronomicalUnit;
+  var Sa7 = -28 * 1e-7 * MetersPerAstronomicalUnit;
+  var Sa8 = 22 * 1e-7 * MetersPerAstronomicalUnit;
+  var q1u = 10;
+  var q2u = 16002;
+  var q3u = 21863;
+  var q4u = 10931;
+  var q5u = 1473;
+  var q6u = 32004;
+  var q7u = 4387;
+  var q8u = 73;
+  var Cl1 = -325 * 1e-7;
+  var Cl2 = -322 * 1e-7;
+  var Cl3 = -79 * 1e-7;
+  var Cl4 = 232 * 1e-7;
+  var Cl5 = -52 * 1e-7;
+  var Cl6 = 97 * 1e-7;
+  var Cl7 = 55 * 1e-7;
+  var Cl8 = -41 * 1e-7;
+  var Sl1 = -105 * 1e-7;
+  var Sl2 = -137 * 1e-7;
+  var Sl3 = 258 * 1e-7;
+  var Sl4 = 35 * 1e-7;
+  var Sl5 = -116 * 1e-7;
+  var Sl6 = -88 * 1e-7;
+  var Sl7 = -112 * 1e-7;
+  var Sl8 = -80 * 1e-7;
+  var scratchDate = new JulianDate(0, 0.0, TimeStandard.TAI);
+  function computeSimonEarthMoonBarycenter(date, result) {
+    taiToTdb(date, scratchDate);
+    var x = (scratchDate.dayNumber - epoch.dayNumber) + ((scratchDate.secondsOfDay - epoch.secondsOfDay) / TimeConstants.SECONDS_PER_DAY);
+    var t = x / (TimeConstants.DAYS_PER_JULIAN_CENTURY * 10.0);
+    var u = 0.35953620 * t;
+    var semimajorAxis = semiMajorAxis0 + Ca1 * Math.cos(p1u * u) + Sa1 * Math.sin(p1u * u) + Ca2 * Math.cos(p2u * u) + Sa2 * Math.sin(p2u * u) + Ca3 * Math.cos(p3u * u) + Sa3 * Math.sin(p3u * u) + Ca4 * Math.cos(p4u * u) + Sa4 * Math.sin(p4u * u) + Ca5 * Math.cos(p5u * u) + Sa5 * Math.sin(p5u * u) + Ca6 * Math.cos(p6u * u) + Sa6 * Math.sin(p6u * u) + Ca7 * Math.cos(p7u * u) + Sa7 * Math.sin(p7u * u) + Ca8 * Math.cos(p8u * u) + Sa8 * Math.sin(p8u * u);
+    var meanLongitude = meanLongitude0 + meanLongitude1 * t + Cl1 * Math.cos(q1u * u) + Sl1 * Math.sin(q1u * u) + Cl2 * Math.cos(q2u * u) + Sl2 * Math.sin(q2u * u) + Cl3 * Math.cos(q3u * u) + Sl3 * Math.sin(q3u * u) + Cl4 * Math.cos(q4u * u) + Sl4 * Math.sin(q4u * u) + Cl5 * Math.cos(q5u * u) + Sl5 * Math.sin(q5u * u) + Cl6 * Math.cos(q6u * u) + Sl6 * Math.sin(q6u * u) + Cl7 * Math.cos(q7u * u) + Sl7 * Math.sin(q7u * u) + Cl8 * Math.cos(q8u * u) + Sl8 * Math.sin(q8u * u);
+    var eccentricity = 0.0167086342 - 0.0004203654 * t;
+    var longitudeOfPerigee = 102.93734808 * RadiansPerDegree + 11612.35290 * RadiansPerArcSecond * t;
+    var inclination = 469.97289 * RadiansPerArcSecond * t;
+    var longitudeOfNode = 174.87317577 * RadiansPerDegree - 8679.27034 * RadiansPerArcSecond * t;
+    return elementsToCartesian(semimajorAxis, eccentricity, inclination, longitudeOfPerigee, longitudeOfNode, meanLongitude, GravitationalParameterOfSun, result);
+  }
+  function computeSimonMoon(date, result) {
+    taiToTdb(date, scratchDate);
+    var x = (scratchDate.dayNumber - epoch.dayNumber) + ((scratchDate.secondsOfDay - epoch.secondsOfDay) / TimeConstants.SECONDS_PER_DAY);
+    var t = x / (TimeConstants.DAYS_PER_JULIAN_CENTURY);
+    var t2 = t * t;
+    var t3 = t2 * t;
+    var t4 = t3 * t;
+    var semimajorAxis = 383397.7725 + 0.0040 * t;
+    var eccentricity = 0.055545526 - 0.000000016 * t;
+    var inclinationConstant = 5.15668983 * RadiansPerDegree;
+    var inclinationSecPart = -0.00008 * t + 0.02966 * t2 - 0.000042 * t3 - 0.00000013 * t4;
+    var longitudeOfPerigeeConstant = 83.35324312 * RadiansPerDegree;
+    var longitudeOfPerigeeSecPart = 14643420.2669 * t - 38.2702 * t2 - 0.045047 * t3 + 0.00021301 * t4;
+    var longitudeOfNodeConstant = 125.04455501 * RadiansPerDegree;
+    var longitudeOfNodeSecPart = -6967919.3631 * t + 6.3602 * t2 + 0.007625 * t3 - 0.00003586 * t4;
+    var meanLongitudeConstant = 218.31664563 * RadiansPerDegree;
+    var meanLongitudeSecPart = 1732559343.48470 * t - 6.3910 * t2 + 0.006588 * t3 - 0.00003169 * t4;
+    var D = 297.85019547 * RadiansPerDegree + RadiansPerArcSecond * (1602961601.2090 * t - 6.3706 * t2 + 0.006593 * t3 - 0.00003169 * t4);
+    var F = 93.27209062 * RadiansPerDegree + RadiansPerArcSecond * (1739527262.8478 * t - 12.7512 * t2 - 0.001037 * t3 + 0.00000417 * t4);
+    var l = 134.96340251 * RadiansPerDegree + RadiansPerArcSecond * (1717915923.2178 * t + 31.8792 * t2 + 0.051635 * t3 - 0.00024470 * t4);
+    var lprime = 357.52910918 * RadiansPerDegree + RadiansPerArcSecond * (129596581.0481 * t - 0.5532 * t2 + 0.000136 * t3 - 0.00001149 * t4);
+    var psi = 310.17137918 * RadiansPerDegree - RadiansPerArcSecond * (6967051.4360 * t + 6.2068 * t2 + 0.007618 * t3 - 0.00003219 * t4);
+    var twoD = 2.0 * D;
+    var fourD = 4.0 * D;
+    var sixD = 6.0 * D;
+    var twol = 2.0 * l;
+    var threel = 3.0 * l;
+    var fourl = 4.0 * l;
+    var twoF = 2.0 * F;
+    semimajorAxis += 3400.4 * Math.cos(twoD) - 635.6 * Math.cos(twoD - l) - 235.6 * Math.cos(l) + 218.1 * Math.cos(twoD - lprime) + 181.0 * Math.cos(twoD + l);
+    eccentricity += 0.014216 * Math.cos(twoD - l) + 0.008551 * Math.cos(twoD - twol) - 0.001383 * Math.cos(l) + 0.001356 * Math.cos(twoD + l) - 0.001147 * Math.cos(fourD - threel) - 0.000914 * Math.cos(fourD - twol) + 0.000869 * Math.cos(twoD - lprime - l) - 0.000627 * Math.cos(twoD) - 0.000394 * Math.cos(fourD - fourl) + 0.000282 * Math.cos(twoD - lprime - twol) - 0.000279 * Math.cos(D - l) - 0.000236 * Math.cos(twol) + 0.000231 * Math.cos(fourD) + 0.000229 * Math.cos(sixD - fourl) - 0.000201 * Math.cos(twol - twoF);
+    inclinationSecPart += 486.26 * Math.cos(twoD - twoF) - 40.13 * Math.cos(twoD) + 37.51 * Math.cos(twoF) + 25.73 * Math.cos(twol - twoF) + 19.97 * Math.cos(twoD - lprime - twoF);
+    longitudeOfPerigeeSecPart += -55609 * Math.sin(twoD - l) - 34711 * Math.sin(twoD - twol) - 9792 * Math.sin(l) + 9385 * Math.sin(fourD - threel) + 7505 * Math.sin(fourD - twol) + 5318 * Math.sin(twoD + l) + 3484 * Math.sin(fourD - fourl) - 3417 * Math.sin(twoD - lprime - l) - 2530 * Math.sin(sixD - fourl) - 2376 * Math.sin(twoD) - 2075 * Math.sin(twoD - threel) - 1883 * Math.sin(twol) - 1736 * Math.sin(sixD - 5.0 * l) + 1626 * Math.sin(lprime) - 1370 * Math.sin(sixD - threel);
+    longitudeOfNodeSecPart += -5392 * Math.sin(twoD - twoF) - 540 * Math.sin(lprime) - 441 * Math.sin(twoD) + 423 * Math.sin(twoF) - 288 * Math.sin(twol - twoF);
+    meanLongitudeSecPart += -3332.9 * Math.sin(twoD) + 1197.4 * Math.sin(twoD - l) - 662.5 * Math.sin(lprime) + 396.3 * Math.sin(l) - 218.0 * Math.sin(twoD - lprime);
+    var twoPsi = 2.0 * psi;
+    var threePsi = 3.0 * psi;
+    inclinationSecPart += 46.997 * Math.cos(psi) * t - 0.614 * Math.cos(twoD - twoF + psi) * t + 0.614 * Math.cos(twoD - twoF - psi) * t - 0.0297 * Math.cos(twoPsi) * t2 - 0.0335 * Math.cos(psi) * t2 + 0.0012 * Math.cos(twoD - twoF + twoPsi) * t2 - 0.00016 * Math.cos(psi) * t3 + 0.00004 * Math.cos(threePsi) * t3 + 0.00004 * Math.cos(twoPsi) * t3;
+    var perigeeAndMean = 2.116 * Math.sin(psi) * t - 0.111 * Math.sin(twoD - twoF - psi) * t - 0.0015 * Math.sin(psi) * t2;
+    longitudeOfPerigeeSecPart += perigeeAndMean;
+    meanLongitudeSecPart += perigeeAndMean;
+    longitudeOfNodeSecPart += -520.77 * Math.sin(psi) * t + 13.66 * Math.sin(twoD - twoF + psi) * t + 1.12 * Math.sin(twoD - psi) * t - 1.06 * Math.sin(twoF - psi) * t + 0.660 * Math.sin(twoPsi) * t2 + 0.371 * Math.sin(psi) * t2 - 0.035 * Math.sin(twoD - twoF + twoPsi) * t2 - 0.015 * Math.sin(twoD - twoF + psi) * t2 + 0.0014 * Math.sin(psi) * t3 - 0.0011 * Math.sin(threePsi) * t3 - 0.0009 * Math.sin(twoPsi) * t3;
+    semimajorAxis *= MetersPerKilometer;
+    var inclination = inclinationConstant + inclinationSecPart * RadiansPerArcSecond;
+    var longitudeOfPerigee = longitudeOfPerigeeConstant + longitudeOfPerigeeSecPart * RadiansPerArcSecond;
+    var meanLongitude = meanLongitudeConstant + meanLongitudeSecPart * RadiansPerArcSecond;
+    var longitudeOfNode = longitudeOfNodeConstant + longitudeOfNodeSecPart * RadiansPerArcSecond;
+    return elementsToCartesian(semimajorAxis, eccentricity, inclination, longitudeOfPerigee, longitudeOfNode, meanLongitude, GravitationalParameterOfEarth, result);
+  }
+  var moonEarthMassRatio = 0.012300034;
+  var factor = moonEarthMassRatio / (moonEarthMassRatio + 1.0) * -1;
+  function computeSimonEarth(date, result) {
+    result = computeSimonMoon(date, result);
+    return Cartesian3.multiplyByScalar(result, factor, result);
+  }
+  var axesTransformation = new Matrix3(1.0000000000000002, 5.619723173785822e-16, 4.690511510146299e-19, -5.154129427414611e-16, 0.9174820620691819, -0.39777715593191376, -2.23970096136568e-16, 0.39777715593191376, 0.9174820620691819);
+  var translation = new Cartesian3();
+  Simon1994PlanetaryPositions.computeSunPositionInEarthInertialFrame = function(date, result) {
+    if (!defined(date)) {
+      date = JulianDate.now();
+    }
+    if (!defined(result)) {
+      result = new Cartesian3();
+    }
+    translation = computeSimonEarthMoonBarycenter(date, translation);
+    result = Cartesian3.negate(translation, result);
+    computeSimonEarth(date, translation);
+    Cartesian3.subtract(result, translation, result);
+    Matrix3.multiplyByVector(axesTransformation, result, result);
+    return result;
+  };
+  Simon1994PlanetaryPositions.computeMoonPositionInEarthInertialFrame = function(date, result) {
+    if (!defined(date)) {
+      date = JulianDate.now();
+    }
+    result = computeSimonMoon(date, result);
+    Matrix3.multiplyByVector(axesTransformation, result, result);
+    return result;
+  };
+  return Simon1994PlanetaryPositions;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("16", ["15"], function(defined) {
+  "use strict";
+  var definePropertyWorks = (function() {
+    try {
+      return 'x' in Object.defineProperty({}, 'x', {});
+    } catch (e) {
+      return false;
+    }
+  })();
+  var defineProperties = Object.defineProperties;
+  if (!definePropertyWorks || !defined(defineProperties)) {
+    defineProperties = function(o) {
+      return o;
+    };
+  }
+  return defineProperties;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("38", ["29", "37", "1e", "15", "16", "17", "1a", "22", "5f"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
+  "use strict";
+  function initialize(ellipsoid, x, y, z) {
+    x = defaultValue(x, 0.0);
+    y = defaultValue(y, 0.0);
+    z = defaultValue(z, 0.0);
+    if (x < 0.0 || y < 0.0 || z < 0.0) {
+      throw new DeveloperError('All radii components must be greater than or equal to zero.');
+    }
+    ellipsoid._radii = new Cartesian3(x, y, z);
+    ellipsoid._radiiSquared = new Cartesian3(x * x, y * y, z * z);
+    ellipsoid._radiiToTheFourth = new Cartesian3(x * x * x * x, y * y * y * y, z * z * z * z);
+    ellipsoid._oneOverRadii = new Cartesian3(x === 0.0 ? 0.0 : 1.0 / x, y === 0.0 ? 0.0 : 1.0 / y, z === 0.0 ? 0.0 : 1.0 / z);
+    ellipsoid._oneOverRadiiSquared = new Cartesian3(x === 0.0 ? 0.0 : 1.0 / (x * x), y === 0.0 ? 0.0 : 1.0 / (y * y), z === 0.0 ? 0.0 : 1.0 / (z * z));
+    ellipsoid._minimumRadius = Math.min(x, y, z);
+    ellipsoid._maximumRadius = Math.max(x, y, z);
+    ellipsoid._centerToleranceSquared = CesiumMath.EPSILON1;
+  }
+  function Ellipsoid(x, y, z) {
+    this._radii = undefined;
+    this._radiiSquared = undefined;
+    this._radiiToTheFourth = undefined;
+    this._oneOverRadii = undefined;
+    this._oneOverRadiiSquared = undefined;
+    this._minimumRadius = undefined;
+    this._maximumRadius = undefined;
+    this._centerToleranceSquared = undefined;
+    initialize(this, x, y, z);
+  }
+  defineProperties(Ellipsoid.prototype, {
+    radii: {get: function() {
+        return this._radii;
+      }},
+    radiiSquared: {get: function() {
+        return this._radiiSquared;
+      }},
+    radiiToTheFourth: {get: function() {
+        return this._radiiToTheFourth;
+      }},
+    oneOverRadii: {get: function() {
+        return this._oneOverRadii;
+      }},
+    oneOverRadiiSquared: {get: function() {
+        return this._oneOverRadiiSquared;
+      }},
+    minimumRadius: {get: function() {
+        return this._minimumRadius;
+      }},
+    maximumRadius: {get: function() {
+        return this._maximumRadius;
+      }}
+  });
+  Ellipsoid.clone = function(ellipsoid, result) {
+    if (!defined(ellipsoid)) {
+      return undefined;
+    }
+    var radii = ellipsoid._radii;
+    if (!defined(result)) {
+      return new Ellipsoid(radii.x, radii.y, radii.z);
+    }
+    Cartesian3.clone(radii, result._radii);
+    Cartesian3.clone(ellipsoid._radiiSquared, result._radiiSquared);
+    Cartesian3.clone(ellipsoid._radiiToTheFourth, result._radiiToTheFourth);
+    Cartesian3.clone(ellipsoid._oneOverRadii, result._oneOverRadii);
+    Cartesian3.clone(ellipsoid._oneOverRadiiSquared, result._oneOverRadiiSquared);
+    result._minimumRadius = ellipsoid._minimumRadius;
+    result._maximumRadius = ellipsoid._maximumRadius;
+    result._centerToleranceSquared = ellipsoid._centerToleranceSquared;
+    return result;
+  };
+  Ellipsoid.fromCartesian3 = function(cartesian, result) {
+    if (!defined(result)) {
+      result = new Ellipsoid();
+    }
+    if (!defined(cartesian)) {
+      return result;
+    }
+    initialize(result, cartesian.x, cartesian.y, cartesian.z);
+    return result;
+  };
+  Ellipsoid.WGS84 = freezeObject(new Ellipsoid(6378137.0, 6378137.0, 6356752.3142451793));
+  Ellipsoid.UNIT_SPHERE = freezeObject(new Ellipsoid(1.0, 1.0, 1.0));
+  Ellipsoid.MOON = freezeObject(new Ellipsoid(CesiumMath.LUNAR_RADIUS, CesiumMath.LUNAR_RADIUS, CesiumMath.LUNAR_RADIUS));
+  Ellipsoid.prototype.clone = function(result) {
+    return Ellipsoid.clone(this, result);
+  };
+  Ellipsoid.packedLength = Cartesian3.packedLength;
+  Ellipsoid.pack = function(value, array, startingIndex) {
+    if (!defined(value)) {
+      throw new DeveloperError('value is required');
+    }
+    if (!defined(array)) {
+      throw new DeveloperError('array is required');
+    }
+    startingIndex = defaultValue(startingIndex, 0);
+    Cartesian3.pack(value._radii, array, startingIndex);
+  };
+  Ellipsoid.unpack = function(array, startingIndex, result) {
+    if (!defined(array)) {
+      throw new DeveloperError('array is required');
+    }
+    startingIndex = defaultValue(startingIndex, 0);
+    var radii = Cartesian3.unpack(array, startingIndex);
+    return Ellipsoid.fromCartesian3(radii, result);
+  };
+  Ellipsoid.prototype.geocentricSurfaceNormal = Cartesian3.normalize;
+  Ellipsoid.prototype.geodeticSurfaceNormalCartographic = function(cartographic, result) {
+    if (!defined(cartographic)) {
+      throw new DeveloperError('cartographic is required.');
+    }
+    var longitude = cartographic.longitude;
+    var latitude = cartographic.latitude;
+    var cosLatitude = Math.cos(latitude);
+    var x = cosLatitude * Math.cos(longitude);
+    var y = cosLatitude * Math.sin(longitude);
+    var z = Math.sin(latitude);
+    if (!defined(result)) {
+      result = new Cartesian3();
+    }
+    result.x = x;
+    result.y = y;
+    result.z = z;
+    return Cartesian3.normalize(result, result);
+  };
+  Ellipsoid.prototype.geodeticSurfaceNormal = function(cartesian, result) {
+    if (!defined(result)) {
+      result = new Cartesian3();
+    }
+    result = Cartesian3.multiplyComponents(cartesian, this._oneOverRadiiSquared, result);
+    return Cartesian3.normalize(result, result);
+  };
+  var cartographicToCartesianNormal = new Cartesian3();
+  var cartographicToCartesianK = new Cartesian3();
+  Ellipsoid.prototype.cartographicToCartesian = function(cartographic, result) {
+    var n = cartographicToCartesianNormal;
+    var k = cartographicToCartesianK;
+    this.geodeticSurfaceNormalCartographic(cartographic, n);
+    Cartesian3.multiplyComponents(this._radiiSquared, n, k);
+    var gamma = Math.sqrt(Cartesian3.dot(n, k));
+    Cartesian3.divideByScalar(k, gamma, k);
+    Cartesian3.multiplyByScalar(n, cartographic.height, n);
+    if (!defined(result)) {
+      result = new Cartesian3();
+    }
+    return Cartesian3.add(k, n, result);
+  };
+  Ellipsoid.prototype.cartographicArrayToCartesianArray = function(cartographics, result) {
+    if (!defined(cartographics)) {
+      throw new DeveloperError('cartographics is required.');
+    }
+    var length = cartographics.length;
+    if (!defined(result)) {
+      result = new Array(length);
+    } else {
+      result.length = length;
+    }
+    for (var i = 0; i < length; i++) {
+      result[i] = this.cartographicToCartesian(cartographics[i], result[i]);
+    }
+    return result;
+  };
+  var cartesianToCartographicN = new Cartesian3();
+  var cartesianToCartographicP = new Cartesian3();
+  var cartesianToCartographicH = new Cartesian3();
+  Ellipsoid.prototype.cartesianToCartographic = function(cartesian, result) {
+    var p = this.scaleToGeodeticSurface(cartesian, cartesianToCartographicP);
+    if (!defined(p)) {
+      return undefined;
+    }
+    var n = this.geodeticSurfaceNormal(p, cartesianToCartographicN);
+    var h = Cartesian3.subtract(cartesian, p, cartesianToCartographicH);
+    var longitude = Math.atan2(n.y, n.x);
+    var latitude = Math.asin(n.z);
+    var height = CesiumMath.sign(Cartesian3.dot(h, cartesian)) * Cartesian3.magnitude(h);
+    if (!defined(result)) {
+      return new Cartographic(longitude, latitude, height);
+    }
+    result.longitude = longitude;
+    result.latitude = latitude;
+    result.height = height;
+    return result;
+  };
+  Ellipsoid.prototype.cartesianArrayToCartographicArray = function(cartesians, result) {
+    if (!defined(cartesians)) {
+      throw new DeveloperError('cartesians is required.');
+    }
+    var length = cartesians.length;
+    if (!defined(result)) {
+      result = new Array(length);
+    } else {
+      result.length = length;
+    }
+    for (var i = 0; i < length; ++i) {
+      result[i] = this.cartesianToCartographic(cartesians[i], result[i]);
+    }
+    return result;
+  };
+  Ellipsoid.prototype.scaleToGeodeticSurface = function(cartesian, result) {
+    return scaleToGeodeticSurface(cartesian, this._oneOverRadii, this._oneOverRadiiSquared, this._centerToleranceSquared, result);
+  };
+  Ellipsoid.prototype.scaleToGeocentricSurface = function(cartesian, result) {
+    if (!defined(cartesian)) {
+      throw new DeveloperError('cartesian is required.');
+    }
+    if (!defined(result)) {
+      result = new Cartesian3();
+    }
+    var positionX = cartesian.x;
+    var positionY = cartesian.y;
+    var positionZ = cartesian.z;
+    var oneOverRadiiSquared = this._oneOverRadiiSquared;
+    var beta = 1.0 / Math.sqrt((positionX * positionX) * oneOverRadiiSquared.x + (positionY * positionY) * oneOverRadiiSquared.y + (positionZ * positionZ) * oneOverRadiiSquared.z);
+    return Cartesian3.multiplyByScalar(cartesian, beta, result);
+  };
+  Ellipsoid.prototype.transformPositionToScaledSpace = function(position, result) {
+    if (!defined(result)) {
+      result = new Cartesian3();
+    }
+    return Cartesian3.multiplyComponents(position, this._oneOverRadii, result);
+  };
+  Ellipsoid.prototype.transformPositionFromScaledSpace = function(position, result) {
+    if (!defined(result)) {
+      result = new Cartesian3();
+    }
+    return Cartesian3.multiplyComponents(position, this._radii, result);
+  };
+  Ellipsoid.prototype.equals = function(right) {
+    return (this === right) || (defined(right) && Cartesian3.equals(this._radii, right._radii));
+  };
+  Ellipsoid.prototype.toString = function() {
+    return this._radii.toString();
+  };
+  return Ellipsoid;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("60", ["29", "37", "1e", "15", "16", "17", "38", "22"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, Ellipsoid, CesiumMath) {
+  "use strict";
+  function setConstants(ellipsoidGeodesic) {
+    var uSquared = ellipsoidGeodesic._uSquared;
+    var a = ellipsoidGeodesic._ellipsoid.maximumRadius;
+    var b = ellipsoidGeodesic._ellipsoid.minimumRadius;
+    var f = (a - b) / a;
+    var cosineHeading = Math.cos(ellipsoidGeodesic._startHeading);
+    var sineHeading = Math.sin(ellipsoidGeodesic._startHeading);
+    var tanU = (1 - f) * Math.tan(ellipsoidGeodesic._start.latitude);
+    var cosineU = 1.0 / Math.sqrt(1.0 + tanU * tanU);
+    var sineU = cosineU * tanU;
+    var sigma = Math.atan2(tanU, cosineHeading);
+    var sineAlpha = cosineU * sineHeading;
+    var sineSquaredAlpha = sineAlpha * sineAlpha;
+    var cosineSquaredAlpha = 1.0 - sineSquaredAlpha;
+    var cosineAlpha = Math.sqrt(cosineSquaredAlpha);
+    var u2Over4 = uSquared / 4.0;
+    var u4Over16 = u2Over4 * u2Over4;
+    var u6Over64 = u4Over16 * u2Over4;
+    var u8Over256 = u4Over16 * u4Over16;
+    var a0 = (1.0 + u2Over4 - 3.0 * u4Over16 / 4.0 + 5.0 * u6Over64 / 4.0 - 175.0 * u8Over256 / 64.0);
+    var a1 = (1.0 - u2Over4 + 15.0 * u4Over16 / 8.0 - 35.0 * u6Over64 / 8.0);
+    var a2 = (1.0 - 3.0 * u2Over4 + 35.0 * u4Over16 / 4.0);
+    var a3 = (1.0 - 5.0 * u2Over4);
+    var distanceRatio = a0 * sigma - a1 * Math.sin(2.0 * sigma) * u2Over4 / 2.0 - a2 * Math.sin(4.0 * sigma) * u4Over16 / 16.0 - a3 * Math.sin(6.0 * sigma) * u6Over64 / 48.0 - Math.sin(8.0 * sigma) * 5.0 * u8Over256 / 512;
+    var constants = ellipsoidGeodesic._constants;
+    constants.a = a;
+    constants.b = b;
+    constants.f = f;
+    constants.cosineHeading = cosineHeading;
+    constants.sineHeading = sineHeading;
+    constants.tanU = tanU;
+    constants.cosineU = cosineU;
+    constants.sineU = sineU;
+    constants.sigma = sigma;
+    constants.sineAlpha = sineAlpha;
+    constants.sineSquaredAlpha = sineSquaredAlpha;
+    constants.cosineSquaredAlpha = cosineSquaredAlpha;
+    constants.cosineAlpha = cosineAlpha;
+    constants.u2Over4 = u2Over4;
+    constants.u4Over16 = u4Over16;
+    constants.u6Over64 = u6Over64;
+    constants.u8Over256 = u8Over256;
+    constants.a0 = a0;
+    constants.a1 = a1;
+    constants.a2 = a2;
+    constants.a3 = a3;
+    constants.distanceRatio = distanceRatio;
+  }
+  function computeC(f, cosineSquaredAlpha) {
+    return f * cosineSquaredAlpha * (4.0 + f * (4.0 - 3.0 * cosineSquaredAlpha)) / 16.0;
+  }
+  function computeDeltaLambda(f, sineAlpha, cosineSquaredAlpha, sigma, sineSigma, cosineSigma, cosineTwiceSigmaMidpoint) {
+    var C = computeC(f, cosineSquaredAlpha);
+    return (1.0 - C) * f * sineAlpha * (sigma + C * sineSigma * (cosineTwiceSigmaMidpoint + C * cosineSigma * (2.0 * cosineTwiceSigmaMidpoint * cosineTwiceSigmaMidpoint - 1.0)));
+  }
+  function vincentyInverseFormula(ellipsoidGeodesic, major, minor, firstLongitude, firstLatitude, secondLongitude, secondLatitude) {
+    var eff = (major - minor) / major;
+    var l = secondLongitude - firstLongitude;
+    var u1 = Math.atan((1 - eff) * Math.tan(firstLatitude));
+    var u2 = Math.atan((1 - eff) * Math.tan(secondLatitude));
+    var cosineU1 = Math.cos(u1);
+    var sineU1 = Math.sin(u1);
+    var cosineU2 = Math.cos(u2);
+    var sineU2 = Math.sin(u2);
+    var cc = cosineU1 * cosineU2;
+    var cs = cosineU1 * sineU2;
+    var ss = sineU1 * sineU2;
+    var sc = sineU1 * cosineU2;
+    var lambda = l;
+    var lambdaDot = CesiumMath.TWO_PI;
+    var cosineLambda = Math.cos(lambda);
+    var sineLambda = Math.sin(lambda);
+    var sigma;
+    var cosineSigma;
+    var sineSigma;
+    var cosineSquaredAlpha;
+    var cosineTwiceSigmaMidpoint;
+    do {
+      cosineLambda = Math.cos(lambda);
+      sineLambda = Math.sin(lambda);
+      var temp = cs - sc * cosineLambda;
+      sineSigma = Math.sqrt(cosineU2 * cosineU2 * sineLambda * sineLambda + temp * temp);
+      cosineSigma = ss + cc * cosineLambda;
+      sigma = Math.atan2(sineSigma, cosineSigma);
+      var sineAlpha;
+      if (sineSigma === 0.0) {
+        sineAlpha = 0.0;
+        cosineSquaredAlpha = 1.0;
+      } else {
+        sineAlpha = cc * sineLambda / sineSigma;
+        cosineSquaredAlpha = 1.0 - sineAlpha * sineAlpha;
+      }
+      lambdaDot = lambda;
+      cosineTwiceSigmaMidpoint = cosineSigma - 2.0 * ss / cosineSquaredAlpha;
+      if (isNaN(cosineTwiceSigmaMidpoint)) {
+        cosineTwiceSigmaMidpoint = 0.0;
+      }
+      lambda = l + computeDeltaLambda(eff, sineAlpha, cosineSquaredAlpha, sigma, sineSigma, cosineSigma, cosineTwiceSigmaMidpoint);
+    } while (Math.abs(lambda - lambdaDot) > CesiumMath.EPSILON12);
+    var uSquared = cosineSquaredAlpha * (major * major - minor * minor) / (minor * minor);
+    var A = 1.0 + uSquared * (4096.0 + uSquared * (uSquared * (320.0 - 175.0 * uSquared) - 768.0)) / 16384.0;
+    var B = uSquared * (256.0 + uSquared * (uSquared * (74.0 - 47.0 * uSquared) - 128.0)) / 1024.0;
+    var cosineSquaredTwiceSigmaMidpoint = cosineTwiceSigmaMidpoint * cosineTwiceSigmaMidpoint;
+    var deltaSigma = B * sineSigma * (cosineTwiceSigmaMidpoint + B * (cosineSigma * (2.0 * cosineSquaredTwiceSigmaMidpoint - 1.0) - B * cosineTwiceSigmaMidpoint * (4.0 * sineSigma * sineSigma - 3.0) * (4.0 * cosineSquaredTwiceSigmaMidpoint - 3.0) / 6.0) / 4.0);
+    var distance = minor * A * (sigma - deltaSigma);
+    var startHeading = Math.atan2(cosineU2 * sineLambda, cs - sc * cosineLambda);
+    var endHeading = Math.atan2(cosineU1 * sineLambda, cs * cosineLambda - sc);
+    ellipsoidGeodesic._distance = distance;
+    ellipsoidGeodesic._startHeading = startHeading;
+    ellipsoidGeodesic._endHeading = endHeading;
+    ellipsoidGeodesic._uSquared = uSquared;
+  }
+  function computeProperties(ellipsoidGeodesic, start, end, ellipsoid) {
+    var firstCartesian = Cartesian3.normalize(ellipsoid.cartographicToCartesian(start, scratchCart2), scratchCart1);
+    var lastCartesian = Cartesian3.normalize(ellipsoid.cartographicToCartesian(end, scratchCart2), scratchCart2);
+    if (Math.abs(Math.abs(Cartesian3.angleBetween(firstCartesian, lastCartesian)) - Math.PI) < 0.0125) {
+      throw new DeveloperError('geodesic position is not unique');
+    }
+    vincentyInverseFormula(ellipsoidGeodesic, ellipsoid.maximumRadius, ellipsoid.minimumRadius, start.longitude, start.latitude, end.longitude, end.latitude);
+    ellipsoidGeodesic._start = Cartographic.clone(start, ellipsoidGeodesic._start);
+    ellipsoidGeodesic._end = Cartographic.clone(end, ellipsoidGeodesic._end);
+    ellipsoidGeodesic._start.height = 0;
+    ellipsoidGeodesic._end.height = 0;
+    setConstants(ellipsoidGeodesic);
+  }
+  var scratchCart1 = new Cartesian3();
+  var scratchCart2 = new Cartesian3();
+  function EllipsoidGeodesic(start, end, ellipsoid) {
+    var e = defaultValue(ellipsoid, Ellipsoid.WGS84);
+    this._ellipsoid = e;
+    this._start = new Cartographic();
+    this._end = new Cartographic();
+    this._constants = {};
+    this._startHeading = undefined;
+    this._endHeading = undefined;
+    this._distance = undefined;
+    this._uSquared = undefined;
+    if (defined(start) && defined(end)) {
+      computeProperties(this, start, end, e);
+    }
+  }
+  defineProperties(EllipsoidGeodesic.prototype, {
+    ellipsoid: {get: function() {
+        return this._ellipsoid;
+      }},
+    surfaceDistance: {get: function() {
+        if (!defined(this._distance)) {
+          throw new DeveloperError('set end positions before getting surfaceDistance');
+        }
+        return this._distance;
+      }},
+    start: {get: function() {
+        return this._start;
+      }},
+    end: {get: function() {
+        return this._end;
+      }},
+    startHeading: {get: function() {
+        if (!defined(this._distance)) {
+          throw new DeveloperError('set end positions before getting startHeading');
+        }
+        return this._startHeading;
+      }},
+    endHeading: {get: function() {
+        if (!defined(this._distance)) {
+          throw new DeveloperError('set end positions before getting endHeading');
+        }
+        return this._endHeading;
+      }}
+  });
+  EllipsoidGeodesic.prototype.setEndPoints = function(start, end) {
+    if (!defined(start)) {
+      throw new DeveloperError('start cartographic position is required');
+    }
+    if (!defined(end)) {
+      throw new DeveloperError('end cartgraphic position is required');
+    }
+    computeProperties(this, start, end, this._ellipsoid);
+  };
+  EllipsoidGeodesic.prototype.interpolateUsingFraction = function(fraction, result) {
+    return this.interpolateUsingSurfaceDistance(this._distance * fraction, result);
+  };
+  EllipsoidGeodesic.prototype.interpolateUsingSurfaceDistance = function(distance, result) {
+    if (!defined(this._distance)) {
+      throw new DeveloperError('start and end must be set before calling funciton interpolateUsingSurfaceDistance');
+    }
+    var constants = this._constants;
+    var s = constants.distanceRatio + distance / constants.b;
+    var cosine2S = Math.cos(2.0 * s);
+    var cosine4S = Math.cos(4.0 * s);
+    var cosine6S = Math.cos(6.0 * s);
+    var sine2S = Math.sin(2.0 * s);
+    var sine4S = Math.sin(4.0 * s);
+    var sine6S = Math.sin(6.0 * s);
+    var sine8S = Math.sin(8.0 * s);
+    var s2 = s * s;
+    var s3 = s * s2;
+    var u8Over256 = constants.u8Over256;
+    var u2Over4 = constants.u2Over4;
+    var u6Over64 = constants.u6Over64;
+    var u4Over16 = constants.u4Over16;
+    var sigma = 2.0 * s3 * u8Over256 * cosine2S / 3.0 + s * (1.0 - u2Over4 + 7.0 * u4Over16 / 4.0 - 15.0 * u6Over64 / 4.0 + 579.0 * u8Over256 / 64.0 - (u4Over16 - 15.0 * u6Over64 / 4.0 + 187.0 * u8Over256 / 16.0) * cosine2S - (5.0 * u6Over64 / 4.0 - 115.0 * u8Over256 / 16.0) * cosine4S - 29.0 * u8Over256 * cosine6S / 16.0) + (u2Over4 / 2.0 - u4Over16 + 71.0 * u6Over64 / 32.0 - 85.0 * u8Over256 / 16.0) * sine2S + (5.0 * u4Over16 / 16.0 - 5.0 * u6Over64 / 4.0 + 383.0 * u8Over256 / 96.0) * sine4S - s2 * ((u6Over64 - 11.0 * u8Over256 / 2.0) * sine2S + 5.0 * u8Over256 * sine4S / 2.0) + (29.0 * u6Over64 / 96.0 - 29.0 * u8Over256 / 16.0) * sine6S + 539.0 * u8Over256 * sine8S / 1536.0;
+    var theta = Math.asin(Math.sin(sigma) * constants.cosineAlpha);
+    var latitude = Math.atan(constants.a / constants.b * Math.tan(theta));
+    sigma = sigma - constants.sigma;
+    var cosineTwiceSigmaMidpoint = Math.cos(2.0 * constants.sigma + sigma);
+    var sineSigma = Math.sin(sigma);
+    var cosineSigma = Math.cos(sigma);
+    var cc = constants.cosineU * cosineSigma;
+    var ss = constants.sineU * sineSigma;
+    var lambda = Math.atan2(sineSigma * constants.sineHeading, cc - ss * constants.cosineHeading);
+    var l = lambda - computeDeltaLambda(constants.f, constants.sineAlpha, constants.cosineSquaredAlpha, sigma, sineSigma, cosineSigma, cosineTwiceSigmaMidpoint);
+    if (defined(result)) {
+      result.longitude = this._start.longitude + l;
+      result.latitude = latitude;
+      result.height = 0.0;
+      return result;
+    }
+    return new Cartographic(this._start.longitude + l, latitude, 0.0);
+  };
+  return EllipsoidGeodesic;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("5f", ["29", "15", "17", "22"], function(Cartesian3, defined, DeveloperError, CesiumMath) {
+  "use strict";
+  var scaleToGeodeticSurfaceIntersection = new Cartesian3();
+  var scaleToGeodeticSurfaceGradient = new Cartesian3();
+  function scaleToGeodeticSurface(cartesian, oneOverRadii, oneOverRadiiSquared, centerToleranceSquared, result) {
+    if (!defined(cartesian)) {
+      throw new DeveloperError('cartesian is required.');
+    }
+    if (!defined(oneOverRadii)) {
+      throw new DeveloperError('oneOverRadii is required.');
+    }
+    if (!defined(oneOverRadiiSquared)) {
+      throw new DeveloperError('oneOverRadiiSquared is required.');
+    }
+    if (!defined(centerToleranceSquared)) {
+      throw new DeveloperError('centerToleranceSquared is required.');
+    }
+    var positionX = cartesian.x;
+    var positionY = cartesian.y;
+    var positionZ = cartesian.z;
+    var oneOverRadiiX = oneOverRadii.x;
+    var oneOverRadiiY = oneOverRadii.y;
+    var oneOverRadiiZ = oneOverRadii.z;
+    var x2 = positionX * positionX * oneOverRadiiX * oneOverRadiiX;
+    var y2 = positionY * positionY * oneOverRadiiY * oneOverRadiiY;
+    var z2 = positionZ * positionZ * oneOverRadiiZ * oneOverRadiiZ;
+    var squaredNorm = x2 + y2 + z2;
+    var ratio = Math.sqrt(1.0 / squaredNorm);
+    var intersection = Cartesian3.multiplyByScalar(cartesian, ratio, scaleToGeodeticSurfaceIntersection);
+    if (squaredNorm < centerToleranceSquared) {
+      return !isFinite(ratio) ? undefined : Cartesian3.clone(intersection, result);
+    }
+    var oneOverRadiiSquaredX = oneOverRadiiSquared.x;
+    var oneOverRadiiSquaredY = oneOverRadiiSquared.y;
+    var oneOverRadiiSquaredZ = oneOverRadiiSquared.z;
+    var gradient = scaleToGeodeticSurfaceGradient;
+    gradient.x = intersection.x * oneOverRadiiSquaredX * 2.0;
+    gradient.y = intersection.y * oneOverRadiiSquaredY * 2.0;
+    gradient.z = intersection.z * oneOverRadiiSquaredZ * 2.0;
+    var lambda = (1.0 - ratio) * Cartesian3.magnitude(cartesian) / (0.5 * Cartesian3.magnitude(gradient));
+    var correction = 0.0;
+    var func;
+    var denominator;
+    var xMultiplier;
+    var yMultiplier;
+    var zMultiplier;
+    var xMultiplier2;
+    var yMultiplier2;
+    var zMultiplier2;
+    var xMultiplier3;
+    var yMultiplier3;
+    var zMultiplier3;
+    do {
+      lambda -= correction;
+      xMultiplier = 1.0 / (1.0 + lambda * oneOverRadiiSquaredX);
+      yMultiplier = 1.0 / (1.0 + lambda * oneOverRadiiSquaredY);
+      zMultiplier = 1.0 / (1.0 + lambda * oneOverRadiiSquaredZ);
+      xMultiplier2 = xMultiplier * xMultiplier;
+      yMultiplier2 = yMultiplier * yMultiplier;
+      zMultiplier2 = zMultiplier * zMultiplier;
+      xMultiplier3 = xMultiplier2 * xMultiplier;
+      yMultiplier3 = yMultiplier2 * yMultiplier;
+      zMultiplier3 = zMultiplier2 * zMultiplier;
+      func = x2 * xMultiplier2 + y2 * yMultiplier2 + z2 * zMultiplier2 - 1.0;
+      denominator = x2 * xMultiplier3 * oneOverRadiiSquaredX + y2 * yMultiplier3 * oneOverRadiiSquaredY + z2 * zMultiplier3 * oneOverRadiiSquaredZ;
+      var derivative = -2.0 * denominator;
+      correction = func / derivative;
+    } while (Math.abs(func) > CesiumMath.EPSILON12);
+    if (!defined(result)) {
+      return new Cartesian3(positionX * xMultiplier, positionY * yMultiplier, positionZ * zMultiplier);
+    }
+    result.x = positionX * xMultiplier;
+    result.y = positionY * yMultiplier;
+    result.z = positionZ * zMultiplier;
+    return result;
+  }
+  return scaleToGeodeticSurface;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("37", ["29", "1e", "15", "17", "1a", "22", "5f"], function(Cartesian3, defaultValue, defined, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
+  "use strict";
+  function Cartographic(longitude, latitude, height) {
+    this.longitude = defaultValue(longitude, 0.0);
+    this.latitude = defaultValue(latitude, 0.0);
+    this.height = defaultValue(height, 0.0);
+  }
+  Cartographic.fromRadians = function(longitude, latitude, height, result) {
+    if (!defined(longitude)) {
+      throw new DeveloperError('longitude is required.');
+    }
+    if (!defined(latitude)) {
+      throw new DeveloperError('latitude is required.');
+    }
+    height = defaultValue(height, 0.0);
+    if (!defined(result)) {
+      return new Cartographic(longitude, latitude, height);
+    }
+    result.longitude = longitude;
+    result.latitude = latitude;
+    result.height = height;
+    return result;
+  };
+  Cartographic.fromDegrees = function(longitude, latitude, height, result) {
+    if (!defined(longitude)) {
+      throw new DeveloperError('longitude is required.');
+    }
+    if (!defined(latitude)) {
+      throw new DeveloperError('latitude is required.');
+    }
+    longitude = CesiumMath.toRadians(longitude);
+    latitude = CesiumMath.toRadians(latitude);
+    return Cartographic.fromRadians(longitude, latitude, height, result);
+  };
+  var cartesianToCartographicN = new Cartesian3();
+  var cartesianToCartographicP = new Cartesian3();
+  var cartesianToCartographicH = new Cartesian3();
+  var wgs84OneOverRadii = new Cartesian3(1.0 / 6378137.0, 1.0 / 6378137.0, 1.0 / 6356752.3142451793);
+  var wgs84OneOverRadiiSquared = new Cartesian3(1.0 / (6378137.0 * 6378137.0), 1.0 / (6378137.0 * 6378137.0), 1.0 / (6356752.3142451793 * 6356752.3142451793));
+  var wgs84CenterToleranceSquared = CesiumMath.EPSILON1;
+  Cartographic.fromCartesian = function(cartesian, ellipsoid, result) {
+    var oneOverRadii = defined(ellipsoid) ? ellipsoid.oneOverRadii : wgs84OneOverRadii;
+    var oneOverRadiiSquared = defined(ellipsoid) ? ellipsoid.oneOverRadiiSquared : wgs84OneOverRadiiSquared;
+    var centerToleranceSquared = defined(ellipsoid) ? ellipsoid._centerToleranceSquared : wgs84CenterToleranceSquared;
+    var p = scaleToGeodeticSurface(cartesian, oneOverRadii, oneOverRadiiSquared, centerToleranceSquared, cartesianToCartographicP);
+    if (!defined(p)) {
+      return undefined;
+    }
+    var n = Cartesian3.multiplyComponents(cartesian, oneOverRadiiSquared, cartesianToCartographicN);
+    n = Cartesian3.normalize(n, n);
+    var h = Cartesian3.subtract(cartesian, p, cartesianToCartographicH);
+    var longitude = Math.atan2(n.y, n.x);
+    var latitude = Math.asin(n.z);
+    var height = CesiumMath.sign(Cartesian3.dot(h, cartesian)) * Cartesian3.magnitude(h);
+    if (!defined(result)) {
+      return new Cartographic(longitude, latitude, height);
+    }
+    result.longitude = longitude;
+    result.latitude = latitude;
+    result.height = height;
+    return result;
+  };
+  Cartographic.clone = function(cartographic, result) {
+    if (!defined(cartographic)) {
+      return undefined;
+    }
+    if (!defined(result)) {
+      return new Cartographic(cartographic.longitude, cartographic.latitude, cartographic.height);
+    }
+    result.longitude = cartographic.longitude;
+    result.latitude = cartographic.latitude;
+    result.height = cartographic.height;
+    return result;
+  };
+  Cartographic.equals = function(left, right) {
+    return (left === right) || ((defined(left)) && (defined(right)) && (left.longitude === right.longitude) && (left.latitude === right.latitude) && (left.height === right.height));
+  };
+  Cartographic.equalsEpsilon = function(left, right, epsilon) {
+    if (typeof epsilon !== 'number') {
+      throw new DeveloperError('epsilon is required and must be a number.');
+    }
+    return (left === right) || ((defined(left)) && (defined(right)) && (Math.abs(left.longitude - right.longitude) <= epsilon) && (Math.abs(left.latitude - right.latitude) <= epsilon) && (Math.abs(left.height - right.height) <= epsilon));
+  };
+  Cartographic.ZERO = freezeObject(new Cartographic(0.0, 0.0, 0.0));
+  Cartographic.prototype.clone = function(result) {
+    return Cartographic.clone(this, result);
+  };
+  Cartographic.prototype.equals = function(right) {
+    return Cartographic.equals(this, right);
+  };
+  Cartographic.prototype.equalsEpsilon = function(right, epsilon) {
+    return Cartographic.equalsEpsilon(this, right, epsilon);
+  };
+  Cartographic.prototype.toString = function() {
+    return '(' + this.longitude + ', ' + this.latitude + ', ' + this.height + ')';
+  };
+  return Cartographic;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("61", ["17", "62"], function(DeveloperError, QuadraticRealPolynomial) {
+  "use strict";
+  var CubicRealPolynomial = {};
+  CubicRealPolynomial.computeDiscriminant = function(a, b, c, d) {
+    if (typeof a !== 'number') {
+      throw new DeveloperError('a is a required number.');
+    }
+    if (typeof b !== 'number') {
+      throw new DeveloperError('b is a required number.');
+    }
+    if (typeof c !== 'number') {
+      throw new DeveloperError('c is a required number.');
+    }
+    if (typeof d !== 'number') {
+      throw new DeveloperError('d is a required number.');
+    }
+    var a2 = a * a;
+    var b2 = b * b;
+    var c2 = c * c;
+    var d2 = d * d;
+    var discriminant = 18.0 * a * b * c * d + b2 * c2 - 27.0 * a2 * d2 - 4.0 * (a * c2 * c + b2 * b * d);
+    return discriminant;
+  };
+  function computeRealRoots(a, b, c, d) {
+    var A = a;
+    var B = b / 3.0;
+    var C = c / 3.0;
+    var D = d;
+    var AC = A * C;
+    var BD = B * D;
+    var B2 = B * B;
+    var C2 = C * C;
+    var delta1 = A * C - B2;
+    var delta2 = A * D - B * C;
+    var delta3 = B * D - C2;
+    var discriminant = 4.0 * delta1 * delta3 - delta2 * delta2;
+    var temp;
+    var temp1;
+    if (discriminant < 0.0) {
+      var ABar;
+      var CBar;
+      var DBar;
+      if (B2 * BD >= AC * C2) {
+        ABar = A;
+        CBar = delta1;
+        DBar = -2.0 * B * delta1 + A * delta2;
+      } else {
+        ABar = D;
+        CBar = delta3;
+        DBar = -D * delta2 + 2.0 * C * delta3;
+      }
+      var s = (DBar < 0.0) ? -1.0 : 1.0;
+      var temp0 = -s * Math.abs(ABar) * Math.sqrt(-discriminant);
+      temp1 = -DBar + temp0;
+      var x = temp1 / 2.0;
+      var p = x < 0.0 ? -Math.pow(-x, 1.0 / 3.0) : Math.pow(x, 1.0 / 3.0);
+      var q = (temp1 === temp0) ? -p : -CBar / p;
+      temp = (CBar <= 0.0) ? p + q : -DBar / (p * p + q * q + CBar);
+      if (B2 * BD >= AC * C2) {
+        return [(temp - B) / A];
+      }
+      return [-D / (temp + C)];
+    }
+    var CBarA = delta1;
+    var DBarA = -2.0 * B * delta1 + A * delta2;
+    var CBarD = delta3;
+    var DBarD = -D * delta2 + 2.0 * C * delta3;
+    var squareRootOfDiscriminant = Math.sqrt(discriminant);
+    var halfSquareRootOf3 = Math.sqrt(3.0) / 2.0;
+    var theta = Math.abs(Math.atan2(A * squareRootOfDiscriminant, -DBarA) / 3.0);
+    temp = 2.0 * Math.sqrt(-CBarA);
+    var cosine = Math.cos(theta);
+    temp1 = temp * cosine;
+    var temp3 = temp * (-cosine / 2.0 - halfSquareRootOf3 * Math.sin(theta));
+    var numeratorLarge = (temp1 + temp3 > 2.0 * B) ? temp1 - B : temp3 - B;
+    var denominatorLarge = A;
+    var root1 = numeratorLarge / denominatorLarge;
+    theta = Math.abs(Math.atan2(D * squareRootOfDiscriminant, -DBarD) / 3.0);
+    temp = 2.0 * Math.sqrt(-CBarD);
+    cosine = Math.cos(theta);
+    temp1 = temp * cosine;
+    temp3 = temp * (-cosine / 2.0 - halfSquareRootOf3 * Math.sin(theta));
+    var numeratorSmall = -D;
+    var denominatorSmall = (temp1 + temp3 < 2.0 * C) ? temp1 + C : temp3 + C;
+    var root3 = numeratorSmall / denominatorSmall;
+    var E = denominatorLarge * denominatorSmall;
+    var F = -numeratorLarge * denominatorSmall - denominatorLarge * numeratorSmall;
+    var G = numeratorLarge * numeratorSmall;
+    var root2 = (C * F - B * G) / (-B * F + C * E);
+    if (root1 <= root2) {
+      if (root1 <= root3) {
+        if (root2 <= root3) {
+          return [root1, root2, root3];
+        }
+        return [root1, root3, root2];
+      }
+      return [root3, root1, root2];
+    }
+    if (root1 <= root3) {
+      return [root2, root1, root3];
+    }
+    if (root2 <= root3) {
+      return [root2, root3, root1];
+    }
+    return [root3, root2, root1];
+  }
+  CubicRealPolynomial.computeRealRoots = function(a, b, c, d) {
+    if (typeof a !== 'number') {
+      throw new DeveloperError('a is a required number.');
+    }
+    if (typeof b !== 'number') {
+      throw new DeveloperError('b is a required number.');
+    }
+    if (typeof c !== 'number') {
+      throw new DeveloperError('c is a required number.');
+    }
+    if (typeof d !== 'number') {
+      throw new DeveloperError('d is a required number.');
+    }
+    var roots;
+    var ratio;
+    if (a === 0.0) {
+      return QuadraticRealPolynomial.computeRealRoots(b, c, d);
+    } else if (b === 0.0) {
+      if (c === 0.0) {
+        if (d === 0.0) {
+          return [0.0, 0.0, 0.0];
+        }
+        ratio = -d / a;
+        var root = (ratio < 0.0) ? -Math.pow(-ratio, 1.0 / 3.0) : Math.pow(ratio, 1.0 / 3.0);
+        return [root, root, root];
+      } else if (d === 0.0) {
+        roots = QuadraticRealPolynomial.computeRealRoots(a, 0, c);
+        if (roots.Length === 0) {
+          return [0.0];
+        }
+        return [roots[0], 0.0, roots[1]];
+      }
+      return computeRealRoots(a, 0, c, d);
+    } else if (c === 0.0) {
+      if (d === 0.0) {
+        ratio = -b / a;
+        if (ratio < 0.0) {
+          return [ratio, 0.0, 0.0];
+        }
+        return [0.0, 0.0, ratio];
+      }
+      return computeRealRoots(a, b, 0, d);
+    } else if (d === 0.0) {
+      roots = QuadraticRealPolynomial.computeRealRoots(a, b, c);
+      if (roots.length === 0) {
+        return [0.0];
+      } else if (roots[1] <= 0.0) {
+        return [roots[0], roots[1], 0.0];
+      } else if (roots[0] >= 0.0) {
+        return [0.0, roots[0], roots[1]];
+      }
+      return [roots[0], 0.0, roots[1]];
+    }
+    return computeRealRoots(a, b, c, d);
+  };
+  return CubicRealPolynomial;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("62", ["17", "22"], function(DeveloperError, CesiumMath) {
+  "use strict";
+  var QuadraticRealPolynomial = {};
+  QuadraticRealPolynomial.computeDiscriminant = function(a, b, c) {
+    if (typeof a !== 'number') {
+      throw new DeveloperError('a is a required number.');
+    }
+    if (typeof b !== 'number') {
+      throw new DeveloperError('b is a required number.');
+    }
+    if (typeof c !== 'number') {
+      throw new DeveloperError('c is a required number.');
+    }
+    var discriminant = b * b - 4.0 * a * c;
+    return discriminant;
+  };
+  function addWithCancellationCheck(left, right, tolerance) {
+    var difference = left + right;
+    if ((CesiumMath.sign(left) !== CesiumMath.sign(right)) && Math.abs(difference / Math.max(Math.abs(left), Math.abs(right))) < tolerance) {
+      return 0.0;
+    }
+    return difference;
+  }
+  QuadraticRealPolynomial.computeRealRoots = function(a, b, c) {
+    if (typeof a !== 'number') {
+      throw new DeveloperError('a is a required number.');
+    }
+    if (typeof b !== 'number') {
+      throw new DeveloperError('b is a required number.');
+    }
+    if (typeof c !== 'number') {
+      throw new DeveloperError('c is a required number.');
+    }
+    var ratio;
+    if (a === 0.0) {
+      if (b === 0.0) {
+        return [];
+      }
+      return [-c / b];
+    } else if (b === 0.0) {
+      if (c === 0.0) {
+        return [0.0, 0.0];
+      }
+      var cMagnitude = Math.abs(c);
+      var aMagnitude = Math.abs(a);
+      if ((cMagnitude < aMagnitude) && (cMagnitude / aMagnitude < CesiumMath.EPSILON14)) {
+        return [0.0, 0.0];
+      } else if ((cMagnitude > aMagnitude) && (aMagnitude / cMagnitude < CesiumMath.EPSILON14)) {
+        return [];
+      }
+      ratio = -c / a;
+      if (ratio < 0.0) {
+        return [];
+      }
+      var root = Math.sqrt(ratio);
+      return [-root, root];
+    } else if (c === 0.0) {
+      ratio = -b / a;
+      if (ratio < 0.0) {
+        return [ratio, 0.0];
+      }
+      return [0.0, ratio];
+    }
+    var b2 = b * b;
+    var four_ac = 4.0 * a * c;
+    var radicand = addWithCancellationCheck(b2, -four_ac, CesiumMath.EPSILON14);
+    if (radicand < 0.0) {
+      return [];
+    }
+    var q = -0.5 * addWithCancellationCheck(b, CesiumMath.sign(b) * Math.sqrt(radicand), CesiumMath.EPSILON14);
+    if (b > 0.0) {
+      return [q / a, c / q];
+    }
+    return [c / q, q / a];
+  };
+  return QuadraticRealPolynomial;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("63", ["61", "17", "22", "62"], function(CubicRealPolynomial, DeveloperError, CesiumMath, QuadraticRealPolynomial) {
+  "use strict";
+  var QuarticRealPolynomial = {};
+  QuarticRealPolynomial.computeDiscriminant = function(a, b, c, d, e) {
+    if (typeof a !== 'number') {
+      throw new DeveloperError('a is a required number.');
+    }
+    if (typeof b !== 'number') {
+      throw new DeveloperError('b is a required number.');
+    }
+    if (typeof c !== 'number') {
+      throw new DeveloperError('c is a required number.');
+    }
+    if (typeof d !== 'number') {
+      throw new DeveloperError('d is a required number.');
+    }
+    if (typeof e !== 'number') {
+      throw new DeveloperError('e is a required number.');
+    }
+    var a2 = a * a;
+    var a3 = a2 * a;
+    var b2 = b * b;
+    var b3 = b2 * b;
+    var c2 = c * c;
+    var c3 = c2 * c;
+    var d2 = d * d;
+    var d3 = d2 * d;
+    var e2 = e * e;
+    var e3 = e2 * e;
+    var discriminant = (b2 * c2 * d2 - 4.0 * b3 * d3 - 4.0 * a * c3 * d2 + 18 * a * b * c * d3 - 27.0 * a2 * d2 * d2 + 256.0 * a3 * e3) + e * (18.0 * b3 * c * d - 4.0 * b2 * c3 + 16.0 * a * c2 * c2 - 80.0 * a * b * c2 * d - 6.0 * a * b2 * d2 + 144.0 * a2 * c * d2) + e2 * (144.0 * a * b2 * c - 27.0 * b2 * b2 - 128.0 * a2 * c2 - 192.0 * a2 * b * d);
+    return discriminant;
+  };
+  function original(a3, a2, a1, a0) {
+    var a3Squared = a3 * a3;
+    var p = a2 - 3.0 * a3Squared / 8.0;
+    var q = a1 - a2 * a3 / 2.0 + a3Squared * a3 / 8.0;
+    var r = a0 - a1 * a3 / 4.0 + a2 * a3Squared / 16.0 - 3.0 * a3Squared * a3Squared / 256.0;
+    var cubicRoots = CubicRealPolynomial.computeRealRoots(1.0, 2.0 * p, p * p - 4.0 * r, -q * q);
+    if (cubicRoots.length > 0) {
+      var temp = -a3 / 4.0;
+      var hSquared = cubicRoots[cubicRoots.length - 1];
+      if (Math.abs(hSquared) < CesiumMath.EPSILON14) {
+        var roots = QuadraticRealPolynomial.computeRealRoots(1.0, p, r);
+        if (roots.length === 2) {
+          var root0 = roots[0];
+          var root1 = roots[1];
+          var y;
+          if (root0 >= 0.0 && root1 >= 0.0) {
+            var y0 = Math.sqrt(root0);
+            var y1 = Math.sqrt(root1);
+            return [temp - y1, temp - y0, temp + y0, temp + y1];
+          } else if (root0 >= 0.0 && root1 < 0.0) {
+            y = Math.sqrt(root0);
+            return [temp - y, temp + y];
+          } else if (root0 < 0.0 && root1 >= 0.0) {
+            y = Math.sqrt(root1);
+            return [temp - y, temp + y];
+          }
+        }
+        return [];
+      } else if (hSquared > 0.0) {
+        var h = Math.sqrt(hSquared);
+        var m = (p + hSquared - q / h) / 2.0;
+        var n = (p + hSquared + q / h) / 2.0;
+        var roots1 = QuadraticRealPolynomial.computeRealRoots(1.0, h, m);
+        var roots2 = QuadraticRealPolynomial.computeRealRoots(1.0, -h, n);
+        if (roots1.length !== 0) {
+          roots1[0] += temp;
+          roots1[1] += temp;
+          if (roots2.length !== 0) {
+            roots2[0] += temp;
+            roots2[1] += temp;
+            if (roots1[1] <= roots2[0]) {
+              return [roots1[0], roots1[1], roots2[0], roots2[1]];
+            } else if (roots2[1] <= roots1[0]) {
+              return [roots2[0], roots2[1], roots1[0], roots1[1]];
+            } else if (roots1[0] >= roots2[0] && roots1[1] <= roots2[1]) {
+              return [roots2[0], roots1[0], roots1[1], roots2[1]];
+            } else if (roots2[0] >= roots1[0] && roots2[1] <= roots1[1]) {
+              return [roots1[0], roots2[0], roots2[1], roots1[1]];
+            } else if (roots1[0] > roots2[0] && roots1[0] < roots2[1]) {
+              return [roots2[0], roots1[0], roots2[1], roots1[1]];
+            }
+            return [roots1[0], roots2[0], roots1[1], roots2[1]];
+          }
+          return roots1;
+        }
+        if (roots2.length !== 0) {
+          roots2[0] += temp;
+          roots2[1] += temp;
+          return roots2;
+        }
+        return [];
+      }
+    }
+    return [];
+  }
+  function neumark(a3, a2, a1, a0) {
+    var a1Squared = a1 * a1;
+    var a2Squared = a2 * a2;
+    var a3Squared = a3 * a3;
+    var p = -2.0 * a2;
+    var q = a1 * a3 + a2Squared - 4.0 * a0;
+    var r = a3Squared * a0 - a1 * a2 * a3 + a1Squared;
+    var cubicRoots = CubicRealPolynomial.computeRealRoots(1.0, p, q, r);
+    if (cubicRoots.length > 0) {
+      var y = cubicRoots[0];
+      var temp = (a2 - y);
+      var tempSquared = temp * temp;
+      var g1 = a3 / 2.0;
+      var h1 = temp / 2.0;
+      var m = tempSquared - 4.0 * a0;
+      var mError = tempSquared + 4.0 * Math.abs(a0);
+      var n = a3Squared - 4.0 * y;
+      var nError = a3Squared + 4.0 * Math.abs(y);
+      var g2;
+      var h2;
+      if (y < 0.0 || (m * nError < n * mError)) {
+        var squareRootOfN = Math.sqrt(n);
+        g2 = squareRootOfN / 2.0;
+        h2 = squareRootOfN === 0.0 ? 0.0 : (a3 * h1 - a1) / squareRootOfN;
+      } else {
+        var squareRootOfM = Math.sqrt(m);
+        g2 = squareRootOfM === 0.0 ? 0.0 : (a3 * h1 - a1) / squareRootOfM;
+        h2 = squareRootOfM / 2.0;
+      }
+      var G;
+      var g;
+      if (g1 === 0.0 && g2 === 0.0) {
+        G = 0.0;
+        g = 0.0;
+      } else if (CesiumMath.sign(g1) === CesiumMath.sign(g2)) {
+        G = g1 + g2;
+        g = y / G;
+      } else {
+        g = g1 - g2;
+        G = y / g;
+      }
+      var H;
+      var h;
+      if (h1 === 0.0 && h2 === 0.0) {
+        H = 0.0;
+        h = 0.0;
+      } else if (CesiumMath.sign(h1) === CesiumMath.sign(h2)) {
+        H = h1 + h2;
+        h = a0 / H;
+      } else {
+        h = h1 - h2;
+        H = a0 / h;
+      }
+      var roots1 = QuadraticRealPolynomial.computeRealRoots(1.0, G, H);
+      var roots2 = QuadraticRealPolynomial.computeRealRoots(1.0, g, h);
+      if (roots1.length !== 0) {
+        if (roots2.length !== 0) {
+          if (roots1[1] <= roots2[0]) {
+            return [roots1[0], roots1[1], roots2[0], roots2[1]];
+          } else if (roots2[1] <= roots1[0]) {
+            return [roots2[0], roots2[1], roots1[0], roots1[1]];
+          } else if (roots1[0] >= roots2[0] && roots1[1] <= roots2[1]) {
+            return [roots2[0], roots1[0], roots1[1], roots2[1]];
+          } else if (roots2[0] >= roots1[0] && roots2[1] <= roots1[1]) {
+            return [roots1[0], roots2[0], roots2[1], roots1[1]];
+          } else if (roots1[0] > roots2[0] && roots1[0] < roots2[1]) {
+            return [roots2[0], roots1[0], roots2[1], roots1[1]];
+          } else {
+            return [roots1[0], roots2[0], roots1[1], roots2[1]];
+          }
+        }
+        return roots1;
+      }
+      if (roots2.length !== 0) {
+        return roots2;
+      }
+    }
+    return [];
+  }
+  QuarticRealPolynomial.computeRealRoots = function(a, b, c, d, e) {
+    if (typeof a !== 'number') {
+      throw new DeveloperError('a is a required number.');
+    }
+    if (typeof b !== 'number') {
+      throw new DeveloperError('b is a required number.');
+    }
+    if (typeof c !== 'number') {
+      throw new DeveloperError('c is a required number.');
+    }
+    if (typeof d !== 'number') {
+      throw new DeveloperError('d is a required number.');
+    }
+    if (typeof e !== 'number') {
+      throw new DeveloperError('e is a required number.');
+    }
+    if (Math.abs(a) < CesiumMath.EPSILON15) {
+      return CubicRealPolynomial.computeRealRoots(b, c, d, e);
+    }
+    var a3 = b / a;
+    var a2 = c / a;
+    var a1 = d / a;
+    var a0 = e / a;
+    var k = (a3 < 0.0) ? 1 : 0;
+    k += (a2 < 0.0) ? k + 1 : k;
+    k += (a1 < 0.0) ? k + 1 : k;
+    k += (a0 < 0.0) ? k + 1 : k;
+    switch (k) {
+      case 0:
+        return original(a3, a2, a1, a0);
+      case 1:
+        return neumark(a3, a2, a1, a0);
+      case 2:
+        return neumark(a3, a2, a1, a0);
+      case 3:
+        return original(a3, a2, a1, a0);
+      case 4:
+        return original(a3, a2, a1, a0);
+      case 5:
+        return neumark(a3, a2, a1, a0);
+      case 6:
+        return original(a3, a2, a1, a0);
+      case 7:
+        return original(a3, a2, a1, a0);
+      case 8:
+        return neumark(a3, a2, a1, a0);
+      case 9:
+        return original(a3, a2, a1, a0);
+      case 10:
+        return original(a3, a2, a1, a0);
+      case 11:
+        return neumark(a3, a2, a1, a0);
+      case 12:
+        return original(a3, a2, a1, a0);
+      case 13:
+        return original(a3, a2, a1, a0);
+      case 14:
+        return original(a3, a2, a1, a0);
+      case 15:
+        return original(a3, a2, a1, a0);
+      default:
+        return undefined;
+    }
+  };
+  return QuarticRealPolynomial;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("64", ["29", "1e", "15", "17"], function(Cartesian3, defaultValue, defined, DeveloperError) {
+  "use strict";
+  function Ray(origin, direction) {
+    direction = Cartesian3.clone(defaultValue(direction, Cartesian3.ZERO));
+    if (!Cartesian3.equals(direction, Cartesian3.ZERO)) {
+      Cartesian3.normalize(direction, direction);
+    }
+    this.origin = Cartesian3.clone(defaultValue(origin, Cartesian3.ZERO));
+    this.direction = direction;
+  }
+  Ray.getPoint = function(ray, t, result) {
+    if (!defined(ray)) {
+      throw new DeveloperError('ray is requred');
+    }
+    if (typeof t !== 'number') {
+      throw new DeveloperError('t is a required number');
+    }
+    if (!defined(result)) {
+      result = new Cartesian3();
+    }
+    result = Cartesian3.multiplyByScalar(ray.direction, t, result);
+    return Cartesian3.add(ray.origin, result, result);
+  };
+  return Ray;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("65", ["29", "37", "1e", "15", "17", "22", "2e", "62", "63", "64"], function(Cartesian3, Cartographic, defaultValue, defined, DeveloperError, CesiumMath, Matrix3, QuadraticRealPolynomial, QuarticRealPolynomial, Ray) {
+  "use strict";
+  var IntersectionTests = {};
+  IntersectionTests.rayPlane = function(ray, plane, result) {
+    if (!defined(ray)) {
+      throw new DeveloperError('ray is required.');
+    }
+    if (!defined(plane)) {
+      throw new DeveloperError('plane is required.');
+    }
+    if (!defined(result)) {
+      result = new Cartesian3();
+    }
+    var origin = ray.origin;
+    var direction = ray.direction;
+    var normal = plane.normal;
+    var denominator = Cartesian3.dot(normal, direction);
+    if (Math.abs(denominator) < CesiumMath.EPSILON15) {
+      return undefined;
+    }
+    var t = (-plane.distance - Cartesian3.dot(normal, origin)) / denominator;
+    if (t < 0) {
+      return undefined;
+    }
+    result = Cartesian3.multiplyByScalar(direction, t, result);
+    return Cartesian3.add(origin, result, result);
+  };
+  var scratchEdge0 = new Cartesian3();
+  var scratchEdge1 = new Cartesian3();
+  var scratchPVec = new Cartesian3();
+  var scratchTVec = new Cartesian3();
+  var scratchQVec = new Cartesian3();
+  function rayTriangle(ray, p0, p1, p2, cullBackFaces) {
+    if (!defined(ray)) {
+      throw new DeveloperError('ray is required.');
+    }
+    if (!defined(p0)) {
+      throw new DeveloperError('p0 is required.');
+    }
+    if (!defined(p1)) {
+      throw new DeveloperError('p1 is required.');
+    }
+    if (!defined(p2)) {
+      throw new DeveloperError('p2 is required.');
+    }
+    cullBackFaces = defaultValue(cullBackFaces, false);
+    var origin = ray.origin;
+    var direction = ray.direction;
+    var edge0 = Cartesian3.subtract(p1, p0, scratchEdge0);
+    var edge1 = Cartesian3.subtract(p2, p0, scratchEdge1);
+    var p = Cartesian3.cross(direction, edge1, scratchPVec);
+    var det = Cartesian3.dot(edge0, p);
+    var tvec;
+    var q;
+    var u;
+    var v;
+    var t;
+    if (cullBackFaces) {
+      if (det < CesiumMath.EPSILON6) {
+        return undefined;
+      }
+      tvec = Cartesian3.subtract(origin, p0, scratchTVec);
+      u = Cartesian3.dot(tvec, p);
+      if (u < 0.0 || u > det) {
+        return undefined;
+      }
+      q = Cartesian3.cross(tvec, edge0, scratchQVec);
+      v = Cartesian3.dot(direction, q);
+      if (v < 0.0 || u + v > det) {
+        return undefined;
+      }
+      t = Cartesian3.dot(edge1, q) / det;
+    } else {
+      if (Math.abs(det) < CesiumMath.EPSILON6) {
+        return undefined;
+      }
+      var invDet = 1.0 / det;
+      tvec = Cartesian3.subtract(origin, p0, scratchTVec);
+      u = Cartesian3.dot(tvec, p) * invDet;
+      if (u < 0.0 || u > 1.0) {
+        return undefined;
+      }
+      q = Cartesian3.cross(tvec, edge0, scratchQVec);
+      v = Cartesian3.dot(direction, q) * invDet;
+      if (v < 0.0 || u + v > 1.0) {
+        return undefined;
+      }
+      t = Cartesian3.dot(edge1, q) * invDet;
+    }
+    return t;
+  }
+  IntersectionTests.rayTriangle = function(ray, p0, p1, p2, cullBackFaces, result) {
+    var t = rayTriangle(ray, p0, p1, p2, cullBackFaces);
+    if (!defined(t) || t < 0.0) {
+      return undefined;
+    }
+    if (!defined(result)) {
+      result = new Cartesian3();
+    }
+    Cartesian3.multiplyByScalar(ray.direction, t, result);
+    return Cartesian3.add(ray.origin, result, result);
+  };
+  var scratchLineSegmentTriangleRay = new Ray();
+  IntersectionTests.lineSegmentTriangle = function(v0, v1, p0, p1, p2, cullBackFaces, result) {
+    if (!defined(v0)) {
+      throw new DeveloperError('v0 is required.');
+    }
+    if (!defined(v1)) {
+      throw new DeveloperError('v1 is required.');
+    }
+    var ray = scratchLineSegmentTriangleRay;
+    Cartesian3.clone(v0, ray.origin);
+    Cartesian3.subtract(v1, v0, ray.direction);
+    Cartesian3.normalize(ray.direction, ray.direction);
+    var t = rayTriangle(ray, p0, p1, p2, cullBackFaces);
+    if (!defined(t) || t < 0.0 || t > Cartesian3.distance(v0, v1)) {
+      return undefined;
+    }
+    if (!defined(result)) {
+      result = new Cartesian3();
+    }
+    Cartesian3.multiplyByScalar(ray.direction, t, result);
+    return Cartesian3.add(ray.origin, result, result);
+  };
+  function solveQuadratic(a, b, c, result) {
+    var det = b * b - 4.0 * a * c;
+    if (det < 0.0) {
+      return undefined;
+    } else if (det > 0.0) {
+      var denom = 1.0 / (2.0 * a);
+      var disc = Math.sqrt(det);
+      var root0 = (-b + disc) * denom;
+      var root1 = (-b - disc) * denom;
+      if (root0 < root1) {
+        result.root0 = root0;
+        result.root1 = root1;
+      } else {
+        result.root0 = root1;
+        result.root1 = root0;
+      }
+      return result;
+    }
+    var root = -b / (2.0 * a);
+    if (root === 0.0) {
+      return undefined;
+    }
+    result.root0 = result.root1 = root;
+    return result;
+  }
+  var raySphereRoots = {
+    root0: 0.0,
+    root1: 0.0
+  };
+  function raySphere(ray, sphere, result) {
+    if (!defined(result)) {
+      result = {};
+    }
+    var origin = ray.origin;
+    var direction = ray.direction;
+    var center = sphere.center;
+    var radiusSquared = sphere.radius * sphere.radius;
+    var diff = Cartesian3.subtract(origin, center, scratchPVec);
+    var a = Cartesian3.dot(direction, direction);
+    var b = 2.0 * Cartesian3.dot(direction, diff);
+    var c = Cartesian3.magnitudeSquared(diff) - radiusSquared;
+    var roots = solveQuadratic(a, b, c, raySphereRoots);
+    if (!defined(roots)) {
+      return undefined;
+    }
+    result.start = roots.root0;
+    result.stop = roots.root1;
+    return result;
+  }
+  IntersectionTests.raySphere = function(ray, sphere, result) {
+    if (!defined(ray)) {
+      throw new DeveloperError('ray is required.');
+    }
+    if (!defined(sphere)) {
+      throw new DeveloperError('sphere is required.');
+    }
+    result = raySphere(ray, sphere, result);
+    if (!defined(result) || result.stop < 0.0) {
+      return undefined;
+    }
+    result.start = Math.max(result.start, 0.0);
+    return result;
+  };
+  var scratchLineSegmentRay = new Ray();
+  IntersectionTests.lineSegmentSphere = function(p0, p1, sphere, result) {
+    if (!defined(p0)) {
+      throw new DeveloperError('p0 is required.');
+    }
+    if (!defined(p1)) {
+      throw new DeveloperError('p1 is required.');
+    }
+    if (!defined(sphere)) {
+      throw new DeveloperError('sphere is required.');
+    }
+    var ray = scratchLineSegmentRay;
+    var direction = Cartesian3.subtract(p1, p0, ray.direction);
+    var maxT = Cartesian3.magnitude(direction);
+    Cartesian3.normalize(direction, direction);
+    result = raySphere(ray, sphere, result);
+    if (!defined(result) || result.stop < 0.0 || result.start > maxT) {
+      return undefined;
+    }
+    result.start = Math.max(result.start, 0.0);
+    result.stop = Math.min(result.stop, maxT);
+    return result;
+  };
+  var scratchQ = new Cartesian3();
+  var scratchW = new Cartesian3();
+  IntersectionTests.rayEllipsoid = function(ray, ellipsoid) {
+    if (!defined(ray)) {
+      throw new DeveloperError('ray is required.');
+    }
+    if (!defined(ellipsoid)) {
+      throw new DeveloperError('ellipsoid is required.');
+    }
+    var inverseRadii = ellipsoid.oneOverRadii;
+    var q = Cartesian3.multiplyComponents(inverseRadii, ray.origin, scratchQ);
+    var w = Cartesian3.multiplyComponents(inverseRadii, ray.direction, scratchW);
+    var q2 = Cartesian3.magnitudeSquared(q);
+    var qw = Cartesian3.dot(q, w);
+    var difference,
+        w2,
+        product,
+        discriminant,
+        temp;
+    if (q2 > 1.0) {
+      if (qw >= 0.0) {
+        return undefined;
+      }
+      var qw2 = qw * qw;
+      difference = q2 - 1.0;
+      w2 = Cartesian3.magnitudeSquared(w);
+      product = w2 * difference;
+      if (qw2 < product) {
+        return undefined;
+      } else if (qw2 > product) {
+        discriminant = qw * qw - product;
+        temp = -qw + Math.sqrt(discriminant);
+        var root0 = temp / w2;
+        var root1 = difference / temp;
+        if (root0 < root1) {
+          return {
+            start: root0,
+            stop: root1
+          };
+        }
+        return {
+          start: root1,
+          stop: root0
+        };
+      } else {
+        var root = Math.sqrt(difference / w2);
+        return {
+          start: root,
+          stop: root
+        };
+      }
+    } else if (q2 < 1.0) {
+      difference = q2 - 1.0;
+      w2 = Cartesian3.magnitudeSquared(w);
+      product = w2 * difference;
+      discriminant = qw * qw - product;
+      temp = -qw + Math.sqrt(discriminant);
+      return {
+        start: 0.0,
+        stop: temp / w2
+      };
+    } else {
+      if (qw < 0.0) {
+        w2 = Cartesian3.magnitudeSquared(w);
+        return {
+          start: 0.0,
+          stop: -qw / w2
+        };
+      }
+      return undefined;
+    }
+  };
+  function addWithCancellationCheck(left, right, tolerance) {
+    var difference = left + right;
+    if ((CesiumMath.sign(left) !== CesiumMath.sign(right)) && Math.abs(difference / Math.max(Math.abs(left), Math.abs(right))) < tolerance) {
+      return 0.0;
+    }
+    return difference;
+  }
+  function quadraticVectorExpression(A, b, c, x, w) {
+    var xSquared = x * x;
+    var wSquared = w * w;
+    var l2 = (A[Matrix3.COLUMN1ROW1] - A[Matrix3.COLUMN2ROW2]) * wSquared;
+    var l1 = w * (x * addWithCancellationCheck(A[Matrix3.COLUMN1ROW0], A[Matrix3.COLUMN0ROW1], CesiumMath.EPSILON15) + b.y);
+    var l0 = (A[Matrix3.COLUMN0ROW0] * xSquared + A[Matrix3.COLUMN2ROW2] * wSquared) + x * b.x + c;
+    var r1 = wSquared * addWithCancellationCheck(A[Matrix3.COLUMN2ROW1], A[Matrix3.COLUMN1ROW2], CesiumMath.EPSILON15);
+    var r0 = w * (x * addWithCancellationCheck(A[Matrix3.COLUMN2ROW0], A[Matrix3.COLUMN0ROW2]) + b.z);
+    var cosines;
+    var solutions = [];
+    if (r0 === 0.0 && r1 === 0.0) {
+      cosines = QuadraticRealPolynomial.computeRealRoots(l2, l1, l0);
+      if (cosines.length === 0) {
+        return solutions;
+      }
+      var cosine0 = cosines[0];
+      var sine0 = Math.sqrt(Math.max(1.0 - cosine0 * cosine0, 0.0));
+      solutions.push(new Cartesian3(x, w * cosine0, w * -sine0));
+      solutions.push(new Cartesian3(x, w * cosine0, w * sine0));
+      if (cosines.length === 2) {
+        var cosine1 = cosines[1];
+        var sine1 = Math.sqrt(Math.max(1.0 - cosine1 * cosine1, 0.0));
+        solutions.push(new Cartesian3(x, w * cosine1, w * -sine1));
+        solutions.push(new Cartesian3(x, w * cosine1, w * sine1));
+      }
+      return solutions;
+    }
+    var r0Squared = r0 * r0;
+    var r1Squared = r1 * r1;
+    var l2Squared = l2 * l2;
+    var r0r1 = r0 * r1;
+    var c4 = l2Squared + r1Squared;
+    var c3 = 2.0 * (l1 * l2 + r0r1);
+    var c2 = 2.0 * l0 * l2 + l1 * l1 - r1Squared + r0Squared;
+    var c1 = 2.0 * (l0 * l1 - r0r1);
+    var c0 = l0 * l0 - r0Squared;
+    if (c4 === 0.0 && c3 === 0.0 && c2 === 0.0 && c1 === 0.0) {
+      return solutions;
+    }
+    cosines = QuarticRealPolynomial.computeRealRoots(c4, c3, c2, c1, c0);
+    var length = cosines.length;
+    if (length === 0) {
+      return solutions;
+    }
+    for (var i = 0; i < length; ++i) {
+      var cosine = cosines[i];
+      var cosineSquared = cosine * cosine;
+      var sineSquared = Math.max(1.0 - cosineSquared, 0.0);
+      var sine = Math.sqrt(sineSquared);
+      var left;
+      if (CesiumMath.sign(l2) === CesiumMath.sign(l0)) {
+        left = addWithCancellationCheck(l2 * cosineSquared + l0, l1 * cosine, CesiumMath.EPSILON12);
+      } else if (CesiumMath.sign(l0) === CesiumMath.sign(l1 * cosine)) {
+        left = addWithCancellationCheck(l2 * cosineSquared, l1 * cosine + l0, CesiumMath.EPSILON12);
+      } else {
+        left = addWithCancellationCheck(l2 * cosineSquared + l1 * cosine, l0, CesiumMath.EPSILON12);
+      }
+      var right = addWithCancellationCheck(r1 * cosine, r0, CesiumMath.EPSILON15);
+      var product = left * right;
+      if (product < 0.0) {
+        solutions.push(new Cartesian3(x, w * cosine, w * sine));
+      } else if (product > 0.0) {
+        solutions.push(new Cartesian3(x, w * cosine, w * -sine));
+      } else if (sine !== 0.0) {
+        solutions.push(new Cartesian3(x, w * cosine, w * -sine));
+        solutions.push(new Cartesian3(x, w * cosine, w * sine));
+        ++i;
+      } else {
+        solutions.push(new Cartesian3(x, w * cosine, w * sine));
+      }
+    }
+    return solutions;
+  }
+  var firstAxisScratch = new Cartesian3();
+  var secondAxisScratch = new Cartesian3();
+  var thirdAxisScratch = new Cartesian3();
+  var referenceScratch = new Cartesian3();
+  var bCart = new Cartesian3();
+  var bScratch = new Matrix3();
+  var btScratch = new Matrix3();
+  var diScratch = new Matrix3();
+  var dScratch = new Matrix3();
+  var cScratch = new Matrix3();
+  var tempMatrix = new Matrix3();
+  var aScratch = new Matrix3();
+  var sScratch = new Cartesian3();
+  var closestScratch = new Cartesian3();
+  var surfPointScratch = new Cartographic();
+  IntersectionTests.grazingAltitudeLocation = function(ray, ellipsoid) {
+    if (!defined(ray)) {
+      throw new DeveloperError('ray is required.');
+    }
+    if (!defined(ellipsoid)) {
+      throw new DeveloperError('ellipsoid is required.');
+    }
+    var position = ray.origin;
+    var direction = ray.direction;
+    var normal = ellipsoid.geodeticSurfaceNormal(position, firstAxisScratch);
+    if (Cartesian3.dot(direction, normal) >= 0.0) {
+      return position;
+    }
+    var intersects = defined(this.rayEllipsoid(ray, ellipsoid));
+    var f = ellipsoid.transformPositionToScaledSpace(direction, firstAxisScratch);
+    var firstAxis = Cartesian3.normalize(f, f);
+    var reference = Cartesian3.mostOrthogonalAxis(f, referenceScratch);
+    var secondAxis = Cartesian3.normalize(Cartesian3.cross(reference, firstAxis, secondAxisScratch), secondAxisScratch);
+    var thirdAxis = Cartesian3.normalize(Cartesian3.cross(firstAxis, secondAxis, thirdAxisScratch), thirdAxisScratch);
+    var B = bScratch;
+    B[0] = firstAxis.x;
+    B[1] = firstAxis.y;
+    B[2] = firstAxis.z;
+    B[3] = secondAxis.x;
+    B[4] = secondAxis.y;
+    B[5] = secondAxis.z;
+    B[6] = thirdAxis.x;
+    B[7] = thirdAxis.y;
+    B[8] = thirdAxis.z;
+    var B_T = Matrix3.transpose(B, btScratch);
+    var D_I = Matrix3.fromScale(ellipsoid.radii, diScratch);
+    var D = Matrix3.fromScale(ellipsoid.oneOverRadii, dScratch);
+    var C = cScratch;
+    C[0] = 0.0;
+    C[1] = -direction.z;
+    C[2] = direction.y;
+    C[3] = direction.z;
+    C[4] = 0.0;
+    C[5] = -direction.x;
+    C[6] = -direction.y;
+    C[7] = direction.x;
+    C[8] = 0.0;
+    var temp = Matrix3.multiply(Matrix3.multiply(B_T, D, tempMatrix), C, tempMatrix);
+    var A = Matrix3.multiply(Matrix3.multiply(temp, D_I, aScratch), B, aScratch);
+    var b = Matrix3.multiplyByVector(temp, position, bCart);
+    var solutions = quadraticVectorExpression(A, Cartesian3.negate(b, firstAxisScratch), 0.0, 0.0, 1.0);
+    var s;
+    var altitude;
+    var length = solutions.length;
+    if (length > 0) {
+      var closest = Cartesian3.clone(Cartesian3.ZERO, closestScratch);
+      var maximumValue = Number.NEGATIVE_INFINITY;
+      for (var i = 0; i < length; ++i) {
+        s = Matrix3.multiplyByVector(D_I, Matrix3.multiplyByVector(B, solutions[i], sScratch), sScratch);
+        var v = Cartesian3.normalize(Cartesian3.subtract(s, position, referenceScratch), referenceScratch);
+        var dotProduct = Cartesian3.dot(v, direction);
+        if (dotProduct > maximumValue) {
+          maximumValue = dotProduct;
+          closest = Cartesian3.clone(s, closest);
+        }
+      }
+      var surfacePoint = ellipsoid.cartesianToCartographic(closest, surfPointScratch);
+      maximumValue = CesiumMath.clamp(maximumValue, 0.0, 1.0);
+      altitude = Cartesian3.magnitude(Cartesian3.subtract(closest, position, referenceScratch)) * Math.sqrt(1.0 - maximumValue * maximumValue);
+      altitude = intersects ? -altitude : altitude;
+      surfacePoint.height = altitude;
+      return ellipsoid.cartographicToCartesian(surfacePoint, new Cartesian3());
+    }
+    return undefined;
+  };
+  var lineSegmentPlaneDifference = new Cartesian3();
+  IntersectionTests.lineSegmentPlane = function(endPoint0, endPoint1, plane, result) {
+    if (!defined(endPoint0)) {
+      throw new DeveloperError('endPoint0 is required.');
+    }
+    if (!defined(endPoint1)) {
+      throw new DeveloperError('endPoint1 is required.');
+    }
+    if (!defined(plane)) {
+      throw new DeveloperError('plane is required.');
+    }
+    if (!defined(result)) {
+      result = new Cartesian3();
+    }
+    var difference = Cartesian3.subtract(endPoint1, endPoint0, lineSegmentPlaneDifference);
+    var normal = plane.normal;
+    var nDotDiff = Cartesian3.dot(normal, difference);
+    if (Math.abs(nDotDiff) < CesiumMath.EPSILON6) {
+      return undefined;
+    }
+    var nDotP0 = Cartesian3.dot(normal, endPoint0);
+    var t = -(plane.distance + nDotP0) / nDotDiff;
+    if (t < 0.0 || t > 1.0) {
+      return undefined;
+    }
+    Cartesian3.multiplyByScalar(difference, t, result);
+    Cartesian3.add(endPoint0, result, result);
+    return result;
+  };
+  IntersectionTests.trianglePlaneIntersection = function(p0, p1, p2, plane) {
+    if ((!defined(p0)) || (!defined(p1)) || (!defined(p2)) || (!defined(plane))) {
+      throw new DeveloperError('p0, p1, p2, and plane are required.');
+    }
+    var planeNormal = plane.normal;
+    var planeD = plane.distance;
+    var p0Behind = (Cartesian3.dot(planeNormal, p0) + planeD) < 0.0;
+    var p1Behind = (Cartesian3.dot(planeNormal, p1) + planeD) < 0.0;
+    var p2Behind = (Cartesian3.dot(planeNormal, p2) + planeD) < 0.0;
+    var numBehind = 0;
+    numBehind += p0Behind ? 1 : 0;
+    numBehind += p1Behind ? 1 : 0;
+    numBehind += p2Behind ? 1 : 0;
+    var u1,
+        u2;
+    if (numBehind === 1 || numBehind === 2) {
+      u1 = new Cartesian3();
+      u2 = new Cartesian3();
+    }
+    if (numBehind === 1) {
+      if (p0Behind) {
+        IntersectionTests.lineSegmentPlane(p0, p1, plane, u1);
+        IntersectionTests.lineSegmentPlane(p0, p2, plane, u2);
+        return {
+          positions: [p0, p1, p2, u1, u2],
+          indices: [0, 3, 4, 1, 2, 4, 1, 4, 3]
+        };
+      } else if (p1Behind) {
+        IntersectionTests.lineSegmentPlane(p1, p2, plane, u1);
+        IntersectionTests.lineSegmentPlane(p1, p0, plane, u2);
+        return {
+          positions: [p0, p1, p2, u1, u2],
+          indices: [1, 3, 4, 2, 0, 4, 2, 4, 3]
+        };
+      } else if (p2Behind) {
+        IntersectionTests.lineSegmentPlane(p2, p0, plane, u1);
+        IntersectionTests.lineSegmentPlane(p2, p1, plane, u2);
+        return {
+          positions: [p0, p1, p2, u1, u2],
+          indices: [2, 3, 4, 0, 1, 4, 0, 4, 3]
+        };
+      }
+    } else if (numBehind === 2) {
+      if (!p0Behind) {
+        IntersectionTests.lineSegmentPlane(p1, p0, plane, u1);
+        IntersectionTests.lineSegmentPlane(p2, p0, plane, u2);
+        return {
+          positions: [p0, p1, p2, u1, u2],
+          indices: [1, 2, 4, 1, 4, 3, 0, 3, 4]
+        };
+      } else if (!p1Behind) {
+        IntersectionTests.lineSegmentPlane(p2, p1, plane, u1);
+        IntersectionTests.lineSegmentPlane(p0, p1, plane, u2);
+        return {
+          positions: [p0, p1, p2, u1, u2],
+          indices: [2, 0, 4, 2, 4, 3, 1, 3, 4]
+        };
+      } else if (!p2Behind) {
+        IntersectionTests.lineSegmentPlane(p0, p2, plane, u1);
+        IntersectionTests.lineSegmentPlane(p1, p2, plane, u2);
+        return {
+          positions: [p0, p1, p2, u1, u2],
+          indices: [0, 1, 4, 0, 4, 3, 2, 3, 4]
+        };
+      }
+    }
+    return undefined;
+  };
+  return IntersectionTests;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("66", ["15"], function(defined) {
+  "use strict";
+  var isArray = Array.isArray;
+  if (!defined(isArray)) {
+    isArray = function(value) {
+      return Object.prototype.toString.call(value) === '[object Array]';
+    };
+  }
+  return isArray;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
 define("40", ["1e", "15", "17", "1a", "22"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
   "use strict";
   function Cartesian4(x, y, z, w) {
@@ -10312,6 +13212,758 @@ define("40", ["1e", "15", "17", "1a", "22"], function(defaultValue, defined, Dev
     return '(' + this.x + ', ' + this.y + ', ' + this.z + ', ' + this.w + ')';
   };
   return Cartesian4;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("2e", ["29", "1e", "15", "17", "1a", "22"], function(Cartesian3, defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
+  "use strict";
+  function Matrix3(column0Row0, column1Row0, column2Row0, column0Row1, column1Row1, column2Row1, column0Row2, column1Row2, column2Row2) {
+    this[0] = defaultValue(column0Row0, 0.0);
+    this[1] = defaultValue(column0Row1, 0.0);
+    this[2] = defaultValue(column0Row2, 0.0);
+    this[3] = defaultValue(column1Row0, 0.0);
+    this[4] = defaultValue(column1Row1, 0.0);
+    this[5] = defaultValue(column1Row2, 0.0);
+    this[6] = defaultValue(column2Row0, 0.0);
+    this[7] = defaultValue(column2Row1, 0.0);
+    this[8] = defaultValue(column2Row2, 0.0);
+  }
+  Matrix3.packedLength = 9;
+  Matrix3.pack = function(value, array, startingIndex) {
+    if (!defined(value)) {
+      throw new DeveloperError('value is required');
+    }
+    if (!defined(array)) {
+      throw new DeveloperError('array is required');
+    }
+    startingIndex = defaultValue(startingIndex, 0);
+    array[startingIndex++] = value[0];
+    array[startingIndex++] = value[1];
+    array[startingIndex++] = value[2];
+    array[startingIndex++] = value[3];
+    array[startingIndex++] = value[4];
+    array[startingIndex++] = value[5];
+    array[startingIndex++] = value[6];
+    array[startingIndex++] = value[7];
+    array[startingIndex++] = value[8];
+  };
+  Matrix3.unpack = function(array, startingIndex, result) {
+    if (!defined(array)) {
+      throw new DeveloperError('array is required');
+    }
+    startingIndex = defaultValue(startingIndex, 0);
+    if (!defined(result)) {
+      result = new Matrix3();
+    }
+    result[0] = array[startingIndex++];
+    result[1] = array[startingIndex++];
+    result[2] = array[startingIndex++];
+    result[3] = array[startingIndex++];
+    result[4] = array[startingIndex++];
+    result[5] = array[startingIndex++];
+    result[6] = array[startingIndex++];
+    result[7] = array[startingIndex++];
+    result[8] = array[startingIndex++];
+    return result;
+  };
+  Matrix3.clone = function(values, result) {
+    if (!defined(values)) {
+      return undefined;
+    }
+    if (!defined(result)) {
+      return new Matrix3(values[0], values[3], values[6], values[1], values[4], values[7], values[2], values[5], values[8]);
+    }
+    result[0] = values[0];
+    result[1] = values[1];
+    result[2] = values[2];
+    result[3] = values[3];
+    result[4] = values[4];
+    result[5] = values[5];
+    result[6] = values[6];
+    result[7] = values[7];
+    result[8] = values[8];
+    return result;
+  };
+  Matrix3.fromArray = function(array, startingIndex, result) {
+    if (!defined(array)) {
+      throw new DeveloperError('array is required');
+    }
+    startingIndex = defaultValue(startingIndex, 0);
+    if (!defined(result)) {
+      result = new Matrix3();
+    }
+    result[0] = array[startingIndex];
+    result[1] = array[startingIndex + 1];
+    result[2] = array[startingIndex + 2];
+    result[3] = array[startingIndex + 3];
+    result[4] = array[startingIndex + 4];
+    result[5] = array[startingIndex + 5];
+    result[6] = array[startingIndex + 6];
+    result[7] = array[startingIndex + 7];
+    result[8] = array[startingIndex + 8];
+    return result;
+  };
+  Matrix3.fromColumnMajorArray = function(values, result) {
+    if (!defined(values)) {
+      throw new DeveloperError('values parameter is required');
+    }
+    return Matrix3.clone(values, result);
+  };
+  Matrix3.fromRowMajorArray = function(values, result) {
+    if (!defined(values)) {
+      throw new DeveloperError('values is required.');
+    }
+    if (!defined(result)) {
+      return new Matrix3(values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8]);
+    }
+    result[0] = values[0];
+    result[1] = values[3];
+    result[2] = values[6];
+    result[3] = values[1];
+    result[4] = values[4];
+    result[5] = values[7];
+    result[6] = values[2];
+    result[7] = values[5];
+    result[8] = values[8];
+    return result;
+  };
+  Matrix3.fromQuaternion = function(quaternion, result) {
+    if (!defined(quaternion)) {
+      throw new DeveloperError('quaternion is required');
+    }
+    var x2 = quaternion.x * quaternion.x;
+    var xy = quaternion.x * quaternion.y;
+    var xz = quaternion.x * quaternion.z;
+    var xw = quaternion.x * quaternion.w;
+    var y2 = quaternion.y * quaternion.y;
+    var yz = quaternion.y * quaternion.z;
+    var yw = quaternion.y * quaternion.w;
+    var z2 = quaternion.z * quaternion.z;
+    var zw = quaternion.z * quaternion.w;
+    var w2 = quaternion.w * quaternion.w;
+    var m00 = x2 - y2 - z2 + w2;
+    var m01 = 2.0 * (xy - zw);
+    var m02 = 2.0 * (xz + yw);
+    var m10 = 2.0 * (xy + zw);
+    var m11 = -x2 + y2 - z2 + w2;
+    var m12 = 2.0 * (yz - xw);
+    var m20 = 2.0 * (xz - yw);
+    var m21 = 2.0 * (yz + xw);
+    var m22 = -x2 - y2 + z2 + w2;
+    if (!defined(result)) {
+      return new Matrix3(m00, m01, m02, m10, m11, m12, m20, m21, m22);
+    }
+    result[0] = m00;
+    result[1] = m10;
+    result[2] = m20;
+    result[3] = m01;
+    result[4] = m11;
+    result[5] = m21;
+    result[6] = m02;
+    result[7] = m12;
+    result[8] = m22;
+    return result;
+  };
+  Matrix3.fromScale = function(scale, result) {
+    if (!defined(scale)) {
+      throw new DeveloperError('scale is required.');
+    }
+    if (!defined(result)) {
+      return new Matrix3(scale.x, 0.0, 0.0, 0.0, scale.y, 0.0, 0.0, 0.0, scale.z);
+    }
+    result[0] = scale.x;
+    result[1] = 0.0;
+    result[2] = 0.0;
+    result[3] = 0.0;
+    result[4] = scale.y;
+    result[5] = 0.0;
+    result[6] = 0.0;
+    result[7] = 0.0;
+    result[8] = scale.z;
+    return result;
+  };
+  Matrix3.fromUniformScale = function(scale, result) {
+    if (typeof scale !== 'number') {
+      throw new DeveloperError('scale is required.');
+    }
+    if (!defined(result)) {
+      return new Matrix3(scale, 0.0, 0.0, 0.0, scale, 0.0, 0.0, 0.0, scale);
+    }
+    result[0] = scale;
+    result[1] = 0.0;
+    result[2] = 0.0;
+    result[3] = 0.0;
+    result[4] = scale;
+    result[5] = 0.0;
+    result[6] = 0.0;
+    result[7] = 0.0;
+    result[8] = scale;
+    return result;
+  };
+  Matrix3.fromCrossProduct = function(vector, result) {
+    if (!defined(vector)) {
+      throw new DeveloperError('vector is required.');
+    }
+    if (!defined(result)) {
+      return new Matrix3(0.0, -vector.z, vector.y, vector.z, 0.0, -vector.x, -vector.y, vector.x, 0.0);
+    }
+    result[0] = 0.0;
+    result[1] = vector.z;
+    result[2] = -vector.y;
+    result[3] = -vector.z;
+    result[4] = 0.0;
+    result[5] = vector.x;
+    result[6] = vector.y;
+    result[7] = -vector.x;
+    result[8] = 0.0;
+    return result;
+  };
+  Matrix3.fromRotationX = function(angle, result) {
+    if (!defined(angle)) {
+      throw new DeveloperError('angle is required.');
+    }
+    var cosAngle = Math.cos(angle);
+    var sinAngle = Math.sin(angle);
+    if (!defined(result)) {
+      return new Matrix3(1.0, 0.0, 0.0, 0.0, cosAngle, -sinAngle, 0.0, sinAngle, cosAngle);
+    }
+    result[0] = 1.0;
+    result[1] = 0.0;
+    result[2] = 0.0;
+    result[3] = 0.0;
+    result[4] = cosAngle;
+    result[5] = sinAngle;
+    result[6] = 0.0;
+    result[7] = -sinAngle;
+    result[8] = cosAngle;
+    return result;
+  };
+  Matrix3.fromRotationY = function(angle, result) {
+    if (!defined(angle)) {
+      throw new DeveloperError('angle is required.');
+    }
+    var cosAngle = Math.cos(angle);
+    var sinAngle = Math.sin(angle);
+    if (!defined(result)) {
+      return new Matrix3(cosAngle, 0.0, sinAngle, 0.0, 1.0, 0.0, -sinAngle, 0.0, cosAngle);
+    }
+    result[0] = cosAngle;
+    result[1] = 0.0;
+    result[2] = -sinAngle;
+    result[3] = 0.0;
+    result[4] = 1.0;
+    result[5] = 0.0;
+    result[6] = sinAngle;
+    result[7] = 0.0;
+    result[8] = cosAngle;
+    return result;
+  };
+  Matrix3.fromRotationZ = function(angle, result) {
+    if (!defined(angle)) {
+      throw new DeveloperError('angle is required.');
+    }
+    var cosAngle = Math.cos(angle);
+    var sinAngle = Math.sin(angle);
+    if (!defined(result)) {
+      return new Matrix3(cosAngle, -sinAngle, 0.0, sinAngle, cosAngle, 0.0, 0.0, 0.0, 1.0);
+    }
+    result[0] = cosAngle;
+    result[1] = sinAngle;
+    result[2] = 0.0;
+    result[3] = -sinAngle;
+    result[4] = cosAngle;
+    result[5] = 0.0;
+    result[6] = 0.0;
+    result[7] = 0.0;
+    result[8] = 1.0;
+    return result;
+  };
+  Matrix3.toArray = function(matrix, result) {
+    if (!defined(matrix)) {
+      throw new DeveloperError('matrix is required');
+    }
+    if (!defined(result)) {
+      return [matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], matrix[6], matrix[7], matrix[8]];
+    }
+    result[0] = matrix[0];
+    result[1] = matrix[1];
+    result[2] = matrix[2];
+    result[3] = matrix[3];
+    result[4] = matrix[4];
+    result[5] = matrix[5];
+    result[6] = matrix[6];
+    result[7] = matrix[7];
+    result[8] = matrix[8];
+    return result;
+  };
+  Matrix3.getElementIndex = function(column, row) {
+    if (typeof row !== 'number' || row < 0 || row > 2) {
+      throw new DeveloperError('row must be 0, 1, or 2.');
+    }
+    if (typeof column !== 'number' || column < 0 || column > 2) {
+      throw new DeveloperError('column must be 0, 1, or 2.');
+    }
+    return column * 3 + row;
+  };
+  Matrix3.getColumn = function(matrix, index, result) {
+    if (!defined(matrix)) {
+      throw new DeveloperError('matrix is required.');
+    }
+    if (typeof index !== 'number' || index < 0 || index > 2) {
+      throw new DeveloperError('index must be 0, 1, or 2.');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    var startIndex = index * 3;
+    var x = matrix[startIndex];
+    var y = matrix[startIndex + 1];
+    var z = matrix[startIndex + 2];
+    result.x = x;
+    result.y = y;
+    result.z = z;
+    return result;
+  };
+  Matrix3.setColumn = function(matrix, index, cartesian, result) {
+    if (!defined(matrix)) {
+      throw new DeveloperError('matrix is required');
+    }
+    if (!defined(cartesian)) {
+      throw new DeveloperError('cartesian is required');
+    }
+    if (typeof index !== 'number' || index < 0 || index > 2) {
+      throw new DeveloperError('index must be 0, 1, or 2.');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    result = Matrix3.clone(matrix, result);
+    var startIndex = index * 3;
+    result[startIndex] = cartesian.x;
+    result[startIndex + 1] = cartesian.y;
+    result[startIndex + 2] = cartesian.z;
+    return result;
+  };
+  Matrix3.getRow = function(matrix, index, result) {
+    if (!defined(matrix)) {
+      throw new DeveloperError('matrix is required.');
+    }
+    if (typeof index !== 'number' || index < 0 || index > 2) {
+      throw new DeveloperError('index must be 0, 1, or 2.');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    var x = matrix[index];
+    var y = matrix[index + 3];
+    var z = matrix[index + 6];
+    result.x = x;
+    result.y = y;
+    result.z = z;
+    return result;
+  };
+  Matrix3.setRow = function(matrix, index, cartesian, result) {
+    if (!defined(matrix)) {
+      throw new DeveloperError('matrix is required');
+    }
+    if (!defined(cartesian)) {
+      throw new DeveloperError('cartesian is required');
+    }
+    if (typeof index !== 'number' || index < 0 || index > 2) {
+      throw new DeveloperError('index must be 0, 1, or 2.');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    result = Matrix3.clone(matrix, result);
+    result[index] = cartesian.x;
+    result[index + 3] = cartesian.y;
+    result[index + 6] = cartesian.z;
+    return result;
+  };
+  var scratchColumn = new Cartesian3();
+  Matrix3.getScale = function(matrix, result) {
+    if (!defined(matrix)) {
+      throw new DeveloperError('matrix is required.');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    result.x = Cartesian3.magnitude(Cartesian3.fromElements(matrix[0], matrix[1], matrix[2], scratchColumn));
+    result.y = Cartesian3.magnitude(Cartesian3.fromElements(matrix[3], matrix[4], matrix[5], scratchColumn));
+    result.z = Cartesian3.magnitude(Cartesian3.fromElements(matrix[6], matrix[7], matrix[8], scratchColumn));
+    return result;
+  };
+  var scratchScale = new Cartesian3();
+  Matrix3.getMaximumScale = function(matrix) {
+    Matrix3.getScale(matrix, scratchScale);
+    return Cartesian3.maximumComponent(scratchScale);
+  };
+  Matrix3.multiply = function(left, right, result) {
+    if (!defined(left)) {
+      throw new DeveloperError('left is required');
+    }
+    if (!defined(right)) {
+      throw new DeveloperError('right is required');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    var column0Row0 = left[0] * right[0] + left[3] * right[1] + left[6] * right[2];
+    var column0Row1 = left[1] * right[0] + left[4] * right[1] + left[7] * right[2];
+    var column0Row2 = left[2] * right[0] + left[5] * right[1] + left[8] * right[2];
+    var column1Row0 = left[0] * right[3] + left[3] * right[4] + left[6] * right[5];
+    var column1Row1 = left[1] * right[3] + left[4] * right[4] + left[7] * right[5];
+    var column1Row2 = left[2] * right[3] + left[5] * right[4] + left[8] * right[5];
+    var column2Row0 = left[0] * right[6] + left[3] * right[7] + left[6] * right[8];
+    var column2Row1 = left[1] * right[6] + left[4] * right[7] + left[7] * right[8];
+    var column2Row2 = left[2] * right[6] + left[5] * right[7] + left[8] * right[8];
+    result[0] = column0Row0;
+    result[1] = column0Row1;
+    result[2] = column0Row2;
+    result[3] = column1Row0;
+    result[4] = column1Row1;
+    result[5] = column1Row2;
+    result[6] = column2Row0;
+    result[7] = column2Row1;
+    result[8] = column2Row2;
+    return result;
+  };
+  Matrix3.add = function(left, right, result) {
+    if (!defined(left)) {
+      throw new DeveloperError('left is required');
+    }
+    if (!defined(right)) {
+      throw new DeveloperError('right is required');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    result[0] = left[0] + right[0];
+    result[1] = left[1] + right[1];
+    result[2] = left[2] + right[2];
+    result[3] = left[3] + right[3];
+    result[4] = left[4] + right[4];
+    result[5] = left[5] + right[5];
+    result[6] = left[6] + right[6];
+    result[7] = left[7] + right[7];
+    result[8] = left[8] + right[8];
+    return result;
+  };
+  Matrix3.subtract = function(left, right, result) {
+    if (!defined(left)) {
+      throw new DeveloperError('left is required');
+    }
+    if (!defined(right)) {
+      throw new DeveloperError('right is required');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    result[0] = left[0] - right[0];
+    result[1] = left[1] - right[1];
+    result[2] = left[2] - right[2];
+    result[3] = left[3] - right[3];
+    result[4] = left[4] - right[4];
+    result[5] = left[5] - right[5];
+    result[6] = left[6] - right[6];
+    result[7] = left[7] - right[7];
+    result[8] = left[8] - right[8];
+    return result;
+  };
+  Matrix3.multiplyByVector = function(matrix, cartesian, result) {
+    if (!defined(matrix)) {
+      throw new DeveloperError('matrix is required');
+    }
+    if (!defined(cartesian)) {
+      throw new DeveloperError('cartesian is required');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    var vX = cartesian.x;
+    var vY = cartesian.y;
+    var vZ = cartesian.z;
+    var x = matrix[0] * vX + matrix[3] * vY + matrix[6] * vZ;
+    var y = matrix[1] * vX + matrix[4] * vY + matrix[7] * vZ;
+    var z = matrix[2] * vX + matrix[5] * vY + matrix[8] * vZ;
+    result.x = x;
+    result.y = y;
+    result.z = z;
+    return result;
+  };
+  Matrix3.multiplyByScalar = function(matrix, scalar, result) {
+    if (!defined(matrix)) {
+      throw new DeveloperError('matrix is required');
+    }
+    if (typeof scalar !== 'number') {
+      throw new DeveloperError('scalar must be a number');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    result[0] = matrix[0] * scalar;
+    result[1] = matrix[1] * scalar;
+    result[2] = matrix[2] * scalar;
+    result[3] = matrix[3] * scalar;
+    result[4] = matrix[4] * scalar;
+    result[5] = matrix[5] * scalar;
+    result[6] = matrix[6] * scalar;
+    result[7] = matrix[7] * scalar;
+    result[8] = matrix[8] * scalar;
+    return result;
+  };
+  Matrix3.multiplyByScale = function(matrix, scale, result) {
+    if (!defined(matrix)) {
+      throw new DeveloperError('matrix is required');
+    }
+    if (!defined(scale)) {
+      throw new DeveloperError('scale is required');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    result[0] = matrix[0] * scale.x;
+    result[1] = matrix[1] * scale.x;
+    result[2] = matrix[2] * scale.x;
+    result[3] = matrix[3] * scale.y;
+    result[4] = matrix[4] * scale.y;
+    result[5] = matrix[5] * scale.y;
+    result[6] = matrix[6] * scale.z;
+    result[7] = matrix[7] * scale.z;
+    result[8] = matrix[8] * scale.z;
+    return result;
+  };
+  Matrix3.negate = function(matrix, result) {
+    if (!defined(matrix)) {
+      throw new DeveloperError('matrix is required');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    result[0] = -matrix[0];
+    result[1] = -matrix[1];
+    result[2] = -matrix[2];
+    result[3] = -matrix[3];
+    result[4] = -matrix[4];
+    result[5] = -matrix[5];
+    result[6] = -matrix[6];
+    result[7] = -matrix[7];
+    result[8] = -matrix[8];
+    return result;
+  };
+  Matrix3.transpose = function(matrix, result) {
+    if (!defined(matrix)) {
+      throw new DeveloperError('matrix is required');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    var column0Row0 = matrix[0];
+    var column0Row1 = matrix[3];
+    var column0Row2 = matrix[6];
+    var column1Row0 = matrix[1];
+    var column1Row1 = matrix[4];
+    var column1Row2 = matrix[7];
+    var column2Row0 = matrix[2];
+    var column2Row1 = matrix[5];
+    var column2Row2 = matrix[8];
+    result[0] = column0Row0;
+    result[1] = column0Row1;
+    result[2] = column0Row2;
+    result[3] = column1Row0;
+    result[4] = column1Row1;
+    result[5] = column1Row2;
+    result[6] = column2Row0;
+    result[7] = column2Row1;
+    result[8] = column2Row2;
+    return result;
+  };
+  function computeFrobeniusNorm(matrix) {
+    var norm = 0.0;
+    for (var i = 0; i < 9; ++i) {
+      var temp = matrix[i];
+      norm += temp * temp;
+    }
+    return Math.sqrt(norm);
+  }
+  var rowVal = [1, 0, 0];
+  var colVal = [2, 2, 1];
+  function offDiagonalFrobeniusNorm(matrix) {
+    var norm = 0.0;
+    for (var i = 0; i < 3; ++i) {
+      var temp = matrix[Matrix3.getElementIndex(colVal[i], rowVal[i])];
+      norm += 2.0 * temp * temp;
+    }
+    return Math.sqrt(norm);
+  }
+  function shurDecomposition(matrix, result) {
+    var tolerance = CesiumMath.EPSILON15;
+    var maxDiagonal = 0.0;
+    var rotAxis = 1;
+    for (var i = 0; i < 3; ++i) {
+      var temp = Math.abs(matrix[Matrix3.getElementIndex(colVal[i], rowVal[i])]);
+      if (temp > maxDiagonal) {
+        rotAxis = i;
+        maxDiagonal = temp;
+      }
+    }
+    var c = 1.0;
+    var s = 0.0;
+    var p = rowVal[rotAxis];
+    var q = colVal[rotAxis];
+    if (Math.abs(matrix[Matrix3.getElementIndex(q, p)]) > tolerance) {
+      var qq = matrix[Matrix3.getElementIndex(q, q)];
+      var pp = matrix[Matrix3.getElementIndex(p, p)];
+      var qp = matrix[Matrix3.getElementIndex(q, p)];
+      var tau = (qq - pp) / 2.0 / qp;
+      var t;
+      if (tau < 0.0) {
+        t = -1.0 / (-tau + Math.sqrt(1.0 + tau * tau));
+      } else {
+        t = 1.0 / (tau + Math.sqrt(1.0 + tau * tau));
+      }
+      c = 1.0 / Math.sqrt(1.0 + t * t);
+      s = t * c;
+    }
+    result = Matrix3.clone(Matrix3.IDENTITY, result);
+    result[Matrix3.getElementIndex(p, p)] = result[Matrix3.getElementIndex(q, q)] = c;
+    result[Matrix3.getElementIndex(q, p)] = s;
+    result[Matrix3.getElementIndex(p, q)] = -s;
+    return result;
+  }
+  var jMatrix = new Matrix3();
+  var jMatrixTranspose = new Matrix3();
+  Matrix3.computeEigenDecomposition = function(matrix, result) {
+    if (!defined(matrix)) {
+      throw new DeveloperError('matrix is required.');
+    }
+    var tolerance = CesiumMath.EPSILON20;
+    var maxSweeps = 10;
+    var count = 0;
+    var sweep = 0;
+    if (!defined(result)) {
+      result = {};
+    }
+    var unitaryMatrix = result.unitary = Matrix3.clone(Matrix3.IDENTITY, result.unitary);
+    var diagMatrix = result.diagonal = Matrix3.clone(matrix, result.diagonal);
+    var epsilon = tolerance * computeFrobeniusNorm(diagMatrix);
+    while (sweep < maxSweeps && offDiagonalFrobeniusNorm(diagMatrix) > epsilon) {
+      shurDecomposition(diagMatrix, jMatrix);
+      Matrix3.transpose(jMatrix, jMatrixTranspose);
+      Matrix3.multiply(diagMatrix, jMatrix, diagMatrix);
+      Matrix3.multiply(jMatrixTranspose, diagMatrix, diagMatrix);
+      Matrix3.multiply(unitaryMatrix, jMatrix, unitaryMatrix);
+      if (++count > 2) {
+        ++sweep;
+        count = 0;
+      }
+    }
+    return result;
+  };
+  Matrix3.abs = function(matrix, result) {
+    if (!defined(matrix)) {
+      throw new DeveloperError('matrix is required');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    result[0] = Math.abs(matrix[0]);
+    result[1] = Math.abs(matrix[1]);
+    result[2] = Math.abs(matrix[2]);
+    result[3] = Math.abs(matrix[3]);
+    result[4] = Math.abs(matrix[4]);
+    result[5] = Math.abs(matrix[5]);
+    result[6] = Math.abs(matrix[6]);
+    result[7] = Math.abs(matrix[7]);
+    result[8] = Math.abs(matrix[8]);
+    return result;
+  };
+  Matrix3.determinant = function(matrix) {
+    if (!defined(matrix)) {
+      throw new DeveloperError('matrix is required');
+    }
+    var m11 = matrix[0];
+    var m21 = matrix[3];
+    var m31 = matrix[6];
+    var m12 = matrix[1];
+    var m22 = matrix[4];
+    var m32 = matrix[7];
+    var m13 = matrix[2];
+    var m23 = matrix[5];
+    var m33 = matrix[8];
+    return m11 * (m22 * m33 - m23 * m32) + m12 * (m23 * m31 - m21 * m33) + m13 * (m21 * m32 - m22 * m31);
+  };
+  Matrix3.inverse = function(matrix, result) {
+    if (!defined(matrix)) {
+      throw new DeveloperError('matrix is required');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    var m11 = matrix[0];
+    var m21 = matrix[1];
+    var m31 = matrix[2];
+    var m12 = matrix[3];
+    var m22 = matrix[4];
+    var m32 = matrix[5];
+    var m13 = matrix[6];
+    var m23 = matrix[7];
+    var m33 = matrix[8];
+    var determinant = Matrix3.determinant(matrix);
+    if (Math.abs(determinant) <= CesiumMath.EPSILON15) {
+      throw new DeveloperError('matrix is not invertible');
+    }
+    result[0] = m22 * m33 - m23 * m32;
+    result[1] = m23 * m31 - m21 * m33;
+    result[2] = m21 * m32 - m22 * m31;
+    result[3] = m13 * m32 - m12 * m33;
+    result[4] = m11 * m33 - m13 * m31;
+    result[5] = m12 * m31 - m11 * m32;
+    result[6] = m12 * m23 - m13 * m22;
+    result[7] = m13 * m21 - m11 * m23;
+    result[8] = m11 * m22 - m12 * m21;
+    var scale = 1.0 / determinant;
+    return Matrix3.multiplyByScalar(result, scale, result);
+  };
+  Matrix3.equals = function(left, right) {
+    return (left === right) || (defined(left) && defined(right) && left[0] === right[0] && left[1] === right[1] && left[2] === right[2] && left[3] === right[3] && left[4] === right[4] && left[5] === right[5] && left[6] === right[6] && left[7] === right[7] && left[8] === right[8]);
+  };
+  Matrix3.equalsEpsilon = function(left, right, epsilon) {
+    if (typeof epsilon !== 'number') {
+      throw new DeveloperError('epsilon must be a number');
+    }
+    return (left === right) || (defined(left) && defined(right) && Math.abs(left[0] - right[0]) <= epsilon && Math.abs(left[1] - right[1]) <= epsilon && Math.abs(left[2] - right[2]) <= epsilon && Math.abs(left[3] - right[3]) <= epsilon && Math.abs(left[4] - right[4]) <= epsilon && Math.abs(left[5] - right[5]) <= epsilon && Math.abs(left[6] - right[6]) <= epsilon && Math.abs(left[7] - right[7]) <= epsilon && Math.abs(left[8] - right[8]) <= epsilon);
+  };
+  Matrix3.IDENTITY = freezeObject(new Matrix3(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0));
+  Matrix3.ZERO = freezeObject(new Matrix3(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0));
+  Matrix3.COLUMN0ROW0 = 0;
+  Matrix3.COLUMN0ROW1 = 1;
+  Matrix3.COLUMN0ROW2 = 2;
+  Matrix3.COLUMN1ROW0 = 3;
+  Matrix3.COLUMN1ROW1 = 4;
+  Matrix3.COLUMN1ROW2 = 5;
+  Matrix3.COLUMN2ROW0 = 6;
+  Matrix3.COLUMN2ROW1 = 7;
+  Matrix3.COLUMN2ROW2 = 8;
+  Matrix3.prototype.clone = function(result) {
+    return Matrix3.clone(this, result);
+  };
+  Matrix3.prototype.equals = function(right) {
+    return Matrix3.equals(this, right);
+  };
+  Matrix3.equalsArray = function(matrix, array, offset) {
+    return matrix[0] === array[offset] && matrix[1] === array[offset + 1] && matrix[2] === array[offset + 2] && matrix[3] === array[offset + 3] && matrix[4] === array[offset + 4] && matrix[5] === array[offset + 5] && matrix[6] === array[offset + 6] && matrix[7] === array[offset + 7] && matrix[8] === array[offset + 8];
+  };
+  Matrix3.prototype.equalsEpsilon = function(right, epsilon) {
+    return Matrix3.equalsEpsilon(this, right, epsilon);
+  };
+  Matrix3.prototype.toString = function() {
+    return '(' + this[0] + ', ' + this[3] + ', ' + this[6] + ')\n' + '(' + this[1] + ', ' + this[4] + ', ' + this[7] + ')\n' + '(' + this[2] + ', ' + this[5] + ', ' + this[8] + ')';
+  };
+  return Matrix3;
 });
 
 })();
@@ -11788,312 +15440,308 @@ define("2f", ["29", "40", "1e", "15", "17", "1a", "22", "2e", "34"], function(Ca
 })();
 (function() {
 var define = $__System.amdDefine;
-define("16", ["15"], function(defined) {
-  "use strict";
-  var definePropertyWorks = (function() {
-    try {
-      return 'x' in Object.defineProperty({}, 'x', {});
-    } catch (e) {
-      return false;
+define("67", [], function() {
+  var MersenneTwister = function(seed) {
+    if (seed == undefined) {
+      seed = new Date().getTime();
     }
-  })();
-  var defineProperties = Object.defineProperties;
-  if (!definePropertyWorks || !defined(defineProperties)) {
-    defineProperties = function(o) {
-      return o;
-    };
-  }
-  return defineProperties;
+    this.N = 624;
+    this.M = 397;
+    this.MATRIX_A = 0x9908b0df;
+    this.UPPER_MASK = 0x80000000;
+    this.LOWER_MASK = 0x7fffffff;
+    this.mt = new Array(this.N);
+    this.mti = this.N + 1;
+    this.init_genrand(seed);
+  };
+  MersenneTwister.prototype.init_genrand = function(s) {
+    this.mt[0] = s >>> 0;
+    for (this.mti = 1; this.mti < this.N; this.mti++) {
+      var s = this.mt[this.mti - 1] ^ (this.mt[this.mti - 1] >>> 30);
+      this.mt[this.mti] = (((((s & 0xffff0000) >>> 16) * 1812433253) << 16) + (s & 0x0000ffff) * 1812433253) + this.mti;
+      this.mt[this.mti] >>>= 0;
+    }
+  };
+  MersenneTwister.prototype.genrand_int32 = function() {
+    var y;
+    var mag01 = new Array(0x0, this.MATRIX_A);
+    if (this.mti >= this.N) {
+      var kk;
+      if (this.mti == this.N + 1)
+        this.init_genrand(5489);
+      for (kk = 0; kk < this.N - this.M; kk++) {
+        y = (this.mt[kk] & this.UPPER_MASK) | (this.mt[kk + 1] & this.LOWER_MASK);
+        this.mt[kk] = this.mt[kk + this.M] ^ (y >>> 1) ^ mag01[y & 0x1];
+      }
+      for (; kk < this.N - 1; kk++) {
+        y = (this.mt[kk] & this.UPPER_MASK) | (this.mt[kk + 1] & this.LOWER_MASK);
+        this.mt[kk] = this.mt[kk + (this.M - this.N)] ^ (y >>> 1) ^ mag01[y & 0x1];
+      }
+      y = (this.mt[this.N - 1] & this.UPPER_MASK) | (this.mt[0] & this.LOWER_MASK);
+      this.mt[this.N - 1] = this.mt[this.M - 1] ^ (y >>> 1) ^ mag01[y & 0x1];
+      this.mti = 0;
+    }
+    y = this.mt[this.mti++];
+    y ^= (y >>> 11);
+    y ^= (y << 7) & 0x9d2c5680;
+    y ^= (y << 15) & 0xefc60000;
+    y ^= (y >>> 18);
+    return y >>> 0;
+  };
+  MersenneTwister.prototype.random = function() {
+    return this.genrand_int32() * (1.0 / 4294967296.0);
+  };
+  return MersenneTwister;
 });
 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5d", ["15", "16"], function(defined, defineProperties) {
+define("1e", ["1a"], function(freezeObject) {
   "use strict";
-  var _supportsFullscreen;
-  var _names = {
-    requestFullscreen: undefined,
-    exitFullscreen: undefined,
-    fullscreenEnabled: undefined,
-    fullscreenElement: undefined,
-    fullscreenchange: undefined,
-    fullscreenerror: undefined
-  };
-  var Fullscreen = {};
-  defineProperties(Fullscreen, {
-    element: {get: function() {
-        if (!Fullscreen.supportsFullscreen()) {
-          return undefined;
-        }
-        return document[_names.fullscreenElement];
-      }},
-    changeEventName: {get: function() {
-        if (!Fullscreen.supportsFullscreen()) {
-          return undefined;
-        }
-        return _names.fullscreenchange;
-      }},
-    errorEventName: {get: function() {
-        if (!Fullscreen.supportsFullscreen()) {
-          return undefined;
-        }
-        return _names.fullscreenerror;
-      }},
-    enabled: {get: function() {
-        if (!Fullscreen.supportsFullscreen()) {
-          return undefined;
-        }
-        return document[_names.fullscreenEnabled];
-      }},
-    fullscreen: {get: function() {
-        if (!Fullscreen.supportsFullscreen()) {
-          return undefined;
-        }
-        return Fullscreen.element !== null;
-      }}
-  });
-  Fullscreen.supportsFullscreen = function() {
-    if (defined(_supportsFullscreen)) {
-      return _supportsFullscreen;
+  function defaultValue(a, b) {
+    if (a !== undefined) {
+      return a;
     }
-    _supportsFullscreen = false;
-    var body = document.body;
-    if (typeof body.requestFullscreen === 'function') {
-      _names.requestFullscreen = 'requestFullscreen';
-      _names.exitFullscreen = 'exitFullscreen';
-      _names.fullscreenEnabled = 'fullscreenEnabled';
-      _names.fullscreenElement = 'fullscreenElement';
-      _names.fullscreenchange = 'fullscreenchange';
-      _names.fullscreenerror = 'fullscreenerror';
-      _supportsFullscreen = true;
-      return _supportsFullscreen;
-    }
-    var prefixes = ['webkit', 'moz', 'o', 'ms', 'khtml'];
-    var name;
-    for (var i = 0,
-        len = prefixes.length; i < len; ++i) {
-      var prefix = prefixes[i];
-      name = prefix + 'RequestFullscreen';
-      if (typeof body[name] === 'function') {
-        _names.requestFullscreen = name;
-        _supportsFullscreen = true;
-      } else {
-        name = prefix + 'RequestFullScreen';
-        if (typeof body[name] === 'function') {
-          _names.requestFullscreen = name;
-          _supportsFullscreen = true;
-        }
-      }
-      name = prefix + 'ExitFullscreen';
-      if (typeof document[name] === 'function') {
-        _names.exitFullscreen = name;
-      } else {
-        name = prefix + 'CancelFullScreen';
-        if (typeof document[name] === 'function') {
-          _names.exitFullscreen = name;
-        }
-      }
-      name = prefix + 'FullscreenEnabled';
-      if (defined(document[name])) {
-        _names.fullscreenEnabled = name;
-      } else {
-        name = prefix + 'FullScreenEnabled';
-        if (defined(document[name])) {
-          _names.fullscreenEnabled = name;
-        }
-      }
-      name = prefix + 'FullscreenElement';
-      if (defined(document[name])) {
-        _names.fullscreenElement = name;
-      } else {
-        name = prefix + 'FullScreenElement';
-        if (defined(document[name])) {
-          _names.fullscreenElement = name;
-        }
-      }
-      name = prefix + 'fullscreenchange';
-      if (defined(document['on' + name])) {
-        if (prefix === 'ms') {
-          name = 'MSFullscreenChange';
-        }
-        _names.fullscreenchange = name;
-      }
-      name = prefix + 'fullscreenerror';
-      if (defined(document['on' + name])) {
-        if (prefix === 'ms') {
-          name = 'MSFullscreenError';
-        }
-        _names.fullscreenerror = name;
-      }
-    }
-    return _supportsFullscreen;
-  };
-  Fullscreen.requestFullscreen = function(element) {
-    if (!Fullscreen.supportsFullscreen()) {
-      return;
-    }
-    element[_names.requestFullscreen]();
-  };
-  Fullscreen.exitFullscreen = function() {
-    if (!Fullscreen.supportsFullscreen()) {
-      return;
-    }
-    document[_names.exitFullscreen]();
-  };
-  return Fullscreen;
+    return b;
+  }
+  defaultValue.EMPTY_OBJECT = freezeObject({});
+  return defaultValue;
 });
 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5e", ["1e", "15", "5d"], function(defaultValue, defined, Fullscreen) {
+define("22", ["67", "1e", "15", "17"], function(MersenneTwister, defaultValue, defined, DeveloperError) {
   "use strict";
-  var theNavigator;
-  if (typeof navigator !== 'undefined') {
-    theNavigator = navigator;
-  } else {
-    theNavigator = {};
-  }
-  function extractVersion(versionString) {
-    var parts = versionString.split('.');
-    for (var i = 0,
-        len = parts.length; i < len; ++i) {
-      parts[i] = parseInt(parts[i], 10);
+  var CesiumMath = {};
+  CesiumMath.EPSILON1 = 0.1;
+  CesiumMath.EPSILON2 = 0.01;
+  CesiumMath.EPSILON3 = 0.001;
+  CesiumMath.EPSILON4 = 0.0001;
+  CesiumMath.EPSILON5 = 0.00001;
+  CesiumMath.EPSILON6 = 0.000001;
+  CesiumMath.EPSILON7 = 0.0000001;
+  CesiumMath.EPSILON8 = 0.00000001;
+  CesiumMath.EPSILON9 = 0.000000001;
+  CesiumMath.EPSILON10 = 0.0000000001;
+  CesiumMath.EPSILON11 = 0.00000000001;
+  CesiumMath.EPSILON12 = 0.000000000001;
+  CesiumMath.EPSILON13 = 0.0000000000001;
+  CesiumMath.EPSILON14 = 0.00000000000001;
+  CesiumMath.EPSILON15 = 0.000000000000001;
+  CesiumMath.EPSILON16 = 0.0000000000000001;
+  CesiumMath.EPSILON17 = 0.00000000000000001;
+  CesiumMath.EPSILON18 = 0.000000000000000001;
+  CesiumMath.EPSILON19 = 0.0000000000000000001;
+  CesiumMath.EPSILON20 = 0.00000000000000000001;
+  CesiumMath.GRAVITATIONALPARAMETER = 3.986004418e14;
+  CesiumMath.SOLAR_RADIUS = 6.955e8;
+  CesiumMath.LUNAR_RADIUS = 1737400.0;
+  CesiumMath.SIXTY_FOUR_KILOBYTES = 64 * 1024;
+  CesiumMath.sign = function(value) {
+    if (value > 0) {
+      return 1;
     }
-    return parts;
-  }
-  var isChromeResult;
-  var chromeVersionResult;
-  function isChrome() {
-    if (!defined(isChromeResult)) {
-      isChromeResult = false;
-      var fields = (/ Chrome\/([\.0-9]+)/).exec(theNavigator.userAgent);
-      if (fields !== null) {
-        isChromeResult = true;
-        chromeVersionResult = extractVersion(fields[1]);
-      }
+    if (value < 0) {
+      return -1;
     }
-    return isChromeResult;
-  }
-  function chromeVersion() {
-    return isChrome() && chromeVersionResult;
-  }
-  var isSafariResult;
-  var safariVersionResult;
-  function isSafari() {
-    if (!defined(isSafariResult)) {
-      isSafariResult = false;
-      if (!isChrome() && (/ Safari\/[\.0-9]+/).test(theNavigator.userAgent)) {
-        var fields = (/ Version\/([\.0-9]+)/).exec(theNavigator.userAgent);
-        if (fields !== null) {
-          isSafariResult = true;
-          safariVersionResult = extractVersion(fields[1]);
-        }
-      }
-    }
-    return isSafariResult;
-  }
-  function safariVersion() {
-    return isSafari() && safariVersionResult;
-  }
-  var isWebkitResult;
-  var webkitVersionResult;
-  function isWebkit() {
-    if (!defined(isWebkitResult)) {
-      isWebkitResult = false;
-      var fields = (/ AppleWebKit\/([\.0-9]+)(\+?)/).exec(theNavigator.userAgent);
-      if (fields !== null) {
-        isWebkitResult = true;
-        webkitVersionResult = extractVersion(fields[1]);
-        webkitVersionResult.isNightly = !!fields[2];
-      }
-    }
-    return isWebkitResult;
-  }
-  function webkitVersion() {
-    return isWebkit() && webkitVersionResult;
-  }
-  var isInternetExplorerResult;
-  var internetExplorerVersionResult;
-  function isInternetExplorer() {
-    if (!defined(isInternetExplorerResult)) {
-      isInternetExplorerResult = false;
-      var fields;
-      if (theNavigator.appName === 'Microsoft Internet Explorer') {
-        fields = /MSIE ([0-9]{1,}[\.0-9]{0,})/.exec(theNavigator.userAgent);
-        if (fields !== null) {
-          isInternetExplorerResult = true;
-          internetExplorerVersionResult = extractVersion(fields[1]);
-        }
-      } else if (theNavigator.appName === 'Netscape') {
-        fields = /Trident\/.*rv:([0-9]{1,}[\.0-9]{0,})/.exec(theNavigator.userAgent);
-        if (fields !== null) {
-          isInternetExplorerResult = true;
-          internetExplorerVersionResult = extractVersion(fields[1]);
-        }
-      }
-    }
-    return isInternetExplorerResult;
-  }
-  function internetExplorerVersion() {
-    return isInternetExplorer() && internetExplorerVersionResult;
-  }
-  var isFirefoxResult;
-  var firefoxVersionResult;
-  function isFirefox() {
-    if (!defined(isFirefoxResult)) {
-      isFirefoxResult = false;
-      var fields = /Firefox\/([\.0-9]+)/.exec(theNavigator.userAgent);
-      if (fields !== null) {
-        isFirefoxResult = true;
-        firefoxVersionResult = extractVersion(fields[1]);
-      }
-    }
-    return isFirefoxResult;
-  }
-  var isWindowsResult;
-  function isWindows() {
-    if (!defined(isWindowsResult)) {
-      isWindowsResult = /Windows/i.test(theNavigator.appVersion);
-    }
-    return isWindowsResult;
-  }
-  function firefoxVersion() {
-    return isFirefox() && firefoxVersionResult;
-  }
-  var hasPointerEvents;
-  function supportsPointerEvents() {
-    if (!defined(hasPointerEvents)) {
-      hasPointerEvents = typeof PointerEvent !== 'undefined' && (!defined(theNavigator.pointerEnabled) || theNavigator.pointerEnabled);
-    }
-    return hasPointerEvents;
-  }
-  var FeatureDetection = {
-    isChrome: isChrome,
-    chromeVersion: chromeVersion,
-    isSafari: isSafari,
-    safariVersion: safariVersion,
-    isWebkit: isWebkit,
-    webkitVersion: webkitVersion,
-    isInternetExplorer: isInternetExplorer,
-    internetExplorerVersion: internetExplorerVersion,
-    isFirefox: isFirefox,
-    firefoxVersion: firefoxVersion,
-    isWindows: isWindows,
-    hardwareConcurrency: defaultValue(theNavigator.hardwareConcurrency, 3),
-    supportsPointerEvents: supportsPointerEvents
+    return 0;
   };
-  FeatureDetection.supportsFullscreen = function() {
-    return Fullscreen.supportsFullscreen();
+  CesiumMath.signNotZero = function(value) {
+    return value < 0.0 ? -1.0 : 1.0;
   };
-  FeatureDetection.supportsTypedArrays = function() {
-    return typeof ArrayBuffer !== 'undefined';
+  CesiumMath.toSNorm = function(value) {
+    return Math.round((CesiumMath.clamp(value, -1.0, 1.0) * 0.5 + 0.5) * 255.0);
   };
-  FeatureDetection.supportsWebWorkers = function() {
-    return typeof Worker !== 'undefined';
+  CesiumMath.fromSNorm = function(value) {
+    return CesiumMath.clamp(value, 0.0, 255.0) / 255.0 * 2.0 - 1.0;
   };
-  return FeatureDetection;
+  CesiumMath.sinh = function(value) {
+    var part1 = Math.pow(Math.E, value);
+    var part2 = Math.pow(Math.E, -1.0 * value);
+    return (part1 - part2) * 0.5;
+  };
+  CesiumMath.cosh = function(value) {
+    var part1 = Math.pow(Math.E, value);
+    var part2 = Math.pow(Math.E, -1.0 * value);
+    return (part1 + part2) * 0.5;
+  };
+  CesiumMath.lerp = function(p, q, time) {
+    return ((1.0 - time) * p) + (time * q);
+  };
+  CesiumMath.PI = Math.PI;
+  CesiumMath.ONE_OVER_PI = 1.0 / Math.PI;
+  CesiumMath.PI_OVER_TWO = Math.PI * 0.5;
+  CesiumMath.PI_OVER_THREE = Math.PI / 3.0;
+  CesiumMath.PI_OVER_FOUR = Math.PI / 4.0;
+  CesiumMath.PI_OVER_SIX = Math.PI / 6.0;
+  CesiumMath.THREE_PI_OVER_TWO = (3.0 * Math.PI) * 0.5;
+  CesiumMath.TWO_PI = 2.0 * Math.PI;
+  CesiumMath.ONE_OVER_TWO_PI = 1.0 / (2.0 * Math.PI);
+  CesiumMath.RADIANS_PER_DEGREE = Math.PI / 180.0;
+  CesiumMath.DEGREES_PER_RADIAN = 180.0 / Math.PI;
+  CesiumMath.RADIANS_PER_ARCSECOND = CesiumMath.RADIANS_PER_DEGREE / 3600.0;
+  CesiumMath.toRadians = function(degrees) {
+    if (!defined(degrees)) {
+      throw new DeveloperError('degrees is required.');
+    }
+    return degrees * CesiumMath.RADIANS_PER_DEGREE;
+  };
+  CesiumMath.toDegrees = function(radians) {
+    if (!defined(radians)) {
+      throw new DeveloperError('radians is required.');
+    }
+    return radians * CesiumMath.DEGREES_PER_RADIAN;
+  };
+  CesiumMath.convertLongitudeRange = function(angle) {
+    if (!defined(angle)) {
+      throw new DeveloperError('angle is required.');
+    }
+    var twoPi = CesiumMath.TWO_PI;
+    var simplified = angle - Math.floor(angle / twoPi) * twoPi;
+    if (simplified < -Math.PI) {
+      return simplified + twoPi;
+    }
+    if (simplified >= Math.PI) {
+      return simplified - twoPi;
+    }
+    return simplified;
+  };
+  CesiumMath.negativePiToPi = function(x) {
+    if (!defined(x)) {
+      throw new DeveloperError('x is required.');
+    }
+    return CesiumMath.zeroToTwoPi(x + CesiumMath.PI) - CesiumMath.PI;
+  };
+  CesiumMath.zeroToTwoPi = function(x) {
+    if (!defined(x)) {
+      throw new DeveloperError('x is required.');
+    }
+    var mod = CesiumMath.mod(x, CesiumMath.TWO_PI);
+    if (Math.abs(mod) < CesiumMath.EPSILON14 && Math.abs(x) > CesiumMath.EPSILON14) {
+      return CesiumMath.TWO_PI;
+    }
+    return mod;
+  };
+  CesiumMath.mod = function(m, n) {
+    if (!defined(m)) {
+      throw new DeveloperError('m is required.');
+    }
+    if (!defined(n)) {
+      throw new DeveloperError('n is required.');
+    }
+    return ((m % n) + n) % n;
+  };
+  CesiumMath.equalsEpsilon = function(left, right, relativeEpsilon, absoluteEpsilon) {
+    if (!defined(left)) {
+      throw new DeveloperError('left is required.');
+    }
+    if (!defined(right)) {
+      throw new DeveloperError('right is required.');
+    }
+    if (!defined(relativeEpsilon)) {
+      throw new DeveloperError('relativeEpsilon is required.');
+    }
+    absoluteEpsilon = defaultValue(absoluteEpsilon, relativeEpsilon);
+    var absDiff = Math.abs(left - right);
+    return absDiff <= absoluteEpsilon || absDiff <= relativeEpsilon * Math.max(Math.abs(left), Math.abs(right));
+  };
+  var factorials = [1];
+  CesiumMath.factorial = function(n) {
+    if (typeof n !== 'number' || n < 0) {
+      throw new DeveloperError('A number greater than or equal to 0 is required.');
+    }
+    var length = factorials.length;
+    if (n >= length) {
+      var sum = factorials[length - 1];
+      for (var i = length; i <= n; i++) {
+        factorials.push(sum * i);
+      }
+    }
+    return factorials[n];
+  };
+  CesiumMath.incrementWrap = function(n, maximumValue, minimumValue) {
+    minimumValue = defaultValue(minimumValue, 0.0);
+    if (!defined(n)) {
+      throw new DeveloperError('n is required.');
+    }
+    if (maximumValue <= minimumValue) {
+      throw new DeveloperError('maximumValue must be greater than minimumValue.');
+    }
+    ++n;
+    if (n > maximumValue) {
+      n = minimumValue;
+    }
+    return n;
+  };
+  CesiumMath.isPowerOfTwo = function(n) {
+    if (typeof n !== 'number' || n < 0) {
+      throw new DeveloperError('A number greater than or equal to 0 is required.');
+    }
+    return (n !== 0) && ((n & (n - 1)) === 0);
+  };
+  CesiumMath.nextPowerOfTwo = function(n) {
+    if (typeof n !== 'number' || n < 0) {
+      throw new DeveloperError('A number greater than or equal to 0 is required.');
+    }
+    --n;
+    n |= n >> 1;
+    n |= n >> 2;
+    n |= n >> 4;
+    n |= n >> 8;
+    n |= n >> 16;
+    ++n;
+    return n;
+  };
+  CesiumMath.clamp = function(value, min, max) {
+    if (!defined(value)) {
+      throw new DeveloperError('value is required');
+    }
+    if (!defined(min)) {
+      throw new DeveloperError('min is required.');
+    }
+    if (!defined(max)) {
+      throw new DeveloperError('max is required.');
+    }
+    return value < min ? min : value > max ? max : value;
+  };
+  var randomNumberGenerator = new MersenneTwister();
+  CesiumMath.setRandomNumberSeed = function(seed) {
+    if (!defined(seed)) {
+      throw new DeveloperError('seed is required.');
+    }
+    randomNumberGenerator = new MersenneTwister(seed);
+  };
+  CesiumMath.nextRandomNumber = function() {
+    return randomNumberGenerator.random();
+  };
+  CesiumMath.acosClamped = function(value) {
+    if (!defined(value)) {
+      throw new DeveloperError('value is required.');
+    }
+    return Math.acos(CesiumMath.clamp(value, -1.0, 1.0));
+  };
+  CesiumMath.asinClamped = function(value) {
+    if (!defined(value)) {
+      throw new DeveloperError('value is required.');
+    }
+    return Math.asin(CesiumMath.clamp(value, -1.0, 1.0));
+  };
+  CesiumMath.chordLength = function(angle, radius) {
+    if (!defined(angle)) {
+      throw new DeveloperError('angle is required.');
+    }
+    if (!defined(radius)) {
+      throw new DeveloperError('radius is required.');
+    }
+    return 2.0 * radius * Math.sin(angle * 0.5);
+  };
+  CesiumMath.fog = function(distanceToCamera, density) {
+    var scalar = distanceToCamera * density;
+    return 1.0 - Math.exp(-(scalar * scalar));
+  };
+  return CesiumMath;
 });
 
 })();
@@ -12583,78 +16231,6 @@ define("29", ["1e", "15", "17", "1a", "22"], function(defaultValue, defined, Dev
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5f", [], function() {
-  var MersenneTwister = function(seed) {
-    if (seed == undefined) {
-      seed = new Date().getTime();
-    }
-    this.N = 624;
-    this.M = 397;
-    this.MATRIX_A = 0x9908b0df;
-    this.UPPER_MASK = 0x80000000;
-    this.LOWER_MASK = 0x7fffffff;
-    this.mt = new Array(this.N);
-    this.mti = this.N + 1;
-    this.init_genrand(seed);
-  };
-  MersenneTwister.prototype.init_genrand = function(s) {
-    this.mt[0] = s >>> 0;
-    for (this.mti = 1; this.mti < this.N; this.mti++) {
-      var s = this.mt[this.mti - 1] ^ (this.mt[this.mti - 1] >>> 30);
-      this.mt[this.mti] = (((((s & 0xffff0000) >>> 16) * 1812433253) << 16) + (s & 0x0000ffff) * 1812433253) + this.mti;
-      this.mt[this.mti] >>>= 0;
-    }
-  };
-  MersenneTwister.prototype.genrand_int32 = function() {
-    var y;
-    var mag01 = new Array(0x0, this.MATRIX_A);
-    if (this.mti >= this.N) {
-      var kk;
-      if (this.mti == this.N + 1)
-        this.init_genrand(5489);
-      for (kk = 0; kk < this.N - this.M; kk++) {
-        y = (this.mt[kk] & this.UPPER_MASK) | (this.mt[kk + 1] & this.LOWER_MASK);
-        this.mt[kk] = this.mt[kk + this.M] ^ (y >>> 1) ^ mag01[y & 0x1];
-      }
-      for (; kk < this.N - 1; kk++) {
-        y = (this.mt[kk] & this.UPPER_MASK) | (this.mt[kk + 1] & this.LOWER_MASK);
-        this.mt[kk] = this.mt[kk + (this.M - this.N)] ^ (y >>> 1) ^ mag01[y & 0x1];
-      }
-      y = (this.mt[this.N - 1] & this.UPPER_MASK) | (this.mt[0] & this.LOWER_MASK);
-      this.mt[this.N - 1] = this.mt[this.M - 1] ^ (y >>> 1) ^ mag01[y & 0x1];
-      this.mti = 0;
-    }
-    y = this.mt[this.mti++];
-    y ^= (y >>> 11);
-    y ^= (y << 7) & 0x9d2c5680;
-    y ^= (y << 15) & 0xefc60000;
-    y ^= (y >>> 18);
-    return y >>> 0;
-  };
-  MersenneTwister.prototype.random = function() {
-    return this.genrand_int32() * (1.0 / 4294967296.0);
-  };
-  return MersenneTwister;
-});
-
-})();
-(function() {
-var define = $__System.amdDefine;
-define("1e", ["1a"], function(freezeObject) {
-  "use strict";
-  function defaultValue(a, b) {
-    if (a !== undefined) {
-      return a;
-    }
-    return b;
-  }
-  defaultValue.EMPTY_OBJECT = freezeObject({});
-  return defaultValue;
-});
-
-})();
-(function() {
-var define = $__System.amdDefine;
 define("17", ["15"], function(defined) {
   "use strict";
   function DeveloperError(message) {
@@ -12679,1569 +16255,6 @@ define("17", ["15"], function(defined) {
     throw new DeveloperError('This function defines an interface and should not be called directly.');
   };
   return DeveloperError;
-});
-
-})();
-(function() {
-var define = $__System.amdDefine;
-define("22", ["5f", "1e", "15", "17"], function(MersenneTwister, defaultValue, defined, DeveloperError) {
-  "use strict";
-  var CesiumMath = {};
-  CesiumMath.EPSILON1 = 0.1;
-  CesiumMath.EPSILON2 = 0.01;
-  CesiumMath.EPSILON3 = 0.001;
-  CesiumMath.EPSILON4 = 0.0001;
-  CesiumMath.EPSILON5 = 0.00001;
-  CesiumMath.EPSILON6 = 0.000001;
-  CesiumMath.EPSILON7 = 0.0000001;
-  CesiumMath.EPSILON8 = 0.00000001;
-  CesiumMath.EPSILON9 = 0.000000001;
-  CesiumMath.EPSILON10 = 0.0000000001;
-  CesiumMath.EPSILON11 = 0.00000000001;
-  CesiumMath.EPSILON12 = 0.000000000001;
-  CesiumMath.EPSILON13 = 0.0000000000001;
-  CesiumMath.EPSILON14 = 0.00000000000001;
-  CesiumMath.EPSILON15 = 0.000000000000001;
-  CesiumMath.EPSILON16 = 0.0000000000000001;
-  CesiumMath.EPSILON17 = 0.00000000000000001;
-  CesiumMath.EPSILON18 = 0.000000000000000001;
-  CesiumMath.EPSILON19 = 0.0000000000000000001;
-  CesiumMath.EPSILON20 = 0.00000000000000000001;
-  CesiumMath.GRAVITATIONALPARAMETER = 3.986004418e14;
-  CesiumMath.SOLAR_RADIUS = 6.955e8;
-  CesiumMath.LUNAR_RADIUS = 1737400.0;
-  CesiumMath.SIXTY_FOUR_KILOBYTES = 64 * 1024;
-  CesiumMath.sign = function(value) {
-    if (value > 0) {
-      return 1;
-    }
-    if (value < 0) {
-      return -1;
-    }
-    return 0;
-  };
-  CesiumMath.signNotZero = function(value) {
-    return value < 0.0 ? -1.0 : 1.0;
-  };
-  CesiumMath.toSNorm = function(value) {
-    return Math.round((CesiumMath.clamp(value, -1.0, 1.0) * 0.5 + 0.5) * 255.0);
-  };
-  CesiumMath.fromSNorm = function(value) {
-    return CesiumMath.clamp(value, 0.0, 255.0) / 255.0 * 2.0 - 1.0;
-  };
-  CesiumMath.sinh = function(value) {
-    var part1 = Math.pow(Math.E, value);
-    var part2 = Math.pow(Math.E, -1.0 * value);
-    return (part1 - part2) * 0.5;
-  };
-  CesiumMath.cosh = function(value) {
-    var part1 = Math.pow(Math.E, value);
-    var part2 = Math.pow(Math.E, -1.0 * value);
-    return (part1 + part2) * 0.5;
-  };
-  CesiumMath.lerp = function(p, q, time) {
-    return ((1.0 - time) * p) + (time * q);
-  };
-  CesiumMath.PI = Math.PI;
-  CesiumMath.ONE_OVER_PI = 1.0 / Math.PI;
-  CesiumMath.PI_OVER_TWO = Math.PI * 0.5;
-  CesiumMath.PI_OVER_THREE = Math.PI / 3.0;
-  CesiumMath.PI_OVER_FOUR = Math.PI / 4.0;
-  CesiumMath.PI_OVER_SIX = Math.PI / 6.0;
-  CesiumMath.THREE_PI_OVER_TWO = (3.0 * Math.PI) * 0.5;
-  CesiumMath.TWO_PI = 2.0 * Math.PI;
-  CesiumMath.ONE_OVER_TWO_PI = 1.0 / (2.0 * Math.PI);
-  CesiumMath.RADIANS_PER_DEGREE = Math.PI / 180.0;
-  CesiumMath.DEGREES_PER_RADIAN = 180.0 / Math.PI;
-  CesiumMath.RADIANS_PER_ARCSECOND = CesiumMath.RADIANS_PER_DEGREE / 3600.0;
-  CesiumMath.toRadians = function(degrees) {
-    if (!defined(degrees)) {
-      throw new DeveloperError('degrees is required.');
-    }
-    return degrees * CesiumMath.RADIANS_PER_DEGREE;
-  };
-  CesiumMath.toDegrees = function(radians) {
-    if (!defined(radians)) {
-      throw new DeveloperError('radians is required.');
-    }
-    return radians * CesiumMath.DEGREES_PER_RADIAN;
-  };
-  CesiumMath.convertLongitudeRange = function(angle) {
-    if (!defined(angle)) {
-      throw new DeveloperError('angle is required.');
-    }
-    var twoPi = CesiumMath.TWO_PI;
-    var simplified = angle - Math.floor(angle / twoPi) * twoPi;
-    if (simplified < -Math.PI) {
-      return simplified + twoPi;
-    }
-    if (simplified >= Math.PI) {
-      return simplified - twoPi;
-    }
-    return simplified;
-  };
-  CesiumMath.negativePiToPi = function(x) {
-    if (!defined(x)) {
-      throw new DeveloperError('x is required.');
-    }
-    return CesiumMath.zeroToTwoPi(x + CesiumMath.PI) - CesiumMath.PI;
-  };
-  CesiumMath.zeroToTwoPi = function(x) {
-    if (!defined(x)) {
-      throw new DeveloperError('x is required.');
-    }
-    var mod = CesiumMath.mod(x, CesiumMath.TWO_PI);
-    if (Math.abs(mod) < CesiumMath.EPSILON14 && Math.abs(x) > CesiumMath.EPSILON14) {
-      return CesiumMath.TWO_PI;
-    }
-    return mod;
-  };
-  CesiumMath.mod = function(m, n) {
-    if (!defined(m)) {
-      throw new DeveloperError('m is required.');
-    }
-    if (!defined(n)) {
-      throw new DeveloperError('n is required.');
-    }
-    return ((m % n) + n) % n;
-  };
-  CesiumMath.equalsEpsilon = function(left, right, relativeEpsilon, absoluteEpsilon) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required.');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required.');
-    }
-    if (!defined(relativeEpsilon)) {
-      throw new DeveloperError('relativeEpsilon is required.');
-    }
-    absoluteEpsilon = defaultValue(absoluteEpsilon, relativeEpsilon);
-    var absDiff = Math.abs(left - right);
-    return absDiff <= absoluteEpsilon || absDiff <= relativeEpsilon * Math.max(Math.abs(left), Math.abs(right));
-  };
-  var factorials = [1];
-  CesiumMath.factorial = function(n) {
-    if (typeof n !== 'number' || n < 0) {
-      throw new DeveloperError('A number greater than or equal to 0 is required.');
-    }
-    var length = factorials.length;
-    if (n >= length) {
-      var sum = factorials[length - 1];
-      for (var i = length; i <= n; i++) {
-        factorials.push(sum * i);
-      }
-    }
-    return factorials[n];
-  };
-  CesiumMath.incrementWrap = function(n, maximumValue, minimumValue) {
-    minimumValue = defaultValue(minimumValue, 0.0);
-    if (!defined(n)) {
-      throw new DeveloperError('n is required.');
-    }
-    if (maximumValue <= minimumValue) {
-      throw new DeveloperError('maximumValue must be greater than minimumValue.');
-    }
-    ++n;
-    if (n > maximumValue) {
-      n = minimumValue;
-    }
-    return n;
-  };
-  CesiumMath.isPowerOfTwo = function(n) {
-    if (typeof n !== 'number' || n < 0) {
-      throw new DeveloperError('A number greater than or equal to 0 is required.');
-    }
-    return (n !== 0) && ((n & (n - 1)) === 0);
-  };
-  CesiumMath.nextPowerOfTwo = function(n) {
-    if (typeof n !== 'number' || n < 0) {
-      throw new DeveloperError('A number greater than or equal to 0 is required.');
-    }
-    --n;
-    n |= n >> 1;
-    n |= n >> 2;
-    n |= n >> 4;
-    n |= n >> 8;
-    n |= n >> 16;
-    ++n;
-    return n;
-  };
-  CesiumMath.clamp = function(value, min, max) {
-    if (!defined(value)) {
-      throw new DeveloperError('value is required');
-    }
-    if (!defined(min)) {
-      throw new DeveloperError('min is required.');
-    }
-    if (!defined(max)) {
-      throw new DeveloperError('max is required.');
-    }
-    return value < min ? min : value > max ? max : value;
-  };
-  var randomNumberGenerator = new MersenneTwister();
-  CesiumMath.setRandomNumberSeed = function(seed) {
-    if (!defined(seed)) {
-      throw new DeveloperError('seed is required.');
-    }
-    randomNumberGenerator = new MersenneTwister(seed);
-  };
-  CesiumMath.nextRandomNumber = function() {
-    return randomNumberGenerator.random();
-  };
-  CesiumMath.acosClamped = function(value) {
-    if (!defined(value)) {
-      throw new DeveloperError('value is required.');
-    }
-    return Math.acos(CesiumMath.clamp(value, -1.0, 1.0));
-  };
-  CesiumMath.asinClamped = function(value) {
-    if (!defined(value)) {
-      throw new DeveloperError('value is required.');
-    }
-    return Math.asin(CesiumMath.clamp(value, -1.0, 1.0));
-  };
-  CesiumMath.chordLength = function(angle, radius) {
-    if (!defined(angle)) {
-      throw new DeveloperError('angle is required.');
-    }
-    if (!defined(radius)) {
-      throw new DeveloperError('radius is required.');
-    }
-    return 2.0 * radius * Math.sin(angle * 0.5);
-  };
-  CesiumMath.fog = function(distanceToCamera, density) {
-    var scalar = distanceToCamera * density;
-    return 1.0 - Math.exp(-(scalar * scalar));
-  };
-  return CesiumMath;
-});
-
-})();
-(function() {
-var define = $__System.amdDefine;
-define("2e", ["29", "1e", "15", "17", "1a", "22"], function(Cartesian3, defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
-  "use strict";
-  function Matrix3(column0Row0, column1Row0, column2Row0, column0Row1, column1Row1, column2Row1, column0Row2, column1Row2, column2Row2) {
-    this[0] = defaultValue(column0Row0, 0.0);
-    this[1] = defaultValue(column0Row1, 0.0);
-    this[2] = defaultValue(column0Row2, 0.0);
-    this[3] = defaultValue(column1Row0, 0.0);
-    this[4] = defaultValue(column1Row1, 0.0);
-    this[5] = defaultValue(column1Row2, 0.0);
-    this[6] = defaultValue(column2Row0, 0.0);
-    this[7] = defaultValue(column2Row1, 0.0);
-    this[8] = defaultValue(column2Row2, 0.0);
-  }
-  Matrix3.packedLength = 9;
-  Matrix3.pack = function(value, array, startingIndex) {
-    if (!defined(value)) {
-      throw new DeveloperError('value is required');
-    }
-    if (!defined(array)) {
-      throw new DeveloperError('array is required');
-    }
-    startingIndex = defaultValue(startingIndex, 0);
-    array[startingIndex++] = value[0];
-    array[startingIndex++] = value[1];
-    array[startingIndex++] = value[2];
-    array[startingIndex++] = value[3];
-    array[startingIndex++] = value[4];
-    array[startingIndex++] = value[5];
-    array[startingIndex++] = value[6];
-    array[startingIndex++] = value[7];
-    array[startingIndex++] = value[8];
-  };
-  Matrix3.unpack = function(array, startingIndex, result) {
-    if (!defined(array)) {
-      throw new DeveloperError('array is required');
-    }
-    startingIndex = defaultValue(startingIndex, 0);
-    if (!defined(result)) {
-      result = new Matrix3();
-    }
-    result[0] = array[startingIndex++];
-    result[1] = array[startingIndex++];
-    result[2] = array[startingIndex++];
-    result[3] = array[startingIndex++];
-    result[4] = array[startingIndex++];
-    result[5] = array[startingIndex++];
-    result[6] = array[startingIndex++];
-    result[7] = array[startingIndex++];
-    result[8] = array[startingIndex++];
-    return result;
-  };
-  Matrix3.clone = function(values, result) {
-    if (!defined(values)) {
-      return undefined;
-    }
-    if (!defined(result)) {
-      return new Matrix3(values[0], values[3], values[6], values[1], values[4], values[7], values[2], values[5], values[8]);
-    }
-    result[0] = values[0];
-    result[1] = values[1];
-    result[2] = values[2];
-    result[3] = values[3];
-    result[4] = values[4];
-    result[5] = values[5];
-    result[6] = values[6];
-    result[7] = values[7];
-    result[8] = values[8];
-    return result;
-  };
-  Matrix3.fromArray = function(array, startingIndex, result) {
-    if (!defined(array)) {
-      throw new DeveloperError('array is required');
-    }
-    startingIndex = defaultValue(startingIndex, 0);
-    if (!defined(result)) {
-      result = new Matrix3();
-    }
-    result[0] = array[startingIndex];
-    result[1] = array[startingIndex + 1];
-    result[2] = array[startingIndex + 2];
-    result[3] = array[startingIndex + 3];
-    result[4] = array[startingIndex + 4];
-    result[5] = array[startingIndex + 5];
-    result[6] = array[startingIndex + 6];
-    result[7] = array[startingIndex + 7];
-    result[8] = array[startingIndex + 8];
-    return result;
-  };
-  Matrix3.fromColumnMajorArray = function(values, result) {
-    if (!defined(values)) {
-      throw new DeveloperError('values parameter is required');
-    }
-    return Matrix3.clone(values, result);
-  };
-  Matrix3.fromRowMajorArray = function(values, result) {
-    if (!defined(values)) {
-      throw new DeveloperError('values is required.');
-    }
-    if (!defined(result)) {
-      return new Matrix3(values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8]);
-    }
-    result[0] = values[0];
-    result[1] = values[3];
-    result[2] = values[6];
-    result[3] = values[1];
-    result[4] = values[4];
-    result[5] = values[7];
-    result[6] = values[2];
-    result[7] = values[5];
-    result[8] = values[8];
-    return result;
-  };
-  Matrix3.fromQuaternion = function(quaternion, result) {
-    if (!defined(quaternion)) {
-      throw new DeveloperError('quaternion is required');
-    }
-    var x2 = quaternion.x * quaternion.x;
-    var xy = quaternion.x * quaternion.y;
-    var xz = quaternion.x * quaternion.z;
-    var xw = quaternion.x * quaternion.w;
-    var y2 = quaternion.y * quaternion.y;
-    var yz = quaternion.y * quaternion.z;
-    var yw = quaternion.y * quaternion.w;
-    var z2 = quaternion.z * quaternion.z;
-    var zw = quaternion.z * quaternion.w;
-    var w2 = quaternion.w * quaternion.w;
-    var m00 = x2 - y2 - z2 + w2;
-    var m01 = 2.0 * (xy - zw);
-    var m02 = 2.0 * (xz + yw);
-    var m10 = 2.0 * (xy + zw);
-    var m11 = -x2 + y2 - z2 + w2;
-    var m12 = 2.0 * (yz - xw);
-    var m20 = 2.0 * (xz - yw);
-    var m21 = 2.0 * (yz + xw);
-    var m22 = -x2 - y2 + z2 + w2;
-    if (!defined(result)) {
-      return new Matrix3(m00, m01, m02, m10, m11, m12, m20, m21, m22);
-    }
-    result[0] = m00;
-    result[1] = m10;
-    result[2] = m20;
-    result[3] = m01;
-    result[4] = m11;
-    result[5] = m21;
-    result[6] = m02;
-    result[7] = m12;
-    result[8] = m22;
-    return result;
-  };
-  Matrix3.fromScale = function(scale, result) {
-    if (!defined(scale)) {
-      throw new DeveloperError('scale is required.');
-    }
-    if (!defined(result)) {
-      return new Matrix3(scale.x, 0.0, 0.0, 0.0, scale.y, 0.0, 0.0, 0.0, scale.z);
-    }
-    result[0] = scale.x;
-    result[1] = 0.0;
-    result[2] = 0.0;
-    result[3] = 0.0;
-    result[4] = scale.y;
-    result[5] = 0.0;
-    result[6] = 0.0;
-    result[7] = 0.0;
-    result[8] = scale.z;
-    return result;
-  };
-  Matrix3.fromUniformScale = function(scale, result) {
-    if (typeof scale !== 'number') {
-      throw new DeveloperError('scale is required.');
-    }
-    if (!defined(result)) {
-      return new Matrix3(scale, 0.0, 0.0, 0.0, scale, 0.0, 0.0, 0.0, scale);
-    }
-    result[0] = scale;
-    result[1] = 0.0;
-    result[2] = 0.0;
-    result[3] = 0.0;
-    result[4] = scale;
-    result[5] = 0.0;
-    result[6] = 0.0;
-    result[7] = 0.0;
-    result[8] = scale;
-    return result;
-  };
-  Matrix3.fromCrossProduct = function(vector, result) {
-    if (!defined(vector)) {
-      throw new DeveloperError('vector is required.');
-    }
-    if (!defined(result)) {
-      return new Matrix3(0.0, -vector.z, vector.y, vector.z, 0.0, -vector.x, -vector.y, vector.x, 0.0);
-    }
-    result[0] = 0.0;
-    result[1] = vector.z;
-    result[2] = -vector.y;
-    result[3] = -vector.z;
-    result[4] = 0.0;
-    result[5] = vector.x;
-    result[6] = vector.y;
-    result[7] = -vector.x;
-    result[8] = 0.0;
-    return result;
-  };
-  Matrix3.fromRotationX = function(angle, result) {
-    if (!defined(angle)) {
-      throw new DeveloperError('angle is required.');
-    }
-    var cosAngle = Math.cos(angle);
-    var sinAngle = Math.sin(angle);
-    if (!defined(result)) {
-      return new Matrix3(1.0, 0.0, 0.0, 0.0, cosAngle, -sinAngle, 0.0, sinAngle, cosAngle);
-    }
-    result[0] = 1.0;
-    result[1] = 0.0;
-    result[2] = 0.0;
-    result[3] = 0.0;
-    result[4] = cosAngle;
-    result[5] = sinAngle;
-    result[6] = 0.0;
-    result[7] = -sinAngle;
-    result[8] = cosAngle;
-    return result;
-  };
-  Matrix3.fromRotationY = function(angle, result) {
-    if (!defined(angle)) {
-      throw new DeveloperError('angle is required.');
-    }
-    var cosAngle = Math.cos(angle);
-    var sinAngle = Math.sin(angle);
-    if (!defined(result)) {
-      return new Matrix3(cosAngle, 0.0, sinAngle, 0.0, 1.0, 0.0, -sinAngle, 0.0, cosAngle);
-    }
-    result[0] = cosAngle;
-    result[1] = 0.0;
-    result[2] = -sinAngle;
-    result[3] = 0.0;
-    result[4] = 1.0;
-    result[5] = 0.0;
-    result[6] = sinAngle;
-    result[7] = 0.0;
-    result[8] = cosAngle;
-    return result;
-  };
-  Matrix3.fromRotationZ = function(angle, result) {
-    if (!defined(angle)) {
-      throw new DeveloperError('angle is required.');
-    }
-    var cosAngle = Math.cos(angle);
-    var sinAngle = Math.sin(angle);
-    if (!defined(result)) {
-      return new Matrix3(cosAngle, -sinAngle, 0.0, sinAngle, cosAngle, 0.0, 0.0, 0.0, 1.0);
-    }
-    result[0] = cosAngle;
-    result[1] = sinAngle;
-    result[2] = 0.0;
-    result[3] = -sinAngle;
-    result[4] = cosAngle;
-    result[5] = 0.0;
-    result[6] = 0.0;
-    result[7] = 0.0;
-    result[8] = 1.0;
-    return result;
-  };
-  Matrix3.toArray = function(matrix, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(result)) {
-      return [matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], matrix[6], matrix[7], matrix[8]];
-    }
-    result[0] = matrix[0];
-    result[1] = matrix[1];
-    result[2] = matrix[2];
-    result[3] = matrix[3];
-    result[4] = matrix[4];
-    result[5] = matrix[5];
-    result[6] = matrix[6];
-    result[7] = matrix[7];
-    result[8] = matrix[8];
-    return result;
-  };
-  Matrix3.getElementIndex = function(column, row) {
-    if (typeof row !== 'number' || row < 0 || row > 2) {
-      throw new DeveloperError('row must be 0, 1, or 2.');
-    }
-    if (typeof column !== 'number' || column < 0 || column > 2) {
-      throw new DeveloperError('column must be 0, 1, or 2.');
-    }
-    return column * 3 + row;
-  };
-  Matrix3.getColumn = function(matrix, index, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required.');
-    }
-    if (typeof index !== 'number' || index < 0 || index > 2) {
-      throw new DeveloperError('index must be 0, 1, or 2.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    var startIndex = index * 3;
-    var x = matrix[startIndex];
-    var y = matrix[startIndex + 1];
-    var z = matrix[startIndex + 2];
-    result.x = x;
-    result.y = y;
-    result.z = z;
-    return result;
-  };
-  Matrix3.setColumn = function(matrix, index, cartesian, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
-    if (typeof index !== 'number' || index < 0 || index > 2) {
-      throw new DeveloperError('index must be 0, 1, or 2.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    result = Matrix3.clone(matrix, result);
-    var startIndex = index * 3;
-    result[startIndex] = cartesian.x;
-    result[startIndex + 1] = cartesian.y;
-    result[startIndex + 2] = cartesian.z;
-    return result;
-  };
-  Matrix3.getRow = function(matrix, index, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required.');
-    }
-    if (typeof index !== 'number' || index < 0 || index > 2) {
-      throw new DeveloperError('index must be 0, 1, or 2.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    var x = matrix[index];
-    var y = matrix[index + 3];
-    var z = matrix[index + 6];
-    result.x = x;
-    result.y = y;
-    result.z = z;
-    return result;
-  };
-  Matrix3.setRow = function(matrix, index, cartesian, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
-    if (typeof index !== 'number' || index < 0 || index > 2) {
-      throw new DeveloperError('index must be 0, 1, or 2.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    result = Matrix3.clone(matrix, result);
-    result[index] = cartesian.x;
-    result[index + 3] = cartesian.y;
-    result[index + 6] = cartesian.z;
-    return result;
-  };
-  var scratchColumn = new Cartesian3();
-  Matrix3.getScale = function(matrix, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    result.x = Cartesian3.magnitude(Cartesian3.fromElements(matrix[0], matrix[1], matrix[2], scratchColumn));
-    result.y = Cartesian3.magnitude(Cartesian3.fromElements(matrix[3], matrix[4], matrix[5], scratchColumn));
-    result.z = Cartesian3.magnitude(Cartesian3.fromElements(matrix[6], matrix[7], matrix[8], scratchColumn));
-    return result;
-  };
-  var scratchScale = new Cartesian3();
-  Matrix3.getMaximumScale = function(matrix) {
-    Matrix3.getScale(matrix, scratchScale);
-    return Cartesian3.maximumComponent(scratchScale);
-  };
-  Matrix3.multiply = function(left, right, result) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    var column0Row0 = left[0] * right[0] + left[3] * right[1] + left[6] * right[2];
-    var column0Row1 = left[1] * right[0] + left[4] * right[1] + left[7] * right[2];
-    var column0Row2 = left[2] * right[0] + left[5] * right[1] + left[8] * right[2];
-    var column1Row0 = left[0] * right[3] + left[3] * right[4] + left[6] * right[5];
-    var column1Row1 = left[1] * right[3] + left[4] * right[4] + left[7] * right[5];
-    var column1Row2 = left[2] * right[3] + left[5] * right[4] + left[8] * right[5];
-    var column2Row0 = left[0] * right[6] + left[3] * right[7] + left[6] * right[8];
-    var column2Row1 = left[1] * right[6] + left[4] * right[7] + left[7] * right[8];
-    var column2Row2 = left[2] * right[6] + left[5] * right[7] + left[8] * right[8];
-    result[0] = column0Row0;
-    result[1] = column0Row1;
-    result[2] = column0Row2;
-    result[3] = column1Row0;
-    result[4] = column1Row1;
-    result[5] = column1Row2;
-    result[6] = column2Row0;
-    result[7] = column2Row1;
-    result[8] = column2Row2;
-    return result;
-  };
-  Matrix3.add = function(left, right, result) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    result[0] = left[0] + right[0];
-    result[1] = left[1] + right[1];
-    result[2] = left[2] + right[2];
-    result[3] = left[3] + right[3];
-    result[4] = left[4] + right[4];
-    result[5] = left[5] + right[5];
-    result[6] = left[6] + right[6];
-    result[7] = left[7] + right[7];
-    result[8] = left[8] + right[8];
-    return result;
-  };
-  Matrix3.subtract = function(left, right, result) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    result[0] = left[0] - right[0];
-    result[1] = left[1] - right[1];
-    result[2] = left[2] - right[2];
-    result[3] = left[3] - right[3];
-    result[4] = left[4] - right[4];
-    result[5] = left[5] - right[5];
-    result[6] = left[6] - right[6];
-    result[7] = left[7] - right[7];
-    result[8] = left[8] - right[8];
-    return result;
-  };
-  Matrix3.multiplyByVector = function(matrix, cartesian, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    var vX = cartesian.x;
-    var vY = cartesian.y;
-    var vZ = cartesian.z;
-    var x = matrix[0] * vX + matrix[3] * vY + matrix[6] * vZ;
-    var y = matrix[1] * vX + matrix[4] * vY + matrix[7] * vZ;
-    var z = matrix[2] * vX + matrix[5] * vY + matrix[8] * vZ;
-    result.x = x;
-    result.y = y;
-    result.z = z;
-    return result;
-  };
-  Matrix3.multiplyByScalar = function(matrix, scalar, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (typeof scalar !== 'number') {
-      throw new DeveloperError('scalar must be a number');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    result[0] = matrix[0] * scalar;
-    result[1] = matrix[1] * scalar;
-    result[2] = matrix[2] * scalar;
-    result[3] = matrix[3] * scalar;
-    result[4] = matrix[4] * scalar;
-    result[5] = matrix[5] * scalar;
-    result[6] = matrix[6] * scalar;
-    result[7] = matrix[7] * scalar;
-    result[8] = matrix[8] * scalar;
-    return result;
-  };
-  Matrix3.multiplyByScale = function(matrix, scale, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(scale)) {
-      throw new DeveloperError('scale is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    result[0] = matrix[0] * scale.x;
-    result[1] = matrix[1] * scale.x;
-    result[2] = matrix[2] * scale.x;
-    result[3] = matrix[3] * scale.y;
-    result[4] = matrix[4] * scale.y;
-    result[5] = matrix[5] * scale.y;
-    result[6] = matrix[6] * scale.z;
-    result[7] = matrix[7] * scale.z;
-    result[8] = matrix[8] * scale.z;
-    return result;
-  };
-  Matrix3.negate = function(matrix, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    result[0] = -matrix[0];
-    result[1] = -matrix[1];
-    result[2] = -matrix[2];
-    result[3] = -matrix[3];
-    result[4] = -matrix[4];
-    result[5] = -matrix[5];
-    result[6] = -matrix[6];
-    result[7] = -matrix[7];
-    result[8] = -matrix[8];
-    return result;
-  };
-  Matrix3.transpose = function(matrix, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    var column0Row0 = matrix[0];
-    var column0Row1 = matrix[3];
-    var column0Row2 = matrix[6];
-    var column1Row0 = matrix[1];
-    var column1Row1 = matrix[4];
-    var column1Row2 = matrix[7];
-    var column2Row0 = matrix[2];
-    var column2Row1 = matrix[5];
-    var column2Row2 = matrix[8];
-    result[0] = column0Row0;
-    result[1] = column0Row1;
-    result[2] = column0Row2;
-    result[3] = column1Row0;
-    result[4] = column1Row1;
-    result[5] = column1Row2;
-    result[6] = column2Row0;
-    result[7] = column2Row1;
-    result[8] = column2Row2;
-    return result;
-  };
-  function computeFrobeniusNorm(matrix) {
-    var norm = 0.0;
-    for (var i = 0; i < 9; ++i) {
-      var temp = matrix[i];
-      norm += temp * temp;
-    }
-    return Math.sqrt(norm);
-  }
-  var rowVal = [1, 0, 0];
-  var colVal = [2, 2, 1];
-  function offDiagonalFrobeniusNorm(matrix) {
-    var norm = 0.0;
-    for (var i = 0; i < 3; ++i) {
-      var temp = matrix[Matrix3.getElementIndex(colVal[i], rowVal[i])];
-      norm += 2.0 * temp * temp;
-    }
-    return Math.sqrt(norm);
-  }
-  function shurDecomposition(matrix, result) {
-    var tolerance = CesiumMath.EPSILON15;
-    var maxDiagonal = 0.0;
-    var rotAxis = 1;
-    for (var i = 0; i < 3; ++i) {
-      var temp = Math.abs(matrix[Matrix3.getElementIndex(colVal[i], rowVal[i])]);
-      if (temp > maxDiagonal) {
-        rotAxis = i;
-        maxDiagonal = temp;
-      }
-    }
-    var c = 1.0;
-    var s = 0.0;
-    var p = rowVal[rotAxis];
-    var q = colVal[rotAxis];
-    if (Math.abs(matrix[Matrix3.getElementIndex(q, p)]) > tolerance) {
-      var qq = matrix[Matrix3.getElementIndex(q, q)];
-      var pp = matrix[Matrix3.getElementIndex(p, p)];
-      var qp = matrix[Matrix3.getElementIndex(q, p)];
-      var tau = (qq - pp) / 2.0 / qp;
-      var t;
-      if (tau < 0.0) {
-        t = -1.0 / (-tau + Math.sqrt(1.0 + tau * tau));
-      } else {
-        t = 1.0 / (tau + Math.sqrt(1.0 + tau * tau));
-      }
-      c = 1.0 / Math.sqrt(1.0 + t * t);
-      s = t * c;
-    }
-    result = Matrix3.clone(Matrix3.IDENTITY, result);
-    result[Matrix3.getElementIndex(p, p)] = result[Matrix3.getElementIndex(q, q)] = c;
-    result[Matrix3.getElementIndex(q, p)] = s;
-    result[Matrix3.getElementIndex(p, q)] = -s;
-    return result;
-  }
-  var jMatrix = new Matrix3();
-  var jMatrixTranspose = new Matrix3();
-  Matrix3.computeEigenDecomposition = function(matrix, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required.');
-    }
-    var tolerance = CesiumMath.EPSILON20;
-    var maxSweeps = 10;
-    var count = 0;
-    var sweep = 0;
-    if (!defined(result)) {
-      result = {};
-    }
-    var unitaryMatrix = result.unitary = Matrix3.clone(Matrix3.IDENTITY, result.unitary);
-    var diagMatrix = result.diagonal = Matrix3.clone(matrix, result.diagonal);
-    var epsilon = tolerance * computeFrobeniusNorm(diagMatrix);
-    while (sweep < maxSweeps && offDiagonalFrobeniusNorm(diagMatrix) > epsilon) {
-      shurDecomposition(diagMatrix, jMatrix);
-      Matrix3.transpose(jMatrix, jMatrixTranspose);
-      Matrix3.multiply(diagMatrix, jMatrix, diagMatrix);
-      Matrix3.multiply(jMatrixTranspose, diagMatrix, diagMatrix);
-      Matrix3.multiply(unitaryMatrix, jMatrix, unitaryMatrix);
-      if (++count > 2) {
-        ++sweep;
-        count = 0;
-      }
-    }
-    return result;
-  };
-  Matrix3.abs = function(matrix, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    result[0] = Math.abs(matrix[0]);
-    result[1] = Math.abs(matrix[1]);
-    result[2] = Math.abs(matrix[2]);
-    result[3] = Math.abs(matrix[3]);
-    result[4] = Math.abs(matrix[4]);
-    result[5] = Math.abs(matrix[5]);
-    result[6] = Math.abs(matrix[6]);
-    result[7] = Math.abs(matrix[7]);
-    result[8] = Math.abs(matrix[8]);
-    return result;
-  };
-  Matrix3.determinant = function(matrix) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    var m11 = matrix[0];
-    var m21 = matrix[3];
-    var m31 = matrix[6];
-    var m12 = matrix[1];
-    var m22 = matrix[4];
-    var m32 = matrix[7];
-    var m13 = matrix[2];
-    var m23 = matrix[5];
-    var m33 = matrix[8];
-    return m11 * (m22 * m33 - m23 * m32) + m12 * (m23 * m31 - m21 * m33) + m13 * (m21 * m32 - m22 * m31);
-  };
-  Matrix3.inverse = function(matrix, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    var m11 = matrix[0];
-    var m21 = matrix[1];
-    var m31 = matrix[2];
-    var m12 = matrix[3];
-    var m22 = matrix[4];
-    var m32 = matrix[5];
-    var m13 = matrix[6];
-    var m23 = matrix[7];
-    var m33 = matrix[8];
-    var determinant = Matrix3.determinant(matrix);
-    if (Math.abs(determinant) <= CesiumMath.EPSILON15) {
-      throw new DeveloperError('matrix is not invertible');
-    }
-    result[0] = m22 * m33 - m23 * m32;
-    result[1] = m23 * m31 - m21 * m33;
-    result[2] = m21 * m32 - m22 * m31;
-    result[3] = m13 * m32 - m12 * m33;
-    result[4] = m11 * m33 - m13 * m31;
-    result[5] = m12 * m31 - m11 * m32;
-    result[6] = m12 * m23 - m13 * m22;
-    result[7] = m13 * m21 - m11 * m23;
-    result[8] = m11 * m22 - m12 * m21;
-    var scale = 1.0 / determinant;
-    return Matrix3.multiplyByScalar(result, scale, result);
-  };
-  Matrix3.equals = function(left, right) {
-    return (left === right) || (defined(left) && defined(right) && left[0] === right[0] && left[1] === right[1] && left[2] === right[2] && left[3] === right[3] && left[4] === right[4] && left[5] === right[5] && left[6] === right[6] && left[7] === right[7] && left[8] === right[8]);
-  };
-  Matrix3.equalsEpsilon = function(left, right, epsilon) {
-    if (typeof epsilon !== 'number') {
-      throw new DeveloperError('epsilon must be a number');
-    }
-    return (left === right) || (defined(left) && defined(right) && Math.abs(left[0] - right[0]) <= epsilon && Math.abs(left[1] - right[1]) <= epsilon && Math.abs(left[2] - right[2]) <= epsilon && Math.abs(left[3] - right[3]) <= epsilon && Math.abs(left[4] - right[4]) <= epsilon && Math.abs(left[5] - right[5]) <= epsilon && Math.abs(left[6] - right[6]) <= epsilon && Math.abs(left[7] - right[7]) <= epsilon && Math.abs(left[8] - right[8]) <= epsilon);
-  };
-  Matrix3.IDENTITY = freezeObject(new Matrix3(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0));
-  Matrix3.ZERO = freezeObject(new Matrix3(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0));
-  Matrix3.COLUMN0ROW0 = 0;
-  Matrix3.COLUMN0ROW1 = 1;
-  Matrix3.COLUMN0ROW2 = 2;
-  Matrix3.COLUMN1ROW0 = 3;
-  Matrix3.COLUMN1ROW1 = 4;
-  Matrix3.COLUMN1ROW2 = 5;
-  Matrix3.COLUMN2ROW0 = 6;
-  Matrix3.COLUMN2ROW1 = 7;
-  Matrix3.COLUMN2ROW2 = 8;
-  Matrix3.prototype.clone = function(result) {
-    return Matrix3.clone(this, result);
-  };
-  Matrix3.prototype.equals = function(right) {
-    return Matrix3.equals(this, right);
-  };
-  Matrix3.equalsArray = function(matrix, array, offset) {
-    return matrix[0] === array[offset] && matrix[1] === array[offset + 1] && matrix[2] === array[offset + 2] && matrix[3] === array[offset + 3] && matrix[4] === array[offset + 4] && matrix[5] === array[offset + 5] && matrix[6] === array[offset + 6] && matrix[7] === array[offset + 7] && matrix[8] === array[offset + 8];
-  };
-  Matrix3.prototype.equalsEpsilon = function(right, epsilon) {
-    return Matrix3.equalsEpsilon(this, right, epsilon);
-  };
-  Matrix3.prototype.toString = function() {
-    return '(' + this[0] + ', ' + this[3] + ', ' + this[6] + ')\n' + '(' + this[1] + ', ' + this[4] + ', ' + this[7] + ')\n' + '(' + this[2] + ', ' + this[5] + ', ' + this[8] + ')';
-  };
-  return Matrix3;
-});
-
-})();
-(function() {
-var define = $__System.amdDefine;
-define("30", ["29", "1e", "15", "17", "5e", "1a", "22", "2e"], function(Cartesian3, defaultValue, defined, DeveloperError, FeatureDetection, freezeObject, CesiumMath, Matrix3) {
-  "use strict";
-  function Quaternion(x, y, z, w) {
-    this.x = defaultValue(x, 0.0);
-    this.y = defaultValue(y, 0.0);
-    this.z = defaultValue(z, 0.0);
-    this.w = defaultValue(w, 0.0);
-  }
-  var fromAxisAngleScratch = new Cartesian3();
-  Quaternion.fromAxisAngle = function(axis, angle, result) {
-    if (!defined(axis)) {
-      throw new DeveloperError('axis is required.');
-    }
-    if (typeof angle !== 'number') {
-      throw new DeveloperError('angle is required and must be a number.');
-    }
-    var halfAngle = angle / 2.0;
-    var s = Math.sin(halfAngle);
-    fromAxisAngleScratch = Cartesian3.normalize(axis, fromAxisAngleScratch);
-    var x = fromAxisAngleScratch.x * s;
-    var y = fromAxisAngleScratch.y * s;
-    var z = fromAxisAngleScratch.z * s;
-    var w = Math.cos(halfAngle);
-    if (!defined(result)) {
-      return new Quaternion(x, y, z, w);
-    }
-    result.x = x;
-    result.y = y;
-    result.z = z;
-    result.w = w;
-    return result;
-  };
-  var fromRotationMatrixNext = [1, 2, 0];
-  var fromRotationMatrixQuat = new Array(3);
-  Quaternion.fromRotationMatrix = function(matrix, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required.');
-    }
-    var root;
-    var x;
-    var y;
-    var z;
-    var w;
-    var m00 = matrix[Matrix3.COLUMN0ROW0];
-    var m11 = matrix[Matrix3.COLUMN1ROW1];
-    var m22 = matrix[Matrix3.COLUMN2ROW2];
-    var trace = m00 + m11 + m22;
-    if (trace > 0.0) {
-      root = Math.sqrt(trace + 1.0);
-      w = 0.5 * root;
-      root = 0.5 / root;
-      x = (matrix[Matrix3.COLUMN1ROW2] - matrix[Matrix3.COLUMN2ROW1]) * root;
-      y = (matrix[Matrix3.COLUMN2ROW0] - matrix[Matrix3.COLUMN0ROW2]) * root;
-      z = (matrix[Matrix3.COLUMN0ROW1] - matrix[Matrix3.COLUMN1ROW0]) * root;
-    } else {
-      var next = fromRotationMatrixNext;
-      var i = 0;
-      if (m11 > m00) {
-        i = 1;
-      }
-      if (m22 > m00 && m22 > m11) {
-        i = 2;
-      }
-      var j = next[i];
-      var k = next[j];
-      root = Math.sqrt(matrix[Matrix3.getElementIndex(i, i)] - matrix[Matrix3.getElementIndex(j, j)] - matrix[Matrix3.getElementIndex(k, k)] + 1.0);
-      var quat = fromRotationMatrixQuat;
-      quat[i] = 0.5 * root;
-      root = 0.5 / root;
-      w = (matrix[Matrix3.getElementIndex(k, j)] - matrix[Matrix3.getElementIndex(j, k)]) * root;
-      quat[j] = (matrix[Matrix3.getElementIndex(j, i)] + matrix[Matrix3.getElementIndex(i, j)]) * root;
-      quat[k] = (matrix[Matrix3.getElementIndex(k, i)] + matrix[Matrix3.getElementIndex(i, k)]) * root;
-      x = -quat[0];
-      y = -quat[1];
-      z = -quat[2];
-    }
-    if (!defined(result)) {
-      return new Quaternion(x, y, z, w);
-    }
-    result.x = x;
-    result.y = y;
-    result.z = z;
-    result.w = w;
-    return result;
-  };
-  var scratchHPRQuaternion = new Quaternion();
-  Quaternion.fromHeadingPitchRoll = function(heading, pitch, roll, result) {
-    if (!defined(heading)) {
-      throw new DeveloperError('heading is required.');
-    }
-    if (!defined(pitch)) {
-      throw new DeveloperError('pitch is required.');
-    }
-    if (!defined(roll)) {
-      throw new DeveloperError('roll is required.');
-    }
-    var rollQuaternion = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, roll, scratchHPRQuaternion);
-    var pitchQuaternion = Quaternion.fromAxisAngle(Cartesian3.UNIT_Y, -pitch, result);
-    result = Quaternion.multiply(pitchQuaternion, rollQuaternion, pitchQuaternion);
-    var headingQuaternion = Quaternion.fromAxisAngle(Cartesian3.UNIT_Z, -heading, scratchHPRQuaternion);
-    return Quaternion.multiply(headingQuaternion, result, result);
-  };
-  var sampledQuaternionAxis = new Cartesian3();
-  var sampledQuaternionRotation = new Cartesian3();
-  var sampledQuaternionTempQuaternion = new Quaternion();
-  var sampledQuaternionQuaternion0 = new Quaternion();
-  var sampledQuaternionQuaternion0Conjugate = new Quaternion();
-  Quaternion.packedLength = 4;
-  Quaternion.pack = function(value, array, startingIndex) {
-    if (!defined(value)) {
-      throw new DeveloperError('value is required');
-    }
-    if (!defined(array)) {
-      throw new DeveloperError('array is required');
-    }
-    startingIndex = defaultValue(startingIndex, 0);
-    array[startingIndex++] = value.x;
-    array[startingIndex++] = value.y;
-    array[startingIndex++] = value.z;
-    array[startingIndex] = value.w;
-  };
-  Quaternion.unpack = function(array, startingIndex, result) {
-    if (!defined(array)) {
-      throw new DeveloperError('array is required');
-    }
-    startingIndex = defaultValue(startingIndex, 0);
-    if (!defined(result)) {
-      result = new Quaternion();
-    }
-    result.x = array[startingIndex];
-    result.y = array[startingIndex + 1];
-    result.z = array[startingIndex + 2];
-    result.w = array[startingIndex + 3];
-    return result;
-  };
-  Quaternion.packedInterpolationLength = 3;
-  Quaternion.convertPackedArrayForInterpolation = function(packedArray, startingIndex, lastIndex, result) {
-    Quaternion.unpack(packedArray, lastIndex * 4, sampledQuaternionQuaternion0Conjugate);
-    Quaternion.conjugate(sampledQuaternionQuaternion0Conjugate, sampledQuaternionQuaternion0Conjugate);
-    for (var i = 0,
-        len = lastIndex - startingIndex + 1; i < len; i++) {
-      var offset = i * 3;
-      Quaternion.unpack(packedArray, (startingIndex + i) * 4, sampledQuaternionTempQuaternion);
-      Quaternion.multiply(sampledQuaternionTempQuaternion, sampledQuaternionQuaternion0Conjugate, sampledQuaternionTempQuaternion);
-      if (sampledQuaternionTempQuaternion.w < 0) {
-        Quaternion.negate(sampledQuaternionTempQuaternion, sampledQuaternionTempQuaternion);
-      }
-      Quaternion.computeAxis(sampledQuaternionTempQuaternion, sampledQuaternionAxis);
-      var angle = Quaternion.computeAngle(sampledQuaternionTempQuaternion);
-      result[offset] = sampledQuaternionAxis.x * angle;
-      result[offset + 1] = sampledQuaternionAxis.y * angle;
-      result[offset + 2] = sampledQuaternionAxis.z * angle;
-    }
-  };
-  Quaternion.unpackInterpolationResult = function(array, sourceArray, firstIndex, lastIndex, result) {
-    if (!defined(result)) {
-      result = new Quaternion();
-    }
-    Cartesian3.fromArray(array, 0, sampledQuaternionRotation);
-    var magnitude = Cartesian3.magnitude(sampledQuaternionRotation);
-    Quaternion.unpack(sourceArray, lastIndex * 4, sampledQuaternionQuaternion0);
-    if (magnitude === 0) {
-      Quaternion.clone(Quaternion.IDENTITY, sampledQuaternionTempQuaternion);
-    } else {
-      Quaternion.fromAxisAngle(sampledQuaternionRotation, magnitude, sampledQuaternionTempQuaternion);
-    }
-    return Quaternion.multiply(sampledQuaternionTempQuaternion, sampledQuaternionQuaternion0, result);
-  };
-  Quaternion.clone = function(quaternion, result) {
-    if (!defined(quaternion)) {
-      return undefined;
-    }
-    if (!defined(result)) {
-      return new Quaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
-    }
-    result.x = quaternion.x;
-    result.y = quaternion.y;
-    result.z = quaternion.z;
-    result.w = quaternion.w;
-    return result;
-  };
-  Quaternion.conjugate = function(quaternion, result) {
-    if (!defined(quaternion)) {
-      throw new DeveloperError('quaternion is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    result.x = -quaternion.x;
-    result.y = -quaternion.y;
-    result.z = -quaternion.z;
-    result.w = quaternion.w;
-    return result;
-  };
-  Quaternion.magnitudeSquared = function(quaternion) {
-    if (!defined(quaternion)) {
-      throw new DeveloperError('quaternion is required');
-    }
-    return quaternion.x * quaternion.x + quaternion.y * quaternion.y + quaternion.z * quaternion.z + quaternion.w * quaternion.w;
-  };
-  Quaternion.magnitude = function(quaternion) {
-    return Math.sqrt(Quaternion.magnitudeSquared(quaternion));
-  };
-  Quaternion.normalize = function(quaternion, result) {
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    var inverseMagnitude = 1.0 / Quaternion.magnitude(quaternion);
-    var x = quaternion.x * inverseMagnitude;
-    var y = quaternion.y * inverseMagnitude;
-    var z = quaternion.z * inverseMagnitude;
-    var w = quaternion.w * inverseMagnitude;
-    result.x = x;
-    result.y = y;
-    result.z = z;
-    result.w = w;
-    return result;
-  };
-  Quaternion.inverse = function(quaternion, result) {
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    var magnitudeSquared = Quaternion.magnitudeSquared(quaternion);
-    result = Quaternion.conjugate(quaternion, result);
-    return Quaternion.multiplyByScalar(result, 1.0 / magnitudeSquared, result);
-  };
-  Quaternion.add = function(left, right, result) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    result.x = left.x + right.x;
-    result.y = left.y + right.y;
-    result.z = left.z + right.z;
-    result.w = left.w + right.w;
-    return result;
-  };
-  Quaternion.subtract = function(left, right, result) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    result.x = left.x - right.x;
-    result.y = left.y - right.y;
-    result.z = left.z - right.z;
-    result.w = left.w - right.w;
-    return result;
-  };
-  Quaternion.negate = function(quaternion, result) {
-    if (!defined(quaternion)) {
-      throw new DeveloperError('quaternion is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    result.x = -quaternion.x;
-    result.y = -quaternion.y;
-    result.z = -quaternion.z;
-    result.w = -quaternion.w;
-    return result;
-  };
-  Quaternion.dot = function(left, right) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
-    return left.x * right.x + left.y * right.y + left.z * right.z + left.w * right.w;
-  };
-  Quaternion.multiply = function(left, right, result) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    var leftX = left.x;
-    var leftY = left.y;
-    var leftZ = left.z;
-    var leftW = left.w;
-    var rightX = right.x;
-    var rightY = right.y;
-    var rightZ = right.z;
-    var rightW = right.w;
-    var x = leftW * rightX + leftX * rightW + leftY * rightZ - leftZ * rightY;
-    var y = leftW * rightY - leftX * rightZ + leftY * rightW + leftZ * rightX;
-    var z = leftW * rightZ + leftX * rightY - leftY * rightX + leftZ * rightW;
-    var w = leftW * rightW - leftX * rightX - leftY * rightY - leftZ * rightZ;
-    result.x = x;
-    result.y = y;
-    result.z = z;
-    result.w = w;
-    return result;
-  };
-  Quaternion.multiplyByScalar = function(quaternion, scalar, result) {
-    if (!defined(quaternion)) {
-      throw new DeveloperError('quaternion is required');
-    }
-    if (typeof scalar !== 'number') {
-      throw new DeveloperError('scalar is required and must be a number.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    result.x = quaternion.x * scalar;
-    result.y = quaternion.y * scalar;
-    result.z = quaternion.z * scalar;
-    result.w = quaternion.w * scalar;
-    return result;
-  };
-  Quaternion.divideByScalar = function(quaternion, scalar, result) {
-    if (!defined(quaternion)) {
-      throw new DeveloperError('quaternion is required');
-    }
-    if (typeof scalar !== 'number') {
-      throw new DeveloperError('scalar is required and must be a number.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    result.x = quaternion.x / scalar;
-    result.y = quaternion.y / scalar;
-    result.z = quaternion.z / scalar;
-    result.w = quaternion.w / scalar;
-    return result;
-  };
-  Quaternion.computeAxis = function(quaternion, result) {
-    if (!defined(quaternion)) {
-      throw new DeveloperError('quaternion is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    var w = quaternion.w;
-    if (Math.abs(w - 1.0) < CesiumMath.EPSILON6) {
-      result.x = result.y = result.z = 0;
-      return result;
-    }
-    var scalar = 1.0 / Math.sqrt(1.0 - (w * w));
-    result.x = quaternion.x * scalar;
-    result.y = quaternion.y * scalar;
-    result.z = quaternion.z * scalar;
-    return result;
-  };
-  Quaternion.computeAngle = function(quaternion) {
-    if (!defined(quaternion)) {
-      throw new DeveloperError('quaternion is required');
-    }
-    if (Math.abs(quaternion.w - 1.0) < CesiumMath.EPSILON6) {
-      return 0.0;
-    }
-    return 2.0 * Math.acos(quaternion.w);
-  };
-  var lerpScratch = new Quaternion();
-  Quaternion.lerp = function(start, end, t, result) {
-    if (!defined(start)) {
-      throw new DeveloperError('start is required.');
-    }
-    if (!defined(end)) {
-      throw new DeveloperError('end is required.');
-    }
-    if (typeof t !== 'number') {
-      throw new DeveloperError('t is required and must be a number.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    lerpScratch = Quaternion.multiplyByScalar(end, t, lerpScratch);
-    result = Quaternion.multiplyByScalar(start, 1.0 - t, result);
-    return Quaternion.add(lerpScratch, result, result);
-  };
-  var slerpEndNegated = new Quaternion();
-  var slerpScaledP = new Quaternion();
-  var slerpScaledR = new Quaternion();
-  Quaternion.slerp = function(start, end, t, result) {
-    if (!defined(start)) {
-      throw new DeveloperError('start is required.');
-    }
-    if (!defined(end)) {
-      throw new DeveloperError('end is required.');
-    }
-    if (typeof t !== 'number') {
-      throw new DeveloperError('t is required and must be a number.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    var dot = Quaternion.dot(start, end);
-    var r = end;
-    if (dot < 0.0) {
-      dot = -dot;
-      r = slerpEndNegated = Quaternion.negate(end, slerpEndNegated);
-    }
-    if (1.0 - dot < CesiumMath.EPSILON6) {
-      return Quaternion.lerp(start, r, t, result);
-    }
-    var theta = Math.acos(dot);
-    slerpScaledP = Quaternion.multiplyByScalar(start, Math.sin((1 - t) * theta), slerpScaledP);
-    slerpScaledR = Quaternion.multiplyByScalar(r, Math.sin(t * theta), slerpScaledR);
-    result = Quaternion.add(slerpScaledP, slerpScaledR, result);
-    return Quaternion.multiplyByScalar(result, 1.0 / Math.sin(theta), result);
-  };
-  Quaternion.log = function(quaternion, result) {
-    if (!defined(quaternion)) {
-      throw new DeveloperError('quaternion is required.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    var theta = CesiumMath.acosClamped(quaternion.w);
-    var thetaOverSinTheta = 0.0;
-    if (theta !== 0.0) {
-      thetaOverSinTheta = theta / Math.sin(theta);
-    }
-    return Cartesian3.multiplyByScalar(quaternion, thetaOverSinTheta, result);
-  };
-  Quaternion.exp = function(cartesian, result) {
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    var theta = Cartesian3.magnitude(cartesian);
-    var sinThetaOverTheta = 0.0;
-    if (theta !== 0.0) {
-      sinThetaOverTheta = Math.sin(theta) / theta;
-    }
-    result.x = cartesian.x * sinThetaOverTheta;
-    result.y = cartesian.y * sinThetaOverTheta;
-    result.z = cartesian.z * sinThetaOverTheta;
-    result.w = Math.cos(theta);
-    return result;
-  };
-  var squadScratchCartesian0 = new Cartesian3();
-  var squadScratchCartesian1 = new Cartesian3();
-  var squadScratchQuaternion0 = new Quaternion();
-  var squadScratchQuaternion1 = new Quaternion();
-  Quaternion.computeInnerQuadrangle = function(q0, q1, q2, result) {
-    if (!defined(q0) || !defined(q1) || !defined(q2)) {
-      throw new DeveloperError('q0, q1, and q2 are required.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    var qInv = Quaternion.conjugate(q1, squadScratchQuaternion0);
-    Quaternion.multiply(qInv, q2, squadScratchQuaternion1);
-    var cart0 = Quaternion.log(squadScratchQuaternion1, squadScratchCartesian0);
-    Quaternion.multiply(qInv, q0, squadScratchQuaternion1);
-    var cart1 = Quaternion.log(squadScratchQuaternion1, squadScratchCartesian1);
-    Cartesian3.add(cart0, cart1, cart0);
-    Cartesian3.multiplyByScalar(cart0, 0.25, cart0);
-    Cartesian3.negate(cart0, cart0);
-    Quaternion.exp(cart0, squadScratchQuaternion0);
-    return Quaternion.multiply(q1, squadScratchQuaternion0, result);
-  };
-  Quaternion.squad = function(q0, q1, s0, s1, t, result) {
-    if (!defined(q0) || !defined(q1) || !defined(s0) || !defined(s1)) {
-      throw new DeveloperError('q0, q1, s0, and s1 are required.');
-    }
-    if (typeof t !== 'number') {
-      throw new DeveloperError('t is required and must be a number.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    var slerp0 = Quaternion.slerp(q0, q1, t, squadScratchQuaternion0);
-    var slerp1 = Quaternion.slerp(s0, s1, t, squadScratchQuaternion1);
-    return Quaternion.slerp(slerp0, slerp1, 2.0 * t * (1.0 - t), result);
-  };
-  var fastSlerpScratchQuaternion = new Quaternion();
-  var opmu = 1.90110745351730037;
-  var u = FeatureDetection.supportsTypedArrays() ? new Float32Array(8) : [];
-  var v = FeatureDetection.supportsTypedArrays() ? new Float32Array(8) : [];
-  var bT = FeatureDetection.supportsTypedArrays() ? new Float32Array(8) : [];
-  var bD = FeatureDetection.supportsTypedArrays() ? new Float32Array(8) : [];
-  for (var i = 0; i < 7; ++i) {
-    var s = i + 1.0;
-    var t = 2.0 * s + 1.0;
-    u[i] = 1.0 / (s * t);
-    v[i] = s / t;
-  }
-  u[7] = opmu / (8.0 * 17.0);
-  v[7] = opmu * 8.0 / 17.0;
-  Quaternion.fastSlerp = function(start, end, t, result) {
-    if (!defined(start)) {
-      throw new DeveloperError('start is required.');
-    }
-    if (!defined(end)) {
-      throw new DeveloperError('end is required.');
-    }
-    if (typeof t !== 'number') {
-      throw new DeveloperError('t is required and must be a number.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    var x = Quaternion.dot(start, end);
-    var sign;
-    if (x >= 0) {
-      sign = 1.0;
-    } else {
-      sign = -1.0;
-      x = -x;
-    }
-    var xm1 = x - 1.0;
-    var d = 1.0 - t;
-    var sqrT = t * t;
-    var sqrD = d * d;
-    for (var i = 7; i >= 0; --i) {
-      bT[i] = (u[i] * sqrT - v[i]) * xm1;
-      bD[i] = (u[i] * sqrD - v[i]) * xm1;
-    }
-    var cT = sign * t * (1.0 + bT[0] * (1.0 + bT[1] * (1.0 + bT[2] * (1.0 + bT[3] * (1.0 + bT[4] * (1.0 + bT[5] * (1.0 + bT[6] * (1.0 + bT[7]))))))));
-    var cD = d * (1.0 + bD[0] * (1.0 + bD[1] * (1.0 + bD[2] * (1.0 + bD[3] * (1.0 + bD[4] * (1.0 + bD[5] * (1.0 + bD[6] * (1.0 + bD[7]))))))));
-    var temp = Quaternion.multiplyByScalar(start, cD, fastSlerpScratchQuaternion);
-    Quaternion.multiplyByScalar(end, cT, result);
-    return Quaternion.add(temp, result, result);
-  };
-  Quaternion.fastSquad = function(q0, q1, s0, s1, t, result) {
-    if (!defined(q0) || !defined(q1) || !defined(s0) || !defined(s1)) {
-      throw new DeveloperError('q0, q1, s0, and s1 are required.');
-    }
-    if (typeof t !== 'number') {
-      throw new DeveloperError('t is required and must be a number.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
-    var slerp0 = Quaternion.fastSlerp(q0, q1, t, squadScratchQuaternion0);
-    var slerp1 = Quaternion.fastSlerp(s0, s1, t, squadScratchQuaternion1);
-    return Quaternion.fastSlerp(slerp0, slerp1, 2.0 * t * (1.0 - t), result);
-  };
-  Quaternion.equals = function(left, right) {
-    return (left === right) || ((defined(left)) && (defined(right)) && (left.x === right.x) && (left.y === right.y) && (left.z === right.z) && (left.w === right.w));
-  };
-  Quaternion.equalsEpsilon = function(left, right, epsilon) {
-    if (typeof epsilon !== 'number') {
-      throw new DeveloperError('epsilon is required and must be a number.');
-    }
-    return (left === right) || ((defined(left)) && (defined(right)) && (Math.abs(left.x - right.x) <= epsilon) && (Math.abs(left.y - right.y) <= epsilon) && (Math.abs(left.z - right.z) <= epsilon) && (Math.abs(left.w - right.w) <= epsilon));
-  };
-  Quaternion.ZERO = freezeObject(new Quaternion(0.0, 0.0, 0.0, 0.0));
-  Quaternion.IDENTITY = freezeObject(new Quaternion(0.0, 0.0, 0.0, 1.0));
-  Quaternion.prototype.clone = function(result) {
-    return Quaternion.clone(this, result);
-  };
-  Quaternion.prototype.equals = function(right) {
-    return Quaternion.equals(this, right);
-  };
-  Quaternion.prototype.equalsEpsilon = function(right, epsilon) {
-    return Quaternion.equalsEpsilon(this, right, epsilon);
-  };
-  Quaternion.prototype.toString = function() {
-    return '(' + this.x + ', ' + this.y + ', ' + this.z + ', ' + this.w + ')';
-  };
-  return Quaternion;
 });
 
 })();
@@ -14272,421 +16285,278 @@ define("1a", ["15"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4e", ["1a"], function(freezeObject) {
+define("3d", ["29", "15", "17", "1a"], function(Cartesian3, defined, DeveloperError, freezeObject) {
   "use strict";
-  var TimeConstants = {
-    SECONDS_PER_MILLISECOND: 0.001,
-    SECONDS_PER_MINUTE: 60.0,
-    MINUTES_PER_HOUR: 60.0,
-    HOURS_PER_DAY: 24.0,
-    SECONDS_PER_HOUR: 3600.0,
-    MINUTES_PER_DAY: 1440.0,
-    SECONDS_PER_DAY: 86400.0,
-    DAYS_PER_JULIAN_CENTURY: 36525.0,
-    PICOSECOND: 0.000000001,
-    MODIFIED_JULIAN_DATE_DIFFERENCE: 2400000.5
+  function Plane(normal, distance) {
+    if (!defined(normal)) {
+      throw new DeveloperError('normal is required.');
+    }
+    if (!defined(distance)) {
+      throw new DeveloperError('distance is required.');
+    }
+    this.normal = Cartesian3.clone(normal);
+    this.distance = distance;
+  }
+  Plane.fromPointNormal = function(point, normal, result) {
+    if (!defined(point)) {
+      throw new DeveloperError('point is required.');
+    }
+    if (!defined(normal)) {
+      throw new DeveloperError('normal is required.');
+    }
+    var distance = -Cartesian3.dot(normal, point);
+    if (!defined(result)) {
+      return new Plane(normal, distance);
+    }
+    Cartesian3.clone(normal, result.normal);
+    result.distance = distance;
+    return result;
   };
-  return freezeObject(TimeConstants);
+  var scratchNormal = new Cartesian3();
+  Plane.fromCartesian4 = function(coefficients, result) {
+    if (!defined(coefficients)) {
+      throw new DeveloperError('coefficients is required.');
+    }
+    var normal = Cartesian3.fromCartesian4(coefficients, scratchNormal);
+    var distance = coefficients.w;
+    if (!defined(result)) {
+      return new Plane(normal, distance);
+    } else {
+      Cartesian3.clone(normal, result.normal);
+      result.distance = distance;
+      return result;
+    }
+  };
+  Plane.getPointDistance = function(plane, point) {
+    if (!defined(plane)) {
+      throw new DeveloperError('plane is required.');
+    }
+    if (!defined(point)) {
+      throw new DeveloperError('point is required.');
+    }
+    return Cartesian3.dot(plane.normal, point) + plane.distance;
+  };
+  Plane.ORIGIN_XY_PLANE = freezeObject(new Plane(Cartesian3.UNIT_Z, 0.0));
+  Plane.ORIGIN_YZ_PLANE = freezeObject(new Plane(Cartesian3.UNIT_X, 0.0));
+  Plane.ORIGIN_ZX_PLANE = freezeObject(new Plane(Cartesian3.UNIT_Y, 0.0));
+  return Plane;
 });
 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("31", ["4a", "3f", "29", "40", "1e", "15", "17", "49", "4b", "38", "58", "59", "1f", "22", "2e", "2f", "30", "4e"], function(when, Cartesian2, Cartesian3, Cartesian4, defaultValue, defined, DeveloperError, EarthOrientationParameters, EarthOrientationParametersSample, Ellipsoid, Iau2006XysData, Iau2006XysSample, JulianDate, CesiumMath, Matrix3, Matrix4, Quaternion, TimeConstants) {
+define("68", ["29", "37", "1e", "15", "17", "38", "60", "65", "66", "22", "2f", "3d"], function(Cartesian3, Cartographic, defaultValue, defined, DeveloperError, Ellipsoid, EllipsoidGeodesic, IntersectionTests, isArray, CesiumMath, Matrix4, Plane) {
   "use strict";
-  var Transforms = {};
-  var eastNorthUpToFixedFrameNormal = new Cartesian3();
-  var eastNorthUpToFixedFrameTangent = new Cartesian3();
-  var eastNorthUpToFixedFrameBitangent = new Cartesian3();
-  Transforms.eastNorthUpToFixedFrame = function(origin, ellipsoid, result) {
-    if (!defined(origin)) {
-      throw new DeveloperError('origin is required.');
+  var PolylinePipeline = {};
+  PolylinePipeline.numberOfPoints = function(p0, p1, minDistance) {
+    var distance = Cartesian3.distance(p0, p1);
+    return Math.ceil(distance / minDistance);
+  };
+  var cartoScratch = new Cartographic();
+  PolylinePipeline.extractHeights = function(positions, ellipsoid) {
+    var length = positions.length;
+    var heights = new Array(length);
+    for (var i = 0; i < length; i++) {
+      var p = positions[i];
+      heights[i] = ellipsoid.cartesianToCartographic(p, cartoScratch).height;
     }
-    if (CesiumMath.equalsEpsilon(origin.x, 0.0, CesiumMath.EPSILON14) && CesiumMath.equalsEpsilon(origin.y, 0.0, CesiumMath.EPSILON14)) {
-      var sign = CesiumMath.sign(origin.z);
-      if (!defined(result)) {
-        return new Matrix4(0.0, -sign, 0.0, origin.x, 1.0, 0.0, 0.0, origin.y, 0.0, 0.0, sign, origin.z, 0.0, 0.0, 0.0, 1.0);
+    return heights;
+  };
+  var wrapLongitudeInversMatrix = new Matrix4();
+  var wrapLongitudeOrigin = new Cartesian3();
+  var wrapLongitudeXZNormal = new Cartesian3();
+  var wrapLongitudeXZPlane = new Plane(Cartesian3.ZERO, 0.0);
+  var wrapLongitudeYZNormal = new Cartesian3();
+  var wrapLongitudeYZPlane = new Plane(Cartesian3.ZERO, 0.0);
+  var wrapLongitudeIntersection = new Cartesian3();
+  var wrapLongitudeOffset = new Cartesian3();
+  var subdivideHeightsScratchArray = [];
+  function subdivideHeights(numPoints, h0, h1) {
+    var heights = subdivideHeightsScratchArray;
+    heights.length = numPoints;
+    var i;
+    if (h0 === h1) {
+      for (i = 0; i < numPoints; i++) {
+        heights[i] = h0;
       }
-      result[0] = 0.0;
-      result[1] = 1.0;
-      result[2] = 0.0;
-      result[3] = 0.0;
-      result[4] = -sign;
-      result[5] = 0.0;
-      result[6] = 0.0;
-      result[7] = 0.0;
-      result[8] = 0.0;
-      result[9] = 0.0;
-      result[10] = sign;
-      result[11] = 0.0;
-      result[12] = origin.x;
-      result[13] = origin.y;
-      result[14] = origin.z;
-      result[15] = 1.0;
-      return result;
+      return heights;
     }
-    var normal = eastNorthUpToFixedFrameNormal;
-    var tangent = eastNorthUpToFixedFrameTangent;
-    var bitangent = eastNorthUpToFixedFrameBitangent;
-    ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
-    ellipsoid.geodeticSurfaceNormal(origin, normal);
-    tangent.x = -origin.y;
-    tangent.y = origin.x;
-    tangent.z = 0.0;
-    Cartesian3.normalize(tangent, tangent);
-    Cartesian3.cross(normal, tangent, bitangent);
-    if (!defined(result)) {
-      return new Matrix4(tangent.x, bitangent.x, normal.x, origin.x, tangent.y, bitangent.y, normal.y, origin.y, tangent.z, bitangent.z, normal.z, origin.z, 0.0, 0.0, 0.0, 1.0);
+    var dHeight = h1 - h0;
+    var heightPerVertex = dHeight / numPoints;
+    for (i = 0; i < numPoints; i++) {
+      var h = h0 + i * heightPerVertex;
+      heights[i] = h;
     }
-    result[0] = tangent.x;
-    result[1] = tangent.y;
-    result[2] = tangent.z;
-    result[3] = 0.0;
-    result[4] = bitangent.x;
-    result[5] = bitangent.y;
-    result[6] = bitangent.z;
-    result[7] = 0.0;
-    result[8] = normal.x;
-    result[9] = normal.y;
-    result[10] = normal.z;
-    result[11] = 0.0;
-    result[12] = origin.x;
-    result[13] = origin.y;
-    result[14] = origin.z;
-    result[15] = 1.0;
-    return result;
-  };
-  var northEastDownToFixedFrameNormal = new Cartesian3();
-  var northEastDownToFixedFrameTangent = new Cartesian3();
-  var northEastDownToFixedFrameBitangent = new Cartesian3();
-  Transforms.northEastDownToFixedFrame = function(origin, ellipsoid, result) {
-    if (!defined(origin)) {
-      throw new DeveloperError('origin is required.');
+    return heights;
+  }
+  var carto1 = new Cartographic();
+  var carto2 = new Cartographic();
+  var cartesian = new Cartesian3();
+  var scaleFirst = new Cartesian3();
+  var scaleLast = new Cartesian3();
+  var ellipsoidGeodesic = new EllipsoidGeodesic();
+  function generateCartesianArc(p0, p1, minDistance, ellipsoid, h0, h1, array, offset) {
+    var first = ellipsoid.scaleToGeodeticSurface(p0, scaleFirst);
+    var last = ellipsoid.scaleToGeodeticSurface(p1, scaleLast);
+    var numPoints = PolylinePipeline.numberOfPoints(p0, p1, minDistance);
+    var start = ellipsoid.cartesianToCartographic(first, carto1);
+    var end = ellipsoid.cartesianToCartographic(last, carto2);
+    var heights = subdivideHeights(numPoints, h0, h1);
+    ellipsoidGeodesic.setEndPoints(start, end);
+    var surfaceDistanceBetweenPoints = ellipsoidGeodesic.surfaceDistance / numPoints;
+    var index = offset;
+    start.height = h0;
+    var cart = ellipsoid.cartographicToCartesian(start, cartesian);
+    Cartesian3.pack(cart, array, index);
+    index += 3;
+    for (var i = 1; i < numPoints; i++) {
+      var carto = ellipsoidGeodesic.interpolateUsingSurfaceDistance(i * surfaceDistanceBetweenPoints, carto2);
+      carto.height = heights[i];
+      cart = ellipsoid.cartographicToCartesian(carto, cartesian);
+      Cartesian3.pack(cart, array, index);
+      index += 3;
     }
-    if (CesiumMath.equalsEpsilon(origin.x, 0.0, CesiumMath.EPSILON14) && CesiumMath.equalsEpsilon(origin.y, 0.0, CesiumMath.EPSILON14)) {
-      var sign = CesiumMath.sign(origin.z);
-      if (!defined(result)) {
-        return new Matrix4(-sign, 0.0, 0.0, origin.x, 0.0, 1.0, 0.0, origin.y, 0.0, 0.0, -sign, origin.z, 0.0, 0.0, 0.0, 1.0);
+    return index;
+  }
+  PolylinePipeline.wrapLongitude = function(positions, modelMatrix) {
+    var cartesians = [];
+    var segments = [];
+    if (defined(positions) && positions.length > 0) {
+      modelMatrix = defaultValue(modelMatrix, Matrix4.IDENTITY);
+      var inverseModelMatrix = Matrix4.inverseTransformation(modelMatrix, wrapLongitudeInversMatrix);
+      var origin = Matrix4.multiplyByPoint(inverseModelMatrix, Cartesian3.ZERO, wrapLongitudeOrigin);
+      var xzNormal = Matrix4.multiplyByPointAsVector(inverseModelMatrix, Cartesian3.UNIT_Y, wrapLongitudeXZNormal);
+      var xzPlane = Plane.fromPointNormal(origin, xzNormal, wrapLongitudeXZPlane);
+      var yzNormal = Matrix4.multiplyByPointAsVector(inverseModelMatrix, Cartesian3.UNIT_X, wrapLongitudeYZNormal);
+      var yzPlane = Plane.fromPointNormal(origin, yzNormal, wrapLongitudeYZPlane);
+      var count = 1;
+      cartesians.push(Cartesian3.clone(positions[0]));
+      var prev = cartesians[0];
+      var length = positions.length;
+      for (var i = 1; i < length; ++i) {
+        var cur = positions[i];
+        if (Plane.getPointDistance(yzPlane, prev) < 0.0 || Plane.getPointDistance(yzPlane, cur) < 0.0) {
+          var intersection = IntersectionTests.lineSegmentPlane(prev, cur, xzPlane, wrapLongitudeIntersection);
+          if (defined(intersection)) {
+            var offset = Cartesian3.multiplyByScalar(xzNormal, 5.0e-9, wrapLongitudeOffset);
+            if (Plane.getPointDistance(xzPlane, prev) < 0.0) {
+              Cartesian3.negate(offset, offset);
+            }
+            cartesians.push(Cartesian3.add(intersection, offset, new Cartesian3()));
+            segments.push(count + 1);
+            Cartesian3.negate(offset, offset);
+            cartesians.push(Cartesian3.add(intersection, offset, new Cartesian3()));
+            count = 1;
+          }
+        }
+        cartesians.push(Cartesian3.clone(positions[i]));
+        count++;
+        prev = cur;
       }
-      result[0] = -sign;
-      result[1] = 0.0;
-      result[2] = 0.0;
-      result[3] = 0.0;
-      result[4] = 0.0;
-      result[5] = 1.0;
-      result[6] = 0.0;
-      result[7] = 0.0;
-      result[8] = 0.0;
-      result[9] = 0.0;
-      result[10] = -sign;
-      result[11] = 0.0;
-      result[12] = origin.x;
-      result[13] = origin.y;
-      result[14] = origin.z;
-      result[15] = 1.0;
-      return result;
+      segments.push(count);
     }
-    var normal = northEastDownToFixedFrameNormal;
-    var tangent = northEastDownToFixedFrameTangent;
-    var bitangent = northEastDownToFixedFrameBitangent;
-    ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
-    ellipsoid.geodeticSurfaceNormal(origin, normal);
-    tangent.x = -origin.y;
-    tangent.y = origin.x;
-    tangent.z = 0.0;
-    Cartesian3.normalize(tangent, tangent);
-    Cartesian3.cross(normal, tangent, bitangent);
-    if (!defined(result)) {
-      return new Matrix4(bitangent.x, tangent.x, -normal.x, origin.x, bitangent.y, tangent.y, -normal.y, origin.y, bitangent.z, tangent.z, -normal.z, origin.z, 0.0, 0.0, 0.0, 1.0);
-    }
-    result[0] = bitangent.x;
-    result[1] = bitangent.y;
-    result[2] = bitangent.z;
-    result[3] = 0.0;
-    result[4] = tangent.x;
-    result[5] = tangent.y;
-    result[6] = tangent.z;
-    result[7] = 0.0;
-    result[8] = -normal.x;
-    result[9] = -normal.y;
-    result[10] = -normal.z;
-    result[11] = 0.0;
-    result[12] = origin.x;
-    result[13] = origin.y;
-    result[14] = origin.z;
-    result[15] = 1.0;
-    return result;
+    return {
+      positions: cartesians,
+      lengths: segments
+    };
   };
-  Transforms.northUpEastToFixedFrame = function(origin, ellipsoid, result) {
-    if (!defined(origin)) {
-      throw new DeveloperError('origin is required.');
+  var removeDuplicatesEpsilon = CesiumMath.EPSILON10;
+  PolylinePipeline.removeDuplicates = function(positions) {
+    if (!defined(positions)) {
+      throw new DeveloperError('positions is required.');
     }
-    if (CesiumMath.equalsEpsilon(origin.x, 0.0, CesiumMath.EPSILON14) && CesiumMath.equalsEpsilon(origin.y, 0.0, CesiumMath.EPSILON14)) {
-      var sign = CesiumMath.sign(origin.z);
-      if (!defined(result)) {
-        return new Matrix4(-sign, 0.0, 0.0, origin.x, 0.0, 0.0, 1.0, origin.y, 0.0, sign, 0.0, origin.z, 0.0, 0.0, 0.0, 1.0);
+    var length = positions.length;
+    if (length < 2) {
+      return positions;
+    }
+    var i;
+    var v0;
+    var v1;
+    for (i = 1; i < length; ++i) {
+      v0 = positions[i - 1];
+      v1 = positions[i];
+      if (Cartesian3.equalsEpsilon(v0, v1, removeDuplicatesEpsilon)) {
+        break;
       }
-      result[0] = -sign;
-      result[1] = 0.0;
-      result[2] = 0.0;
-      result[3] = 0.0;
-      result[4] = 0.0;
-      result[5] = 0.0;
-      result[6] = sign;
-      result[7] = 0.0;
-      result[8] = 0.0;
-      result[9] = 1.0;
-      result[10] = 0.0;
-      result[11] = 0.0;
-      result[12] = origin.x;
-      result[13] = origin.y;
-      result[14] = origin.z;
-      result[15] = 1.0;
-      return result;
     }
-    var normal = eastNorthUpToFixedFrameNormal;
-    var tangent = eastNorthUpToFixedFrameTangent;
-    var bitangent = eastNorthUpToFixedFrameBitangent;
-    ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
-    ellipsoid.geodeticSurfaceNormal(origin, normal);
-    tangent.x = -origin.y;
-    tangent.y = origin.x;
-    tangent.z = 0.0;
-    Cartesian3.normalize(tangent, tangent);
-    Cartesian3.cross(normal, tangent, bitangent);
-    if (!defined(result)) {
-      return new Matrix4(bitangent.x, normal.x, tangent.x, origin.x, bitangent.y, normal.y, tangent.y, origin.y, bitangent.z, normal.z, tangent.z, origin.z, 0.0, 0.0, 0.0, 1.0);
+    if (i === length) {
+      return positions;
     }
-    result[0] = bitangent.x;
-    result[1] = bitangent.y;
-    result[2] = bitangent.z;
-    result[3] = 0.0;
-    result[4] = normal.x;
-    result[5] = normal.y;
-    result[6] = normal.z;
-    result[7] = 0.0;
-    result[8] = tangent.x;
-    result[9] = tangent.y;
-    result[10] = tangent.z;
-    result[11] = 0.0;
-    result[12] = origin.x;
-    result[13] = origin.y;
-    result[14] = origin.z;
-    result[15] = 1.0;
-    return result;
+    var cleanedPositions = positions.slice(0, i);
+    for (; i < length; ++i) {
+      v1 = positions[i];
+      if (!Cartesian3.equalsEpsilon(v0, v1, removeDuplicatesEpsilon)) {
+        cleanedPositions.push(Cartesian3.clone(v1));
+        v0 = v1;
+      }
+    }
+    return cleanedPositions;
   };
-  var scratchHPRQuaternion = new Quaternion();
-  var scratchScale = new Cartesian3(1.0, 1.0, 1.0);
-  var scratchHPRMatrix4 = new Matrix4();
-  Transforms.headingPitchRollToFixedFrame = function(origin, heading, pitch, roll, ellipsoid, result) {
-    var hprQuaternion = Quaternion.fromHeadingPitchRoll(heading, pitch, roll, scratchHPRQuaternion);
-    var hprMatrix = Matrix4.fromTranslationQuaternionRotationScale(Cartesian3.ZERO, hprQuaternion, scratchScale, scratchHPRMatrix4);
-    result = Transforms.eastNorthUpToFixedFrame(origin, ellipsoid, result);
-    return Matrix4.multiply(result, hprMatrix, result);
+  PolylinePipeline.generateArc = function(options) {
+    if (!defined(options)) {
+      options = {};
+    }
+    var positions = options.positions;
+    if (!defined(positions)) {
+      throw new DeveloperError('options.positions is required.');
+    }
+    var length = positions.length;
+    var ellipsoid = defaultValue(options.ellipsoid, Ellipsoid.WGS84);
+    var height = defaultValue(options.height, 0);
+    if (length < 1) {
+      return [];
+    } else if (length === 1) {
+      var p = ellipsoid.scaleToGeodeticSurface(positions[0], scaleFirst);
+      if (height !== 0) {
+        var n = ellipsoid.geodeticSurfaceNormal(p, cartesian);
+        Cartesian3.multiplyByScalar(n, height, n);
+        Cartesian3.add(p, n, p);
+      }
+      return [p.x, p.y, p.z];
+    }
+    var minDistance = options.minDistance;
+    if (!defined(minDistance)) {
+      var granularity = defaultValue(options.granularity, CesiumMath.RADIANS_PER_DEGREE);
+      minDistance = CesiumMath.chordLength(granularity, ellipsoid.maximumRadius);
+    }
+    var numPoints = 0;
+    var i;
+    for (i = 0; i < length - 1; i++) {
+      numPoints += PolylinePipeline.numberOfPoints(positions[i], positions[i + 1], minDistance);
+    }
+    var arrayLength = (numPoints + 1) * 3;
+    var newPositions = new Array(arrayLength);
+    var offset = 0;
+    var hasHeightArray = isArray(height);
+    for (i = 0; i < length - 1; i++) {
+      var p0 = positions[i];
+      var p1 = positions[i + 1];
+      var h0 = hasHeightArray ? height[i] : height;
+      var h1 = hasHeightArray ? height[i + 1] : height;
+      offset = generateCartesianArc(p0, p1, minDistance, ellipsoid, h0, h1, newPositions, offset);
+    }
+    subdivideHeightsScratchArray.length = 0;
+    var lastPoint = positions[length - 1];
+    var carto = ellipsoid.cartesianToCartographic(lastPoint, carto1);
+    carto.height = hasHeightArray ? height[length - 1] : height;
+    var cart = ellipsoid.cartographicToCartesian(carto, cartesian);
+    Cartesian3.pack(cart, newPositions, arrayLength - 3);
+    return newPositions;
   };
-  var scratchENUMatrix4 = new Matrix4();
-  var scratchHPRMatrix3 = new Matrix3();
-  Transforms.headingPitchRollQuaternion = function(origin, heading, pitch, roll, ellipsoid, result) {
-    var transform = Transforms.headingPitchRollToFixedFrame(origin, heading, pitch, roll, ellipsoid, scratchENUMatrix4);
-    var rotation = Matrix4.getRotation(transform, scratchHPRMatrix3);
-    return Quaternion.fromRotationMatrix(rotation, result);
+  PolylinePipeline.generateCartesianArc = function(options) {
+    var numberArray = PolylinePipeline.generateArc(options);
+    var size = numberArray.length / 3;
+    var newPositions = new Array(size);
+    for (var i = 0; i < size; i++) {
+      newPositions[i] = Cartesian3.unpack(numberArray, i * 3);
+    }
+    return newPositions;
   };
-  var gmstConstant0 = 6 * 3600 + 41 * 60 + 50.54841;
-  var gmstConstant1 = 8640184.812866;
-  var gmstConstant2 = 0.093104;
-  var gmstConstant3 = -6.2E-6;
-  var rateCoef = 1.1772758384668e-19;
-  var wgs84WRPrecessing = 7.2921158553E-5;
-  var twoPiOverSecondsInDay = CesiumMath.TWO_PI / 86400.0;
-  var dateInUtc = new JulianDate();
-  Transforms.computeTemeToPseudoFixedMatrix = function(date, result) {
-    if (!defined(date)) {
-      throw new DeveloperError('date is required.');
-    }
-    dateInUtc = JulianDate.addSeconds(date, -JulianDate.computeTaiMinusUtc(date), dateInUtc);
-    var utcDayNumber = dateInUtc.dayNumber;
-    var utcSecondsIntoDay = dateInUtc.secondsOfDay;
-    var t;
-    var diffDays = utcDayNumber - 2451545;
-    if (utcSecondsIntoDay >= 43200.0) {
-      t = (diffDays + 0.5) / TimeConstants.DAYS_PER_JULIAN_CENTURY;
-    } else {
-      t = (diffDays - 0.5) / TimeConstants.DAYS_PER_JULIAN_CENTURY;
-    }
-    var gmst0 = gmstConstant0 + t * (gmstConstant1 + t * (gmstConstant2 + t * gmstConstant3));
-    var angle = (gmst0 * twoPiOverSecondsInDay) % CesiumMath.TWO_PI;
-    var ratio = wgs84WRPrecessing + rateCoef * (utcDayNumber - 2451545.5);
-    var secondsSinceMidnight = (utcSecondsIntoDay + TimeConstants.SECONDS_PER_DAY * 0.5) % TimeConstants.SECONDS_PER_DAY;
-    var gha = angle + (ratio * secondsSinceMidnight);
-    var cosGha = Math.cos(gha);
-    var sinGha = Math.sin(gha);
-    if (!defined(result)) {
-      return new Matrix3(cosGha, sinGha, 0.0, -sinGha, cosGha, 0.0, 0.0, 0.0, 1.0);
-    }
-    result[0] = cosGha;
-    result[1] = -sinGha;
-    result[2] = 0.0;
-    result[3] = sinGha;
-    result[4] = cosGha;
-    result[5] = 0.0;
-    result[6] = 0.0;
-    result[7] = 0.0;
-    result[8] = 1.0;
-    return result;
-  };
-  Transforms.iau2006XysData = new Iau2006XysData();
-  Transforms.earthOrientationParameters = EarthOrientationParameters.NONE;
-  var ttMinusTai = 32.184;
-  var j2000ttDays = 2451545.0;
-  Transforms.preloadIcrfFixed = function(timeInterval) {
-    var startDayTT = timeInterval.start.dayNumber;
-    var startSecondTT = timeInterval.start.secondsOfDay + ttMinusTai;
-    var stopDayTT = timeInterval.stop.dayNumber;
-    var stopSecondTT = timeInterval.stop.secondsOfDay + ttMinusTai;
-    var xysPromise = Transforms.iau2006XysData.preload(startDayTT, startSecondTT, stopDayTT, stopSecondTT);
-    var eopPromise = Transforms.earthOrientationParameters.getPromiseToLoad();
-    return when.all([xysPromise, eopPromise]);
-  };
-  Transforms.computeIcrfToFixedMatrix = function(date, result) {
-    if (!defined(date)) {
-      throw new DeveloperError('date is required.');
-    }
-    if (!defined(result)) {
-      result = new Matrix3();
-    }
-    var fixedToIcrfMtx = Transforms.computeFixedToIcrfMatrix(date, result);
-    if (!defined(fixedToIcrfMtx)) {
-      return undefined;
-    }
-    return Matrix3.transpose(fixedToIcrfMtx, result);
-  };
-  var xysScratch = new Iau2006XysSample(0.0, 0.0, 0.0);
-  var eopScratch = new EarthOrientationParametersSample(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-  var rotation1Scratch = new Matrix3();
-  var rotation2Scratch = new Matrix3();
-  Transforms.computeFixedToIcrfMatrix = function(date, result) {
-    if (!defined(date)) {
-      throw new DeveloperError('date is required.');
-    }
-    if (!defined(result)) {
-      result = new Matrix3();
-    }
-    var eop = Transforms.earthOrientationParameters.compute(date, eopScratch);
-    if (!defined(eop)) {
-      return undefined;
-    }
-    var dayTT = date.dayNumber;
-    var secondTT = date.secondsOfDay + ttMinusTai;
-    var xys = Transforms.iau2006XysData.computeXysRadians(dayTT, secondTT, xysScratch);
-    if (!defined(xys)) {
-      return undefined;
-    }
-    var x = xys.x + eop.xPoleOffset;
-    var y = xys.y + eop.yPoleOffset;
-    var a = 1.0 / (1.0 + Math.sqrt(1.0 - x * x - y * y));
-    var rotation1 = rotation1Scratch;
-    rotation1[0] = 1.0 - a * x * x;
-    rotation1[3] = -a * x * y;
-    rotation1[6] = x;
-    rotation1[1] = -a * x * y;
-    rotation1[4] = 1 - a * y * y;
-    rotation1[7] = y;
-    rotation1[2] = -x;
-    rotation1[5] = -y;
-    rotation1[8] = 1 - a * (x * x + y * y);
-    var rotation2 = Matrix3.fromRotationZ(-xys.s, rotation2Scratch);
-    var matrixQ = Matrix3.multiply(rotation1, rotation2, rotation1Scratch);
-    var dateUt1day = date.dayNumber;
-    var dateUt1sec = date.secondsOfDay - JulianDate.computeTaiMinusUtc(date) + eop.ut1MinusUtc;
-    var daysSinceJ2000 = dateUt1day - 2451545;
-    var fractionOfDay = dateUt1sec / TimeConstants.SECONDS_PER_DAY;
-    var era = 0.7790572732640 + fractionOfDay + 0.00273781191135448 * (daysSinceJ2000 + fractionOfDay);
-    era = (era % 1.0) * CesiumMath.TWO_PI;
-    var earthRotation = Matrix3.fromRotationZ(era, rotation2Scratch);
-    var pfToIcrf = Matrix3.multiply(matrixQ, earthRotation, rotation1Scratch);
-    var cosxp = Math.cos(eop.xPoleWander);
-    var cosyp = Math.cos(eop.yPoleWander);
-    var sinxp = Math.sin(eop.xPoleWander);
-    var sinyp = Math.sin(eop.yPoleWander);
-    var ttt = (dayTT - j2000ttDays) + secondTT / TimeConstants.SECONDS_PER_DAY;
-    ttt /= 36525.0;
-    var sp = -47.0e-6 * ttt * CesiumMath.RADIANS_PER_DEGREE / 3600.0;
-    var cossp = Math.cos(sp);
-    var sinsp = Math.sin(sp);
-    var fToPfMtx = rotation2Scratch;
-    fToPfMtx[0] = cosxp * cossp;
-    fToPfMtx[1] = cosxp * sinsp;
-    fToPfMtx[2] = sinxp;
-    fToPfMtx[3] = -cosyp * sinsp + sinyp * sinxp * cossp;
-    fToPfMtx[4] = cosyp * cossp + sinyp * sinxp * sinsp;
-    fToPfMtx[5] = -sinyp * cosxp;
-    fToPfMtx[6] = -sinyp * sinsp - cosyp * sinxp * cossp;
-    fToPfMtx[7] = sinyp * cossp - cosyp * sinxp * sinsp;
-    fToPfMtx[8] = cosyp * cosxp;
-    return Matrix3.multiply(pfToIcrf, fToPfMtx, result);
-  };
-  var pointToWindowCoordinatesTemp = new Cartesian4();
-  Transforms.pointToWindowCoordinates = function(modelViewProjectionMatrix, viewportTransformation, point, result) {
-    result = Transforms.pointToGLWindowCoordinates(modelViewProjectionMatrix, viewportTransformation, point, result);
-    result.y = 2.0 * viewportTransformation[5] - result.y;
-    return result;
-  };
-  Transforms.pointToGLWindowCoordinates = function(modelViewProjectionMatrix, viewportTransformation, point, result) {
-    if (!defined(modelViewProjectionMatrix)) {
-      throw new DeveloperError('modelViewProjectionMatrix is required.');
-    }
-    if (!defined(viewportTransformation)) {
-      throw new DeveloperError('viewportTransformation is required.');
-    }
-    if (!defined(point)) {
-      throw new DeveloperError('point is required.');
-    }
-    if (!defined(result)) {
-      result = new Cartesian2();
-    }
-    var tmp = pointToWindowCoordinatesTemp;
-    Matrix4.multiplyByVector(modelViewProjectionMatrix, Cartesian4.fromElements(point.x, point.y, point.z, 1, tmp), tmp);
-    Cartesian4.multiplyByScalar(tmp, 1.0 / tmp.w, tmp);
-    Matrix4.multiplyByVector(viewportTransformation, tmp, tmp);
-    return Cartesian2.fromCartesian4(tmp, result);
-  };
-  var normalScratch = new Cartesian3();
-  var rightScratch = new Cartesian3();
-  var upScratch = new Cartesian3();
-  Transforms.rotationMatrixFromPositionVelocity = function(position, velocity, ellipsoid, result) {
-    if (!defined(position)) {
-      throw new DeveloperError('position is required.');
-    }
-    if (!defined(velocity)) {
-      throw new DeveloperError('velocity is required.');
-    }
-    var normal = defaultValue(ellipsoid, Ellipsoid.WGS84).geodeticSurfaceNormal(position, normalScratch);
-    var right = Cartesian3.cross(velocity, normal, rightScratch);
-    if (Cartesian3.equalsEpsilon(right, Cartesian3.ZERO, CesiumMath.EPSILON6)) {
-      right = Cartesian3.clone(Cartesian3.UNIT_X, right);
-    }
-    var up = Cartesian3.cross(right, velocity, upScratch);
-    Cartesian3.cross(velocity, up, right);
-    Cartesian3.negate(right, right);
-    if (!defined(result)) {
-      result = new Matrix3();
-    }
-    result[0] = velocity.x;
-    result[1] = velocity.y;
-    result[2] = velocity.z;
-    result[3] = right.x;
-    result[4] = right.y;
-    result[5] = right.z;
-    result[6] = up.x;
-    result[7] = up.y;
-    result[8] = up.z;
-    return result;
-  };
-  return Transforms;
+  return PolylinePipeline;
 });
 
 })();
-$__System.register("60", ["a"], function(exports_1, context_1) {
+$__System.register("69", ["a"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var cesium_imports_ts_1;
@@ -14755,7 +16625,7 @@ $__System.register("60", ["a"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("a", ["48", "14", "3f", "29", "40", "1c", "1d", "20", "28", "2c", "21", "1e", "15", "17", "38", "23", "24", "18", "46", "36", "39", "1f", "22", "2e", "2f", "3a", "41", "2b", "32", "30", "42", "2a", "43", "44", "45", "31", "60"], function(exports_1, context_1) {
+$__System.register("a", ["48", "14", "3f", "29", "40", "1c", "1d", "20", "28", "2c", "21", "1e", "15", "17", "38", "23", "24", "18", "46", "36", "39", "1f", "22", "2e", "2f", "3a", "41", "2b", "32", "30", "42", "2a", "43", "44", "45", "31", "5e", "68", "69"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   return {
@@ -14831,6 +16701,10 @@ $__System.register("a", ["48", "14", "3f", "29", "40", "1c", "1d", "20", "28", "
       exports_1({"SampledProperty": SampledProperty_1_1["default"]});
     }, function(Transforms_1_1) {
       exports_1({"Transforms": Transforms_1_1["default"]});
+    }, function(Simon1994PlanetaryPositions_1_1) {
+      exports_1({"Simon1994PlanetaryPositions": Simon1994PlanetaryPositions_1_1["default"]});
+    }, function(PolylinePipeline_1_1) {
+      exports_1({"PolylinePipeline": PolylinePipeline_1_1["default"]});
     }, function(_1) {}],
     execute: function() {}
   };
@@ -14846,6 +16720,8 @@ $__System.register("7", ["18", "a"], function(exports_1, context_1) {
       scratchCartesianPositionFIXED,
       scratchMatrix4,
       scratchMatrix3,
+      getEntityPosition,
+      getEntityOrientation,
       urlParser,
       MessageChannelLike,
       SynchronousMessageChannel,
@@ -15013,6 +16889,8 @@ $__System.register("7", ["18", "a"], function(exports_1, context_1) {
       scratchCartesianPositionFIXED = new cesium_imports_1.Cartesian3;
       scratchMatrix4 = new cesium_imports_1.Matrix4;
       scratchMatrix3 = new cesium_imports_1.Matrix3;
+      exports_1("getEntityPosition", getEntityPosition = getEntityPositionInReferenceFrame);
+      exports_1("getEntityOrientation", getEntityOrientation = getEntityOrientationInReferenceFrame);
       urlParser = typeof document !== 'undefined' ? document.createElement("a") : undefined;
       MessageChannelLike = (function() {
         function MessageChannelLike() {

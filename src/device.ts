@@ -47,7 +47,7 @@ export class DeviceService {
             this._mobileDetect = new MobileDetect(window.navigator.userAgent);
         }
     }
-    
+
     public locationUpdatesEnabled = true;
     public orientationUpdatesEnabled = true;
 

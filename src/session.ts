@@ -71,9 +71,9 @@ export class SessionPort {
      */
     public info: Configuration;
 
-    private static OPEN = 'ar.session.open';
-    private static CLOSE = 'ar.session.close';
-    private static ERROR = 'ar.session.error';
+    public static OPEN = 'ar.session.open';
+    public static CLOSE = 'ar.session.close';
+    public static ERROR = 'ar.session.error';
 
     private _isOpened = false;
     private _isConnected = false;
@@ -107,6 +107,39 @@ export class SessionPort {
             if (this.errorEvent.numberOfListeners === 1) console.error(error);
         })
 
+    }
+
+    /**
+     * Check if a protocol is supported by this session.
+     */
+    supportsProtocol(name: string, versions?: number | number[]): boolean {
+        if (!this._isConnected) throw new Error('Session has not yet connected');
+        const protocols = this.info.protocols;
+        if (!protocols) return false;
+        let supported = false;
+        const foundVersions = new Set<number>();
+        protocols.forEach((p) => {
+            if (p.indexOf(name) !== -1) {
+                const v = (+p.split('@v')[1]) || 0;
+                foundVersions.add(v);
+            }
+        });
+        if (versions) {
+            if (Array.isArray(versions)) {
+                versions.forEach((v) => {
+                    if (foundVersions.has(v)) {
+                        supported = true;
+                    }
+                })
+            } else {
+                if (foundVersions.has(versions)) {
+                    supported = true;
+                }
+            }
+        } else if (!versions) {
+            supported = true;
+        }
+        return supported;
     }
 
     /**

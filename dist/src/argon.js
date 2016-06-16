@@ -15,7 +15,9 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
         else {
             role = common_1.Role.MANAGER;
         }
-        var config = Object.assign({ role: role }, options.config);
+        var config = Object.assign({
+            role: role
+        }, options.config);
         return new ArgonSystem(config, options.container);
     }
     exports_1("init", init);

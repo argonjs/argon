@@ -45,6 +45,7 @@ System.register(['aurelia-dependency-injection', '../cesium/cesium-imports', '..
                     var realitySession = this.sessionService.addManagedSessionPort();
                     var remoteRealitySession = this.sessionService.createSessionPort();
                     var doUpdate = true;
+                    remoteRealitySession.on['ar.context.update'] = function () { };
                     remoteRealitySession.connectEvent.addEventListener(function () {
                         var update = function (time, index) {
                             if (doUpdate) {

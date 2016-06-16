@@ -126,11 +126,15 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                         var messageChannel = _this.sessionService.createSynchronousMessageChannel();
                         var ROUTE_MESSAGE_KEY = 'ar.reality.message.route.' + id;
                         var SEND_MESSAGE_KEY = 'ar.reality.message.send.' + id;
+                        var CLOSE_SESSION_KEY = 'ar.reality.close.' + id;
                         messageChannel.port1.onmessage = function (msg) {
                             _this.sessionService.manager.send(ROUTE_MESSAGE_KEY, msg.data);
                         };
                         _this.sessionService.manager.on[SEND_MESSAGE_KEY] = function (message) {
                             messageChannel.port1.postMessage(message);
+                        };
+                        _this.sessionService.manager.on[CLOSE_SESSION_KEY] = function (message) {
+                            realityControlSession.close();
                         };
                         realityControlSession.connectEvent.addEventListener(function () {
                             _this.connectEvent.raiseEvent(realityControlSession);
@@ -138,6 +142,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                         _this.sessionService.manager.closeEvent.addEventListener(function () {
                             realityControlSession.close();
                             delete _this.sessionService.manager.on[SEND_MESSAGE_KEY];
+                            delete _this.sessionService.manager.on[CLOSE_SESSION_KEY];
                         });
                         realityControlSession.open(messageChannel.port2, _this.sessionService.configuration);
                     };
@@ -230,7 +235,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     var _this = this;
                     if (this._current && reality && this._current === reality)
                         return;
-                    if (this._current && !reality)
+                    if (this._current && !reality && this._realitySession)
                         return;
                     if (!this._current && !reality) {
                         reality = this._default;
@@ -268,6 +273,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                             var id = cesium_imports_1.createGuid();
                             var ROUTE_MESSAGE_KEY_1 = 'ar.reality.message.route.' + id;
                             var SEND_MESSAGE_KEY_1 = 'ar.reality.message.send.' + id;
+                            var CLOSE_SESSION_KEY_1 = 'ar.reality.close.' + id;
                             realitySession.on[ROUTE_MESSAGE_KEY_1] = function (message) {
                                 ownerSession_1.send(SEND_MESSAGE_KEY_1, message);
                             };
@@ -277,9 +283,15 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                             realitySession.send('ar.reality.connect', { id: id });
                             ownerSession_1.send('ar.reality.connect', { id: id });
                             realitySession.closeEvent.addEventListener(function () {
+                                ownerSession_1.send(CLOSE_SESSION_KEY_1);
+                                _this._realitySession = undefined;
                                 delete ownerSession_1.on[ROUTE_MESSAGE_KEY_1];
                                 console.log('Reality session closed: ' + JSON.stringify(reality));
                                 _this._setNextReality(_this.onSelectReality());
+                            });
+                            ownerSession_1.closeEvent.addEventListener(function () {
+                                realitySession.send(CLOSE_SESSION_KEY_1);
+                                realitySession.close();
                             });
                         }
                     }).catch(function (error) {

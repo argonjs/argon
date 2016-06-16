@@ -90,7 +90,8 @@ export class ViewService {
                 }
             `, 0);
             sheet.insertRule(`
-                #argon > * {
+                #argon > canvas {
+                    z-index: -1;
                     position: absolute;
                     transform: translateZ(0px);
                     left: 0px;
@@ -163,9 +164,9 @@ export class ViewService {
     }
 
     /**
-     * Returns a suggested viewport
+     * Returns a maximum viewport
      */
-    public getSuggestedViewport() {
+    public getMaximumViewport() {
         if (window && document && document.documentElement) {
             return {
                 x: 0,

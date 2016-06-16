@@ -7,8 +7,8 @@ export interface Configuration {
     name?: string;
     role?: Role;
     userData?: any;
+    protocols?: string[];
     // app options
-    'app.supportsCustomView'?: boolean;
     // reality view options
     'reality.supportsControlPort'?: boolean;
     'reality.supportsCustomViewport'?: boolean;

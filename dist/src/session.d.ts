@@ -51,13 +51,17 @@ export declare class SessionPort {
      * Describes the configuration of the connected session.
      */
     info: Configuration;
-    private static OPEN;
-    private static CLOSE;
-    private static ERROR;
+    static OPEN: string;
+    static CLOSE: string;
+    static ERROR: string;
     private _isOpened;
     private _isConnected;
     private _isClosed;
     constructor();
+    /**
+     * Check if a protocol is supported by this session.
+     */
+    supportsProtocol(name: string, versions?: number | number[]): boolean;
     /**
      * Establish a connection to another session via the provided MessagePort.
      * @param messagePort the message port to post and receive messages.

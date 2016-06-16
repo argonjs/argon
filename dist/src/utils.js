@@ -2,7 +2,7 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var Event_1, cesium_imports_1;
-    var Event, CommandQueue, scratchCartesianPositionFIXED, scratchMatrix4, scratchMatrix3, urlParser, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory;
+    var Event, CommandQueue, scratchCartesianPositionFIXED, scratchMatrix4, scratchMatrix3, getEntityPosition, getEntityOrientation, urlParser, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory;
     /**
      * Get array of ancestor reference frames of a Cesium Entity.
      * @param frame A Cesium Entity to get ancestor reference frames.
@@ -274,6 +274,14 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
             scratchCartesianPositionFIXED = new cesium_imports_1.Cartesian3;
             scratchMatrix4 = new cesium_imports_1.Matrix4;
             scratchMatrix3 = new cesium_imports_1.Matrix3;
+            /**
+             * Alias of getEntityPositionInReferenceFrame
+             */
+            exports_1("getEntityPosition", getEntityPosition = getEntityPositionInReferenceFrame);
+            /**
+             * Alias of getEntityOrientationInReferenceFrame
+             */
+            exports_1("getEntityOrientation", getEntityOrientation = getEntityOrientationInReferenceFrame);
             urlParser = typeof document !== 'undefined' ? document.createElement("a") : undefined;
             /**
              * A MessageChannel pollyfill.

@@ -67,9 +67,9 @@ export declare class ViewService {
      */
     isOwner(): void;
     /**
-     * Returns a suggested viewport
+     * Returns a maximum viewport
      */
-    getSuggestedViewport(): {
+    getMaximumViewport(): {
         x: number;
         y: number;
         width: number;

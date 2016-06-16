@@ -56,6 +56,8 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                 */
                 function DeviceService(context) {
                     this.context = context;
+                    this.locationUpdatesEnabled = true;
+                    this.orientationUpdatesEnabled = true;
                     this.locationEntity = new cesium_imports_1.Entity({ id: 'ar.device.location', name: 'Device Location' });
                     this.orientationEntity = new cesium_imports_1.Entity({ id: 'ar.device.orientation', name: 'Device Orientation' });
                     this.interfaceEntity = new cesium_imports_1.Entity({ id: 'ar.device.interface', name: 'Device Interface' });
@@ -101,7 +103,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                             interfaceOrientation = cesium_imports_1.Quaternion.multiply(this._x90Rot, interfaceOrientation, interfaceOrientation);
                         }
                         interfaceOrientationProperty.setValue(interfaceOrientation);
-                        if (!cesium_imports_1.defined(this._geolocationWatchId)) {
+                        if (!cesium_imports_1.defined(this._geolocationWatchId) && this.locationUpdatesEnabled) {
                             this._geolocationWatchId = navigator.geolocation.watchPosition(function (pos) {
                                 if (_this.locationEntity.position instanceof cesium_imports_1.SampledPositionProperty === false) {
                                     var sampledPostionProperty = new cesium_imports_1.SampledPositionProperty(cesium_imports_1.ReferenceFrame.FIXED);
@@ -121,7 +123,11 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                                 enableHighAccuracy: true
                             });
                         }
-                        if (!cesium_imports_1.defined(this._deviceorientationListener)) {
+                        else if (cesium_imports_1.defined(this._geolocationWatchId) && !this.locationUpdatesEnabled) {
+                            navigator.geolocation.clearWatch(this._geolocationWatchId);
+                            this._geolocationWatchId = undefined;
+                        }
+                        if (!cesium_imports_1.defined(this._deviceorientationListener) && this.orientationUpdatesEnabled) {
                             this._deviceorientationListener = function (e) {
                                 var alphaDegrees = e.alpha;
                                 if (!cesium_imports_1.defined(alphaDegrees)) {
@@ -173,6 +179,10 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                                 // }
                             };
                             window.addEventListener('deviceorientation', this._deviceorientationListener);
+                        }
+                        else if (cesium_imports_1.defined(this._deviceorientationListener) && !this.orientationUpdatesEnabled) {
+                            window.removeEventListener('deviceorientation', this._deviceorientationListener);
+                            this._deviceorientationListener = undefined;
                         }
                     }
                 };

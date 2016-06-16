@@ -38,4 +38,7 @@ export {default as SampledPositionProperty} from 'Cesium/Source/DataSources/Samp
 export {default as SampledProperty} from 'Cesium/Source/DataSources/SampledProperty'
 export {default as Transforms} from 'Cesium/Source/Core/Transforms'
 
+export {default as Simon1994PlanetaryPositions} from 'Cesium/Source/Core/Simon1994PlanetaryPositions'
+export {default as PolylinePipeline} from 'Cesium/Source/Core/PolylinePipeline'
+
 import './cesium-extensions'

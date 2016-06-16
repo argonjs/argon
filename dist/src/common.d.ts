@@ -6,7 +6,7 @@ export interface Configuration {
     name?: string;
     role?: Role;
     userData?: any;
-    'app.supportsCustomView'?: boolean;
+    protocols?: string[];
     'reality.supportsControlPort'?: boolean;
     'reality.supportsCustomViewport'?: boolean;
     'reality.supportsCustomSubviews'?: boolean;

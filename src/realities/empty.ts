@@ -24,6 +24,7 @@ export class EmptyRealityLoader implements RealityLoader {
         const realitySession = this.sessionService.addManagedSessionPort();
         const remoteRealitySession = this.sessionService.createSessionPort();
         let doUpdate = true;
+        remoteRealitySession.on['ar.context.update'] = () => { };
         remoteRealitySession.connectEvent.addEventListener(() => {
             const update = (time: JulianDate, index: number) => {
                 if (doUpdate) {

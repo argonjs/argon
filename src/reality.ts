@@ -118,6 +118,7 @@ export class RealityService {
 
             const ROUTE_MESSAGE_KEY = 'ar.reality.message.route.' + id;
             const SEND_MESSAGE_KEY = 'ar.reality.message.send.' + id;
+            const CLOSE_SESSION_KEY = 'ar.reality.close.' + id;
 
             messageChannel.port1.onmessage = (msg: MessageEvent) => {
                 this.sessionService.manager.send(ROUTE_MESSAGE_KEY, msg.data);
@@ -127,6 +128,10 @@ export class RealityService {
                 messageChannel.port1.postMessage(message);
             }
 
+            this.sessionService.manager.on[CLOSE_SESSION_KEY] = (message) => {
+                realityControlSession.close();
+            }
+
             realityControlSession.connectEvent.addEventListener(() => {
                 this.connectEvent.raiseEvent(realityControlSession);
             })
@@ -134,6 +139,7 @@ export class RealityService {
             this.sessionService.manager.closeEvent.addEventListener(() => {
                 realityControlSession.close();
                 delete this.sessionService.manager.on[SEND_MESSAGE_KEY];
+                delete this.sessionService.manager.on[CLOSE_SESSION_KEY];
             });
 
             realityControlSession.open(messageChannel.port2, this.sessionService.configuration);
@@ -240,7 +246,7 @@ export class RealityService {
 
     private _setNextReality(reality: RealityView) {
         if (this._current && reality && this._current === reality) return;
-        if (this._current && !reality) return;
+        if (this._current && !reality && this._realitySession) return;
         if (!this._current && !reality) {
             reality = this._default;
             if (!reality) return;
@@ -286,6 +292,7 @@ export class RealityService {
                 const id = createGuid();
                 const ROUTE_MESSAGE_KEY = 'ar.reality.message.route.' + id;
                 const SEND_MESSAGE_KEY = 'ar.reality.message.send.' + id;
+                const CLOSE_SESSION_KEY = 'ar.reality.close.' + id;
 
                 realitySession.on[ROUTE_MESSAGE_KEY] = (message) => {
                     ownerSession.send(SEND_MESSAGE_KEY, message);
@@ -299,10 +306,17 @@ export class RealityService {
                 ownerSession.send('ar.reality.connect', { id });
 
                 realitySession.closeEvent.addEventListener(() => {
+                    ownerSession.send(CLOSE_SESSION_KEY);
+                    this._realitySession = undefined;
                     delete ownerSession.on[ROUTE_MESSAGE_KEY];
                     console.log('Reality session closed: ' + JSON.stringify(reality));
                     this._setNextReality(this.onSelectReality());
                 });
+
+                ownerSession.closeEvent.addEventListener(() => {
+                    realitySession.send(CLOSE_SESSION_KEY);
+                    realitySession.close();
+                })
             }
         }).catch((error) => {
             this.sessionService.errorEvent.raiseEvent(error);

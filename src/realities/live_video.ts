@@ -19,18 +19,22 @@ export class LiveVideoRealityLoader implements RealityLoader {
         const realitySession = this.sessionService.addManagedSessionPort();
         const remoteRealitySession = this.sessionService.createSessionPort();
 
-        this.vuforiaDelegate.videoEnabled = true;
-        this.vuforiaDelegate.trackingEnabled = true;
+        remoteRealitySession.on['ar.context.update'] = () => { };
 
-        const remove = this.vuforiaDelegate.stateUpdateEvent.addEventListener((frameState) => {
-            remoteRealitySession.send('ar.reality.frameState', frameState);
-        });
+        remoteRealitySession.connectEvent.addEventListener(() => {
+            const remove = this.vuforiaDelegate.stateUpdateEvent.addEventListener((frameState) => {
+                remoteRealitySession.send('ar.reality.frameState', frameState);
+            });
 
-        remoteRealitySession.closeEvent.addEventListener(() => {
-            remove();
-            this.vuforiaDelegate.videoEnabled = false;
-            this.vuforiaDelegate.trackingEnabled = false;
-        });
+            this.vuforiaDelegate.videoEnabled = true;
+            this.vuforiaDelegate.trackingEnabled = true;
+
+            remoteRealitySession.closeEvent.addEventListener(() => {
+                remove();
+                this.vuforiaDelegate.videoEnabled = false;
+                this.vuforiaDelegate.trackingEnabled = false;
+            });
+        })
 
         const messageChannel = this.sessionService.createSynchronousMessageChannel();
         realitySession.open(messageChannel.port1, this.sessionService.configuration);

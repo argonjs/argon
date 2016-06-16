@@ -155,6 +155,15 @@ declare module 'Cesium/Source/Core/Transforms' {
     export default Transforms;
 }
 
+declare module 'Cesium/Source/Core/Simon1994PlanetaryPositions' {
+    import {Simon1994PlanetaryPositions} from 'Cesium';
+    export default Simon1994PlanetaryPositions;
+}
+
+declare module 'Cesium/Source/Core/PolylinePipeline' {
+    import {PolylinePipeline} from 'Cesium';
+    export default PolylinePipeline;
+}
 
 declare module 'Cesium' {
 
@@ -175,6 +184,10 @@ declare module 'Cesium' {
         requestTileGeometry(x: number, y: number, level: number): Promise<TerrainData>;
         getLevelMaximumGeometricError(level: number): number;
         getTileDataAvailable(x: number, y: number, level: number): boolean;
+    }
+
+    class PolylinePipeline {
+
     }
 
     class AssociativeArray {

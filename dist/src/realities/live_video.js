@@ -34,15 +34,18 @@ System.register(['aurelia-dependency-injection', '../common', '../session', '../
                     var _this = this;
                     var realitySession = this.sessionService.addManagedSessionPort();
                     var remoteRealitySession = this.sessionService.createSessionPort();
-                    this.vuforiaDelegate.videoEnabled = true;
-                    this.vuforiaDelegate.trackingEnabled = true;
-                    var remove = this.vuforiaDelegate.stateUpdateEvent.addEventListener(function (frameState) {
-                        remoteRealitySession.send('ar.reality.frameState', frameState);
-                    });
-                    remoteRealitySession.closeEvent.addEventListener(function () {
-                        remove();
-                        _this.vuforiaDelegate.videoEnabled = false;
-                        _this.vuforiaDelegate.trackingEnabled = false;
+                    remoteRealitySession.on['ar.context.update'] = function () { };
+                    remoteRealitySession.connectEvent.addEventListener(function () {
+                        var remove = _this.vuforiaDelegate.stateUpdateEvent.addEventListener(function (frameState) {
+                            remoteRealitySession.send('ar.reality.frameState', frameState);
+                        });
+                        _this.vuforiaDelegate.videoEnabled = true;
+                        _this.vuforiaDelegate.trackingEnabled = true;
+                        remoteRealitySession.closeEvent.addEventListener(function () {
+                            remove();
+                            _this.vuforiaDelegate.videoEnabled = false;
+                            _this.vuforiaDelegate.trackingEnabled = false;
+                        });
                     });
                     var messageChannel = this.sessionService.createSynchronousMessageChannel();
                     realitySession.open(messageChannel.port1, this.sessionService.configuration);

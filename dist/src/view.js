@@ -70,8 +70,8 @@ System.register(['aurelia-dependency-injection', './session', './context', './ut
                         style.type = 'text/css';
                         document.head.appendChild(style);
                         var sheet = style.sheet;
-                        sheet.insertRule("\n                #argon {\n                    position: fixed;\n                    transform: translateZ(0px);\n                    z-index: -9999;\n                    left: 0px;\n                    bottom: 0px;\n                    width: 100%;\n                    height: 100%;\n                    margin: 0;\n                    border: 0;\n                    padding: 0;\n                }\n            ", 0);
-                        sheet.insertRule("\n                #argon > * {\n                    position: absolute;\n                    transform: translateZ(0px);\n                    left: 0px;\n                    bottom: 0px;\n                }\n            ", 1);
+                        sheet.insertRule("\n                #argon {\n                    position: fixed;\n                    transform: translateZ(0px);\n                    left: 0px;\n                    bottom: 0px;\n                    width: 100%;\n                    height: 100%;\n                    margin: 0;\n                    border: 0;\n                    padding: 0;\n                }\n            ", 0);
+                        sheet.insertRule("\n                #argon > canvas {\n                    z-index: -1;\n                    position: absolute;\n                    transform: translateZ(0px);\n                    left: 0px;\n                    bottom: 0px;\n                }\n            ", 1);
                     }
                     if (this.sessionService.isManager) {
                         this.sessionService.connectEvent.addEventListener(function (session) {
@@ -127,9 +127,9 @@ System.register(['aurelia-dependency-injection', './session', './context', './ut
                 ViewService.prototype.isOwner = function () {
                 };
                 /**
-                 * Returns a suggested viewport
+                 * Returns a maximum viewport
                  */
-                ViewService.prototype.getSuggestedViewport = function () {
+                ViewService.prototype.getMaximumViewport = function () {
                     if (window && document && document.documentElement) {
                         return {
                             x: 0,

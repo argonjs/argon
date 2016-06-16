@@ -9,6 +9,8 @@ export declare class DeviceService {
     * Initialize the DeviceService
     */
     constructor(context: ContextService);
+    locationUpdatesEnabled: boolean;
+    orientationUpdatesEnabled: boolean;
     locationEntity: Entity;
     orientationEntity: Entity;
     interfaceEntity: Entity;
