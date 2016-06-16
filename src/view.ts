@@ -80,7 +80,6 @@ export class ViewService {
                 #argon {
                     position: fixed;
                     transform: translateZ(0px);
-                    z-index: -9999;
                     left: 0px;
                     bottom: 0px;
                     width: 100%;
