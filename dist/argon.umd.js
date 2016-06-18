@@ -368,7 +368,7 @@ define("2", ["exports", "3"], function(exports, _aureliaPal) {
 });
 
 })();
-$__System.register("4", ["8", "5", "6", "7"], function(exports_1, context_1) {
+$__System.register("4", ["9", "5", "6", "7", "8"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
@@ -386,7 +386,8 @@ $__System.register("4", ["8", "5", "6", "7"], function(exports_1, context_1) {
   var aurelia_dependency_injection_1,
       session_1,
       context_2,
-      utils_1;
+      utils_1,
+      focus_1;
   var ViewService;
   return {
     setters: [function(aurelia_dependency_injection_1_1) {
@@ -397,13 +398,16 @@ $__System.register("4", ["8", "5", "6", "7"], function(exports_1, context_1) {
       context_2 = context_2_1;
     }, function(utils_1_1) {
       utils_1 = utils_1_1;
+    }, function(focus_1_1) {
+      focus_1 = focus_1_1;
     }],
     execute: function() {
       ViewService = (function() {
-        function ViewService(sessionService, contextService) {
+        function ViewService(sessionService, contextService, focusService) {
           var _this = this;
           this.sessionService = sessionService;
           this.contextService = contextService;
+          this.focusService = focusService;
           this.viewportChangeEvent = new utils_1.Event();
           this.acquireEvent = new utils_1.Event();
           this.releaseEvent = new utils_1.Event();
@@ -416,26 +420,39 @@ $__System.register("4", ["8", "5", "6", "7"], function(exports_1, context_1) {
             viewportMetaTag.name = 'viewport';
             viewportMetaTag.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0';
             document.head.appendChild(viewportMetaTag);
-            var argonView_1 = document.querySelector('#argon');
-            if (!argonView_1)
-              argonView_1 = document.createElement('div');
-            argonView_1.id = 'argon';
-            document.documentElement.appendChild(argonView_1);
-            this.element = argonView_1;
+            var argonContainer_1 = document.querySelector('#argon');
+            if (!argonContainer_1)
+              argonContainer_1 = document.createElement('div');
+            argonContainer_1.id = 'argon';
+            argonContainer_1.classList.add('argon-view');
+            var element = document.createElement('div');
+            element.style.width = '100%';
+            element.style.height = '100%';
+            element.classList.add('argon-view');
+            this.element = element;
+            argonContainer_1.insertBefore(this.element, argonContainer_1.firstChild);
             if (document.body)
-              document.body.appendChild(argonView_1);
+              document.body.appendChild(argonContainer_1);
             else {
+              document.documentElement.appendChild(argonContainer_1);
               document.addEventListener('DOMContentLoaded', function() {
-                document.body.appendChild(argonView_1);
+                document.body.appendChild(argonContainer_1);
               });
             }
             var style = document.createElement("style");
             style.type = 'text/css';
-            document.head.appendChild(style);
+            document.head.insertBefore(style, document.head.firstChild);
             var sheet = style.sheet;
-            sheet.insertRule("\n                #argon {\n                    position: fixed;\n                    transform: translateZ(0px);\n                    left: 0px;\n                    bottom: 0px;\n                    width: 100%;\n                    height: 100%;\n                    margin: 0;\n                    border: 0;\n                    padding: 0;\n                }\n            ", 0);
-            sheet.insertRule("\n                #argon > canvas {\n                    z-index: -1;\n                    pointer-events: auto;\n                }\n            ", 1);
-            sheet.insertRule("\n                #argon > * {\n                    position: absolute;\n                    pointer-events: none;\n                }\n            ", 1);
+            sheet.insertRule("\n                #argon {\n                    position: fixed;\n                    left: 0px;\n                    bottom: 0px;\n                    width: 100%;\n                    height: 100%;\n                    margin: 0;\n                    border: 0;\n                    padding: 0;\n                }\n            ", 0);
+            sheet.insertRule("\n                .argon-view > * {\n                    position: absolute;\n                    pointer-events: none;\n                }\n            ", 1);
+            this.focusService.focusEvent.addEventListener(function() {
+              argonContainer_1.classList.remove('argon-no-focus');
+              argonContainer_1.classList.add('argon-focus');
+            });
+            this.focusService.blurEvent.addEventListener(function() {
+              argonContainer_1.classList.remove('argon-focus');
+              argonContainer_1.classList.add('argon-no-focus');
+            });
           }
           if (this.sessionService.isManager) {
             this.sessionService.connectEvent.addEventListener(function(session) {
@@ -499,7 +516,7 @@ $__System.register("4", ["8", "5", "6", "7"], function(exports_1, context_1) {
             this.viewportChangeEvent.raiseEvent({previous: previousViewport});
           }
         };
-        ViewService = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, context_2.ContextService)], ViewService);
+        ViewService = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, context_2.ContextService, focus_1.FocusService)], ViewService);
         return ViewService;
       }());
       exports_1("ViewService", ViewService);
@@ -507,7 +524,7 @@ $__System.register("4", ["8", "5", "6", "7"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("9", ["8", "a", "b", "c", "5", "7"], function(exports_1, context_1) {
+$__System.register("a", ["9", "b", "c", "8", "5", "7"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
@@ -785,7 +802,7 @@ $__System.register("9", ["8", "a", "b", "c", "5", "7"], function(exports_1, cont
   };
 });
 
-$__System.register("6", ["8", "a", "5", "9", "d", "7"], function(exports_1, context_1) {
+$__System.register("6", ["9", "b", "5", "a", "d", "7"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
@@ -1640,7 +1657,7 @@ $__System.registerDynamic("e", [], true, function($__require, exports, module) {
   return module.exports;
 });
 
-$__System.register("f", ["8", "a", "6", "e"], function(exports_1, context_1) {
+$__System.register("f", ["9", "b", "6", "e"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
@@ -1824,7 +1841,7 @@ $__System.register("f", ["8", "a", "6", "e"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("d", ["a"], function(exports_1, context_1) {
+$__System.register("d", ["b"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var cesium_imports_1;
@@ -1876,7 +1893,7 @@ $__System.register("d", ["a"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("10", ["8", "a", "b", "5", "f", "d", "7"], function(exports_1, context_1) {
+$__System.register("10", ["9", "b", "c", "5", "f", "d", "7"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
@@ -1977,7 +1994,7 @@ $__System.register("10", ["8", "a", "b", "5", "f", "d", "7"], function(exports_1
   };
 });
 
-$__System.register("c", ["8", "5", "7"], function(exports_1, context_1) {
+$__System.register("8", ["9", "5", "7"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
@@ -2386,7 +2403,7 @@ define("3", ["exports"], function(exports) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("8", ["exports", "11", "3"], function(exports, _aureliaMetadata, _aureliaPal) {
+define("9", ["exports", "11", "3"], function(exports, _aureliaMetadata, _aureliaPal) {
   'use strict';
   exports.__esModule = true;
   var _classInvokers;
@@ -2878,7 +2895,7 @@ define("8", ["exports", "11", "3"], function(exports, _aureliaMetadata, _aurelia
 });
 
 })();
-$__System.register("b", [], function(exports_1, context_1) {
+$__System.register("c", [], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var Role,
@@ -2903,7 +2920,7 @@ $__System.register("b", [], function(exports_1, context_1) {
   };
 });
 
-$__System.register("5", ["a", "8", "b", "7"], function(exports_1, context_1) {
+$__System.register("5", ["b", "9", "c", "7"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __extends = (this && this.__extends) || function(d, b) {
@@ -3370,7 +3387,7 @@ $__System.register("5", ["a", "8", "b", "7"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("12", ["8", "c", "5", "7"], function(exports_1, context_1) {
+$__System.register("12", ["9", "8", "5", "7"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __extends = (this && this.__extends) || function(d, b) {
@@ -3844,7 +3861,7 @@ $__System.register("12", ["8", "c", "5", "7"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("13", ["8", "b", "5", "12"], function(exports_1, context_1) {
+$__System.register("13", ["9", "c", "5", "12"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
@@ -16553,7 +16570,7 @@ define("68", ["29", "37", "1e", "15", "17", "38", "60", "65", "66", "22", "2f", 
 });
 
 })();
-$__System.register("69", ["a"], function(exports_1, context_1) {
+$__System.register("69", ["b"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var cesium_imports_ts_1;
@@ -16622,7 +16639,7 @@ $__System.register("69", ["a"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("a", ["48", "14", "3f", "29", "40", "1c", "1d", "20", "28", "2c", "21", "1e", "15", "17", "38", "23", "24", "18", "46", "36", "39", "1f", "22", "2e", "2f", "3a", "41", "2b", "32", "30", "42", "2a", "43", "44", "45", "31", "5e", "68", "69"], function(exports_1, context_1) {
+$__System.register("b", ["48", "14", "3f", "29", "40", "1c", "1d", "20", "28", "2c", "21", "1e", "15", "17", "38", "23", "24", "18", "46", "36", "39", "1f", "22", "2e", "2f", "3a", "41", "2b", "32", "30", "42", "2a", "43", "44", "45", "31", "5e", "68", "69"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   return {
@@ -16707,7 +16724,7 @@ $__System.register("a", ["48", "14", "3f", "29", "40", "1c", "1d", "20", "28", "
   };
 });
 
-$__System.register("7", ["18", "a"], function(exports_1, context_1) {
+$__System.register("7", ["18", "b"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var Event_1,
@@ -17016,7 +17033,7 @@ $__System.register("7", ["18", "a"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("1", ["2", "8", "a", "5", "b", "6", "f", "c", "9", "d", "4", "12", "10", "13", "7"], function(exports_1, context_1) {
+$__System.register("1", ["2", "9", "b", "5", "c", "6", "f", "8", "a", "d", "4", "12", "10", "13", "7"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var DI,

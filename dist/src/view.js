@@ -1,4 +1,4 @@
-System.register(['aurelia-dependency-injection', './session', './context', './utils'], function(exports_1, context_1) {
+System.register(['aurelia-dependency-injection', './session', './context', './utils', './focus'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -7,7 +7,7 @@ System.register(['aurelia-dependency-injection', './session', './context', './ut
         else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
-    var aurelia_dependency_injection_1, session_1, context_2, utils_1;
+    var aurelia_dependency_injection_1, session_1, context_2, utils_1, focus_1;
     var ViewService;
     return {
         setters:[
@@ -22,16 +22,20 @@ System.register(['aurelia-dependency-injection', './session', './context', './ut
             },
             function (utils_1_1) {
                 utils_1 = utils_1_1;
+            },
+            function (focus_1_1) {
+                focus_1 = focus_1_1;
             }],
         execute: function() {
             /**
              * Manages the view state
              */
             ViewService = (function () {
-                function ViewService(sessionService, contextService) {
+                function ViewService(sessionService, contextService, focusService) {
                     var _this = this;
                     this.sessionService = sessionService;
                     this.contextService = contextService;
+                    this.focusService = focusService;
                     /**
                      * An event that is raised when the root viewport has changed
                      */
@@ -53,26 +57,39 @@ System.register(['aurelia-dependency-injection', './session', './context', './ut
                         viewportMetaTag.name = 'viewport';
                         viewportMetaTag.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0';
                         document.head.appendChild(viewportMetaTag);
-                        var argonView_1 = document.querySelector('#argon');
-                        if (!argonView_1)
-                            argonView_1 = document.createElement('div');
-                        argonView_1.id = 'argon';
-                        document.documentElement.appendChild(argonView_1);
-                        this.element = argonView_1;
+                        var argonContainer_1 = document.querySelector('#argon');
+                        if (!argonContainer_1)
+                            argonContainer_1 = document.createElement('div');
+                        argonContainer_1.id = 'argon';
+                        argonContainer_1.classList.add('argon-view');
+                        var element = document.createElement('div');
+                        element.style.width = '100%';
+                        element.style.height = '100%';
+                        element.classList.add('argon-view');
+                        this.element = element;
+                        argonContainer_1.insertBefore(this.element, argonContainer_1.firstChild);
                         if (document.body)
-                            document.body.appendChild(argonView_1);
+                            document.body.appendChild(argonContainer_1);
                         else {
+                            document.documentElement.appendChild(argonContainer_1);
                             document.addEventListener('DOMContentLoaded', function () {
-                                document.body.appendChild(argonView_1);
+                                document.body.appendChild(argonContainer_1);
                             });
                         }
                         var style = document.createElement("style");
                         style.type = 'text/css';
-                        document.head.appendChild(style);
+                        document.head.insertBefore(style, document.head.firstChild);
                         var sheet = style.sheet;
-                        sheet.insertRule("\n                #argon {\n                    position: fixed;\n                    transform: translateZ(0px);\n                    left: 0px;\n                    bottom: 0px;\n                    width: 100%;\n                    height: 100%;\n                    margin: 0;\n                    border: 0;\n                    padding: 0;\n                }\n            ", 0);
-                        sheet.insertRule("\n                #argon > canvas {\n                    z-index: -1;\n                    pointer-events: auto;\n                }\n            ", 1);
-                        sheet.insertRule("\n                #argon > * {\n                    position: absolute;\n                    pointer-events: none;\n                }\n            ", 1);
+                        sheet.insertRule("\n                #argon {\n                    position: fixed;\n                    left: 0px;\n                    bottom: 0px;\n                    width: 100%;\n                    height: 100%;\n                    margin: 0;\n                    border: 0;\n                    padding: 0;\n                }\n            ", 0);
+                        sheet.insertRule("\n                .argon-view > * {\n                    position: absolute;\n                    pointer-events: none;\n                }\n            ", 1);
+                        this.focusService.focusEvent.addEventListener(function () {
+                            argonContainer_1.classList.remove('argon-no-focus');
+                            argonContainer_1.classList.add('argon-focus');
+                        });
+                        this.focusService.blurEvent.addEventListener(function () {
+                            argonContainer_1.classList.remove('argon-focus');
+                            argonContainer_1.classList.add('argon-no-focus');
+                        });
                     }
                     if (this.sessionService.isManager) {
                         this.sessionService.connectEvent.addEventListener(function (session) {
@@ -160,7 +177,7 @@ System.register(['aurelia-dependency-injection', './session', './context', './ut
                     }
                 };
                 ViewService = __decorate([
-                    aurelia_dependency_injection_1.inject(session_1.SessionService, context_2.ContextService)
+                    aurelia_dependency_injection_1.inject(session_1.SessionService, context_2.ContextService, focus_1.FocusService)
                 ], ViewService);
                 return ViewService;
             }());

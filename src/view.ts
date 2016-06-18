@@ -4,6 +4,7 @@ import {Viewport, SubviewType, SerializedEntityPose, SerializedViewParameters} f
 import {SessionService, SessionPort} from './session'
 import {EntityPose, ContextService} from './context'
 import {Event} from './utils'
+import {FocusService} from './focus'
 
 /**
  * The rendering paramters for a particular subview
@@ -18,7 +19,7 @@ export interface Subview {
 /**
  * Manages the view state
  */
-@inject(SessionService, ContextService)
+@inject(SessionService, ContextService, FocusService)
 export class ViewService {
 
     /**
@@ -50,7 +51,10 @@ export class ViewService {
     public desiredViewportMap = new WeakMap<SessionPort, Viewport>();
     public desiredProjectionMatrixMap = new WeakMap<SessionPort, Matrix4>();
 
-    constructor(private sessionService: SessionService, private contextService: ContextService) {
+    constructor(
+        private sessionService: SessionService,
+        private contextService: ContextService,
+        private focusService: FocusService) {
 
         if (typeof document !== 'undefined') {
             let viewportMetaTag = <HTMLMetaElement>document.querySelector('meta[name=viewport]');
@@ -59,27 +63,33 @@ export class ViewService {
             viewportMetaTag.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'
             document.head.appendChild(viewportMetaTag);
 
-            let argonView = <HTMLDivElement>document.querySelector('#argon');
-            if (!argonView) argonView = document.createElement('div');
-            argonView.id = 'argon';
-            document.documentElement.appendChild(argonView);
-            this.element = argonView;
+            let argonContainer = <HTMLDivElement>document.querySelector('#argon');
+            if (!argonContainer) argonContainer = document.createElement('div');
+            argonContainer.id = 'argon';
+            argonContainer.classList.add('argon-view');
 
-            if (document.body) document.body.appendChild(argonView)
+            const element = document.createElement('div');
+            element.style.width = '100%';
+            element.style.height = '100%';
+            element.classList.add('argon-view');
+            this.element = element;
+            argonContainer.insertBefore(this.element, argonContainer.firstChild);
+
+            if (document.body) document.body.appendChild(argonContainer)
             else {
+                document.documentElement.appendChild(argonContainer);
                 document.addEventListener('DOMContentLoaded', () => {
-                    document.body.appendChild(argonView);
+                    document.body.appendChild(argonContainer);
                 })
             }
 
             var style = document.createElement("style");
             style.type = 'text/css';
-            document.head.appendChild(style);
+            document.head.insertBefore(style, document.head.firstChild);
             const sheet = <CSSStyleSheet>style.sheet;
             sheet.insertRule(`
                 #argon {
                     position: fixed;
-                    transform: translateZ(0px);
                     left: 0px;
                     bottom: 0px;
                     width: 100%;
@@ -90,17 +100,21 @@ export class ViewService {
                 }
             `, 0);
             sheet.insertRule(`
-                #argon > canvas {
-                    z-index: -1;
-                    pointer-events: auto;
-                }
-            `, 1);
-            sheet.insertRule(`
-                #argon > * {
+                .argon-view > * {
                     position: absolute;
                     pointer-events: none;
                 }
             `, 1);
+
+            this.focusService.focusEvent.addEventListener(() => {
+                argonContainer.classList.remove('argon-no-focus');
+                argonContainer.classList.add('argon-focus');
+            })
+
+            this.focusService.blurEvent.addEventListener(() => {
+                argonContainer.classList.remove('argon-focus');
+                argonContainer.classList.add('argon-no-focus');
+            })
         }
 
         if (this.sessionService.isManager) {

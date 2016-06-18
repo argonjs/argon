@@ -3,6 +3,7 @@ import { Viewport, SubviewType } from './common';
 import { SessionService, SessionPort } from './session';
 import { EntityPose, ContextService } from './context';
 import { Event } from './utils';
+import { FocusService } from './focus';
 /**
  * The rendering paramters for a particular subview
  */
@@ -18,6 +19,7 @@ export interface Subview {
 export declare class ViewService {
     private sessionService;
     private contextService;
+    private focusService;
     /**
      * An event that is raised when the root viewport has changed
      */
@@ -43,7 +45,7 @@ export declare class ViewService {
     private _currentViewportJSON;
     desiredViewportMap: WeakMap<SessionPort, Viewport>;
     desiredProjectionMatrixMap: WeakMap<SessionPort, Matrix4>;
-    constructor(sessionService: SessionService, contextService: ContextService);
+    constructor(sessionService: SessionService, contextService: ContextService, focusService: FocusService);
     getSubviews(referenceFrame?: Entity): Subview[];
     getViewport(): Viewport;
     /**
