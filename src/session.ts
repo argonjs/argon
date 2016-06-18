@@ -171,21 +171,17 @@ export class SessionPort {
                     this.errorEvent.raiseEvent(e);
                 }
             } else if (handler) {
-                const response = handler(message, evt);
-                if (typeof response === 'undefined') {
-                    this.send(topic + ':resolve:' + id);
-                } else {
-                    Promise.resolve(response).then(response => {
-                        if (this._isClosed) return;
-                        this.send(topic + ':resolve:' + id, response)
-                    }).catch(error => {
-                        if (this._isClosed) return;
-                        let errorMessage: string;
-                        if (typeof error === 'string') errorMessage = error;
-                        else if (typeof error.message === 'string') errorMessage = error.message;
-                        this.send(topic + ':reject:' + id, { reason: errorMessage })
-                    })
-                }
+                const response = new Promise((resolve) => resolve(<any>handler(message, evt)));
+                Promise.resolve(response).then(response => {
+                    if (this._isClosed) return;
+                    this.send(topic + ':resolve:' + id, response)
+                }).catch(error => {
+                    if (this._isClosed) return;
+                    let errorMessage: string;
+                    if (typeof error === 'string') errorMessage = error;
+                    else if (typeof error.message === 'string') errorMessage = error.message;
+                    this.send(topic + ':reject:' + id, { reason: errorMessage })
+                })
             } else {
                 const errorMessage = 'Unable to handle message ' + topic;
                 if (expectsResponse) {
