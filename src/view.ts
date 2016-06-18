@@ -99,11 +99,6 @@ export class ViewService {
                     position: absolute;
                 }
             `, 1);
-            sheet.insertRule(`
-                #argon * {
-                    pointer-events: auto;
-                }
-            `, 1);
         }
 
         if (this.sessionService.isManager) {
