@@ -87,8 +87,6 @@ export class ViewService {
                     margin: 0;
                     border: 0;
                     padding: 0;
-                    -webkit-user-select: none;
-                    user-select: none;
                 }
             `, 0);
             sheet.insertRule(`

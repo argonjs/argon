@@ -165,26 +165,21 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                             }
                         }
                         else if (handler) {
-                            var response = handler(message, evt);
-                            if (typeof response === 'undefined') {
-                                _this.send(topic + ':resolve:' + id);
-                            }
-                            else {
-                                Promise.resolve(response).then(function (response) {
-                                    if (_this._isClosed)
-                                        return;
-                                    _this.send(topic + ':resolve:' + id, response);
-                                }).catch(function (error) {
-                                    if (_this._isClosed)
-                                        return;
-                                    var errorMessage;
-                                    if (typeof error === 'string')
-                                        errorMessage = error;
-                                    else if (typeof error.message === 'string')
-                                        errorMessage = error.message;
-                                    _this.send(topic + ':reject:' + id, { reason: errorMessage });
-                                });
-                            }
+                            var response = new Promise(function (resolve) { return resolve(handler(message, evt)); });
+                            Promise.resolve(response).then(function (response) {
+                                if (_this._isClosed)
+                                    return;
+                                _this.send(topic + ':resolve:' + id, response);
+                            }).catch(function (error) {
+                                if (_this._isClosed)
+                                    return;
+                                var errorMessage;
+                                if (typeof error === 'string')
+                                    errorMessage = error;
+                                else if (typeof error.message === 'string')
+                                    errorMessage = error.message;
+                                _this.send(topic + ':reject:' + id, { reason: errorMessage });
+                            });
                         }
                         else {
                             var errorMessage = 'Unable to handle message ' + topic;

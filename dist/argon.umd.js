@@ -434,7 +434,9 @@ $__System.register("4", ["8", "5", "6", "7"], function(exports_1, context_1) {
             document.head.appendChild(style);
             var sheet = style.sheet;
             sheet.insertRule("\n                #argon {\n                    position: fixed;\n                    transform: translateZ(0px);\n                    left: 0px;\n                    bottom: 0px;\n                    width: 100%;\n                    height: 100%;\n                    margin: 0;\n                    border: 0;\n                    padding: 0;\n                }\n            ", 0);
-            sheet.insertRule("\n                #argon > canvas {\n                    z-index: -1;\n                    position: absolute;\n                    transform: translateZ(0px);\n                    left: 0px;\n                    bottom: 0px;\n                }\n            ", 1);
+            sheet.insertRule("\n                #argon > canvas {\n                    z-index: -1;\n                }\n            ", 1);
+            sheet.insertRule("\n                #argon > * {\n                    position: absolute;\n                }\n            ", 1);
+            sheet.insertRule("\n                #argon * {\n                    pointer-events: auto;\n                }\n            ", 1);
           }
           if (this.sessionService.isManager) {
             this.sessionService.connectEvent.addEventListener(function(session) {
@@ -1784,10 +1786,8 @@ $__System.register("f", ["8", "a", "6", "e"], function(exports_1, context_1) {
                     _this._alphaOffset -= _this._headingDrift;
                   }
                 }
-                if (!cesium_imports_1.defined(_this._alphaOffset)) {
-                  return;
-                }
-                var alpha = cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE * (e.alpha + (_this._alphaOffset || 0));
+                var alphaOffset = _this._alphaOffset || -webkitCompassHeading || 0;
+                var alpha = cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE * (e.alpha + alphaOffset);
                 var beta = cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE * e.beta;
                 var gamma = cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE * e.gamma;
                 var alphaQuat = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_Z, alpha, _this._scratchQuaternion1);
@@ -3058,25 +3058,23 @@ $__System.register("5", ["a", "8", "b", "7"], function(exports_1, context_1) {
                 _this.errorEvent.raiseEvent(e);
               }
             } else if (handler) {
-              var response = handler(message, evt);
-              if (typeof response === 'undefined') {
-                _this.send(topic + ':resolve:' + id);
-              } else {
-                Promise.resolve(response).then(function(response) {
-                  if (_this._isClosed)
-                    return;
-                  _this.send(topic + ':resolve:' + id, response);
-                }).catch(function(error) {
-                  if (_this._isClosed)
-                    return;
-                  var errorMessage;
-                  if (typeof error === 'string')
-                    errorMessage = error;
-                  else if (typeof error.message === 'string')
-                    errorMessage = error.message;
-                  _this.send(topic + ':reject:' + id, {reason: errorMessage});
-                });
-              }
+              var response = new Promise(function(resolve) {
+                return resolve(handler(message, evt));
+              });
+              Promise.resolve(response).then(function(response) {
+                if (_this._isClosed)
+                  return;
+                _this.send(topic + ':resolve:' + id, response);
+              }).catch(function(error) {
+                if (_this._isClosed)
+                  return;
+                var errorMessage;
+                if (typeof error === 'string')
+                  errorMessage = error;
+                else if (typeof error.message === 'string')
+                  errorMessage = error.message;
+                _this.send(topic + ':reject:' + id, {reason: errorMessage});
+              });
             } else {
               var errorMessage = 'Unable to handle message ' + topic;
               if (expectsResponse) {

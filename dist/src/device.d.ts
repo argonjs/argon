@@ -11,6 +11,9 @@ export declare class DeviceService {
     constructor(context: ContextService);
     locationUpdatesEnabled: boolean;
     orientationUpdatesEnabled: boolean;
+    /**
+     * The locationEntity is an ENU coordinate frame centered at the device location
+     */
     locationEntity: Entity;
     orientationEntity: Entity;
     interfaceEntity: Entity;

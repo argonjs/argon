@@ -58,6 +58,9 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     this.context = context;
                     this.locationUpdatesEnabled = true;
                     this.orientationUpdatesEnabled = true;
+                    /**
+                     * The locationEntity is an ENU coordinate frame centered at the device location
+                     */
                     this.locationEntity = new cesium_imports_1.Entity({ id: 'ar.device.location', name: 'Device Location' });
                     this.orientationEntity = new cesium_imports_1.Entity({ id: 'ar.device.orientation', name: 'Device Orientation' });
                     this.interfaceEntity = new cesium_imports_1.Entity({ id: 'ar.device.interface', name: 'Device Interface' });
@@ -153,12 +156,10 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                                         _this._alphaOffset -= _this._headingDrift;
                                     }
                                 }
-                                if (!cesium_imports_1.defined(_this._alphaOffset)) {
-                                    return;
-                                }
+                                var alphaOffset = _this._alphaOffset || -webkitCompassHeading || 0;
                                 // TODO: deal with various browser quirks :\
                                 // https://mobiforge.com/design-development/html5-mobile-web-device-orientation-events
-                                var alpha = cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE * (e.alpha + (_this._alphaOffset || 0));
+                                var alpha = cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE * (e.alpha + alphaOffset);
                                 var beta = cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE * e.beta;
                                 var gamma = cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE * e.gamma;
                                 var alphaQuat = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_Z, alpha, _this._scratchQuaternion1);
