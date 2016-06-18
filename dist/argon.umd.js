@@ -436,7 +436,6 @@ $__System.register("4", ["8", "5", "6", "7"], function(exports_1, context_1) {
             sheet.insertRule("\n                #argon {\n                    position: fixed;\n                    transform: translateZ(0px);\n                    left: 0px;\n                    bottom: 0px;\n                    width: 100%;\n                    height: 100%;\n                    margin: 0;\n                    border: 0;\n                    padding: 0;\n                }\n            ", 0);
             sheet.insertRule("\n                #argon > canvas {\n                    z-index: -1;\n                }\n            ", 1);
             sheet.insertRule("\n                #argon > * {\n                    position: absolute;\n                }\n            ", 1);
-            sheet.insertRule("\n                #argon * {\n                    pointer-events: auto;\n                }\n            ", 1);
           }
           if (this.sessionService.isManager) {
             this.sessionService.connectEvent.addEventListener(function(session) {
