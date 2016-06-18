@@ -92,11 +92,13 @@ export class ViewService {
             sheet.insertRule(`
                 #argon > canvas {
                     z-index: -1;
+                    pointer-events: auto;
                 }
             `, 1);
             sheet.insertRule(`
                 #argon > * {
                     position: absolute;
+                    pointer-events: none;
                 }
             `, 1);
         }
