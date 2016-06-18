@@ -51,6 +51,9 @@ export class DeviceService {
     public locationUpdatesEnabled = true;
     public orientationUpdatesEnabled = true;
 
+    /**
+     * The locationEntity is an ENU coordinate frame centered at the device location
+     */
     public locationEntity = new Entity({ id: 'ar.device.location', name: 'Device Location' });
     public orientationEntity = new Entity({ id: 'ar.device.orientation', name: 'Device Orientation' });
     public interfaceEntity = new Entity({ id: 'ar.device.interface', name: 'Device Interface' });
@@ -155,13 +158,11 @@ export class DeviceService {
                         }
                     }
 
-                    if (!defined(this._alphaOffset)) {
-                        return;
-                    }
+                    const alphaOffset = this._alphaOffset || -webkitCompassHeading || 0;
 
                     // TODO: deal with various browser quirks :\
                     // https://mobiforge.com/design-development/html5-mobile-web-device-orientation-events
-                    const alpha = CesiumMath.RADIANS_PER_DEGREE * (e.alpha + (this._alphaOffset || 0));
+                    const alpha = CesiumMath.RADIANS_PER_DEGREE * (e.alpha + alphaOffset);
                     const beta = CesiumMath.RADIANS_PER_DEGREE * e.beta;
                     const gamma = CesiumMath.RADIANS_PER_DEGREE * e.gamma;
 
