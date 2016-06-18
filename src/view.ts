@@ -87,15 +87,23 @@ export class ViewService {
                     margin: 0;
                     border: 0;
                     padding: 0;
+                    -webkit-user-select: none;
+                    user-select: none;
                 }
             `, 0);
             sheet.insertRule(`
                 #argon > canvas {
                     z-index: -1;
+                }
+            `, 1);
+            sheet.insertRule(`
+                #argon > * {
                     position: absolute;
-                    transform: translateZ(0px);
-                    left: 0px;
-                    bottom: 0px;
+                }
+            `, 1);
+            sheet.insertRule(`
+                #argon * {
+                    pointer-events: auto;
                 }
             `, 1);
         }
