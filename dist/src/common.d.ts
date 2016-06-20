@@ -95,6 +95,16 @@ export interface SerializedViewParameters {
     subviews: SerializedSubview[];
 }
 /**
+ * Describes the pose of a reality view and how it is able to render
+ */
+export interface SerializedEyeParameters {
+    pose: SerializedEntityPose;
+    fov?: number[] | number;
+    separation?: number;
+    forceSeparation?: boolean;
+    forceFOV?: boolean;
+}
+/**
  * Describes the serialized frame state.
  */
 export interface SerializedFrameState {
@@ -103,6 +113,7 @@ export interface SerializedFrameState {
         dayNumber: number;
         secondsOfDay: number;
     };
-    view: SerializedViewParameters;
+    view?: SerializedViewParameters;
+    eye?: SerializedEyeParameters;
     entities?: SerializedEntityPoseMap;
 }

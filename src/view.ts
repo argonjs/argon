@@ -10,6 +10,7 @@ import {FocusService} from './focus'
  * The rendering paramters for a particular subview
  */
 export interface Subview {
+    index: number,
     type: SubviewType,
     projectionMatrix: Array<number>,
     pose: EntityPose,
@@ -135,6 +136,7 @@ export class ViewService {
         this._current.subviews.forEach((subview, index) => {
             const viewEntity = this.contextService.entities.getById('ar.view_' + index);
             subviews[index] = {
+                index: index,
                 type: subview.type,
                 pose: this.contextService.getEntityPose(viewEntity, referenceFrame),
                 projectionMatrix: <Array<number>>subview.projectionMatrix,

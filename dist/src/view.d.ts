@@ -8,6 +8,7 @@ import { FocusService } from './focus';
  * The rendering paramters for a particular subview
  */
 export interface Subview {
+    index: number;
     type: SubviewType;
     projectionMatrix: Array<number>;
     pose: EntityPose;

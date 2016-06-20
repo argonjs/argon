@@ -108,6 +108,7 @@ System.register(['aurelia-dependency-injection', './session', './context', './ut
                     this._current.subviews.forEach(function (subview, index) {
                         var viewEntity = _this.contextService.entities.getById('ar.view_' + index);
                         subviews[index] = {
+                            index: index,
                             type: subview.type,
                             pose: _this.contextService.getEntityPose(viewEntity, referenceFrame),
                             projectionMatrix: subview.projectionMatrix,
