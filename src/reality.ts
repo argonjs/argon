@@ -308,7 +308,6 @@ export class RealityService {
                 realitySession.closeEvent.addEventListener(() => {
                     ownerSession.send(CLOSE_SESSION_KEY);
                     this._realitySession = undefined;
-                    delete ownerSession.on[ROUTE_MESSAGE_KEY];
                     console.log('Reality session closed: ' + JSON.stringify(reality));
                     this._setNextReality(this.onSelectReality());
                 });

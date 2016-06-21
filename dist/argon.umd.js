@@ -368,7 +368,7 @@ define("2", ["exports", "3"], function(exports, _aureliaPal) {
 });
 
 })();
-$__System.register("4", ["9", "5", "6", "7", "8"], function(exports_1, context_1) {
+$__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
@@ -384,6 +384,8 @@ $__System.register("4", ["9", "5", "6", "7", "8"], function(exports_1, context_1
     return c > 3 && r && Object.defineProperty(target, key, r), r;
   };
   var aurelia_dependency_injection_1,
+      cesium_imports_1,
+      common_1,
       session_1,
       context_2,
       utils_1,
@@ -392,6 +394,10 @@ $__System.register("4", ["9", "5", "6", "7", "8"], function(exports_1, context_1
   return {
     setters: [function(aurelia_dependency_injection_1_1) {
       aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
+    }, function(cesium_imports_1_1) {
+      cesium_imports_1 = cesium_imports_1_1;
+    }, function(common_1_1) {
+      common_1 = common_1_1;
     }, function(session_1_1) {
       session_1 = session_1_1;
     }, function(context_2_1) {
@@ -403,16 +409,17 @@ $__System.register("4", ["9", "5", "6", "7", "8"], function(exports_1, context_1
     }],
     execute: function() {
       ViewService = (function() {
-        function ViewService(sessionService, contextService, focusService) {
+        function ViewService(sessionService, focusService, contextService) {
           var _this = this;
           this.sessionService = sessionService;
-          this.contextService = contextService;
           this.focusService = focusService;
+          this.contextService = contextService;
           this.viewportChangeEvent = new utils_1.Event();
           this.acquireEvent = new utils_1.Event();
           this.releaseEvent = new utils_1.Event();
           this.desiredViewportMap = new WeakMap();
-          this.desiredProjectionMatrixMap = new WeakMap();
+          this._subviewEntities = [];
+          this._scratchFrustum = new cesium_imports_1.PerspectiveFrustum();
           if (typeof document !== 'undefined') {
             var viewportMetaTag = document.querySelector('meta[name=viewport]');
             if (!viewportMetaTag)
@@ -460,20 +467,40 @@ $__System.register("4", ["9", "5", "6", "7", "8"], function(exports_1, context_1
                 _this.desiredViewportMap.set(session, viewport);
               };
             });
+            this.contextService.prepareEvent.addEventListener(function(_a) {
+              var serializedState = _a.serializedState,
+                  state = _a.state;
+              if (!cesium_imports_1.defined(state.view)) {
+                if (!cesium_imports_1.defined(serializedState.eye))
+                  throw new Error("Unable to construct view configuration: missing eye parameters");
+                state.view = _this.generateViewFromFrameState(serializedState);
+              }
+            });
           }
           this.contextService.renderEvent.addEventListener(function() {
-            _this._setViewParameters(_this.contextService.state.view);
+            var state = _this.contextService.state;
+            var subviewEntities = _this._subviewEntities;
+            subviewEntities.length = 0;
+            state.view.subviews.forEach(function(subview, index) {
+              var id = 'ar.view_' + index;
+              state.entities[id] = subview.pose || state.view.pose;
+              _this.contextService.updateEntityFromFrameState(id, state);
+              delete state.entities[id];
+              subviewEntities[index] = _this.contextService.entities.getById(id);
+            });
+            _this.update();
           });
         }
         ViewService.prototype.getSubviews = function(referenceFrame) {
           var _this = this;
+          this.update();
           var subviews = [];
           this._current.subviews.forEach(function(subview, index) {
-            var viewEntity = _this.contextService.entities.getById('ar.view_' + index);
+            var subviewEntity = _this._subviewEntities[index];
             subviews[index] = {
               index: index,
               type: subview.type,
-              pose: _this.contextService.getEntityPose(viewEntity, referenceFrame),
+              pose: _this.contextService.getEntityPose(subviewEntity, referenceFrame),
               projectionMatrix: subview.projectionMatrix,
               viewport: subview.viewport || _this._current.viewport
             };
@@ -497,11 +524,25 @@ $__System.register("4", ["9", "5", "6", "7", "8"], function(exports_1, context_1
               width: document.documentElement.clientWidth,
               height: document.documentElement.clientHeight
             };
-          } else {
-            return undefined;
           }
+          throw new Error("Not implemeneted for the current platform");
         };
-        ViewService.prototype._setViewParameters = function(view) {
+        ViewService.prototype.generateViewFromFrameState = function(state) {
+          var viewport = this.getMaximumViewport();
+          this._scratchFrustum.fov = state.eye.fov;
+          this._scratchFrustum.aspectRatio = viewport.width / viewport.height;
+          this._scratchFrustum.near = 0.01;
+          return {
+            viewport: viewport,
+            pose: state.eye.pose,
+            subviews: [{
+              type: common_1.SubviewType.SINGULAR,
+              projectionMatrix: this._scratchFrustum.infiniteProjectionMatrix
+            }]
+          };
+        };
+        ViewService.prototype.update = function() {
+          var view = this.contextService.state.view;
           var viewportJSON = JSON.stringify(view.viewport);
           var previousViewport = this._current && this._current.viewport;
           this._current = view;
@@ -517,7 +558,7 @@ $__System.register("4", ["9", "5", "6", "7", "8"], function(exports_1, context_1
             this.viewportChangeEvent.raiseEvent({previous: previousViewport});
           }
         };
-        ViewService = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, context_2.ContextService, focus_1.FocusService)], ViewService);
+        ViewService = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, focus_1.FocusService, context_2.ContextService)], ViewService);
         return ViewService;
       }());
       exports_1("ViewService", ViewService);
@@ -525,7 +566,7 @@ $__System.register("4", ["9", "5", "6", "7", "8"], function(exports_1, context_1
   };
 });
 
-$__System.register("a", ["9", "b", "c", "8", "5", "7"], function(exports_1, context_1) {
+$__System.register("c", ["b", "5", "6", "a", "7", "9"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
@@ -738,13 +779,13 @@ $__System.register("a", ["9", "b", "c", "8", "5", "7"], function(exports_1, cont
             if (realitySession.info['reality.supportsControlPort']) {
               var ownerSession_1 = _this.desiredRealityMapInverse.get(reality) || _this.sessionService.manager;
               var id = cesium_imports_1.createGuid();
-              var ROUTE_MESSAGE_KEY_1 = 'ar.reality.message.route.' + id;
+              var ROUTE_MESSAGE_KEY = 'ar.reality.message.route.' + id;
               var SEND_MESSAGE_KEY_1 = 'ar.reality.message.send.' + id;
               var CLOSE_SESSION_KEY_1 = 'ar.reality.close.' + id;
-              realitySession.on[ROUTE_MESSAGE_KEY_1] = function(message) {
+              realitySession.on[ROUTE_MESSAGE_KEY] = function(message) {
                 ownerSession_1.send(SEND_MESSAGE_KEY_1, message);
               };
-              ownerSession_1.on[ROUTE_MESSAGE_KEY_1] = function(message) {
+              ownerSession_1.on[ROUTE_MESSAGE_KEY] = function(message) {
                 realitySession.send(SEND_MESSAGE_KEY_1, message);
               };
               realitySession.send('ar.reality.connect', {id: id});
@@ -752,7 +793,6 @@ $__System.register("a", ["9", "b", "c", "8", "5", "7"], function(exports_1, cont
               realitySession.closeEvent.addEventListener(function() {
                 ownerSession_1.send(CLOSE_SESSION_KEY_1);
                 _this._realitySession = undefined;
-                delete ownerSession_1.on[ROUTE_MESSAGE_KEY_1];
                 console.log('Reality session closed: ' + JSON.stringify(reality));
                 _this._setNextReality(_this.onSelectReality());
               });
@@ -803,7 +843,7 @@ $__System.register("a", ["9", "b", "c", "8", "5", "7"], function(exports_1, cont
   };
 });
 
-$__System.register("6", ["9", "b", "5", "a", "d", "7"], function(exports_1, context_1) {
+$__System.register("8", ["b", "5", "7", "c", "9"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
@@ -822,7 +862,6 @@ $__System.register("6", ["9", "b", "5", "a", "d", "7"], function(exports_1, cont
       cesium_imports_1,
       session_1,
       reality_1,
-      timer_1,
       utils_1;
   var PoseStatus,
       scratchDate,
@@ -844,8 +883,6 @@ $__System.register("6", ["9", "b", "5", "a", "d", "7"], function(exports_1, cont
       session_1 = session_1_1;
     }, function(reality_1_1) {
       reality_1 = reality_1_1;
-    }, function(timer_1_1) {
-      timer_1 = timer_1_1;
     }, function(utils_1_1) {
       utils_1 = utils_1_1;
     }],
@@ -862,11 +899,11 @@ $__System.register("6", ["9", "b", "5", "a", "d", "7"], function(exports_1, cont
       scratchOriginCartesian3 = new cesium_imports_1.Cartesian3(0, 0);
       negX90 = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_X, -cesium_imports_1.CesiumMath.PI_OVER_TWO);
       ContextService = (function() {
-        function ContextService(sessionService, realityService, timerService) {
+        function ContextService(sessionService, realityService) {
           var _this = this;
           this.sessionService = sessionService;
           this.realityService = realityService;
-          this.timerService = timerService;
+          this.prepareEvent = new utils_1.Event();
           this.updateEvent = new utils_1.Event();
           this.renderEvent = new utils_1.Event();
           this.wellKnownReferenceFrames = new cesium_imports_1.EntityCollection();
@@ -898,19 +935,24 @@ $__System.register("6", ["9", "b", "5", "a", "d", "7"], function(exports_1, cont
           this._subscribedEntities = new WeakMap();
           this._updatingEntities = new Set();
           this._knownEntities = new Set();
+          this._subviewEntities = [];
           this.entities.addCollection(this.wellKnownReferenceFrames);
           this.entities.addCollection(this.subscribedEntities);
           this.subscribedEntities.add(this.user);
           if (this.sessionService.isManager) {
-            this.realityService.frameEvent.addEventListener(function(state) {
-              _this._update({
-                reality: _this.realityService.getCurrent(),
-                index: state.index,
-                time: state.time,
-                view: state.view,
-                entities: state.entities || {},
-                sendTime: cesium_imports_1.JulianDate.now()
+            this.realityService.frameEvent.addEventListener(function(serializedState) {
+              var state = (_this._state || {});
+              state.reality = _this.realityService.getCurrent();
+              state.index = serializedState.index;
+              state.time = serializedState.time;
+              state.view = serializedState.view;
+              state.entities = serializedState.entities || {};
+              state.sendTime = cesium_imports_1.JulianDate.now(state.sendTime);
+              _this.prepareEvent.raiseEvent({
+                serializedState: serializedState,
+                state: state
               });
+              _this._update(state);
             });
             this.sessionService.connectEvent.addEventListener(function(session) {
               _this._subscribedEntities.set(session, new Set());
@@ -993,13 +1035,20 @@ $__System.register("6", ["9", "b", "5", "a", "d", "7"], function(exports_1, cont
         };
         ContextService.prototype._update = function(state) {
           var _this = this;
+          if (this.sessionService.isManager) {
+            delete state.entities[this.user.id];
+            this._entityPoseCache = {};
+            for (var _i = 0,
+                _a = this.sessionService.managedSessions; _i < _a.length; _i++) {
+              var session = _a[_i];
+              this._sendUpdateForSession(state, session);
+            }
+          }
+          this._state = state;
           state.entities[this.user.id] = state.view.pose;
-          state.view.subviews.forEach(function(subview, index) {
-            state.entities['ar.view_' + index] = subview.pose || state.view.pose;
-          });
           this._knownEntities.clear();
           for (var id in state.entities) {
-            this._updateEntity(id, state);
+            this.updateEntityFromFrameState(id, state);
             this._updatingEntities.add(id);
             this._knownEntities.add(id);
           }
@@ -1012,20 +1061,11 @@ $__System.register("6", ["9", "b", "5", "a", "d", "7"], function(exports_1, cont
             }
           });
           this._updateLocalOrigin(state);
-          if (this.sessionService.isManager) {
-            this._entityPoseCache = {};
-            for (var _i = 0,
-                _a = this.sessionService.managedSessions; _i < _a.length; _i++) {
-              var session = _a[_i];
-              this._sendUpdateForSession(state, session);
-            }
-          }
-          this._state = state;
           cesium_imports_1.JulianDate.clone(this._state.time, this._time);
           this.updateEvent.raiseEvent(undefined);
           this.renderEvent.raiseEvent(undefined);
         };
-        ContextService.prototype._updateEntity = function(id, state) {
+        ContextService.prototype.updateEntityFromFrameState = function(id, state) {
           var entityPose = state.entities[id];
           if (!entityPose) {
             if (!this.wellKnownReferenceFrames.getById(id)) {
@@ -1044,7 +1084,7 @@ $__System.register("6", ["9", "b", "5", "a", "d", "7"], function(exports_1, cont
             referenceFrame = cesium_imports_1.ReferenceFrame.FIXED;
           }
           if (!cesium_imports_1.defined(referenceFrame)) {
-            this._updateEntity(entityPose.r, state);
+            this.updateEntityFromFrameState(entityPose.r, state);
             referenceFrame = this.entities.getById(entityPose.r);
           }
           var positionValue = (entityPose.p === 0 ? cesium_imports_1.Cartesian3.ZERO : entityPose.p);
@@ -1125,7 +1165,7 @@ $__System.register("6", ["9", "b", "5", "a", "d", "7"], function(exports_1, cont
           }
           poseMap[id] = this._entityPoseCache[id];
         };
-        ContextService = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, reality_1.RealityService, timer_1.TimerService)], ContextService);
+        ContextService = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, reality_1.RealityService)], ContextService);
         return ContextService;
       }());
       exports_1("ContextService", ContextService);
@@ -1133,7 +1173,7 @@ $__System.register("6", ["9", "b", "5", "a", "d", "7"], function(exports_1, cont
   };
 });
 
-$__System.registerDynamic("e", [], true, function($__require, exports, module) {
+$__System.registerDynamic("d", [], true, function($__require, exports, module) {
   ;
   var define,
       global = this,
@@ -1658,7 +1698,7 @@ $__System.registerDynamic("e", [], true, function($__require, exports, module) {
   return module.exports;
 });
 
-$__System.register("f", ["9", "b", "6", "e"], function(exports_1, context_1) {
+$__System.register("e", ["b", "5", "8", "d"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
@@ -1842,7 +1882,7 @@ $__System.register("f", ["9", "b", "6", "e"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("d", ["b"], function(exports_1, context_1) {
+$__System.register("f", ["5"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var cesium_imports_1;
@@ -1894,7 +1934,7 @@ $__System.register("d", ["b"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("10", ["9", "b", "c", "5", "f", "d", "7"], function(exports_1, context_1) {
+$__System.register("10", ["b", "5", "6", "7", "e", "f", "9"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
@@ -1995,7 +2035,7 @@ $__System.register("10", ["9", "b", "c", "5", "f", "d", "7"], function(exports_1
   };
 });
 
-$__System.register("8", ["9", "5", "7"], function(exports_1, context_1) {
+$__System.register("a", ["b", "7", "9"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
@@ -2404,7 +2444,7 @@ define("3", ["exports"], function(exports) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("9", ["exports", "11", "3"], function(exports, _aureliaMetadata, _aureliaPal) {
+define("b", ["exports", "11", "3"], function(exports, _aureliaMetadata, _aureliaPal) {
   'use strict';
   exports.__esModule = true;
   var _classInvokers;
@@ -2896,7 +2936,7 @@ define("9", ["exports", "11", "3"], function(exports, _aureliaMetadata, _aurelia
 });
 
 })();
-$__System.register("c", [], function(exports_1, context_1) {
+$__System.register("6", [], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var Role,
@@ -2921,7 +2961,7 @@ $__System.register("c", [], function(exports_1, context_1) {
   };
 });
 
-$__System.register("5", ["b", "9", "c", "7"], function(exports_1, context_1) {
+$__System.register("7", ["5", "b", "6", "9"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __extends = (this && this.__extends) || function(d, b) {
@@ -3388,7 +3428,7 @@ $__System.register("5", ["b", "9", "c", "7"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("12", ["9", "8", "5", "7"], function(exports_1, context_1) {
+$__System.register("12", ["b", "a", "7", "9"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __extends = (this && this.__extends) || function(d, b) {
@@ -3862,7 +3902,7 @@ $__System.register("12", ["9", "8", "5", "7"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("13", ["9", "c", "5", "12"], function(exports_1, context_1) {
+$__System.register("13", ["b", "6", "7", "12"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
@@ -16571,7 +16611,7 @@ define("68", ["29", "37", "1e", "15", "17", "38", "60", "65", "66", "22", "2f", 
 });
 
 })();
-$__System.register("69", ["b"], function(exports_1, context_1) {
+$__System.register("69", ["5"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var cesium_imports_ts_1;
@@ -16640,7 +16680,7 @@ $__System.register("69", ["b"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("b", ["48", "14", "3f", "29", "40", "1c", "1d", "20", "28", "2c", "21", "1e", "15", "17", "38", "23", "24", "18", "46", "36", "39", "1f", "22", "2e", "2f", "3a", "41", "2b", "32", "30", "42", "2a", "43", "44", "45", "31", "5e", "68", "69"], function(exports_1, context_1) {
+$__System.register("5", ["48", "14", "3f", "29", "40", "1c", "1d", "20", "28", "2c", "21", "1e", "15", "17", "38", "23", "24", "18", "46", "36", "39", "1f", "22", "2e", "2f", "3a", "41", "2b", "32", "30", "42", "2a", "43", "44", "45", "31", "5e", "68", "69"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   return {
@@ -16725,7 +16765,7 @@ $__System.register("b", ["48", "14", "3f", "29", "40", "1c", "1d", "20", "28", "
   };
 });
 
-$__System.register("7", ["18", "b"], function(exports_1, context_1) {
+$__System.register("9", ["18", "5"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var Event_1,
@@ -17034,7 +17074,7 @@ $__System.register("7", ["18", "b"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("1", ["2", "9", "b", "5", "c", "6", "f", "8", "a", "d", "4", "12", "10", "13", "7"], function(exports_1, context_1) {
+$__System.register("1", ["2", "b", "5", "7", "6", "8", "e", "a", "c", "f", "4", "12", "10", "13", "9"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var DI,

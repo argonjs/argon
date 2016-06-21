@@ -1,4 +1,4 @@
-System.register(['aurelia-dependency-injection', './session', './context', './utils', './focus'], function(exports_1, context_1) {
+System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './common', './session', './context', './utils', './focus'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -7,12 +7,18 @@ System.register(['aurelia-dependency-injection', './session', './context', './ut
         else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
-    var aurelia_dependency_injection_1, session_1, context_2, utils_1, focus_1;
+    var aurelia_dependency_injection_1, cesium_imports_1, common_1, session_1, context_2, utils_1, focus_1;
     var ViewService;
     return {
         setters:[
             function (aurelia_dependency_injection_1_1) {
                 aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
+            },
+            function (cesium_imports_1_1) {
+                cesium_imports_1 = cesium_imports_1_1;
+            },
+            function (common_1_1) {
+                common_1 = common_1_1;
             },
             function (session_1_1) {
                 session_1 = session_1_1;
@@ -31,11 +37,11 @@ System.register(['aurelia-dependency-injection', './session', './context', './ut
              * Manages the view state
              */
             ViewService = (function () {
-                function ViewService(sessionService, contextService, focusService) {
+                function ViewService(sessionService, focusService, contextService) {
                     var _this = this;
                     this.sessionService = sessionService;
-                    this.contextService = contextService;
                     this.focusService = focusService;
+                    this.contextService = contextService;
                     /**
                      * An event that is raised when the root viewport has changed
                      */
@@ -49,7 +55,8 @@ System.register(['aurelia-dependency-injection', './session', './context', './ut
                     */
                     this.releaseEvent = new utils_1.Event();
                     this.desiredViewportMap = new WeakMap();
-                    this.desiredProjectionMatrixMap = new WeakMap();
+                    this._subviewEntities = [];
+                    this._scratchFrustum = new cesium_imports_1.PerspectiveFrustum();
                     if (typeof document !== 'undefined') {
                         var viewportMetaTag = document.querySelector('meta[name=viewport]');
                         if (!viewportMetaTag)
@@ -97,20 +104,39 @@ System.register(['aurelia-dependency-injection', './session', './context', './ut
                                 _this.desiredViewportMap.set(session, viewport);
                             };
                         });
+                        this.contextService.prepareEvent.addEventListener(function (_a) {
+                            var serializedState = _a.serializedState, state = _a.state;
+                            if (!cesium_imports_1.defined(state.view)) {
+                                if (!cesium_imports_1.defined(serializedState.eye))
+                                    throw new Error("Unable to construct view configuration: missing eye parameters");
+                                state.view = _this.generateViewFromFrameState(serializedState);
+                            }
+                        });
                     }
                     this.contextService.renderEvent.addEventListener(function () {
-                        _this._setViewParameters(_this.contextService.state.view);
+                        var state = _this.contextService.state;
+                        var subviewEntities = _this._subviewEntities;
+                        subviewEntities.length = 0;
+                        state.view.subviews.forEach(function (subview, index) {
+                            var id = 'ar.view_' + index;
+                            state.entities[id] = subview.pose || state.view.pose;
+                            _this.contextService.updateEntityFromFrameState(id, state);
+                            delete state.entities[id];
+                            subviewEntities[index] = _this.contextService.entities.getById(id);
+                        });
+                        _this.update();
                     });
                 }
                 ViewService.prototype.getSubviews = function (referenceFrame) {
                     var _this = this;
+                    this.update();
                     var subviews = [];
                     this._current.subviews.forEach(function (subview, index) {
-                        var viewEntity = _this.contextService.entities.getById('ar.view_' + index);
+                        var subviewEntity = _this._subviewEntities[index];
                         subviews[index] = {
                             index: index,
                             type: subview.type,
-                            pose: _this.contextService.getEntityPose(viewEntity, referenceFrame),
+                            pose: _this.contextService.getEntityPose(subviewEntity, referenceFrame),
                             projectionMatrix: subview.projectionMatrix,
                             viewport: subview.viewport || _this._current.viewport
                         };
@@ -157,11 +183,26 @@ System.register(['aurelia-dependency-injection', './session', './context', './ut
                             height: document.documentElement.clientHeight
                         };
                     }
-                    else {
-                        return undefined;
-                    }
+                    throw new Error("Not implemeneted for the current platform");
                 };
-                ViewService.prototype._setViewParameters = function (view) {
+                ViewService.prototype.generateViewFromFrameState = function (state) {
+                    var viewport = this.getMaximumViewport();
+                    this._scratchFrustum.fov = state.eye.fov;
+                    this._scratchFrustum.aspectRatio = viewport.width / viewport.height;
+                    this._scratchFrustum.near = 0.01;
+                    return {
+                        viewport: viewport,
+                        pose: state.eye.pose,
+                        subviews: [
+                            {
+                                type: common_1.SubviewType.SINGULAR,
+                                projectionMatrix: this._scratchFrustum.infiniteProjectionMatrix
+                            }
+                        ]
+                    };
+                };
+                ViewService.prototype.update = function () {
+                    var view = this.contextService.state.view;
                     var viewportJSON = JSON.stringify(view.viewport);
                     var previousViewport = this._current && this._current.viewport;
                     this._current = view;
@@ -178,7 +219,7 @@ System.register(['aurelia-dependency-injection', './session', './context', './ut
                     }
                 };
                 ViewService = __decorate([
-                    aurelia_dependency_injection_1.inject(session_1.SessionService, context_2.ContextService, focus_1.FocusService)
+                    aurelia_dependency_injection_1.inject(session_1.SessionService, focus_1.FocusService, context_2.ContextService)
                 ], ViewService);
                 return ViewService;
             }());

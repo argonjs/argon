@@ -1,4 +1,4 @@
-System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './session', './reality', './timer', './utils'], function(exports_1, context_1) {
+System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './session', './reality', './utils'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -7,7 +7,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
         else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
-    var aurelia_dependency_injection_1, cesium_imports_1, session_1, reality_1, timer_1, utils_1;
+    var aurelia_dependency_injection_1, cesium_imports_1, session_1, reality_1, utils_1;
     var PoseStatus, scratchDate, scratchCartesian3, scratchQuaternion, scratchOriginCartesian3, negX90, ContextService;
     function _stringFromReferenceFrame(referenceFrame) {
         var rf = referenceFrame;
@@ -26,9 +26,6 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
             },
             function (reality_1_1) {
                 reality_1 = reality_1_1;
-            },
-            function (timer_1_1) {
-                timer_1 = timer_1_1;
             },
             function (utils_1_1) {
                 utils_1 = utils_1_1;
@@ -69,11 +66,15 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
              *    to be focused on.
              */
             ContextService = (function () {
-                function ContextService(sessionService, realityService, timerService) {
+                function ContextService(sessionService, realityService) {
                     var _this = this;
                     this.sessionService = sessionService;
                     this.realityService = realityService;
-                    this.timerService = timerService;
+                    /**
+                     * An event used internally to allow other services to modify the final frame state
+                     * before it is processed by the ContextService
+                     */
+                    this.prepareEvent = new utils_1.Event();
                     /**
                      * An event that is raised when all remotely managed entities are are up-to-date for
                      * the current frame. It is suggested that all modifications to locally managed entities
@@ -141,19 +142,24 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                     this._subscribedEntities = new WeakMap();
                     this._updatingEntities = new Set();
                     this._knownEntities = new Set();
+                    this._subviewEntities = [];
                     this.entities.addCollection(this.wellKnownReferenceFrames);
                     this.entities.addCollection(this.subscribedEntities);
                     this.subscribedEntities.add(this.user);
                     if (this.sessionService.isManager) {
-                        this.realityService.frameEvent.addEventListener(function (state) {
-                            _this._update({
-                                reality: _this.realityService.getCurrent(),
-                                index: state.index,
-                                time: state.time,
-                                view: state.view,
-                                entities: state.entities || {},
-                                sendTime: cesium_imports_1.JulianDate.now()
+                        this.realityService.frameEvent.addEventListener(function (serializedState) {
+                            var state = (_this._state || {});
+                            state.reality = _this.realityService.getCurrent();
+                            state.index = serializedState.index;
+                            state.time = serializedState.time;
+                            state.view = serializedState.view;
+                            state.entities = serializedState.entities || {};
+                            state.sendTime = cesium_imports_1.JulianDate.now(state.sendTime);
+                            _this.prepareEvent.raiseEvent({
+                                serializedState: serializedState,
+                                state: state
                             });
+                            _this._update(state);
                         });
                         this.sessionService.connectEvent.addEventListener(function (session) {
                             _this._subscribedEntities.set(session, new Set());
@@ -269,17 +275,23 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                 // TODO: This function is called a lot. Potential for optimization. 
                 ContextService.prototype._update = function (state) {
                     var _this = this;
+                    // if this session is the manager, we need to update our child sessions a.s.a.p
+                    if (this.sessionService.isManager) {
+                        delete state.entities[this.user.id]; // children don't need this
+                        this._entityPoseCache = {};
+                        for (var _i = 0, _a = this.sessionService.managedSessions; _i < _a.length; _i++) {
+                            var session = _a[_i];
+                            this._sendUpdateForSession(state, session);
+                        }
+                    }
+                    // save our state 
+                    this._state = state;
                     // our user entity is defined by the current view pose (the current reality must provide this)
                     state.entities[this.user.id] = state.view.pose;
-                    // save our subview poses to be updated as entities
-                    state.view.subviews.forEach(function (subview, index) {
-                        // if the subview pose is undefined, assume it is the same as the view pose
-                        state.entities['ar.view_' + index] = subview.pose || state.view.pose;
-                    });
                     // update the entities the manager knows about
                     this._knownEntities.clear();
                     for (var id in state.entities) {
-                        this._updateEntity(id, state);
+                        this.updateEntityFromFrameState(id, state);
                         this._updatingEntities.add(id);
                         this._knownEntities.add(id);
                     }
@@ -295,22 +307,13 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                     });
                     // update our local origin
                     this._updateLocalOrigin(state);
-                    // if this session is the manager, we need to update our child sessions
-                    if (this.sessionService.isManager) {
-                        this._entityPoseCache = {};
-                        for (var _i = 0, _a = this.sessionService.managedSessions; _i < _a.length; _i++) {
-                            var session = _a[_i];
-                            this._sendUpdateForSession(state, session);
-                        }
-                    }
-                    // save our state 
-                    this._state = state;
+                    // update our time
                     cesium_imports_1.JulianDate.clone(this._state.time, this._time);
                     // raise an event for the user update and render the scene
                     this.updateEvent.raiseEvent(undefined);
                     this.renderEvent.raiseEvent(undefined);
                 };
-                ContextService.prototype._updateEntity = function (id, state) {
+                ContextService.prototype.updateEntityFromFrameState = function (id, state) {
                     var entityPose = state.entities[id];
                     if (!entityPose) {
                         if (!this.wellKnownReferenceFrames.getById(id)) {
@@ -331,7 +334,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                         referenceFrame = cesium_imports_1.ReferenceFrame.FIXED;
                     }
                     if (!cesium_imports_1.defined(referenceFrame)) {
-                        this._updateEntity(entityPose.r, state);
+                        this.updateEntityFromFrameState(entityPose.r, state);
                         referenceFrame = this.entities.getById(entityPose.r);
                     }
                     var positionValue = (entityPose.p === 0 ? cesium_imports_1.Cartesian3.ZERO : entityPose.p);
@@ -417,7 +420,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                     poseMap[id] = this._entityPoseCache[id];
                 };
                 ContextService = __decorate([
-                    aurelia_dependency_injection_1.inject(session_1.SessionService, reality_1.RealityService, timer_1.TimerService)
+                    aurelia_dependency_injection_1.inject(session_1.SessionService, reality_1.RealityService)
                 ], ContextService);
                 return ContextService;
             }());

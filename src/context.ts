@@ -7,7 +7,6 @@ import {
     CesiumMath,
     ConstantPositionProperty,
     ConstantProperty,
-    PerspectiveFrustum,
     SampledPositionProperty,
     SampledProperty,
     Transforms,
@@ -18,11 +17,11 @@ import {
     createGuid,
     defined
 } from './cesium/cesium-imports'
-import {Role, RealityView, SerializedFrameState, SerializedEntityPoseMap} from './common'
+import {Role, RealityView, SerializedFrameState, SerializedEntityPoseMap, SerializedEyeParameters, SerializedViewParameters} from './common'
 import {SessionService, SessionPort} from './session'
 import {RealityService} from './reality'
-import {TimerService} from './timer'
 import {Event, getRootReferenceFrame, getSerializedEntityPose, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame} from './utils'
+import {ViewService} from './view'
 
 /**
  * Describes a complete frame state which is sent to child sessions
@@ -79,8 +78,14 @@ const negX90 = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, -CesiumMath.PI_OVER_T
  *  * `ar.context.update` - Indicates to this context that the session wants
  *    to be focused on.
  */
-@inject(SessionService, RealityService, TimerService)
+@inject(SessionService, RealityService)
 export class ContextService {
+
+    /**
+     * An event used internally to allow other services to modify the final frame state 
+     * before it is processed by the ContextService
+     */
+    public prepareEvent = new Event<{ serializedState: SerializedFrameState, state: FrameState }>();
 
     /**
      * An event that is raised when all remotely managed entities are are up-to-date for 
@@ -180,8 +185,7 @@ export class ContextService {
 
     constructor(
         private sessionService: SessionService,
-        private realityService: RealityService,
-        private timerService: TimerService) {
+        private realityService: RealityService) {
 
         this.entities.addCollection(this.wellKnownReferenceFrames);
         this.entities.addCollection(this.subscribedEntities);
@@ -189,15 +193,23 @@ export class ContextService {
         this.subscribedEntities.add(this.user);
 
         if (this.sessionService.isManager) {
-            this.realityService.frameEvent.addEventListener((state) => {
-                this._update({
-                    reality: this.realityService.getCurrent(),
-                    index: state.index,
-                    time: state.time,
-                    view: state.view,
-                    entities: state.entities || {},
-                    sendTime: JulianDate.now()
+            this.realityService.frameEvent.addEventListener((serializedState) => {
+
+                const state = <FrameState>(this._state || {});
+
+                state.reality = this.realityService.getCurrent();
+                state.index = serializedState.index;
+                state.time = serializedState.time;
+                state.view = serializedState.view;
+                state.entities = serializedState.entities || {};
+                state.sendTime = JulianDate.now(state.sendTime);
+
+                this.prepareEvent.raiseEvent({
+                    serializedState,
+                    state
                 });
+
+                this._update(state);
             });
 
             this.sessionService.connectEvent.addEventListener((session) => {
@@ -315,21 +327,29 @@ export class ContextService {
         return this.getEntityPose(entity, referenceFrame);
     }
 
+    private _subviewEntities: Entity[] = [];
+
     // TODO: This function is called a lot. Potential for optimization. 
     private _update(state: FrameState) {
+        // if this session is the manager, we need to update our child sessions a.s.a.p
+        if (this.sessionService.isManager) {
+            delete state.entities[this.user.id]; // children don't need this
+            this._entityPoseCache = {};
+            for (const session of this.sessionService.managedSessions) {
+                this._sendUpdateForSession(state, session);
+            }
+        }
+
+        // save our state 
+        this._state = state;
+
         // our user entity is defined by the current view pose (the current reality must provide this)
         state.entities[this.user.id] = state.view.pose;
-
-        // save our subview poses to be updated as entities
-        state.view.subviews.forEach((subview, index) => {
-            // if the subview pose is undefined, assume it is the same as the view pose
-            state.entities['ar.view_' + index] = subview.pose || state.view.pose;
-        });
 
         // update the entities the manager knows about
         this._knownEntities.clear();
         for (const id in state.entities) {
-            this._updateEntity(id, state);
+            this.updateEntityFromFrameState(id, state);
             this._updatingEntities.add(id);
             this._knownEntities.add(id);
         }
@@ -348,23 +368,15 @@ export class ContextService {
         // update our local origin
         this._updateLocalOrigin(state);
 
-        // if this session is the manager, we need to update our child sessions
-        if (this.sessionService.isManager) {
-            this._entityPoseCache = {};
-            for (const session of this.sessionService.managedSessions) {
-                this._sendUpdateForSession(state, session);
-            }
-        }
-
-        // save our state 
-        this._state = state;
+        // update our time
         JulianDate.clone(<JulianDate>this._state.time, this._time);
+
         // raise an event for the user update and render the scene
         this.updateEvent.raiseEvent(undefined);
         this.renderEvent.raiseEvent(undefined);
     }
 
-    private _updateEntity(id: string, state: FrameState) {
+    public updateEntityFromFrameState(id: string, state: FrameState) {
         const entityPose = state.entities[id];
         if (!entityPose) {
             if (!this.wellKnownReferenceFrames.getById(id)) {
@@ -386,7 +398,7 @@ export class ContextService {
         }
 
         if (!defined(referenceFrame)) {
-            this._updateEntity(<string>entityPose.r, state);
+            this.updateEntityFromFrameState(<string>entityPose.r, state);
             referenceFrame = this.entities.getById(entityPose.r);
         }
 

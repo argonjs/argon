@@ -2,7 +2,6 @@ import { Entity, EntityCollection, CompositeEntityCollection, Cartesian3, Quater
 import { RealityView, SerializedFrameState, SerializedEntityPoseMap } from './common';
 import { SessionService } from './session';
 import { RealityService } from './reality';
-import { TimerService } from './timer';
 import { Event } from './utils';
 /**
  * Describes a complete frame state which is sent to child sessions
@@ -52,7 +51,14 @@ export declare enum PoseStatus {
 export declare class ContextService {
     private sessionService;
     private realityService;
-    private timerService;
+    /**
+     * An event used internally to allow other services to modify the final frame state
+     * before it is processed by the ContextService
+     */
+    prepareEvent: Event<{
+        serializedState: SerializedFrameState;
+        state: FrameState;
+    }>;
     /**
      * An event that is raised when all remotely managed entities are are up-to-date for
      * the current frame. It is suggested that all modifications to locally managed entities
@@ -112,7 +118,7 @@ export declare class ContextService {
     private _updatingEntities;
     private _knownEntities;
     private _state;
-    constructor(sessionService: SessionService, realityService: RealityService, timerService: TimerService);
+    constructor(sessionService: SessionService, realityService: RealityService);
     /**
      * Get the current time (not valid until the first update event)
      */
@@ -144,8 +150,9 @@ export declare class ContextService {
      */
     getEntityPose(entity: Entity, referenceFrame?: ReferenceFrame | Entity): EntityPose;
     private getCurrentEntityState(entity, referenceFrame);
+    private _subviewEntities;
     private _update(state);
-    private _updateEntity(id, state);
+    updateEntityFromFrameState(id: string, state: FrameState): Entity;
     private _updateLocalOrigin(state);
     private _sendUpdateForSession(parentState, session);
     private _addEntityAndAncestorsToPoseMap(poseMap, id, time);

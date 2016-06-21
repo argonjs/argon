@@ -1,6 +1,6 @@
 import {inject} from 'aurelia-dependency-injection'
-import {Entity, Matrix4} from './cesium/cesium-imports'
-import {Viewport, SubviewType, SerializedEntityPose, SerializedViewParameters} from './common'
+import {defined, Entity, Matrix4, PerspectiveFrustum} from './cesium/cesium-imports'
+import {Viewport, SubviewType, SerializedFrameState, SerializedEntityPose, SerializedViewParameters} from './common'
 import {SessionService, SessionPort} from './session'
 import {EntityPose, ContextService} from './context'
 import {Event} from './utils'
@@ -20,7 +20,7 @@ export interface Subview {
 /**
  * Manages the view state
  */
-@inject(SessionService, ContextService, FocusService)
+@inject(SessionService, FocusService, ContextService)
 export class ViewService {
 
     /**
@@ -46,16 +46,17 @@ export class ViewService {
      */
     public element: HTMLDivElement;
 
+    public desiredViewportMap = new WeakMap<SessionPort, Viewport>();
+
     private _current: SerializedViewParameters;
     private _currentViewportJSON: string;
 
-    public desiredViewportMap = new WeakMap<SessionPort, Viewport>();
-    public desiredProjectionMatrixMap = new WeakMap<SessionPort, Matrix4>();
+    private _subviewEntities: Entity[] = [];
 
     constructor(
         private sessionService: SessionService,
-        private contextService: ContextService,
-        private focusService: FocusService) {
+        private focusService: FocusService,
+        private contextService: ContextService) {
 
         if (typeof document !== 'undefined') {
             let viewportMetaTag = <HTMLMetaElement>document.querySelector('meta[name=viewport]');
@@ -123,22 +124,41 @@ export class ViewService {
                 session.on['ar.viewport.desired'] = (viewport: Viewport) => {
                     this.desiredViewportMap.set(session, viewport);
                 }
+            });
+
+            this.contextService.prepareEvent.addEventListener(({serializedState, state}) => {
+                if (!defined(state.view)) {
+                    if (!defined(serializedState.eye))
+                        throw new Error("Unable to construct view configuration: missing eye parameters");
+                    state.view = this.generateViewFromFrameState(serializedState);
+                }
             })
         }
 
         this.contextService.renderEvent.addEventListener(() => {
-            this._setViewParameters(this.contextService.state.view);
+            const state = this.contextService.state;
+            const subviewEntities = this._subviewEntities;
+            subviewEntities.length = 0;
+            state.view.subviews.forEach((subview, index) => {
+                const id = 'ar.view_' + index;
+                state.entities[id] = subview.pose || state.view.pose;
+                this.contextService.updateEntityFromFrameState(id, state);
+                delete state.entities[id];
+                subviewEntities[index] = this.contextService.entities.getById(id);
+            });
+            this.update();
         })
     }
 
     public getSubviews(referenceFrame?: Entity): Subview[] {
+        this.update();
         let subviews: Subview[] = [];
         this._current.subviews.forEach((subview, index) => {
-            const viewEntity = this.contextService.entities.getById('ar.view_' + index);
+            const subviewEntity = this._subviewEntities[index];
             subviews[index] = {
                 index: index,
                 type: subview.type,
-                pose: this.contextService.getEntityPose(viewEntity, referenceFrame),
+                pose: this.contextService.getEntityPose(subviewEntity, referenceFrame),
                 projectionMatrix: <Array<number>>subview.projectionMatrix,
                 viewport: subview.viewport || this._current.viewport
             }
@@ -193,12 +213,30 @@ export class ViewService {
                 width: document.documentElement.clientWidth,
                 height: document.documentElement.clientHeight
             }
-        } else {
-            return undefined;
+        }
+        throw new Error("Not implemeneted for the current platform");
+    }
+
+    private _scratchFrustum = new PerspectiveFrustum();
+    protected generateViewFromFrameState(state: SerializedFrameState): SerializedViewParameters {
+        const viewport = this.getMaximumViewport();
+        this._scratchFrustum.fov = state.eye.fov;
+        this._scratchFrustum.aspectRatio = viewport.width / viewport.height;
+        this._scratchFrustum.near = 0.01;
+        return {
+            viewport,
+            pose: state.eye.pose,
+            subviews: [
+                {
+                    type: SubviewType.SINGULAR,
+                    projectionMatrix: this._scratchFrustum.infiniteProjectionMatrix
+                }
+            ]
         }
     }
 
-    private _setViewParameters(view: SerializedViewParameters) {
+    public update() {
+        const view = this.contextService.state.view;
         const viewportJSON = JSON.stringify(view.viewport);
         const previousViewport = this._current && this._current.viewport;
         this._current = view;

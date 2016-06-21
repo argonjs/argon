@@ -271,13 +271,13 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                         if (realitySession.info['reality.supportsControlPort']) {
                             var ownerSession_1 = _this.desiredRealityMapInverse.get(reality) || _this.sessionService.manager;
                             var id = cesium_imports_1.createGuid();
-                            var ROUTE_MESSAGE_KEY_1 = 'ar.reality.message.route.' + id;
+                            var ROUTE_MESSAGE_KEY = 'ar.reality.message.route.' + id;
                             var SEND_MESSAGE_KEY_1 = 'ar.reality.message.send.' + id;
                             var CLOSE_SESSION_KEY_1 = 'ar.reality.close.' + id;
-                            realitySession.on[ROUTE_MESSAGE_KEY_1] = function (message) {
+                            realitySession.on[ROUTE_MESSAGE_KEY] = function (message) {
                                 ownerSession_1.send(SEND_MESSAGE_KEY_1, message);
                             };
-                            ownerSession_1.on[ROUTE_MESSAGE_KEY_1] = function (message) {
+                            ownerSession_1.on[ROUTE_MESSAGE_KEY] = function (message) {
                                 realitySession.send(SEND_MESSAGE_KEY_1, message);
                             };
                             realitySession.send('ar.reality.connect', { id: id });
@@ -285,7 +285,6 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                             realitySession.closeEvent.addEventListener(function () {
                                 ownerSession_1.send(CLOSE_SESSION_KEY_1);
                                 _this._realitySession = undefined;
-                                delete ownerSession_1.on[ROUTE_MESSAGE_KEY_1];
                                 console.log('Reality session closed: ' + JSON.stringify(reality));
                                 _this._setNextReality(_this.onSelectReality());
                             });

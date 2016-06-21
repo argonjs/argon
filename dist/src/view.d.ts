@@ -1,5 +1,5 @@
-import { Entity, Matrix4 } from './cesium/cesium-imports';
-import { Viewport, SubviewType } from './common';
+import { Entity } from './cesium/cesium-imports';
+import { Viewport, SubviewType, SerializedFrameState, SerializedViewParameters } from './common';
 import { SessionService, SessionPort } from './session';
 import { EntityPose, ContextService } from './context';
 import { Event } from './utils';
@@ -19,8 +19,8 @@ export interface Subview {
  */
 export declare class ViewService {
     private sessionService;
-    private contextService;
     private focusService;
+    private contextService;
     /**
      * An event that is raised when the root viewport has changed
      */
@@ -42,11 +42,11 @@ export declare class ViewService {
      * inherit the same size and position as this element (via CSS).
      */
     element: HTMLDivElement;
+    desiredViewportMap: WeakMap<SessionPort, Viewport>;
     private _current;
     private _currentViewportJSON;
-    desiredViewportMap: WeakMap<SessionPort, Viewport>;
-    desiredProjectionMatrixMap: WeakMap<SessionPort, Matrix4>;
-    constructor(sessionService: SessionService, contextService: ContextService, focusService: FocusService);
+    private _subviewEntities;
+    constructor(sessionService: SessionService, focusService: FocusService, contextService: ContextService);
     getSubviews(referenceFrame?: Entity): Subview[];
     getViewport(): Viewport;
     /**
@@ -78,5 +78,7 @@ export declare class ViewService {
         width: number;
         height: number;
     };
-    private _setViewParameters(view);
+    private _scratchFrustum;
+    protected generateViewFromFrameState(state: SerializedFrameState): SerializedViewParameters;
+    update(): void;
 }

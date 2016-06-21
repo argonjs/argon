@@ -99,10 +99,9 @@ export interface SerializedViewParameters {
  */
 export interface SerializedEyeParameters {
     pose: SerializedEntityPose;
-    fov?: number[] | number;
-    separation?: number;
-    forceSeparation?: boolean;
-    forceFOV?: boolean;
+    aspectRatio?: number;
+    fov?: number;
+    stereoMultiplier?: number;
 }
 /**
  * Describes the serialized frame state.
