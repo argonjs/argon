@@ -12,7 +12,7 @@ import {MessagePortLike, Event, getSerializedEntityPose} from './utils'
  */
 export abstract class RealityLoader {
     abstract type: string;
-    abstract load(reality: RealityView): Promise<SessionPort> | SessionPort;
+    abstract load(reality: RealityView, callback: (realitySession: SessionPort) => void);
 }
 
 /**
@@ -55,9 +55,6 @@ export class RealityService {
 
     // Manager-only. The port which connects the manager to the current reality
     private _realitySession: SessionPort;
-
-    // Manager-only. Represents a pending reality session object.
-    private _realitySessionPromise: Promise<SessionPort>
 
     // The default reality
     private _default: RealityView = null;
@@ -227,12 +224,16 @@ export class RealityService {
         let selectedReality = this.desiredRealityMap.get(this.sessionService.manager);
 
         if (!selectedReality) {
-            selectedReality = this.desiredRealityMap.get(this.focusService.getSession());
+            const focusSession = this.focusService.getSession();
+            if (focusSession && focusSession.isConnected) {
+                selectedReality = this.desiredRealityMap.get(focusSession);
+            }
         }
 
         if (!selectedReality) {
             // TODO: sort and select based on some kind of ranking system
             for (const session of this.sessionService.managedSessions) {
+                if (!session.isConnected) continue;
                 const desiredReality = this.desiredRealityMap.get(session);
                 if (desiredReality && this.isSupported(desiredReality.type)) {
                     selectedReality = desiredReality;
@@ -257,69 +258,69 @@ export class RealityService {
             return;
         }
 
-        const realitySessionPromise = Promise.resolve<SessionPort>(this._executeRealityLoader(reality));
-
-        this._realitySessionPromise = realitySessionPromise;
-        this._realitySessionPromise.then((realitySession) => {
-
-            if (this._realitySessionPromise !== realitySessionPromise) return;
-
-            if (!realitySession.isConnected) throw new Error('Expected a connected session');
-
-            if (realitySession.info.role !== Role.REALITY_VIEW) {
-                realitySession.sendError({ message: "Expected a reality session" });
-                realitySession.close();
-                throw new Error('The application "' + realitySession.info.name + '" does not support being loaded as a reality');
-            }
-
-            const previousRealitySession = this._realitySession;
-            const previousReality = this._current;
-
-            if (previousRealitySession) {
-                previousRealitySession.close();
-            }
+        this._executeRealityLoader(reality, (realitySession) => {
+            if (realitySession.isConnected) throw new Error('Expected an unconnected session');
 
             realitySession.on['ar.reality.frameState'] = (state: SerializedFrameState) => {
                 this.frameEvent.raiseEvent(state);
             }
 
-            this._realitySession = realitySession;
-            this._setCurrent(reality);
-
-            if (realitySession.info['reality.supportsControlPort']) {
-                const ownerSession = this.desiredRealityMapInverse.get(reality) || this.sessionService.manager;
-
-                const id = createGuid();
-                const ROUTE_MESSAGE_KEY = 'ar.reality.message.route.' + id;
-                const SEND_MESSAGE_KEY = 'ar.reality.message.send.' + id;
-                const CLOSE_SESSION_KEY = 'ar.reality.close.' + id;
-
-                realitySession.on[ROUTE_MESSAGE_KEY] = (message) => {
-                    ownerSession.send(SEND_MESSAGE_KEY, message);
-                }
-
-                ownerSession.on[ROUTE_MESSAGE_KEY] = (message) => {
-                    realitySession.send(SEND_MESSAGE_KEY, message);
-                }
-
-                realitySession.send('ar.reality.connect', { id });
-                ownerSession.send('ar.reality.connect', { id });
-
-                realitySession.closeEvent.addEventListener(() => {
-                    ownerSession.send(CLOSE_SESSION_KEY);
-                    this._realitySession = undefined;
-                    console.log('Reality session closed: ' + JSON.stringify(reality));
+            realitySession.closeEvent.addEventListener(() => {
+                console.log('Reality session closed: ' + JSON.stringify(reality));
+                if (this._current == reality) {
+                    this._current = null;
                     this._setNextReality(this.onSelectReality());
-                });
+                }
+            })
 
-                ownerSession.closeEvent.addEventListener(() => {
-                    realitySession.send(CLOSE_SESSION_KEY);
+            realitySession.connectEvent.addEventListener(() => {
+
+                if (realitySession.info.role !== Role.REALITY_VIEW) {
+                    realitySession.sendError({ message: "Expected a reality session" });
                     realitySession.close();
-                })
-            }
-        }).catch((error) => {
-            this.sessionService.errorEvent.raiseEvent(error);
-        })
+                    throw new Error('The application "' + realitySession.info.name + '" does not support being loaded as a reality');
+                }
+
+                const previousRealitySession = this._realitySession;
+                const previousReality = this._current;
+
+                this._realitySession = realitySession;
+                this._setCurrent(reality);
+
+                if (previousRealitySession) {
+                    previousRealitySession.close();
+                }
+
+                if (realitySession.info['reality.supportsControlPort']) {
+                    const ownerSession = this.desiredRealityMapInverse.get(reality) || this.sessionService.manager;
+
+                    const id = createGuid();
+                    const ROUTE_MESSAGE_KEY = 'ar.reality.message.route.' + id;
+                    const SEND_MESSAGE_KEY = 'ar.reality.message.send.' + id;
+                    const CLOSE_SESSION_KEY = 'ar.reality.close.' + id;
+
+                    realitySession.on[ROUTE_MESSAGE_KEY] = (message) => {
+                        ownerSession.send(SEND_MESSAGE_KEY, message);
+                    }
+
+                    ownerSession.on[ROUTE_MESSAGE_KEY] = (message) => {
+                        realitySession.send(SEND_MESSAGE_KEY, message);
+                    }
+
+                    realitySession.send('ar.reality.connect', { id });
+                    ownerSession.send('ar.reality.connect', { id });
+
+                    realitySession.closeEvent.addEventListener(() => {
+                        ownerSession.send(CLOSE_SESSION_KEY);
+                    });
+
+                    ownerSession.closeEvent.addEventListener(() => {
+                        realitySession.send(CLOSE_SESSION_KEY);
+                        realitySession.close();
+                    })
+                }
+            });
+        });
     }
 
     private _getLoader(type: string) {
@@ -342,11 +343,11 @@ export class RealityService {
         }
     }
 
-    private _executeRealityLoader(reality: RealityView) {
+    private _executeRealityLoader(reality: RealityView, callback: (realitySession: SessionPort) => void) {
         this.sessionService.ensureIsManager();
         const loader = this._getLoader(reality.type);
         if (!loader) throw new Error('Unable to setup unsupported reality type: ' + reality.type);
-        return loader.load(reality);
+        loader.load(reality, callback);
     }
 
 }

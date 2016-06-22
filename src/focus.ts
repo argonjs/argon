@@ -53,7 +53,7 @@ export class FocusService {
      */
     public getSession() {
         this.sessionService.ensureIsManager();
-        return this._session
+        return this._session;
     }
 
     /**
@@ -61,6 +61,8 @@ export class FocusService {
      */
     public setSession(session: SessionPort) {
         this.sessionService.ensureIsManager();
+        if (!session.isConnected)
+            throw new Error('Only a connected session can be granted focus')
         const previousFocussedSession = this._session;
         if (previousFocussedSession !== session) {
             if (previousFocussedSession)

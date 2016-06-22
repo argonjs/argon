@@ -95,9 +95,7 @@ export declare class SessionPort {
      * Close the connection to the remote session.
      */
     close(): void;
-    readonly isOpened: boolean;
     readonly isConnected: boolean;
-    readonly isClosed: boolean;
 }
 export declare class SessionPortFactory {
     create(): SessionPort;

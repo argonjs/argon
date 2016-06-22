@@ -8,14 +8,16 @@ import {getSerializedEntityPose} from '../utils'
 import {VuforiaServiceDelegate} from '../vuforia'
 
 @inject(SessionService, VuforiaServiceDelegate)
-export class LiveVideoRealityLoader implements RealityLoader {
+export class LiveVideoRealityLoader extends RealityLoader {
     public type = 'live-video';
 
     constructor(
         private sessionService: SessionService,
-        private vuforiaDelegate: VuforiaServiceDelegate) { }
+        private vuforiaDelegate: VuforiaServiceDelegate) {
+        super();
+    }
 
-    public load(reality: RealityView) {
+    public load(reality: RealityView, callback: (realitySession: SessionPort) => void): void {
         const realitySession = this.sessionService.addManagedSessionPort();
         const remoteRealitySession = this.sessionService.createSessionPort();
 
@@ -36,9 +38,10 @@ export class LiveVideoRealityLoader implements RealityLoader {
             });
         })
 
+        callback(realitySession);
+        // Only connect after the caller is able to attach connectEvent handlers
         const messageChannel = this.sessionService.createSynchronousMessageChannel();
         realitySession.open(messageChannel.port1, this.sessionService.configuration);
         remoteRealitySession.open(messageChannel.port2, { role: Role.REALITY_VIEW, name: 'live_video' });
-        return realitySession;
     }
 }

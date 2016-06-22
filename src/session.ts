@@ -273,16 +273,8 @@ export class SessionPort {
         this.closeEvent.raiseEvent(null);
     }
 
-    get isOpened() {
-        return this._isOpened;
-    }
-
     get isConnected() {
         return this._isConnected;
-    }
-
-    get isClosed() {
-        return this._isClosed;
     }
 }
 

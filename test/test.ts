@@ -104,18 +104,13 @@ describe('RealityService', () => {
             class CustomRealitySetupHandler implements Argon.RealityLoader {
                 public type = 'custom_type';
                 
-                public load(reality : Argon.RealityView) {
+                public load(reality : Argon.RealityView, callback:(realitySession:Argon.SessionPort)=>void) : void {
                     const realitySession = sessionService.addManagedSessionPort();
                     const remoteRealitySession = sessionService.createSessionPort();
                     const messageChannel = sessionService.createMessageChannel();
+                    callback(realitySession);
                     remoteRealitySession.open(messageChannel.port1, { role: Argon.Role.REALITY_VIEW });
-                    const connectedSession = new Promise((resolve, reject)=>{
-                        realitySession.connectEvent.addEventListener(()=>{
-                            resolve(realitySession);
-                        })
-                    })                    
                     realitySession.open(messageChannel.port2, sessionService.configuration);
-                    return connectedSession;
                 }
             }
             

@@ -271,23 +271,9 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                         this.messagePort.close();
                     this.closeEvent.raiseEvent(null);
                 };
-                Object.defineProperty(SessionPort.prototype, "isOpened", {
-                    get: function () {
-                        return this._isOpened;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
                 Object.defineProperty(SessionPort.prototype, "isConnected", {
                     get: function () {
                         return this._isConnected;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(SessionPort.prototype, "isClosed", {
-                    get: function () {
-                        return this._isClosed;
                     },
                     enumerable: true,
                     configurable: true

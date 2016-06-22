@@ -10,7 +10,7 @@ import {RealityLoader} from '../reality'
 import {getSerializedEntityPose} from '../utils'
 
 @inject(SessionService, DeviceService, TimerService)
-export class EmptyRealityLoader implements RealityLoader {
+export class EmptyRealityLoader extends RealityLoader {
 
     public type = 'empty';
 
@@ -18,9 +18,10 @@ export class EmptyRealityLoader implements RealityLoader {
         private sessionService: SessionService,
         private deviceService: DeviceService,
         private timer: TimerService) {
+        super();
     }
 
-    public load(reality: RealityView) {
+    public load(reality: RealityView, callback: (realitySession: SessionPort) => void): void {
         const realitySession = this.sessionService.addManagedSessionPort();
         const remoteRealitySession = this.sessionService.createSessionPort();
         let doUpdate = true;
@@ -61,9 +62,11 @@ export class EmptyRealityLoader implements RealityLoader {
         remoteRealitySession.closeEvent.addEventListener(() => {
             doUpdate = false;
         });
+
+        callback(realitySession);
+        // Only connect after the caller is able to attach connectEvent handlers
         const messageChannel = this.sessionService.createSynchronousMessageChannel();
         realitySession.open(messageChannel.port1, this.sessionService.configuration);
         remoteRealitySession.open(messageChannel.port2, { role: Role.REALITY_VIEW, name: 'empty' });
-        return realitySession;
     }
 }

@@ -79,6 +79,8 @@ System.register(['aurelia-dependency-injection', './session', './utils'], functi
                  */
                 FocusService.prototype.setSession = function (session) {
                     this.sessionService.ensureIsManager();
+                    if (!session.isConnected)
+                        throw new Error('Only a connected session can be granted focus');
                     var previousFocussedSession = this._session;
                     if (previousFocussedSession !== session) {
                         if (previousFocussedSession)

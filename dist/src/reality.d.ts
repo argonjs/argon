@@ -8,7 +8,7 @@ import { Event } from './utils';
  */
 export declare abstract class RealityLoader {
     abstract type: string;
-    abstract load(reality: RealityView): Promise<SessionPort> | SessionPort;
+    abstract load(reality: RealityView, callback: (realitySession: SessionPort) => void): any;
 }
 /**
 * A service which manages the reality view
@@ -50,7 +50,6 @@ export declare class RealityService {
         current: RealityView;
     }>;
     private _realitySession;
-    private _realitySessionPromise;
     private _default;
     private _current;
     private _desired;
@@ -101,5 +100,5 @@ export declare class RealityService {
     private _setNextReality(reality);
     private _getLoader(type);
     private _setCurrent(reality);
-    private _executeRealityLoader(reality);
+    private _executeRealityLoader(reality, callback);
 }
