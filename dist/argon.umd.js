@@ -2121,7 +2121,7 @@ $__System.register("a", ["b", "7", "9"], function(exports_1, context_1) {
         };
         FocusService.prototype.setSession = function(session) {
           this.sessionService.ensureIsManager();
-          if (!session.isConnected)
+          if (session && !session.isConnected)
             throw new Error('Only a connected session can be granted focus');
           var previousFocussedSession = this._session;
           if (previousFocussedSession !== session) {
