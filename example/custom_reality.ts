@@ -1,4 +1,4 @@
-/// <reference path="../typings/browser.d.ts"/>
+/// <reference path="../typings/index.d.ts"/>
 // import * as Argon from 'argon'
 import * as Argon from '../src/argon'
 
@@ -80,15 +80,15 @@ var scratchArray = [];
 
 function update(time:Argon.Cesium.JulianDate, index:number) {
     app.device.update();
-    const viewport = app.view.getSuggestedViewport();
+    const viewport = app.view.getMaximumViewport();
     perspectiveProjection.aspectRatio = viewport.width / viewport.height;
     const matrix = perspectiveProjection.infiniteProjectionMatrix;
     app.reality.frameEvent.raiseEvent({
         time,
         index,
         view: {
-            viewport: app.view.getSuggestedViewport(),
-            pose: Argon.getSerializedEntityPose(app.device.interfaceEntity, time),
+            viewport: app.view.getMaximumViewport(),
+            pose: Argon.getSerializedEntityPose(app.device.displayEntity, time),
             subviews: [{
                 type: Argon.SubviewType.SINGULAR,
                 projectionMatrix: Argon.Cesium.Matrix4.toArray(matrix, scratchArray)

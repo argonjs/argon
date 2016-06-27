@@ -1,7 +1,6 @@
 /// <reference path="../typings/index.d.ts"/>
 // import * as Argon from 'argon'
-import * as Argon from '../src/argon'
-import robotariumData from './robotarium-data.json!';
+import * as Argon from '../dist/src/argon'
 
 declare const THREE: any;
 
@@ -22,10 +21,6 @@ export const userLocation = new THREE.Object3D;
 scene.add(camera);
 scene.add(user);
 scene.add(userLocation);
-
-const robots:Set<string> = new Set<string>();
-
-// console.log(robotariumData);
 
 const renderer = new THREE.WebGLRenderer({ 
     alpha: true, 
@@ -89,14 +84,6 @@ axisHelper.position.y = -50;
 // var textMesh = new THREE.Mesh( text, new THREE.MeshBasicMaterial( { color: 0xff0000 } ) ) ;
 // scene.add(textMesh);
 
-const robotariumEntity = app.context.subscribedEntities.add(<any>{
-    id: 'robotarium',
-    position: new Argon.Cesium.ConstantPositionProperty(),
-    orientation: new Argon.Cesium.ConstantProperty(Argon.Cesium.Quaternion)
-})
-
-const robotObjectMap = new Map<Argon.Cesium.Entity, any>();
-
 app.vuforia.init({
 	licenseKey: "AXRIsu7/////AAAAAaYn+sFgpkAomH+Z+tK/Wsc8D+x60P90Nz8Oh0J8onzjVUIP5RbYjdDfyatmpnNgib3xGo1v8iWhkU1swiCaOM9V2jmpC4RZommwQzlgFbBRfZjV8DY3ggx9qAq8mijhN7nMzFDMgUhOlRWeN04VOcJGVUxnKn+R+oot1XTF5OlJZk3oXK2UfGkZo5DzSYafIVA0QS3Qgcx6j2qYAa/SZcPqiReiDM9FpaiObwxV3/xYJhXPUGVxI4wMcDI0XBWtiPR2yO9jAnv+x8+p88xqlMH8GHDSUecG97NbcTlPB0RayGGg1F6Y7v0/nQyk1OIp7J8VQ2YrTK25kKHST0Ny2s3M234SgvNCvnUHfAKFQ5KV"
 }).then((api)=>{
@@ -122,9 +109,6 @@ app.vuforia.init({
             box.add( axisHelper );
             
             console.log('Subscribes to stones trackable with id ' + trackables['stones'].id);
-            
-            robotariumEntity.position.setValue(Argon.Cesium.Cartesian3.ZERO, stonesEntity);
-            robotariumEntity.orientation.setValue(Argon.Cesium.Quaternion.IDENTITY);
 
             app.context.updateEvent.addEventListener(() => {
                 const stonesPose = app.context.getEntityPose(stonesEntity);
@@ -139,30 +123,6 @@ app.vuforia.init({
                 } else if (stonesPose.poseStatus & Argon.PoseStatus.LOST) {
                     stonesObject.remove(box);
                 }
-                
-                
-                // robots.forEach((id)=>{
-                //     const robotEntity = app.context.entities.getById(id)
-                //     const robotPose = app.context.getEntityPose(robotEntity);
-                        
-                //     if (robotPose.poseStatus & Argon.PoseStatus.KNOWN) {
-                        
-                //         var robotObject = robotObjectMap.get(robotEntity);
-                        
-                //         if (!robotObject) {
-                //             var geo = new THREE.BoxGeometry(10, 10, 10);
-                //             var material = new THREE.MeshNormalMaterial()
-                //             material.side = THREE.DoubleSide;
-                //             robotObject = new THREE.Mesh(geo, material);
-                //             robotObject.position.z = 25;
-                //             scene.add(robotObject);
-                //             robotObjectMap.set(robotEntity, robotObject);
-                //         }
-                        
-                //         robotObject.position.copy(robotPose.position);
-                //         robotObject.quaternion.copy(robotPose.orientation);
-                //     }
-                // })
             })
         });
         
@@ -195,34 +155,6 @@ app.renderEvent.addEventListener(() => {
         renderer.render(scene, camera);
     }
 })
-
-function loadRobotariumData() {
-    var robotData = robotariumData.RobotData;
-    var now = Argon.Cesium.JulianDate.now();
-    robotData.forEach((r)=>{
-        if (!r.id) return;
-        const robotEntity = app.context.subscribedEntities.getOrCreateEntity(r.id);
-        if (!robotEntity.position || !robotEntity.orientation) {
-            robotEntity.position = new Argon.Cesium.SampledPositionProperty(robotariumEntity);
-            (robotEntity.position as Argon.Cesium.SampledPositionProperty).forwardExtrapolationType = Argon.Cesium.ExtrapolationType.HOLD;
-            (robotEntity.position as Argon.Cesium.SampledPositionProperty).backwardExtrapolationType = Argon.Cesium.ExtrapolationType.HOLD;
-            robotEntity.orientation = new Argon.Cesium.SampledProperty(Argon.Cesium.Quaternion);
-            (robotEntity.orientation as Argon.Cesium.SampledProperty).forwardExtrapolationType = Argon.Cesium.ExtrapolationType.HOLD;
-            (robotEntity.orientation as Argon.Cesium.SampledProperty).backwardExtrapolationType = Argon.Cesium.ExtrapolationType.HOLD;
-        }
-        var t = Argon.Cesium.JulianDate.addSeconds(now, r.iter*0.05, new Argon.Cesium.JulianDate(0,0));
-        (robotEntity.position as Argon.Cesium.SampledPositionProperty).addSample(
-            t,
-            <Argon.Cesium.Cartesian3>{x:r.xPos*200, y:r.yPos*200, z:0}
-        );
-        (robotEntity.orientation as Argon.Cesium.SampledProperty).addSample(
-            t,
-            Argon.Cesium.Quaternion.fromAxisAngle(Argon.Cesium.Cartesian3.UNIT_Z, r.theta, new Argon.Cesium.Quaternion)
-        );
-        robots.add(robotEntity.id);
-    })
-}
-loadRobotariumData();
 
 // // creating 6 divs to indicate the x y z positioning
 // const divXpos = document.createElement('div')
