@@ -42,7 +42,7 @@ export class EmptyRealityLoader extends RealityLoader {
                                 width: w,
                                 height: h
                             },
-                            pose: getSerializedEntityPose(this.deviceService.interfaceEntity, time),
+                            pose: getSerializedEntityPose(this.deviceService.displayEntity, time),
                             subviews: [
                                 {
                                     type: SubviewType.SINGULAR,

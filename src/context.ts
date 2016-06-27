@@ -127,7 +127,7 @@ export class ContextService {
     public user: Entity = new Entity({
         id: 'ar.user',
         name: 'user',
-        position: new ConstantPositionProperty(Cartesian3.ZERO, null),
+        position: new ConstantPositionProperty(undefined, ReferenceFrame.FIXED),
         orientation: new ConstantProperty(Quaternion.IDENTITY)
     });
 
@@ -138,7 +138,7 @@ export class ContextService {
     public localOriginEastNorthUp: Entity = new Entity({
         id: 'ar.localENU',
         name: 'localOriginENU',
-        position: new ConstantPositionProperty(Cartesian3.ZERO, null),
+        position: new ConstantPositionProperty(undefined, ReferenceFrame.FIXED),
         orientation: new ConstantProperty(Quaternion.IDENTITY)
     });
 

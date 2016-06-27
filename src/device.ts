@@ -29,19 +29,10 @@ export class DeviceService {
     * Initialize the DeviceService
     */
     constructor(private context: ContextService) {
-        this.locationEntity.position = new ConstantPositionProperty(Cartesian3.ZERO, null);
-        this.locationEntity.orientation = new ConstantProperty(Quaternion.IDENTITY);
-        this.orientationEntity.position = new ConstantPositionProperty(Cartesian3.ZERO, this.locationEntity);
-        this.orientationEntity.orientation = new ConstantProperty(Quaternion.IDENTITY);
-
-        // by default, assume the interface is upright, perpendicular to the 
-        this.interfaceEntity.position = new ConstantPositionProperty(Cartesian3.ZERO, this.orientationEntity);
-        this.interfaceEntity.orientation = new ConstantProperty(Quaternion.fromAxisAngle(Cartesian3.UNIT_X, -CesiumMath.PI_OVER_TWO));
-
-
-        context.wellKnownReferenceFrames.add(this.locationEntity);
+        context.wellKnownReferenceFrames.add(this.geolocationEntity);
         context.wellKnownReferenceFrames.add(this.orientationEntity);
-        context.wellKnownReferenceFrames.add(this.interfaceEntity);
+        context.wellKnownReferenceFrames.add(this.entity);
+        context.wellKnownReferenceFrames.add(this.displayEntity);
 
         if (typeof window !== 'undefined' && window.navigator) {
             this._mobileDetect = new MobileDetect(window.navigator.userAgent);
@@ -52,11 +43,29 @@ export class DeviceService {
     public orientationUpdatesEnabled = true;
 
     /**
-     * The locationEntity is an ENU coordinate frame centered at the device location
+     * An ENU coordinate frame centered at the gps location reported by this device
      */
-    public locationEntity = new Entity({ id: 'ar.device.location', name: 'Device Location' });
+    public geolocationEntity = new Entity({ id: 'ar.device.geolocation', name: 'Device Geolocation' });
+
+    /**
+     * A frame which represents the orientation of this device relative to it's ENU coordinate frame (geolocationEntity)
+     */
     public orientationEntity = new Entity({ id: 'ar.device.orientation', name: 'Device Orientation' });
-    public interfaceEntity = new Entity({ id: 'ar.device.interface', name: 'Device Interface' });
+
+    /**
+     * A frame which represents the pose of this device
+     */
+    public entity = new Entity({ id: 'ar.device', name: 'Device' });
+
+    /**
+     * A frame which describes the pose of the display relative to this device
+     */
+    public displayEntity = new Entity({
+        id: 'ar.device.display',
+        name: 'Device Display',
+        position: new ConstantPositionProperty(Cartesian3.ZERO, this.entity),
+        orientation: new ConstantProperty(Quaternion.IDENTITY)
+    });
 
     private _scratchCartesian = new Cartesian3;
     private _scratchQuaternion1 = new Quaternion;
@@ -90,7 +99,7 @@ export class DeviceService {
     protected onUpdate() {
         if (typeof window !== 'undefined') {
 
-            const interfaceOrientationProperty = <ConstantProperty>this.interfaceEntity.orientation;
+            const interfaceOrientationProperty = <ConstantProperty>this.displayEntity.orientation;
             let interfaceOrientation = Quaternion.fromAxisAngle(Cartesian3.UNIT_Z, (-window.orientation || 0) * CesiumMath.RADIANS_PER_DEGREE, this._scratchQuaternion1);
             if (this._mobileDetect && !this._mobileDetect.mobile()) {
                 // for laptops, rotate device orientation by 90° around +X so that it 
@@ -101,26 +110,27 @@ export class DeviceService {
 
             if (!defined(this._geolocationWatchId) && this.locationUpdatesEnabled) {
                 this._geolocationWatchId = navigator.geolocation.watchPosition((pos) => {
-
-                    if (this.locationEntity.position instanceof SampledPositionProperty === false) {
+                    if (this.geolocationEntity.position instanceof SampledPositionProperty === false) {
                         const sampledPostionProperty = new SampledPositionProperty(ReferenceFrame.FIXED);
                         sampledPostionProperty.forwardExtrapolationType = ExtrapolationType.HOLD;
                         sampledPostionProperty.backwardExtrapolationType = ExtrapolationType.HOLD;
                         sampledPostionProperty['maxNumSamples'] = 10;
-                        this.locationEntity.position = sampledPostionProperty;
+                        this.geolocationEntity.position = sampledPostionProperty;
                     }
-
                     const positionTime = JulianDate.fromDate(new Date(pos.timestamp));
                     const positionECEF = Cartesian3.fromDegrees(pos.coords.longitude, pos.coords.latitude, pos.coords.altitude || 0, undefined, this._scratchCartesian);
-                    (this.locationEntity.position as SampledPositionProperty).addSample(positionTime, positionECEF);
+                    (this.geolocationEntity.position as SampledPositionProperty).addSample(positionTime, positionECEF);
 
+                    if (this.geolocationEntity.orientation instanceof ConstantProperty === false) {
+                        this.geolocationEntity.orientation = new ConstantProperty();
+                    }
                     const enuOrientation = Transforms.headingPitchRollQuaternion(positionECEF, 0, 0, 0, undefined, this._scratchQuaternion1);
-                    (this.locationEntity.orientation as ConstantProperty).setValue(enuOrientation);
+                    (this.geolocationEntity.orientation as ConstantProperty).setValue(enuOrientation);
                 }, (error) => {
                     console.error(error)
                 }, {
                         enableHighAccuracy: true
-                    })
+                    });
             } else if (defined(this._geolocationWatchId) && !this.locationUpdatesEnabled) {
                 navigator.geolocation.clearWatch(this._geolocationWatchId);
                 this._geolocationWatchId = undefined;
@@ -171,7 +181,23 @@ export class DeviceService {
                     const alphaBetaQuat = Quaternion.multiply(alphaQuat, betaQuat, this._scratchQuaternion1);
                     const gammaQuat = Quaternion.fromAxisAngle(Cartesian3.UNIT_Y, gamma, this._scratchQuaternion2);
                     const alphaBetaGammaQuat = Quaternion.multiply(alphaBetaQuat, gammaQuat, alphaBetaQuat);
+
+                    // update orientationEntity
+                    if (this.orientationEntity.position instanceof ConstantPositionProperty == false) {
+                        this.orientationEntity.position = new ConstantPositionProperty(Cartesian3.ZERO, this.geolocationEntity);
+                    }
+                    if (this.orientationEntity.orientation instanceof ConstantProperty == false) {
+                        this.orientationEntity.orientation = new ConstantProperty();
+                    }
                     (this.orientationEntity.orientation as ConstantProperty).setValue(alphaBetaGammaQuat);
+
+                    // make sure the device entity has a defined pose relative to the device orientation entity
+                    if (this.entity.position instanceof ConstantPositionProperty == false) {
+                        this.entity.position = new ConstantPositionProperty(Cartesian3.ZERO, this.orientationEntity);
+                    }
+                    if (this.entity.orientation instanceof ConstantProperty == false) {
+                        this.entity.orientation = new ConstantProperty(Quaternion.IDENTITY);
+                    }
 
                     // TODO: fix heading drift calculation (heading should match webkitCompassHeading)
                     // if (defined(webkitCompassHeading)) {
