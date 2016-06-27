@@ -79,7 +79,7 @@ export class FocusService {
     public whenSessionHasFocus(session: SessionPort) {
         this.sessionService.ensureIsManager();
         return new Promise((resolve) => {
-            const remove = this.sessionFocusEvent.addEventListener(({current}) => {
+            let remove = this.sessionFocusEvent.addEventListener(({current}) => {
                 if (current === session) {
                     remove();
                     resolve();

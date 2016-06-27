@@ -77,17 +77,17 @@ System.register(['aurelia-dependency-injection', './focus', './session', './util
                 }
                 VuforiaServiceDelegate.prototype.isAvailable = function () { return false; };
                 VuforiaServiceDelegate.prototype.setHint = function (hint, value) { return true; };
-                VuforiaServiceDelegate.prototype.init = function (options) { return null; };
+                VuforiaServiceDelegate.prototype.init = function (options) { return Promise.resolve(VuforiaInitResult.SUCCESS); };
                 VuforiaServiceDelegate.prototype.deinit = function () { };
                 VuforiaServiceDelegate.prototype.cameraDeviceInitAndStart = function () { return true; };
                 VuforiaServiceDelegate.prototype.cameraDeviceSetFlashTorchMode = function (on) { return true; };
                 VuforiaServiceDelegate.prototype.objectTrackerInit = function () { return true; };
-                VuforiaServiceDelegate.prototype.objectTrackerCreateDataSet = function (url) { return null; };
+                VuforiaServiceDelegate.prototype.objectTrackerCreateDataSet = function (url) { return ''; };
                 VuforiaServiceDelegate.prototype.objectTrackerDestroyDataSet = function (id) { return true; };
                 VuforiaServiceDelegate.prototype.objectTrackerActivateDataSet = function (id) { return true; };
                 VuforiaServiceDelegate.prototype.objectTrackerDeactivateDataSet = function (id) { return true; };
-                VuforiaServiceDelegate.prototype.dataSetFetch = function (id) { return null; };
-                VuforiaServiceDelegate.prototype.dataSetLoad = function (id) { return null; };
+                VuforiaServiceDelegate.prototype.dataSetFetch = function (id) { return Promise.resolve(undefined); };
+                VuforiaServiceDelegate.prototype.dataSetLoad = function (id) { return Promise.resolve(); };
                 return VuforiaServiceDelegate;
             }(VuforiaServiceDelegateBase));
             exports_1("VuforiaServiceDelegate", VuforiaServiceDelegate);
@@ -101,7 +101,6 @@ System.register(['aurelia-dependency-injection', './focus', './session', './util
                     this.sessionService = sessionService;
                     this.focusService = focusService;
                     this.delegate = delegate;
-                    this._controllingSession = null;
                     this._sessionSwitcherCommandQueue = new utils_1.CommandQueue();
                     this._sessionCommandQueue = new WeakMap();
                     this._sessionInitOptions = new WeakMap();
@@ -292,7 +291,7 @@ System.register(['aurelia-dependency-injection', './focus', './session', './util
                     var commandQueue = this._sessionCommandQueue.get(session);
                     return commandQueue.push(function () {
                         commandQueue.pause();
-                        _this._controllingSession = null;
+                        _this._controllingSession = undefined;
                         return _this._deinit(session);
                     }, true);
                 };
@@ -346,7 +345,7 @@ System.register(['aurelia-dependency-injection', './focus', './session', './util
                             throw new Error("Vuforia init failed: Unable to complete initialization");
                         }
                     }).catch(function (err) {
-                        _this._sessionInitOptions.set(session, null);
+                        _this._sessionInitOptions.delete(session);
                         _this._sessionIsInitialized.set(session, false);
                         _this._deinit(session);
                         _this._ensureActiveSession();

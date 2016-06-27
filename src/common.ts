@@ -88,8 +88,8 @@ export enum SubviewType {
  * A serialized notation for the position, orientation, and referenceFrame of an entity.
  */
 export interface SerializedEntityPose {
-    p?: { x: number, y: number, z: number } | number, // position, if 0, means Cartesian3.ZERO
-    o?: { x: number, y: number, z: number, w: number } | number, // orientation, if 0, means Quaternion.IDENTITY
+    p: { x: number, y: number, z: number } | number, // position, if 0, means Cartesian3.ZERO
+    o: { x: number, y: number, z: number, w: number } | number, // orientation, if 0, means Quaternion.IDENTITY
     r: number | string, // reference frame
 }
 
@@ -97,7 +97,7 @@ export interface SerializedEntityPose {
  * A map of entity ids and their associated poses.
  */
 export interface SerializedEntityPoseMap {
-    [id: string]: SerializedEntityPose
+    [id: string]: SerializedEntityPose | undefined
 }
 
 /**
@@ -124,7 +124,7 @@ export interface SerializedViewParameters {
     /**
      * The primary pose for this view. 
      */
-    pose: SerializedEntityPose
+    pose?: SerializedEntityPose
 
     /**
      * The list of subviews to render.

@@ -109,7 +109,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                             if (!cesium_imports_1.defined(state.view)) {
                                 if (!cesium_imports_1.defined(serializedState.eye))
                                     throw new Error("Unable to construct view configuration: missing eye parameters");
-                                state.view = _this.generateViewFromFrameState(serializedState);
+                                state.view = _this.generateViewFromFrameStateEye(serializedState);
                             }
                         });
                     }
@@ -185,14 +185,17 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     }
                     throw new Error("Not implemeneted for the current platform");
                 };
-                ViewService.prototype.generateViewFromFrameState = function (state) {
+                ViewService.prototype.generateViewFromFrameStateEye = function (state) {
+                    var eye = state.eye;
+                    if (!eye)
+                        throw new Error("Expected a frame state with an eye configuration");
                     var viewport = this.getMaximumViewport();
-                    this._scratchFrustum.fov = state.eye.fov;
+                    this._scratchFrustum.fov = eye.fov || Math.PI / 3;
                     this._scratchFrustum.aspectRatio = viewport.width / viewport.height;
                     this._scratchFrustum.near = 0.01;
                     return {
                         viewport: viewport,
-                        pose: state.eye.pose,
+                        pose: eye.pose,
                         subviews: [
                             {
                                 type: common_1.SubviewType.SINGULAR,

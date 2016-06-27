@@ -48,12 +48,12 @@ export declare enum SubviewType {
  * A serialized notation for the position, orientation, and referenceFrame of an entity.
  */
 export interface SerializedEntityPose {
-    p?: {
+    p: {
         x: number;
         y: number;
         z: number;
     } | number;
-    o?: {
+    o: {
         x: number;
         y: number;
         z: number;
@@ -65,7 +65,7 @@ export interface SerializedEntityPose {
  * A map of entity ids and their associated poses.
  */
 export interface SerializedEntityPoseMap {
-    [id: string]: SerializedEntityPose;
+    [id: string]: SerializedEntityPose | undefined;
 }
 /**
  * The serialized rendering parameters for a particular subview
@@ -88,7 +88,7 @@ export interface SerializedViewParameters {
     /**
      * The primary pose for this view.
      */
-    pose: SerializedEntityPose;
+    pose?: SerializedEntityPose;
     /**
      * The list of subviews to render.
      */

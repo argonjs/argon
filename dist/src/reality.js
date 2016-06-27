@@ -73,12 +73,6 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                      * Manager-only. An event that is raised when a session changes it's desired reality.
                      */
                     this.sessionDesiredRealityChangeEvent = new utils_1.Event();
-                    // The default reality
-                    this._default = null;
-                    // The current reality
-                    this._current = null;
-                    // The desired reality
-                    this._desired = null;
                     // RealitySetupHandlers
                     this._loaders = [];
                     if (sessionService.isManager) {
@@ -242,68 +236,68 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                         return;
                     if (this._current && !reality && this._realitySession)
                         return;
-                    if (!this._current && !reality) {
+                    if (!this._current && !cesium_imports_1.defined(reality)) {
                         reality = this._default;
-                        if (!reality)
+                    }
+                    if (cesium_imports_1.defined(reality)) {
+                        if (!this.isSupported(reality.type)) {
+                            this.sessionService.errorEvent.raiseEvent(new Error('Reality of type "' + reality.type + '" is not available on this platform'));
                             return;
-                    }
-                    if (!this.isSupported(reality.type)) {
-                        this.sessionService.errorEvent.raiseEvent(new Error('Reality of type "' + reality.type + '" is not available on this platform'));
-                        return;
-                    }
-                    this._executeRealityLoader(reality, function (realitySession) {
-                        if (realitySession.isConnected)
-                            throw new Error('Expected an unconnected session');
-                        realitySession.on['ar.reality.frameState'] = function (state) {
-                            _this.frameEvent.raiseEvent(state);
-                        };
-                        realitySession.closeEvent.addEventListener(function () {
-                            console.log('Reality session closed: ' + JSON.stringify(reality));
-                            if (_this._current == reality) {
-                                _this._current = null;
-                                _this._setNextReality(_this.onSelectReality());
-                            }
-                        });
-                        realitySession.connectEvent.addEventListener(function () {
-                            if (realitySession.info.role !== common_1.Role.REALITY_VIEW) {
-                                realitySession.sendError({ message: "Expected a reality session" });
-                                realitySession.close();
-                                throw new Error('The application "' + realitySession.info.name + '" does not support being loaded as a reality');
-                            }
-                            var previousRealitySession = _this._realitySession;
-                            var previousReality = _this._current;
-                            _this._realitySession = realitySession;
-                            _this._setCurrent(reality);
-                            if (previousRealitySession) {
-                                previousRealitySession.close();
-                            }
-                            if (realitySession.info['reality.supportsControlPort']) {
-                                var ownerSession_1 = _this.desiredRealityMapInverse.get(reality) || _this.sessionService.manager;
-                                var id = cesium_imports_1.createGuid();
-                                var ROUTE_MESSAGE_KEY = 'ar.reality.message.route.' + id;
-                                var SEND_MESSAGE_KEY_1 = 'ar.reality.message.send.' + id;
-                                var CLOSE_SESSION_KEY_1 = 'ar.reality.close.' + id;
-                                realitySession.on[ROUTE_MESSAGE_KEY] = function (message) {
-                                    ownerSession_1.send(SEND_MESSAGE_KEY_1, message);
-                                };
-                                ownerSession_1.on[ROUTE_MESSAGE_KEY] = function (message) {
-                                    realitySession.send(SEND_MESSAGE_KEY_1, message);
-                                };
-                                realitySession.send('ar.reality.connect', { id: id });
-                                ownerSession_1.send('ar.reality.connect', { id: id });
-                                realitySession.closeEvent.addEventListener(function () {
-                                    ownerSession_1.send(CLOSE_SESSION_KEY_1);
-                                });
-                                ownerSession_1.closeEvent.addEventListener(function () {
-                                    realitySession.send(CLOSE_SESSION_KEY_1);
+                        }
+                        this._executeRealityLoader(reality, function (realitySession) {
+                            if (realitySession.isConnected)
+                                throw new Error('Expected an unconnected session');
+                            realitySession.on['ar.reality.frameState'] = function (state) {
+                                _this.frameEvent.raiseEvent(state);
+                            };
+                            realitySession.closeEvent.addEventListener(function () {
+                                console.log('Reality session closed: ' + JSON.stringify(reality));
+                                if (_this._current == reality) {
+                                    _this._current = undefined;
+                                    _this._setNextReality(_this.onSelectReality());
+                                }
+                            });
+                            realitySession.connectEvent.addEventListener(function () {
+                                if (realitySession.info.role !== common_1.Role.REALITY_VIEW) {
+                                    realitySession.sendError({ message: "Expected a reality session" });
                                     realitySession.close();
-                                });
-                            }
+                                    throw new Error('The application "' + realitySession.info.name + '" does not support being loaded as a reality');
+                                }
+                                var previousRealitySession = _this._realitySession;
+                                var previousReality = _this._current;
+                                _this._realitySession = realitySession;
+                                _this._setCurrent(reality);
+                                if (previousRealitySession) {
+                                    previousRealitySession.close();
+                                }
+                                if (realitySession.info['reality.supportsControlPort']) {
+                                    var ownerSession_1 = _this.desiredRealityMapInverse.get(reality) || _this.sessionService.manager;
+                                    var id = cesium_imports_1.createGuid();
+                                    var ROUTE_MESSAGE_KEY = 'ar.reality.message.route.' + id;
+                                    var SEND_MESSAGE_KEY_1 = 'ar.reality.message.send.' + id;
+                                    var CLOSE_SESSION_KEY_1 = 'ar.reality.close.' + id;
+                                    realitySession.on[ROUTE_MESSAGE_KEY] = function (message) {
+                                        ownerSession_1.send(SEND_MESSAGE_KEY_1, message);
+                                    };
+                                    ownerSession_1.on[ROUTE_MESSAGE_KEY] = function (message) {
+                                        realitySession.send(SEND_MESSAGE_KEY_1, message);
+                                    };
+                                    realitySession.send('ar.reality.connect', { id: id });
+                                    ownerSession_1.send('ar.reality.connect', { id: id });
+                                    realitySession.closeEvent.addEventListener(function () {
+                                        ownerSession_1.send(CLOSE_SESSION_KEY_1);
+                                    });
+                                    ownerSession_1.closeEvent.addEventListener(function () {
+                                        realitySession.send(CLOSE_SESSION_KEY_1);
+                                        realitySession.close();
+                                    });
+                                }
+                            });
                         });
-                    });
+                    }
                 };
                 RealityService.prototype._getLoader = function (type) {
-                    var found = undefined;
+                    var found;
                     for (var _i = 0, _a = this._loaders; _i < _a.length; _i++) {
                         var loader = _a[_i];
                         if (loader.type === type) {
@@ -314,7 +308,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     return found;
                 };
                 RealityService.prototype._setCurrent = function (reality) {
-                    if (!this._current || this._current !== reality) {
+                    if (this._current === undefined || this._current !== reality) {
                         var previous = this._current;
                         this._current = reality;
                         this.changeEvent.raiseEvent({ previous: previous, current: reality });

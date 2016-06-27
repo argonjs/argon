@@ -24,7 +24,7 @@ export declare class RealityService {
      * An event that is raised when the current reality is changed.
      */
     changeEvent: Event<{
-        previous: RealityView;
+        previous?: RealityView | undefined;
         current: RealityView;
     }>;
     /**
@@ -40,7 +40,7 @@ export declare class RealityService {
     /**
      * Manager-only. A map from a desired reality to the session which requested it
      */
-    desiredRealityMapInverse: WeakMap<RealityView, SessionPort>;
+    desiredRealityMapInverse: WeakMap<RealityView | undefined, SessionPort>;
     /**
      * Manager-only. An event that is raised when a session changes it's desired reality.
      */
@@ -50,9 +50,9 @@ export declare class RealityService {
         current: RealityView;
     }>;
     private _realitySession;
-    private _default;
-    private _current;
-    private _desired;
+    private _default?;
+    private _current?;
+    private _desired?;
     private _loaders;
     constructor(sessionService: SessionService, focusService: FocusService);
     /**
@@ -62,7 +62,7 @@ export declare class RealityService {
     /**
      * Get the current reality view
      */
-    getCurrent(): RealityView;
+    getCurrent(): RealityView | undefined;
     /**
     * Manager-only. Check if a type of reality is supported.
     * @param type reality type
@@ -76,7 +76,7 @@ export declare class RealityService {
     /**
      * Get the desired reality
      */
-    getDesired(): RealityView;
+    getDesired(): RealityView | undefined;
     /**
      * Set the optional reference frames for this app
      */
@@ -97,7 +97,7 @@ export declare class RealityService {
     * realities have been requested.
     */
     onSelectReality(): RealityView;
-    private _setNextReality(reality);
+    private _setNextReality(reality?);
     private _getLoader(type);
     private _setCurrent(reality);
     private _executeRealityLoader(reality, callback);

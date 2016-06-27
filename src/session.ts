@@ -44,12 +44,12 @@ export class SessionPort {
             throw new Error('The connectEvent only fires once and the session is already connected.')
         return this._connectEvent;
     };
-    private _connectEvent = new Event<void>();
+    private _connectEvent = new Event<undefined>();
 
     /**
      * An event which fires when this port has closed
      */
-    public closeEvent = new Event<void>();
+    public closeEvent = new Event<undefined>();
 
     /**
      * An error which fires when an error occurs.
@@ -86,7 +86,7 @@ export class SessionPort {
             if (this._isConnected) throw new Error('Session has already connected!');
             this.info = info;
             this._isConnected = true;
-            this._connectEvent.raiseEvent(null);
+            this._connectEvent.raiseEvent(undefined);
         }
 
         this.on[SessionPort.CLOSE] = (message) => {
@@ -94,7 +94,7 @@ export class SessionPort {
             this._isConnected = false;
             if (this.messagePort && this.messagePort.close)
                 this.messagePort.close();
-            this.closeEvent.raiseEvent(null);
+            this.closeEvent.raiseEvent(undefined);
         }
 
         this.on[SessionPort.ERROR] = (error: ErrorMessage) => {
@@ -177,7 +177,7 @@ export class SessionPort {
                     this.send(topic + ':resolve:' + id, response)
                 }).catch(error => {
                     if (this._isClosed) return;
-                    let errorMessage: string;
+                    let errorMessage: string | undefined;
                     if (typeof error === 'string') errorMessage = error;
                     else if (typeof error.message === 'string') errorMessage = error.message;
                     this.send(topic + ':reject:' + id, { reason: errorMessage })
@@ -270,7 +270,7 @@ export class SessionPort {
         this._isConnected = false;
         if (this.messagePort && this.messagePort.close)
             this.messagePort.close();
-        this.closeEvent.raiseEvent(null);
+        this.closeEvent.raiseEvent(undefined);
     }
 
     get isConnected() {

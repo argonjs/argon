@@ -130,7 +130,7 @@ export class ViewService {
                 if (!defined(state.view)) {
                     if (!defined(serializedState.eye))
                         throw new Error("Unable to construct view configuration: missing eye parameters");
-                    state.view = this.generateViewFromFrameState(serializedState);
+                    state.view = this.generateViewFromFrameStateEye(serializedState);
                 }
             })
         }
@@ -218,14 +218,16 @@ export class ViewService {
     }
 
     private _scratchFrustum = new PerspectiveFrustum();
-    protected generateViewFromFrameState(state: SerializedFrameState): SerializedViewParameters {
+    protected generateViewFromFrameStateEye(state: SerializedFrameState): SerializedViewParameters {
+        const eye = state.eye;
+        if (!eye) throw new Error("Expected a frame state with an eye configuration");
         const viewport = this.getMaximumViewport();
-        this._scratchFrustum.fov = state.eye.fov;
+        this._scratchFrustum.fov = eye.fov || Math.PI / 3;
         this._scratchFrustum.aspectRatio = viewport.width / viewport.height;
         this._scratchFrustum.near = 0.01;
         return {
             viewport,
-            pose: state.eye.pose,
+            pose: eye.pose,
             subviews: [
                 {
                     type: SubviewType.SINGULAR,

@@ -76,17 +76,17 @@ export abstract class VuforiaServiceDelegateBase {
 export class VuforiaServiceDelegate extends VuforiaServiceDelegateBase {
     isAvailable() { return false }
     setHint(hint: VuforiaHint, value: number): boolean { return true }
-    init(options: VuforiaInitOptions): Promise<VuforiaInitResult> { return null }
+    init(options: VuforiaInitOptions): Promise<VuforiaInitResult> { return Promise.resolve(VuforiaInitResult.SUCCESS) }
     deinit(): void { }
     cameraDeviceInitAndStart(): boolean { return true }
     cameraDeviceSetFlashTorchMode(on: boolean): boolean { return true }
     objectTrackerInit(): boolean { return true }
-    objectTrackerCreateDataSet(url?: string): string { return null }
+    objectTrackerCreateDataSet(url?: string): string { return '' }
     objectTrackerDestroyDataSet(id: string): boolean { return true }
     objectTrackerActivateDataSet(id: string): boolean { return true }
     objectTrackerDeactivateDataSet(id: string): boolean { return true }
-    dataSetFetch(id: string): Promise<void> { return null }
-    dataSetLoad(id: string): Promise<VuforiaTrackables> { return null }
+    dataSetFetch(id: string): Promise<void> { return Promise.resolve(undefined) }
+    dataSetLoad(id: string): Promise<VuforiaTrackables> { return Promise.resolve() }
 }
 
 /**
@@ -96,7 +96,7 @@ export class VuforiaServiceDelegate extends VuforiaServiceDelegateBase {
 @inject(SessionService, FocusService, VuforiaServiceDelegate)
 export class VuforiaService {
 
-    private _controllingSession: SessionPort = null;
+    private _controllingSession: SessionPort | undefined;
     private _sessionSwitcherCommandQueue = new CommandQueue();
     private _sessionCommandQueue = new WeakMap<SessionPort, CommandQueue>();
 
@@ -313,7 +313,7 @@ export class VuforiaService {
         const commandQueue = this._sessionCommandQueue.get(session);
         return commandQueue.push(() => {
             commandQueue.pause();
-            this._controllingSession = null;
+            this._controllingSession = undefined;
             return this._deinit(session);
         }, true);
     }
@@ -380,7 +380,7 @@ export class VuforiaService {
 
         }).catch((err) => {
 
-            this._sessionInitOptions.set(session, null);
+            this._sessionInitOptions.delete(session);
             this._sessionIsInitialized.set(session, false);
             this._deinit(session);
             this._ensureActiveSession();

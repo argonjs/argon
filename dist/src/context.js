@@ -166,7 +166,8 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                             session.on['ar.context.subscribe'] = function (_a) {
                                 var id = _a.id;
                                 var subscriptions = _this._subscribedEntities.get(session);
-                                subscriptions.add(id);
+                                if (subscriptions)
+                                    subscriptions.add(id);
                             };
                         });
                     }
@@ -342,7 +343,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                     var entity = this.subscribedEntities.getOrCreateEntity(id);
                     var entityPosition = entity.position;
                     var entityOrientation = entity.orientation;
-                    if (!cesium_imports_1.defined(entityPosition) || entityPosition.referenceFrame !== referenceFrame) {
+                    if (!entityPosition || entityPosition.referenceFrame !== referenceFrame) {
                         entityPosition = new cesium_imports_1.ConstantPositionProperty(positionValue, referenceFrame);
                         entity.position = entityPosition;
                     }
@@ -369,11 +370,15 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                 };
                 ContextService.prototype._updateLocalOrigin = function (state) {
                     var userRootFrame = utils_1.getRootReferenceFrame(this.user);
-                    var userPosition = this.user.position.getValueInReferenceFrame(state.time, userRootFrame, scratchCartesian3);
-                    var localENUFrame = this.localOriginEastNorthUp.position.referenceFrame;
-                    var localENUPosition = this.localOriginEastNorthUp.position.getValueInReferenceFrame(state.time, localENUFrame, scratchOriginCartesian3);
-                    if (!localENUPosition || localENUFrame !== userRootFrame ||
-                        cesium_imports_1.Cartesian3.magnitudeSquared(cesium_imports_1.Cartesian3.subtract(userPosition, localENUPosition, scratchOriginCartesian3)) > 25000000) {
+                    var userPosition = this.user.position &&
+                        this.user.position.getValueInReferenceFrame(state.time, userRootFrame, scratchCartesian3);
+                    var localENUFrame = this.localOriginEastNorthUp.position &&
+                        this.localOriginEastNorthUp.position.referenceFrame;
+                    var localENUPosition = this.localOriginEastNorthUp.position && localENUFrame &&
+                        this.localOriginEastNorthUp.position.getValueInReferenceFrame(state.time, localENUFrame, scratchOriginCartesian3);
+                    if (userPosition && (!localENUPosition ||
+                        localENUFrame !== userRootFrame ||
+                        cesium_imports_1.Cartesian3.magnitudeSquared(cesium_imports_1.Cartesian3.subtract(userPosition, localENUPosition, scratchOriginCartesian3)) > 25000000)) {
                         var localENUPositionProperty = this.localOriginEastNorthUp.position;
                         var localENUOrientationProperty = this.localOriginEastNorthUp.orientation;
                         localENUPositionProperty.setValue(userPosition, userRootFrame);
@@ -393,7 +398,8 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                     for (var id in parentState.entities) {
                         sessionPoseMap[id] = parentState.entities[id];
                     }
-                    this._subscribedEntities.get(session).forEach(function (id) {
+                    var subscriptions = this._subscribedEntities.get(session);
+                    subscriptions.forEach(function (id) {
                         _this._addEntityAndAncestorsToPoseMap(sessionPoseMap, id, parentState.time);
                     });
                     var sessionState = {
@@ -412,7 +418,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                         if (!entity)
                             return;
                         this._entityPoseCache[id] = utils_1.getSerializedEntityPose(entity, time);
-                        if (entity.position.referenceFrame instanceof cesium_imports_1.Entity) {
+                        if (entity.position && entity.position.referenceFrame instanceof cesium_imports_1.Entity) {
                             var refId = _stringFromReferenceFrame(entity.position.referenceFrame);
                             this._addEntityAndAncestorsToPoseMap(poseMap, refId, time);
                         }

@@ -78,7 +78,7 @@ export class DeviceService {
     private _mobileDetect: MobileDetect;
 
     private _webkitCompassHeading: number;
-    private _alphaOffset: number;
+    private _alphaOffset?: number;
     private _headingDrift = 0;
 
     private _idleTimeoutId: number;

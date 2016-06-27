@@ -79,6 +79,6 @@ export declare class ViewService {
         height: number;
     };
     private _scratchFrustum;
-    protected generateViewFromFrameState(state: SerializedFrameState): SerializedViewParameters;
+    protected generateViewFromFrameStateEye(state: SerializedFrameState): SerializedViewParameters;
     update(): void;
 }

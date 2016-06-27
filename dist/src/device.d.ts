@@ -36,7 +36,7 @@ export declare class DeviceService {
     private _deviceorientationListener;
     private _mobileDetect;
     private _webkitCompassHeading;
-    private _alphaOffset;
+    private _alphaOffset?;
     private _headingDrift;
     private _idleTimeoutId;
     protected onIdle(): void;

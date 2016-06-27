@@ -87,7 +87,7 @@ describe('RealityService', () => {
                 expect(realityService.getCurrent().type === 'empty')
                 expect(state.time).to.haveOwnProperty('dayNumber');
                 expect(state.time).to.haveOwnProperty('secondsOfDay');
-                expect(realityService.getDesired()).to.be.null;
+                expect(realityService.getDesired()).to.be.undefined;
                 removeListener();
                 done();
             })

@@ -7,8 +7,9 @@
         "emitDecoratorMetadata": false,
         "experimentalDecorators": true,
         "allowSyntheticDefaultImports": true,
-        "pretty": false,
-        "sourceMap": true
+        "pretty": true,
+        "sourceMap": true,
+        "strictNullChecks": true
     },
     "filesGlob": [
         "src/**/*.ts",

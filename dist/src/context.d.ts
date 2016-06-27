@@ -1,5 +1,5 @@
 import { Entity, EntityCollection, CompositeEntityCollection, Cartesian3, Quaternion, JulianDate, ReferenceFrame } from './cesium/cesium-imports';
-import { RealityView, SerializedFrameState, SerializedEntityPoseMap } from './common';
+import { RealityView, SerializedFrameState, SerializedEntityPoseMap, SerializedViewParameters } from './common';
 import { SessionService } from './session';
 import { RealityService } from './reality';
 import { Event } from './utils';
@@ -9,6 +9,7 @@ import { Event } from './utils';
 export interface FrameState extends SerializedFrameState {
     reality: RealityView;
     entities: SerializedEntityPoseMap;
+    view: SerializedViewParameters;
     sendTime: JulianDate;
 }
 /**
@@ -152,7 +153,7 @@ export declare class ContextService {
     private getCurrentEntityState(entity, referenceFrame);
     private _subviewEntities;
     private _update(state);
-    updateEntityFromFrameState(id: string, state: FrameState): Entity;
+    updateEntityFromFrameState(id: string, state: FrameState): Entity | undefined;
     private _updateLocalOrigin(state);
     private _sendUpdateForSession(parentState, session);
     private _addEntityAndAncestorsToPoseMap(poseMap, id, time);

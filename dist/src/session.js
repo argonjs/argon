@@ -60,14 +60,14 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                             throw new Error('Session has already connected!');
                         _this.info = info;
                         _this._isConnected = true;
-                        _this._connectEvent.raiseEvent(null);
+                        _this._connectEvent.raiseEvent(undefined);
                     };
                     this.on[SessionPort.CLOSE] = function (message) {
                         _this._isClosed = true;
                         _this._isConnected = false;
                         if (_this.messagePort && _this.messagePort.close)
                             _this.messagePort.close();
-                        _this.closeEvent.raiseEvent(null);
+                        _this.closeEvent.raiseEvent(undefined);
                     };
                     this.on[SessionPort.ERROR] = function (error) {
                         var e = new Error("Session Error: " + error.message);
@@ -269,7 +269,7 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                     this._isConnected = false;
                     if (this.messagePort && this.messagePort.close)
                         this.messagePort.close();
-                    this.closeEvent.raiseEvent(null);
+                    this.closeEvent.raiseEvent(undefined);
                 };
                 Object.defineProperty(SessionPort.prototype, "isConnected", {
                     get: function () {

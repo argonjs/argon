@@ -29,6 +29,7 @@ import {ViewService} from './view'
 export interface FrameState extends SerializedFrameState {
     reality: RealityView,
     entities: SerializedEntityPoseMap,
+    view: SerializedViewParameters,
     sendTime: JulianDate, // the time this state was sent
 }
 
@@ -175,9 +176,9 @@ export class ContextService {
     private _defaultReferenceFrame = this.localOriginEastNorthUp;
 
     private _entityPoseCache: SerializedEntityPoseMap = {};
-    private _entityPoseMap = new Map<string, EntityPose>();
+    private _entityPoseMap = new Map<string, EntityPose | undefined>();
 
-    private _subscribedEntities = new WeakMap<SessionPort, Set<string>>();
+    private _subscribedEntities = new WeakMap<SessionPort, Set<string> | undefined>();
     private _updatingEntities = new Set<string>();
     private _knownEntities = new Set<string>();
 
@@ -197,10 +198,10 @@ export class ContextService {
 
                 const state = <FrameState>(this._state || {});
 
-                state.reality = this.realityService.getCurrent();
+                state.reality = <RealityView>this.realityService.getCurrent();
                 state.index = serializedState.index;
                 state.time = serializedState.time;
-                state.view = serializedState.view;
+                state.view = <SerializedViewParameters>serializedState.view;
                 state.entities = serializedState.entities || {};
                 state.sendTime = JulianDate.now(state.sendTime);
 
@@ -216,9 +217,9 @@ export class ContextService {
 
                 this._subscribedEntities.set(session, new Set<string>());
 
-                session.on['ar.context.subscribe'] = ({id}) => {
+                session.on['ar.context.subscribe'] = ({id}: { id: string }) => {
                     const subscriptions = this._subscribedEntities.get(session);
-                    subscriptions.add(id);
+                    if (subscriptions) subscriptions.add(id);
                 }
 
             })
@@ -409,7 +410,7 @@ export class ContextService {
         let entityPosition = entity.position;
         let entityOrientation = entity.orientation;
 
-        if (!defined(entityPosition) || entityPosition.referenceFrame !== referenceFrame) {
+        if (!entityPosition || entityPosition.referenceFrame !== referenceFrame) {
             entityPosition = new ConstantPositionProperty(positionValue, referenceFrame);
             entity.position = entityPosition;
         }
@@ -439,11 +440,18 @@ export class ContextService {
 
     private _updateLocalOrigin(state: FrameState) {
         const userRootFrame = getRootReferenceFrame(this.user);
-        const userPosition = this.user.position.getValueInReferenceFrame(<JulianDate>state.time, userRootFrame, scratchCartesian3);
-        const localENUFrame = this.localOriginEastNorthUp.position.referenceFrame;
-        const localENUPosition = this.localOriginEastNorthUp.position.getValueInReferenceFrame(<JulianDate>state.time, localENUFrame, scratchOriginCartesian3);
-        if (!localENUPosition || localENUFrame !== userRootFrame ||
-            Cartesian3.magnitudeSquared(Cartesian3.subtract(userPosition, localENUPosition, scratchOriginCartesian3)) > 25000000) {
+        const userPosition = this.user.position &&
+            this.user.position.getValueInReferenceFrame(<JulianDate>state.time, userRootFrame, scratchCartesian3);
+        const localENUFrame = this.localOriginEastNorthUp.position &&
+            this.localOriginEastNorthUp.position.referenceFrame;
+        const localENUPosition = this.localOriginEastNorthUp.position && localENUFrame &&
+            this.localOriginEastNorthUp.position.getValueInReferenceFrame(<JulianDate>state.time, localENUFrame, scratchOriginCartesian3);
+        if (userPosition && (
+            !localENUPosition ||
+            localENUFrame !== userRootFrame ||
+            Cartesian3.magnitudeSquared(
+                Cartesian3.subtract(userPosition, localENUPosition, scratchOriginCartesian3)
+            ) > 25000000)) {
             const localENUPositionProperty = <ConstantPositionProperty>this.localOriginEastNorthUp.position;
             const localENUOrientationProperty = <ConstantProperty>this.localOriginEastNorthUp.orientation;
             localENUPositionProperty.setValue(userPosition, userRootFrame);
@@ -465,7 +473,8 @@ export class ContextService {
             sessionPoseMap[id] = parentState.entities[id];
         }
 
-        this._subscribedEntities.get(session).forEach((id) => {
+        const subscriptions = <Set<string>>this._subscribedEntities.get(session);
+        subscriptions.forEach((id) => {
             this._addEntityAndAncestorsToPoseMap(sessionPoseMap, id, <JulianDate>parentState.time);
         })
 
@@ -486,7 +495,7 @@ export class ContextService {
             const entity = this.subscribedEntities.getById(id);
             if (!entity) return;
             this._entityPoseCache[id] = getSerializedEntityPose(entity, time);
-            if (entity.position.referenceFrame instanceof Entity) {
+            if (entity.position && entity.position.referenceFrame instanceof Entity) {
                 const refId = _stringFromReferenceFrame(entity.position.referenceFrame);
                 this._addEntityAndAncestorsToPoseMap(poseMap, refId, time);
             }
@@ -495,7 +504,7 @@ export class ContextService {
     }
 }
 
-function _stringFromReferenceFrame(referenceFrame: ReferenceFrame | Entity) {
-    const rf = <any>referenceFrame;
+function _stringFromReferenceFrame(referenceFrame: ReferenceFrame | Entity): string {
+    const rf = referenceFrame as Entity;
     return defined(rf.id) ? rf.id : '' + rf;
 }

@@ -29,12 +29,12 @@ export declare class SessionPort {
      * An event which fires when a connection has been
      * established to the remote session.
      */
-    readonly connectEvent: Event<void>;
+    readonly connectEvent: Event<undefined>;
     private _connectEvent;
     /**
      * An event which fires when this port has closed
      */
-    closeEvent: Event<void>;
+    closeEvent: Event<undefined>;
     /**
      * An error which fires when an error occurs.
      */

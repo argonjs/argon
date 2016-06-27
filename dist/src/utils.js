@@ -10,9 +10,11 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
      */
     function getAncestorReferenceFrames(frame) {
         var frames = [];
-        while (frame !== undefined && frame !== null) {
-            frames.unshift(frame);
-            frame = frame.position && frame.position.referenceFrame;
+        var f = frame;
+        while (cesium_imports_1.defined(f)) {
+            frames.unshift(f);
+            var position = f.position;
+            f = position && position.referenceFrame;
         }
         return frames;
     }
@@ -75,14 +77,18 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
      * @return An EntityPose object with orientation, position and referenceFrame.
      */
     function getSerializedEntityPose(entity, time, referenceFrame) {
-        referenceFrame = cesium_imports_1.defined(referenceFrame) ? referenceFrame : getRootReferenceFrame(entity);
-        var p = getEntityPositionInReferenceFrame(entity, time, referenceFrame, {});
-        var o = getEntityOrientationInReferenceFrame(entity, time, referenceFrame, {});
-        return cesium_imports_1.defined(p) && cesium_imports_1.defined(o) ? {
-            p: cesium_imports_1.Cartesian3.ZERO.equalsEpsilon(p, cesium_imports_1.CesiumMath.EPSILON9) ? 0 : p,
-            o: cesium_imports_1.Quaternion.IDENTITY.equalsEpsilon(o, cesium_imports_1.CesiumMath.EPSILON9) ? 0 : o,
-            r: typeof referenceFrame === 'number' ? referenceFrame : referenceFrame.id
-        } : undefined;
+        var frame = referenceFrame ? referenceFrame : getRootReferenceFrame(entity);
+        var p = getEntityPositionInReferenceFrame(entity, time, frame, {});
+        if (!p)
+            return undefined;
+        var o = getEntityOrientationInReferenceFrame(entity, time, frame, {});
+        if (!o)
+            return undefined;
+        return {
+            p: cesium_imports_1.Cartesian3.ZERO.equalsEpsilon(p, cesium_imports_1.CesiumMath.EPSILON16) ? 0 : p,
+            o: cesium_imports_1.Quaternion.IDENTITY.equalsEpsilon(o, cesium_imports_1.CesiumMath.EPSILON16) ? 0 : o,
+            r: typeof frame === 'number' ? frame : frame.id
+        };
     }
     exports_1("getSerializedEntityPose", getSerializedEntityPose);
     /**
@@ -97,7 +103,7 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
             throw new Error("resolveURL requires DOM api");
         if (inURL === undefined)
             throw new Error('Expected inURL');
-        urlParser.href = null;
+        urlParser.href = '';
         urlParser.href = inURL;
         return urlParser.href;
     }
@@ -114,7 +120,7 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
             throw new Error("parseURL requires DOM api");
         if (inURL === undefined)
             throw new Error('Expected inURL');
-        urlParser.href = null;
+        urlParser.href = '';
         urlParser.href = inURL;
         return {
             href: urlParser.href,
@@ -192,7 +198,6 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
                 function CommandQueue() {
                     var _this = this;
                     this._queue = [];
-                    this._currentCommandPending = null;
                     this._paused = true;
                     /**
                      * An error event.
@@ -233,7 +238,7 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
                     var _this = this;
                     this._paused = false;
                     Promise.resolve().then(function () {
-                        if (_this._queue.length > 0 && _this._currentCommandPending === null) {
+                        if (_this._queue.length > 0 && !_this._currentCommandPending) {
                             _this._executeNextCommand();
                         }
                     });
@@ -255,7 +260,7 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
                 };
                 CommandQueue.prototype._executeNextCommand = function () {
                     var _this = this;
-                    this._currentCommandPending = null;
+                    this._currentCommandPending = undefined;
                     if (this._paused)
                         return;
                     var item = this._queue.shift();
@@ -308,7 +313,8 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
                             postMessage: function (data) {
                                 if (_portsOpen) {
                                     _port2ready.then(function () {
-                                        messageChannel.port2.onmessage({ data: data });
+                                        if (messageChannel.port2.onmessage)
+                                            messageChannel.port2.onmessage({ data: data });
                                     });
                                 }
                             },
@@ -330,7 +336,8 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
                             postMessage: function (data) {
                                 if (_portsOpen) {
                                     _port1ready.then(function () {
-                                        messageChannel.port1.onmessage({ data: data });
+                                        if (messageChannel.port1.onmessage)
+                                            messageChannel.port1.onmessage({ data: data });
                                     });
                                 }
                             },
@@ -368,8 +375,8 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
                                 messageChannel.port2.onmessage({ data: data });
                         },
                         close: function () {
-                            messageChannel.port1.onmessage = null;
-                            messageChannel.port2.onmessage = null;
+                            messageChannel.port1.onmessage = undefined;
+                            messageChannel.port2.onmessage = undefined;
                         }
                     };
                     var pendingMessages2 = [];
@@ -388,8 +395,8 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
                                 messageChannel.port1.onmessage({ data: data });
                         },
                         close: function () {
-                            messageChannel.port1.onmessage = null;
-                            messageChannel.port2.onmessage = null;
+                            messageChannel.port1.onmessage = undefined;
+                            messageChannel.port2.onmessage = undefined;
                         }
                     };
                 }

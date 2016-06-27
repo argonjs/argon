@@ -6,6 +6,7 @@ import {
     Entity,
     JulianDate,
     Ellipsoid,
+    PositionProperty,
     OrientationProperty,
     Quaternion,
     Cartesian3,
@@ -69,7 +70,7 @@ export class Event<T> {
 */
 export class CommandQueue {
     private _queue: Array<{ command: Function, execute: Function, reject: (reason: any) => void }> = [];
-    private _currentCommandPending: Promise<any> = null;
+    private _currentCommandPending: Promise<any> | undefined;
     private _paused = true;
 
     /**
@@ -114,7 +115,7 @@ export class CommandQueue {
     public execute() {
         this._paused = false;
         Promise.resolve().then(() => {
-            if (this._queue.length > 0 && this._currentCommandPending === null) {
+            if (this._queue.length > 0 && !this._currentCommandPending) {
                 this._executeNextCommand();
             }
         });
@@ -138,7 +139,7 @@ export class CommandQueue {
     }
 
     private _executeNextCommand() {
-        this._currentCommandPending = null;
+        this._currentCommandPending = undefined;
         if (this._paused) return;
         const item = this._queue.shift();
         if (!item) return;
@@ -159,10 +160,12 @@ export class CommandQueue {
  * @param frames An array of reference frames of the Cesium Entity.
  */
 export function getAncestorReferenceFrames(frame: Entity) {
-    var frames: Array<Entity | ReferenceFrame> = []
-    while (frame !== undefined && frame !== null) {
-        frames.unshift(frame)
-        frame = frame.position && <Entity>frame.position.referenceFrame
+    const frames: Array<Entity | ReferenceFrame> = [];
+    let f: Entity | ReferenceFrame | undefined = frame;
+    while (defined(f)) {
+        frames.unshift(f)
+        let position: PositionProperty | undefined = (f as Entity).position;
+        f = position && position.referenceFrame
     }
     return frames
 }
@@ -192,8 +195,8 @@ const scratchMatrix3 = new Matrix3
 export function getEntityPositionInReferenceFrame(
     entity: Entity,
     time: JulianDate,
-    referenceFrame: ReferenceFrame | Entity,
-    result: Cartesian3): Cartesian3 {
+    referenceFrame: Entity | ReferenceFrame,
+    result: Cartesian3): Cartesian3 | undefined {
     return entity.position && entity.position.getValueInReferenceFrame(time, referenceFrame, result)
 }
 
@@ -214,7 +217,7 @@ export function getEntityOrientationInReferenceFrame(
     entity: Entity,
     time: JulianDate,
     referenceFrame: ReferenceFrame | Entity,
-    result: Quaternion): Quaternion {
+    result: Quaternion): Quaternion | undefined {
     const entityFrame = entity.position && entity.position.referenceFrame
     if (!defined(entityFrame)) return undefined
     let orientation: Quaternion = entity.orientation && entity.orientation.getValue(time, result)
@@ -246,15 +249,17 @@ export const getEntityOrientation = getEntityOrientationInReferenceFrame;
  *  By default, uses the root reference frame of the entity.  
  * @return An EntityPose object with orientation, position and referenceFrame.
  */
-export function getSerializedEntityPose(entity: Entity, time: JulianDate, referenceFrame?: ReferenceFrame | Entity): SerializedEntityPose {
-    referenceFrame = defined(referenceFrame) ? referenceFrame : getRootReferenceFrame(entity);
-    const p = getEntityPositionInReferenceFrame(entity, time, referenceFrame, <Cartesian3>{});
-    const o = getEntityOrientationInReferenceFrame(entity, time, referenceFrame, <Quaternion>{});
-    return defined(p) && defined(o) ? {
-        p: Cartesian3.ZERO.equalsEpsilon(p, CesiumMath.EPSILON9) ? 0 : p,
-        o: Quaternion.IDENTITY.equalsEpsilon(o, CesiumMath.EPSILON9) ? 0 : o,
-        r: typeof referenceFrame === 'number' ? referenceFrame : referenceFrame.id
-    } : undefined;
+export function getSerializedEntityPose(entity: Entity, time: JulianDate, referenceFrame?: ReferenceFrame | Entity): SerializedEntityPose | undefined {
+    let frame = referenceFrame ? referenceFrame : getRootReferenceFrame(entity);
+    const p = getEntityPositionInReferenceFrame(entity, time, frame, <Cartesian3>{});
+    if (!p) return undefined;
+    const o = getEntityOrientationInReferenceFrame(entity, time, frame, <Quaternion>{});
+    if (!o) return undefined;
+    return {
+        p: Cartesian3.ZERO.equalsEpsilon(p, CesiumMath.EPSILON16) ? 0 : p,
+        o: Quaternion.IDENTITY.equalsEpsilon(o, CesiumMath.EPSILON16) ? 0 : o,
+        r: typeof frame === 'number' ? frame : frame.id
+    };
 }
 
 
@@ -270,7 +275,7 @@ const urlParser = typeof document !== 'undefined' ? document.createElement("a") 
 export function resolveURL(inURL: string): string {
     if (!urlParser) throw new Error("resolveURL requires DOM api");
     if (inURL === undefined) throw new Error('Expected inURL')
-    urlParser.href = null
+    urlParser.href = '';
     urlParser.href = inURL
     return urlParser.href
 }
@@ -286,7 +291,7 @@ export function resolveURL(inURL: string): string {
 export function parseURL(inURL: string) {
     if (!urlParser) throw new Error("parseURL requires DOM api");
     if (inURL === undefined) throw new Error('Expected inURL')
-    urlParser.href = null
+    urlParser.href = ''
     urlParser.href = inURL
     return {
         href: urlParser.href,
@@ -317,7 +322,7 @@ export interface MessagePortLike {
     /**
       * A callback for handling incoming messages.
       */
-    onmessage: (ev: MessageEventLike) => any;
+    onmessage?: (ev: MessageEventLike) => any;
 
     /**
      * Send a message through this message port.
@@ -369,7 +374,8 @@ export class MessageChannelLike {
                 postMessage(data: any) {
                     if (_portsOpen) {
                         _port2ready.then(() => {
-                            messageChannel.port2.onmessage({ data });
+                            if (messageChannel.port2.onmessage)
+                                messageChannel.port2.onmessage({ data });
                         })
                     }
                 },
@@ -392,7 +398,8 @@ export class MessageChannelLike {
                 postMessage(data: any) {
                     if (_portsOpen) {
                         _port1ready.then(() => {
-                            messageChannel.port1.onmessage({ data });
+                            if (messageChannel.port1.onmessage)
+                                messageChannel.port1.onmessage({ data });
                         })
                     }
                 },
@@ -427,7 +434,7 @@ export class SynchronousMessageChannel {
     constructor() {
         const messageChannel = this;
 
-        let pendingMessages1 = []
+        let pendingMessages1: any[] = []
         let onmessage1 = function(message) {
             pendingMessages1.push(message);
         }
@@ -443,12 +450,12 @@ export class SynchronousMessageChannel {
                     messageChannel.port2.onmessage({ data });
             },
             close() {
-                messageChannel.port1.onmessage = null;
-                messageChannel.port2.onmessage = null;
+                messageChannel.port1.onmessage = undefined;
+                messageChannel.port2.onmessage = undefined;
             }
         }
 
-        let pendingMessages2 = []
+        let pendingMessages2: any[] = []
         let onmessage2 = function(message) {
             pendingMessages2.push(message);
         }
@@ -464,8 +471,8 @@ export class SynchronousMessageChannel {
                     messageChannel.port1.onmessage({ data });
             },
             close() {
-                messageChannel.port1.onmessage = null;
-                messageChannel.port2.onmessage = null;
+                messageChannel.port1.onmessage = undefined;
+                messageChannel.port2.onmessage = undefined;
             }
         }
     }

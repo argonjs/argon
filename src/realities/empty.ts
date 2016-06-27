@@ -27,7 +27,7 @@ export class EmptyRealityLoader extends RealityLoader {
         let doUpdate = true;
         remoteRealitySession.on['ar.context.update'] = () => { };
         remoteRealitySession.connectEvent.addEventListener(() => {
-            const update = (time: JulianDate, index: number) => {
+            let update = (time: JulianDate, index: number) => {
                 if (doUpdate) {
                     this.deviceService.update();
                     const w = document.documentElement.clientWidth;

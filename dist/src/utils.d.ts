@@ -87,7 +87,7 @@ export declare function getRootReferenceFrame(frame: Entity): Entity | Reference
  * @param result The object to store the value into.
  * @return The modified result parameter.
  */
-export declare function getEntityPositionInReferenceFrame(entity: Entity, time: JulianDate, referenceFrame: ReferenceFrame | Entity, result: Cartesian3): Cartesian3;
+export declare function getEntityPositionInReferenceFrame(entity: Entity, time: JulianDate, referenceFrame: Entity | ReferenceFrame, result: Cartesian3): Cartesian3 | undefined;
 /**
  * Alias of getEntityPositionInReferenceFrame
  */
@@ -100,7 +100,7 @@ export declare const getEntityPosition: typeof getEntityPositionInReferenceFrame
  * @param result The object to store the value into.
  * @return The modified result parameter.
  */
-export declare function getEntityOrientationInReferenceFrame(entity: Entity, time: JulianDate, referenceFrame: ReferenceFrame | Entity, result: Quaternion): Quaternion;
+export declare function getEntityOrientationInReferenceFrame(entity: Entity, time: JulianDate, referenceFrame: ReferenceFrame | Entity, result: Quaternion): Quaternion | undefined;
 /**
  * Alias of getEntityOrientationInReferenceFrame
  */
@@ -113,7 +113,7 @@ export declare const getEntityOrientation: typeof getEntityOrientationInReferenc
  *  By default, uses the root reference frame of the entity.
  * @return An EntityPose object with orientation, position and referenceFrame.
  */
-export declare function getSerializedEntityPose(entity: Entity, time: JulianDate, referenceFrame?: ReferenceFrame | Entity): SerializedEntityPose;
+export declare function getSerializedEntityPose(entity: Entity, time: JulianDate, referenceFrame?: ReferenceFrame | Entity): SerializedEntityPose | undefined;
 /**
  * If urlParser does not have a value, throw error message "resolveURL requires DOM api".
  * If inURL is undefined, throw error message "expected inURL".
@@ -153,7 +153,7 @@ export interface MessagePortLike {
     /**
       * A callback for handling incoming messages.
       */
-    onmessage: (ev: MessageEventLike) => any;
+    onmessage?: (ev: MessageEventLike) => any;
     /**
      * Send a message through this message port.
      * @param message The message needed to be posted.

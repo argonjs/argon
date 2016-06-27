@@ -473,7 +473,7 @@ $__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1,
               if (!cesium_imports_1.defined(state.view)) {
                 if (!cesium_imports_1.defined(serializedState.eye))
                   throw new Error("Unable to construct view configuration: missing eye parameters");
-                state.view = _this.generateViewFromFrameState(serializedState);
+                state.view = _this.generateViewFromFrameStateEye(serializedState);
               }
             });
           }
@@ -527,14 +527,17 @@ $__System.register("4", ["b", "5", "6", "7", "8", "9", "a"], function(exports_1,
           }
           throw new Error("Not implemeneted for the current platform");
         };
-        ViewService.prototype.generateViewFromFrameState = function(state) {
+        ViewService.prototype.generateViewFromFrameStateEye = function(state) {
+          var eye = state.eye;
+          if (!eye)
+            throw new Error("Expected a frame state with an eye configuration");
           var viewport = this.getMaximumViewport();
-          this._scratchFrustum.fov = state.eye.fov;
+          this._scratchFrustum.fov = eye.fov || Math.PI / 3;
           this._scratchFrustum.aspectRatio = viewport.width / viewport.height;
           this._scratchFrustum.near = 0.01;
           return {
             viewport: viewport,
-            pose: state.eye.pose,
+            pose: eye.pose,
             subviews: [{
               type: common_1.SubviewType.SINGULAR,
               projectionMatrix: this._scratchFrustum.infiniteProjectionMatrix
@@ -682,7 +685,8 @@ $__System.register("8", ["b", "5", "7", "c", "9"], function(exports_1, context_1
               session.on['ar.context.subscribe'] = function(_a) {
                 var id = _a.id;
                 var subscriptions = _this._subscribedEntities.get(session);
-                subscriptions.add(id);
+                if (subscriptions)
+                  subscriptions.add(id);
               };
             });
           } else {
@@ -815,7 +819,7 @@ $__System.register("8", ["b", "5", "7", "c", "9"], function(exports_1, context_1
           var entity = this.subscribedEntities.getOrCreateEntity(id);
           var entityPosition = entity.position;
           var entityOrientation = entity.orientation;
-          if (!cesium_imports_1.defined(entityPosition) || entityPosition.referenceFrame !== referenceFrame) {
+          if (!entityPosition || entityPosition.referenceFrame !== referenceFrame) {
             entityPosition = new cesium_imports_1.ConstantPositionProperty(positionValue, referenceFrame);
             entity.position = entityPosition;
           }
@@ -840,10 +844,10 @@ $__System.register("8", ["b", "5", "7", "c", "9"], function(exports_1, context_1
         };
         ContextService.prototype._updateLocalOrigin = function(state) {
           var userRootFrame = utils_1.getRootReferenceFrame(this.user);
-          var userPosition = this.user.position.getValueInReferenceFrame(state.time, userRootFrame, scratchCartesian3);
-          var localENUFrame = this.localOriginEastNorthUp.position.referenceFrame;
-          var localENUPosition = this.localOriginEastNorthUp.position.getValueInReferenceFrame(state.time, localENUFrame, scratchOriginCartesian3);
-          if (!localENUPosition || localENUFrame !== userRootFrame || cesium_imports_1.Cartesian3.magnitudeSquared(cesium_imports_1.Cartesian3.subtract(userPosition, localENUPosition, scratchOriginCartesian3)) > 25000000) {
+          var userPosition = this.user.position && this.user.position.getValueInReferenceFrame(state.time, userRootFrame, scratchCartesian3);
+          var localENUFrame = this.localOriginEastNorthUp.position && this.localOriginEastNorthUp.position.referenceFrame;
+          var localENUPosition = this.localOriginEastNorthUp.position && localENUFrame && this.localOriginEastNorthUp.position.getValueInReferenceFrame(state.time, localENUFrame, scratchOriginCartesian3);
+          if (userPosition && (!localENUPosition || localENUFrame !== userRootFrame || cesium_imports_1.Cartesian3.magnitudeSquared(cesium_imports_1.Cartesian3.subtract(userPosition, localENUPosition, scratchOriginCartesian3)) > 25000000)) {
             var localENUPositionProperty = this.localOriginEastNorthUp.position;
             var localENUOrientationProperty = this.localOriginEastNorthUp.orientation;
             localENUPositionProperty.setValue(userPosition, userRootFrame);
@@ -862,7 +866,8 @@ $__System.register("8", ["b", "5", "7", "c", "9"], function(exports_1, context_1
           for (var id in parentState.entities) {
             sessionPoseMap[id] = parentState.entities[id];
           }
-          this._subscribedEntities.get(session).forEach(function(id) {
+          var subscriptions = this._subscribedEntities.get(session);
+          subscriptions.forEach(function(id) {
             _this._addEntityAndAncestorsToPoseMap(sessionPoseMap, id, parentState.time);
           });
           var sessionState = {
@@ -881,7 +886,7 @@ $__System.register("8", ["b", "5", "7", "c", "9"], function(exports_1, context_1
             if (!entity)
               return;
             this._entityPoseCache[id] = utils_1.getSerializedEntityPose(entity, time);
-            if (entity.position.referenceFrame instanceof cesium_imports_1.Entity) {
+            if (entity.position && entity.position.referenceFrame instanceof cesium_imports_1.Entity) {
               var refId = _stringFromReferenceFrame(entity.position.referenceFrame);
               this._addEntityAndAncestorsToPoseMap(poseMap, refId, time);
             }
@@ -1842,9 +1847,6 @@ $__System.register("c", ["b", "5", "6", "a", "7", "9"], function(exports_1, cont
           this.desiredRealityMap = new WeakMap();
           this.desiredRealityMapInverse = new WeakMap();
           this.sessionDesiredRealityChangeEvent = new utils_1.Event();
-          this._default = null;
-          this._current = null;
-          this._desired = null;
           this._loaders = [];
           if (sessionService.isManager) {
             sessionService.manager.connectEvent.addEventListener(function() {
@@ -1972,68 +1974,68 @@ $__System.register("c", ["b", "5", "6", "a", "7", "9"], function(exports_1, cont
             return;
           if (this._current && !reality && this._realitySession)
             return;
-          if (!this._current && !reality) {
+          if (!this._current && !cesium_imports_1.defined(reality)) {
             reality = this._default;
-            if (!reality)
+          }
+          if (cesium_imports_1.defined(reality)) {
+            if (!this.isSupported(reality.type)) {
+              this.sessionService.errorEvent.raiseEvent(new Error('Reality of type "' + reality.type + '" is not available on this platform'));
               return;
-          }
-          if (!this.isSupported(reality.type)) {
-            this.sessionService.errorEvent.raiseEvent(new Error('Reality of type "' + reality.type + '" is not available on this platform'));
-            return;
-          }
-          this._executeRealityLoader(reality, function(realitySession) {
-            if (realitySession.isConnected)
-              throw new Error('Expected an unconnected session');
-            realitySession.on['ar.reality.frameState'] = function(state) {
-              _this.frameEvent.raiseEvent(state);
-            };
-            realitySession.closeEvent.addEventListener(function() {
-              console.log('Reality session closed: ' + JSON.stringify(reality));
-              if (_this._current == reality) {
-                _this._current = null;
-                _this._setNextReality(_this.onSelectReality());
-              }
-            });
-            realitySession.connectEvent.addEventListener(function() {
-              if (realitySession.info.role !== common_1.Role.REALITY_VIEW) {
-                realitySession.sendError({message: "Expected a reality session"});
-                realitySession.close();
-                throw new Error('The application "' + realitySession.info.name + '" does not support being loaded as a reality');
-              }
-              var previousRealitySession = _this._realitySession;
-              var previousReality = _this._current;
-              _this._realitySession = realitySession;
-              _this._setCurrent(reality);
-              if (previousRealitySession) {
-                previousRealitySession.close();
-              }
-              if (realitySession.info['reality.supportsControlPort']) {
-                var ownerSession_1 = _this.desiredRealityMapInverse.get(reality) || _this.sessionService.manager;
-                var id = cesium_imports_1.createGuid();
-                var ROUTE_MESSAGE_KEY = 'ar.reality.message.route.' + id;
-                var SEND_MESSAGE_KEY_1 = 'ar.reality.message.send.' + id;
-                var CLOSE_SESSION_KEY_1 = 'ar.reality.close.' + id;
-                realitySession.on[ROUTE_MESSAGE_KEY] = function(message) {
-                  ownerSession_1.send(SEND_MESSAGE_KEY_1, message);
-                };
-                ownerSession_1.on[ROUTE_MESSAGE_KEY] = function(message) {
-                  realitySession.send(SEND_MESSAGE_KEY_1, message);
-                };
-                realitySession.send('ar.reality.connect', {id: id});
-                ownerSession_1.send('ar.reality.connect', {id: id});
-                realitySession.closeEvent.addEventListener(function() {
-                  ownerSession_1.send(CLOSE_SESSION_KEY_1);
-                });
-                ownerSession_1.closeEvent.addEventListener(function() {
-                  realitySession.send(CLOSE_SESSION_KEY_1);
+            }
+            this._executeRealityLoader(reality, function(realitySession) {
+              if (realitySession.isConnected)
+                throw new Error('Expected an unconnected session');
+              realitySession.on['ar.reality.frameState'] = function(state) {
+                _this.frameEvent.raiseEvent(state);
+              };
+              realitySession.closeEvent.addEventListener(function() {
+                console.log('Reality session closed: ' + JSON.stringify(reality));
+                if (_this._current == reality) {
+                  _this._current = undefined;
+                  _this._setNextReality(_this.onSelectReality());
+                }
+              });
+              realitySession.connectEvent.addEventListener(function() {
+                if (realitySession.info.role !== common_1.Role.REALITY_VIEW) {
+                  realitySession.sendError({message: "Expected a reality session"});
                   realitySession.close();
-                });
-              }
+                  throw new Error('The application "' + realitySession.info.name + '" does not support being loaded as a reality');
+                }
+                var previousRealitySession = _this._realitySession;
+                var previousReality = _this._current;
+                _this._realitySession = realitySession;
+                _this._setCurrent(reality);
+                if (previousRealitySession) {
+                  previousRealitySession.close();
+                }
+                if (realitySession.info['reality.supportsControlPort']) {
+                  var ownerSession_1 = _this.desiredRealityMapInverse.get(reality) || _this.sessionService.manager;
+                  var id = cesium_imports_1.createGuid();
+                  var ROUTE_MESSAGE_KEY = 'ar.reality.message.route.' + id;
+                  var SEND_MESSAGE_KEY_1 = 'ar.reality.message.send.' + id;
+                  var CLOSE_SESSION_KEY_1 = 'ar.reality.close.' + id;
+                  realitySession.on[ROUTE_MESSAGE_KEY] = function(message) {
+                    ownerSession_1.send(SEND_MESSAGE_KEY_1, message);
+                  };
+                  ownerSession_1.on[ROUTE_MESSAGE_KEY] = function(message) {
+                    realitySession.send(SEND_MESSAGE_KEY_1, message);
+                  };
+                  realitySession.send('ar.reality.connect', {id: id});
+                  ownerSession_1.send('ar.reality.connect', {id: id});
+                  realitySession.closeEvent.addEventListener(function() {
+                    ownerSession_1.send(CLOSE_SESSION_KEY_1);
+                  });
+                  ownerSession_1.closeEvent.addEventListener(function() {
+                    realitySession.send(CLOSE_SESSION_KEY_1);
+                    realitySession.close();
+                  });
+                }
+              });
             });
-          });
+          }
         };
         RealityService.prototype._getLoader = function(type) {
-          var found = undefined;
+          var found;
           for (var _i = 0,
               _a = this._loaders; _i < _a.length; _i++) {
             var loader = _a[_i];
@@ -2045,7 +2047,7 @@ $__System.register("c", ["b", "5", "6", "a", "7", "9"], function(exports_1, cont
           return found;
         };
         RealityService.prototype._setCurrent = function(reality) {
-          if (!this._current || this._current !== reality) {
+          if (this._current === undefined || this._current !== reality) {
             var previous = this._current;
             this._current = reality;
             this.changeEvent.raiseEvent({
@@ -3063,14 +3065,14 @@ $__System.register("7", ["5", "b", "6", "9"], function(exports_1, context_1) {
               throw new Error('Session has already connected!');
             _this.info = info;
             _this._isConnected = true;
-            _this._connectEvent.raiseEvent(null);
+            _this._connectEvent.raiseEvent(undefined);
           };
           this.on[SessionPort.CLOSE] = function(message) {
             _this._isClosed = true;
             _this._isConnected = false;
             if (_this.messagePort && _this.messagePort.close)
               _this.messagePort.close();
-            _this.closeEvent.raiseEvent(null);
+            _this.closeEvent.raiseEvent(undefined);
           };
           this.on[SessionPort.ERROR] = function(error) {
             var e = new Error("Session Error: " + error.message);
@@ -3233,7 +3235,7 @@ $__System.register("7", ["5", "b", "6", "9"], function(exports_1, context_1) {
           this._isConnected = false;
           if (this.messagePort && this.messagePort.close)
             this.messagePort.close();
-          this.closeEvent.raiseEvent(null);
+          this.closeEvent.raiseEvent(undefined);
         };
         Object.defineProperty(SessionPort.prototype, "isConnected", {
           get: function() {
@@ -3538,7 +3540,7 @@ $__System.register("12", ["b", "a", "7", "9"], function(exports_1, context_1) {
           return true;
         };
         VuforiaServiceDelegate.prototype.init = function(options) {
-          return null;
+          return Promise.resolve(VuforiaInitResult.SUCCESS);
         };
         VuforiaServiceDelegate.prototype.deinit = function() {};
         VuforiaServiceDelegate.prototype.cameraDeviceInitAndStart = function() {
@@ -3551,7 +3553,7 @@ $__System.register("12", ["b", "a", "7", "9"], function(exports_1, context_1) {
           return true;
         };
         VuforiaServiceDelegate.prototype.objectTrackerCreateDataSet = function(url) {
-          return null;
+          return '';
         };
         VuforiaServiceDelegate.prototype.objectTrackerDestroyDataSet = function(id) {
           return true;
@@ -3563,10 +3565,10 @@ $__System.register("12", ["b", "a", "7", "9"], function(exports_1, context_1) {
           return true;
         };
         VuforiaServiceDelegate.prototype.dataSetFetch = function(id) {
-          return null;
+          return Promise.resolve(undefined);
         };
         VuforiaServiceDelegate.prototype.dataSetLoad = function(id) {
-          return null;
+          return Promise.resolve();
         };
         return VuforiaServiceDelegate;
       }(VuforiaServiceDelegateBase));
@@ -3577,7 +3579,6 @@ $__System.register("12", ["b", "a", "7", "9"], function(exports_1, context_1) {
           this.sessionService = sessionService;
           this.focusService = focusService;
           this.delegate = delegate;
-          this._controllingSession = null;
           this._sessionSwitcherCommandQueue = new utils_1.CommandQueue();
           this._sessionCommandQueue = new WeakMap();
           this._sessionInitOptions = new WeakMap();
@@ -3767,7 +3768,7 @@ $__System.register("12", ["b", "a", "7", "9"], function(exports_1, context_1) {
           var commandQueue = this._sessionCommandQueue.get(session);
           return commandQueue.push(function() {
             commandQueue.pause();
-            _this._controllingSession = null;
+            _this._controllingSession = undefined;
             return _this._deinit(session);
           }, true);
         };
@@ -3812,7 +3813,7 @@ $__System.register("12", ["b", "a", "7", "9"], function(exports_1, context_1) {
               throw new Error("Vuforia init failed: Unable to complete initialization");
             }
           }).catch(function(err) {
-            _this._sessionInitOptions.set(session, null);
+            _this._sessionInitOptions.delete(session);
             _this._sessionIsInitialized.set(session, false);
             _this._deinit(session);
             _this._ensureActiveSession();
@@ -5476,7 +5477,7 @@ define("39", ["15", "16", "17", "2d", "2f", "28", "30"], function(defined, defin
   }
   function frameParents(frame) {
     var frames = [];
-    while (defined(frame) && frame !== null) {
+    while (defined(frame)) {
       frames.unshift(frame);
       frame = frame.position && frame.position.referenceFrame;
     }
@@ -5514,7 +5515,7 @@ define("39", ["15", "16", "17", "2d", "2f", "28", "30"], function(defined, defin
     if (inputFrame === outputFrame) {
       return Quaternion.clone(value, result);
     }
-    if (inputFrame === null || outputFrame === null) {
+    if (!defined(inputFrame) || !defined(outputFrame)) {
       return undefined;
     }
     var inputFrameParents = frameParents(inputFrame);
@@ -6295,7 +6296,7 @@ define("29", ["27", "15", "16", "17", "2d", "2e", "2f", "28", "30"], function(Ca
   }
   function frameParents(frame) {
     var frames = [];
-    while (defined(frame) && frame !== null) {
+    while (defined(frame)) {
       frames.unshift(frame);
       frame = frame.position && frame.position.referenceFrame;
     }
@@ -6334,7 +6335,7 @@ define("29", ["27", "15", "16", "17", "2d", "2e", "2f", "28", "30"], function(Ca
     if (inputFrame === outputFrame) {
       return Cartesian3.clone(value, result);
     }
-    if (inputFrame === null || outputFrame === null) {
+    if (!defined(inputFrame) || !defined(outputFrame)) {
       return undefined;
     }
     var inputFrameParents = frameParents(inputFrame);
@@ -17090,9 +17091,11 @@ $__System.register("9", ["18", "5"], function(exports_1, context_1) {
       MessageChannelFactory;
   function getAncestorReferenceFrames(frame) {
     var frames = [];
-    while (frame !== undefined && frame !== null) {
-      frames.unshift(frame);
-      frame = frame.position && frame.position.referenceFrame;
+    var f = frame;
+    while (cesium_imports_1.defined(f)) {
+      frames.unshift(f);
+      var position = f.position;
+      f = position && position.referenceFrame;
     }
     return frames;
   }
@@ -17116,14 +17119,18 @@ $__System.register("9", ["18", "5"], function(exports_1, context_1) {
   }
   exports_1("getEntityOrientationInReferenceFrame", getEntityOrientationInReferenceFrame);
   function getSerializedEntityPose(entity, time, referenceFrame) {
-    referenceFrame = cesium_imports_1.defined(referenceFrame) ? referenceFrame : getRootReferenceFrame(entity);
-    var p = getEntityPositionInReferenceFrame(entity, time, referenceFrame, {});
-    var o = getEntityOrientationInReferenceFrame(entity, time, referenceFrame, {});
-    return cesium_imports_1.defined(p) && cesium_imports_1.defined(o) ? {
-      p: cesium_imports_1.Cartesian3.ZERO.equalsEpsilon(p, cesium_imports_1.CesiumMath.EPSILON9) ? 0 : p,
-      o: cesium_imports_1.Quaternion.IDENTITY.equalsEpsilon(o, cesium_imports_1.CesiumMath.EPSILON9) ? 0 : o,
-      r: typeof referenceFrame === 'number' ? referenceFrame : referenceFrame.id
-    } : undefined;
+    var frame = referenceFrame ? referenceFrame : getRootReferenceFrame(entity);
+    var p = getEntityPositionInReferenceFrame(entity, time, frame, {});
+    if (!p)
+      return undefined;
+    var o = getEntityOrientationInReferenceFrame(entity, time, frame, {});
+    if (!o)
+      return undefined;
+    return {
+      p: cesium_imports_1.Cartesian3.ZERO.equalsEpsilon(p, cesium_imports_1.CesiumMath.EPSILON16) ? 0 : p,
+      o: cesium_imports_1.Quaternion.IDENTITY.equalsEpsilon(o, cesium_imports_1.CesiumMath.EPSILON16) ? 0 : o,
+      r: typeof frame === 'number' ? frame : frame.id
+    };
   }
   exports_1("getSerializedEntityPose", getSerializedEntityPose);
   function resolveURL(inURL) {
@@ -17131,7 +17138,7 @@ $__System.register("9", ["18", "5"], function(exports_1, context_1) {
       throw new Error("resolveURL requires DOM api");
     if (inURL === undefined)
       throw new Error('Expected inURL');
-    urlParser.href = null;
+    urlParser.href = '';
     urlParser.href = inURL;
     return urlParser.href;
   }
@@ -17141,7 +17148,7 @@ $__System.register("9", ["18", "5"], function(exports_1, context_1) {
       throw new Error("parseURL requires DOM api");
     if (inURL === undefined)
       throw new Error('Expected inURL');
-    urlParser.href = null;
+    urlParser.href = '';
     urlParser.href = inURL;
     return {
       href: urlParser.href,
@@ -17189,7 +17196,6 @@ $__System.register("9", ["18", "5"], function(exports_1, context_1) {
         function CommandQueue() {
           var _this = this;
           this._queue = [];
-          this._currentCommandPending = null;
           this._paused = true;
           this.errorEvent = new Event();
           this.errorEvent.addEventListener(function(error) {
@@ -17218,7 +17224,7 @@ $__System.register("9", ["18", "5"], function(exports_1, context_1) {
           var _this = this;
           this._paused = false;
           Promise.resolve().then(function() {
-            if (_this._queue.length > 0 && _this._currentCommandPending === null) {
+            if (_this._queue.length > 0 && !_this._currentCommandPending) {
               _this._executeNextCommand();
             }
           });
@@ -17234,7 +17240,7 @@ $__System.register("9", ["18", "5"], function(exports_1, context_1) {
         };
         CommandQueue.prototype._executeNextCommand = function() {
           var _this = this;
-          this._currentCommandPending = null;
+          this._currentCommandPending = undefined;
           if (this._paused)
             return;
           var item = this._queue.shift();
@@ -17273,7 +17279,8 @@ $__System.register("9", ["18", "5"], function(exports_1, context_1) {
               postMessage: function(data) {
                 if (_portsOpen) {
                   _port2ready.then(function() {
-                    messageChannel.port2.onmessage({data: data});
+                    if (messageChannel.port2.onmessage)
+                      messageChannel.port2.onmessage({data: data});
                   });
                 }
               },
@@ -17295,7 +17302,8 @@ $__System.register("9", ["18", "5"], function(exports_1, context_1) {
               postMessage: function(data) {
                 if (_portsOpen) {
                   _port1ready.then(function() {
-                    messageChannel.port1.onmessage({data: data});
+                    if (messageChannel.port1.onmessage)
+                      messageChannel.port1.onmessage({data: data});
                   });
                 }
               },
@@ -17331,8 +17339,8 @@ $__System.register("9", ["18", "5"], function(exports_1, context_1) {
                 messageChannel.port2.onmessage({data: data});
             },
             close: function() {
-              messageChannel.port1.onmessage = null;
-              messageChannel.port2.onmessage = null;
+              messageChannel.port1.onmessage = undefined;
+              messageChannel.port2.onmessage = undefined;
             }
           };
           var pendingMessages2 = [];
@@ -17355,8 +17363,8 @@ $__System.register("9", ["18", "5"], function(exports_1, context_1) {
                 messageChannel.port1.onmessage({data: data});
             },
             close: function() {
-              messageChannel.port1.onmessage = null;
-              messageChannel.port2.onmessage = null;
+              messageChannel.port1.onmessage = undefined;
+              messageChannel.port2.onmessage = undefined;
             }
           };
         }
