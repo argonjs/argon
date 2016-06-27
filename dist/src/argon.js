@@ -230,3 +230,4 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
         }
     }
 });
+//# sourceMappingURL=argon.js.map

@@ -84,7 +84,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     if (sessionService.isManager) {
                         sessionService.manager.connectEvent.addEventListener(function () {
                             setTimeout(function () {
-                                if (!_this._desired)
+                                if (!_this._current)
                                     _this._setNextReality(_this.onSelectReality());
                             });
                         });
@@ -337,3 +337,4 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
         }
     }
 });
+//# sourceMappingURL=reality.js.map

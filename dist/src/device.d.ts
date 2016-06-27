@@ -12,11 +12,21 @@ export declare class DeviceService {
     locationUpdatesEnabled: boolean;
     orientationUpdatesEnabled: boolean;
     /**
-     * The locationEntity is an ENU coordinate frame centered at the device location
+     * An ENU coordinate frame centered at the gps location reported by this device
      */
-    locationEntity: Entity;
+    geolocationEntity: Entity;
+    /**
+     * A frame which represents the orientation of this device relative to it's ENU coordinate frame (geolocationEntity)
+     */
     orientationEntity: Entity;
-    interfaceEntity: Entity;
+    /**
+     * A frame which represents the pose of this device
+     */
+    entity: Entity;
+    /**
+     * A frame which describes the pose of the display relative to this device
+     */
+    displayEntity: Entity;
     private _scratchCartesian;
     private _scratchQuaternion1;
     private _scratchQuaternion2;

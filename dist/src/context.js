@@ -109,7 +109,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                     this.user = new cesium_imports_1.Entity({
                         id: 'ar.user',
                         name: 'user',
-                        position: new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, null),
+                        position: new cesium_imports_1.ConstantPositionProperty(undefined, cesium_imports_1.ReferenceFrame.FIXED),
                         orientation: new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY)
                     });
                     /**
@@ -119,7 +119,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                     this.localOriginEastNorthUp = new cesium_imports_1.Entity({
                         id: 'ar.localENU',
                         name: 'localOriginENU',
-                        position: new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, null),
+                        position: new cesium_imports_1.ConstantPositionProperty(undefined, cesium_imports_1.ReferenceFrame.FIXED),
                         orientation: new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY)
                     });
                     /**
@@ -428,3 +428,4 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
         }
     }
 });
+//# sourceMappingURL=context.js.map

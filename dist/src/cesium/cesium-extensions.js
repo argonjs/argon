@@ -1,13 +1,13 @@
 // Add functionality for keeping a moving window of samples per SampledProperty,
 // so that the data doesn't accumulate indefinitely
-System.register(['./cesium-imports.ts'], function(exports_1, context_1) {
+System.register(['./cesium-imports'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var cesium_imports_ts_1;
+    var cesium_imports_1;
     var __slice, after;
     function removeBeforeDate(property, time) {
         var times = property._times;
-        var index = ~cesium_imports_ts_1.binarySearch(times, time, cesium_imports_ts_1.JulianDate.compare);
+        var index = ~cesium_imports_1.binarySearch(times, time, cesium_imports_1.JulianDate.compare);
         if (index > 0) {
             times.splice(0, index);
             property._values.splice(0, index * property._innerType.packedLength);
@@ -27,12 +27,10 @@ System.register(['./cesium-imports.ts'], function(exports_1, context_1) {
     }
     return {
         setters:[
-            function (cesium_imports_ts_1_1) {
-                cesium_imports_ts_1 = cesium_imports_ts_1_1;
+            function (cesium_imports_1_1) {
+                cesium_imports_1 = cesium_imports_1_1;
             }],
         execute: function() {
-            cesium_imports_ts_1.Matrix3['prototype'].length = 9;
-            cesium_imports_ts_1.Matrix4['prototype'].length = 16;
             __slice = Array.prototype.slice;
             after = function (fn, after) {
                 return function () {
@@ -41,30 +39,31 @@ System.register(['./cesium-imports.ts'], function(exports_1, context_1) {
                     return result;
                 };
             };
-            cesium_imports_ts_1.SampledProperty.prototype.removeSamplesBeforeDate = function (time) {
+            cesium_imports_1.SampledProperty.prototype.removeSamplesBeforeDate = function (time) {
                 removeBeforeDate(this, time);
             };
-            cesium_imports_ts_1.SampledPositionProperty.prototype.removeSamplesBeforeDate = function (time) {
+            cesium_imports_1.SampledPositionProperty.prototype.removeSamplesBeforeDate = function (time) {
                 removeBeforeDate(this._property, time);
             };
-            cesium_imports_ts_1.SampledProperty.prototype.addSample = after(cesium_imports_ts_1.SampledProperty.prototype.addSample, function () {
+            cesium_imports_1.SampledProperty.prototype.addSample = after(cesium_imports_1.SampledProperty.prototype.addSample, function () {
                 removeOldSamples(this, this.maxNumSamples);
             });
-            cesium_imports_ts_1.SampledProperty.prototype.addSamples = after(cesium_imports_ts_1.SampledProperty.prototype.addSamples, function () {
+            cesium_imports_1.SampledProperty.prototype.addSamples = after(cesium_imports_1.SampledProperty.prototype.addSamples, function () {
                 removeOldSamples(this, this.maxNumSamples);
             });
-            cesium_imports_ts_1.SampledProperty.prototype.addSamplesPackedArray = after(cesium_imports_ts_1.SampledProperty.prototype.addSamplesPackedArray, function () {
+            cesium_imports_1.SampledProperty.prototype.addSamplesPackedArray = after(cesium_imports_1.SampledProperty.prototype.addSamplesPackedArray, function () {
                 removeOldSamples(this, this.maxNumSamples);
             });
-            cesium_imports_ts_1.SampledPositionProperty.prototype.addSample = after(cesium_imports_ts_1.SampledPositionProperty.prototype.addSample, function () {
+            cesium_imports_1.SampledPositionProperty.prototype.addSample = after(cesium_imports_1.SampledPositionProperty.prototype.addSample, function () {
                 removeOldSamples(this._property, this.maxNumSamples);
             });
-            cesium_imports_ts_1.SampledPositionProperty.prototype.addSamples = after(cesium_imports_ts_1.SampledPositionProperty.prototype.addSamples, function () {
+            cesium_imports_1.SampledPositionProperty.prototype.addSamples = after(cesium_imports_1.SampledPositionProperty.prototype.addSamples, function () {
                 removeOldSamples(this._property, this.maxNumSamples);
             });
-            cesium_imports_ts_1.SampledPositionProperty.prototype.addSamplesPackedArray = after(cesium_imports_ts_1.SampledPositionProperty.prototype.addSamplesPackedArray, function () {
+            cesium_imports_1.SampledPositionProperty.prototype.addSamplesPackedArray = after(cesium_imports_1.SampledPositionProperty.prototype.addSamplesPackedArray, function () {
                 removeOldSamples(this._property, this.maxNumSamples);
             });
         }
     }
 });
+//# sourceMappingURL=cesium-extensions.js.map

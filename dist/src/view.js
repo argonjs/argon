@@ -227,3 +227,4 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
         }
     }
 });
+//# sourceMappingURL=view.js.map

@@ -481,3 +481,4 @@ System.register(['aurelia-dependency-injection', './focus', './session', './util
         }
     }
 });
+//# sourceMappingURL=vuforia.js.map

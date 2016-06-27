@@ -72,7 +72,7 @@ System.register(['aurelia-dependency-injection', '../cesium/cesium-imports', '..
                                             width: w,
                                             height: h
                                         },
-                                        pose: utils_1.getSerializedEntityPose(_this.deviceService.interfaceEntity, time),
+                                        pose: utils_1.getSerializedEntityPose(_this.deviceService.displayEntity, time),
                                         subviews: [
                                             {
                                                 type: common_1.SubviewType.SINGULAR,
@@ -105,3 +105,4 @@ System.register(['aurelia-dependency-injection', '../cesium/cesium-imports', '..
         }
     }
 });
+//# sourceMappingURL=empty.js.map

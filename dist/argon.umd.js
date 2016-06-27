@@ -636,13 +636,13 @@ $__System.register("8", ["b", "5", "7", "c", "9"], function(exports_1, context_1
           this.user = new cesium_imports_1.Entity({
             id: 'ar.user',
             name: 'user',
-            position: new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, null),
+            position: new cesium_imports_1.ConstantPositionProperty(undefined, cesium_imports_1.ReferenceFrame.FIXED),
             orientation: new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY)
           });
           this.localOriginEastNorthUp = new cesium_imports_1.Entity({
             id: 'ar.localENU',
             name: 'localOriginENU',
-            position: new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, null),
+            position: new cesium_imports_1.ConstantPositionProperty(undefined, cesium_imports_1.ReferenceFrame.FIXED),
             orientation: new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY)
           });
           this.localOriginEastUpSouth = new cesium_imports_1.Entity({
@@ -1476,17 +1476,23 @@ $__System.register("e", ["b", "5", "8", "d"], function(exports_1, context_1) {
           this.context = context;
           this.locationUpdatesEnabled = true;
           this.orientationUpdatesEnabled = true;
-          this.locationEntity = new cesium_imports_1.Entity({
-            id: 'ar.device.location',
-            name: 'Device Location'
+          this.geolocationEntity = new cesium_imports_1.Entity({
+            id: 'ar.device.geolocation',
+            name: 'Device Geolocation'
           });
           this.orientationEntity = new cesium_imports_1.Entity({
             id: 'ar.device.orientation',
             name: 'Device Orientation'
           });
-          this.interfaceEntity = new cesium_imports_1.Entity({
-            id: 'ar.device.interface',
-            name: 'Device Interface'
+          this.entity = new cesium_imports_1.Entity({
+            id: 'ar.device',
+            name: 'Device'
+          });
+          this.displayEntity = new cesium_imports_1.Entity({
+            id: 'ar.device.display',
+            name: 'Device Display',
+            position: new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, this.entity),
+            orientation: new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY)
           });
           this._scratchCartesian = new cesium_imports_1.Cartesian3;
           this._scratchQuaternion1 = new cesium_imports_1.Quaternion;
@@ -1494,15 +1500,10 @@ $__System.register("e", ["b", "5", "8", "d"], function(exports_1, context_1) {
           this._scratchMatrix3 = new cesium_imports_1.Matrix3;
           this._x90Rot = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_X, cesium_imports_1.CesiumMath.PI_OVER_TWO);
           this._headingDrift = 0;
-          this.locationEntity.position = new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, null);
-          this.locationEntity.orientation = new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY);
-          this.orientationEntity.position = new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, this.locationEntity);
-          this.orientationEntity.orientation = new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY);
-          this.interfaceEntity.position = new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, this.orientationEntity);
-          this.interfaceEntity.orientation = new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_X, -cesium_imports_1.CesiumMath.PI_OVER_TWO));
-          context.wellKnownReferenceFrames.add(this.locationEntity);
+          context.wellKnownReferenceFrames.add(this.geolocationEntity);
           context.wellKnownReferenceFrames.add(this.orientationEntity);
-          context.wellKnownReferenceFrames.add(this.interfaceEntity);
+          context.wellKnownReferenceFrames.add(this.entity);
+          context.wellKnownReferenceFrames.add(this.displayEntity);
           if (typeof window !== 'undefined' && window.navigator) {
             this._mobileDetect = new mobile_detect_1.default(window.navigator.userAgent);
           }
@@ -1521,7 +1522,7 @@ $__System.register("e", ["b", "5", "8", "d"], function(exports_1, context_1) {
         DeviceService.prototype.onUpdate = function() {
           var _this = this;
           if (typeof window !== 'undefined') {
-            var interfaceOrientationProperty = this.interfaceEntity.orientation;
+            var interfaceOrientationProperty = this.displayEntity.orientation;
             var interfaceOrientation = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_Z, (-window.orientation || 0) * cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE, this._scratchQuaternion1);
             if (this._mobileDetect && !this._mobileDetect.mobile()) {
               interfaceOrientation = cesium_imports_1.Quaternion.multiply(this._x90Rot, interfaceOrientation, interfaceOrientation);
@@ -1529,18 +1530,21 @@ $__System.register("e", ["b", "5", "8", "d"], function(exports_1, context_1) {
             interfaceOrientationProperty.setValue(interfaceOrientation);
             if (!cesium_imports_1.defined(this._geolocationWatchId) && this.locationUpdatesEnabled) {
               this._geolocationWatchId = navigator.geolocation.watchPosition(function(pos) {
-                if (_this.locationEntity.position instanceof cesium_imports_1.SampledPositionProperty === false) {
+                if (_this.geolocationEntity.position instanceof cesium_imports_1.SampledPositionProperty === false) {
                   var sampledPostionProperty = new cesium_imports_1.SampledPositionProperty(cesium_imports_1.ReferenceFrame.FIXED);
                   sampledPostionProperty.forwardExtrapolationType = cesium_imports_1.ExtrapolationType.HOLD;
                   sampledPostionProperty.backwardExtrapolationType = cesium_imports_1.ExtrapolationType.HOLD;
                   sampledPostionProperty['maxNumSamples'] = 10;
-                  _this.locationEntity.position = sampledPostionProperty;
+                  _this.geolocationEntity.position = sampledPostionProperty;
                 }
                 var positionTime = cesium_imports_1.JulianDate.fromDate(new Date(pos.timestamp));
                 var positionECEF = cesium_imports_1.Cartesian3.fromDegrees(pos.coords.longitude, pos.coords.latitude, pos.coords.altitude || 0, undefined, _this._scratchCartesian);
-                _this.locationEntity.position.addSample(positionTime, positionECEF);
+                _this.geolocationEntity.position.addSample(positionTime, positionECEF);
+                if (_this.geolocationEntity.orientation instanceof cesium_imports_1.ConstantProperty === false) {
+                  _this.geolocationEntity.orientation = new cesium_imports_1.ConstantProperty();
+                }
                 var enuOrientation = cesium_imports_1.Transforms.headingPitchRollQuaternion(positionECEF, 0, 0, 0, undefined, _this._scratchQuaternion1);
-                _this.locationEntity.orientation.setValue(enuOrientation);
+                _this.geolocationEntity.orientation.setValue(enuOrientation);
               }, function(error) {
                 console.error(error);
               }, {enableHighAccuracy: true});
@@ -1575,7 +1579,19 @@ $__System.register("e", ["b", "5", "8", "d"], function(exports_1, context_1) {
                 var alphaBetaQuat = cesium_imports_1.Quaternion.multiply(alphaQuat, betaQuat, _this._scratchQuaternion1);
                 var gammaQuat = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_Y, gamma, _this._scratchQuaternion2);
                 var alphaBetaGammaQuat = cesium_imports_1.Quaternion.multiply(alphaBetaQuat, gammaQuat, alphaBetaQuat);
+                if (_this.orientationEntity.position instanceof cesium_imports_1.ConstantPositionProperty == false) {
+                  _this.orientationEntity.position = new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, _this.geolocationEntity);
+                }
+                if (_this.orientationEntity.orientation instanceof cesium_imports_1.ConstantProperty == false) {
+                  _this.orientationEntity.orientation = new cesium_imports_1.ConstantProperty();
+                }
                 _this.orientationEntity.orientation.setValue(alphaBetaGammaQuat);
+                if (_this.entity.position instanceof cesium_imports_1.ConstantPositionProperty == false) {
+                  _this.entity.position = new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, _this.orientationEntity);
+                }
+                if (_this.entity.orientation instanceof cesium_imports_1.ConstantProperty == false) {
+                  _this.entity.orientation = new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY);
+                }
               };
               window.addEventListener('deviceorientation', this._deviceorientationListener);
             } else if (cesium_imports_1.defined(this._deviceorientationListener) && !this.orientationUpdatesEnabled) {
@@ -1740,7 +1756,7 @@ $__System.register("10", ["b", "5", "6", "7", "e", "f", "c", "9"], function(expo
                       width: w,
                       height: h
                     },
-                    pose: utils_1.getSerializedEntityPose(_this.deviceService.interfaceEntity, time),
+                    pose: utils_1.getSerializedEntityPose(_this.deviceService.displayEntity, time),
                     subviews: [{
                       type: common_1.SubviewType.SINGULAR,
                       projectionMatrix: cesium_imports_1.Matrix4.computePerspectiveFieldOfView(Math.PI / 3, w / h, 0.2, 10000000000, [])
@@ -1833,7 +1849,7 @@ $__System.register("c", ["b", "5", "6", "a", "7", "9"], function(exports_1, cont
           if (sessionService.isManager) {
             sessionService.manager.connectEvent.addEventListener(function() {
               setTimeout(function() {
-                if (!_this._desired)
+                if (!_this._current)
                   _this._setNextReality(_this.onSelectReality());
               });
             });
@@ -3996,7 +4012,7 @@ $__System.register("13", ["b", "6", "7", "c", "12"], function(exports_1, context
 (function() {
 var define = $__System.amdDefine;
 define("14", ["15", "16", "17", "18"], function(defined, defineProperties, DeveloperError, Event) {
-  "use strict";
+  'use strict';
   function CallbackProperty(callback, isConstant) {
     this._callback = undefined;
     this._isConstant = undefined;
@@ -4038,7 +4054,7 @@ define("14", ["15", "16", "17", "18"], function(defined, defineProperties, Devel
 (function() {
 var define = $__System.amdDefine;
 define("19", ["1a"], function(freezeObject) {
-  "use strict";
+  'use strict';
   var ClockRange = {
     UNBOUNDED: 0,
     CLAMPED: 1,
@@ -4051,7 +4067,7 @@ define("19", ["1a"], function(freezeObject) {
 (function() {
 var define = $__System.amdDefine;
 define("1b", ["15"], function(defined) {
-  "use strict";
+  'use strict';
   var getTimestamp;
   if (typeof performance !== 'undefined' && defined(performance.now)) {
     getTimestamp = function() {
@@ -4069,7 +4085,7 @@ define("1b", ["15"], function(defined) {
 (function() {
 var define = $__System.amdDefine;
 define("1c", ["19", "1d", "1e", "15", "17", "18", "1b", "1f"], function(ClockRange, ClockStep, defaultValue, defined, DeveloperError, Event, getTimestamp, JulianDate) {
-  "use strict";
+  'use strict';
   function Clock(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
     var startTime = options.startTime;
@@ -4156,7 +4172,7 @@ define("1c", ["19", "1d", "1e", "15", "17", "18", "1b", "1f"], function(ClockRan
 (function() {
 var define = $__System.amdDefine;
 define("1d", ["1a"], function(freezeObject) {
-  "use strict";
+  'use strict';
   var ClockStep = {
     TICK_DEPENDENT: 0,
     SYSTEM_CLOCK_MULTIPLIER: 1,
@@ -4169,7 +4185,7 @@ define("1d", ["1a"], function(freezeObject) {
 (function() {
 var define = $__System.amdDefine;
 define("20", ["21", "15", "16", "17", "22", "23", "24"], function(createGuid, defined, defineProperties, DeveloperError, CesiumMath, Entity, EntityCollection) {
-  "use strict";
+  'use strict';
   var entityOptionsScratch = {id: undefined};
   var entityIdScratch = new Array(2);
   function clean(entity) {
@@ -4250,7 +4266,8 @@ define("20", ["21", "15", "16", "17", "22", "23", "24"], function(createGuid, de
     }
     composite.resumeEvents();
   }
-  function CompositeEntityCollection(collections) {
+  function CompositeEntityCollection(collections, owner) {
+    this._owner = owner;
     this._composite = new EntityCollection(this);
     this._suspendCount = 0;
     this._collections = defined(collections) ? collections.slice() : [];
@@ -4269,6 +4286,9 @@ define("20", ["21", "15", "16", "17", "22", "23", "24"], function(createGuid, de
       }},
     values: {get: function() {
         return this._composite.values;
+      }},
+    owner: {get: function() {
+        return this._owner;
       }}
   });
   CompositeEntityCollection.prototype.addCollection = function(collection, index) {
@@ -4486,7 +4506,7 @@ define("20", ["21", "15", "16", "17", "22", "23", "24"], function(createGuid, de
 (function() {
 var define = $__System.amdDefine;
 define("25", ["15", "16", "17"], function(defined, defineProperties, DeveloperError) {
-  "use strict";
+  'use strict';
   function AssociativeArray() {
     this._array = [];
     this._hash = {};
@@ -4549,7 +4569,7 @@ define("25", ["15", "16", "17"], function(defined, defineProperties, DeveloperEr
 (function() {
 var define = $__System.amdDefine;
 define("21", [], function() {
-  "use strict";
+  'use strict';
   function createGuid() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
       var r = Math.random() * 16 | 0;
@@ -4563,121 +4583,8 @@ define("21", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("26", ["1e", "15", "16", "17", "18", "27"], function(defaultValue, defined, defineProperties, DeveloperError, Event, createPropertyDescriptor) {
-  "use strict";
-  function BillboardGraphics(options) {
-    this._image = undefined;
-    this._imageSubscription = undefined;
-    this._imageSubRegion = undefined;
-    this._imageSubRegionSubscription = undefined;
-    this._width = undefined;
-    this._widthSubscription = undefined;
-    this._height = undefined;
-    this._heightSubscription = undefined;
-    this._scale = undefined;
-    this._scaleSubscription = undefined;
-    this._rotation = undefined;
-    this._rotationSubscription = undefined;
-    this._alignedAxis = undefined;
-    this._alignedAxisSubscription = undefined;
-    this._horizontalOrigin = undefined;
-    this._horizontalOriginSubscription = undefined;
-    this._verticalOrigin = undefined;
-    this._verticalOriginSubscription = undefined;
-    this._color = undefined;
-    this._colorSubscription = undefined;
-    this._eyeOffset = undefined;
-    this._eyeOffsetSubscription = undefined;
-    this._pixelOffset = undefined;
-    this._pixelOffsetSubscription = undefined;
-    this._show = undefined;
-    this._showSubscription = undefined;
-    this._scaleByDistance = undefined;
-    this._scaleByDistanceSubscription = undefined;
-    this._translucencyByDistance = undefined;
-    this._translucencyByDistanceSubscription = undefined;
-    this._pixelOffsetScaleByDistance = undefined;
-    this._pixelOffsetScaleByDistanceSubscription = undefined;
-    this._sizeInMeters = undefined;
-    this._sizeInMetersSubscription = undefined;
-    this._definitionChanged = new Event();
-    this.merge(defaultValue(options, defaultValue.EMPTY_OBJECT));
-  }
-  defineProperties(BillboardGraphics.prototype, {
-    definitionChanged: {get: function() {
-        return this._definitionChanged;
-      }},
-    image: createPropertyDescriptor('image'),
-    imageSubRegion: createPropertyDescriptor('imageSubRegion'),
-    scale: createPropertyDescriptor('scale'),
-    rotation: createPropertyDescriptor('rotation'),
-    alignedAxis: createPropertyDescriptor('alignedAxis'),
-    horizontalOrigin: createPropertyDescriptor('horizontalOrigin'),
-    verticalOrigin: createPropertyDescriptor('verticalOrigin'),
-    color: createPropertyDescriptor('color'),
-    eyeOffset: createPropertyDescriptor('eyeOffset'),
-    pixelOffset: createPropertyDescriptor('pixelOffset'),
-    show: createPropertyDescriptor('show'),
-    width: createPropertyDescriptor('width'),
-    height: createPropertyDescriptor('height'),
-    scaleByDistance: createPropertyDescriptor('scaleByDistance'),
-    translucencyByDistance: createPropertyDescriptor('translucencyByDistance'),
-    pixelOffsetScaleByDistance: createPropertyDescriptor('pixelOffsetScaleByDistance'),
-    sizeInMeters: createPropertyDescriptor('sizeInMeters')
-  });
-  BillboardGraphics.prototype.clone = function(result) {
-    if (!defined(result)) {
-      return new BillboardGraphics(this);
-    }
-    result.color = this._color;
-    result.eyeOffset = this._eyeOffset;
-    result.horizontalOrigin = this._horizontalOrigin;
-    result.image = this._image;
-    result.imageSubRegion = this._imageSubRegion;
-    result.pixelOffset = this._pixelOffset;
-    result.scale = this._scale;
-    result.rotation = this._rotation;
-    result.alignedAxis = this._alignedAxis;
-    result.show = this._show;
-    result.verticalOrigin = this._verticalOrigin;
-    result.width = this._width;
-    result.height = this._height;
-    result.scaleByDistance = this._scaleByDistance;
-    result.translucencyByDistance = this._translucencyByDistance;
-    result.pixelOffsetScaleByDistance = this._pixelOffsetScaleByDistance;
-    result.sizeInMeters = this._sizeInMeters;
-    return result;
-  };
-  BillboardGraphics.prototype.merge = function(source) {
-    if (!defined(source)) {
-      throw new DeveloperError('source is required.');
-    }
-    this.color = defaultValue(this._color, source.color);
-    this.eyeOffset = defaultValue(this._eyeOffset, source.eyeOffset);
-    this.horizontalOrigin = defaultValue(this._horizontalOrigin, source.horizontalOrigin);
-    this.image = defaultValue(this._image, source.image);
-    this.imageSubRegion = defaultValue(this._imageSubRegion, source.imageSubRegion);
-    this.pixelOffset = defaultValue(this._pixelOffset, source.pixelOffset);
-    this.scale = defaultValue(this._scale, source.scale);
-    this.rotation = defaultValue(this._rotation, source.rotation);
-    this.alignedAxis = defaultValue(this._alignedAxis, source.alignedAxis);
-    this.show = defaultValue(this._show, source.show);
-    this.verticalOrigin = defaultValue(this._verticalOrigin, source.verticalOrigin);
-    this.width = defaultValue(this._width, source.width);
-    this.height = defaultValue(this._height, source.height);
-    this.scaleByDistance = defaultValue(this._scaleByDistance, source.scaleByDistance);
-    this.translucencyByDistance = defaultValue(this._translucencyByDistance, source.translucencyByDistance);
-    this.pixelOffsetScaleByDistance = defaultValue(this._pixelOffsetScaleByDistance, source.pixelOffsetScaleByDistance);
-    this.sizeInMeters = defaultValue(this._sizeInMeters, source.sizeInMeters);
-  };
-  return BillboardGraphics;
-});
-
-})();
-(function() {
-var define = $__System.amdDefine;
-define("28", ["29", "1e", "15", "16", "17", "18", "2a", "2b"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, Event, ReferenceFrame, PositionProperty) {
-  "use strict";
+define("26", ["27", "1e", "15", "16", "17", "18", "28", "29"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, Event, ReferenceFrame, PositionProperty) {
+  'use strict';
   function ConstantPositionProperty(value, referenceFrame) {
     this._definitionChanged = new Event();
     this._value = Cartesian3.clone(value);
@@ -4729,8 +4636,8 @@ define("28", ["29", "1e", "15", "16", "17", "18", "2a", "2b"], function(Cartesia
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2c", ["1e", "15", "16", "17", "18"], function(defaultValue, defined, defineProperties, DeveloperError, Event) {
-  "use strict";
+define("2a", ["1e", "15", "16", "17", "18"], function(defaultValue, defined, defineProperties, DeveloperError, Event) {
+  'use strict';
   function ConstantProperty(value) {
     this._value = undefined;
     this._hasClone = false;
@@ -4771,8 +4678,8 @@ define("2c", ["1e", "15", "16", "17", "18"], function(defaultValue, defined, def
 })();
 (function() {
 var define = $__System.amdDefine;
-define("27", ["1e", "15", "2c"], function(defaultValue, defined, ConstantProperty) {
-  "use strict";
+define("2b", ["1e", "15", "2a"], function(defaultValue, defined, ConstantProperty) {
+  'use strict';
   function createProperty(name, privateName, subscriptionName, configurable, createPropertyCallback) {
     return {
       configurable: configurable,
@@ -4814,8 +4721,8 @@ define("27", ["1e", "15", "2c"], function(defaultValue, defined, ConstantPropert
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2d", ["27"], function(createPropertyDescriptor) {
-  "use strict";
+define("2c", ["2b"], function(createPropertyDescriptor) {
+  'use strict';
   function createRawProperty(value) {
     return value;
   }
@@ -4828,8 +4735,8 @@ define("2d", ["27"], function(createPropertyDescriptor) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("23", ["29", "21", "1e", "15", "16", "17", "18", "2e", "2f", "30", "31", "26", "@empty", "28", "@empty", "27", "2d", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "32", "@empty", "@empty"], function(Cartesian3, createGuid, defaultValue, defined, defineProperties, DeveloperError, Event, Matrix3, Matrix4, Quaternion, Transforms, BillboardGraphics, BoxGraphics, ConstantPositionProperty, CorridorGraphics, createPropertyDescriptor, createRawPropertyDescriptor, CylinderGraphics, EllipseGraphics, EllipsoidGraphics, LabelGraphics, ModelGraphics, PathGraphics, PointGraphics, PolygonGraphics, PolylineGraphics, PolylineVolumeGraphics, Property, RectangleGraphics, WallGraphics) {
-  "use strict";
+define("23", ["27", "21", "1e", "15", "16", "17", "18", "2d", "2e", "2f", "30", "@empty", "@empty", "26", "@empty", "2b", "2c", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "31", "@empty", "@empty"], function(Cartesian3, createGuid, defaultValue, defined, defineProperties, DeveloperError, Event, Matrix3, Matrix4, Quaternion, Transforms, BillboardGraphics, BoxGraphics, ConstantPositionProperty, CorridorGraphics, createPropertyDescriptor, createRawPropertyDescriptor, CylinderGraphics, EllipseGraphics, EllipsoidGraphics, LabelGraphics, ModelGraphics, PathGraphics, PointGraphics, PolygonGraphics, PolylineGraphics, PolylineVolumeGraphics, Property, RectangleGraphics, WallGraphics) {
+  'use strict';
   function createConstantPositionProperty(value) {
     return new ConstantPositionProperty(value);
   }
@@ -4943,7 +4850,7 @@ define("23", ["29", "21", "1e", "15", "16", "17", "18", "2e", "2f", "30", "31", 
       }
     },
     isShowing: {get: function() {
-        return this._show && (!defined(this._parent) || this._parent.isShowing);
+        return this._show && (!defined(this.entityCollection) || this.entityCollection.show) && (!defined(this._parent) || this._parent.isShowing);
       }},
     parent: {
       get: function() {
@@ -5080,19 +4987,31 @@ define("23", ["29", "21", "1e", "15", "16", "17", "18", "2e", "2f", "30", "31", 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("24", ["25", "21", "15", "16", "17", "18", "33", "1f", "34", "35", "23"], function(AssociativeArray, createGuid, defined, defineProperties, DeveloperError, Event, Iso8601, JulianDate, RuntimeError, TimeInterval, Entity) {
-  "use strict";
+define("24", ["25", "21", "15", "16", "17", "18", "32", "1f", "33", "34", "23"], function(AssociativeArray, createGuid, defined, defineProperties, DeveloperError, Event, Iso8601, JulianDate, RuntimeError, TimeInterval, Entity) {
+  'use strict';
   var entityOptionsScratch = {id: undefined};
   function fireChangedEvent(collection) {
+    if (collection._firing) {
+      collection._refire = true;
+      return;
+    }
     if (collection._suspendCount === 0) {
       var added = collection._addedEntities;
       var removed = collection._removedEntities;
       var changed = collection._changedEntities;
       if (changed.length !== 0 || added.length !== 0 || removed.length !== 0) {
-        collection._collectionChanged.raiseEvent(collection, added.values, removed.values, changed.values);
-        added.removeAll();
-        removed.removeAll();
-        changed.removeAll();
+        collection._firing = true;
+        do {
+          collection._refire = false;
+          var addedArray = added.values.slice(0);
+          var removedArray = removed.values.slice(0);
+          var changedArray = changed.values.slice(0);
+          added.removeAll();
+          removed.removeAll();
+          changed.removeAll();
+          collection._collectionChanged.raiseEvent(collection, addedArray, removedArray, changedArray);
+        } while (collection._refire);
+        collection._firing = false;
       }
     }
   }
@@ -5105,6 +5024,9 @@ define("24", ["25", "21", "15", "16", "17", "18", "33", "1f", "34", "35", "23"],
     this._suspendCount = 0;
     this._collectionChanged = new Event();
     this._id = createGuid();
+    this._show = true;
+    this._firing = false;
+    this._refire = false;
   }
   EntityCollection.prototype.suspendEvents = function() {
     this._suspendCount++;
@@ -5127,6 +5049,36 @@ define("24", ["25", "21", "15", "16", "17", "18", "33", "1f", "34", "35", "23"],
     values: {get: function() {
         return this._entities.values;
       }},
+    show: {
+      get: function() {
+        return this._show;
+      },
+      set: function(value) {
+        if (!defined(value)) {
+          throw new DeveloperError('value is required.');
+        }
+        if (value === this._show) {
+          return;
+        }
+        this.suspendEvents();
+        var i;
+        var oldShows = [];
+        var entities = this._entities.values;
+        var entitiesLength = entities.length;
+        for (i = 0; i < entitiesLength; i++) {
+          oldShows.push(entities[i].isShowing);
+        }
+        this._show = value;
+        for (i = 0; i < entitiesLength; i++) {
+          var oldShow = oldShows[i];
+          var entity = entities[i];
+          if (oldShow !== entity.isShowing) {
+            entity.definitionChanged.raiseEvent(entity, 'isShowing', entity.isShowing, oldShow);
+          }
+        }
+        this.resumeEvents();
+      }
+    },
     owner: {get: function() {
         return this._owner;
       }}
@@ -5263,8 +5215,8 @@ define("24", ["25", "21", "15", "16", "17", "18", "33", "1f", "34", "35", "23"],
 })();
 (function() {
 var define = $__System.amdDefine;
-define("36", ["29", "37", "1e", "15", "16", "17", "38"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, Ellipsoid) {
-  "use strict";
+define("35", ["27", "36", "1e", "15", "16", "17", "37"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, Ellipsoid) {
+  'use strict';
   function GeographicProjection(ellipsoid) {
     this._ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
     this._semimajorAxis = this._ellipsoid.maximumRadius;
@@ -5308,8 +5260,8 @@ define("36", ["29", "37", "1e", "15", "16", "17", "38"], function(Cartesian3, Ca
 })();
 (function() {
 var define = $__System.amdDefine;
-define("39", ["1e", "15", "17", "22"], function(defaultValue, defined, DeveloperError, CesiumMath) {
-  "use strict";
+define("38", ["1e", "15", "17", "22"], function(defaultValue, defined, DeveloperError, CesiumMath) {
+  'use strict';
   var factorial = CesiumMath.factorial;
   function calculateCoefficientTerm(x, zIndices, xTable, derivOrder, termOrder, reservedIndices) {
     var result = 0;
@@ -5508,7 +5460,7 @@ define("39", ["1e", "15", "17", "22"], function(defaultValue, defined, Developer
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3a", ["15", "16", "17", "2e", "30", "2a", "31"], function(defined, defineProperties, DeveloperError, Matrix3, Quaternion, ReferenceFrame, Transforms) {
+define("39", ["15", "16", "17", "2d", "2f", "28", "30"], function(defined, defineProperties, DeveloperError, Matrix3, Quaternion, ReferenceFrame, Transforms) {
   "use strict";
   var OrientationProperty = function() {
     DeveloperError.throwInstantiationError();
@@ -5551,7 +5503,6 @@ define("3a", ["15", "16", "17", "2e", "30", "2a", "31"], function(defined, defin
     }
     return Quaternion.fromRotationMatrix(icrfToFixedRotation, scratchIcrfToFixed);
   }
-  var scratchMatrix3 = new Matrix3();
   var scratchQuaternion = new Quaternion();
   OrientationProperty.convertToReferenceFrame = function(time, value, inputFrame, outputFrame, result) {
     if (!defined(value)) {
@@ -5637,8 +5588,8 @@ define("3a", ["15", "16", "17", "2e", "30", "2a", "31"], function(defined, defin
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3b", ["1a"], function(freezeObject) {
-  "use strict";
+define("3a", ["1a"], function(freezeObject) {
+  'use strict';
   var Intersect = {
     OUTSIDE: -1,
     INTERSECTING: 0,
@@ -5650,12 +5601,57 @@ define("3b", ["1a"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3c", ["29", "1e", "15", "17", "3b", "3d"], function(Cartesian3, defaultValue, defined, DeveloperError, Intersect, Plane) {
-  "use strict";
+define("3b", ["27", "3c", "1e", "15", "17", "3a", "3d"], function(Cartesian3, Cartesian4, defaultValue, defined, DeveloperError, Intersect, Plane) {
+  'use strict';
   function CullingVolume(planes) {
     this.planes = defaultValue(planes, []);
   }
+  var faces = [new Cartesian3(), new Cartesian3(), new Cartesian3()];
+  Cartesian3.clone(Cartesian3.UNIT_X, faces[0]);
+  Cartesian3.clone(Cartesian3.UNIT_Y, faces[1]);
+  Cartesian3.clone(Cartesian3.UNIT_Z, faces[2]);
+  var scratchPlaneCenter = new Cartesian3();
+  var scratchPlaneNormal = new Cartesian3();
   var scratchPlane = new Plane(new Cartesian3(), 0.0);
+  CullingVolume.fromBoundingSphere = function(boundingSphere, result) {
+    if (!defined(boundingSphere)) {
+      throw new DeveloperError('boundingSphere is required.');
+    }
+    if (!defined(result)) {
+      result = new CullingVolume();
+    }
+    var length = faces.length;
+    var planes = result.planes;
+    planes.length = 2 * length;
+    var center = boundingSphere.center;
+    var radius = boundingSphere.radius;
+    var planeIndex = 0;
+    for (var i = 0; i < length; ++i) {
+      var faceNormal = faces[i];
+      var plane0 = planes[planeIndex];
+      var plane1 = planes[planeIndex + 1];
+      if (!defined(plane0)) {
+        plane0 = planes[planeIndex] = new Cartesian4();
+      }
+      if (!defined(plane1)) {
+        plane1 = planes[planeIndex + 1] = new Cartesian4();
+      }
+      Cartesian3.multiplyByScalar(faceNormal, -radius, scratchPlaneCenter);
+      Cartesian3.add(center, scratchPlaneCenter, scratchPlaneCenter);
+      plane0.x = faceNormal.x;
+      plane0.y = faceNormal.y;
+      plane0.z = faceNormal.z;
+      plane0.w = -Cartesian3.dot(faceNormal, scratchPlaneCenter);
+      Cartesian3.multiplyByScalar(faceNormal, radius, scratchPlaneCenter);
+      Cartesian3.add(center, scratchPlaneCenter, scratchPlaneCenter);
+      plane1.x = -faceNormal.x;
+      plane1.y = -faceNormal.y;
+      plane1.z = -faceNormal.z;
+      plane1.w = -Cartesian3.dot(Cartesian3.negate(faceNormal, scratchPlaneNormal), scratchPlaneCenter);
+      planeIndex += 2;
+    }
+    return result;
+  };
   CullingVolume.prototype.computeVisibility = function(boundingVolume) {
     if (!defined(boundingVolume)) {
       throw new DeveloperError('boundingVolume is required.');
@@ -5709,8 +5705,8 @@ define("3c", ["29", "1e", "15", "17", "3b", "3d"], function(Cartesian3, defaultV
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3e", ["3f", "29", "40", "1e", "15", "16", "17", "2f", "3c"], function(Cartesian2, Cartesian3, Cartesian4, defaultValue, defined, defineProperties, DeveloperError, Matrix4, CullingVolume) {
-  "use strict";
+define("3e", ["3f", "27", "3c", "1e", "15", "16", "17", "2e", "3b"], function(Cartesian2, Cartesian3, Cartesian4, defaultValue, defined, defineProperties, DeveloperError, Matrix4, CullingVolume) {
+  'use strict';
   function PerspectiveOffCenterFrustum() {
     this.left = undefined;
     this._left = undefined;
@@ -5915,8 +5911,8 @@ define("3e", ["3f", "29", "40", "1e", "15", "16", "17", "2f", "3c"], function(Ca
 })();
 (function() {
 var define = $__System.amdDefine;
-define("41", ["15", "16", "17", "3e"], function(defined, defineProperties, DeveloperError, PerspectiveOffCenterFrustum) {
-  "use strict";
+define("40", ["15", "16", "17", "3e"], function(defined, defineProperties, DeveloperError, PerspectiveOffCenterFrustum) {
+  'use strict';
   function PerspectiveFrustum() {
     this._offCenterFrustum = new PerspectiveOffCenterFrustum();
     this.fov = undefined;
@@ -5929,13 +5925,17 @@ define("41", ["15", "16", "17", "3e"], function(defined, defineProperties, Devel
     this._near = this.near;
     this.far = 500000000.0;
     this._far = this.far;
+    this.xOffset = 0.0;
+    this._xOffset = this.xOffset;
+    this.yOffset = 0.0;
+    this._yOffset = this.yOffset;
   }
   function update(frustum) {
     if (!defined(frustum.fov) || !defined(frustum.aspectRatio) || !defined(frustum.near) || !defined(frustum.far)) {
       throw new DeveloperError('fov, aspectRatio, near, or far parameters are not set.');
     }
     var f = frustum._offCenterFrustum;
-    if (frustum.fov !== frustum._fov || frustum.aspectRatio !== frustum._aspectRatio || frustum.near !== frustum._near || frustum.far !== frustum._far) {
+    if (frustum.fov !== frustum._fov || frustum.aspectRatio !== frustum._aspectRatio || frustum.near !== frustum._near || frustum.far !== frustum._far || frustum.xOffset !== frustum._xOffset || frustum.yOffset !== frustum._yOffset) {
       if (frustum.fov < 0 || frustum.fov >= Math.PI) {
         throw new DeveloperError('fov must be in the range [0, PI).');
       }
@@ -5951,12 +5951,18 @@ define("41", ["15", "16", "17", "3e"], function(defined, defineProperties, Devel
       frustum._near = frustum.near;
       frustum._far = frustum.far;
       frustum._sseDenominator = 2.0 * Math.tan(0.5 * frustum._fovy);
+      frustum._xOffset = frustum.xOffset;
+      frustum._yOffset = frustum.yOffset;
       f.top = frustum.near * Math.tan(0.5 * frustum._fovy);
       f.bottom = -f.top;
       f.right = frustum.aspectRatio * f.top;
       f.left = -f.right;
       f.near = frustum.near;
       f.far = frustum.far;
+      f.right += frustum.xOffset;
+      f.left += frustum.xOffset;
+      f.top += frustum.yOffset;
+      f.bottom += frustum.yOffset;
     }
   }
   defineProperties(PerspectiveFrustum.prototype, {
@@ -6014,7 +6020,7 @@ define("41", ["15", "16", "17", "3e"], function(defined, defineProperties, Devel
 })();
 (function() {
 var define = $__System.amdDefine;
-define("42", ["15", "16", "17", "18", "32"], function(defined, defineProperties, DeveloperError, Event, Property) {
+define("41", ["15", "16", "17", "18", "31"], function(defined, defineProperties, DeveloperError, Event, Property) {
   "use strict";
   function resolve(that) {
     var targetEntity = that._targetEntity;
@@ -6085,8 +6091,8 @@ define("42", ["15", "16", "17", "18", "32"], function(defined, defineProperties,
 })();
 (function() {
 var define = $__System.amdDefine;
-define("43", ["15", "16", "17", "18", "34", "32"], function(defined, defineProperties, DeveloperError, Event, RuntimeError, Property) {
-  "use strict";
+define("42", ["15", "16", "17", "18", "33", "31"], function(defined, defineProperties, DeveloperError, Event, RuntimeError, Property) {
+  'use strict';
   function resolveEntity(that) {
     var entityIsResolved = true;
     if (that._resolveEntity) {
@@ -6259,8 +6265,8 @@ define("43", ["15", "16", "17", "18", "34", "32"], function(defined, definePrope
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2a", ["1a"], function(freezeObject) {
-  "use strict";
+define("28", ["1a"], function(freezeObject) {
+  'use strict';
   var ReferenceFrame = {
     FIXED: 0,
     INERTIAL: 1
@@ -6271,8 +6277,8 @@ define("2a", ["1a"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2b", ["29", "15", "16", "17", "2e", "2f", "30", "2a", "31"], function(Cartesian3, defined, defineProperties, DeveloperError, Matrix3, Matrix4, Quaternion, ReferenceFrame, Transforms) {
-  "use strict";
+define("29", ["27", "15", "16", "17", "2d", "2e", "2f", "28", "30"], function(Cartesian3, defined, defineProperties, DeveloperError, Matrix3, Matrix4, Quaternion, ReferenceFrame, Transforms) {
+  'use strict';
   function PositionProperty() {
     DeveloperError.throwInstantiationError();
   }
@@ -6424,8 +6430,8 @@ define("2b", ["29", "15", "16", "17", "2e", "2f", "30", "2a", "31"], function(Ca
 })();
 (function() {
 var define = $__System.amdDefine;
-define("35", ["1e", "15", "16", "17", "1a", "1f"], function(defaultValue, defined, defineProperties, DeveloperError, freezeObject, JulianDate) {
-  "use strict";
+define("34", ["1e", "15", "16", "17", "1a", "1f"], function(defaultValue, defined, defineProperties, DeveloperError, freezeObject, JulianDate) {
+  'use strict';
   function TimeInterval(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
     this.start = defined(options.start) ? JulianDate.clone(options.start) : new JulianDate();
@@ -6577,8 +6583,8 @@ define("35", ["1e", "15", "16", "17", "1a", "1f"], function(defaultValue, define
 })();
 (function() {
 var define = $__System.amdDefine;
-define("33", ["1a", "1f", "35"], function(freezeObject, JulianDate, TimeInterval) {
-  "use strict";
+define("32", ["1a", "1f", "34"], function(freezeObject, JulianDate, TimeInterval) {
+  'use strict';
   var MINIMUM_VALUE = freezeObject(JulianDate.fromIso8601('0000-01-01T00:00:00Z'));
   var MAXIMUM_VALUE = freezeObject(JulianDate.fromIso8601('9999-12-31T24:00:00Z'));
   var MAXIMUM_INTERVAL = freezeObject(new TimeInterval({
@@ -6596,8 +6602,8 @@ define("33", ["1a", "1f", "35"], function(freezeObject, JulianDate, TimeInterval
 })();
 (function() {
 var define = $__System.amdDefine;
-define("32", ["1e", "15", "16", "17", "33"], function(defaultValue, defined, defineProperties, DeveloperError, Iso8601) {
-  "use strict";
+define("31", ["1e", "15", "16", "17", "32"], function(defaultValue, defined, defineProperties, DeveloperError, Iso8601) {
+  'use strict';
   function Property() {
     DeveloperError.throwInstantiationError();
   }
@@ -6650,8 +6656,8 @@ define("32", ["1e", "15", "16", "17", "33"], function(defaultValue, defined, def
 })();
 (function() {
 var define = $__System.amdDefine;
-define("44", ["29", "1e", "15", "16", "17", "18", "2a", "2b", "32", "45"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, Event, ReferenceFrame, PositionProperty, Property, SampledProperty) {
-  "use strict";
+define("43", ["27", "1e", "15", "16", "17", "18", "28", "29", "31", "44"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, Event, ReferenceFrame, PositionProperty, Property, SampledProperty) {
+  'use strict';
   function SampledPositionProperty(referenceFrame, numberOfDerivatives) {
     numberOfDerivatives = defaultValue(numberOfDerivatives, 0);
     var derivativeTypes;
@@ -6763,7 +6769,7 @@ define("44", ["29", "1e", "15", "16", "17", "18", "2a", "2b", "32", "45"], funct
 (function() {
 var define = $__System.amdDefine;
 define("18", ["15", "16", "17"], function(defined, defineProperties, DeveloperError) {
-  "use strict";
+  'use strict';
   function Event() {
     this._listeners = [];
     this._scopes = [];
@@ -6838,8 +6844,8 @@ define("18", ["15", "16", "17"], function(defined, defineProperties, DeveloperEr
 })();
 (function() {
 var define = $__System.amdDefine;
-define("46", ["1a"], function(freezeObject) {
-  "use strict";
+define("45", ["1a"], function(freezeObject) {
+  'use strict';
   var ExtrapolationType = {
     NONE: 0,
     HOLD: 1,
@@ -6851,8 +6857,8 @@ define("46", ["1a"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("47", ["15", "17"], function(defined, DeveloperError) {
-  "use strict";
+define("46", ["15", "17"], function(defined, DeveloperError) {
+  'use strict';
   var LinearApproximation = {type: 'Linear'};
   LinearApproximation.getRequiredDataPoints = function(degree) {
     return 2;
@@ -6887,8 +6893,8 @@ define("47", ["15", "17"], function(defined, DeveloperError) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("45", ["48", "1e", "15", "16", "17", "18", "46", "1f", "47"], function(binarySearch, defaultValue, defined, defineProperties, DeveloperError, Event, ExtrapolationType, JulianDate, LinearApproximation) {
-  "use strict";
+define("44", ["47", "1e", "15", "16", "17", "18", "45", "1f", "46"], function(binarySearch, defaultValue, defined, defineProperties, DeveloperError, Event, ExtrapolationType, JulianDate, LinearApproximation) {
+  'use strict';
   var PackableNumber = {
     packedLength: 1,
     pack: function(value, array, startingIndex) {
@@ -7337,7 +7343,7 @@ define("45", ["48", "1e", "15", "16", "17", "18", "46", "1f", "47"], function(bi
 (function() {
 var define = $__System.amdDefine;
 define("3f", ["1e", "15", "17", "1a", "22"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
-  "use strict";
+  'use strict';
   function Cartesian2(x, y) {
     this.x = defaultValue(x, 0.0);
     this.y = defaultValue(y, 0.0);
@@ -7385,6 +7391,37 @@ define("3f", ["1e", "15", "17", "1a", "22"], function(defaultValue, defined, Dev
     }
     result.x = array[startingIndex++];
     result.y = array[startingIndex];
+    return result;
+  };
+  Cartesian2.packArray = function(array, result) {
+    if (!defined(array)) {
+      throw new DeveloperError('array is required');
+    }
+    var length = array.length;
+    if (!defined(result)) {
+      result = new Array(length * 2);
+    } else {
+      result.length = length * 2;
+    }
+    for (var i = 0; i < length; ++i) {
+      Cartesian2.pack(array[i], result, i * 2);
+    }
+    return result;
+  };
+  Cartesian2.unpackArray = function(array, result) {
+    if (!defined(array)) {
+      throw new DeveloperError('array is required');
+    }
+    var length = array.length;
+    if (!defined(result)) {
+      result = new Array(length / 2);
+    } else {
+      result.length = length / 2;
+    }
+    for (var i = 0; i < length; i += 2) {
+      var index = i / 2;
+      result[index] = Cartesian2.unpack(array, i, result[index]);
+    }
     return result;
   };
   Cartesian2.fromArray = Cartesian2.unpack;
@@ -7643,8 +7680,8 @@ define("3f", ["1e", "15", "17", "1a", "22"], function(defaultValue, defined, Dev
 })();
 (function() {
 var define = $__System.amdDefine;
-define("49", ["4a", "48", "1e", "15", "4b", "1a", "1f", "4c", "4d", "34", "4e", "4f"], function(when, binarySearch, defaultValue, defined, EarthOrientationParametersSample, freezeObject, JulianDate, LeapSecond, loadJson, RuntimeError, TimeConstants, TimeStandard) {
-  "use strict";
+define("48", ["49", "47", "1e", "15", "4a", "1a", "1f", "4b", "4c", "33", "4d", "4e"], function(when, binarySearch, defaultValue, defined, EarthOrientationParametersSample, freezeObject, JulianDate, LeapSecond, loadJson, RuntimeError, TimeConstants, TimeStandard) {
+  'use strict';
   function EarthOrientationParameters(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
     this._dates = undefined;
@@ -7869,8 +7906,8 @@ define("49", ["4a", "48", "1e", "15", "4b", "1a", "1f", "4c", "4d", "34", "4e", 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4b", [], function() {
-  "use strict";
+define("4a", [], function() {
+  'use strict';
   function EarthOrientationParametersSample(xPoleWander, yPoleWander, xPoleOffset, yPoleOffset, ut1MinusUtc) {
     this.xPoleWander = xPoleWander;
     this.yPoleWander = yPoleWander;
@@ -7879,6 +7916,23 @@ define("4b", [], function() {
     this.ut1MinusUtc = ut1MinusUtc;
   }
   return EarthOrientationParametersSample;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("4f", ["50", "1e", "15", "17"], function(Uri, defaultValue, defined, DeveloperError) {
+  'use strict';
+  function getAbsoluteUri(relative, base) {
+    if (!defined(relative)) {
+      throw new DeveloperError('relative uri is required.');
+    }
+    base = defaultValue(base, document.location.href);
+    var baseUri = new Uri(base);
+    var relativeUri = new Uri(relative);
+    return relativeUri.resolve(baseUri).toString();
+  }
+  return getAbsoluteUri;
 });
 
 })();
@@ -8032,8 +8086,78 @@ define("50", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("51", ["50", "15", "17", "require"], function(Uri, defined, DeveloperError, require) {
-  "use strict";
+define("51", ["50", "1e", "15", "17"], function(Uri, defaultValue, defined, DeveloperError) {
+  'use strict';
+  function joinUrls(first, second, appendSlash) {
+    if (!defined(first)) {
+      throw new DeveloperError('first is required');
+    }
+    if (!defined(second)) {
+      throw new DeveloperError('second is required');
+    }
+    appendSlash = defaultValue(appendSlash, true);
+    if (!(first instanceof Uri)) {
+      first = new Uri(first);
+    }
+    if (!(second instanceof Uri)) {
+      second = new Uri(second);
+    }
+    if (defined(second.authority) && !defined(second.scheme)) {
+      if (typeof document !== 'undefined' && defined(document.location) && defined(document.location.href)) {
+        second.scheme = new Uri(document.location.href).scheme;
+      } else {
+        second.scheme = first.scheme;
+      }
+    }
+    var baseUri = first;
+    if (second.isAbsolute()) {
+      baseUri = second;
+    }
+    var url = '';
+    if (defined(baseUri.scheme)) {
+      url += baseUri.scheme + ':';
+    }
+    if (defined(baseUri.authority)) {
+      url += '//' + baseUri.authority;
+      if (baseUri.path !== '' && baseUri.path !== '/') {
+        url = url.replace(/\/?$/, '/');
+        baseUri.path = baseUri.path.replace(/^\/?/g, '');
+      }
+    }
+    if (baseUri === first) {
+      if (appendSlash) {
+        url += first.path.replace(/\/?$/, '/') + second.path.replace(/^\/?/g, '');
+      } else {
+        url += first.path + second.path;
+      }
+    } else {
+      url += second.path;
+    }
+    var hasFirstQuery = defined(first.query);
+    var hasSecondQuery = defined(second.query);
+    if (hasFirstQuery && hasSecondQuery) {
+      url += '?' + first.query + '&' + second.query;
+    } else if (hasFirstQuery && !hasSecondQuery) {
+      url += '?' + first.query;
+    } else if (!hasFirstQuery && hasSecondQuery) {
+      url += '?' + second.query;
+    }
+    var hasSecondFragment = defined(second.fragment);
+    if (defined(first.fragment) && !hasSecondFragment) {
+      url += '#' + first.fragment;
+    } else if (hasSecondFragment) {
+      url += '#' + second.fragment;
+    }
+    return url;
+  }
+  return joinUrls;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("52", ["50", "15", "17", "4f", "51", "require"], function(Uri, defined, DeveloperError, getAbsoluteUri, joinUrls, require) {
+  'use strict';
   var cesiumScriptRegex = /((?:.*\/)|^)cesium[\w-]*\.js(?:\W|$)/i;
   function getBaseUrlFromCesiumScript() {
     var scripts = document.getElementsByTagName('script');
@@ -8061,14 +8185,14 @@ define("51", ["50", "15", "17", "require"], function(Uri, defined, DeveloperErro
     if (!defined(baseUrlString)) {
       throw new DeveloperError('Unable to determine Cesium base URL automatically, try defining a global variable called CESIUM_BASE_URL.');
     }
-    baseUrl = new Uri(baseUrlString).resolve(new Uri(document.location.href));
+    baseUrl = new Uri(getAbsoluteUri(baseUrlString));
     return baseUrl;
   }
   function buildModuleUrlFromRequireToUrl(moduleID) {
     return require.toUrl('../' + moduleID);
   }
   function buildModuleUrlFromBaseUrl(moduleID) {
-    return new Uri(moduleID).resolve(getCesiumBaseUrl()).toString();
+    return joinUrls(getCesiumBaseUrl(), moduleID);
   }
   var implementation;
   var a;
@@ -8098,8 +8222,8 @@ define("51", ["50", "15", "17", "require"], function(Uri, defined, DeveloperErro
 })();
 (function() {
 var define = $__System.amdDefine;
-define("52", ["1e"], function(defaultValue) {
-  "use strict";
+define("53", ["1e"], function(defaultValue) {
+  'use strict';
   function clone(object, deep) {
     if (object === null || typeof object !== 'object') {
       return object;
@@ -8125,7 +8249,7 @@ define("52", ["1e"], function(defaultValue) {
 var define = $__System.amdDefine;
 (function(define) {
   'use strict';
-  define("4a", [], function() {
+  define("49", [], function() {
     var reduceArray,
         slice,
         undef;
@@ -8468,8 +8592,8 @@ var define = $__System.amdDefine;
 })();
 (function() {
 var define = $__System.amdDefine;
-define("53", [], function() {
-  "use strict";
+define("54", [], function() {
+  'use strict';
   function parseResponseHeaders(headerString) {
     var headers = {};
     if (!headerString) {
@@ -8493,8 +8617,8 @@ define("53", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("54", ["15", "53"], function(defined, parseResponseHeaders) {
-  "use strict";
+define("55", ["15", "54"], function(defined, parseResponseHeaders) {
+  'use strict';
   function RequestErrorEvent(statusCode, response, responseHeaders) {
     this.statusCode = statusCode;
     this.response = response;
@@ -8516,8 +8640,8 @@ define("54", ["15", "53"], function(defined, parseResponseHeaders) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("55", ["4a", "1e", "15", "17", "54", "34"], function(when, defaultValue, defined, DeveloperError, RequestErrorEvent, RuntimeError) {
-  "use strict";
+define("56", ["49", "1e", "15", "17", "55", "33"], function(when, defaultValue, defined, DeveloperError, RequestErrorEvent, RuntimeError) {
+  'use strict';
   function loadWithXhr(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
     if (!defined(options.url)) {
@@ -8624,8 +8748,8 @@ define("55", ["4a", "1e", "15", "17", "54", "34"], function(when, defaultValue, 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("56", ["55"], function(loadWithXhr) {
-  "use strict";
+define("57", ["56"], function(loadWithXhr) {
+  'use strict';
   function loadText(url, headers) {
     return loadWithXhr({
       url: url,
@@ -8638,8 +8762,8 @@ define("56", ["55"], function(loadWithXhr) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4d", ["52", "15", "17", "56"], function(clone, defined, DeveloperError, loadText) {
-  "use strict";
+define("4c", ["53", "15", "17", "57"], function(clone, defined, DeveloperError, loadText) {
+  'use strict';
   var defaultHeaders = {Accept: 'application/json,*/*;q=0.01'};
   function loadJson(url, headers) {
     if (!defined(url)) {
@@ -8661,8 +8785,8 @@ define("4d", ["52", "15", "17", "56"], function(clone, defined, DeveloperError, 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("57", ["4a", "51", "1e", "15", "58", "1f", "4d", "4f"], function(when, buildModuleUrl, defaultValue, defined, Iau2006XysSample, JulianDate, loadJson, TimeStandard) {
-  "use strict";
+define("58", ["49", "52", "1e", "15", "59", "1f", "4c", "4e"], function(when, buildModuleUrl, defaultValue, defined, Iau2006XysSample, JulianDate, loadJson, TimeStandard) {
+  'use strict';
   function Iau2006XysData(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
     this._xysFileUrlTemplate = options.xysFileUrlTemplate;
@@ -8816,8 +8940,8 @@ define("57", ["4a", "51", "1e", "15", "58", "1f", "4d", "4f"], function(when, bu
 })();
 (function() {
 var define = $__System.amdDefine;
-define("58", [], function() {
-  "use strict";
+define("59", [], function() {
+  'use strict';
   function Iau2006XysSample(x, y, s) {
     this.x = x;
     this.y = y;
@@ -8829,8 +8953,8 @@ define("58", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("59", ["15", "16"], function(defined, defineProperties) {
-  "use strict";
+define("5a", ["15", "16"], function(defined, defineProperties) {
+  'use strict';
   var _supportsFullscreen;
   var _names = {
     requestFullscreen: undefined,
@@ -8915,32 +9039,32 @@ define("59", ["15", "16"], function(defined, defineProperties) {
         }
       }
       name = prefix + 'FullscreenEnabled';
-      if (defined(document[name])) {
+      if (document[name] !== undefined) {
         _names.fullscreenEnabled = name;
       } else {
         name = prefix + 'FullScreenEnabled';
-        if (defined(document[name])) {
+        if (document[name] !== undefined) {
           _names.fullscreenEnabled = name;
         }
       }
       name = prefix + 'FullscreenElement';
-      if (defined(document[name])) {
+      if (document[name] !== undefined) {
         _names.fullscreenElement = name;
       } else {
         name = prefix + 'FullScreenElement';
-        if (defined(document[name])) {
+        if (document[name] !== undefined) {
           _names.fullscreenElement = name;
         }
       }
       name = prefix + 'fullscreenchange';
-      if (defined(document['on' + name])) {
+      if (document['on' + name] !== undefined) {
         if (prefix === 'ms') {
           name = 'MSFullscreenChange';
         }
         _names.fullscreenchange = name;
       }
       name = prefix + 'fullscreenerror';
-      if (defined(document['on' + name])) {
+      if (document['on' + name] !== undefined) {
         if (prefix === 'ms') {
           name = 'MSFullscreenError';
         }
@@ -8949,11 +9073,11 @@ define("59", ["15", "16"], function(defined, defineProperties) {
     }
     return _supportsFullscreen;
   };
-  Fullscreen.requestFullscreen = function(element) {
+  Fullscreen.requestFullscreen = function(element, vrDevice) {
     if (!Fullscreen.supportsFullscreen()) {
       return;
     }
-    element[_names.requestFullscreen]();
+    element[_names.requestFullscreen]({vrDisplay: vrDevice});
   };
   Fullscreen.exitFullscreen = function() {
     if (!Fullscreen.supportsFullscreen()) {
@@ -8967,8 +9091,8 @@ define("59", ["15", "16"], function(defined, defineProperties) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5a", ["1e", "15", "59"], function(defaultValue, defined, Fullscreen) {
-  "use strict";
+define("5b", ["1e", "15", "5a"], function(defaultValue, defined, Fullscreen) {
+  'use strict';
   var theNavigator;
   if (typeof navigator !== 'undefined') {
     theNavigator = navigator;
@@ -9089,6 +9213,23 @@ define("5a", ["1e", "15", "59"], function(defaultValue, defined, Fullscreen) {
     }
     return hasPointerEvents;
   }
+  var imageRenderingValueResult;
+  var supportsImageRenderingPixelatedResult;
+  function supportsImageRenderingPixelated() {
+    if (!defined(supportsImageRenderingPixelatedResult)) {
+      var canvas = document.createElement('canvas');
+      canvas.setAttribute('style', 'image-rendering: -moz-crisp-edges;' + 'image-rendering: pixelated;');
+      var tmp = canvas.style.imageRendering;
+      supportsImageRenderingPixelatedResult = defined(tmp) && tmp !== '';
+      if (supportsImageRenderingPixelatedResult) {
+        imageRenderingValueResult = tmp;
+      }
+    }
+    return supportsImageRenderingPixelatedResult;
+  }
+  function imageRenderingValue() {
+    return supportsImageRenderingPixelated() ? imageRenderingValueResult : undefined;
+  }
   var FeatureDetection = {
     isChrome: isChrome,
     chromeVersion: chromeVersion,
@@ -9102,7 +9243,9 @@ define("5a", ["1e", "15", "59"], function(defaultValue, defined, Fullscreen) {
     firefoxVersion: firefoxVersion,
     isWindows: isWindows,
     hardwareConcurrency: defaultValue(theNavigator.hardwareConcurrency, 3),
-    supportsPointerEvents: supportsPointerEvents
+    supportsPointerEvents: supportsPointerEvents,
+    supportsImageRenderingPixelated: supportsImageRenderingPixelated,
+    imageRenderingValue: imageRenderingValue
   };
   FeatureDetection.supportsFullscreen = function() {
     return Fullscreen.supportsFullscreen();
@@ -9119,8 +9262,8 @@ define("5a", ["1e", "15", "59"], function(defaultValue, defined, Fullscreen) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("30", ["29", "1e", "15", "17", "5a", "1a", "22", "2e"], function(Cartesian3, defaultValue, defined, DeveloperError, FeatureDetection, freezeObject, CesiumMath, Matrix3) {
-  "use strict";
+define("2f", ["27", "1e", "15", "17", "5b", "1a", "22", "2d"], function(Cartesian3, defaultValue, defined, DeveloperError, FeatureDetection, freezeObject, CesiumMath, Matrix3) {
+  'use strict';
   function Quaternion(x, y, z, w) {
     this.x = defaultValue(x, 0.0);
     this.y = defaultValue(y, 0.0);
@@ -9695,8 +9838,8 @@ define("30", ["29", "1e", "15", "17", "5a", "1a", "22", "2e"], function(Cartesia
 })();
 (function() {
 var define = $__System.amdDefine;
-define("31", ["4a", "3f", "29", "40", "1e", "15", "17", "49", "4b", "38", "57", "58", "1f", "22", "2e", "2f", "30", "4e"], function(when, Cartesian2, Cartesian3, Cartesian4, defaultValue, defined, DeveloperError, EarthOrientationParameters, EarthOrientationParametersSample, Ellipsoid, Iau2006XysData, Iau2006XysSample, JulianDate, CesiumMath, Matrix3, Matrix4, Quaternion, TimeConstants) {
-  "use strict";
+define("30", ["49", "3f", "27", "3c", "36", "1e", "15", "17", "48", "4a", "37", "58", "59", "1f", "22", "2d", "2e", "2f", "4d"], function(when, Cartesian2, Cartesian3, Cartesian4, Cartographic, defaultValue, defined, DeveloperError, EarthOrientationParameters, EarthOrientationParametersSample, Ellipsoid, Iau2006XysData, Iau2006XysSample, JulianDate, CesiumMath, Matrix3, Matrix4, Quaternion, TimeConstants) {
+  'use strict';
   var Transforms = {};
   var eastNorthUpToFixedFrameNormal = new Cartesian3();
   var eastNorthUpToFixedFrameTangent = new Cartesian3();
@@ -10085,13 +10228,70 @@ define("31", ["4a", "3f", "29", "40", "1e", "15", "17", "49", "4b", "38", "57", 
     result[8] = up.z;
     return result;
   };
+  var scratchCartographic = new Cartographic();
+  var scratchCartesian3Projection = new Cartesian3();
+  var scratchCartesian3 = new Cartesian3();
+  var scratchCartesian4Origin = new Cartesian4();
+  var scratchCartesian4NewOrigin = new Cartesian4();
+  var scratchCartesian4NewXAxis = new Cartesian4();
+  var scratchCartesian4NewYAxis = new Cartesian4();
+  var scratchCartesian4NewZAxis = new Cartesian4();
+  var scratchFromENU = new Matrix4();
+  var scratchToENU = new Matrix4();
+  Transforms.basisTo2D = function(projection, matrix, result) {
+    if (!defined(projection)) {
+      throw new DeveloperError('projection is required.');
+    }
+    if (!defined(matrix)) {
+      throw new DeveloperError('matrix is required.');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required.');
+    }
+    var ellipsoid = projection.ellipsoid;
+    var origin = Matrix4.getColumn(matrix, 3, scratchCartesian4Origin);
+    var cartographic = ellipsoid.cartesianToCartographic(origin, scratchCartographic);
+    var fromENU = Transforms.eastNorthUpToFixedFrame(origin, ellipsoid, scratchFromENU);
+    var toENU = Matrix4.inverseTransformation(fromENU, scratchToENU);
+    var projectedPosition = projection.project(cartographic, scratchCartesian3Projection);
+    var newOrigin = scratchCartesian4NewOrigin;
+    newOrigin.x = projectedPosition.z;
+    newOrigin.y = projectedPosition.x;
+    newOrigin.z = projectedPosition.y;
+    newOrigin.w = 1.0;
+    var xAxis = Matrix4.getColumn(matrix, 0, scratchCartesian3);
+    var xScale = Cartesian3.magnitude(xAxis);
+    var newXAxis = Matrix4.multiplyByVector(toENU, xAxis, scratchCartesian4NewXAxis);
+    Cartesian4.fromElements(newXAxis.z, newXAxis.x, newXAxis.y, 0.0, newXAxis);
+    var yAxis = Matrix4.getColumn(matrix, 1, scratchCartesian3);
+    var yScale = Cartesian3.magnitude(yAxis);
+    var newYAxis = Matrix4.multiplyByVector(toENU, yAxis, scratchCartesian4NewYAxis);
+    Cartesian4.fromElements(newYAxis.z, newYAxis.x, newYAxis.y, 0.0, newYAxis);
+    var zAxis = Matrix4.getColumn(matrix, 2, scratchCartesian3);
+    var zScale = Cartesian3.magnitude(zAxis);
+    var newZAxis = scratchCartesian4NewZAxis;
+    Cartesian3.cross(newXAxis, newYAxis, newZAxis);
+    Cartesian3.normalize(newZAxis, newZAxis);
+    Cartesian3.cross(newYAxis, newZAxis, newXAxis);
+    Cartesian3.normalize(newXAxis, newXAxis);
+    Cartesian3.cross(newZAxis, newXAxis, newYAxis);
+    Cartesian3.normalize(newYAxis, newYAxis);
+    Cartesian3.multiplyByScalar(newXAxis, xScale, newXAxis);
+    Cartesian3.multiplyByScalar(newYAxis, yScale, newYAxis);
+    Cartesian3.multiplyByScalar(newZAxis, zScale, newZAxis);
+    Matrix4.setColumn(result, 0, newXAxis, result);
+    Matrix4.setColumn(result, 1, newYAxis, result);
+    Matrix4.setColumn(result, 2, newZAxis, result);
+    Matrix4.setColumn(result, 3, newOrigin, result);
+    return result;
+  };
   return Transforms;
 });
 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5b", [], function() {
+define("5c", [], function() {
   function sprintf() {
     var regex = /%%|%(\d+\$)?([-+\'#0 ]*)(\*\d+\$|\*|\d+)?(\.(\*\d+\$|\*|\d+))?([scboxXuideEfFgG])/g;
     var a = arguments,
@@ -10240,8 +10440,8 @@ define("5b", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("48", ["15", "17"], function(defined, DeveloperError) {
-  "use strict";
+define("47", ["15", "17"], function(defined, DeveloperError) {
+  'use strict';
   function binarySearch(array, itemToFind, comparator) {
     if (!defined(array)) {
       throw new DeveloperError('array is required.');
@@ -10277,8 +10477,8 @@ define("48", ["15", "17"], function(defined, DeveloperError) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5c", [], function() {
-  "use strict";
+define("5d", [], function() {
+  'use strict';
   function GregorianDate(year, month, day, hour, minute, second, millisecond, isLeapSecond) {
     this.year = year;
     this.month = month;
@@ -10295,8 +10495,8 @@ define("5c", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5d", ["17"], function(DeveloperError) {
-  "use strict";
+define("5e", ["17"], function(DeveloperError) {
+  'use strict';
   function isLeapYear(year) {
     if (year === null || isNaN(year)) {
       throw new DeveloperError('year is required and must be a number.');
@@ -10309,8 +10509,8 @@ define("5d", ["17"], function(DeveloperError) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4c", [], function() {
-  "use strict";
+define("4b", [], function() {
+  'use strict';
   function LeapSecond(date, offset) {
     this.julianDate = date;
     this.offset = offset;
@@ -10321,8 +10521,8 @@ define("4c", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("1f", ["5b", "48", "1e", "15", "17", "5c", "5d", "4c", "4e", "4f"], function(sprintf, binarySearch, defaultValue, defined, DeveloperError, GregorianDate, isLeapYear, LeapSecond, TimeConstants, TimeStandard) {
-  "use strict";
+define("1f", ["5c", "47", "1e", "15", "17", "5d", "5e", "4b", "4d", "4e"], function(sprintf, binarySearch, defaultValue, defined, DeveloperError, GregorianDate, isLeapYear, LeapSecond, TimeConstants, TimeStandard) {
+  'use strict';
   var gregorianDateScratch = new GregorianDate();
   var daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
   var daysInLeapFeburary = 29;
@@ -10857,8 +11057,8 @@ define("1f", ["5b", "48", "1e", "15", "17", "5c", "5d", "4c", "4e", "4f"], funct
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4e", ["1a"], function(freezeObject) {
-  "use strict";
+define("4d", ["1a"], function(freezeObject) {
+  'use strict';
   var TimeConstants = {
     SECONDS_PER_MILLISECOND: 0.001,
     SECONDS_PER_MINUTE: 60.0,
@@ -10877,8 +11077,8 @@ define("4e", ["1a"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4f", ["1a"], function(freezeObject) {
-  "use strict";
+define("4e", ["1a"], function(freezeObject) {
+  'use strict';
   var TimeStandard = {
     UTC: 0,
     TAI: 1
@@ -10889,8 +11089,8 @@ define("4f", ["1a"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5e", ["29", "15", "17", "1f", "22", "2e", "4e", "4f"], function(Cartesian3, defined, DeveloperError, JulianDate, CesiumMath, Matrix3, TimeConstants, TimeStandard) {
-  "use strict";
+define("5f", ["27", "15", "17", "1f", "22", "2d", "4d", "4e"], function(Cartesian3, defined, DeveloperError, JulianDate, CesiumMath, Matrix3, TimeConstants, TimeStandard) {
+  'use strict';
   var Simon1994PlanetaryPositions = {};
   function computeTdbMinusTtSpice(daysSinceJ2000InTerrestrialTime) {
     var g = 6.239996 + (0.0172019696544) * daysSinceJ2000InTerrestrialTime;
@@ -11180,29 +11380,8 @@ define("5e", ["29", "15", "17", "1f", "22", "2e", "4e", "4f"], function(Cartesia
 })();
 (function() {
 var define = $__System.amdDefine;
-define("16", ["15"], function(defined) {
-  "use strict";
-  var definePropertyWorks = (function() {
-    try {
-      return 'x' in Object.defineProperty({}, 'x', {});
-    } catch (e) {
-      return false;
-    }
-  })();
-  var defineProperties = Object.defineProperties;
-  if (!definePropertyWorks || !defined(defineProperties)) {
-    defineProperties = function(o) {
-      return o;
-    };
-  }
-  return defineProperties;
-});
-
-})();
-(function() {
-var define = $__System.amdDefine;
-define("38", ["29", "37", "1e", "15", "16", "17", "1a", "22", "5f"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
-  "use strict";
+define("37", ["27", "36", "1e", "15", "16", "17", "1a", "22", "60"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
+  'use strict';
   function initialize(ellipsoid, x, y, z) {
     x = defaultValue(x, 0.0);
     y = defaultValue(y, 0.0);
@@ -11439,8 +11618,8 @@ define("38", ["29", "37", "1e", "15", "16", "17", "1a", "22", "5f"], function(Ca
 })();
 (function() {
 var define = $__System.amdDefine;
-define("60", ["29", "37", "1e", "15", "16", "17", "38", "22"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, Ellipsoid, CesiumMath) {
-  "use strict";
+define("61", ["27", "36", "1e", "15", "16", "17", "37", "22"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, Ellipsoid, CesiumMath) {
+  'use strict';
   function setConstants(ellipsoidGeodesic) {
     var uSquared = ellipsoidGeodesic._uSquared;
     var a = ellipsoidGeodesic._ellipsoid.maximumRadius;
@@ -11667,8 +11846,8 @@ define("60", ["29", "37", "1e", "15", "16", "17", "38", "22"], function(Cartesia
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5f", ["29", "15", "17", "22"], function(Cartesian3, defined, DeveloperError, CesiumMath) {
-  "use strict";
+define("60", ["27", "15", "17", "22"], function(Cartesian3, defined, DeveloperError, CesiumMath) {
+  'use strict';
   var scaleToGeodeticSurfaceIntersection = new Cartesian3();
   var scaleToGeodeticSurfaceGradient = new Cartesian3();
   function scaleToGeodeticSurface(cartesian, oneOverRadii, oneOverRadiiSquared, centerToleranceSquared, result) {
@@ -11749,8 +11928,8 @@ define("5f", ["29", "15", "17", "22"], function(Cartesian3, defined, DeveloperEr
 })();
 (function() {
 var define = $__System.amdDefine;
-define("37", ["29", "1e", "15", "17", "1a", "22", "5f"], function(Cartesian3, defaultValue, defined, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
-  "use strict";
+define("36", ["27", "1e", "15", "17", "1a", "22", "60"], function(Cartesian3, defaultValue, defined, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
+  'use strict';
   function Cartographic(longitude, latitude, height) {
     this.longitude = defaultValue(longitude, 0.0);
     this.latitude = defaultValue(latitude, 0.0);
@@ -11851,8 +12030,8 @@ define("37", ["29", "1e", "15", "17", "1a", "22", "5f"], function(Cartesian3, de
 })();
 (function() {
 var define = $__System.amdDefine;
-define("61", ["17", "62"], function(DeveloperError, QuadraticRealPolynomial) {
-  "use strict";
+define("62", ["17", "63"], function(DeveloperError, QuadraticRealPolynomial) {
+  'use strict';
   var CubicRealPolynomial = {};
   CubicRealPolynomial.computeDiscriminant = function(a, b, c, d) {
     if (typeof a !== 'number') {
@@ -12018,8 +12197,8 @@ define("61", ["17", "62"], function(DeveloperError, QuadraticRealPolynomial) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("62", ["17", "22"], function(DeveloperError, CesiumMath) {
-  "use strict";
+define("63", ["17", "22"], function(DeveloperError, CesiumMath) {
+  'use strict';
   var QuadraticRealPolynomial = {};
   QuadraticRealPolynomial.computeDiscriminant = function(a, b, c) {
     if (typeof a !== 'number') {
@@ -12099,8 +12278,8 @@ define("62", ["17", "22"], function(DeveloperError, CesiumMath) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("63", ["61", "17", "22", "62"], function(CubicRealPolynomial, DeveloperError, CesiumMath, QuadraticRealPolynomial) {
-  "use strict";
+define("64", ["62", "17", "22", "63"], function(CubicRealPolynomial, DeveloperError, CesiumMath, QuadraticRealPolynomial) {
+  'use strict';
   var QuarticRealPolynomial = {};
   QuarticRealPolynomial.computeDiscriminant = function(a, b, c, d, e) {
     if (typeof a !== 'number') {
@@ -12345,8 +12524,8 @@ define("63", ["61", "17", "22", "62"], function(CubicRealPolynomial, DeveloperEr
 })();
 (function() {
 var define = $__System.amdDefine;
-define("64", ["29", "1e", "15", "17"], function(Cartesian3, defaultValue, defined, DeveloperError) {
-  "use strict";
+define("65", ["27", "1e", "15", "17"], function(Cartesian3, defaultValue, defined, DeveloperError) {
+  'use strict';
   function Ray(origin, direction) {
     direction = Cartesian3.clone(defaultValue(direction, Cartesian3.ZERO));
     if (!Cartesian3.equals(direction, Cartesian3.ZERO)) {
@@ -12374,8 +12553,8 @@ define("64", ["29", "1e", "15", "17"], function(Cartesian3, defaultValue, define
 })();
 (function() {
 var define = $__System.amdDefine;
-define("65", ["29", "37", "1e", "15", "17", "22", "2e", "62", "63", "64"], function(Cartesian3, Cartographic, defaultValue, defined, DeveloperError, CesiumMath, Matrix3, QuadraticRealPolynomial, QuarticRealPolynomial, Ray) {
-  "use strict";
+define("66", ["27", "36", "1e", "15", "17", "22", "2d", "63", "64", "65"], function(Cartesian3, Cartographic, defaultValue, defined, DeveloperError, CesiumMath, Matrix3, QuadraticRealPolynomial, QuarticRealPolynomial, Ray) {
+  'use strict';
   var IntersectionTests = {};
   IntersectionTests.rayPlane = function(ray, plane, result) {
     if (!defined(ray)) {
@@ -12573,6 +12752,7 @@ define("65", ["29", "37", "1e", "15", "17", "22", "2e", "62", "63", "64"], funct
       throw new DeveloperError('sphere is required.');
     }
     var ray = scratchLineSegmentRay;
+    Cartesian3.clone(p0, ray.origin);
     var direction = Cartesian3.subtract(p1, p0, ray.direction);
     var maxT = Cartesian3.magnitude(direction);
     Cartesian3.normalize(direction, direction);
@@ -12924,8 +13104,8 @@ define("65", ["29", "37", "1e", "15", "17", "22", "2e", "62", "63", "64"], funct
 })();
 (function() {
 var define = $__System.amdDefine;
-define("66", ["15"], function(defined) {
-  "use strict";
+define("67", ["15"], function(defined) {
+  'use strict';
   var isArray = Array.isArray;
   if (!defined(isArray)) {
     isArray = function(value) {
@@ -12938,8 +13118,8 @@ define("66", ["15"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("40", ["1e", "15", "17", "1a", "22"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
-  "use strict";
+define("3c", ["1e", "15", "17", "1a", "22"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
+  'use strict';
   function Cartesian4(x, y, z, w) {
     this.x = defaultValue(x, 0.0);
     this.y = defaultValue(y, 0.0);
@@ -13008,6 +13188,37 @@ define("40", ["1e", "15", "17", "1a", "22"], function(defaultValue, defined, Dev
     result.y = array[startingIndex++];
     result.z = array[startingIndex++];
     result.w = array[startingIndex];
+    return result;
+  };
+  Cartesian4.packArray = function(array, result) {
+    if (!defined(array)) {
+      throw new DeveloperError('array is required');
+    }
+    var length = array.length;
+    if (!defined(result)) {
+      result = new Array(length * 4);
+    } else {
+      result.length = length * 4;
+    }
+    for (var i = 0; i < length; ++i) {
+      Cartesian4.pack(array[i], result, i * 4);
+    }
+    return result;
+  };
+  Cartesian4.unpackArray = function(array, result) {
+    if (!defined(array)) {
+      throw new DeveloperError('array is required');
+    }
+    var length = array.length;
+    if (!defined(result)) {
+      result = new Array(length / 4);
+    } else {
+      result.length = length / 4;
+    }
+    for (var i = 0; i < length; i += 4) {
+      var index = i / 4;
+      result[index] = Cartesian4.unpack(array, i, result[index]);
+    }
     return result;
   };
   Cartesian4.fromArray = Cartesian4.unpack;
@@ -13293,8 +13504,29 @@ define("40", ["1e", "15", "17", "1a", "22"], function(defaultValue, defined, Dev
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2e", ["29", "1e", "15", "17", "1a", "22"], function(Cartesian3, defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
-  "use strict";
+define("16", ["15"], function(defined) {
+  'use strict';
+  var definePropertyWorks = (function() {
+    try {
+      return 'x' in Object.defineProperty({}, 'x', {});
+    } catch (e) {
+      return false;
+    }
+  })();
+  var defineProperties = Object.defineProperties;
+  if (!definePropertyWorks || !defined(defineProperties)) {
+    defineProperties = function(o) {
+      return o;
+    };
+  }
+  return defineProperties;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("2d", ["27", "1e", "15", "16", "17", "1a", "22"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath) {
+  'use strict';
   function Matrix3(column0Row0, column1Row0, column2Row0, column0Row1, column1Row1, column2Row1, column0Row2, column1Row2, column2Row2) {
     this[0] = defaultValue(column0Row0, 0.0);
     this[1] = defaultValue(column0Row1, 0.0);
@@ -14024,6 +14256,9 @@ define("2e", ["29", "1e", "15", "17", "1a", "22"], function(Cartesian3, defaultV
   Matrix3.COLUMN2ROW0 = 6;
   Matrix3.COLUMN2ROW1 = 7;
   Matrix3.COLUMN2ROW2 = 8;
+  defineProperties(Matrix3.prototype, {length: {get: function() {
+        return Matrix3.packedLength;
+      }}});
   Matrix3.prototype.clone = function(result) {
     return Matrix3.clone(this, result);
   };
@@ -14045,8 +14280,8 @@ define("2e", ["29", "1e", "15", "17", "1a", "22"], function(Cartesian3, defaultV
 })();
 (function() {
 var define = $__System.amdDefine;
-define("34", ["15"], function(defined) {
-  "use strict";
+define("33", ["15"], function(defined) {
+  'use strict';
   function RuntimeError(message) {
     this.name = 'RuntimeError';
     this.message = message;
@@ -14057,6 +14292,10 @@ define("34", ["15"], function(defined) {
       stack = e.stack;
     }
     this.stack = stack;
+  }
+  if (defined(Object.create)) {
+    RuntimeError.prototype = Object.create(Error.prototype);
+    RuntimeError.prototype.constructor = RuntimeError;
   }
   RuntimeError.prototype.toString = function() {
     var str = this.name + ': ' + this.message;
@@ -14071,8 +14310,8 @@ define("34", ["15"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2f", ["29", "40", "1e", "15", "17", "1a", "22", "2e", "34"], function(Cartesian3, Cartesian4, defaultValue, defined, DeveloperError, freezeObject, CesiumMath, Matrix3, RuntimeError) {
-  "use strict";
+define("2e", ["27", "3c", "1e", "15", "16", "17", "1a", "22", "2d", "33"], function(Cartesian3, Cartesian4, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath, Matrix3, RuntimeError) {
+  'use strict';
   function Matrix4(column0Row0, column1Row0, column2Row0, column3Row0, column0Row1, column1Row1, column2Row1, column3Row1, column0Row2, column1Row2, column2Row2, column3Row2, column0Row3, column1Row3, column2Row3, column3Row3) {
     this[0] = defaultValue(column0Row0, 0.0);
     this[1] = defaultValue(column0Row1, 0.0);
@@ -14342,42 +14581,42 @@ define("2f", ["29", "40", "1e", "15", "17", "1a", "22", "2e", "34"], function(Ca
     return result;
   };
   var fromCameraF = new Cartesian3();
-  var fromCameraS = new Cartesian3();
+  var fromCameraR = new Cartesian3();
   var fromCameraU = new Cartesian3();
   Matrix4.fromCamera = function(camera, result) {
     if (!defined(camera)) {
       throw new DeveloperError('camera is required.');
     }
-    var eye = camera.eye;
-    var target = camera.target;
+    var position = camera.position;
+    var direction = camera.direction;
     var up = camera.up;
-    if (!defined(eye)) {
-      throw new DeveloperError('camera.eye is required.');
+    if (!defined(position)) {
+      throw new DeveloperError('camera.position is required.');
     }
-    if (!defined(target)) {
-      throw new DeveloperError('camera.target is required.');
+    if (!defined(direction)) {
+      throw new DeveloperError('camera.direction is required.');
     }
     if (!defined(up)) {
       throw new DeveloperError('camera.up is required.');
     }
-    Cartesian3.normalize(Cartesian3.subtract(target, eye, fromCameraF), fromCameraF);
-    Cartesian3.normalize(Cartesian3.cross(fromCameraF, up, fromCameraS), fromCameraS);
-    Cartesian3.normalize(Cartesian3.cross(fromCameraS, fromCameraF, fromCameraU), fromCameraU);
-    var sX = fromCameraS.x;
-    var sY = fromCameraS.y;
-    var sZ = fromCameraS.z;
+    Cartesian3.normalize(direction, fromCameraF);
+    Cartesian3.normalize(Cartesian3.cross(fromCameraF, up, fromCameraR), fromCameraR);
+    Cartesian3.normalize(Cartesian3.cross(fromCameraR, fromCameraF, fromCameraU), fromCameraU);
+    var sX = fromCameraR.x;
+    var sY = fromCameraR.y;
+    var sZ = fromCameraR.z;
     var fX = fromCameraF.x;
     var fY = fromCameraF.y;
     var fZ = fromCameraF.z;
     var uX = fromCameraU.x;
     var uY = fromCameraU.y;
     var uZ = fromCameraU.z;
-    var eyeX = eye.x;
-    var eyeY = eye.y;
-    var eyeZ = eye.z;
-    var t0 = sX * -eyeX + sY * -eyeY + sZ * -eyeZ;
-    var t1 = uX * -eyeX + uY * -eyeY + uZ * -eyeZ;
-    var t2 = fX * eyeX + fY * eyeY + fZ * eyeZ;
+    var positionX = position.x;
+    var positionY = position.y;
+    var positionZ = position.z;
+    var t0 = sX * -positionX + sY * -positionY + sZ * -positionZ;
+    var t1 = uX * -positionX + uY * -positionY + uZ * -positionZ;
+    var t2 = fX * positionX + fY * positionY + fZ * positionZ;
     if (!defined(result)) {
       return new Matrix4(sX, sY, sZ, t0, uX, uY, uZ, t1, -fX, -fY, -fZ, t2, 0.0, 0.0, 0.0, 1.0);
     }
@@ -14615,6 +14854,40 @@ define("2f", ["29", "40", "1e", "15", "17", "1a", "22", "2e", "34"], function(Ca
     result[13] = column3Row1;
     result[14] = column3Row2;
     result[15] = column3Row3;
+    return result;
+  };
+  Matrix4.computeView = function(position, direction, up, right, result) {
+    if (!defined(position)) {
+      throw new DeveloperError('position is required');
+    }
+    if (!defined(direction)) {
+      throw new DeveloperError('direction is required');
+    }
+    if (!defined(up)) {
+      throw new DeveloperError('up is required');
+    }
+    if (!defined(right)) {
+      throw new DeveloperError('right is required');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required');
+    }
+    result[0] = right.x;
+    result[1] = up.x;
+    result[2] = -direction.x;
+    result[3] = 0.0;
+    result[4] = right.y;
+    result[5] = up.y;
+    result[6] = -direction.y;
+    result[7] = 0.0;
+    result[8] = right.z;
+    result[9] = up.z;
+    result[10] = -direction.z;
+    result[11] = 0.0;
+    result[12] = -Cartesian3.dot(right, position);
+    result[13] = -Cartesian3.dot(up, position);
+    result[14] = Cartesian3.dot(direction, position);
+    result[15] = 1.0;
     return result;
   };
   Matrix4.toArray = function(matrix, result) {
@@ -15495,6 +15768,9 @@ define("2f", ["29", "40", "1e", "15", "17", "1a", "22", "2e", "34"], function(Ca
   Matrix4.COLUMN3ROW1 = 13;
   Matrix4.COLUMN3ROW2 = 14;
   Matrix4.COLUMN3ROW3 = 15;
+  defineProperties(Matrix4.prototype, {length: {get: function() {
+        return Matrix4.packedLength;
+      }}});
   Matrix4.prototype.clone = function(result) {
     return Matrix4.clone(this, result);
   };
@@ -15516,7 +15792,7 @@ define("2f", ["29", "40", "1e", "15", "17", "1a", "22", "2e", "34"], function(Ca
 })();
 (function() {
 var define = $__System.amdDefine;
-define("67", [], function() {
+define("68", [], function() {
   var MersenneTwister = function(seed) {
     if (seed == undefined) {
       seed = new Date().getTime();
@@ -15574,7 +15850,7 @@ define("67", [], function() {
 (function() {
 var define = $__System.amdDefine;
 define("1e", ["1a"], function(freezeObject) {
-  "use strict";
+  'use strict';
   function defaultValue(a, b) {
     if (a !== undefined) {
       return a;
@@ -15588,8 +15864,8 @@ define("1e", ["1a"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("22", ["67", "1e", "15", "17"], function(MersenneTwister, defaultValue, defined, DeveloperError) {
-  "use strict";
+define("22", ["68", "1e", "15", "17"], function(MersenneTwister, defaultValue, defined, DeveloperError) {
+  'use strict';
   var CesiumMath = {};
   CesiumMath.EPSILON1 = 0.1;
   CesiumMath.EPSILON2 = 0.01;
@@ -15813,6 +16089,15 @@ define("22", ["67", "1e", "15", "17"], function(MersenneTwister, defaultValue, d
     }
     return 2.0 * radius * Math.sin(angle * 0.5);
   };
+  CesiumMath.logBase = function(number, base) {
+    if (!defined(number)) {
+      throw new DeveloperError('number is required.');
+    }
+    if (!defined(base)) {
+      throw new DeveloperError('base is required.');
+    }
+    return Math.log(number) / Math.log(base);
+  };
   CesiumMath.fog = function(distanceToCamera, density) {
     var scalar = distanceToCamera * density;
     return 1.0 - Math.exp(-(scalar * scalar));
@@ -15823,8 +16108,8 @@ define("22", ["67", "1e", "15", "17"], function(MersenneTwister, defaultValue, d
 })();
 (function() {
 var define = $__System.amdDefine;
-define("29", ["1e", "15", "17", "1a", "22"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
-  "use strict";
+define("27", ["1e", "15", "17", "1a", "22"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
+  'use strict';
   function Cartesian3(x, y, z) {
     this.x = defaultValue(x, 0.0);
     this.y = defaultValue(y, 0.0);
@@ -15892,6 +16177,37 @@ define("29", ["1e", "15", "17", "1a", "22"], function(defaultValue, defined, Dev
     result.x = array[startingIndex++];
     result.y = array[startingIndex++];
     result.z = array[startingIndex];
+    return result;
+  };
+  Cartesian3.packArray = function(array, result) {
+    if (!defined(array)) {
+      throw new DeveloperError('array is required');
+    }
+    var length = array.length;
+    if (!defined(result)) {
+      result = new Array(length * 3);
+    } else {
+      result.length = length * 3;
+    }
+    for (var i = 0; i < length; ++i) {
+      Cartesian3.pack(array[i], result, i * 3);
+    }
+    return result;
+  };
+  Cartesian3.unpackArray = function(array, result) {
+    if (!defined(array)) {
+      throw new DeveloperError('array is required');
+    }
+    var length = array.length;
+    if (!defined(result)) {
+      result = new Array(length / 3);
+    } else {
+      result.length = length / 3;
+    }
+    for (var i = 0; i < length; i += 3) {
+      var index = i / 3;
+      result[index] = Cartesian3.unpack(array, i, result[index]);
+    }
     return result;
   };
   Cartesian3.fromArray = Cartesian3.unpack;
@@ -16308,7 +16624,7 @@ define("29", ["1e", "15", "17", "1a", "22"], function(defaultValue, defined, Dev
 (function() {
 var define = $__System.amdDefine;
 define("17", ["15"], function(defined) {
-  "use strict";
+  'use strict';
   function DeveloperError(message) {
     this.name = 'DeveloperError';
     this.message = message;
@@ -16319,6 +16635,10 @@ define("17", ["15"], function(defined) {
       stack = e.stack;
     }
     this.stack = stack;
+  }
+  if (defined(Object.create)) {
+    DeveloperError.prototype = Object.create(Error.prototype);
+    DeveloperError.prototype.constructor = DeveloperError;
   }
   DeveloperError.prototype.toString = function() {
     var str = this.name + ': ' + this.message;
@@ -16337,9 +16657,9 @@ define("17", ["15"], function(defined) {
 (function() {
 var define = $__System.amdDefine;
 define("15", [], function() {
-  "use strict";
+  'use strict';
   function defined(value) {
-    return value !== undefined;
+    return value !== undefined && value !== null;
   }
   return defined;
 });
@@ -16348,7 +16668,7 @@ define("15", [], function() {
 (function() {
 var define = $__System.amdDefine;
 define("1a", ["15"], function(defined) {
-  "use strict";
+  'use strict';
   var freezeObject = Object.freeze;
   if (!defined(freezeObject)) {
     freezeObject = function(o) {
@@ -16361,8 +16681,8 @@ define("1a", ["15"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3d", ["29", "15", "17", "1a"], function(Cartesian3, defined, DeveloperError, freezeObject) {
-  "use strict";
+define("3d", ["27", "15", "17", "1a"], function(Cartesian3, defined, DeveloperError, freezeObject) {
+  'use strict';
   function Plane(normal, distance) {
     if (!defined(normal)) {
       throw new DeveloperError('normal is required.');
@@ -16421,8 +16741,8 @@ define("3d", ["29", "15", "17", "1a"], function(Cartesian3, defined, DeveloperEr
 })();
 (function() {
 var define = $__System.amdDefine;
-define("68", ["29", "37", "1e", "15", "17", "38", "60", "65", "66", "22", "2f", "3d"], function(Cartesian3, Cartographic, defaultValue, defined, DeveloperError, Ellipsoid, EllipsoidGeodesic, IntersectionTests, isArray, CesiumMath, Matrix4, Plane) {
-  "use strict";
+define("69", ["27", "36", "1e", "15", "17", "37", "61", "66", "67", "22", "2e", "3d"], function(Cartesian3, Cartographic, defaultValue, defined, DeveloperError, Ellipsoid, EllipsoidGeodesic, IntersectionTests, isArray, CesiumMath, Matrix4, Plane) {
+  'use strict';
   var PolylinePipeline = {};
   PolylinePipeline.numberOfPoints = function(p0, p1, minDistance) {
     var distance = Cartesian3.distance(p0, p1);
@@ -16536,38 +16856,6 @@ define("68", ["29", "37", "1e", "15", "17", "38", "60", "65", "66", "22", "2f", 
       lengths: segments
     };
   };
-  var removeDuplicatesEpsilon = CesiumMath.EPSILON10;
-  PolylinePipeline.removeDuplicates = function(positions) {
-    if (!defined(positions)) {
-      throw new DeveloperError('positions is required.');
-    }
-    var length = positions.length;
-    if (length < 2) {
-      return positions;
-    }
-    var i;
-    var v0;
-    var v1;
-    for (i = 1; i < length; ++i) {
-      v0 = positions[i - 1];
-      v1 = positions[i];
-      if (Cartesian3.equalsEpsilon(v0, v1, removeDuplicatesEpsilon)) {
-        break;
-      }
-    }
-    if (i === length) {
-      return positions;
-    }
-    var cleanedPositions = positions.slice(0, i);
-    for (; i < length; ++i) {
-      v1 = positions[i];
-      if (!Cartesian3.equalsEpsilon(v0, v1, removeDuplicatesEpsilon)) {
-        cleanedPositions.push(Cartesian3.clone(v1));
-        v0 = v1;
-      }
-    }
-    return cleanedPositions;
-  };
   PolylinePipeline.generateArc = function(options) {
     if (!defined(options)) {
       options = {};
@@ -16632,15 +16920,15 @@ define("68", ["29", "37", "1e", "15", "17", "38", "60", "65", "66", "22", "2f", 
 });
 
 })();
-$__System.register("69", ["5"], function(exports_1, context_1) {
+$__System.register("6a", ["5"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
-  var cesium_imports_ts_1;
+  var cesium_imports_1;
   var __slice,
       after;
   function removeBeforeDate(property, time) {
     var times = property._times;
-    var index = ~cesium_imports_ts_1.binarySearch(times, time, cesium_imports_ts_1.JulianDate.compare);
+    var index = ~cesium_imports_1.binarySearch(times, time, cesium_imports_1.JulianDate.compare);
     if (index > 0) {
       times.splice(0, index);
       property._values.splice(0, index * property._innerType.packedLength);
@@ -16659,12 +16947,10 @@ $__System.register("69", ["5"], function(exports_1, context_1) {
     }
   }
   return {
-    setters: [function(cesium_imports_ts_1_1) {
-      cesium_imports_ts_1 = cesium_imports_ts_1_1;
+    setters: [function(cesium_imports_1_1) {
+      cesium_imports_1 = cesium_imports_1_1;
     }],
     execute: function() {
-      cesium_imports_ts_1.Matrix3['prototype'].length = 9;
-      cesium_imports_ts_1.Matrix4['prototype'].length = 16;
       __slice = Array.prototype.slice;
       after = function(fn, after) {
         return function() {
@@ -16673,35 +16959,35 @@ $__System.register("69", ["5"], function(exports_1, context_1) {
           return result;
         };
       };
-      cesium_imports_ts_1.SampledProperty.prototype.removeSamplesBeforeDate = function(time) {
+      cesium_imports_1.SampledProperty.prototype.removeSamplesBeforeDate = function(time) {
         removeBeforeDate(this, time);
       };
-      cesium_imports_ts_1.SampledPositionProperty.prototype.removeSamplesBeforeDate = function(time) {
+      cesium_imports_1.SampledPositionProperty.prototype.removeSamplesBeforeDate = function(time) {
         removeBeforeDate(this._property, time);
       };
-      cesium_imports_ts_1.SampledProperty.prototype.addSample = after(cesium_imports_ts_1.SampledProperty.prototype.addSample, function() {
+      cesium_imports_1.SampledProperty.prototype.addSample = after(cesium_imports_1.SampledProperty.prototype.addSample, function() {
         removeOldSamples(this, this.maxNumSamples);
       });
-      cesium_imports_ts_1.SampledProperty.prototype.addSamples = after(cesium_imports_ts_1.SampledProperty.prototype.addSamples, function() {
+      cesium_imports_1.SampledProperty.prototype.addSamples = after(cesium_imports_1.SampledProperty.prototype.addSamples, function() {
         removeOldSamples(this, this.maxNumSamples);
       });
-      cesium_imports_ts_1.SampledProperty.prototype.addSamplesPackedArray = after(cesium_imports_ts_1.SampledProperty.prototype.addSamplesPackedArray, function() {
+      cesium_imports_1.SampledProperty.prototype.addSamplesPackedArray = after(cesium_imports_1.SampledProperty.prototype.addSamplesPackedArray, function() {
         removeOldSamples(this, this.maxNumSamples);
       });
-      cesium_imports_ts_1.SampledPositionProperty.prototype.addSample = after(cesium_imports_ts_1.SampledPositionProperty.prototype.addSample, function() {
+      cesium_imports_1.SampledPositionProperty.prototype.addSample = after(cesium_imports_1.SampledPositionProperty.prototype.addSample, function() {
         removeOldSamples(this._property, this.maxNumSamples);
       });
-      cesium_imports_ts_1.SampledPositionProperty.prototype.addSamples = after(cesium_imports_ts_1.SampledPositionProperty.prototype.addSamples, function() {
+      cesium_imports_1.SampledPositionProperty.prototype.addSamples = after(cesium_imports_1.SampledPositionProperty.prototype.addSamples, function() {
         removeOldSamples(this._property, this.maxNumSamples);
       });
-      cesium_imports_ts_1.SampledPositionProperty.prototype.addSamplesPackedArray = after(cesium_imports_ts_1.SampledPositionProperty.prototype.addSamplesPackedArray, function() {
+      cesium_imports_1.SampledPositionProperty.prototype.addSamplesPackedArray = after(cesium_imports_1.SampledPositionProperty.prototype.addSamplesPackedArray, function() {
         removeOldSamples(this._property, this.maxNumSamples);
       });
     }
   };
 });
 
-$__System.register("5", ["48", "14", "3f", "29", "40", "1c", "1d", "20", "28", "2c", "21", "1e", "15", "17", "38", "23", "24", "18", "46", "36", "39", "1f", "22", "2e", "2f", "3a", "41", "2b", "32", "30", "42", "2a", "43", "44", "45", "31", "5e", "68", "69"], function(exports_1, context_1) {
+$__System.register("5", ["47", "14", "3f", "27", "3c", "1c", "1d", "20", "26", "2a", "21", "1e", "15", "17", "37", "23", "24", "18", "45", "35", "38", "1f", "22", "2d", "2e", "39", "40", "29", "31", "2f", "41", "28", "42", "43", "44", "30", "5f", "69", "6a"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   return {

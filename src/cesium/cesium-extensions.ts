@@ -1,10 +1,7 @@
 // Add functionality for keeping a moving window of samples per SampledProperty,
 // so that the data doesn't accumulate indefinitely
 
-import {SampledProperty, SampledPositionProperty, binarySearch, JulianDate, Matrix3, Matrix4} from './cesium-imports.ts'
-
-Matrix3['prototype'].length = 9;
-Matrix4['prototype'].length = 16;
+import {SampledProperty, SampledPositionProperty, binarySearch, JulianDate, Matrix3, Matrix4} from './cesium-imports'
 
 var __slice = Array.prototype.slice
 

@@ -59,27 +59,36 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     this.locationUpdatesEnabled = true;
                     this.orientationUpdatesEnabled = true;
                     /**
-                     * The locationEntity is an ENU coordinate frame centered at the device location
+                     * An ENU coordinate frame centered at the gps location reported by this device
                      */
-                    this.locationEntity = new cesium_imports_1.Entity({ id: 'ar.device.location', name: 'Device Location' });
+                    this.geolocationEntity = new cesium_imports_1.Entity({ id: 'ar.device.geolocation', name: 'Device Geolocation' });
+                    /**
+                     * A frame which represents the orientation of this device relative to it's ENU coordinate frame (geolocationEntity)
+                     */
                     this.orientationEntity = new cesium_imports_1.Entity({ id: 'ar.device.orientation', name: 'Device Orientation' });
-                    this.interfaceEntity = new cesium_imports_1.Entity({ id: 'ar.device.interface', name: 'Device Interface' });
+                    /**
+                     * A frame which represents the pose of this device
+                     */
+                    this.entity = new cesium_imports_1.Entity({ id: 'ar.device', name: 'Device' });
+                    /**
+                     * A frame which describes the pose of the display relative to this device
+                     */
+                    this.displayEntity = new cesium_imports_1.Entity({
+                        id: 'ar.device.display',
+                        name: 'Device Display',
+                        position: new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, this.entity),
+                        orientation: new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY)
+                    });
                     this._scratchCartesian = new cesium_imports_1.Cartesian3;
                     this._scratchQuaternion1 = new cesium_imports_1.Quaternion;
                     this._scratchQuaternion2 = new cesium_imports_1.Quaternion;
                     this._scratchMatrix3 = new cesium_imports_1.Matrix3;
                     this._x90Rot = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_X, cesium_imports_1.CesiumMath.PI_OVER_TWO);
                     this._headingDrift = 0;
-                    this.locationEntity.position = new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, null);
-                    this.locationEntity.orientation = new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY);
-                    this.orientationEntity.position = new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, this.locationEntity);
-                    this.orientationEntity.orientation = new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY);
-                    // by default, assume the interface is upright, perpendicular to the 
-                    this.interfaceEntity.position = new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, this.orientationEntity);
-                    this.interfaceEntity.orientation = new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_X, -cesium_imports_1.CesiumMath.PI_OVER_TWO));
-                    context.wellKnownReferenceFrames.add(this.locationEntity);
+                    context.wellKnownReferenceFrames.add(this.geolocationEntity);
                     context.wellKnownReferenceFrames.add(this.orientationEntity);
-                    context.wellKnownReferenceFrames.add(this.interfaceEntity);
+                    context.wellKnownReferenceFrames.add(this.entity);
+                    context.wellKnownReferenceFrames.add(this.displayEntity);
                     if (typeof window !== 'undefined' && window.navigator) {
                         this._mobileDetect = new mobile_detect_1.default(window.navigator.userAgent);
                     }
@@ -98,7 +107,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                 DeviceService.prototype.onUpdate = function () {
                     var _this = this;
                     if (typeof window !== 'undefined') {
-                        var interfaceOrientationProperty = this.interfaceEntity.orientation;
+                        var interfaceOrientationProperty = this.displayEntity.orientation;
                         var interfaceOrientation = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_Z, (-window.orientation || 0) * cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE, this._scratchQuaternion1);
                         if (this._mobileDetect && !this._mobileDetect.mobile()) {
                             // for laptops, rotate device orientation by 90° around +X so that it 
@@ -108,18 +117,21 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                         interfaceOrientationProperty.setValue(interfaceOrientation);
                         if (!cesium_imports_1.defined(this._geolocationWatchId) && this.locationUpdatesEnabled) {
                             this._geolocationWatchId = navigator.geolocation.watchPosition(function (pos) {
-                                if (_this.locationEntity.position instanceof cesium_imports_1.SampledPositionProperty === false) {
+                                if (_this.geolocationEntity.position instanceof cesium_imports_1.SampledPositionProperty === false) {
                                     var sampledPostionProperty = new cesium_imports_1.SampledPositionProperty(cesium_imports_1.ReferenceFrame.FIXED);
                                     sampledPostionProperty.forwardExtrapolationType = cesium_imports_1.ExtrapolationType.HOLD;
                                     sampledPostionProperty.backwardExtrapolationType = cesium_imports_1.ExtrapolationType.HOLD;
                                     sampledPostionProperty['maxNumSamples'] = 10;
-                                    _this.locationEntity.position = sampledPostionProperty;
+                                    _this.geolocationEntity.position = sampledPostionProperty;
                                 }
                                 var positionTime = cesium_imports_1.JulianDate.fromDate(new Date(pos.timestamp));
                                 var positionECEF = cesium_imports_1.Cartesian3.fromDegrees(pos.coords.longitude, pos.coords.latitude, pos.coords.altitude || 0, undefined, _this._scratchCartesian);
-                                _this.locationEntity.position.addSample(positionTime, positionECEF);
+                                _this.geolocationEntity.position.addSample(positionTime, positionECEF);
+                                if (_this.geolocationEntity.orientation instanceof cesium_imports_1.ConstantProperty === false) {
+                                    _this.geolocationEntity.orientation = new cesium_imports_1.ConstantProperty();
+                                }
                                 var enuOrientation = cesium_imports_1.Transforms.headingPitchRollQuaternion(positionECEF, 0, 0, 0, undefined, _this._scratchQuaternion1);
-                                _this.locationEntity.orientation.setValue(enuOrientation);
+                                _this.geolocationEntity.orientation.setValue(enuOrientation);
                             }, function (error) {
                                 console.error(error);
                             }, {
@@ -167,7 +179,21 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                                 var alphaBetaQuat = cesium_imports_1.Quaternion.multiply(alphaQuat, betaQuat, _this._scratchQuaternion1);
                                 var gammaQuat = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_Y, gamma, _this._scratchQuaternion2);
                                 var alphaBetaGammaQuat = cesium_imports_1.Quaternion.multiply(alphaBetaQuat, gammaQuat, alphaBetaQuat);
+                                // update orientationEntity
+                                if (_this.orientationEntity.position instanceof cesium_imports_1.ConstantPositionProperty == false) {
+                                    _this.orientationEntity.position = new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, _this.geolocationEntity);
+                                }
+                                if (_this.orientationEntity.orientation instanceof cesium_imports_1.ConstantProperty == false) {
+                                    _this.orientationEntity.orientation = new cesium_imports_1.ConstantProperty();
+                                }
                                 _this.orientationEntity.orientation.setValue(alphaBetaGammaQuat);
+                                // make sure the device entity has a defined pose relative to the device orientation entity
+                                if (_this.entity.position instanceof cesium_imports_1.ConstantPositionProperty == false) {
+                                    _this.entity.position = new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, _this.orientationEntity);
+                                }
+                                if (_this.entity.orientation instanceof cesium_imports_1.ConstantProperty == false) {
+                                    _this.entity.orientation = new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY);
+                                }
                                 // TODO: fix heading drift calculation (heading should match webkitCompassHeading)
                                 // if (defined(webkitCompassHeading)) {
                                 //     const q = alphaBetaGammaQuat//utils.getEntityOrientationInReferenceFrame(this.interfaceEntity, JulianDate.now(), this.locationEntity, this._scratchQuaternion1);
@@ -212,3 +238,4 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
         }
     }
 });
+//# sourceMappingURL=device.js.map

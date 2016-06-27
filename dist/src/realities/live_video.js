@@ -72,3 +72,4 @@ System.register(['aurelia-dependency-injection', '../common', '../session', '../
         }
     }
 });
+//# sourceMappingURL=live_video.js.map
