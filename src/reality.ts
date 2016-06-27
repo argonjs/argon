@@ -75,7 +75,7 @@ export class RealityService {
         if (sessionService.isManager) {
             sessionService.manager.connectEvent.addEventListener(() => {
                 setTimeout(() => {
-                    if (!this._desired) this._setNextReality(this.onSelectReality())
+                    if (!this._current) this._setNextReality(this.onSelectReality())
                 })
             });
         } else if (sessionService.isRealityView) {
