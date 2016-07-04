@@ -8,7 +8,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
     var aurelia_dependency_injection_1, cesium_imports_1, common_1, session_1, context_2, utils_1, focus_1;
-    var ViewService;
+    var argonContainerPromise, ViewService;
     return {
         setters:[
             function (aurelia_dependency_injection_1_1) {
@@ -33,12 +33,44 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                 focus_1 = focus_1_1;
             }],
         execute: function() {
+            // setup our DOM environment
+            if (typeof document !== 'undefined' && document.createElement) {
+                var viewportMetaTag = document.querySelector('meta[name=viewport]');
+                if (!viewportMetaTag)
+                    viewportMetaTag = document.createElement('meta');
+                viewportMetaTag.name = 'viewport';
+                viewportMetaTag.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0';
+                document.head.appendChild(viewportMetaTag);
+                var argonMetaTag = document.querySelector('meta[name=argon]');
+                if (!argonMetaTag)
+                    argonMetaTag = document.createElement('meta');
+                argonMetaTag.name = 'argon';
+                document.head.appendChild(argonMetaTag);
+                argonContainerPromise = new Promise(function (resolve) {
+                    document.addEventListener('DOMContentLoaded', function () {
+                        var container = document.querySelector('#argon');
+                        if (!container)
+                            container = document.createElement('div');
+                        container.id = 'argon';
+                        container.classList.add('argon-view');
+                        document.body.appendChild(container);
+                        resolve(container);
+                    });
+                });
+                var style = document.createElement("style");
+                style.type = 'text/css';
+                document.head.insertBefore(style, document.head.firstChild);
+                var sheet = style.sheet;
+                sheet.insertRule("\n        #argon {\n            position: fixed;\n            left: 0px;\n            bottom: 0px;\n            width: 100%;\n            height: 100%;\n            margin: 0;\n            border: 0;\n            padding: 0;\n        }\n    ", 0);
+                sheet.insertRule("\n        .argon-view > * {\n            position: absolute;\n            pointer-events: none;\n        }\n    ", 1);
+            }
             /**
              * Manages the view state
              */
             ViewService = (function () {
-                function ViewService(sessionService, focusService, contextService) {
+                function ViewService(containerElement, sessionService, focusService, contextService) {
                     var _this = this;
+                    this.containerElement = containerElement;
                     this.sessionService = sessionService;
                     this.focusService = focusService;
                     this.contextService = contextService;
@@ -57,46 +89,33 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     this.desiredViewportMap = new WeakMap();
                     this._subviewEntities = [];
                     this._scratchFrustum = new cesium_imports_1.PerspectiveFrustum();
-                    if (typeof document !== 'undefined') {
-                        var viewportMetaTag = document.querySelector('meta[name=viewport]');
-                        if (!viewportMetaTag)
-                            viewportMetaTag = document.createElement('meta');
-                        viewportMetaTag.name = 'viewport';
-                        viewportMetaTag.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0';
-                        document.head.appendChild(viewportMetaTag);
-                        var argonContainer_1 = document.querySelector('#argon');
-                        if (!argonContainer_1)
-                            argonContainer_1 = document.createElement('div');
-                        argonContainer_1.id = 'argon';
-                        argonContainer_1.classList.add('argon-view');
-                        var element = document.createElement('div');
-                        element.style.width = '100%';
-                        element.style.height = '100%';
-                        element.classList.add('argon-view');
-                        this.element = element;
-                        argonContainer_1.insertBefore(this.element, argonContainer_1.firstChild);
-                        if (document.body)
-                            document.body.appendChild(argonContainer_1);
+                    this._scratchArray = [];
+                    if (typeof document !== 'undefined' && document.createElement) {
+                        var element_1 = this.element = document.createElement('div');
+                        element_1.style.width = '100%';
+                        element_1.style.height = '100%';
+                        element_1.classList.add('argon-view');
+                        if (this.containerElement) {
+                            this.containerElement.insertBefore(element_1, this.containerElement.firstChild);
+                        }
                         else {
-                            document.documentElement.appendChild(argonContainer_1);
-                            document.addEventListener('DOMContentLoaded', function () {
-                                document.body.appendChild(argonContainer_1);
+                            argonContainerPromise.then(function (argonContainer) {
+                                _this.containerElement = argonContainer;
+                                _this.containerElement.insertBefore(element_1, _this.containerElement.firstChild);
+                            });
+                            this.focusService.focusEvent.addEventListener(function () {
+                                argonContainerPromise.then(function (argonContainer) {
+                                    argonContainer.classList.remove('argon-no-focus');
+                                    argonContainer.classList.add('argon-focus');
+                                });
+                            });
+                            this.focusService.blurEvent.addEventListener(function () {
+                                argonContainerPromise.then(function (argonContainer) {
+                                    argonContainer.classList.remove('argon-focus');
+                                    argonContainer.classList.add('argon-no-focus');
+                                });
                             });
                         }
-                        var style = document.createElement("style");
-                        style.type = 'text/css';
-                        document.head.insertBefore(style, document.head.firstChild);
-                        var sheet = style.sheet;
-                        sheet.insertRule("\n                #argon {\n                    position: fixed;\n                    left: 0px;\n                    bottom: 0px;\n                    width: 100%;\n                    height: 100%;\n                    margin: 0;\n                    border: 0;\n                    padding: 0;\n                }\n            ", 0);
-                        sheet.insertRule("\n                .argon-view > * {\n                    position: absolute;\n                    pointer-events: none;\n                }\n            ", 1);
-                        this.focusService.focusEvent.addEventListener(function () {
-                            argonContainer_1.classList.remove('argon-no-focus');
-                            argonContainer_1.classList.add('argon-focus');
-                        });
-                        this.focusService.blurEvent.addEventListener(function () {
-                            argonContainer_1.classList.remove('argon-focus');
-                            argonContainer_1.classList.add('argon-no-focus');
-                        });
                     }
                     if (this.sessionService.isManager) {
                         this.sessionService.connectEvent.addEventListener(function (session) {
@@ -109,7 +128,9 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                             if (!cesium_imports_1.defined(state.view)) {
                                 if (!cesium_imports_1.defined(serializedState.eye))
                                     throw new Error("Unable to construct view configuration: missing eye parameters");
-                                state.view = _this.generateViewFromFrameStateEye(serializedState);
+                                state.view = _this.generateViewFromEyeParameters(serializedState.eye);
+                                if (!Array.isArray(state.view.subviews[0].projectionMatrix))
+                                    throw new Error("Expected projectionMatrix to be an Array<number>");
                             }
                         });
                     }
@@ -175,7 +196,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                  * Returns a maximum viewport
                  */
                 ViewService.prototype.getMaximumViewport = function () {
-                    if (window && document && document.documentElement) {
+                    if (typeof document !== 'undefined' && document.documentElement) {
                         return {
                             x: 0,
                             y: 0,
@@ -185,10 +206,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     }
                     throw new Error("Not implemeneted for the current platform");
                 };
-                ViewService.prototype.generateViewFromFrameStateEye = function (state) {
-                    var eye = state.eye;
-                    if (!eye)
-                        throw new Error("Expected a frame state with an eye configuration");
+                ViewService.prototype.generateViewFromEyeParameters = function (eye) {
                     var viewport = this.getMaximumViewport();
                     this._scratchFrustum.fov = eye.fov || Math.PI / 3;
                     this._scratchFrustum.aspectRatio = viewport.width / viewport.height;
@@ -199,7 +217,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                         subviews: [
                             {
                                 type: common_1.SubviewType.SINGULAR,
-                                projectionMatrix: this._scratchFrustum.infiniteProjectionMatrix
+                                projectionMatrix: cesium_imports_1.Matrix4.toArray(this._scratchFrustum.infiniteProjectionMatrix, this._scratchArray)
                             }
                         ]
                     };
@@ -222,7 +240,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     }
                 };
                 ViewService = __decorate([
-                    aurelia_dependency_injection_1.inject(session_1.SessionService, focus_1.FocusService, context_2.ContextService)
+                    aurelia_dependency_injection_1.inject('containerElement', session_1.SessionService, focus_1.FocusService, context_2.ContextService)
                 ], ViewService);
                 return ViewService;
             }());

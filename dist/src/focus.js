@@ -42,9 +42,11 @@ System.register(['aurelia-dependency-injection', './session', './utils'], functi
                         _this._setFocus(message.state);
                     };
                     if (sessionService.isManager) {
-                        setTimeout(function () {
-                            if (!_this._session)
-                                _this.setSession(_this.sessionService.manager);
+                        sessionService.manager.connectEvent.addEventListener(function () {
+                            setTimeout(function () {
+                                if (!_this._session)
+                                    _this.setSession(_this.sessionService.manager);
+                            });
                         });
                     }
                 }

@@ -45,11 +45,13 @@ export declare class ArgonSystem {
     readonly focusEvent: Event<void>;
     readonly blurEvent: Event<void>;
 }
-export declare function init(options?: {
+export interface InitParameters {
     config?: Configuration;
     container?: DI.Container;
-}): ArgonSystem;
-export declare function initReality(options?: {
-    config?: Configuration;
-    container?: DI.Container;
-}): ArgonSystem;
+}
+export declare function init({config, container}?: InitParameters): ArgonSystem;
+export declare function initReality({config, container}?: InitParameters): ArgonSystem;
+export interface InitLocalParameters extends InitParameters {
+    containerElement: HTMLElement;
+}
+export declare function initLocal({containerElement, config, container}: InitLocalParameters): ArgonSystem;

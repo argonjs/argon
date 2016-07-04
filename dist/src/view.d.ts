@@ -1,5 +1,5 @@
 import { Entity } from './cesium/cesium-imports';
-import { Viewport, SubviewType, SerializedFrameState, SerializedViewParameters } from './common';
+import { Viewport, SubviewType, SerializedEyeParameters, SerializedViewParameters } from './common';
 import { SessionService, SessionPort } from './session';
 import { EntityPose, ContextService } from './context';
 import { Event } from './utils';
@@ -18,6 +18,7 @@ export interface Subview {
  * Manages the view state
  */
 export declare class ViewService {
+    containerElement: HTMLElement;
     private sessionService;
     private focusService;
     private contextService;
@@ -46,7 +47,7 @@ export declare class ViewService {
     private _current;
     private _currentViewportJSON;
     private _subviewEntities;
-    constructor(sessionService: SessionService, focusService: FocusService, contextService: ContextService);
+    constructor(containerElement: HTMLElement, sessionService: SessionService, focusService: FocusService, contextService: ContextService);
     getSubviews(referenceFrame?: Entity): Subview[];
     getViewport(): Viewport;
     /**
@@ -79,6 +80,7 @@ export declare class ViewService {
         height: number;
     };
     private _scratchFrustum;
-    protected generateViewFromFrameStateEye(state: SerializedFrameState): SerializedViewParameters;
+    private _scratchArray;
+    protected generateViewFromEyeParameters(eye: SerializedEyeParameters): SerializedViewParameters;
     update(): void;
 }

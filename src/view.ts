@@ -1,10 +1,58 @@
 import {inject} from 'aurelia-dependency-injection'
 import {defined, Entity, Matrix4, PerspectiveFrustum} from './cesium/cesium-imports'
-import {Viewport, SubviewType, SerializedFrameState, SerializedEntityPose, SerializedViewParameters} from './common'
+import {Viewport, SubviewType, SerializedFrameState, SerializedEyeParameters, SerializedEntityPose, SerializedViewParameters} from './common'
 import {SessionService, SessionPort} from './session'
 import {EntityPose, ContextService} from './context'
 import {Event} from './utils'
 import {FocusService} from './focus'
+
+// setup our DOM environment
+if (typeof document !== 'undefined' && document.createElement) {
+    let viewportMetaTag = <HTMLMetaElement>document.querySelector('meta[name=viewport]');
+    if (!viewportMetaTag) viewportMetaTag = document.createElement('meta');
+    viewportMetaTag.name = 'viewport'
+    viewportMetaTag.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'
+    document.head.appendChild(viewportMetaTag);
+
+    let argonMetaTag = <HTMLMetaElement>document.querySelector('meta[name=argon]');
+    if (!argonMetaTag) argonMetaTag = document.createElement('meta');
+    argonMetaTag.name = 'argon'
+    document.head.appendChild(argonMetaTag);
+
+    var argonContainerPromise = new Promise<HTMLElement>((resolve) => {
+        document.addEventListener('DOMContentLoaded', () => {
+            let container = <HTMLDivElement>document.querySelector('#argon');
+            if (!container) container = document.createElement('div');
+            container.id = 'argon';
+            container.classList.add('argon-view');
+            document.body.appendChild(container);
+            resolve(container);
+        })
+    })
+
+    const style = document.createElement("style");
+    style.type = 'text/css';
+    document.head.insertBefore(style, document.head.firstChild);
+    const sheet = <CSSStyleSheet>style.sheet;
+    sheet.insertRule(`
+        #argon {
+            position: fixed;
+            left: 0px;
+            bottom: 0px;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            border: 0;
+            padding: 0;
+        }
+    `, 0);
+    sheet.insertRule(`
+        .argon-view > * {
+            position: absolute;
+            pointer-events: none;
+        }
+    `, 1);
+}
 
 /**
  * The rendering paramters for a particular subview
@@ -20,7 +68,7 @@ export interface Subview {
 /**
  * Manages the view state
  */
-@inject(SessionService, FocusService, ContextService)
+@inject('containerElement', SessionService, FocusService, ContextService)
 export class ViewService {
 
     /**
@@ -54,69 +102,37 @@ export class ViewService {
     private _subviewEntities: Entity[] = [];
 
     constructor(
+        public containerElement: HTMLElement,
         private sessionService: SessionService,
         private focusService: FocusService,
         private contextService: ContextService) {
 
-        if (typeof document !== 'undefined') {
-            let viewportMetaTag = <HTMLMetaElement>document.querySelector('meta[name=viewport]');
-            if (!viewportMetaTag) viewportMetaTag = document.createElement('meta');
-            viewportMetaTag.name = 'viewport'
-            viewportMetaTag.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'
-            document.head.appendChild(viewportMetaTag);
-
-            let argonContainer = <HTMLDivElement>document.querySelector('#argon');
-            if (!argonContainer) argonContainer = document.createElement('div');
-            argonContainer.id = 'argon';
-            argonContainer.classList.add('argon-view');
-
-            const element = document.createElement('div');
+        if (typeof document !== 'undefined' && document.createElement) {
+            const element = this.element = document.createElement('div');
             element.style.width = '100%';
             element.style.height = '100%';
             element.classList.add('argon-view');
-            this.element = element;
-            argonContainer.insertBefore(this.element, argonContainer.firstChild);
 
-            if (document.body) document.body.appendChild(argonContainer)
-            else {
-                document.documentElement.appendChild(argonContainer);
-                document.addEventListener('DOMContentLoaded', () => {
-                    document.body.appendChild(argonContainer);
+            if (this.containerElement) {
+                this.containerElement.insertBefore(element, this.containerElement.firstChild);
+            } else {
+                argonContainerPromise.then((argonContainer) => {
+                    this.containerElement = argonContainer;
+                    this.containerElement.insertBefore(element, this.containerElement.firstChild);
+                })
+                this.focusService.focusEvent.addEventListener(() => {
+                    argonContainerPromise.then((argonContainer) => {
+                        argonContainer.classList.remove('argon-no-focus');
+                        argonContainer.classList.add('argon-focus');
+                    })
+                })
+                this.focusService.blurEvent.addEventListener(() => {
+                    argonContainerPromise.then((argonContainer) => {
+                        argonContainer.classList.remove('argon-focus');
+                        argonContainer.classList.add('argon-no-focus');
+                    })
                 })
             }
-
-            var style = document.createElement("style");
-            style.type = 'text/css';
-            document.head.insertBefore(style, document.head.firstChild);
-            const sheet = <CSSStyleSheet>style.sheet;
-            sheet.insertRule(`
-                #argon {
-                    position: fixed;
-                    left: 0px;
-                    bottom: 0px;
-                    width: 100%;
-                    height: 100%;
-                    margin: 0;
-                    border: 0;
-                    padding: 0;
-                }
-            `, 0);
-            sheet.insertRule(`
-                .argon-view > * {
-                    position: absolute;
-                    pointer-events: none;
-                }
-            `, 1);
-
-            this.focusService.focusEvent.addEventListener(() => {
-                argonContainer.classList.remove('argon-no-focus');
-                argonContainer.classList.add('argon-focus');
-            })
-
-            this.focusService.blurEvent.addEventListener(() => {
-                argonContainer.classList.remove('argon-focus');
-                argonContainer.classList.add('argon-no-focus');
-            })
         }
 
         if (this.sessionService.isManager) {
@@ -130,7 +146,9 @@ export class ViewService {
                 if (!defined(state.view)) {
                     if (!defined(serializedState.eye))
                         throw new Error("Unable to construct view configuration: missing eye parameters");
-                    state.view = this.generateViewFromFrameStateEye(serializedState);
+                    state.view = this.generateViewFromEyeParameters(serializedState.eye);
+                    if (!Array.isArray(state.view.subviews[0].projectionMatrix))
+                        throw new Error("Expected projectionMatrix to be an Array<number>");
                 }
             })
         }
@@ -206,7 +224,7 @@ export class ViewService {
      * Returns a maximum viewport
      */
     public getMaximumViewport() {
-        if (window && document && document.documentElement) {
+        if (typeof document !== 'undefined' && document.documentElement) {
             return {
                 x: 0,
                 y: 0,
@@ -218,9 +236,8 @@ export class ViewService {
     }
 
     private _scratchFrustum = new PerspectiveFrustum();
-    protected generateViewFromFrameStateEye(state: SerializedFrameState): SerializedViewParameters {
-        const eye = state.eye;
-        if (!eye) throw new Error("Expected a frame state with an eye configuration");
+    private _scratchArray = [];
+    protected generateViewFromEyeParameters(eye: SerializedEyeParameters): SerializedViewParameters {
         const viewport = this.getMaximumViewport();
         this._scratchFrustum.fov = eye.fov || Math.PI / 3;
         this._scratchFrustum.aspectRatio = viewport.width / viewport.height;
@@ -231,7 +248,7 @@ export class ViewService {
             subviews: [
                 {
                     type: SubviewType.SINGULAR,
-                    projectionMatrix: this._scratchFrustum.infiniteProjectionMatrix
+                    projectionMatrix: Matrix4.toArray(this._scratchFrustum.infiniteProjectionMatrix, this._scratchArray)
                 }
             ]
         }

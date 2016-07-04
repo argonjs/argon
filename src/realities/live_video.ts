@@ -1,4 +1,4 @@
-import {inject, All} from 'aurelia-dependency-injection'
+import {inject} from 'aurelia-dependency-injection'
 import {Matrix4, JulianDate} from '../cesium/cesium-imports'
 
 import {Role, RealityView, SerializedFrameState, SubviewType} from '../common'

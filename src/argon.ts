@@ -23,6 +23,7 @@ import {VuforiaService} from './vuforia'
 
 import {EmptyRealityLoader} from './realities/empty'
 import {LiveVideoRealityLoader} from './realities/live_video'
+import {HostedRealityLoader} from './realities/hosted'
 
 export {DI, Cesium}
 export * from './common'
@@ -47,11 +48,14 @@ export class ArgonSystem {
 
     static instance: ArgonSystem;
 
-    constructor(config: Configuration, public container = new DI.Container()) {
+    constructor(config: Configuration, public container: DI.Container = new DI.Container) {
         if (!ArgonSystem.instance) ArgonSystem.instance = this;
 
         container.registerInstance('config', config);
         container.registerInstance(ArgonSystem, this);
+
+        if (!container.hasResolver('containerElement'))
+            container.registerInstance('containerElement', null);
 
         if (config.role === Role.MANAGER) {
             container.registerSingleton(
@@ -75,6 +79,7 @@ export class ArgonSystem {
             this.reality.registerLoader(container.get(LiveVideoRealityLoader));
 
             if (typeof document !== 'undefined') {
+                this.reality.registerLoader(container.get(HostedRealityLoader));
                 this.reality.setDefault({ type: 'empty', name: 'Empty Reality' })
             }
         }
@@ -138,7 +143,12 @@ export class ArgonSystem {
     }
 }
 
-export function init(options: { config?: Configuration, container?: DI.Container } = {}) {
+export interface InitParameters {
+    config?: Configuration,
+    container?: DI.Container
+}
+
+export function init({ config, container = new DI.Container }: InitParameters = {}) {
     let role: Role;
     if (typeof window === 'undefined') {
         role = Role.MANAGER
@@ -147,18 +157,32 @@ export function init(options: { config?: Configuration, container?: DI.Container
     } else {
         role = Role.MANAGER
     }
-    const config = Object.assign(<Configuration>{
-        role
-    }, options.config);
-    return new ArgonSystem(config, options.container);
+    const configuration = Object.assign(config || {}, <Configuration>{
+        role,
+    });
+    container.registerInstance('containerElement', null);
+    return new ArgonSystem(configuration, container);
 }
 
-export function initReality(options: { config?: Configuration, container?: DI.Container } = {}) {
-    const config = Object.assign(<Configuration>{
+export function initReality({ config, container = new DI.Container }: InitParameters = {}) {
+    const configuration = Object.assign(config || {}, <Configuration>{
         role: Role.REALITY_VIEW,
         'reality.supportsControlPort': true
-    }, options.config);
-    return new ArgonSystem(config, options.container);
+    });
+    container.registerInstance('containerElement', null);
+    return new ArgonSystem(configuration, container);
+}
+
+export interface InitLocalParameters extends InitParameters {
+    containerElement: HTMLElement
+}
+
+export function initLocal({ containerElement, config, container = new DI.Container }: InitLocalParameters) {
+    const configuration = Object.assign(config || {}, <Configuration>{
+        role: Role.MANAGER
+    });
+    container.registerInstance('containerElement', containerElement);
+    return new ArgonSystem(configuration, container);
 }
 
 declare class Object {

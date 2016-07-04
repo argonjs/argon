@@ -1,10 +1,10 @@
-System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/cesium-imports', './session', './common', './context', './device', './focus', './reality', './timer', './view', './vuforia', './realities/empty', './realities/live_video', './utils'], function(exports_1, context_1) {
+System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/cesium-imports', './session', './common', './context', './device', './focus', './reality', './timer', './view', './vuforia', './realities/empty', './realities/live_video', './realities/hosted', './utils'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var DI, Cesium, session_1, common_1, context_2, device_1, focus_1, reality_1, timer_1, view_1, vuforia_1, empty_1, live_video_1;
+    var DI, Cesium, session_1, common_1, context_2, device_1, focus_1, reality_1, timer_1, view_1, vuforia_1, empty_1, live_video_1, hosted_1;
     var ArgonSystem;
-    function init(options) {
-        if (options === void 0) { options = {}; }
+    function init(_a) {
+        var _b = _a === void 0 ? {} : _a, config = _b.config, _c = _b.container, container = _c === void 0 ? new DI.Container : _c;
         var role;
         if (typeof window === 'undefined') {
             role = common_1.Role.MANAGER;
@@ -15,25 +15,37 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
         else {
             role = common_1.Role.MANAGER;
         }
-        var config = Object.assign({
-            role: role
-        }, options.config);
-        return new ArgonSystem(config, options.container);
+        var configuration = Object.assign(config || {}, {
+            role: role,
+        });
+        container.registerInstance('containerElement', null);
+        return new ArgonSystem(configuration, container);
     }
     exports_1("init", init);
-    function initReality(options) {
-        if (options === void 0) { options = {}; }
-        var config = Object.assign({
+    function initReality(_a) {
+        var _b = _a === void 0 ? {} : _a, config = _b.config, _c = _b.container, container = _c === void 0 ? new DI.Container : _c;
+        var configuration = Object.assign(config || {}, {
             role: common_1.Role.REALITY_VIEW,
             'reality.supportsControlPort': true
-        }, options.config);
-        return new ArgonSystem(config, options.container);
+        });
+        container.registerInstance('containerElement', null);
+        return new ArgonSystem(configuration, container);
     }
     exports_1("initReality", initReality);
+    function initLocal(_a) {
+        var containerElement = _a.containerElement, config = _a.config, _b = _a.container, container = _b === void 0 ? new DI.Container : _b;
+        var configuration = Object.assign(config || {}, {
+            role: common_1.Role.MANAGER
+        });
+        container.registerInstance('containerElement', containerElement);
+        return new ArgonSystem(configuration, container);
+    }
+    exports_1("initLocal", initLocal);
     var exportedNames_1 = {
         'ArgonSystem': true,
         'init': true,
         'initReality': true,
+        'initLocal': true,
         'DI': true,
         'Cesium': true,
         'EmptyRealityLoader': true,
@@ -97,6 +109,9 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
             function (live_video_1_1) {
                 live_video_1 = live_video_1_1;
             },
+            function (hosted_1_1) {
+                hosted_1 = hosted_1_1;
+            },
             function (utils_1_1) {
                 exportStar_1(utils_1_1);
             }],
@@ -110,12 +125,14 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
              */
             ArgonSystem = (function () {
                 function ArgonSystem(config, container) {
-                    if (container === void 0) { container = new DI.Container(); }
+                    if (container === void 0) { container = new DI.Container; }
                     this.container = container;
                     if (!ArgonSystem.instance)
                         ArgonSystem.instance = this;
                     container.registerInstance('config', config);
                     container.registerInstance(ArgonSystem, this);
+                    if (!container.hasResolver('containerElement'))
+                        container.registerInstance('containerElement', null);
                     if (config.role === common_1.Role.MANAGER) {
                         container.registerSingleton(session_1.ConnectService, session_1.LoopbackConnectService);
                     }
@@ -129,6 +146,7 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
                         this.reality.registerLoader(container.get(empty_1.EmptyRealityLoader));
                         this.reality.registerLoader(container.get(live_video_1.LiveVideoRealityLoader));
                         if (typeof document !== 'undefined') {
+                            this.reality.registerLoader(container.get(hosted_1.HostedRealityLoader));
                             this.reality.setDefault({ type: 'empty', name: 'Empty Reality' });
                         }
                     }

@@ -41,9 +41,11 @@ export class FocusService {
         }
 
         if (sessionService.isManager) {
-            setTimeout(() => {
-                if (!this._session)
-                    this.setSession(this.sessionService.manager);
+            sessionService.manager.connectEvent.addEventListener(() => {
+                setTimeout(() => {
+                    if (!this._session)
+                        this.setSession(this.sessionService.manager);
+                })
             })
         }
     }
