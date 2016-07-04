@@ -9,6 +9,7 @@ export interface Configuration {
     userData?: any;
     protocols?: string[];
     // app options
+    'app.disablePinchZoom'? : boolean;
     // reality view options
     'reality.supportsControlPort'?: boolean;
     'reality.supportsCustomViewport'?: boolean;
