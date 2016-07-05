@@ -1,4 +1,4 @@
-System.register(['aurelia-dependency-injection', '../cesium/cesium-imports', '../common', '../session', '../device', '../timer', '../reality', '../utils'], function(exports_1, context_1) {
+System.register(['aurelia-dependency-injection', '../common', '../session', '../device', '../timer', '../reality', '../utils'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __extends = (this && this.__extends) || function (d, b) {
@@ -12,15 +12,12 @@ System.register(['aurelia-dependency-injection', '../cesium/cesium-imports', '..
         else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
-    var aurelia_dependency_injection_1, cesium_imports_1, common_1, session_1, device_1, timer_1, reality_1, utils_1;
+    var aurelia_dependency_injection_1, common_1, session_1, device_1, timer_1, reality_1, utils_1;
     var EmptyRealityLoader;
     return {
         setters:[
             function (aurelia_dependency_injection_1_1) {
                 aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
-            },
-            function (cesium_imports_1_1) {
-                cesium_imports_1 = cesium_imports_1_1;
             },
             function (common_1_1) {
                 common_1 = common_1_1;
@@ -65,20 +62,8 @@ System.register(['aurelia-dependency-injection', '../cesium/cesium-imports', '..
                                 var frameState = {
                                     time: time,
                                     index: index,
-                                    view: {
-                                        viewport: {
-                                            x: 0,
-                                            y: 0,
-                                            width: w,
-                                            height: h
-                                        },
-                                        pose: utils_1.getSerializedEntityPose(_this.deviceService.displayEntity, time),
-                                        subviews: [
-                                            {
-                                                type: common_1.SubviewType.SINGULAR,
-                                                projectionMatrix: cesium_imports_1.Matrix4.computePerspectiveFieldOfView(Math.PI / 3, w / h, 0.2, 10000000000, [])
-                                            }
-                                        ]
+                                    eye: {
+                                        pose: utils_1.getSerializedEntityPose(_this.deviceService.displayEntity, time)
                                     }
                                 };
                                 remoteRealitySession.send('ar.reality.frameState', frameState);

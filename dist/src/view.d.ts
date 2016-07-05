@@ -18,7 +18,6 @@ export interface Subview {
  * Manages the view state
  */
 export declare class ViewService {
-    containerElement: HTMLElement;
     private sessionService;
     private focusService;
     private contextService;
@@ -41,8 +40,17 @@ export declare class ViewService {
      * provide for convenience to attach other elements to (such as
      * a webGL canvas element). Attached elements will automatically
      * inherit the same size and position as this element (via CSS).
+     * This value is undefined in non-DOM environments.
      */
     element: HTMLDivElement;
+    /**
+     * A promise which resolves to the containing HTMLElement for this view.
+     * This value is undefined in non-DOM environments.
+     */
+    containingElementPromise: Promise<HTMLElement>;
+    /**
+     *  Manager-only. A map of sessions to their desired viewports.
+     */
     desiredViewportMap: WeakMap<SessionPort, Viewport>;
     private _current;
     private _currentViewportJSON;
@@ -79,8 +87,18 @@ export declare class ViewService {
         width: number;
         height: number;
     };
+    /**
+     * The value used to scale the x and y axis of the projection matrix when
+     * processing eye parameters from a reality. This value is only used by the manager.
+     */
+    zoomFactor: number;
     private _scratchFrustum;
     private _scratchArray;
     protected generateViewFromEyeParameters(eye: SerializedEyeParameters): SerializedViewParameters;
     update(): void;
+}
+export declare class PinchZoomService {
+    private viewService;
+    private sessionService;
+    constructor(viewService: ViewService, sessionService: SessionService);
 }

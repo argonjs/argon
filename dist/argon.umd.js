@@ -1145,7 +1145,7 @@ $__System.register("9", ["6"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("a", ["8", "6", "b", "c", "5", "9", "d", "e"], function(exports_1, context_1) {
+$__System.register("a", ["8", "b", "c", "5", "9", "d", "e"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __extends = (this && this.__extends) || function(d, b) {
@@ -1170,7 +1170,6 @@ $__System.register("a", ["8", "6", "b", "c", "5", "9", "d", "e"], function(expor
     return c > 3 && r && Object.defineProperty(target, key, r), r;
   };
   var aurelia_dependency_injection_1,
-      cesium_imports_1,
       common_1,
       session_1,
       device_1,
@@ -1181,8 +1180,6 @@ $__System.register("a", ["8", "6", "b", "c", "5", "9", "d", "e"], function(expor
   return {
     setters: [function(aurelia_dependency_injection_1_1) {
       aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
-    }, function(cesium_imports_1_1) {
-      cesium_imports_1 = cesium_imports_1_1;
     }, function(common_1_1) {
       common_1 = common_1_1;
     }, function(session_1_1) {
@@ -1221,19 +1218,7 @@ $__System.register("a", ["8", "6", "b", "c", "5", "9", "d", "e"], function(expor
                 var frameState = {
                   time: time,
                   index: index,
-                  view: {
-                    viewport: {
-                      x: 0,
-                      y: 0,
-                      width: w,
-                      height: h
-                    },
-                    pose: utils_1.getSerializedEntityPose(_this.deviceService.displayEntity, time),
-                    subviews: [{
-                      type: common_1.SubviewType.SINGULAR,
-                      projectionMatrix: cesium_imports_1.Matrix4.computePerspectiveFieldOfView(Math.PI / 3, w / h, 0.2, 10000000000, [])
-                    }]
-                  }
+                  eye: {pose: utils_1.getSerializedEntityPose(_this.deviceService.displayEntity, time)}
                 };
                 remoteRealitySession.send('ar.reality.frameState', frameState);
                 _this.timer.requestFrame(update);
@@ -3642,13 +3627,7 @@ $__System.register("c", ["6", "8", "b", "e"], function(exports_1, context_1) {
         };
         DOMConnectService.prototype.connect = function(sessionService) {
           var messageChannel = sessionService.createMessageChannel();
-          var postMessagePortToParent = function() {
-            return window.parent.postMessage({type: 'ARGON_SESSION'}, '*', [messageChannel.port1]);
-          };
-          if (document.readyState === 'complete')
-            postMessagePortToParent();
-          else
-            document.addEventListener('load', postMessagePortToParent);
+          window.parent.postMessage({type: 'ARGON_SESSION'}, '*', [messageChannel.port1]);
           sessionService.manager.open(messageChannel.port2, sessionService.configuration);
         };
         return DOMConnectService;
@@ -3834,7 +3813,8 @@ $__System.register("13", ["8", "6", "b", "c", "7", "e", "10"], function(exports_
       utils_1,
       focus_1;
   var argonContainerPromise,
-      ViewService;
+      ViewService,
+      PinchZoomService;
   return {
     setters: [function(aurelia_dependency_injection_1_1) {
       aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
@@ -3865,7 +3845,7 @@ $__System.register("13", ["8", "6", "b", "c", "7", "e", "10"], function(exports_
         argonMetaTag.name = 'argon';
         document.head.appendChild(argonMetaTag);
         argonContainerPromise = new Promise(function(resolve) {
-          document.addEventListener('DOMContentLoaded', function() {
+          var resolveArgonContainer = function() {
             var container = document.querySelector('#argon');
             if (!container)
               container = document.createElement('div');
@@ -3873,7 +3853,12 @@ $__System.register("13", ["8", "6", "b", "c", "7", "e", "10"], function(exports_
             container.classList.add('argon-view');
             document.body.appendChild(container);
             resolve(container);
-          });
+          };
+          if (document.readyState == 'loading') {
+            document.addEventListener('DOMContentLoaded', resolveArgonContainer);
+          } else {
+            resolveArgonContainer();
+          }
         });
         var style = document.createElement("style");
         style.type = 'text/css';
@@ -3885,7 +3870,6 @@ $__System.register("13", ["8", "6", "b", "c", "7", "e", "10"], function(exports_
       ViewService = (function() {
         function ViewService(containerElement, sessionService, focusService, contextService) {
           var _this = this;
-          this.containerElement = containerElement;
           this.sessionService = sessionService;
           this.focusService = focusService;
           this.contextService = contextService;
@@ -3894,6 +3878,7 @@ $__System.register("13", ["8", "6", "b", "c", "7", "e", "10"], function(exports_
           this.releaseEvent = new utils_1.Event();
           this.desiredViewportMap = new WeakMap();
           this._subviewEntities = [];
+          this.zoomFactor = 1;
           this._scratchFrustum = new cesium_imports_1.PerspectiveFrustum();
           this._scratchArray = [];
           if (typeof document !== 'undefined' && document.createElement) {
@@ -3901,26 +3886,30 @@ $__System.register("13", ["8", "6", "b", "c", "7", "e", "10"], function(exports_
             element_1.style.width = '100%';
             element_1.style.height = '100%';
             element_1.classList.add('argon-view');
-            if (this.containerElement) {
-              this.containerElement.insertBefore(element_1, this.containerElement.firstChild);
-            } else {
-              argonContainerPromise.then(function(argonContainer) {
-                _this.containerElement = argonContainer;
-                _this.containerElement.insertBefore(element_1, _this.containerElement.firstChild);
-              });
-              this.focusService.focusEvent.addEventListener(function() {
+            this.containingElementPromise = new Promise(function(resolve) {
+              if (containerElement) {
+                containerElement.insertBefore(element_1, containerElement.firstChild);
+                resolve(containerElement);
+              } else {
                 argonContainerPromise.then(function(argonContainer) {
-                  argonContainer.classList.remove('argon-no-focus');
-                  argonContainer.classList.add('argon-focus');
+                  containerElement = argonContainer;
+                  containerElement.insertBefore(element_1, containerElement.firstChild);
+                  resolve(containerElement);
                 });
-              });
-              this.focusService.blurEvent.addEventListener(function() {
-                argonContainerPromise.then(function(argonContainer) {
-                  argonContainer.classList.remove('argon-focus');
-                  argonContainer.classList.add('argon-no-focus');
+                _this.focusService.focusEvent.addEventListener(function() {
+                  argonContainerPromise.then(function(argonContainer) {
+                    argonContainer.classList.remove('argon-no-focus');
+                    argonContainer.classList.add('argon-focus');
+                  });
                 });
-              });
-            }
+                _this.focusService.blurEvent.addEventListener(function() {
+                  argonContainerPromise.then(function(argonContainer) {
+                    argonContainer.classList.remove('argon-focus');
+                    argonContainer.classList.add('argon-no-focus');
+                  });
+                });
+              }
+            });
           }
           if (this.sessionService.isManager) {
             this.sessionService.connectEvent.addEventListener(function(session) {
@@ -3992,15 +3981,26 @@ $__System.register("13", ["8", "6", "b", "c", "7", "e", "10"], function(exports_
         };
         ViewService.prototype.generateViewFromEyeParameters = function(eye) {
           var viewport = this.getMaximumViewport();
-          this._scratchFrustum.fov = eye.fov || Math.PI / 3;
+          this._scratchFrustum.fov = Math.PI / 3;
           this._scratchFrustum.aspectRatio = viewport.width / viewport.height;
           this._scratchFrustum.near = 0.01;
+          var projectionMatrix = cesium_imports_1.Matrix4.toArray(this._scratchFrustum.infiniteProjectionMatrix, this._scratchArray);
+          if (this.zoomFactor !== 1) {
+            projectionMatrix[0] *= this.zoomFactor;
+            projectionMatrix[1] *= this.zoomFactor;
+            projectionMatrix[2] *= this.zoomFactor;
+            projectionMatrix[3] *= this.zoomFactor;
+            projectionMatrix[4] *= this.zoomFactor;
+            projectionMatrix[5] *= this.zoomFactor;
+            projectionMatrix[6] *= this.zoomFactor;
+            projectionMatrix[7] *= this.zoomFactor;
+          }
           return {
             viewport: viewport,
             pose: eye.pose,
             subviews: [{
               type: common_1.SubviewType.SINGULAR,
-              projectionMatrix: cesium_imports_1.Matrix4.toArray(this._scratchFrustum.infiniteProjectionMatrix, this._scratchArray)
+              projectionMatrix: projectionMatrix
             }]
           };
         };
@@ -4025,11 +4025,80 @@ $__System.register("13", ["8", "6", "b", "c", "7", "e", "10"], function(exports_
         return ViewService;
       }());
       exports_1("ViewService", ViewService);
+      PinchZoomService = (function() {
+        function PinchZoomService(viewService, sessionService) {
+          var _this = this;
+          this.viewService = viewService;
+          this.sessionService = sessionService;
+          if (this.sessionService.isManager) {
+            var el = viewService.element;
+            el.style.pointerEvents = 'auto';
+            var zoomStart_1;
+            if (typeof PointerEvent !== 'undefined') {
+              var evCache_1 = new Array();
+              var startDistSquared_1 = -1;
+              var remove_event_1 = function(ev) {
+                for (var i = 0; i < evCache_1.length; i++) {
+                  if (evCache_1[i].pointerId == ev.pointerId) {
+                    evCache_1.splice(i, 1);
+                    break;
+                  }
+                }
+              };
+              var pointerdown_handler = function(ev) {
+                evCache_1.push(ev);
+              };
+              var pointermove_handler = function(ev) {
+                for (var i = 0; i < evCache_1.length; i++) {
+                  if (ev.pointerId == evCache_1[i].pointerId) {
+                    evCache_1[i] = ev;
+                    break;
+                  }
+                }
+                if (evCache_1.length == 2) {
+                  var curDiffX = Math.abs(evCache_1[0].clientX - evCache_1[1].clientX);
+                  var curDiffY = Math.abs(evCache_1[0].clientY - evCache_1[1].clientY);
+                  var currDistSquared = curDiffX * curDiffX + curDiffY * curDiffY;
+                  if (startDistSquared_1 > 0) {
+                    var scale = currDistSquared / startDistSquared_1;
+                  } else {
+                    startDistSquared_1 = currDistSquared;
+                  }
+                } else {
+                  startDistSquared_1 = -1;
+                }
+              };
+              var pointerup_handler = function(ev) {
+                remove_event_1(ev);
+                if (evCache_1.length < 2)
+                  startDistSquared_1 = -1;
+              };
+              el.onpointerdown = pointerdown_handler;
+              el.onpointermove = pointermove_handler;
+              el.onpointerup = pointerup_handler;
+              el.onpointercancel = pointerup_handler;
+              el.onpointerout = pointerup_handler;
+              el.onpointerleave = pointerup_handler;
+            } else {
+              el.addEventListener('gesturestart', function(ev) {
+                zoomStart_1 = _this.viewService.zoomFactor;
+                _this.viewService.zoomFactor = zoomStart_1 * ev.scale;
+              });
+              el.addEventListener('gesturechange', function(ev) {
+                _this.viewService.zoomFactor = zoomStart_1 * ev.scale;
+              });
+            }
+          }
+        }
+        PinchZoomService = __decorate([aurelia_dependency_injection_1.inject(ViewService, session_1.SessionService)], PinchZoomService);
+        return PinchZoomService;
+      }());
+      exports_1("PinchZoomService", PinchZoomService);
     }
   };
 });
 
-$__System.register("14", ["8", "b", "c", "d", "13"], function(exports_1, context_1) {
+$__System.register("14", ["8", "c", "d", "13"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __extends = (this && this.__extends) || function(d, b) {
@@ -4054,7 +4123,6 @@ $__System.register("14", ["8", "b", "c", "d", "13"], function(exports_1, context
     return c > 3 && r && Object.defineProperty(target, key, r), r;
   };
   var aurelia_dependency_injection_1,
-      common_1,
       session_1,
       reality_1,
       view_1;
@@ -4062,8 +4130,6 @@ $__System.register("14", ["8", "b", "c", "d", "13"], function(exports_1, context
   return {
     setters: [function(aurelia_dependency_injection_1_1) {
       aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
-    }, function(common_1_1) {
-      common_1 = common_1_1;
     }, function(session_1_1) {
       session_1 = session_1_1;
     }, function(reality_1_1) {
@@ -4079,20 +4145,38 @@ $__System.register("14", ["8", "b", "c", "d", "13"], function(exports_1, context
           this.sessionService = sessionService;
           this.viewService = viewService;
           this.type = 'hosted';
+          this.iframeElement = document.createElement('iframe');
+          this.iframeElement.style.border = '0';
+          this.iframeElement.width = '100%';
+          this.iframeElement.height = '100%';
+          viewService.element.insertBefore(this.iframeElement, viewService.element.firstChild);
         }
         HostedRealityLoader.prototype.load = function(reality, callback) {
-          var realitySession = this.sessionService.addManagedSessionPort();
-          var remoteRealitySession = this.sessionService.createSessionPort();
-          var doUpdate = true;
-          remoteRealitySession.on['ar.context.update'] = function() {};
-          callback(realitySession);
-          var messageChannel = this.sessionService.createSynchronousMessageChannel();
-          realitySession.open(messageChannel.port1, this.sessionService.configuration);
-          remoteRealitySession.open(messageChannel.port2, {
-            role: common_1.Role.REALITY_VIEW,
-            name: 'empty'
-          });
+          var _this = this;
+          var handleConnectMessage = function(ev) {
+            if (ev.data.type !== 'ARGON_SESSION')
+              return;
+            var messagePort = ev.ports && ev.ports[0];
+            if (!messagePort)
+              throw new Error('Received an ARGON_SESSION message without a MessagePort object');
+            var i = 0;
+            var frame;
+            while (i < window.frames.length && !frame) {
+              if (window.frames[i] == ev.source)
+                frame = document.getElementsByTagName('iframe')[i];
+            }
+            if (frame !== _this.iframeElement)
+              return;
+            window.removeEventListener('message', handleConnectMessage);
+            var realitySession = _this.sessionService.addManagedSessionPort();
+            callback(realitySession);
+            realitySession.open(messagePort, _this.sessionService.configuration);
+          };
+          window.addEventListener('message', handleConnectMessage);
+          this.iframeElement.src = '';
+          this.iframeElement.src = reality['url'];
         };
+        HostedRealityLoader.prototype._handleMessage = function(ev) {};
         HostedRealityLoader = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, view_1.ViewService)], HostedRealityLoader);
         return HostedRealityLoader;
       }(reality_1.RealityLoader));
@@ -17547,7 +17631,8 @@ $__System.register("1", ["2", "8", "6", "c", "b", "7", "5", "10", "d", "9", "13"
     'DI': true,
     'Cesium': true,
     'EmptyRealityLoader': true,
-    'LiveVideoRealityLoader': true
+    'LiveVideoRealityLoader': true,
+    'HostedRealityLoader': true
   };
   function exportStar_1(m) {
     var exports = {};
@@ -17603,6 +17688,7 @@ $__System.register("1", ["2", "8", "6", "c", "b", "7", "5", "10", "d", "9", "13"
       exports_1("Cesium", Cesium);
       exports_1("EmptyRealityLoader", empty_1.EmptyRealityLoader);
       exports_1("LiveVideoRealityLoader", live_video_1.LiveVideoRealityLoader);
+      exports_1("HostedRealityLoader", hosted_1.HostedRealityLoader);
       ArgonSystem = (function() {
         function ArgonSystem(config, container) {
           if (container === void 0) {
@@ -17619,6 +17705,8 @@ $__System.register("1", ["2", "8", "6", "c", "b", "7", "5", "10", "d", "9", "13"
             container.registerSingleton(session_1.ConnectService, session_1.LoopbackConnectService);
           } else if (session_1.WKWebViewConnectService.isAvailable()) {
             container.registerSingleton(session_1.ConnectService, session_1.WKWebViewConnectService);
+          } else if (session_1.DOMConnectService.isAvailable()) {
+            container.registerSingleton(session_1.ConnectService, session_1.DOMConnectService);
           } else if (session_1.DebugConnectService.isAvailable()) {
             container.registerSingleton(session_1.ConnectService, session_1.DebugConnectService);
           }
@@ -17631,6 +17719,7 @@ $__System.register("1", ["2", "8", "6", "c", "b", "7", "5", "10", "d", "9", "13"
                 type: 'empty',
                 name: 'Empty Reality'
               });
+              container.get(view_1.PinchZoomService);
             }
           }
           for (var _i = 0,

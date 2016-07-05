@@ -35,22 +35,8 @@ export class EmptyRealityLoader extends RealityLoader {
                     const frameState: SerializedFrameState = {
                         time,
                         index,
-                        view: {
-                            viewport: {
-                                x: 0,
-                                y: 0,
-                                width: w,
-                                height: h
-                            },
-                            pose: getSerializedEntityPose(this.deviceService.displayEntity, time),
-                            subviews: [
-                                {
-                                    type: SubviewType.SINGULAR,
-                                    projectionMatrix: Matrix4.computePerspectiveFieldOfView(
-                                        Math.PI / 3, w / h, 0.2, 10000000000, <any>[]
-                                    )
-                                }
-                            ]
+                        eye: {
+                            pose: getSerializedEntityPose(this.deviceService.displayEntity, time)
                         }
                     }
                     remoteRealitySession.send('ar.reality.frameState', frameState);

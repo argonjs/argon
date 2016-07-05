@@ -86,13 +86,8 @@ function update(time:Argon.Cesium.JulianDate, index:number) {
     app.reality.frameEvent.raiseEvent({
         time,
         index,
-        view: {
-            viewport: app.view.getMaximumViewport(),
-            pose: Argon.getSerializedEntityPose(app.device.displayEntity, time),
-            subviews: [{
-                type: Argon.SubviewType.SINGULAR,
-                projectionMatrix: Argon.Cesium.Matrix4.toArray(matrix, scratchArray)
-            }]
+        eye: {
+            pose: Argon.getSerializedEntityPose(app.device.displayEntity, time)
         }
     })
     app.timer.requestFrame(update);

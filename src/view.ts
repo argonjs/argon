@@ -20,14 +20,19 @@ if (typeof document !== 'undefined' && document.createElement) {
     document.head.appendChild(argonMetaTag);
 
     var argonContainerPromise = new Promise<HTMLElement>((resolve) => {
-        document.addEventListener('DOMContentLoaded', () => {
+        const resolveArgonContainer = () => {
             let container = <HTMLDivElement>document.querySelector('#argon');
             if (!container) container = document.createElement('div');
             container.id = 'argon';
             container.classList.add('argon-view');
             document.body.appendChild(container);
             resolve(container);
-        })
+        }
+        if (document.readyState == 'loading') {
+            document.addEventListener('DOMContentLoaded', resolveArgonContainer);
+        } else {
+            resolveArgonContainer();
+        }
     })
 
     const style = document.createElement("style");
@@ -91,9 +96,19 @@ export class ViewService {
      * provide for convenience to attach other elements to (such as
      * a webGL canvas element). Attached elements will automatically 
      * inherit the same size and position as this element (via CSS). 
+     * This value is undefined in non-DOM environments.
      */
     public element: HTMLDivElement;
 
+    /**
+     * A promise which resolves to the containing HTMLElement for this view.
+     * This value is undefined in non-DOM environments.
+     */
+    public containingElementPromise: Promise<HTMLElement>;
+
+    /**
+     *  Manager-only. A map of sessions to their desired viewports.
+     */
     public desiredViewportMap = new WeakMap<SessionPort, Viewport>();
 
     private _current: SerializedViewParameters;
@@ -102,7 +117,7 @@ export class ViewService {
     private _subviewEntities: Entity[] = [];
 
     constructor(
-        public containerElement: HTMLElement,
+        containerElement: HTMLElement,
         private sessionService: SessionService,
         private focusService: FocusService,
         private contextService: ContextService) {
@@ -113,26 +128,30 @@ export class ViewService {
             element.style.height = '100%';
             element.classList.add('argon-view');
 
-            if (this.containerElement) {
-                this.containerElement.insertBefore(element, this.containerElement.firstChild);
-            } else {
-                argonContainerPromise.then((argonContainer) => {
-                    this.containerElement = argonContainer;
-                    this.containerElement.insertBefore(element, this.containerElement.firstChild);
-                })
-                this.focusService.focusEvent.addEventListener(() => {
+            this.containingElementPromise = new Promise((resolve) => {
+                if (containerElement) {
+                    containerElement.insertBefore(element, containerElement.firstChild);
+                    resolve(containerElement);
+                } else {
                     argonContainerPromise.then((argonContainer) => {
-                        argonContainer.classList.remove('argon-no-focus');
-                        argonContainer.classList.add('argon-focus');
+                        containerElement = argonContainer;
+                        containerElement.insertBefore(element, containerElement.firstChild);
+                        resolve(containerElement);
                     })
-                })
-                this.focusService.blurEvent.addEventListener(() => {
-                    argonContainerPromise.then((argonContainer) => {
-                        argonContainer.classList.remove('argon-focus');
-                        argonContainer.classList.add('argon-no-focus');
+                    this.focusService.focusEvent.addEventListener(() => {
+                        argonContainerPromise.then((argonContainer) => {
+                            argonContainer.classList.remove('argon-no-focus');
+                            argonContainer.classList.add('argon-focus');
+                        })
                     })
-                })
-            }
+                    this.focusService.blurEvent.addEventListener(() => {
+                        argonContainerPromise.then((argonContainer) => {
+                            argonContainer.classList.remove('argon-focus');
+                            argonContainer.classList.add('argon-no-focus');
+                        })
+                    })
+                }
+            })
         }
 
         if (this.sessionService.isManager) {
@@ -235,20 +254,37 @@ export class ViewService {
         throw new Error("Not implemeneted for the current platform");
     }
 
+    /**
+     * The value used to scale the x and y axis of the projection matrix when
+     * processing eye parameters from a reality. This value is only used by the manager.
+     */
+    public zoomFactor = 1;
+
     private _scratchFrustum = new PerspectiveFrustum();
     private _scratchArray = [];
     protected generateViewFromEyeParameters(eye: SerializedEyeParameters): SerializedViewParameters {
         const viewport = this.getMaximumViewport();
-        this._scratchFrustum.fov = eye.fov || Math.PI / 3;
+        this._scratchFrustum.fov = Math.PI / 3;
         this._scratchFrustum.aspectRatio = viewport.width / viewport.height;
         this._scratchFrustum.near = 0.01;
+        const projectionMatrix = Matrix4.toArray(this._scratchFrustum.infiniteProjectionMatrix, this._scratchArray);
+        if (this.zoomFactor !== 1) {
+            projectionMatrix[0] *= this.zoomFactor;
+            projectionMatrix[1] *= this.zoomFactor;
+            projectionMatrix[2] *= this.zoomFactor;
+            projectionMatrix[3] *= this.zoomFactor;
+            projectionMatrix[4] *= this.zoomFactor;
+            projectionMatrix[5] *= this.zoomFactor;
+            projectionMatrix[6] *= this.zoomFactor;
+            projectionMatrix[7] *= this.zoomFactor;
+        }
         return {
             viewport,
             pose: eye.pose,
             subviews: [
                 {
                     type: SubviewType.SINGULAR,
-                    projectionMatrix: Matrix4.toArray(this._scratchFrustum.infiniteProjectionMatrix, this._scratchArray)
+                    projectionMatrix,
                 }
             ]
         }
@@ -272,6 +308,96 @@ export class ViewService {
             }
 
             this.viewportChangeEvent.raiseEvent({ previous: previousViewport })
+        }
+    }
+}
+
+
+@inject(ViewService, SessionService)
+export class PinchZoomService {
+    constructor(private viewService: ViewService, private sessionService: SessionService) {
+        if (this.sessionService.isManager) {
+            const el = viewService.element;
+            el.style.pointerEvents = 'auto';
+
+            let zoomStart: number;
+
+            if (typeof PointerEvent !== 'undefined') {
+
+                const evCache = new Array();
+                let startDistSquared = -1;
+
+                const remove_event = (ev) => {
+                    // Remove this event from the target's cache
+                    for (var i = 0; i < evCache.length; i++) {
+                        if (evCache[i].pointerId == ev.pointerId) {
+                            evCache.splice(i, 1);
+                            break;
+                        }
+                    }
+                }
+
+                const pointerdown_handler = (ev) => {
+                    // The pointerdown event signals the start of a touch interaction.
+                    // This event is cached to support 2-finger gestures
+                    evCache.push(ev);
+                }
+
+                const pointermove_handler = (ev) => {
+                    // This function implements a 2-pointer pinch/zoom gesture. 
+
+                    // Find this event in the cache and update its record with this event
+                    for (var i = 0; i < evCache.length; i++) {
+                        if (ev.pointerId == evCache[i].pointerId) {
+                            evCache[i] = ev;
+                            break;
+                        }
+                    }
+
+                    // If two pointers are down, check for pinch gestures
+                    if (evCache.length == 2) {
+                        // Calculate the distance between the two pointers
+                        const curDiffX = Math.abs(evCache[0].clientX - evCache[1].clientX);
+                        const curDiffY = Math.abs(evCache[0].clientY - evCache[1].clientY);
+                        const currDistSquared = curDiffX * curDiffX + curDiffY * curDiffY;
+
+                        if (startDistSquared > 0) {
+                            const scale = currDistSquared / startDistSquared;
+                        } else {
+                            startDistSquared = currDistSquared;
+                        }
+                    } else {
+                        startDistSquared = -1;
+                    }
+                }
+
+                const pointerup_handler = (ev) => {
+                    // Remove this pointer from the cache
+                    remove_event(ev);
+
+                    // If the number of pointers down is less than two then reset diff tracker
+                    if (evCache.length < 2) startDistSquared = -1;
+                }
+
+                el.onpointerdown = pointerdown_handler;
+                el.onpointermove = pointermove_handler;
+
+                // Use same handler for pointer{up,cancel,out,leave} events since
+                // the semantics for these events - in this app - are the same.
+                el.onpointerup = pointerup_handler;
+                el.onpointercancel = pointerup_handler;
+                el.onpointerout = pointerup_handler;
+                el.onpointerleave = pointerup_handler;
+
+            } else {
+                el.addEventListener('gesturestart', (ev: any) => {
+                    zoomStart = this.viewService.zoomFactor;
+                    this.viewService.zoomFactor = zoomStart * ev.scale;
+                })
+                el.addEventListener('gesturechange', (ev: any) => {
+                    this.viewService.zoomFactor = zoomStart * ev.scale;
+                })
+            }
         }
     }
 }

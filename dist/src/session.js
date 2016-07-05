@@ -519,11 +519,7 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                  */
                 DOMConnectService.prototype.connect = function (sessionService) {
                     var messageChannel = sessionService.createMessageChannel();
-                    var postMessagePortToParent = function () { return window.parent.postMessage({ type: 'ARGON_SESSION' }, '*', [messageChannel.port1]); };
-                    if (document.readyState === 'complete')
-                        postMessagePortToParent();
-                    else
-                        document.addEventListener('load', postMessagePortToParent);
+                    window.parent.postMessage({ type: 'ARGON_SESSION' }, '*', [messageChannel.port1]);
                     sessionService.manager.open(messageChannel.port2, sessionService.configuration);
                 };
                 return DOMConnectService;

@@ -7,6 +7,7 @@ export interface Configuration {
     role?: Role;
     userData?: any;
     protocols?: string[];
+    'app.disablePinchZoom'?: boolean;
     'reality.supportsControlPort'?: boolean;
     'reality.supportsCustomViewport'?: boolean;
     'reality.supportsCustomSubviews'?: boolean;
@@ -98,9 +99,7 @@ export interface SerializedViewParameters {
  * Describes the pose of a reality view and how it is able to render
  */
 export interface SerializedEyeParameters {
-    pose: SerializedEntityPose;
-    aspectRatio?: number;
-    fov?: number;
+    pose?: SerializedEntityPose;
     stereoMultiplier?: number;
 }
 /**

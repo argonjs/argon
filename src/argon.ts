@@ -18,7 +18,7 @@ import {FocusService} from './focus'
 import {RealityService, RealityLoader} from './reality'
 import {TimerService} from './timer'
 import {Event} from './utils'
-import {ViewService} from './view'
+import {ViewService, PinchZoomService} from './view'
 import {VuforiaService} from './vuforia'
 
 import {EmptyRealityLoader} from './realities/empty'
@@ -38,7 +38,8 @@ export * from './view'
 export * from './vuforia'
 export {
 EmptyRealityLoader,
-LiveVideoRealityLoader
+LiveVideoRealityLoader,
+HostedRealityLoader
 }
 
 /**
@@ -67,6 +68,11 @@ export class ArgonSystem {
                 ConnectService,
                 WKWebViewConnectService
             )
+        } else if (DOMConnectService.isAvailable()) {
+            container.registerSingleton(
+                ConnectService,
+                DOMConnectService
+            )
         } else if (DebugConnectService.isAvailable()) {
             container.registerSingleton(
                 ConnectService,
@@ -81,6 +87,9 @@ export class ArgonSystem {
             if (typeof document !== 'undefined') {
                 this.reality.registerLoader(container.get(HostedRealityLoader));
                 this.reality.setDefault({ type: 'empty', name: 'Empty Reality' })
+
+                // enable pinch-zoom
+                container.get(PinchZoomService)
             }
         }
 

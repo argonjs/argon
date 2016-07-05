@@ -13,6 +13,7 @@ import { ViewService } from './view';
 import { VuforiaService } from './vuforia';
 import { EmptyRealityLoader } from './realities/empty';
 import { LiveVideoRealityLoader } from './realities/live_video';
+import { HostedRealityLoader } from './realities/hosted';
 export { DI, Cesium };
 export * from './common';
 export * from './context';
@@ -24,7 +25,7 @@ export * from './timer';
 export * from './utils';
 export * from './view';
 export * from './vuforia';
-export { EmptyRealityLoader, LiveVideoRealityLoader };
+export { EmptyRealityLoader, LiveVideoRealityLoader, HostedRealityLoader };
 /**
  * A composition root which instantiates the object graph based on a provided configuration
  */

@@ -1,6 +1,7 @@
 /// <reference path="../typings/index.d.ts"/>
 // import * as Argon from 'argon'
-import * as Argon from '../dist/src/argon'
+// import * as Argon from '../dist/src/argon'
+import * as Argon from '../src/argon'
 
 declare const THREE: any;
 

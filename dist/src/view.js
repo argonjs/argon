@@ -8,7 +8,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
     var aurelia_dependency_injection_1, cesium_imports_1, common_1, session_1, context_2, utils_1, focus_1;
-    var argonContainerPromise, ViewService;
+    var argonContainerPromise, ViewService, PinchZoomService;
     return {
         setters:[
             function (aurelia_dependency_injection_1_1) {
@@ -47,7 +47,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                 argonMetaTag.name = 'argon';
                 document.head.appendChild(argonMetaTag);
                 argonContainerPromise = new Promise(function (resolve) {
-                    document.addEventListener('DOMContentLoaded', function () {
+                    var resolveArgonContainer = function () {
                         var container = document.querySelector('#argon');
                         if (!container)
                             container = document.createElement('div');
@@ -55,7 +55,13 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                         container.classList.add('argon-view');
                         document.body.appendChild(container);
                         resolve(container);
-                    });
+                    };
+                    if (document.readyState == 'loading') {
+                        document.addEventListener('DOMContentLoaded', resolveArgonContainer);
+                    }
+                    else {
+                        resolveArgonContainer();
+                    }
                 });
                 var style = document.createElement("style");
                 style.type = 'text/css';
@@ -70,7 +76,6 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
             ViewService = (function () {
                 function ViewService(containerElement, sessionService, focusService, contextService) {
                     var _this = this;
-                    this.containerElement = containerElement;
                     this.sessionService = sessionService;
                     this.focusService = focusService;
                     this.contextService = contextService;
@@ -86,8 +91,16 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                      * An event that is raised when ownership of the view has been released from this application
                     */
                     this.releaseEvent = new utils_1.Event();
+                    /**
+                     *  Manager-only. A map of sessions to their desired viewports.
+                     */
                     this.desiredViewportMap = new WeakMap();
                     this._subviewEntities = [];
+                    /**
+                     * The value used to scale the x and y axis of the projection matrix when
+                     * processing eye parameters from a reality. This value is only used by the manager.
+                     */
+                    this.zoomFactor = 1;
                     this._scratchFrustum = new cesium_imports_1.PerspectiveFrustum();
                     this._scratchArray = [];
                     if (typeof document !== 'undefined' && document.createElement) {
@@ -95,27 +108,31 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                         element_1.style.width = '100%';
                         element_1.style.height = '100%';
                         element_1.classList.add('argon-view');
-                        if (this.containerElement) {
-                            this.containerElement.insertBefore(element_1, this.containerElement.firstChild);
-                        }
-                        else {
-                            argonContainerPromise.then(function (argonContainer) {
-                                _this.containerElement = argonContainer;
-                                _this.containerElement.insertBefore(element_1, _this.containerElement.firstChild);
-                            });
-                            this.focusService.focusEvent.addEventListener(function () {
+                        this.containingElementPromise = new Promise(function (resolve) {
+                            if (containerElement) {
+                                containerElement.insertBefore(element_1, containerElement.firstChild);
+                                resolve(containerElement);
+                            }
+                            else {
                                 argonContainerPromise.then(function (argonContainer) {
-                                    argonContainer.classList.remove('argon-no-focus');
-                                    argonContainer.classList.add('argon-focus');
+                                    containerElement = argonContainer;
+                                    containerElement.insertBefore(element_1, containerElement.firstChild);
+                                    resolve(containerElement);
                                 });
-                            });
-                            this.focusService.blurEvent.addEventListener(function () {
-                                argonContainerPromise.then(function (argonContainer) {
-                                    argonContainer.classList.remove('argon-focus');
-                                    argonContainer.classList.add('argon-no-focus');
+                                _this.focusService.focusEvent.addEventListener(function () {
+                                    argonContainerPromise.then(function (argonContainer) {
+                                        argonContainer.classList.remove('argon-no-focus');
+                                        argonContainer.classList.add('argon-focus');
+                                    });
                                 });
-                            });
-                        }
+                                _this.focusService.blurEvent.addEventListener(function () {
+                                    argonContainerPromise.then(function (argonContainer) {
+                                        argonContainer.classList.remove('argon-focus');
+                                        argonContainer.classList.add('argon-no-focus');
+                                    });
+                                });
+                            }
+                        });
                     }
                     if (this.sessionService.isManager) {
                         this.sessionService.connectEvent.addEventListener(function (session) {
@@ -208,16 +225,27 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                 };
                 ViewService.prototype.generateViewFromEyeParameters = function (eye) {
                     var viewport = this.getMaximumViewport();
-                    this._scratchFrustum.fov = eye.fov || Math.PI / 3;
+                    this._scratchFrustum.fov = Math.PI / 3;
                     this._scratchFrustum.aspectRatio = viewport.width / viewport.height;
                     this._scratchFrustum.near = 0.01;
+                    var projectionMatrix = cesium_imports_1.Matrix4.toArray(this._scratchFrustum.infiniteProjectionMatrix, this._scratchArray);
+                    if (this.zoomFactor !== 1) {
+                        projectionMatrix[0] *= this.zoomFactor;
+                        projectionMatrix[1] *= this.zoomFactor;
+                        projectionMatrix[2] *= this.zoomFactor;
+                        projectionMatrix[3] *= this.zoomFactor;
+                        projectionMatrix[4] *= this.zoomFactor;
+                        projectionMatrix[5] *= this.zoomFactor;
+                        projectionMatrix[6] *= this.zoomFactor;
+                        projectionMatrix[7] *= this.zoomFactor;
+                    }
                     return {
                         viewport: viewport,
                         pose: eye.pose,
                         subviews: [
                             {
                                 type: common_1.SubviewType.SINGULAR,
-                                projectionMatrix: cesium_imports_1.Matrix4.toArray(this._scratchFrustum.infiniteProjectionMatrix, this._scratchArray)
+                                projectionMatrix: projectionMatrix,
                             }
                         ]
                     };
@@ -245,6 +273,91 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                 return ViewService;
             }());
             exports_1("ViewService", ViewService);
+            PinchZoomService = (function () {
+                function PinchZoomService(viewService, sessionService) {
+                    var _this = this;
+                    this.viewService = viewService;
+                    this.sessionService = sessionService;
+                    if (this.sessionService.isManager) {
+                        var el = viewService.element;
+                        el.style.pointerEvents = 'auto';
+                        var zoomStart_1;
+                        if (typeof PointerEvent !== 'undefined') {
+                            var evCache_1 = new Array();
+                            var startDistSquared_1 = -1;
+                            var remove_event_1 = function (ev) {
+                                // Remove this event from the target's cache
+                                for (var i = 0; i < evCache_1.length; i++) {
+                                    if (evCache_1[i].pointerId == ev.pointerId) {
+                                        evCache_1.splice(i, 1);
+                                        break;
+                                    }
+                                }
+                            };
+                            var pointerdown_handler = function (ev) {
+                                // The pointerdown event signals the start of a touch interaction.
+                                // This event is cached to support 2-finger gestures
+                                evCache_1.push(ev);
+                            };
+                            var pointermove_handler = function (ev) {
+                                // This function implements a 2-pointer pinch/zoom gesture. 
+                                // Find this event in the cache and update its record with this event
+                                for (var i = 0; i < evCache_1.length; i++) {
+                                    if (ev.pointerId == evCache_1[i].pointerId) {
+                                        evCache_1[i] = ev;
+                                        break;
+                                    }
+                                }
+                                // If two pointers are down, check for pinch gestures
+                                if (evCache_1.length == 2) {
+                                    // Calculate the distance between the two pointers
+                                    var curDiffX = Math.abs(evCache_1[0].clientX - evCache_1[1].clientX);
+                                    var curDiffY = Math.abs(evCache_1[0].clientY - evCache_1[1].clientY);
+                                    var currDistSquared = curDiffX * curDiffX + curDiffY * curDiffY;
+                                    if (startDistSquared_1 > 0) {
+                                        var scale = currDistSquared / startDistSquared_1;
+                                    }
+                                    else {
+                                        startDistSquared_1 = currDistSquared;
+                                    }
+                                }
+                                else {
+                                    startDistSquared_1 = -1;
+                                }
+                            };
+                            var pointerup_handler = function (ev) {
+                                // Remove this pointer from the cache
+                                remove_event_1(ev);
+                                // If the number of pointers down is less than two then reset diff tracker
+                                if (evCache_1.length < 2)
+                                    startDistSquared_1 = -1;
+                            };
+                            el.onpointerdown = pointerdown_handler;
+                            el.onpointermove = pointermove_handler;
+                            // Use same handler for pointer{up,cancel,out,leave} events since
+                            // the semantics for these events - in this app - are the same.
+                            el.onpointerup = pointerup_handler;
+                            el.onpointercancel = pointerup_handler;
+                            el.onpointerout = pointerup_handler;
+                            el.onpointerleave = pointerup_handler;
+                        }
+                        else {
+                            el.addEventListener('gesturestart', function (ev) {
+                                zoomStart_1 = _this.viewService.zoomFactor;
+                                _this.viewService.zoomFactor = zoomStart_1 * ev.scale;
+                            });
+                            el.addEventListener('gesturechange', function (ev) {
+                                _this.viewService.zoomFactor = zoomStart_1 * ev.scale;
+                            });
+                        }
+                    }
+                }
+                PinchZoomService = __decorate([
+                    aurelia_dependency_injection_1.inject(ViewService, session_1.SessionService)
+                ], PinchZoomService);
+                return PinchZoomService;
+            }());
+            exports_1("PinchZoomService", PinchZoomService);
         }
     }
 });

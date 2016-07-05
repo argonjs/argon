@@ -498,9 +498,7 @@ export class DOMConnectService extends ConnectService {
      */
     connect(sessionService: SessionService) {
         const messageChannel = sessionService.createMessageChannel();
-        const postMessagePortToParent = () => window.parent.postMessage({ type: 'ARGON_SESSION' }, '*', [messageChannel.port1]);
-        if (document.readyState === 'complete') postMessagePortToParent()
-        else document.addEventListener('load', postMessagePortToParent);
+        window.parent.postMessage({ type: 'ARGON_SESSION' }, '*', [messageChannel.port1]);
         sessionService.manager.open(messageChannel.port2, sessionService.configuration);
     }
 }

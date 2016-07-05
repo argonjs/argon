@@ -11,24 +11,50 @@ export class HostedRealityLoader extends RealityLoader {
 
     public type = 'hosted';
 
+    public iframeElement: HTMLIFrameElement;
+
     constructor(
         private sessionService: SessionService,
         private viewService: ViewService) {
         super();
+        this.iframeElement = document.createElement('iframe');
+        this.iframeElement.style.border = '0';
+        this.iframeElement.width = '100%';
+        this.iframeElement.height = '100%';
+        viewService.element.insertBefore(this.iframeElement, viewService.element.firstChild);
     }
 
     public load(reality: RealityView, callback: (realitySession: SessionPort) => void): void {
-        const realitySession = this.sessionService.addManagedSessionPort();
-        const remoteRealitySession = this.sessionService.createSessionPort();
-        let doUpdate = true;
-        remoteRealitySession.on['ar.context.update'] = () => { };
+        let handleConnectMessage = (ev) => {
+            if (ev.data.type !== 'ARGON_SESSION') return;
 
+            const messagePort: MessagePort = ev.ports && ev.ports[0];
 
-        callback(realitySession);
-        // Only connect after the caller is able to attach connectEvent handlers
-        const messageChannel = this.sessionService.createSynchronousMessageChannel();
-        realitySession.open(messageChannel.port1, this.sessionService.configuration);
-        remoteRealitySession.open(messageChannel.port2, { role: Role.REALITY_VIEW, name: 'empty' });
+            if (!messagePort)
+                throw new Error('Received an ARGON_SESSION message without a MessagePort object');
+
+            // get the event.source iframe
+            let i = 0;
+            let frame: HTMLIFrameElement | undefined;
+            while (i < window.frames.length && !frame) {
+                if (window.frames[i] == ev.source)
+                    frame = document.getElementsByTagName('iframe')[i];
+            }
+
+            if (frame !== this.iframeElement) return;
+
+            window.removeEventListener('message', handleConnectMessage);
+
+            const realitySession = this.sessionService.addManagedSessionPort();
+            callback(realitySession);
+            realitySession.open(messagePort, this.sessionService.configuration);
+        };
+        window.addEventListener('message', handleConnectMessage);
+        this.iframeElement.src = '';
+        this.iframeElement.src = reality['url'];
+    }
+
+    private _handleMessage(ev: MessageEvent) {
     }
 }
 

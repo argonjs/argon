@@ -49,7 +49,8 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
         'DI': true,
         'Cesium': true,
         'EmptyRealityLoader': true,
-        'LiveVideoRealityLoader': true
+        'LiveVideoRealityLoader': true,
+        'HostedRealityLoader': true
     };
     function exportStar_1(m) {
         var exports = {};
@@ -120,6 +121,7 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
             exports_1("Cesium", Cesium);
             exports_1("EmptyRealityLoader", empty_1.EmptyRealityLoader);
             exports_1("LiveVideoRealityLoader", live_video_1.LiveVideoRealityLoader);
+            exports_1("HostedRealityLoader", hosted_1.HostedRealityLoader);
             /**
              * A composition root which instantiates the object graph based on a provided configuration
              */
@@ -139,6 +141,9 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
                     else if (session_1.WKWebViewConnectService.isAvailable()) {
                         container.registerSingleton(session_1.ConnectService, session_1.WKWebViewConnectService);
                     }
+                    else if (session_1.DOMConnectService.isAvailable()) {
+                        container.registerSingleton(session_1.ConnectService, session_1.DOMConnectService);
+                    }
                     else if (session_1.DebugConnectService.isAvailable()) {
                         container.registerSingleton(session_1.ConnectService, session_1.DebugConnectService);
                     }
@@ -148,6 +153,8 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
                         if (typeof document !== 'undefined') {
                             this.reality.registerLoader(container.get(hosted_1.HostedRealityLoader));
                             this.reality.setDefault({ type: 'empty', name: 'Empty Reality' });
+                            // enable pinch-zoom
+                            container.get(view_1.PinchZoomService);
                         }
                     }
                     // ensure the entire object graph is instantiated before connecting to the manager. 
