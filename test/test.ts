@@ -84,7 +84,7 @@ describe('RealityService', () => {
             realityService.setDefault({type:'empty', name:'My Custom Reality'})
             
             const removeListener = realityService.frameEvent.addEventListener((state) => {
-                expect(realityService.getCurrent().type === 'empty')
+                expect(state.reality.type === 'empty')
                 expect(state.time).to.haveOwnProperty('dayNumber');
                 expect(state.time).to.haveOwnProperty('secondsOfDay');
                 expect(realityService.getDesired()).to.be.undefined;
@@ -138,7 +138,7 @@ describe('RealityService', () => {
             container.registerSingleton(Argon.ConnectService, Argon.LoopbackConnectService);
             const realityService:Argon.RealityService = container.get(Argon.RealityService);
             const sessionService:Argon.SessionService = container.get(Argon.SessionService);
-            
+
             sessionService.errorEvent.addEventListener((error)=>{
                 expect(error).to.be.instanceof(Error);
                 done()
@@ -719,5 +719,56 @@ describe('VuforiaService', () => {
     //     })
     // })
 
+
+})
+
+describe('Utils', () => {
+
+    describe('decomposePerspectiveOffCenterProjectionMatrix', () => {
+        it('should correctly decompose a perspective off center projection matrix', () => {
+            const frustum = new Argon.Cesium.PerspectiveOffCenterFrustum;
+            frustum.left = -1;
+            frustum.right = 2;
+            frustum.top = -3;
+            frustum.bottom = 4;
+            frustum.near = 5;
+            frustum.far = 6;
+            const result = Argon.decomposePerspectiveOffCenterProjectionMatrix(
+                frustum.projectionMatrix, 
+                new Argon.Cesium.PerspectiveOffCenterFrustum
+            );
+            const CesiumMath = Argon.Cesium.CesiumMath;
+            expect(CesiumMath.equalsEpsilon(frustum.left, result.left, CesiumMath.EPSILON10)).to.be.true;
+            expect(CesiumMath.equalsEpsilon(frustum.right, result.right, CesiumMath.EPSILON10)).to.be.true;
+            expect(CesiumMath.equalsEpsilon(frustum.top, result.top, CesiumMath.EPSILON10)).to.be.true;
+            expect(CesiumMath.equalsEpsilon(frustum.bottom, result.bottom, CesiumMath.EPSILON10)).to.be.true;
+            expect(CesiumMath.equalsEpsilon(frustum.near, result.near, CesiumMath.EPSILON10)).to.be.true;
+            expect(CesiumMath.equalsEpsilon(frustum.far, result.far, CesiumMath.EPSILON10)).to.be.true;
+        });
+    })
+
+    describe('decomposePerspectiveProjectionMatrix', () => {
+        it('should correctly decompose a perspective projection matrix', () => {
+            const frustum = new Argon.Cesium.PerspectiveFrustum;
+            frustum.fov = Math.PI / 2;
+            frustum.near = 0.01;
+            frustum.far = 10000;
+            frustum.aspectRatio = 0.75;
+            frustum.xOffset = 42;
+            frustum.yOffset = 15;
+            const result = Argon.decomposePerspectiveProjectionMatrix(
+                frustum.projectionMatrix, 
+                new Argon.Cesium.PerspectiveFrustum
+            );
+            const CesiumMath = Argon.Cesium.CesiumMath;
+            expect(CesiumMath.equalsEpsilon(frustum.fov, result.fov, CesiumMath.EPSILON10)).to.be.true;
+            expect(CesiumMath.equalsEpsilon(frustum.fovy, result.fovy, CesiumMath.EPSILON10)).to.be.true;
+            expect(CesiumMath.equalsEpsilon(frustum.aspectRatio, result.aspectRatio, CesiumMath.EPSILON10)).to.be.true;
+            expect(CesiumMath.equalsEpsilon(frustum.near, result.near, CesiumMath.EPSILON10)).to.be.true;
+            expect(CesiumMath.equalsEpsilon(frustum.far, result.far, CesiumMath.EPSILON10)).to.be.true;
+            expect(CesiumMath.equalsEpsilon(frustum.xOffset, result.xOffset, CesiumMath.EPSILON10)).to.be.true;
+            expect(CesiumMath.equalsEpsilon(frustum.yOffset, result.yOffset, CesiumMath.EPSILON10)).to.be.true;
+        });
+    })
 
 })
