@@ -19,6 +19,7 @@ if (typeof document !== 'undefined' && document.createElement) {
     argonMetaTag.name = 'argon'
     document.head.appendChild(argonMetaTag);
 
+    var argonContainer: HTMLElement;
     var argonContainerPromise = new Promise<HTMLElement>((resolve) => {
         const resolveArgonContainer = () => {
             let container = <HTMLDivElement>document.querySelector('#argon');
@@ -26,6 +27,7 @@ if (typeof document !== 'undefined' && document.createElement) {
             container.id = 'argon';
             container.classList.add('argon-view');
             document.body.appendChild(container);
+            argonContainer = container;
             resolve(container);
         }
         if (document.readyState == 'loading') {
@@ -129,15 +131,19 @@ export class ViewService {
             element.classList.add('argon-view');
 
             this.containingElementPromise = new Promise((resolve) => {
-                if (containerElement) {
+                if (containerElement && containerElement instanceof HTMLElement) {
                     containerElement.insertBefore(element, containerElement.firstChild);
                     resolve(containerElement);
                 } else {
-                    argonContainerPromise.then((argonContainer) => {
-                        containerElement = argonContainer;
-                        containerElement.insertBefore(element, containerElement.firstChild);
-                        resolve(containerElement);
-                    })
+                    if (argonContainer) {
+                        argonContainer.insertBefore(element, argonContainer.firstChild);
+                        resolve(argonContainer);
+                    } else {
+                        argonContainerPromise.then((argonContainer) => {
+                            argonContainer.insertBefore(element, argonContainer.firstChild);
+                            resolve(argonContainer);
+                        })
+                    }
                     this.focusService.focusEvent.addEventListener(() => {
                         argonContainerPromise.then((argonContainer) => {
                             argonContainer.classList.remove('argon-no-focus');
@@ -300,11 +306,13 @@ export class ViewService {
             this._currentViewportJSON = viewportJSON;
 
             if (this.element) {
-                const viewport = view.viewport;
-                this.element.style.left = viewport.x + 'px';
-                this.element.style.bottom = viewport.y + 'px';
-                this.element.style.width = (viewport.width / document.documentElement.clientWidth) * 100 + '%';
-                this.element.style.height = (viewport.height / document.documentElement.clientHeight) * 100 + '%';
+                requestAnimationFrame(() => {
+                    const viewport = view.viewport;
+                    this.element.style.left = viewport.x + 'px';
+                    this.element.style.bottom = viewport.y + 'px';
+                    this.element.style.width = viewport.width + 'px';
+                    this.element.style.height = viewport.height + 'px';
+                })
             }
 
             this.viewportChangeEvent.raiseEvent({ previous: previousViewport })
