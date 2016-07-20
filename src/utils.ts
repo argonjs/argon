@@ -6,6 +6,8 @@ import {
     Entity,
     JulianDate,
     Ellipsoid,
+    PerspectiveFrustum,
+    PerspectiveOffCenterFrustum,
     PositionProperty,
     OrientationProperty,
     Quaternion,
@@ -498,4 +500,56 @@ export class MessageChannelFactory {
     public createSynchronous(): SynchronousMessageChannel {
         return new SynchronousMessageChannel()
     }
+}
+
+export function decomposePerspectiveOffCenterProjectionMatrix(mat: Matrix4, result: PerspectiveOffCenterFrustum) {
+    const m11 = mat[Matrix4.COLUMN0ROW0];
+    const m12 = mat[Matrix4.COLUMN0ROW1];
+    const m22 = mat[Matrix4.COLUMN1ROW1];
+    const m31 = mat[Matrix4.COLUMN2ROW0];
+    const m32 = mat[Matrix4.COLUMN2ROW1];
+    const m33 = mat[Matrix4.COLUMN2ROW2];
+    const m43 = mat[Matrix4.COLUMN3ROW2];
+
+    const near = result.near = m43 / (m33 - 1);
+    result.far = m43 / (m33 + 1);
+    result.bottom = near * (m32 - 1) / m22;
+    result.top = near * (m32 + 1) / m22;
+    result.left = near * (m31 - 1) / m11;
+    result.right = near * (m31 + 1) / m11;
+    return result;
+}
+
+const scratchPerspectiveOffCenterFrustum = new PerspectiveOffCenterFrustum;
+
+export function decomposePerspectiveProjectionMatrix(mat: Matrix4, result: PerspectiveFrustum) {
+    const f = decomposePerspectiveOffCenterProjectionMatrix(mat, scratchPerspectiveOffCenterFrustum);
+
+    const xOffset = (f.left + f.right) / 2;
+    const yOffset = (f.top + f.bottom) / 2;
+    const near = f.near;
+    const far = f.far;
+    const left = f.left - xOffset;
+    const right = f.right - xOffset;
+    const top = f.top - yOffset;
+    const bottom = f.bottom - yOffset;
+    const aspectRatio = right / top;
+
+    const fovy = 2 * Math.atan(top / near);
+
+    let fov;
+    if (aspectRatio < 1) {
+        fov = fovy;
+    } else {
+        fov = Math.atan(Math.tan(fovy * 0.5) * aspectRatio) * 2.0
+    }
+
+    result.near = near;
+    result.far = far;
+    result.fov = fov;
+    result.aspectRatio = aspectRatio;
+    result.xOffset = xOffset;
+    result.yOffset = yOffset;
+
+    return result;
 }
