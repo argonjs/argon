@@ -118,6 +118,10 @@ declare module 'Cesium/Source/Scene/PerspectiveFrustum' {
     import {PerspectiveFrustum} from 'Cesium';
     export default PerspectiveFrustum;
 }
+declare module 'Cesium/Source/Scene/PerspectiveOffCenterFrustum' {
+    import {PerspectiveOffCenterFrustum} from 'Cesium';
+    export default PerspectiveOffCenterFrustum;
+}
 declare module 'Cesium/Source/DataSources/PositionProperty' {
     import {PositionProperty} from 'Cesium';
     export default PositionProperty;
@@ -1103,8 +1107,6 @@ declare module 'Cesium' {
         static inverse(matrix: Matrix3, result: Matrix3): Matrix3;
         static equals(left?: Matrix3, right?: Matrix3): boolean;
         static equalsEpsilon(left: Matrix3, right: Matrix3, epsilon: number): boolean;
-
-        // Note: Added by Argon
         length: number;
     }
 
@@ -1178,8 +1180,6 @@ declare module 'Cesium' {
         static getRotation(matrix: Matrix4, result: Matrix3): Matrix3;
         static inverse(matrix: Matrix4, result: Matrix4): Matrix4;
         static inverseTransformation(matrix: Matrix4, result: Matrix4): Matrix4;
-
-        // Note: Added by Argon
         length: number;
     }
 
@@ -1982,10 +1982,6 @@ declare module 'Cesium' {
         static processPacketData(type: Function, object: any, propertyName: string, packetData: any, interval: TimeInterval, sourceUri: string, entityCollection: EntityCollection);
         static processPositionPacketData(object: any, propertyName: string, packetData: any, interval: TimeInterval, sourceUri: string, entityCollection: EntityCollection);
         static processMaterialPacketData(object: any, propertyName: string, packetData: any, interval: TimeInterval, sourceUri: string, entityCollection: EntityCollection);
-
-        // Note: Added by Argon, defined in common/dataSource.ts
-        publishEntity(entity: Entity): Promise<Entity>;
-        subscribeToEntityById(entityId: string): Promise<Entity>;
     }
 
     class DataSource {
@@ -2153,13 +2149,13 @@ declare module 'Cesium' {
         ellipsoid: EllipsoidGraphics;
         label: LabelGraphics;
         model: ModelGraphics;
-        orientation: Property;
+        orientation?: Property;
         path: PathGraphics;
         point: PointGraphics;
         polygon: PolygonGraphics;
         polyline: PolylineGraphics;
         polylineVolume: PolylineVolumeGraphics;
-        position: PositionProperty;
+        position?: PositionProperty;
         rectangle: RectangleGraphics;
         viewFrom: Property;
         wall: WallGraphics;
@@ -2351,14 +2347,12 @@ declare module 'Cesium' {
         destroy();
     }
 
-    // Note: Added by Argon. This is technically a class, but effectively an interface
+    // Note: Added by Argon.
     class OrientationProperty {
         isConstant: boolean;
         definitionChanged: Event;
         getValue(time: JulianDate, result?: Quaternion): Quaternion;
         equals(other: Property): boolean;
-        // Note: declared private, but Argon depends upon it
-        // TODO: better type annotations
         static convertToReferenceFrame(time: any, value: any, inputFrame: any, outputFrame: any, result: any): any;
     }
 
@@ -3495,6 +3489,8 @@ declare module 'Cesium' {
         projectionMatrix: Matrix4;
         infiniteProjectionMatrix: Matrix4;
         fovy: number;
+        xOffset: number;
+        yOffset: number;
         computeCullingVolume(position: Cartesian3, direction: Cartesian3, up: Cartesian3): CullingVolume;
         getPixelSize(drawingBufferDimensions: Cartesian2, distance?: number, result?: Cartesian2): Cartesian2;
         clone(result?: PerspectiveFrustum): PerspectiveFrustum;
@@ -4858,5 +4854,5 @@ declare module 'Cesium' {
 
     function createGuid(): string;
     function defaultValue<T>(maybe: T, default_: T): T;
-    function defined(value: any): boolean;
+    function defined<T>(value: T|undefined|null): value is T;
 }
