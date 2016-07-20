@@ -135,6 +135,7 @@ export class ViewService {
                     containerElement.insertBefore(element, containerElement.firstChild);
                     resolve(containerElement);
                 } else {
+                    argonContainer = <HTMLDivElement>document.querySelector('#argon');
                     if (argonContainer) {
                         argonContainer.insertBefore(element, argonContainer.firstChild);
                         resolve(argonContainer);
