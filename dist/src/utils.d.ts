@@ -1,5 +1,5 @@
 import { SerializedEntityPose } from './common';
-import { Entity, JulianDate, Quaternion, Cartesian3, ReferenceFrame } from './cesium/cesium-imports';
+import { Entity, JulianDate, PerspectiveFrustum, PerspectiveOffCenterFrustum, Quaternion, Cartesian3, ReferenceFrame, Matrix4 } from './cesium/cesium-imports';
 /**
  * A callback for removing the event listener.
  */
@@ -212,3 +212,5 @@ export declare class MessageChannelFactory {
      */
     createSynchronous(): SynchronousMessageChannel;
 }
+export declare function decomposePerspectiveOffCenterProjectionMatrix(mat: Matrix4, result: PerspectiveOffCenterFrustum): PerspectiveOffCenterFrustum;
+export declare function decomposePerspectiveProjectionMatrix(mat: Matrix4, result: PerspectiveFrustum): PerspectiveFrustum;

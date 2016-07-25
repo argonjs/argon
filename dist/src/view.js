@@ -1,4 +1,4 @@
-System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './common', './session', './context', './utils', './focus'], function(exports_1, context_1) {
+System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './session', './context', './utils', './focus', './reality'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -7,8 +7,8 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
         else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
-    var aurelia_dependency_injection_1, cesium_imports_1, common_1, session_1, context_2, utils_1, focus_1;
-    var argonContainerPromise, ViewService, PinchZoomService;
+    var aurelia_dependency_injection_1, cesium_imports_1, session_1, context_2, utils_1, focus_1, reality_1;
+    var argonContainer, argonContainerPromise, ViewService, PinchZoomService;
     return {
         setters:[
             function (aurelia_dependency_injection_1_1) {
@@ -16,9 +16,6 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
             },
             function (cesium_imports_1_1) {
                 cesium_imports_1 = cesium_imports_1_1;
-            },
-            function (common_1_1) {
-                common_1 = common_1_1;
             },
             function (session_1_1) {
                 session_1 = session_1_1;
@@ -31,6 +28,9 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
             },
             function (focus_1_1) {
                 focus_1 = focus_1_1;
+            },
+            function (reality_1_1) {
+                reality_1 = reality_1_1;
             }],
         execute: function() {
             // setup our DOM environment
@@ -54,6 +54,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                         container.id = 'argon';
                         container.classList.add('argon-view');
                         document.body.appendChild(container);
+                        argonContainer = container;
                         resolve(container);
                     };
                     if (document.readyState == 'loading') {
@@ -95,30 +96,31 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                      *  Manager-only. A map of sessions to their desired viewports.
                      */
                     this.desiredViewportMap = new WeakMap();
+                    this._subviews = [];
                     this._subviewEntities = [];
-                    /**
-                     * The value used to scale the x and y axis of the projection matrix when
-                     * processing eye parameters from a reality. This value is only used by the manager.
-                     */
-                    this.zoomFactor = 1;
-                    this._scratchFrustum = new cesium_imports_1.PerspectiveFrustum();
-                    this._scratchArray = [];
+                    this._frustums = [];
                     if (typeof document !== 'undefined' && document.createElement) {
                         var element_1 = this.element = document.createElement('div');
                         element_1.style.width = '100%';
                         element_1.style.height = '100%';
                         element_1.classList.add('argon-view');
                         this.containingElementPromise = new Promise(function (resolve) {
-                            if (containerElement) {
+                            if (containerElement && containerElement instanceof HTMLElement) {
                                 containerElement.insertBefore(element_1, containerElement.firstChild);
                                 resolve(containerElement);
                             }
                             else {
-                                argonContainerPromise.then(function (argonContainer) {
-                                    containerElement = argonContainer;
-                                    containerElement.insertBefore(element_1, containerElement.firstChild);
-                                    resolve(containerElement);
-                                });
+                                argonContainer = document.querySelector('#argon');
+                                if (argonContainer) {
+                                    argonContainer.insertBefore(element_1, argonContainer.firstChild);
+                                    resolve(argonContainer);
+                                }
+                                else {
+                                    argonContainerPromise.then(function (argonContainer) {
+                                        argonContainer.insertBefore(element_1, argonContainer.firstChild);
+                                        resolve(argonContainer);
+                                    });
+                                }
                                 _this.focusService.focusEvent.addEventListener(function () {
                                     argonContainerPromise.then(function (argonContainer) {
                                         argonContainer.classList.remove('argon-no-focus');
@@ -140,19 +142,9 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                                 _this.desiredViewportMap.set(session, viewport);
                             };
                         });
-                        this.contextService.prepareEvent.addEventListener(function (_a) {
-                            var serializedState = _a.serializedState, state = _a.state;
-                            if (!cesium_imports_1.defined(state.view)) {
-                                if (!cesium_imports_1.defined(serializedState.eye))
-                                    throw new Error("Unable to construct view configuration: missing eye parameters");
-                                state.view = _this.generateViewFromEyeParameters(serializedState.eye);
-                                if (!Array.isArray(state.view.subviews[0].projectionMatrix))
-                                    throw new Error("Expected projectionMatrix to be an Array<number>");
-                            }
-                        });
                     }
                     this.contextService.renderEvent.addEventListener(function () {
-                        var state = _this.contextService.state;
+                        var state = _this.contextService.serializedFrameState;
                         var subviewEntities = _this._subviewEntities;
                         subviewEntities.length = 0;
                         state.view.subviews.forEach(function (subview, index) {
@@ -162,22 +154,32 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                             delete state.entities[id];
                             subviewEntities[index] = _this.contextService.entities.getById(id);
                         });
-                        _this.update();
+                        _this._update();
                     });
                 }
                 ViewService.prototype.getSubviews = function (referenceFrame) {
                     var _this = this;
-                    this.update();
-                    var subviews = [];
-                    this._current.subviews.forEach(function (subview, index) {
+                    this._update();
+                    var subviews = this._subviews;
+                    subviews.length = this._current.subviews.length;
+                    this._current.subviews.forEach(function (serializedSubview, index) {
                         var subviewEntity = _this._subviewEntities[index];
-                        subviews[index] = {
-                            index: index,
-                            type: subview.type,
-                            pose: _this.contextService.getEntityPose(subviewEntity, referenceFrame),
-                            projectionMatrix: subview.projectionMatrix,
-                            viewport: subview.viewport || _this._current.viewport
-                        };
+                        var subview = subviews[index] = subviews[index] || {};
+                        subview.index = index;
+                        subview.type = serializedSubview.type;
+                        subview.pose = _this.contextService.getEntityPose(subviewEntity, referenceFrame);
+                        subview.viewport = serializedSubview.viewport || _this._current.viewport;
+                        subview.frustum = _this._frustums[index];
+                        if (!subview.frustum) {
+                            subview.frustum = _this._frustums[index] = new cesium_imports_1.PerspectiveFrustum();
+                            subview.frustum.near = 0.01;
+                            subview.frustum.far = 10000000;
+                        }
+                        subview.frustum.fov = serializedSubview.frustum.fov;
+                        subview.frustum.aspectRatio = serializedSubview.frustum.aspectRatio || subview.viewport.width / subview.viewport.height;
+                        subview.frustum.xOffset = serializedSubview.frustum.xOffset || 0;
+                        subview.frustum.yOffset = serializedSubview.frustum.yOffset || 0;
+                        subview.projectionMatrix = serializedSubview.projectionMatrix || subview.frustum.infiniteProjectionMatrix;
                     });
                     return subviews;
                 };
@@ -209,60 +211,26 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                  */
                 ViewService.prototype.isOwner = function () {
                 };
-                /**
-                 * Returns a maximum viewport
-                 */
-                ViewService.prototype.getMaximumViewport = function () {
-                    if (typeof document !== 'undefined' && document.documentElement) {
-                        return {
-                            x: 0,
-                            y: 0,
-                            width: document.documentElement.clientWidth,
-                            height: document.documentElement.clientHeight
-                        };
-                    }
-                    throw new Error("Not implemeneted for the current platform");
-                };
-                ViewService.prototype.generateViewFromEyeParameters = function (eye) {
-                    var viewport = this.getMaximumViewport();
-                    this._scratchFrustum.fov = Math.PI / 3;
-                    this._scratchFrustum.aspectRatio = viewport.width / viewport.height;
-                    this._scratchFrustum.near = 0.01;
-                    var projectionMatrix = cesium_imports_1.Matrix4.toArray(this._scratchFrustum.infiniteProjectionMatrix, this._scratchArray);
-                    if (this.zoomFactor !== 1) {
-                        projectionMatrix[0] *= this.zoomFactor;
-                        projectionMatrix[1] *= this.zoomFactor;
-                        projectionMatrix[2] *= this.zoomFactor;
-                        projectionMatrix[3] *= this.zoomFactor;
-                        projectionMatrix[4] *= this.zoomFactor;
-                        projectionMatrix[5] *= this.zoomFactor;
-                        projectionMatrix[6] *= this.zoomFactor;
-                        projectionMatrix[7] *= this.zoomFactor;
-                    }
-                    return {
-                        viewport: viewport,
-                        pose: eye.pose,
-                        subviews: [
-                            {
-                                type: common_1.SubviewType.SINGULAR,
-                                projectionMatrix: projectionMatrix,
-                            }
-                        ]
-                    };
-                };
-                ViewService.prototype.update = function () {
-                    var view = this.contextService.state.view;
+                // Updates the element, if necessary, and raise a view change event
+                ViewService.prototype._update = function () {
+                    var _this = this;
+                    var state = this.contextService.serializedFrameState;
+                    if (!state)
+                        throw new Error('Expected state to be defined');
+                    var view = state.view;
                     var viewportJSON = JSON.stringify(view.viewport);
                     var previousViewport = this._current && this._current.viewport;
                     this._current = view;
                     if (!this._currentViewportJSON || this._currentViewportJSON !== viewportJSON) {
                         this._currentViewportJSON = viewportJSON;
                         if (this.element) {
-                            var viewport = view.viewport;
-                            this.element.style.left = viewport.x + 'px';
-                            this.element.style.bottom = viewport.y + 'px';
-                            this.element.style.width = (viewport.width / document.documentElement.clientWidth) * 100 + '%';
-                            this.element.style.height = (viewport.height / document.documentElement.clientHeight) * 100 + '%';
+                            requestAnimationFrame(function () {
+                                var viewport = view.viewport;
+                                _this.element.style.left = viewport.x + 'px';
+                                _this.element.style.bottom = viewport.y + 'px';
+                                _this.element.style.width = viewport.width + 'px';
+                                _this.element.style.height = viewport.height + 'px';
+                            });
                         }
                         this.viewportChangeEvent.raiseEvent({ previous: previousViewport });
                     }
@@ -274,17 +242,20 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
             }());
             exports_1("ViewService", ViewService);
             PinchZoomService = (function () {
-                function PinchZoomService(viewService, sessionService) {
+                function PinchZoomService(viewService, realityService, contextService, sessionService) {
                     var _this = this;
                     this.viewService = viewService;
+                    this.realityService = realityService;
+                    this.contextService = contextService;
                     this.sessionService = sessionService;
                     if (this.sessionService.isManager) {
                         var el = viewService.element;
                         el.style.pointerEvents = 'auto';
-                        var zoomStart_1;
+                        var fov_1 = -1;
                         if (typeof PointerEvent !== 'undefined') {
                             var evCache_1 = new Array();
                             var startDistSquared_1 = -1;
+                            var zoom_1 = 1;
                             var remove_event_1 = function (ev) {
                                 // Remove this event from the target's cache
                                 for (var i = 0; i < evCache_1.length; i++) {
@@ -308,20 +279,31 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                                         break;
                                     }
                                 }
+                                var state = _this.contextService.serializedFrameState;
+                                if (!state)
+                                    return;
                                 // If two pointers are down, check for pinch gestures
                                 if (evCache_1.length == 2) {
                                     // Calculate the distance between the two pointers
                                     var curDiffX = Math.abs(evCache_1[0].clientX - evCache_1[1].clientX);
                                     var curDiffY = Math.abs(evCache_1[0].clientY - evCache_1[1].clientY);
                                     var currDistSquared = curDiffX * curDiffX + curDiffY * curDiffY;
-                                    if (startDistSquared_1 > 0) {
-                                        var scale = currDistSquared / startDistSquared_1;
+                                    if (startDistSquared_1 == -1) {
+                                        // start pinch
+                                        startDistSquared_1 = currDistSquared;
+                                        fov_1 = state.view.subviews[0].frustum.fov;
+                                        zoom_1 = 1;
+                                        _this.realityService.zoom({ zoom: zoom_1, fov: fov_1, state: reality_1.RealityZoomState.START });
                                     }
                                     else {
-                                        startDistSquared_1 = currDistSquared;
+                                        // change pinch
+                                        zoom_1 = currDistSquared / startDistSquared_1;
+                                        _this.realityService.zoom({ zoom: zoom_1, fov: fov_1, state: reality_1.RealityZoomState.CHANGE });
                                     }
                                 }
                                 else {
+                                    // end pinch                            
+                                    _this.realityService.zoom({ zoom: zoom_1, fov: fov_1, state: reality_1.RealityZoomState.END });
                                     startDistSquared_1 = -1;
                                 }
                             };
@@ -343,17 +325,23 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                         }
                         else {
                             el.addEventListener('gesturestart', function (ev) {
-                                zoomStart_1 = _this.viewService.zoomFactor;
-                                _this.viewService.zoomFactor = zoomStart_1 * ev.scale;
+                                var state = _this.contextService.serializedFrameState;
+                                if (state && state.view.subviews[0]) {
+                                    fov_1 = state.view.subviews[0].frustum.fov;
+                                    _this.realityService.zoom({ zoom: ev.scale, fov: fov_1, state: reality_1.RealityZoomState.START });
+                                }
                             });
                             el.addEventListener('gesturechange', function (ev) {
-                                _this.viewService.zoomFactor = zoomStart_1 * ev.scale;
+                                _this.realityService.zoom({ zoom: ev.scale, fov: fov_1, state: reality_1.RealityZoomState.CHANGE });
+                            });
+                            el.addEventListener('gestureend', function (ev) {
+                                _this.realityService.zoom({ zoom: ev.scale, fov: fov_1, state: reality_1.RealityZoomState.END });
                             });
                         }
                     }
                 }
                 PinchZoomService = __decorate([
-                    aurelia_dependency_injection_1.inject(ViewService, session_1.SessionService)
+                    aurelia_dependency_injection_1.inject(ViewService, reality_1.RealityService, context_2.ContextService, session_1.SessionService)
                 ], PinchZoomService);
                 return PinchZoomService;
             }());

@@ -1,9 +1,9 @@
 import {inject} from 'aurelia-dependency-injection'
 import {Matrix4, JulianDate} from '../cesium/cesium-imports'
 
-import {Role, RealityView, SerializedFrameState, SubviewType} from '../common'
+import {Role, SerializedFrameState, SubviewType} from '../common'
 import {SessionService, SessionPort} from '../session'
-import {RealityLoader} from '../reality'
+import {RealityLoader, RealityView} from '../reality'
 import {getSerializedEntityPose} from '../utils'
 import {VuforiaServiceDelegate} from '../vuforia'
 

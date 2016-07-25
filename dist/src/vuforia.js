@@ -207,7 +207,7 @@ System.register(['aurelia-dependency-injection', './focus', './session', './util
                         });
                         focusService.sessionFocusEvent.addEventListener(function (_a) {
                             var current = _a.current;
-                            if (_this._sessionInitOptions.get(current)) {
+                            if (current && _this._sessionInitOptions.get(current)) {
                                 _this._setControllingSession(current);
                             }
                         });
@@ -233,7 +233,7 @@ System.register(['aurelia-dependency-injection', './focus', './session', './util
                 };
                 VuforiaService.prototype._selectControllingSession = function () {
                     var focusSession = this.focusService.getSession();
-                    if (this._sessionInitOptions.get(focusSession)) {
+                    if (focusSession && this._sessionInitOptions.get(focusSession)) {
                         this._setControllingSession(focusSession);
                         return;
                     }

@@ -1,17 +1,8 @@
 import { Entity, EntityCollection, CompositeEntityCollection, Cartesian3, Quaternion, JulianDate, ReferenceFrame } from './cesium/cesium-imports';
-import { RealityView, SerializedFrameState, SerializedEntityPoseMap, SerializedViewParameters } from './common';
+import { SerializedFrameState } from './common';
 import { SessionService } from './session';
 import { RealityService } from './reality';
 import { Event } from './utils';
-/**
- * Describes a complete frame state which is sent to child sessions
- */
-export interface FrameState extends SerializedFrameState {
-    reality: RealityView;
-    entities: SerializedEntityPoseMap;
-    view: SerializedViewParameters;
-    sendTime: JulianDate;
-}
 /**
  * Describes the pose of an entity at a particular time relative to a particular reference frame
  */
@@ -31,6 +22,10 @@ export declare enum PoseStatus {
     KNOWN = 1,
     FOUND = 2,
     LOST = 4,
+}
+export interface Frame {
+    time: JulianDate;
+    deltaTime: number;
 }
 /**
  * Provides a means of querying the current state of reality.
@@ -53,24 +48,16 @@ export declare class ContextService {
     private sessionService;
     private realityService;
     /**
-     * An event used internally to allow other services to modify the final frame state
-     * before it is processed by the ContextService
-     */
-    prepareEvent: Event<{
-        serializedState: SerializedFrameState;
-        state: FrameState;
-    }>;
-    /**
      * An event that is raised when all remotely managed entities are are up-to-date for
      * the current frame. It is suggested that all modifications to locally managed entities
      * should occur within this event.
      */
-    updateEvent: Event<void>;
+    updateEvent: Event<Frame>;
     /**
      * An event that is raised when it is an approriate time to render graphics.
      * This event fires after the update event.
      */
-    renderEvent: Event<void>;
+    renderEvent: Event<Frame>;
     /**
      * The set of entities representing well-known reference frames.
      * These are assumed to be readily available to applications.
@@ -104,24 +91,29 @@ export declare class ContextService {
      */
     localOriginEastUpSouth: Entity;
     /**
-     * Get the current time (not valid until the first update event)
+     * The current frame
      */
-    readonly time: JulianDate;
+    readonly frame: Frame;
     /**
-     *  Used internally. Return the last frame state.
+     * The serialized frame state for this frame
      */
-    readonly state: FrameState;
-    private _time;
+    readonly serializedFrameState: SerializedFrameState | undefined;
+    /**
+     * This value caps the deltaTime for each frame
+     */
+    maxDeltaTime: number;
+    private _serializedState?;
+    private _lastFrameUpdateTime;
+    private _frame;
     private _defaultReferenceFrame;
     private _entityPoseCache;
     private _entityPoseMap;
     private _subscribedEntities;
     private _updatingEntities;
     private _knownEntities;
-    private _state;
     constructor(sessionService: SessionService, realityService: RealityService);
     /**
-     * Get the current time (not valid until the first update event)
+     * Get the current time
      */
     getTime(): JulianDate;
     /**
@@ -152,8 +144,8 @@ export declare class ContextService {
     getEntityPose(entity: Entity, referenceFrame?: ReferenceFrame | Entity): EntityPose;
     private getCurrentEntityState(entity, referenceFrame);
     private _subviewEntities;
-    private _update(state);
-    updateEntityFromFrameState(id: string, state: FrameState): Entity | undefined;
+    private _update(serializedState);
+    updateEntityFromFrameState(id: string, state: SerializedFrameState): Entity | undefined;
     private _updateLocalOrigin(state);
     private _sendUpdateForSession(parentState, session);
     private _addEntityAndAncestorsToPoseMap(poseMap, id, time);

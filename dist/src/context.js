@@ -8,7 +8,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
     var aurelia_dependency_injection_1, cesium_imports_1, session_1, reality_1, utils_1;
-    var PoseStatus, scratchDate, scratchCartesian3, scratchQuaternion, scratchOriginCartesian3, negX90, ContextService;
+    var PoseStatus, scratchDate, scratchCartesian3, scratchQuaternion, scratchOriginCartesian3, ContextService;
     function _stringFromReferenceFrame(referenceFrame) {
         var rf = referenceFrame;
         return cesium_imports_1.defined(rf.id) ? rf.id : '' + rf;
@@ -47,7 +47,6 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
             scratchCartesian3 = new cesium_imports_1.Cartesian3(0, 0);
             scratchQuaternion = new cesium_imports_1.Quaternion(0, 0);
             scratchOriginCartesian3 = new cesium_imports_1.Cartesian3(0, 0);
-            negX90 = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_X, -cesium_imports_1.CesiumMath.PI_OVER_TWO);
             /**
              * Provides a means of querying the current state of reality.
              *
@@ -70,11 +69,6 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                     var _this = this;
                     this.sessionService = sessionService;
                     this.realityService = realityService;
-                    /**
-                     * An event used internally to allow other services to modify the final frame state
-                     * before it is processed by the ContextService
-                     */
-                    this.prepareEvent = new utils_1.Event();
                     /**
                      * An event that is raised when all remotely managed entities are are up-to-date for
                      * the current frame. It is suggested that all modifications to locally managed entities
@@ -133,8 +127,15 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                         position: new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, this.localOriginEastNorthUp),
                         orientation: new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_X, Math.PI / 2))
                     });
-                    // the current time (based on the current reality view, not valid until first update event)
-                    this._time = new cesium_imports_1.JulianDate(0, 0);
+                    /**
+                     * This value caps the deltaTime for each frame
+                     */
+                    this.maxDeltaTime = 1 / 3 * 1000;
+                    this._lastFrameUpdateTime = 0;
+                    this._frame = {
+                        time: new cesium_imports_1.JulianDate(0, 0),
+                        deltaTime: 0
+                    };
                     // The default origin to use when calling `getEntityPose`.
                     this._defaultReferenceFrame = this.localOriginEastNorthUp;
                     this._entityPoseCache = {};
@@ -147,18 +148,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                     this.entities.addCollection(this.subscribedEntities);
                     this.subscribedEntities.add(this.user);
                     if (this.sessionService.isManager) {
-                        this.realityService.frameEvent.addEventListener(function (serializedState) {
-                            var state = (_this._state || {});
-                            state.reality = _this.realityService.getCurrent();
-                            state.index = serializedState.index;
-                            state.time = serializedState.time;
-                            state.view = serializedState.view;
-                            state.entities = serializedState.entities || {};
-                            state.sendTime = cesium_imports_1.JulianDate.now(state.sendTime);
-                            _this.prepareEvent.raiseEvent({
-                                serializedState: serializedState,
-                                state: state
-                            });
+                        this.realityService.frameEvent.addEventListener(function (state) {
                             _this._update(state);
                         });
                         this.sessionService.connectEvent.addEventListener(function (session) {
@@ -177,31 +167,33 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                         };
                     }
                 }
-                Object.defineProperty(ContextService.prototype, "time", {
+                Object.defineProperty(ContextService.prototype, "frame", {
                     /**
-                     * Get the current time (not valid until the first update event)
+                     * The current frame
                      */
                     get: function () {
-                        return this._time;
+                        if (!cesium_imports_1.defined(this.serializedFrameState))
+                            throw new Error('A frame state has not yet been received');
+                        return this._frame;
                     },
                     enumerable: true,
                     configurable: true
                 });
-                Object.defineProperty(ContextService.prototype, "state", {
+                Object.defineProperty(ContextService.prototype, "serializedFrameState", {
                     /**
-                     *  Used internally. Return the last frame state.
+                     * The serialized frame state for this frame
                      */
                     get: function () {
-                        return this._state;
+                        return this._serializedState;
                     },
                     enumerable: true,
                     configurable: true
                 });
                 /**
-                 * Get the current time (not valid until the first update event)
+                 * Get the current time
                  */
                 ContextService.prototype.getTime = function () {
-                    return this._time;
+                    return this.frame.time;
                 };
                 /**
                  * Set the default reference frame for `getCurrentEntityState`.
@@ -237,7 +229,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                  */
                 ContextService.prototype.getEntityPose = function (entity, referenceFrame) {
                     if (referenceFrame === void 0) { referenceFrame = this._defaultReferenceFrame; }
-                    var time = this._time;
+                    var time = this.getTime();
                     var key = entity.id + '@' + _stringFromReferenceFrame(referenceFrame);
                     var entityPose = this._entityPoseMap.get(key);
                     if (!cesium_imports_1.defined(entityPose)) {
@@ -274,25 +266,23 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                     return this.getEntityPose(entity, referenceFrame);
                 };
                 // TODO: This function is called a lot. Potential for optimization. 
-                ContextService.prototype._update = function (state) {
+                ContextService.prototype._update = function (serializedState) {
                     var _this = this;
                     // if this session is the manager, we need to update our child sessions a.s.a.p
                     if (this.sessionService.isManager) {
-                        delete state.entities[this.user.id]; // children don't need this
+                        delete serializedState.entities[this.user.id]; // children don't need this
                         this._entityPoseCache = {};
                         for (var _i = 0, _a = this.sessionService.managedSessions; _i < _a.length; _i++) {
                             var session = _a[_i];
-                            this._sendUpdateForSession(state, session);
+                            this._sendUpdateForSession(serializedState, session);
                         }
                     }
-                    // save our state 
-                    this._state = state;
                     // our user entity is defined by the current view pose (the current reality must provide this)
-                    state.entities[this.user.id] = state.view.pose;
+                    serializedState.entities[this.user.id] = serializedState.view.pose;
                     // update the entities the manager knows about
                     this._knownEntities.clear();
-                    for (var id in state.entities) {
-                        this.updateEntityFromFrameState(id, state);
+                    for (var id in serializedState.entities) {
+                        this.updateEntityFromFrameState(id, serializedState);
                         this._updatingEntities.add(id);
                         this._knownEntities.add(id);
                     }
@@ -307,12 +297,17 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                         }
                     });
                     // update our local origin
-                    this._updateLocalOrigin(state);
-                    // update our time
-                    cesium_imports_1.JulianDate.clone(this._state.time, this._time);
+                    this._updateLocalOrigin(serializedState);
+                    // update our frame
+                    var frame = this._frame;
+                    var now = typeof performance !== 'undefined' ? performance.now() : Date.now();
+                    frame.deltaTime = Math.max(now - this._lastFrameUpdateTime, this.maxDeltaTime);
+                    cesium_imports_1.JulianDate.clone(serializedState.time, frame.time);
+                    this._serializedState = serializedState;
+                    this._lastFrameUpdateTime = now;
                     // raise an event for the user update and render the scene
-                    this.updateEvent.raiseEvent(undefined);
-                    this.renderEvent.raiseEvent(undefined);
+                    this.updateEvent.raiseEvent(frame);
+                    this.renderEvent.raiseEvent(frame);
                 };
                 ContextService.prototype.updateEntityFromFrameState = function (id, state) {
                     var entityPose = state.entities[id];
@@ -338,7 +333,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                         this.updateEntityFromFrameState(entityPose.r, state);
                         referenceFrame = this.entities.getById(entityPose.r);
                     }
-                    var positionValue = (entityPose.p === 0 ? cesium_imports_1.Cartesian3.ZERO : entityPose.p);
+                    var positionValue = entityPose.p === 0 ? cesium_imports_1.Cartesian3.ZERO : entityPose.p;
                     var orientationValue = entityPose.o === 0 ? cesium_imports_1.Quaternion.IDENTITY : entityPose.o;
                     var entity = this.subscribedEntities.getOrCreateEntity(id);
                     var entityPosition = entity.position;
@@ -353,7 +348,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                     else if (entityPosition instanceof cesium_imports_1.SampledPositionProperty) {
                         entityPosition.addSample(cesium_imports_1.JulianDate.clone(state.time), positionValue);
                     }
-                    if (!cesium_imports_1.defined(entityOrientation)) {
+                    if (orientationValue && !entityOrientation) {
                         entityOrientation = new cesium_imports_1.SampledProperty(cesium_imports_1.Quaternion);
                         entityOrientation.forwardExtrapolationType = cesium_imports_1.ExtrapolationType.HOLD;
                         entityOrientation.forwardExtrapolationDuration = 5 / 60;

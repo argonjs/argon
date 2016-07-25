@@ -2,7 +2,7 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var Event_1, cesium_imports_1;
-    var Event, CommandQueue, scratchCartesianPositionFIXED, scratchMatrix4, scratchMatrix3, getEntityPosition, getEntityOrientation, urlParser, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory;
+    var Event, CommandQueue, scratchCartesianPositionFIXED, scratchMatrix4, scratchMatrix3, getEntityPosition, getEntityOrientation, urlParser, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, scratchPerspectiveOffCenterFrustum;
     /**
      * Get array of ancestor reference frames of a Cesium Entity.
      * @param frame A Cesium Entity to get ancestor reference frames.
@@ -134,6 +134,51 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
         };
     }
     exports_1("parseURL", parseURL);
+    function decomposePerspectiveOffCenterProjectionMatrix(mat, result) {
+        var m11 = mat[cesium_imports_1.Matrix4.COLUMN0ROW0];
+        var m12 = mat[cesium_imports_1.Matrix4.COLUMN0ROW1];
+        var m22 = mat[cesium_imports_1.Matrix4.COLUMN1ROW1];
+        var m31 = mat[cesium_imports_1.Matrix4.COLUMN2ROW0];
+        var m32 = mat[cesium_imports_1.Matrix4.COLUMN2ROW1];
+        var m33 = mat[cesium_imports_1.Matrix4.COLUMN2ROW2];
+        var m43 = mat[cesium_imports_1.Matrix4.COLUMN3ROW2];
+        var near = result.near = m43 / (m33 - 1);
+        result.far = m43 / (m33 + 1);
+        result.bottom = near * (m32 - 1) / m22;
+        result.top = near * (m32 + 1) / m22;
+        result.left = near * (m31 - 1) / m11;
+        result.right = near * (m31 + 1) / m11;
+        return result;
+    }
+    exports_1("decomposePerspectiveOffCenterProjectionMatrix", decomposePerspectiveOffCenterProjectionMatrix);
+    function decomposePerspectiveProjectionMatrix(mat, result) {
+        var f = decomposePerspectiveOffCenterProjectionMatrix(mat, scratchPerspectiveOffCenterFrustum);
+        var xOffset = (f.left + f.right) / 2;
+        var yOffset = (f.top + f.bottom) / 2;
+        var near = f.near;
+        var far = f.far;
+        var left = f.left - xOffset;
+        var right = f.right - xOffset;
+        var top = f.top - yOffset;
+        var bottom = f.bottom - yOffset;
+        var aspectRatio = right / top;
+        var fovy = 2 * Math.atan(top / near);
+        var fov;
+        if (aspectRatio < 1) {
+            fov = fovy;
+        }
+        else {
+            fov = Math.atan(Math.tan(fovy * 0.5) * aspectRatio) * 2.0;
+        }
+        result.near = near;
+        result.far = far;
+        result.fov = fov;
+        result.aspectRatio = aspectRatio;
+        result.xOffset = xOffset;
+        result.yOffset = yOffset;
+        return result;
+    }
+    exports_1("decomposePerspectiveProjectionMatrix", decomposePerspectiveProjectionMatrix);
     return {
         setters:[
             function (Event_1_1) {
@@ -428,6 +473,7 @@ System.register(['Cesium/Source/Core/Event', './cesium/cesium-imports'], functio
                 return MessageChannelFactory;
             }());
             exports_1("MessageChannelFactory", MessageChannelFactory);
+            scratchPerspectiveOffCenterFrustum = new cesium_imports_1.PerspectiveOffCenterFrustum;
         }
     }
 });

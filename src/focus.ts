@@ -31,9 +31,9 @@ export class FocusService {
         this.sessionService.ensureIsManager();
         return this._sessionFocusEvent;
     }
-    private _sessionFocusEvent = new Event<{ previous: SessionPort, current: SessionPort }>();
+    private _sessionFocusEvent = new Event<{ previous?: SessionPort, current?: SessionPort }>();
 
-    private _session: SessionPort;
+    private _session?: SessionPort;
 
     constructor(private sessionService: SessionService) {
         sessionService.manager.on['ar.focus.state'] = (message: { state: boolean }) => {
@@ -61,7 +61,7 @@ export class FocusService {
     /**
      *  Manager-only. Grant focus to a managed session.
      */
-    public setSession(session: SessionPort) {
+    public setSession(session?: SessionPort) {
         this.sessionService.ensureIsManager();
         if (session && !session.isConnected)
             throw new Error('Only a connected session can be granted focus')

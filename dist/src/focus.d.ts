@@ -22,20 +22,20 @@ export declare class FocusService {
      * Manager-only. An event that is raised when a managed session has acquired focus.
      */
     readonly sessionFocusEvent: Event<{
-        previous: SessionPort;
-        current: SessionPort;
+        previous?: SessionPort | undefined;
+        current?: SessionPort | undefined;
     }>;
     private _sessionFocusEvent;
-    private _session;
+    private _session?;
     constructor(sessionService: SessionService);
     /**
      * Manager-only. The managed session which currently has focus.
      */
-    getSession(): SessionPort;
+    getSession(): SessionPort | undefined;
     /**
      *  Manager-only. Grant focus to a managed session.
      */
-    setSession(session: SessionPort): void;
+    setSession(session?: SessionPort): void;
     whenSessionHasFocus(session: SessionPort): Promise<{}>;
     private _setFocus(state);
 }

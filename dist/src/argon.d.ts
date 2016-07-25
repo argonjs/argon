@@ -3,7 +3,7 @@ import * as DI from 'aurelia-dependency-injection';
 import * as Cesium from './cesium/cesium-imports';
 import { SessionService } from './session';
 import { Configuration } from './common';
-import { ContextService } from './context';
+import { ContextService, Frame } from './context';
 import { DeviceService } from './device';
 import { FocusService } from './focus';
 import { RealityService } from './reality';
@@ -11,9 +11,9 @@ import { TimerService } from './timer';
 import { Event } from './utils';
 import { ViewService } from './view';
 import { VuforiaService } from './vuforia';
-import { EmptyRealityLoader } from './realities/empty';
-import { LiveVideoRealityLoader } from './realities/live_video';
-import { HostedRealityLoader } from './realities/hosted';
+import { EmptyRealityLoader } from './reality-loader/empty';
+import { LiveVideoRealityLoader } from './reality-loader/live_video';
+import { HostedRealityLoader } from './reality-loader/hosted';
 export { DI, Cesium };
 export * from './common';
 export * from './context';
@@ -41,18 +41,18 @@ export declare class ArgonSystem {
     readonly timer: TimerService;
     readonly view: ViewService;
     readonly vuforia: VuforiaService;
-    readonly updateEvent: Event<void>;
-    readonly renderEvent: Event<void>;
+    readonly updateEvent: Event<Frame>;
+    readonly renderEvent: Event<Frame>;
     readonly focusEvent: Event<void>;
     readonly blurEvent: Event<void>;
 }
 export interface InitParameters {
-    config?: Configuration;
+    configuration?: Configuration;
     container?: DI.Container;
 }
-export declare function init({config, container}?: InitParameters): ArgonSystem;
-export declare function initReality({config, container}?: InitParameters): ArgonSystem;
+export declare function init({configuration, container}?: InitParameters): ArgonSystem;
+export declare function initReality({configuration, container}?: InitParameters): ArgonSystem;
 export interface InitLocalParameters extends InitParameters {
     containerElement: HTMLElement;
 }
-export declare function initLocal({containerElement, config, container}: InitLocalParameters): ArgonSystem;
+export declare function initLocal({containerElement, configuration, container}: InitLocalParameters): ArgonSystem;

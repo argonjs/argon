@@ -80,13 +80,11 @@ var scratchArray = [];
 
 function update(time:Argon.Cesium.JulianDate, index:number) {
     app.device.update();
-    const viewport = app.view.getMaximumViewport();
-    perspectiveProjection.aspectRatio = viewport.width / viewport.height;
-    const matrix = perspectiveProjection.infiniteProjectionMatrix;
-    app.reality.frameEvent.raiseEvent({
+    app.reality.publishState({
         time,
         index,
         eye: {
+            viewport: app.view.getMaximumViewport(),
             pose: Argon.getSerializedEntityPose(app.device.displayEntity, time)
         }
     })

@@ -2,11 +2,12 @@
 import {inject} from 'aurelia-dependency-injection'
 import {Matrix4, JulianDate} from '../cesium/cesium-imports'
 
-import {Role, RealityView, SerializedFrameState, SubviewType} from '../common'
+import {Role, SerializedPartialFrameState, SubviewType} from '../common'
 import {SessionService, SessionPort} from '../session'
 import {DeviceService} from '../device'
 import {TimerService} from '../timer'
-import {RealityLoader} from '../reality'
+import {RealityLoader, RealityView} from '../reality'
+import {ViewService} from '../view'
 import {getSerializedEntityPose} from '../utils'
 
 @inject(SessionService, DeviceService, TimerService)
@@ -30,9 +31,7 @@ export class EmptyRealityLoader extends RealityLoader {
             let update = (time: JulianDate, index: number) => {
                 if (doUpdate) {
                     this.deviceService.update();
-                    const w = document.documentElement.clientWidth;
-                    const h = document.documentElement.clientHeight;
-                    const frameState: SerializedFrameState = {
+                    const frameState: SerializedPartialFrameState = {
                         time,
                         index,
                         eye: {

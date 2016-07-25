@@ -1,16 +1,18 @@
-import { Entity } from './cesium/cesium-imports';
-import { Viewport, SubviewType, SerializedEyeParameters, SerializedViewParameters } from './common';
+import { Entity, Matrix4, PerspectiveFrustum } from './cesium/cesium-imports';
+import { Viewport, SubviewType } from './common';
 import { SessionService, SessionPort } from './session';
 import { EntityPose, ContextService } from './context';
 import { Event } from './utils';
 import { FocusService } from './focus';
+import { RealityService } from './reality';
 /**
  * The rendering paramters for a particular subview
  */
 export interface Subview {
     index: number;
     type: SubviewType;
-    projectionMatrix: Array<number>;
+    projectionMatrix: Matrix4;
+    frustum: PerspectiveFrustum;
     pose: EntityPose;
     viewport: Viewport;
 }
@@ -54,7 +56,9 @@ export declare class ViewService {
     desiredViewportMap: WeakMap<SessionPort, Viewport>;
     private _current;
     private _currentViewportJSON;
+    private _subviews;
     private _subviewEntities;
+    private _frustums;
     constructor(containerElement: HTMLElement, sessionService: SessionService, focusService: FocusService, contextService: ContextService);
     getSubviews(referenceFrame?: Entity): Subview[];
     getViewport(): Viewport;
@@ -78,27 +82,12 @@ export declare class ViewService {
      * Returns true if this application has control over the view.
      */
     isOwner(): void;
-    /**
-     * Returns a maximum viewport
-     */
-    getMaximumViewport(): {
-        x: number;
-        y: number;
-        width: number;
-        height: number;
-    };
-    /**
-     * The value used to scale the x and y axis of the projection matrix when
-     * processing eye parameters from a reality. This value is only used by the manager.
-     */
-    zoomFactor: number;
-    private _scratchFrustum;
-    private _scratchArray;
-    protected generateViewFromEyeParameters(eye: SerializedEyeParameters): SerializedViewParameters;
-    update(): void;
+    private _update();
 }
 export declare class PinchZoomService {
     private viewService;
+    private realityService;
+    private contextService;
     private sessionService;
-    constructor(viewService: ViewService, sessionService: SessionService);
+    constructor(viewService: ViewService, realityService: RealityService, contextService: ContextService, sessionService: SessionService);
 }

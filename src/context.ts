@@ -17,21 +17,10 @@ import {
     createGuid,
     defined
 } from './cesium/cesium-imports'
-import {Role, RealityView, SerializedFrameState, SerializedEntityPoseMap, SerializedEyeParameters, SerializedViewParameters} from './common'
+import {Role, SerializedEntityPoseMap, SerializedViewParameters, SerializedFrameState} from './common'
 import {SessionService, SessionPort} from './session'
-import {RealityService} from './reality'
+import {RealityService, RealityView} from './reality'
 import {Event, getRootReferenceFrame, getSerializedEntityPose, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame} from './utils'
-import {ViewService} from './view'
-
-/**
- * Describes a complete frame state which is sent to child sessions
- */
-export interface FrameState extends SerializedFrameState {
-    reality: RealityView,
-    entities: SerializedEntityPoseMap,
-    view: SerializedViewParameters,
-    sendTime: JulianDate, // the time this state was sent
-}
 
 /**
  * Describes the pose of an entity at a particular time relative to a particular reference frame
@@ -60,7 +49,10 @@ const scratchCartesian3 = new Cartesian3(0, 0);
 const scratchQuaternion = new Quaternion(0, 0);
 const scratchOriginCartesian3 = new Cartesian3(0, 0);
 
-const negX90 = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, -CesiumMath.PI_OVER_TWO)
+export interface Frame {
+    time: JulianDate,
+    deltaTime: number // ms since last frame, capped to 1/30s
+}
 
 /**
  * Provides a means of querying the current state of reality. 
@@ -83,23 +75,17 @@ const negX90 = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, -CesiumMath.PI_OVER_T
 export class ContextService {
 
     /**
-     * An event used internally to allow other services to modify the final frame state 
-     * before it is processed by the ContextService
-     */
-    public prepareEvent = new Event<{ serializedState: SerializedFrameState, state: FrameState }>();
-
-    /**
      * An event that is raised when all remotely managed entities are are up-to-date for 
      * the current frame. It is suggested that all modifications to locally managed entities 
      * should occur within this event. 
      */
-    public updateEvent = new Event<void>();
+    public updateEvent = new Event<Frame>();
 
     /**
      * An event that is raised when it is an approriate time to render graphics. 
      * This event fires after the update event. 
      */
-    public renderEvent = new Event<void>();
+    public renderEvent = new Event<Frame>();
 
     /**
      * The set of entities representing well-known reference frames. 
@@ -156,21 +142,33 @@ export class ContextService {
     });
 
     /**
-     * Get the current time (not valid until the first update event)
+     * The current frame
      */
-    public get time() {
-        return this._time;
+    public get frame(): Frame {
+        if (!defined(this.serializedFrameState))
+            throw new Error('A frame state has not yet been received');
+        return this._frame;
     }
 
     /**
-     *  Used internally. Return the last frame state.
+     * The serialized frame state for this frame
      */
-    public get state() {
-        return this._state;
+    public get serializedFrameState(): SerializedFrameState | undefined {
+        return this._serializedState;
     }
 
-    // the current time (based on the current reality view, not valid until first update event)
-    private _time = new JulianDate(0, 0);
+    /**
+     * This value caps the deltaTime for each frame
+     */
+    public maxDeltaTime = 1 / 3 * 1000;
+
+    private _serializedState?: SerializedFrameState;
+    private _lastFrameUpdateTime = 0;
+
+    private _frame: Frame = {
+        time: new JulianDate(0, 0),
+        deltaTime: 0
+    }
 
     // The default origin to use when calling `getEntityPose`.
     private _defaultReferenceFrame = this.localOriginEastNorthUp;
@@ -182,8 +180,6 @@ export class ContextService {
     private _updatingEntities = new Set<string>();
     private _knownEntities = new Set<string>();
 
-    private _state: FrameState; // the last frame state
-
     constructor(
         private sessionService: SessionService,
         private realityService: RealityService) {
@@ -194,22 +190,7 @@ export class ContextService {
         this.subscribedEntities.add(this.user);
 
         if (this.sessionService.isManager) {
-            this.realityService.frameEvent.addEventListener((serializedState) => {
-
-                const state = <FrameState>(this._state || {});
-
-                state.reality = <RealityView>this.realityService.getCurrent();
-                state.index = serializedState.index;
-                state.time = serializedState.time;
-                state.view = <SerializedViewParameters>serializedState.view;
-                state.entities = serializedState.entities || {};
-                state.sendTime = JulianDate.now(state.sendTime);
-
-                this.prepareEvent.raiseEvent({
-                    serializedState,
-                    state
-                });
-
+            this.realityService.frameEvent.addEventListener((state) => {
                 this._update(state);
             });
 
@@ -224,17 +205,17 @@ export class ContextService {
 
             })
         } else {
-            this.sessionService.manager.on['ar.context.update'] = (state: FrameState) => {
+            this.sessionService.manager.on['ar.context.update'] = (state: SerializedFrameState) => {
                 this._update(state);
             }
         }
     }
 
     /**
-     * Get the current time (not valid until the first update event)
+     * Get the current time
      */
-    public getTime() {
-        return this._time;
+    public getTime(): JulianDate {
+        return this.frame.time;
     }
 
     /**
@@ -273,7 +254,7 @@ export class ContextService {
      * `Cartesian3`. Otherwise undefined.
      */
     public getEntityPose(entity: Entity, referenceFrame: ReferenceFrame | Entity = this._defaultReferenceFrame): EntityPose {
-        const time = this._time;
+        const time = this.getTime();
 
         const key = entity.id + '@' + _stringFromReferenceFrame(referenceFrame);
         let entityPose = this._entityPoseMap.get(key);
@@ -331,26 +312,23 @@ export class ContextService {
     private _subviewEntities: Entity[] = [];
 
     // TODO: This function is called a lot. Potential for optimization. 
-    private _update(state: FrameState) {
+    private _update(serializedState: SerializedFrameState) {
         // if this session is the manager, we need to update our child sessions a.s.a.p
         if (this.sessionService.isManager) {
-            delete state.entities[this.user.id]; // children don't need this
+            delete serializedState.entities[this.user.id]; // children don't need this
             this._entityPoseCache = {};
             for (const session of this.sessionService.managedSessions) {
-                this._sendUpdateForSession(state, session);
+                this._sendUpdateForSession(serializedState, session);
             }
         }
 
-        // save our state 
-        this._state = state;
-
         // our user entity is defined by the current view pose (the current reality must provide this)
-        state.entities[this.user.id] = state.view.pose;
+        serializedState.entities[this.user.id] = serializedState.view.pose;
 
         // update the entities the manager knows about
         this._knownEntities.clear();
-        for (const id in state.entities) {
-            this.updateEntityFromFrameState(id, state);
+        for (const id in serializedState.entities) {
+            this.updateEntityFromFrameState(id, serializedState);
             this._updatingEntities.add(id);
             this._knownEntities.add(id);
         }
@@ -367,17 +345,22 @@ export class ContextService {
         })
 
         // update our local origin
-        this._updateLocalOrigin(state);
+        this._updateLocalOrigin(serializedState);
 
-        // update our time
-        JulianDate.clone(<JulianDate>this._state.time, this._time);
+        // update our frame
+        const frame = this._frame;
+        const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
+        frame.deltaTime = Math.max(now - this._lastFrameUpdateTime, this.maxDeltaTime);
+        JulianDate.clone(<JulianDate>serializedState.time, frame.time);
+        this._serializedState = serializedState;
+        this._lastFrameUpdateTime = now;
 
         // raise an event for the user update and render the scene
-        this.updateEvent.raiseEvent(undefined);
-        this.renderEvent.raiseEvent(undefined);
+        this.updateEvent.raiseEvent(frame);
+        this.renderEvent.raiseEvent(frame);
     }
 
-    public updateEntityFromFrameState(id: string, state: FrameState) {
+    public updateEntityFromFrameState(id: string, state: SerializedFrameState) {
         const entityPose = state.entities[id];
         if (!entityPose) {
             if (!this.wellKnownReferenceFrames.getById(id)) {
@@ -403,8 +386,8 @@ export class ContextService {
             referenceFrame = this.entities.getById(entityPose.r);
         }
 
-        const positionValue = <Cartesian3>(entityPose.p === 0 ? Cartesian3.ZERO : entityPose.p);
-        const orientationValue = entityPose.o === 0 ? Quaternion.IDENTITY : entityPose.o;
+        const positionValue = entityPose.p === 0 ? Cartesian3.ZERO : <Cartesian3>entityPose.p;
+        const orientationValue = entityPose.o === 0 ? Quaternion.IDENTITY : <Quaternion>entityPose.o;
 
         const entity = this.subscribedEntities.getOrCreateEntity(id);
         let entityPosition = entity.position;
@@ -421,7 +404,7 @@ export class ContextService {
             entityPosition.addSample(JulianDate.clone(<JulianDate>state.time), positionValue);
         }
 
-        if (!defined(entityOrientation)) {
+        if (orientationValue && !entityOrientation) {
             entityOrientation = new SampledProperty(Quaternion);
             (entityOrientation as SampledProperty).forwardExtrapolationType = ExtrapolationType.HOLD;
             (entityOrientation as SampledProperty).forwardExtrapolationDuration = 5 / 60;
@@ -438,7 +421,7 @@ export class ContextService {
         return entity;
     }
 
-    private _updateLocalOrigin(state: FrameState) {
+    private _updateLocalOrigin(state: SerializedFrameState) {
         const userRootFrame = getRootReferenceFrame(this.user);
         const userPosition = this.user.position &&
             this.user.position.getValueInReferenceFrame(<JulianDate>state.time, userRootFrame, scratchCartesian3);
@@ -465,7 +448,7 @@ export class ContextService {
         }
     }
 
-    private _sendUpdateForSession(parentState: FrameState, session: SessionPort) {
+    private _sendUpdateForSession(parentState: SerializedFrameState, session: SessionPort) {
 
         const sessionPoseMap: SerializedEntityPoseMap = {}
 
@@ -478,7 +461,7 @@ export class ContextService {
             this._addEntityAndAncestorsToPoseMap(sessionPoseMap, id, <JulianDate>parentState.time);
         })
 
-        const sessionState: FrameState = {
+        const sessionState: SerializedFrameState = {
             reality: parentState.reality,
             index: parentState.index,
             time: parentState.time,

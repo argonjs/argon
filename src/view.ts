@@ -1,10 +1,11 @@
 import {inject} from 'aurelia-dependency-injection'
 import {defined, Entity, Matrix4, PerspectiveFrustum} from './cesium/cesium-imports'
-import {Viewport, SubviewType, SerializedFrameState, SerializedEyeParameters, SerializedEntityPose, SerializedViewParameters} from './common'
+import {Viewport, SubviewType, SerializedFrameState, SerializedPartialFrameState, SerializedEyeParameters, SerializedEntityPose, SerializedViewParameters} from './common'
 import {SessionService, SessionPort} from './session'
 import {EntityPose, ContextService} from './context'
 import {Event} from './utils'
 import {FocusService} from './focus'
+import {RealityService, RealityZoomState} from './reality'
 
 // setup our DOM environment
 if (typeof document !== 'undefined' && document.createElement) {
@@ -67,7 +68,8 @@ if (typeof document !== 'undefined' && document.createElement) {
 export interface Subview {
     index: number,
     type: SubviewType,
-    projectionMatrix: Array<number>,
+    projectionMatrix: Matrix4,
+    frustum: PerspectiveFrustum,
     pose: EntityPose,
     viewport: Viewport
 }
@@ -116,7 +118,9 @@ export class ViewService {
     private _current: SerializedViewParameters;
     private _currentViewportJSON: string;
 
+    private _subviews: Subview[] = [];
     private _subviewEntities: Entity[] = [];
+    private _frustums: PerspectiveFrustum[] = [];
 
     constructor(
         containerElement: HTMLElement,
@@ -167,20 +171,10 @@ export class ViewService {
                     this.desiredViewportMap.set(session, viewport);
                 }
             });
-
-            this.contextService.prepareEvent.addEventListener(({serializedState, state}) => {
-                if (!defined(state.view)) {
-                    if (!defined(serializedState.eye))
-                        throw new Error("Unable to construct view configuration: missing eye parameters");
-                    state.view = this.generateViewFromEyeParameters(serializedState.eye);
-                    if (!Array.isArray(state.view.subviews[0].projectionMatrix))
-                        throw new Error("Expected projectionMatrix to be an Array<number>");
-                }
-            })
         }
 
         this.contextService.renderEvent.addEventListener(() => {
-            const state = this.contextService.state;
+            const state = <SerializedFrameState>this.contextService.serializedFrameState;
             const subviewEntities = this._subviewEntities;
             subviewEntities.length = 0;
             state.view.subviews.forEach((subview, index) => {
@@ -190,22 +184,34 @@ export class ViewService {
                 delete state.entities[id];
                 subviewEntities[index] = this.contextService.entities.getById(id);
             });
-            this.update();
+            this._update();
         })
     }
 
     public getSubviews(referenceFrame?: Entity): Subview[] {
-        this.update();
-        let subviews: Subview[] = [];
-        this._current.subviews.forEach((subview, index) => {
+        this._update();
+        const subviews: Subview[] = this._subviews;
+        subviews.length = this._current.subviews.length;
+        this._current.subviews.forEach((serializedSubview, index) => {
             const subviewEntity = this._subviewEntities[index];
-            subviews[index] = {
-                index: index,
-                type: subview.type,
-                pose: this.contextService.getEntityPose(subviewEntity, referenceFrame),
-                projectionMatrix: <Array<number>>subview.projectionMatrix,
-                viewport: subview.viewport || this._current.viewport
+            const subview = subviews[index] = subviews[index] || <Subview>{};
+            subview.index = index;
+            subview.type = serializedSubview.type;
+            subview.pose = this.contextService.getEntityPose(subviewEntity, referenceFrame);
+            subview.viewport = serializedSubview.viewport || this._current.viewport;
+
+            subview.frustum = this._frustums[index];
+            if (!subview.frustum) {
+                subview.frustum = this._frustums[index] = new PerspectiveFrustum();
+                subview.frustum.near = 0.01;
+                subview.frustum.far = 10000000;
             }
+            subview.frustum.fov = serializedSubview.frustum.fov;
+            subview.frustum.aspectRatio = serializedSubview.frustum.aspectRatio || subview.viewport.width / subview.viewport.height;
+            subview.frustum.xOffset = serializedSubview.frustum.xOffset || 0;
+            subview.frustum.yOffset = serializedSubview.frustum.yOffset || 0;
+
+            subview.projectionMatrix = <Matrix4>serializedSubview.projectionMatrix || subview.frustum.infiniteProjectionMatrix;
         })
         return subviews;
     }
@@ -246,59 +252,12 @@ export class ViewService {
 
     }
 
-    /**
-     * Returns a maximum viewport
-     */
-    public getMaximumViewport() {
-        if (typeof document !== 'undefined' && document.documentElement) {
-            return {
-                x: 0,
-                y: 0,
-                width: document.documentElement.clientWidth,
-                height: document.documentElement.clientHeight
-            }
-        }
-        throw new Error("Not implemeneted for the current platform");
-    }
+    // Updates the element, if necessary, and raise a view change event
+    private _update() {
+        const state = this.contextService.serializedFrameState;
+        if (!state) throw new Error('Expected state to be defined');
 
-    /**
-     * The value used to scale the x and y axis of the projection matrix when
-     * processing eye parameters from a reality. This value is only used by the manager.
-     */
-    public zoomFactor = 1;
-
-    private _scratchFrustum = new PerspectiveFrustum();
-    private _scratchArray = [];
-    protected generateViewFromEyeParameters(eye: SerializedEyeParameters): SerializedViewParameters {
-        const viewport = this.getMaximumViewport();
-        this._scratchFrustum.fov = Math.PI / 3;
-        this._scratchFrustum.aspectRatio = viewport.width / viewport.height;
-        this._scratchFrustum.near = 0.01;
-        const projectionMatrix = Matrix4.toArray(this._scratchFrustum.infiniteProjectionMatrix, this._scratchArray);
-        if (this.zoomFactor !== 1) {
-            projectionMatrix[0] *= this.zoomFactor;
-            projectionMatrix[1] *= this.zoomFactor;
-            projectionMatrix[2] *= this.zoomFactor;
-            projectionMatrix[3] *= this.zoomFactor;
-            projectionMatrix[4] *= this.zoomFactor;
-            projectionMatrix[5] *= this.zoomFactor;
-            projectionMatrix[6] *= this.zoomFactor;
-            projectionMatrix[7] *= this.zoomFactor;
-        }
-        return {
-            viewport,
-            pose: eye.pose,
-            subviews: [
-                {
-                    type: SubviewType.SINGULAR,
-                    projectionMatrix,
-                }
-            ]
-        }
-    }
-
-    public update() {
-        const view = this.contextService.state.view;
+        const view = state.view;
         const viewportJSON = JSON.stringify(view.viewport);
         const previousViewport = this._current && this._current.viewport;
         this._current = view;
@@ -322,19 +281,24 @@ export class ViewService {
 }
 
 
-@inject(ViewService, SessionService)
+@inject(ViewService, RealityService, ContextService, SessionService)
 export class PinchZoomService {
-    constructor(private viewService: ViewService, private sessionService: SessionService) {
+    constructor(
+        private viewService: ViewService,
+        private realityService: RealityService,
+        private contextService: ContextService,
+        private sessionService: SessionService) {
         if (this.sessionService.isManager) {
             const el = viewService.element;
             el.style.pointerEvents = 'auto';
 
-            let zoomStart: number;
+            let fov: number = -1;
 
             if (typeof PointerEvent !== 'undefined') {
 
                 const evCache = new Array();
                 let startDistSquared = -1;
+                let zoom = 1;
 
                 const remove_event = (ev) => {
                     // Remove this event from the target's cache
@@ -363,6 +327,9 @@ export class PinchZoomService {
                         }
                     }
 
+                    const state = this.contextService.serializedFrameState;
+                    if (!state) return;
+
                     // If two pointers are down, check for pinch gestures
                     if (evCache.length == 2) {
                         // Calculate the distance between the two pointers
@@ -370,12 +337,20 @@ export class PinchZoomService {
                         const curDiffY = Math.abs(evCache[0].clientY - evCache[1].clientY);
                         const currDistSquared = curDiffX * curDiffX + curDiffY * curDiffY;
 
-                        if (startDistSquared > 0) {
-                            const scale = currDistSquared / startDistSquared;
-                        } else {
+                        if (startDistSquared == -1) {
+                            // start pinch
                             startDistSquared = currDistSquared;
+                            fov = state.view.subviews[0].frustum.fov;
+                            zoom = 1;
+                            this.realityService.zoom({ zoom, fov, state: RealityZoomState.START });
+                        } else {
+                            // change pinch
+                            zoom = currDistSquared / startDistSquared;
+                            this.realityService.zoom({ zoom, fov, state: RealityZoomState.CHANGE });
                         }
                     } else {
+                        // end pinch                            
+                        this.realityService.zoom({ zoom, fov, state: RealityZoomState.END });
                         startDistSquared = -1;
                     }
                 }
@@ -400,11 +375,17 @@ export class PinchZoomService {
 
             } else {
                 el.addEventListener('gesturestart', (ev: any) => {
-                    zoomStart = this.viewService.zoomFactor;
-                    this.viewService.zoomFactor = zoomStart * ev.scale;
+                    const state = this.contextService.serializedFrameState;
+                    if (state && state.view.subviews[0]) {
+                        fov = state.view.subviews[0].frustum.fov;
+                        this.realityService.zoom({ zoom: ev.scale, fov, state: RealityZoomState.START });
+                    }
                 })
                 el.addEventListener('gesturechange', (ev: any) => {
-                    this.viewService.zoomFactor = zoomStart * ev.scale;
+                    this.realityService.zoom({ zoom: ev.scale, fov, state: RealityZoomState.CHANGE });
+                })
+                el.addEventListener('gestureend', (ev: any) => {
+                    this.realityService.zoom({ zoom: ev.scale, fov, state: RealityZoomState.END });
                 })
             }
         }

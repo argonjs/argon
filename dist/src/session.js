@@ -137,10 +137,10 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                  */
                 SessionPort.prototype.open = function (messagePort, options) {
                     var _this = this;
+                    if (this._isClosed)
+                        return;
                     if (this._isOpened)
                         throw new Error('Session can only be opened once');
-                    if (this._isClosed)
-                        throw new Error('Session has already been closed');
                     if (!options)
                         throw new Error('Session options must be provided');
                     this.messagePort = messagePort;

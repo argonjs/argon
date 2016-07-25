@@ -467,7 +467,7 @@ describe('CommandQueue', () => {
 describe('Context', () => {
 
     function createSystem() {
-        return Argon.init({config: {role: Argon.Role.MANAGER}});
+        return Argon.init({configuration: {role: Argon.Role.MANAGER}});
     }
 
     describe('new Context()', () => {
@@ -478,7 +478,7 @@ describe('Context', () => {
         it('should emit update events with default reality', (done) => {
             const {context} = createSystem();
             const removeListener = context.updateEvent.addEventListener(() => {
-                expect(context.state.reality.type).to.equal('empty');
+                expect(context.serializedFrameState.reality.type).to.equal('empty');
                 removeListener();
                 done();
             })
@@ -549,7 +549,7 @@ describe('VuforiaService', () => {
     function createManagerWithVuforiaDelegate(DelegateClass: typeof Argon.VuforiaServiceDelegate) {
         const container = new Argon.DI.Container();
         container.registerSingleton(Argon.VuforiaServiceDelegate, DelegateClass)
-        const manager = Argon.init({config:{
+        const manager = Argon.init({configuration:{
             role:Argon.Role.MANAGER
         }, container});
         return manager;

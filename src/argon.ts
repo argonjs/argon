@@ -12,18 +12,18 @@ import {
 } from './session'
 
 import {Configuration, Role} from './common'
-import {ContextService} from './context'
+import {ContextService, Frame} from './context'
 import {DeviceService} from './device'
 import {FocusService} from './focus'
-import {RealityService, RealityLoader} from './reality'
+import {RealityView, RealityService, RealityLoader} from './reality'
 import {TimerService} from './timer'
 import {Event} from './utils'
 import {ViewService, PinchZoomService} from './view'
 import {VuforiaService} from './vuforia'
 
-import {EmptyRealityLoader} from './realities/empty'
-import {LiveVideoRealityLoader} from './realities/live_video'
-import {HostedRealityLoader} from './realities/hosted'
+import {EmptyRealityLoader} from './reality-loader/empty'
+import {LiveVideoRealityLoader} from './reality-loader/live_video'
+import {HostedRealityLoader} from './reality-loader/hosted'
 
 export {DI, Cesium}
 export * from './common'
@@ -86,11 +86,11 @@ export class ArgonSystem {
 
             if (typeof document !== 'undefined') {
                 this.reality.registerLoader(container.get(HostedRealityLoader));
-                this.reality.setDefault({ type: 'empty', name: 'Empty Reality' })
-
                 // enable pinch-zoom
-                container.get(PinchZoomService)
+                container.get(PinchZoomService);
             }
+
+            this.reality.setDefault(RealityView.EMPTY);
         }
 
         // ensure the entire object graph is instantiated before connecting to the manager. 
@@ -135,11 +135,11 @@ export class ArgonSystem {
 
     // events
 
-    public get updateEvent(): Event<void> {
+    public get updateEvent(): Event<Frame> {
         return this.context.updateEvent;
     }
 
-    public get renderEvent(): Event<void> {
+    public get renderEvent(): Event<Frame> {
         return this.context.renderEvent;
     }
 
@@ -153,11 +153,11 @@ export class ArgonSystem {
 }
 
 export interface InitParameters {
-    config?: Configuration,
+    configuration?: Configuration,
     container?: DI.Container
 }
 
-export function init({ config, container = new DI.Container }: InitParameters = {}) {
+export function init({ configuration, container = new DI.Container }: InitParameters = {}) {
     let role: Role;
     if (typeof window === 'undefined') {
         role = Role.MANAGER
@@ -166,32 +166,32 @@ export function init({ config, container = new DI.Container }: InitParameters = 
     } else {
         role = Role.MANAGER
     }
-    const configuration = Object.assign(config || {}, <Configuration>{
+    const config = Object.assign(configuration || {}, <Configuration>{
         role,
     });
     container.registerInstance('containerElement', null);
-    return new ArgonSystem(configuration, container);
+    return new ArgonSystem(config, container);
 }
 
-export function initReality({ config, container = new DI.Container }: InitParameters = {}) {
-    const configuration = Object.assign(config || {}, <Configuration>{
+export function initReality({ configuration, container = new DI.Container }: InitParameters = {}) {
+    const config = Object.assign(configuration || {}, <Configuration>{
         role: Role.REALITY_VIEW,
         'reality.supportsControlPort': true
     });
     container.registerInstance('containerElement', null);
-    return new ArgonSystem(configuration, container);
+    return new ArgonSystem(config, container);
 }
 
 export interface InitLocalParameters extends InitParameters {
     containerElement: HTMLElement
 }
 
-export function initLocal({ containerElement, config, container = new DI.Container }: InitLocalParameters) {
-    const configuration = Object.assign(config || {}, <Configuration>{
+export function initLocal({ containerElement, configuration, container = new DI.Container }: InitLocalParameters) {
+    const config = Object.assign(configuration || {}, <Configuration>{
         role: Role.MANAGER
     });
     container.registerInstance('containerElement', containerElement);
-    return new ArgonSystem(configuration, container);
+    return new ArgonSystem(config, container);
 }
 
 declare class Object {

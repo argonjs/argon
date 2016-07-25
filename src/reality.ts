@@ -1,11 +1,56 @@
 import {inject, All} from 'aurelia-dependency-injection'
-import {createGuid, defined, Entity, Cartesian3, Quaternion, CesiumMath, Matrix4, JulianDate, ReferenceFrame } from './cesium/cesium-imports'
+import {
+    createGuid,
+    defined,
+    Cartesian3,
+    CesiumMath,
+    Entity,
+    JulianDate,
+    Matrix4,
+    PerspectiveFrustum,
+    Quaternion,
+    ReferenceFrame
+} from './cesium/cesium-imports'
 import {TimerService} from './timer'
-import {Role, SubviewType, SerializedFrameState, RealityView, SerializedEntityPoseMap} from './common'
+import {
+    Role,
+    SerializedPartialFrameState,
+    SerializedFrameState,
+    SerializedViewParameters,
+    SerializedEyeParameters,
+    SubviewType
+} from './common'
 import {FocusService} from './focus'
 import {SessionPort, SessionService} from './session'
 import {DeviceService} from './device'
 import {MessagePortLike, Event, getSerializedEntityPose} from './utils'
+
+/**
+* Represents a view of Reality
+*/
+export class RealityView {
+    static EMPTY = new RealityView('empty', 'Empty', {
+        providedReferenceFrames: ['FIXED']
+    });
+
+    public providedReferenceFrames?: Array<string>;
+
+    [option: string]: any;
+
+    constructor(
+        public type: string,
+        public name: string,
+        options?: {
+            providedReferenceFrames?: Array<string>
+            [option: string]: any
+        }) {
+        if (options) {
+            for (var k in options) {
+                this[k] = options[k];
+            }
+        }
+    }
+}
 
 /**
  * Abstract class for a reality setup handler
@@ -15,11 +60,32 @@ export abstract class RealityLoader {
     abstract load(reality: RealityView, callback: (realitySession: SessionPort) => void);
 }
 
+export enum RealityZoomState {
+    OTHER,
+    START,
+    CHANGE,
+    END
+}
+
+export interface RealityZoomData {
+    zoom: number,
+    fov: number,
+    naturalFov: number,
+    state: RealityZoomState
+}
+
 /**
-* A service which manages the reality view
+* A service which manages the reality view. 
+* For an app developer, the RealityService instance can be used to 
+* set preferences which can affect how the manager selects a reality view.
 */
 @inject(SessionService, FocusService)
 export class RealityService {
+
+    /**
+     * A collection of known reality views from which the reality service can select.
+     */
+    public realities = new Array<RealityView>();
 
     /**
      * An event that is raised when a reality control port is opened.
@@ -27,16 +93,24 @@ export class RealityService {
     public connectEvent = new Event<SessionPort>();
 
     /**
-     * An event that is raised when the current reality is changed.
+     * Manager-only. An event that is raised when the current reality is changed.
      */
-    public changeEvent = new Event<{ previous?: RealityView, current: RealityView }>();
+    private _changeEvent = new Event<{ previous?: RealityView, current: RealityView }>();
+    get changeEvent() {
+        this.sessionService.ensureIsManager();
+        return this._changeEvent;
+    }
 
     /**
-     * An event that is raised when the current reality emits the next frame state.
+     * Manager-only. An event that is raised when the current reality emits the next frame state.
      * This event contains pose updates for the entities that are managed by 
      * the current reality.
      */
-    public frameEvent = new Event<SerializedFrameState>();
+    private _frameEvent = new Event<SerializedFrameState>();
+    get frameEvent() {
+        this.sessionService.ensureIsManager();
+        return this._frameEvent;
+    }
 
     /**
      * Manager-only. A map from a managed session to the desired reality
@@ -54,10 +128,10 @@ export class RealityService {
     public sessionDesiredRealityChangeEvent = new Event<{ session: SessionPort, previous: RealityView, current: RealityView }>();
 
     // Manager-only. The port which connects the manager to the current reality
-    private _realitySession: SessionPort;
+    private _realitySession?: SessionPort;
 
     // The default reality
-    private _default?: RealityView;
+    private _default: RealityView;
 
     // The current reality
     private _current?: RealityView;
@@ -67,6 +141,11 @@ export class RealityService {
 
     // RealitySetupHandlers
     private _loaders: RealityLoader[] = [];
+
+    private _defaultFov = Math.PI / 2;
+    private _desiredFov: number | undefined;
+
+    private _frustum = new PerspectiveFrustum;
 
     constructor(
         private sessionService: SessionService,
@@ -78,12 +157,6 @@ export class RealityService {
                     if (!this._current) this._setNextReality(this.onSelectReality())
                 })
             });
-        } else if (sessionService.isRealityView) {
-            this.frameEvent.addEventListener((frameState) => {
-                if (this.sessionService.manager.isConnected) {
-                    this.sessionService.manager.send('ar.reality.frameState', frameState);
-                }
-            })
         }
 
         sessionService.connectEvent.addEventListener((session) => {
@@ -141,6 +214,17 @@ export class RealityService {
 
             realityControlSession.open(messageChannel.port2, this.sessionService.configuration);
         }
+
+        sessionService.manager.on['ar.reality.zoom'] = (data: RealityZoomData) => {
+            this.zoom(data);
+        }
+    }
+
+    /**     
+     * Set the default reality.
+     */
+    public setDefault(reality: RealityView) {
+        this._default = reality;
     }
 
     /**
@@ -152,9 +236,11 @@ export class RealityService {
     }
 
     /**
-     * Get the current reality view
+     * Manager-only. Get the current reality view. 
+     * @deprecated. Use app.context.getCurrentReality()
      */
     public getCurrent(): RealityView | undefined {
+        this.sessionService.ensureIsManager();
         return this._current;
     }
 
@@ -169,13 +255,23 @@ export class RealityService {
     }
 
     /**
+     * Reality-only. Publish the next frame state. 
+     */
+    public publishFrame(state: SerializedPartialFrameState) {
+        this.sessionService.ensureIsReality();
+        if (this.sessionService.manager.isConnected) {
+            this.sessionService.manager.send('ar.reality.frameState', state);
+        }
+    }
+
+    /**
      * Set the desired reality. 
      */
-    public setDesired(reality: RealityView) {
+    public setDesired(reality: RealityView | undefined) {
         this.sessionService.ensureNotReality();
         this._desired = reality;
         if (this.sessionService.isManager) {
-            this._setNextReality(reality);
+            this._setNextReality(reality, true);
         } else {
             this.sessionService.manager.send('ar.reality.desired', { reality });
         }
@@ -203,11 +299,52 @@ export class RealityService {
     }
 
     /**
-     * Set the default reality. Manager-only. 
+     * Set a desired fov in radians.
      */
-    public setDefault(reality: RealityView) {
-        this.sessionService.ensureIsManager();
-        this._default = reality;
+    public setDesiredFov(fov: number | undefined) {
+        this._desiredFov = fov;
+        this.zoom({ fov: fov || this._defaultFov, zoom: 1, state: RealityZoomState.OTHER })
+    }
+
+    /**
+     * Get the desired fov in radians
+     */
+    public getDesiredFov(): number | undefined {
+        return this._desiredFov;
+    }
+
+    /**
+     * Set the default fov in radians, and adjust the desired fov to match the 
+     * previous desired / default ratio. 
+     */
+    public setDefaultFov(fov: number) {
+        if (defined(this._desiredFov)) {
+            const ratio = this._desiredFov / this._defaultFov;
+            this.setDesiredFov(fov * ratio);
+        }
+        this._defaultFov = fov;
+    }
+
+    /**
+     * Get the default fov in radians
+     */
+    public getDefaultFov() {
+        return this._defaultFov;
+    }
+
+    /**
+     * Returns a maximum viewport
+     */
+    public getMaximumViewport() {
+        if (typeof document !== 'undefined' && document.documentElement) {
+            return {
+                x: 0,
+                y: 0,
+                width: document.documentElement.clientWidth,
+                height: document.documentElement.clientHeight
+            }
+        }
+        throw new Error("Not implemeneted for the current platform");
     }
 
     /**
@@ -245,8 +382,63 @@ export class RealityService {
         return selectedReality;
     }
 
-    private _setNextReality(reality?: RealityView) {
-        if (this._current && reality && this._current === reality) return;
+    private _scratchFrustum = new PerspectiveFrustum();
+    private _scratchArray = new Array<number>();
+
+    public onGenerateViewFromEyeParameters(eye: SerializedEyeParameters): SerializedViewParameters {
+        const fov = eye.fov || this._desiredFov || this._defaultFov;
+        const viewport = eye.viewport || this.getMaximumViewport();
+        const aspectRatio = eye.aspect || viewport.width / viewport.height;
+        this._scratchFrustum.fov = fov;
+        this._scratchFrustum.aspectRatio = aspectRatio;
+        this._scratchFrustum.near = 0.01;
+        this._scratchFrustum.far = 10000000;
+        return {
+            viewport,
+            pose: eye.pose,
+            subviews: [
+                {
+                    type: SubviewType.SINGULAR,
+                    frustum: {
+                        fov,
+                        aspectRatio
+                    },
+                    // TODO: remove this later  
+                    projectionMatrix: Matrix4.toArray(this._scratchFrustum.projectionMatrix, this._scratchArray)
+                }
+            ]
+        }
+    }
+
+    public zoom(data: { zoom: number, fov: number, naturalFov?: number, state: RealityZoomState }) {
+        data.naturalFov = data.naturalFov || this._defaultFov;
+        if (this._realitySession && this._realitySession.info['reality.handlesZoom']) {
+            this._realitySession.send('ar.reality.zoom', data);
+        } else {
+            const fov = this._desiredFov = this.onZoom(<RealityZoomData>data);
+            if (this.sessionService.isRealityView) {
+                this.sessionService.manager.send('ar.reality.desiredFov', { fov });
+            }
+        }
+    }
+
+    protected onZoom(data: RealityZoomData): number {
+        let newFov = 2 * Math.atan(Math.tan(data.fov * 0.5) / data.zoom);
+        newFov = Math.max(
+            10 * CesiumMath.RADIANS_PER_DEGREE,
+            Math.min(newFov, 160 * CesiumMath.RADIANS_PER_DEGREE)
+        );
+        if (data.state === RealityZoomState.END &&
+            Math.abs(newFov - data.naturalFov) < 0.05 /* +-6deg */) {
+            newFov = data.naturalFov;
+        }
+        return newFov;
+    }
+
+    private _loadID = -1;
+
+    private _setNextReality(reality?: RealityView, force = false) {
+        if (this._current && reality && this._current === reality && !force) return;
         if (this._current && !reality && this._realitySession) return;
 
         if (!this._current && !defined(reality)) {
@@ -254,21 +446,50 @@ export class RealityService {
         }
 
         if (defined(reality)) {
+
             if (!this.isSupported(reality.type)) {
                 this.sessionService.errorEvent.raiseEvent(new Error('Reality of type "' + reality.type + '" is not available on this platform'))
                 return;
             }
 
+            const loadID = ++this._loadID;
+
             this._executeRealityLoader(reality, (realitySession) => {
                 if (realitySession.isConnected) throw new Error('Expected an unconnected session');
+                if (loadID !== this._loadID) {
+                    realitySession.close();
+                    return;
+                }
 
-                realitySession.on['ar.reality.frameState'] = (state: SerializedFrameState) => {
+                const previousRealitySession = this._realitySession;
+                const previousReality = this._current;
+
+                this._realitySession = realitySession;
+                this._setCurrent(<RealityView>reality);
+
+                realitySession.on['ar.reality.frameState'] = (serializedState: SerializedPartialFrameState) => {
+                    const state = <SerializedFrameState>serializedState;
+                    if (!defined(serializedState.view)) {
+                        if (!defined(serializedState.eye))
+                            throw new Error("Unable to construct view configuration: missing eye parameters");
+                        state.view = this.onGenerateViewFromEyeParameters(serializedState.eye);
+                        state.eye = undefined;
+                        state.entities = serializedState.entities || {};
+                    }
+                    state.reality = <RealityView>this.getCurrent();
                     this.frameEvent.raiseEvent(state);
+                }
+
+                realitySession.on['ar.reality.desiredFov'] = (state: { fov: number }) => {
+                    this._desiredFov = state.fov;
                 }
 
                 realitySession.closeEvent.addEventListener(() => {
                     console.log('Reality session closed: ' + JSON.stringify(reality));
-                    if (this._current == reality) {
+                    // select a new reality if the current reality has closed without 
+                    // another reality having been requested
+                    if (this._loadID === loadID) {
+                        this._realitySession = undefined;
                         this._current = undefined;
                         this._setNextReality(this.onSelectReality());
                     }
@@ -281,12 +502,6 @@ export class RealityService {
                         realitySession.close();
                         throw new Error('The application "' + realitySession.info.name + '" does not support being loaded as a reality');
                     }
-
-                    const previousRealitySession = this._realitySession;
-                    const previousReality = this._current;
-
-                    this._realitySession = realitySession;
-                    this._setCurrent(<RealityView>reality);
 
                     if (previousRealitySession) {
                         previousRealitySession.close();

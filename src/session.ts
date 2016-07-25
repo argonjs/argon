@@ -148,8 +148,8 @@ export class SessionPort {
      * @param options the configuration which describes this system.
      */
     open(messagePort: MessagePortLike, options: Configuration) {
+        if (this._isClosed) return;
         if (this._isOpened) throw new Error('Session can only be opened once');
-        if (this._isClosed) throw new Error('Session has already been closed');
         if (!options) throw new Error('Session options must be provided');
         this.messagePort = messagePort;
         this._isOpened = true;

@@ -1,6 +1,6 @@
 import {inject} from 'aurelia-dependency-injection'
 import {defined, createGuid, JulianDate} from './cesium/cesium-imports'
-import {Role, SerializedFrameState, SerializedEntityPoseMap} from './common'
+import {Role, SerializedPartialFrameState, SerializedEntityPoseMap} from './common'
 import {ContextService} from './context'
 import {FocusService} from './focus'
 import {SessionService, SessionPort} from './session'
@@ -54,7 +54,7 @@ export const enum VuforiaHint {
 export abstract class VuforiaServiceDelegateBase {
     videoEnabled: boolean;
     trackingEnabled: boolean;
-    stateUpdateEvent: Event<SerializedFrameState> = new Event();
+    stateUpdateEvent: Event<SerializedPartialFrameState> = new Event();
     abstract isAvailable(): boolean
     abstract setHint(hint: VuforiaHint, value: number): boolean;
     abstract init(options: VuforiaInitOptions): Promise<VuforiaInitResult>;
@@ -62,7 +62,7 @@ export abstract class VuforiaServiceDelegateBase {
     abstract cameraDeviceInitAndStart(): boolean;
     abstract cameraDeviceSetFlashTorchMode(on: boolean): boolean;
     abstract objectTrackerInit(): boolean;
-    abstract objectTrackerCreateDataSet(url?: string): string;
+    abstract objectTrackerCreateDataSet(url?: string): string | undefined;
     abstract objectTrackerDestroyDataSet(id: string): boolean;
     abstract objectTrackerActivateDataSet(id: string): boolean;
     abstract objectTrackerDeactivateDataSet(id: string): boolean;
@@ -223,7 +223,7 @@ export class VuforiaService {
             });
 
             focusService.sessionFocusEvent.addEventListener(({current}) => {
-                if (this._sessionInitOptions.get(current)) {
+                if (current && this._sessionInitOptions.get(current)) {
                     this._setControllingSession(current);
                 }
             });
@@ -253,7 +253,7 @@ export class VuforiaService {
     private _selectControllingSession() {
         const focusSession = this.focusService.getSession();
 
-        if (this._sessionInitOptions.get(focusSession)) {
+        if (focusSession && this._sessionInitOptions.get(focusSession)) {
             this._setControllingSession(focusSession);
             return;
         }

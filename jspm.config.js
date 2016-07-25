@@ -3,7 +3,7 @@ SystemJS.config({
     typescriptOptions: {
         "tsconfig": true,
         "typeCheck": false,
-        "sourceMap": false
+        "sourceMap": true
     },
     packages: {
         "src": {

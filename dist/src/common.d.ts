@@ -9,22 +9,13 @@ export interface Configuration {
     protocols?: string[];
     'app.disablePinchZoom'?: boolean;
     'reality.supportsControlPort'?: boolean;
-    'reality.supportsCustomViewport'?: boolean;
-    'reality.supportsCustomSubviews'?: boolean;
+    'reality.handlesZoom'?: boolean;
     'reality.providedReferenceFrames'?: (number | string)[];
 }
 export declare enum Role {
     APPLICATION,
     REALITY_VIEW,
     MANAGER,
-}
-/**
-* Represents a view of Reality
-*/
-export interface RealityView {
-    type: string;
-    name: string;
-    [option: string]: any;
 }
 /**
  * Viewport is expressed using a right-handed coordinate system with the origin
@@ -68,12 +59,25 @@ export interface SerializedEntityPose {
 export interface SerializedEntityPoseMap {
     [id: string]: SerializedEntityPose | undefined;
 }
+export interface SerializedFrustum {
+    xOffset?: number;
+    yOffset?: number;
+    fov: number;
+    aspectRatio?: number;
+}
 /**
  * The serialized rendering parameters for a particular subview
  */
 export interface SerializedSubview {
     type: SubviewType;
-    projectionMatrix: ArrayLike<number> | Matrix4;
+    /**
+     * @deprecated
+     */
+    projectionMatrix?: ArrayLike<number> | Matrix4;
+    /**
+     * The viewing frustum for this subview
+     */
+    frustum: SerializedFrustum;
     pose?: SerializedEntityPose;
     viewport?: Viewport;
 }
@@ -99,13 +103,16 @@ export interface SerializedViewParameters {
  * Describes the pose of a reality view and how it is able to render
  */
 export interface SerializedEyeParameters {
+    viewport?: Viewport;
     pose?: SerializedEntityPose;
     stereoMultiplier?: number;
+    fov?: number;
+    aspect?: number;
 }
 /**
  * Describes the serialized frame state.
  */
-export interface SerializedFrameState {
+export interface SerializedPartialFrameState {
     index: number;
     time: {
         dayNumber: number;
@@ -114,4 +121,21 @@ export interface SerializedFrameState {
     view?: SerializedViewParameters;
     eye?: SerializedEyeParameters;
     entities?: SerializedEntityPoseMap;
+}
+/**
+ * Describes a complete frame state which is sent to child sessions
+ */
+export interface SerializedFrameState extends SerializedPartialFrameState {
+    reality: {
+        type: string;
+        name: string;
+        [option: string]: any;
+    };
+    entities: SerializedEntityPoseMap;
+    eye?: undefined;
+    view: SerializedViewParameters;
+    sendTime?: {
+        dayNumber: number;
+        secondsOfDay: number;
+    };
 }

@@ -10,12 +10,10 @@ export interface Configuration {
     protocols?: string[];
     // app options
     'app.disablePinchZoom'?: boolean;
-    // reality view options
+    // reality options
     'reality.supportsControlPort'?: boolean;
-    'reality.supportsCustomViewport'?: boolean;
-    'reality.supportsCustomSubviews'?: boolean;
+    'reality.handlesZoom'?: boolean;
     'reality.providedReferenceFrames'?: (number | string)[];
-    // manager options
 }
 
 /*
@@ -38,15 +36,6 @@ export enum Role {
      * and keeps track of known entities in the world.
      */
     MANAGER = "Manager" as any
-}
-
-/**
-* Represents a view of Reality
-*/
-export interface RealityView {
-    type: string;
-    name: string;
-    [option: string]: any
 }
 
 /**
@@ -101,13 +90,26 @@ export interface SerializedEntityPoseMap {
     [id: string]: SerializedEntityPose | undefined
 }
 
+export interface SerializedFrustum {
+    xOffset?: number,
+    yOffset?: number,
+    fov: number,
+    aspectRatio?: number
+}
+
 /**
  * The serialized rendering parameters for a particular subview
  */
 export interface SerializedSubview {
     type: SubviewType,
-    projectionMatrix: ArrayLike<number> | Matrix4,
-    // TODO: use viewVolume instead of projectionMatrix as described here // http://www.codeproject.com/Articles/42848/A-New-Perspective-on-Viewing
+    /**
+     * @deprecated
+     */
+    projectionMatrix?: ArrayLike<number> | Matrix4,
+    /**
+     * The viewing frustum for this subview
+     */
+    frustum: SerializedFrustum,
     pose?: SerializedEntityPose, // if undefined, the primary pose should be assumed
     viewport?: Viewport // if undefined, the primary viewport should be assumed
 }
@@ -137,17 +139,31 @@ export interface SerializedViewParameters {
  * Describes the pose of a reality view and how it is able to render
  */
 export interface SerializedEyeParameters {
+    viewport?: Viewport; // default: maximum
     pose?: SerializedEntityPose;
     stereoMultiplier?: number; // default: 1
+    fov?: number; // default: defer to manager
+    aspect?: number; // default: matches viewport 
 }
 
 /**
  * Describes the serialized frame state.
  */
-export interface SerializedFrameState {
+export interface SerializedPartialFrameState {
     index: number,
     time: { dayNumber: number, secondsOfDay: number }, // JulianDate,
     view?: SerializedViewParameters,
     eye?: SerializedEyeParameters,
     entities?: SerializedEntityPoseMap
+}
+
+/**
+ * Describes a complete frame state which is sent to child sessions
+ */
+export interface SerializedFrameState extends SerializedPartialFrameState {
+    reality: { type: string, name: string, [option: string]: any },
+    entities: SerializedEntityPoseMap,
+    eye?: undefined,
+    view: SerializedViewParameters,
+    sendTime?: { dayNumber: number, secondsOfDay: number }, // the time this state was sent
 }

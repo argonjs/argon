@@ -1,10 +1,10 @@
-System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/cesium-imports', './session', './common', './context', './device', './focus', './reality', './timer', './view', './vuforia', './realities/empty', './realities/live_video', './realities/hosted', './utils'], function(exports_1, context_1) {
+System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/cesium-imports', './session', './common', './context', './device', './focus', './reality', './timer', './view', './vuforia', './reality-loader/empty', './reality-loader/live_video', './reality-loader/hosted', './utils'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var DI, Cesium, session_1, common_1, context_2, device_1, focus_1, reality_1, timer_1, view_1, vuforia_1, empty_1, live_video_1, hosted_1;
     var ArgonSystem;
     function init(_a) {
-        var _b = _a === void 0 ? {} : _a, config = _b.config, _c = _b.container, container = _c === void 0 ? new DI.Container : _c;
+        var _b = _a === void 0 ? {} : _a, configuration = _b.configuration, _c = _b.container, container = _c === void 0 ? new DI.Container : _c;
         var role;
         if (typeof window === 'undefined') {
             role = common_1.Role.MANAGER;
@@ -15,30 +15,30 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
         else {
             role = common_1.Role.MANAGER;
         }
-        var configuration = Object.assign(config || {}, {
+        var config = Object.assign(configuration || {}, {
             role: role,
         });
         container.registerInstance('containerElement', null);
-        return new ArgonSystem(configuration, container);
+        return new ArgonSystem(config, container);
     }
     exports_1("init", init);
     function initReality(_a) {
-        var _b = _a === void 0 ? {} : _a, config = _b.config, _c = _b.container, container = _c === void 0 ? new DI.Container : _c;
-        var configuration = Object.assign(config || {}, {
+        var _b = _a === void 0 ? {} : _a, configuration = _b.configuration, _c = _b.container, container = _c === void 0 ? new DI.Container : _c;
+        var config = Object.assign(configuration || {}, {
             role: common_1.Role.REALITY_VIEW,
             'reality.supportsControlPort': true
         });
         container.registerInstance('containerElement', null);
-        return new ArgonSystem(configuration, container);
+        return new ArgonSystem(config, container);
     }
     exports_1("initReality", initReality);
     function initLocal(_a) {
-        var containerElement = _a.containerElement, config = _a.config, _b = _a.container, container = _b === void 0 ? new DI.Container : _b;
-        var configuration = Object.assign(config || {}, {
+        var containerElement = _a.containerElement, configuration = _a.configuration, _b = _a.container, container = _b === void 0 ? new DI.Container : _b;
+        var config = Object.assign(configuration || {}, {
             role: common_1.Role.MANAGER
         });
         container.registerInstance('containerElement', containerElement);
-        return new ArgonSystem(configuration, container);
+        return new ArgonSystem(config, container);
     }
     exports_1("initLocal", initLocal);
     var exportedNames_1 = {
@@ -152,10 +152,10 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
                         this.reality.registerLoader(container.get(live_video_1.LiveVideoRealityLoader));
                         if (typeof document !== 'undefined') {
                             this.reality.registerLoader(container.get(hosted_1.HostedRealityLoader));
-                            this.reality.setDefault({ type: 'empty', name: 'Empty Reality' });
                             // enable pinch-zoom
                             container.get(view_1.PinchZoomService);
                         }
+                        this.reality.setDefault(reality_1.RealityView.EMPTY);
                     }
                     // ensure the entire object graph is instantiated before connecting to the manager. 
                     for (var _i = 0, _a = Object.keys(ArgonSystem.prototype); _i < _a.length; _i++) {

@@ -1,4 +1,4 @@
-import { SerializedFrameState } from './common';
+import { SerializedPartialFrameState } from './common';
 import { FocusService } from './focus';
 import { SessionService, SessionPort } from './session';
 import { Event } from './utils';
@@ -47,7 +47,7 @@ export declare const enum VuforiaHint {
 export declare abstract class VuforiaServiceDelegateBase {
     videoEnabled: boolean;
     trackingEnabled: boolean;
-    stateUpdateEvent: Event<SerializedFrameState>;
+    stateUpdateEvent: Event<SerializedPartialFrameState>;
     abstract isAvailable(): boolean;
     abstract setHint(hint: VuforiaHint, value: number): boolean;
     abstract init(options: VuforiaInitOptions): Promise<VuforiaInitResult>;
@@ -55,7 +55,7 @@ export declare abstract class VuforiaServiceDelegateBase {
     abstract cameraDeviceInitAndStart(): boolean;
     abstract cameraDeviceSetFlashTorchMode(on: boolean): boolean;
     abstract objectTrackerInit(): boolean;
-    abstract objectTrackerCreateDataSet(url?: string): string;
+    abstract objectTrackerCreateDataSet(url?: string): string | undefined;
     abstract objectTrackerDestroyDataSet(id: string): boolean;
     abstract objectTrackerActivateDataSet(id: string): boolean;
     abstract objectTrackerDeactivateDataSet(id: string): boolean;
