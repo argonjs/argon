@@ -32,6 +32,7 @@ System.register(['aurelia-dependency-injection', '../session', '../reality', '..
             HostedRealityLoader = (function (_super) {
                 __extends(HostedRealityLoader, _super);
                 function HostedRealityLoader(sessionService, viewService) {
+                    var _this = this;
                     _super.call(this);
                     this.sessionService = sessionService;
                     this.viewService = viewService;
@@ -40,36 +41,38 @@ System.register(['aurelia-dependency-injection', '../session', '../reality', '..
                     this.iframeElement.style.border = '0';
                     this.iframeElement.width = '100%';
                     this.iframeElement.height = '100%';
-                    viewService.element.insertBefore(this.iframeElement, viewService.element.firstChild);
+                    viewService.containingElementPromise.then(function (container) {
+                        container.insertBefore(_this.iframeElement, container.firstChild);
+                    });
                 }
                 HostedRealityLoader.prototype.load = function (reality, callback) {
                     var _this = this;
-                    var handleConnectMessage = function (ev) {
-                        if (ev.data.type !== 'ARGON_SESSION')
-                            return;
-                        var messagePort = ev.ports && ev.ports[0];
-                        if (!messagePort)
-                            throw new Error('Received an ARGON_SESSION message without a MessagePort object');
-                        // get the event.source iframe
-                        var i = 0;
-                        var frame;
-                        while (i < window.frames.length && !frame) {
-                            if (window.frames[i] == ev.source)
-                                frame = document.getElementsByTagName('iframe')[i];
-                        }
-                        if (frame !== _this.iframeElement)
-                            return;
-                        window.removeEventListener('message', handleConnectMessage);
-                        var realitySession = _this.sessionService.addManagedSessionPort();
-                        callback(realitySession);
-                        realitySession.open(messagePort, _this.sessionService.configuration);
-                    };
-                    window.addEventListener('message', handleConnectMessage);
-                    this.iframeElement.src = '';
-                    this.iframeElement.src = reality['url'];
-                    this.iframeElement.style.pointerEvents = 'auto';
-                };
-                HostedRealityLoader.prototype._handleMessage = function (ev) {
+                    this.viewService.containingElementPromise.then(function (container) {
+                        var handleConnectMessage = function (ev) {
+                            if (ev.data.type !== 'ARGON_SESSION')
+                                return;
+                            var messagePort = ev.ports && ev.ports[0];
+                            if (!messagePort)
+                                throw new Error('Received an ARGON_SESSION message without a MessagePort object');
+                            // get the event.source iframe
+                            var i = 0;
+                            var frame;
+                            while (i < window.frames.length && !frame) {
+                                if (window.frames[i] == ev.source)
+                                    frame = document.getElementsByTagName('iframe')[i];
+                            }
+                            if (frame !== _this.iframeElement)
+                                return;
+                            window.removeEventListener('message', handleConnectMessage);
+                            var realitySession = _this.sessionService.addManagedSessionPort();
+                            callback(realitySession);
+                            realitySession.open(messagePort, _this.sessionService.configuration);
+                        };
+                        window.addEventListener('message', handleConnectMessage);
+                        _this.iframeElement.src = '';
+                        _this.iframeElement.src = reality['url'];
+                        _this.iframeElement.style.pointerEvents = 'auto';
+                    });
                 };
                 HostedRealityLoader = __decorate([
                     aurelia_dependency_injection_1.inject(session_1.SessionService, view_1.ViewService)

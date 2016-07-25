@@ -8,5 +8,4 @@ export declare class HostedRealityLoader extends RealityLoader {
     iframeElement: HTMLIFrameElement;
     constructor(sessionService: SessionService, viewService: ViewService);
     load(reality: RealityView, callback: (realitySession: SessionPort) => void): void;
-    private _handleMessage(ev);
 }

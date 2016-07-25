@@ -115,7 +115,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     if (sessionService.isManager) {
                         sessionService.manager.connectEvent.addEventListener(function () {
                             setTimeout(function () {
-                                if (!_this._current)
+                                if (_this._loadID === -1)
                                     _this._setNextReality(_this.onSelectReality());
                             });
                         });

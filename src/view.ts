@@ -289,105 +289,105 @@ export class PinchZoomService {
         private contextService: ContextService,
         private sessionService: SessionService) {
         if (this.sessionService.isManager) {
-            const el = viewService.element;
-            el.style.pointerEvents = 'auto';
+            viewService.containingElementPromise.then((el) => {
+                el.style.pointerEvents = 'auto';
+                let fov: number = -1;
 
-            let fov: number = -1;
+                if (typeof PointerEvent !== 'undefined') {
 
-            if (typeof PointerEvent !== 'undefined') {
+                    const evCache = new Array();
+                    let startDistSquared = -1;
+                    let zoom = 1;
 
-                const evCache = new Array();
-                let startDistSquared = -1;
-                let zoom = 1;
-
-                const remove_event = (ev) => {
-                    // Remove this event from the target's cache
-                    for (var i = 0; i < evCache.length; i++) {
-                        if (evCache[i].pointerId == ev.pointerId) {
-                            evCache.splice(i, 1);
-                            break;
-                        }
-                    }
-                }
-
-                const pointerdown_handler = (ev) => {
-                    // The pointerdown event signals the start of a touch interaction.
-                    // This event is cached to support 2-finger gestures
-                    evCache.push(ev);
-                }
-
-                const pointermove_handler = (ev) => {
-                    // This function implements a 2-pointer pinch/zoom gesture. 
-
-                    // Find this event in the cache and update its record with this event
-                    for (var i = 0; i < evCache.length; i++) {
-                        if (ev.pointerId == evCache[i].pointerId) {
-                            evCache[i] = ev;
-                            break;
+                    const remove_event = (ev) => {
+                        // Remove this event from the target's cache
+                        for (var i = 0; i < evCache.length; i++) {
+                            if (evCache[i].pointerId == ev.pointerId) {
+                                evCache.splice(i, 1);
+                                break;
+                            }
                         }
                     }
 
-                    const state = this.contextService.serializedFrameState;
-                    if (!state) return;
+                    const pointerdown_handler = (ev) => {
+                        // The pointerdown event signals the start of a touch interaction.
+                        // This event is cached to support 2-finger gestures
+                        evCache.push(ev);
+                    }
 
-                    // If two pointers are down, check for pinch gestures
-                    if (evCache.length == 2) {
-                        // Calculate the distance between the two pointers
-                        const curDiffX = Math.abs(evCache[0].clientX - evCache[1].clientX);
-                        const curDiffY = Math.abs(evCache[0].clientY - evCache[1].clientY);
-                        const currDistSquared = curDiffX * curDiffX + curDiffY * curDiffY;
+                    const pointermove_handler = (ev) => {
+                        // This function implements a 2-pointer pinch/zoom gesture. 
 
-                        if (startDistSquared == -1) {
-                            // start pinch
-                            startDistSquared = currDistSquared;
-                            fov = state.view.subviews[0].frustum.fov;
-                            zoom = 1;
-                            this.realityService.zoom({ zoom, fov, state: RealityZoomState.START });
+                        // Find this event in the cache and update its record with this event
+                        for (var i = 0; i < evCache.length; i++) {
+                            if (ev.pointerId == evCache[i].pointerId) {
+                                evCache[i] = ev;
+                                break;
+                            }
+                        }
+
+                        const state = this.contextService.serializedFrameState;
+                        if (!state) return;
+
+                        // If two pointers are down, check for pinch gestures
+                        if (evCache.length == 2) {
+                            // Calculate the distance between the two pointers
+                            const curDiffX = Math.abs(evCache[0].clientX - evCache[1].clientX);
+                            const curDiffY = Math.abs(evCache[0].clientY - evCache[1].clientY);
+                            const currDistSquared = curDiffX * curDiffX + curDiffY * curDiffY;
+
+                            if (startDistSquared == -1) {
+                                // start pinch
+                                startDistSquared = currDistSquared;
+                                fov = state.view.subviews[0].frustum.fov;
+                                zoom = 1;
+                                this.realityService.zoom({ zoom, fov, state: RealityZoomState.START });
+                            } else {
+                                // change pinch
+                                zoom = currDistSquared / startDistSquared;
+                                this.realityService.zoom({ zoom, fov, state: RealityZoomState.CHANGE });
+                            }
                         } else {
-                            // change pinch
-                            zoom = currDistSquared / startDistSquared;
-                            this.realityService.zoom({ zoom, fov, state: RealityZoomState.CHANGE });
+                            // end pinch                            
+                            this.realityService.zoom({ zoom, fov, state: RealityZoomState.END });
+                            startDistSquared = -1;
                         }
-                    } else {
-                        // end pinch                            
-                        this.realityService.zoom({ zoom, fov, state: RealityZoomState.END });
-                        startDistSquared = -1;
                     }
-                }
 
-                const pointerup_handler = (ev) => {
-                    // Remove this pointer from the cache
-                    remove_event(ev);
+                    const pointerup_handler = (ev) => {
+                        // Remove this pointer from the cache
+                        remove_event(ev);
 
-                    // If the number of pointers down is less than two then reset diff tracker
-                    if (evCache.length < 2) startDistSquared = -1;
-                }
-
-                el.onpointerdown = pointerdown_handler;
-                el.onpointermove = pointermove_handler;
-
-                // Use same handler for pointer{up,cancel,out,leave} events since
-                // the semantics for these events - in this app - are the same.
-                el.onpointerup = pointerup_handler;
-                el.onpointercancel = pointerup_handler;
-                el.onpointerout = pointerup_handler;
-                el.onpointerleave = pointerup_handler;
-
-            } else {
-                el.addEventListener('gesturestart', (ev: any) => {
-                    const state = this.contextService.serializedFrameState;
-                    if (state && state.view.subviews[0]) {
-                        fov = state.view.subviews[0].frustum.fov;
-                        this.realityService.zoom({ zoom: ev.scale, fov, state: RealityZoomState.START });
+                        // If the number of pointers down is less than two then reset diff tracker
+                        if (evCache.length < 2) startDistSquared = -1;
                     }
-                })
-                el.addEventListener('gesturechange', (ev: any) => {
-                    this.realityService.zoom({ zoom: ev.scale, fov, state: RealityZoomState.CHANGE });
-                })
-                el.addEventListener('gestureend', (ev: any) => {
-                    this.realityService.zoom({ zoom: ev.scale, fov, state: RealityZoomState.END });
-                })
-            }
+
+                    el.onpointerdown = pointerdown_handler;
+                    el.onpointermove = pointermove_handler;
+
+                    // Use same handler for pointer{up,cancel,out,leave} events since
+                    // the semantics for these events - in this app - are the same.
+                    el.onpointerup = pointerup_handler;
+                    el.onpointercancel = pointerup_handler;
+                    el.onpointerout = pointerup_handler;
+                    el.onpointerleave = pointerup_handler;
+
+                } else {
+                    el.addEventListener('gesturestart', (ev: any) => {
+                        const state = this.contextService.serializedFrameState;
+                        if (state && state.view.subviews[0]) {
+                            fov = state.view.subviews[0].frustum.fov;
+                            this.realityService.zoom({ zoom: ev.scale, fov, state: RealityZoomState.START });
+                        }
+                    })
+                    el.addEventListener('gesturechange', (ev: any) => {
+                        this.realityService.zoom({ zoom: ev.scale, fov, state: RealityZoomState.CHANGE });
+                    })
+                    el.addEventListener('gestureend', (ev: any) => {
+                        this.realityService.zoom({ zoom: ev.scale, fov, state: RealityZoomState.END });
+                    })
+                }
+            })
         }
     }
 }

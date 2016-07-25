@@ -154,7 +154,8 @@ export class RealityService {
         if (sessionService.isManager) {
             sessionService.manager.connectEvent.addEventListener(() => {
                 setTimeout(() => {
-                    if (!this._current) this._setNextReality(this.onSelectReality())
+                    if (this._loadID === -1)
+                        this._setNextReality(this.onSelectReality())
                 })
             });
         }

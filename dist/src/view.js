@@ -249,95 +249,96 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                     this.contextService = contextService;
                     this.sessionService = sessionService;
                     if (this.sessionService.isManager) {
-                        var el = viewService.element;
-                        el.style.pointerEvents = 'auto';
-                        var fov_1 = -1;
-                        if (typeof PointerEvent !== 'undefined') {
-                            var evCache_1 = new Array();
-                            var startDistSquared_1 = -1;
-                            var zoom_1 = 1;
-                            var remove_event_1 = function (ev) {
-                                // Remove this event from the target's cache
-                                for (var i = 0; i < evCache_1.length; i++) {
-                                    if (evCache_1[i].pointerId == ev.pointerId) {
-                                        evCache_1.splice(i, 1);
-                                        break;
+                        viewService.containingElementPromise.then(function (el) {
+                            el.style.pointerEvents = 'auto';
+                            var fov = -1;
+                            if (typeof PointerEvent !== 'undefined') {
+                                var evCache_1 = new Array();
+                                var startDistSquared_1 = -1;
+                                var zoom_1 = 1;
+                                var remove_event_1 = function (ev) {
+                                    // Remove this event from the target's cache
+                                    for (var i = 0; i < evCache_1.length; i++) {
+                                        if (evCache_1[i].pointerId == ev.pointerId) {
+                                            evCache_1.splice(i, 1);
+                                            break;
+                                        }
                                     }
-                                }
-                            };
-                            var pointerdown_handler = function (ev) {
-                                // The pointerdown event signals the start of a touch interaction.
-                                // This event is cached to support 2-finger gestures
-                                evCache_1.push(ev);
-                            };
-                            var pointermove_handler = function (ev) {
-                                // This function implements a 2-pointer pinch/zoom gesture. 
-                                // Find this event in the cache and update its record with this event
-                                for (var i = 0; i < evCache_1.length; i++) {
-                                    if (ev.pointerId == evCache_1[i].pointerId) {
-                                        evCache_1[i] = ev;
-                                        break;
+                                };
+                                var pointerdown_handler = function (ev) {
+                                    // The pointerdown event signals the start of a touch interaction.
+                                    // This event is cached to support 2-finger gestures
+                                    evCache_1.push(ev);
+                                };
+                                var pointermove_handler = function (ev) {
+                                    // This function implements a 2-pointer pinch/zoom gesture. 
+                                    // Find this event in the cache and update its record with this event
+                                    for (var i = 0; i < evCache_1.length; i++) {
+                                        if (ev.pointerId == evCache_1[i].pointerId) {
+                                            evCache_1[i] = ev;
+                                            break;
+                                        }
                                     }
-                                }
-                                var state = _this.contextService.serializedFrameState;
-                                if (!state)
-                                    return;
-                                // If two pointers are down, check for pinch gestures
-                                if (evCache_1.length == 2) {
-                                    // Calculate the distance between the two pointers
-                                    var curDiffX = Math.abs(evCache_1[0].clientX - evCache_1[1].clientX);
-                                    var curDiffY = Math.abs(evCache_1[0].clientY - evCache_1[1].clientY);
-                                    var currDistSquared = curDiffX * curDiffX + curDiffY * curDiffY;
-                                    if (startDistSquared_1 == -1) {
-                                        // start pinch
-                                        startDistSquared_1 = currDistSquared;
-                                        fov_1 = state.view.subviews[0].frustum.fov;
-                                        zoom_1 = 1;
-                                        _this.realityService.zoom({ zoom: zoom_1, fov: fov_1, state: reality_1.RealityZoomState.START });
+                                    var state = _this.contextService.serializedFrameState;
+                                    if (!state)
+                                        return;
+                                    // If two pointers are down, check for pinch gestures
+                                    if (evCache_1.length == 2) {
+                                        // Calculate the distance between the two pointers
+                                        var curDiffX = Math.abs(evCache_1[0].clientX - evCache_1[1].clientX);
+                                        var curDiffY = Math.abs(evCache_1[0].clientY - evCache_1[1].clientY);
+                                        var currDistSquared = curDiffX * curDiffX + curDiffY * curDiffY;
+                                        if (startDistSquared_1 == -1) {
+                                            // start pinch
+                                            startDistSquared_1 = currDistSquared;
+                                            fov = state.view.subviews[0].frustum.fov;
+                                            zoom_1 = 1;
+                                            _this.realityService.zoom({ zoom: zoom_1, fov: fov, state: reality_1.RealityZoomState.START });
+                                        }
+                                        else {
+                                            // change pinch
+                                            zoom_1 = currDistSquared / startDistSquared_1;
+                                            _this.realityService.zoom({ zoom: zoom_1, fov: fov, state: reality_1.RealityZoomState.CHANGE });
+                                        }
                                     }
                                     else {
-                                        // change pinch
-                                        zoom_1 = currDistSquared / startDistSquared_1;
-                                        _this.realityService.zoom({ zoom: zoom_1, fov: fov_1, state: reality_1.RealityZoomState.CHANGE });
+                                        // end pinch                            
+                                        _this.realityService.zoom({ zoom: zoom_1, fov: fov, state: reality_1.RealityZoomState.END });
+                                        startDistSquared_1 = -1;
                                     }
-                                }
-                                else {
-                                    // end pinch                            
-                                    _this.realityService.zoom({ zoom: zoom_1, fov: fov_1, state: reality_1.RealityZoomState.END });
-                                    startDistSquared_1 = -1;
-                                }
-                            };
-                            var pointerup_handler = function (ev) {
-                                // Remove this pointer from the cache
-                                remove_event_1(ev);
-                                // If the number of pointers down is less than two then reset diff tracker
-                                if (evCache_1.length < 2)
-                                    startDistSquared_1 = -1;
-                            };
-                            el.onpointerdown = pointerdown_handler;
-                            el.onpointermove = pointermove_handler;
-                            // Use same handler for pointer{up,cancel,out,leave} events since
-                            // the semantics for these events - in this app - are the same.
-                            el.onpointerup = pointerup_handler;
-                            el.onpointercancel = pointerup_handler;
-                            el.onpointerout = pointerup_handler;
-                            el.onpointerleave = pointerup_handler;
-                        }
-                        else {
-                            el.addEventListener('gesturestart', function (ev) {
-                                var state = _this.contextService.serializedFrameState;
-                                if (state && state.view.subviews[0]) {
-                                    fov_1 = state.view.subviews[0].frustum.fov;
-                                    _this.realityService.zoom({ zoom: ev.scale, fov: fov_1, state: reality_1.RealityZoomState.START });
-                                }
-                            });
-                            el.addEventListener('gesturechange', function (ev) {
-                                _this.realityService.zoom({ zoom: ev.scale, fov: fov_1, state: reality_1.RealityZoomState.CHANGE });
-                            });
-                            el.addEventListener('gestureend', function (ev) {
-                                _this.realityService.zoom({ zoom: ev.scale, fov: fov_1, state: reality_1.RealityZoomState.END });
-                            });
-                        }
+                                };
+                                var pointerup_handler = function (ev) {
+                                    // Remove this pointer from the cache
+                                    remove_event_1(ev);
+                                    // If the number of pointers down is less than two then reset diff tracker
+                                    if (evCache_1.length < 2)
+                                        startDistSquared_1 = -1;
+                                };
+                                el.onpointerdown = pointerdown_handler;
+                                el.onpointermove = pointermove_handler;
+                                // Use same handler for pointer{up,cancel,out,leave} events since
+                                // the semantics for these events - in this app - are the same.
+                                el.onpointerup = pointerup_handler;
+                                el.onpointercancel = pointerup_handler;
+                                el.onpointerout = pointerup_handler;
+                                el.onpointerleave = pointerup_handler;
+                            }
+                            else {
+                                el.addEventListener('gesturestart', function (ev) {
+                                    var state = _this.contextService.serializedFrameState;
+                                    if (state && state.view.subviews[0]) {
+                                        fov = state.view.subviews[0].frustum.fov;
+                                        _this.realityService.zoom({ zoom: ev.scale, fov: fov, state: reality_1.RealityZoomState.START });
+                                    }
+                                });
+                                el.addEventListener('gesturechange', function (ev) {
+                                    _this.realityService.zoom({ zoom: ev.scale, fov: fov, state: reality_1.RealityZoomState.CHANGE });
+                                });
+                                el.addEventListener('gestureend', function (ev) {
+                                    _this.realityService.zoom({ zoom: ev.scale, fov: fov, state: reality_1.RealityZoomState.END });
+                                });
+                            }
+                        });
                     }
                 }
                 PinchZoomService = __decorate([

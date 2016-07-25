@@ -3593,7 +3593,7 @@ $__System.register("d", ["8", "6", "b", "10", "c", "e"], function(exports_1, con
           if (sessionService.isManager) {
             sessionService.manager.connectEvent.addEventListener(function() {
               setTimeout(function() {
-                if (!_this._current)
+                if (_this._loadID === -1)
                   _this._setNextReality(_this.onSelectReality());
               });
             });
@@ -4144,102 +4144,103 @@ $__System.register("13", ["8", "6", "c", "7", "e", "10", "d"], function(exports_
           this.contextService = contextService;
           this.sessionService = sessionService;
           if (this.sessionService.isManager) {
-            var el = viewService.element;
-            el.style.pointerEvents = 'auto';
-            var fov_1 = -1;
-            if (typeof PointerEvent !== 'undefined') {
-              var evCache_1 = new Array();
-              var startDistSquared_1 = -1;
-              var zoom_1 = 1;
-              var remove_event_1 = function(ev) {
-                for (var i = 0; i < evCache_1.length; i++) {
-                  if (evCache_1[i].pointerId == ev.pointerId) {
-                    evCache_1.splice(i, 1);
-                    break;
+            viewService.containingElementPromise.then(function(el) {
+              el.style.pointerEvents = 'auto';
+              var fov = -1;
+              if (typeof PointerEvent !== 'undefined') {
+                var evCache_1 = new Array();
+                var startDistSquared_1 = -1;
+                var zoom_1 = 1;
+                var remove_event_1 = function(ev) {
+                  for (var i = 0; i < evCache_1.length; i++) {
+                    if (evCache_1[i].pointerId == ev.pointerId) {
+                      evCache_1.splice(i, 1);
+                      break;
+                    }
                   }
-                }
-              };
-              var pointerdown_handler = function(ev) {
-                evCache_1.push(ev);
-              };
-              var pointermove_handler = function(ev) {
-                for (var i = 0; i < evCache_1.length; i++) {
-                  if (ev.pointerId == evCache_1[i].pointerId) {
-                    evCache_1[i] = ev;
-                    break;
+                };
+                var pointerdown_handler = function(ev) {
+                  evCache_1.push(ev);
+                };
+                var pointermove_handler = function(ev) {
+                  for (var i = 0; i < evCache_1.length; i++) {
+                    if (ev.pointerId == evCache_1[i].pointerId) {
+                      evCache_1[i] = ev;
+                      break;
+                    }
                   }
-                }
-                var state = _this.contextService.serializedFrameState;
-                if (!state)
-                  return;
-                if (evCache_1.length == 2) {
-                  var curDiffX = Math.abs(evCache_1[0].clientX - evCache_1[1].clientX);
-                  var curDiffY = Math.abs(evCache_1[0].clientY - evCache_1[1].clientY);
-                  var currDistSquared = curDiffX * curDiffX + curDiffY * curDiffY;
-                  if (startDistSquared_1 == -1) {
-                    startDistSquared_1 = currDistSquared;
-                    fov_1 = state.view.subviews[0].frustum.fov;
-                    zoom_1 = 1;
+                  var state = _this.contextService.serializedFrameState;
+                  if (!state)
+                    return;
+                  if (evCache_1.length == 2) {
+                    var curDiffX = Math.abs(evCache_1[0].clientX - evCache_1[1].clientX);
+                    var curDiffY = Math.abs(evCache_1[0].clientY - evCache_1[1].clientY);
+                    var currDistSquared = curDiffX * curDiffX + curDiffY * curDiffY;
+                    if (startDistSquared_1 == -1) {
+                      startDistSquared_1 = currDistSquared;
+                      fov = state.view.subviews[0].frustum.fov;
+                      zoom_1 = 1;
+                      _this.realityService.zoom({
+                        zoom: zoom_1,
+                        fov: fov,
+                        state: reality_1.RealityZoomState.START
+                      });
+                    } else {
+                      zoom_1 = currDistSquared / startDistSquared_1;
+                      _this.realityService.zoom({
+                        zoom: zoom_1,
+                        fov: fov,
+                        state: reality_1.RealityZoomState.CHANGE
+                      });
+                    }
+                  } else {
                     _this.realityService.zoom({
                       zoom: zoom_1,
-                      fov: fov_1,
+                      fov: fov,
+                      state: reality_1.RealityZoomState.END
+                    });
+                    startDistSquared_1 = -1;
+                  }
+                };
+                var pointerup_handler = function(ev) {
+                  remove_event_1(ev);
+                  if (evCache_1.length < 2)
+                    startDistSquared_1 = -1;
+                };
+                el.onpointerdown = pointerdown_handler;
+                el.onpointermove = pointermove_handler;
+                el.onpointerup = pointerup_handler;
+                el.onpointercancel = pointerup_handler;
+                el.onpointerout = pointerup_handler;
+                el.onpointerleave = pointerup_handler;
+              } else {
+                el.addEventListener('gesturestart', function(ev) {
+                  var state = _this.contextService.serializedFrameState;
+                  if (state && state.view.subviews[0]) {
+                    fov = state.view.subviews[0].frustum.fov;
+                    _this.realityService.zoom({
+                      zoom: ev.scale,
+                      fov: fov,
                       state: reality_1.RealityZoomState.START
                     });
-                  } else {
-                    zoom_1 = currDistSquared / startDistSquared_1;
-                    _this.realityService.zoom({
-                      zoom: zoom_1,
-                      fov: fov_1,
-                      state: reality_1.RealityZoomState.CHANGE
-                    });
                   }
-                } else {
-                  _this.realityService.zoom({
-                    zoom: zoom_1,
-                    fov: fov_1,
-                    state: reality_1.RealityZoomState.END
-                  });
-                  startDistSquared_1 = -1;
-                }
-              };
-              var pointerup_handler = function(ev) {
-                remove_event_1(ev);
-                if (evCache_1.length < 2)
-                  startDistSquared_1 = -1;
-              };
-              el.onpointerdown = pointerdown_handler;
-              el.onpointermove = pointermove_handler;
-              el.onpointerup = pointerup_handler;
-              el.onpointercancel = pointerup_handler;
-              el.onpointerout = pointerup_handler;
-              el.onpointerleave = pointerup_handler;
-            } else {
-              el.addEventListener('gesturestart', function(ev) {
-                var state = _this.contextService.serializedFrameState;
-                if (state && state.view.subviews[0]) {
-                  fov_1 = state.view.subviews[0].frustum.fov;
+                });
+                el.addEventListener('gesturechange', function(ev) {
                   _this.realityService.zoom({
                     zoom: ev.scale,
-                    fov: fov_1,
-                    state: reality_1.RealityZoomState.START
+                    fov: fov,
+                    state: reality_1.RealityZoomState.CHANGE
                   });
-                }
-              });
-              el.addEventListener('gesturechange', function(ev) {
-                _this.realityService.zoom({
-                  zoom: ev.scale,
-                  fov: fov_1,
-                  state: reality_1.RealityZoomState.CHANGE
                 });
-              });
-              el.addEventListener('gestureend', function(ev) {
-                _this.realityService.zoom({
-                  zoom: ev.scale,
-                  fov: fov_1,
-                  state: reality_1.RealityZoomState.END
+                el.addEventListener('gestureend', function(ev) {
+                  _this.realityService.zoom({
+                    zoom: ev.scale,
+                    fov: fov,
+                    state: reality_1.RealityZoomState.END
+                  });
                 });
-              });
-            }
+              }
+            });
           }
         }
         PinchZoomService = __decorate([aurelia_dependency_injection_1.inject(ViewService, reality_1.RealityService, context_2.ContextService, session_1.SessionService)], PinchZoomService);
@@ -4293,6 +4294,7 @@ $__System.register("14", ["8", "c", "d", "13"], function(exports_1, context_1) {
       HostedRealityLoader = (function(_super) {
         __extends(HostedRealityLoader, _super);
         function HostedRealityLoader(sessionService, viewService) {
+          var _this = this;
           _super.call(this);
           this.sessionService = sessionService;
           this.viewService = viewService;
@@ -4301,35 +4303,38 @@ $__System.register("14", ["8", "c", "d", "13"], function(exports_1, context_1) {
           this.iframeElement.style.border = '0';
           this.iframeElement.width = '100%';
           this.iframeElement.height = '100%';
-          viewService.element.insertBefore(this.iframeElement, viewService.element.firstChild);
+          viewService.containingElementPromise.then(function(container) {
+            container.insertBefore(_this.iframeElement, container.firstChild);
+          });
         }
         HostedRealityLoader.prototype.load = function(reality, callback) {
           var _this = this;
-          var handleConnectMessage = function(ev) {
-            if (ev.data.type !== 'ARGON_SESSION')
-              return;
-            var messagePort = ev.ports && ev.ports[0];
-            if (!messagePort)
-              throw new Error('Received an ARGON_SESSION message without a MessagePort object');
-            var i = 0;
-            var frame;
-            while (i < window.frames.length && !frame) {
-              if (window.frames[i] == ev.source)
-                frame = document.getElementsByTagName('iframe')[i];
-            }
-            if (frame !== _this.iframeElement)
-              return;
-            window.removeEventListener('message', handleConnectMessage);
-            var realitySession = _this.sessionService.addManagedSessionPort();
-            callback(realitySession);
-            realitySession.open(messagePort, _this.sessionService.configuration);
-          };
-          window.addEventListener('message', handleConnectMessage);
-          this.iframeElement.src = '';
-          this.iframeElement.src = reality['url'];
-          this.iframeElement.style.pointerEvents = 'auto';
+          this.viewService.containingElementPromise.then(function(container) {
+            var handleConnectMessage = function(ev) {
+              if (ev.data.type !== 'ARGON_SESSION')
+                return;
+              var messagePort = ev.ports && ev.ports[0];
+              if (!messagePort)
+                throw new Error('Received an ARGON_SESSION message without a MessagePort object');
+              var i = 0;
+              var frame;
+              while (i < window.frames.length && !frame) {
+                if (window.frames[i] == ev.source)
+                  frame = document.getElementsByTagName('iframe')[i];
+              }
+              if (frame !== _this.iframeElement)
+                return;
+              window.removeEventListener('message', handleConnectMessage);
+              var realitySession = _this.sessionService.addManagedSessionPort();
+              callback(realitySession);
+              realitySession.open(messagePort, _this.sessionService.configuration);
+            };
+            window.addEventListener('message', handleConnectMessage);
+            _this.iframeElement.src = '';
+            _this.iframeElement.src = reality['url'];
+            _this.iframeElement.style.pointerEvents = 'auto';
+          });
         };
-        HostedRealityLoader.prototype._handleMessage = function(ev) {};
         HostedRealityLoader = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, view_1.ViewService)], HostedRealityLoader);
         return HostedRealityLoader;
       }(reality_1.RealityLoader));
