@@ -28,7 +28,8 @@ SystemJS.config({
             "chai": "npm:chai@3.5.0",
             "css": "github:systemjs/plugin-css@0.1.20",
             "mocha": "npm:mocha@2.4.5",
-            "ts": "github:frankwallis/plugin-typescript@4.0.16"
+            "ts": "github:frankwallis/plugin-typescript@5.0.8",
+            "os": "github:jspm/nodelibs-os@0.2.0-alpha"
         },
         "packages": {
             "npm:chai@3.5.0": {
@@ -48,9 +49,14 @@ SystemJS.config({
                     "css": "github:systemjs/plugin-css@0.1.20"
                 }
             },
-            "github:frankwallis/plugin-typescript@4.0.16": {
+            "github:frankwallis/plugin-typescript@5.0.8": {
                 "map": {
-                    "typescript": "npm:typescript@1.9.0-dev.20160627-1.0"
+                    "typescript": "npm:typescript@2.0.0"
+                }
+            },
+            "github:jspm/nodelibs-os@0.2.0-alpha": {
+                "map": {
+                    "os-browserify": "npm:os-browserify@0.2.1"
                 }
             }
         }
@@ -70,14 +76,7 @@ SystemJS.config({
         "aurelia-metadata": "npm:aurelia-metadata@1.0.0-beta.1.1.5",
         "aurelia-pal": "npm:aurelia-pal@1.0.0-beta.1.1.1",
         "aurelia-polyfills": "npm:aurelia-polyfills@1.0.0-beta.1.0.0",
-        "mobile-detect": "npm:mobile-detect@1.3.2",
-        "os": "github:jspm/nodelibs-os@0.2.0-alpha"
+        "mobile-detect": "npm:mobile-detect@1.3.2"
     },
-    packages: {
-        "github:jspm/nodelibs-os@0.2.0-alpha": {
-            "map": {
-                "os-browserify": "npm:os-browserify@0.2.1"
-            }
-        }
-    }
+    packages: {}
 });
