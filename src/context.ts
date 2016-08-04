@@ -1,10 +1,9 @@
-import {inject} from 'aurelia-dependency-injection'
+import { inject } from 'aurelia-dependency-injection'
 import {
     Entity,
     EntityCollection,
     CompositeEntityCollection,
     ExtrapolationType,
-    CesiumMath,
     ConstantPositionProperty,
     ConstantProperty,
     SampledPositionProperty,
@@ -14,13 +13,12 @@ import {
     Quaternion,
     JulianDate,
     ReferenceFrame,
-    createGuid,
     defined
 } from './cesium/cesium-imports'
-import {Role, SerializedEntityPoseMap, SerializedViewParameters, SerializedFrameState} from './common'
-import {SessionService, SessionPort} from './session'
-import {RealityService, RealityView} from './reality'
-import {Event, getRootReferenceFrame, getSerializedEntityPose, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame} from './utils'
+import { SerializedEntityPoseMap, SerializedFrameState } from './common'
+import { SessionService, SessionPort } from './session'
+import { RealityService } from './reality'
+import { Event, getRootReferenceFrame, getSerializedEntityPose, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame } from './utils'
 
 /**
  * Describes the pose of an entity at a particular time relative to a particular reference frame
@@ -44,7 +42,6 @@ export enum PoseStatus {
     LOST = 4
 }
 
-const scratchDate = new JulianDate(0, 0);
 const scratchCartesian3 = new Cartesian3(0, 0);
 const scratchQuaternion = new Quaternion(0, 0);
 const scratchOriginCartesian3 = new Cartesian3(0, 0);
@@ -304,12 +301,13 @@ export class ContextService {
         return entityPose;
     }
 
-    private getCurrentEntityState(entity: Entity, referenceFrame: any) {
+    /**
+     * deprecated
+     */
+    public getCurrentEntityState(entity: Entity, referenceFrame: any) {
         console.warn('getCurrentEntityState is deprecated. Use getEntityPose instead.');
         return this.getEntityPose(entity, referenceFrame);
     }
-
-    private _subviewEntities: Entity[] = [];
 
     // TODO: This function is called a lot. Potential for optimization. 
     private _update(serializedState: SerializedFrameState) {

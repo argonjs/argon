@@ -1,13 +1,12 @@
-import {Matrix4} from './cesium/cesium-imports'
+import { Matrix4 } from './cesium/cesium-imports'
 
 /**
  * Describes the session configuration
  */
 export interface Configuration {
-    name?: string;
     role?: Role;
-    userData?: any;
     protocols?: string[];
+    userData?: any;
     // app options
     'app.disablePinchZoom'?: boolean;
     // reality options
@@ -161,9 +160,34 @@ export interface SerializedPartialFrameState {
  * Describes a complete frame state which is sent to child sessions
  */
 export interface SerializedFrameState extends SerializedPartialFrameState {
-    reality: { type: string, name: string, [option: string]: any },
+    reality: RealityView,
     entities: SerializedEntityPoseMap,
     eye?: undefined,
     view: SerializedViewParameters,
     sendTime?: { dayNumber: number, secondsOfDay: number }, // the time this state was sent
+}
+
+
+/**
+* Represents a view of Reality
+*/
+export class RealityView {
+    static EMPTY: RealityView = {
+        uri: 'reality:empty',
+        title: 'Reality',
+        providedReferenceFrames: ['FIXED']
+    }
+
+    public uri: string;
+    public title?: string;
+    public providedReferenceFrames?: Array<string>;
+
+    static getType(reality: RealityView) {
+        const uri = reality.uri;
+        const parts = uri.split(':');
+        if (parts[0] === 'reality') {
+            return parts[1];
+        }
+        return 'hosted';
+    }
 }

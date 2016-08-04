@@ -1,11 +1,11 @@
-import {inject} from 'aurelia-dependency-injection'
-import {defined, Entity, Matrix4, PerspectiveFrustum} from './cesium/cesium-imports'
-import {Viewport, SubviewType, SerializedFrameState, SerializedPartialFrameState, SerializedEyeParameters, SerializedEntityPose, SerializedViewParameters} from './common'
-import {SessionService, SessionPort} from './session'
-import {EntityPose, ContextService} from './context'
-import {Event} from './utils'
-import {FocusService} from './focus'
-import {RealityService, RealityZoomState} from './reality'
+import { inject } from 'aurelia-dependency-injection'
+import { Entity, Matrix4, PerspectiveFrustum } from './cesium/cesium-imports'
+import { Viewport, SubviewType, SerializedFrameState, SerializedViewParameters } from './common'
+import { SessionService, SessionPort } from './session'
+import { EntityPose, ContextService } from './context'
+import { Event } from './utils'
+import { FocusService } from './focus'
+import { RealityService, RealityZoomState } from './reality'
 
 // setup our DOM environment
 if (typeof document !== 'undefined' && document.createElement) {
@@ -289,7 +289,7 @@ export class PinchZoomService {
         private contextService: ContextService,
         private sessionService: SessionService) {
         if (this.sessionService.isManager) {
-            viewService.containingElementPromise.then((el) => {
+            this.viewService.containingElementPromise.then((el) => {
                 el.style.pointerEvents = 'auto';
                 let fov: number = -1;
 

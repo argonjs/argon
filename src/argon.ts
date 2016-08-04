@@ -1,6 +1,7 @@
 import 'aurelia-polyfills'
 import * as DI from 'aurelia-dependency-injection'
 import * as Cesium from './cesium/cesium-imports'
+import * as URI from 'urijs';
 
 import {
     SessionService,
@@ -11,21 +12,21 @@ import {
     WKWebViewConnectService
 } from './session'
 
-import {Configuration, Role} from './common'
-import {ContextService, Frame} from './context'
-import {DeviceService} from './device'
-import {FocusService} from './focus'
-import {RealityView, RealityService, RealityLoader} from './reality'
-import {TimerService} from './timer'
-import {Event} from './utils'
-import {ViewService, PinchZoomService} from './view'
-import {VuforiaService} from './vuforia'
+import { Configuration, Role, RealityView } from './common'
+import { ContextService, Frame } from './context'
+import { DeviceService } from './device'
+import { FocusService } from './focus'
+import { RealityService } from './reality'
+import { TimerService } from './timer'
+import { Event } from './utils'
+import { ViewService, PinchZoomService } from './view'
+import { VuforiaService } from './vuforia'
 
-import {EmptyRealityLoader} from './reality-loader/empty'
-import {LiveVideoRealityLoader} from './reality-loader/live_video'
-import {HostedRealityLoader} from './reality-loader/hosted'
+import { EmptyRealityLoader } from './reality-loader/empty'
+import { LiveVideoRealityLoader } from './reality-loader/live_video'
+import { HostedRealityLoader } from './reality-loader/hosted'
 
-export {DI, Cesium}
+export { DI, Cesium, URI }
 export * from './common'
 export * from './context'
 export * from './device'
@@ -37,9 +38,9 @@ export * from './utils'
 export * from './view'
 export * from './vuforia'
 export {
-EmptyRealityLoader,
-LiveVideoRealityLoader,
-HostedRealityLoader
+    EmptyRealityLoader,
+    LiveVideoRealityLoader,
+    HostedRealityLoader
 }
 
 /**
@@ -47,7 +48,7 @@ HostedRealityLoader
  */
 export class ArgonSystem {
 
-    static instance: ArgonSystem;
+    static instance?: ArgonSystem;
 
     constructor(config: Configuration, public container: DI.Container = new DI.Container) {
         if (!ArgonSystem.instance) ArgonSystem.instance = this;

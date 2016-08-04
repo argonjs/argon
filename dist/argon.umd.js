@@ -368,7 +368,2330 @@ define("2", ["exports", "3"], function(exports, _aureliaPal) {
 });
 
 })();
-$__System.registerDynamic("4", [], true, function($__require, exports, module) {
+(function() {
+var define = $__System.amdDefine;
+;
+(function(root) {
+  var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
+  var freeModule = typeof module == 'object' && module && !module.nodeType && module;
+  var freeGlobal = typeof global == 'object' && global;
+  if (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal || freeGlobal.self === freeGlobal) {
+    root = freeGlobal;
+  }
+  var punycode,
+      maxInt = 2147483647,
+      base = 36,
+      tMin = 1,
+      tMax = 26,
+      skew = 38,
+      damp = 700,
+      initialBias = 72,
+      initialN = 128,
+      delimiter = '-',
+      regexPunycode = /^xn--/,
+      regexNonASCII = /[^\x20-\x7E]/,
+      regexSeparators = /[\x2E\u3002\uFF0E\uFF61]/g,
+      errors = {
+        'overflow': 'Overflow: input needs wider integers to process',
+        'not-basic': 'Illegal input >= 0x80 (not a basic code point)',
+        'invalid-input': 'Invalid input'
+      },
+      baseMinusTMin = base - tMin,
+      floor = Math.floor,
+      stringFromCharCode = String.fromCharCode,
+      key;
+  function error(type) {
+    throw new RangeError(errors[type]);
+  }
+  function map(array, fn) {
+    var length = array.length;
+    var result = [];
+    while (length--) {
+      result[length] = fn(array[length]);
+    }
+    return result;
+  }
+  function mapDomain(string, fn) {
+    var parts = string.split('@');
+    var result = '';
+    if (parts.length > 1) {
+      result = parts[0] + '@';
+      string = parts[1];
+    }
+    string = string.replace(regexSeparators, '\x2E');
+    var labels = string.split('.');
+    var encoded = map(labels, fn).join('.');
+    return result + encoded;
+  }
+  function ucs2decode(string) {
+    var output = [],
+        counter = 0,
+        length = string.length,
+        value,
+        extra;
+    while (counter < length) {
+      value = string.charCodeAt(counter++);
+      if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
+        extra = string.charCodeAt(counter++);
+        if ((extra & 0xFC00) == 0xDC00) {
+          output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
+        } else {
+          output.push(value);
+          counter--;
+        }
+      } else {
+        output.push(value);
+      }
+    }
+    return output;
+  }
+  function ucs2encode(array) {
+    return map(array, function(value) {
+      var output = '';
+      if (value > 0xFFFF) {
+        value -= 0x10000;
+        output += stringFromCharCode(value >>> 10 & 0x3FF | 0xD800);
+        value = 0xDC00 | value & 0x3FF;
+      }
+      output += stringFromCharCode(value);
+      return output;
+    }).join('');
+  }
+  function basicToDigit(codePoint) {
+    if (codePoint - 48 < 10) {
+      return codePoint - 22;
+    }
+    if (codePoint - 65 < 26) {
+      return codePoint - 65;
+    }
+    if (codePoint - 97 < 26) {
+      return codePoint - 97;
+    }
+    return base;
+  }
+  function digitToBasic(digit, flag) {
+    return digit + 22 + 75 * (digit < 26) - ((flag != 0) << 5);
+  }
+  function adapt(delta, numPoints, firstTime) {
+    var k = 0;
+    delta = firstTime ? floor(delta / damp) : delta >> 1;
+    delta += floor(delta / numPoints);
+    for (; delta > baseMinusTMin * tMax >> 1; k += base) {
+      delta = floor(delta / baseMinusTMin);
+    }
+    return floor(k + (baseMinusTMin + 1) * delta / (delta + skew));
+  }
+  function decode(input) {
+    var output = [],
+        inputLength = input.length,
+        out,
+        i = 0,
+        n = initialN,
+        bias = initialBias,
+        basic,
+        j,
+        index,
+        oldi,
+        w,
+        k,
+        digit,
+        t,
+        baseMinusT;
+    basic = input.lastIndexOf(delimiter);
+    if (basic < 0) {
+      basic = 0;
+    }
+    for (j = 0; j < basic; ++j) {
+      if (input.charCodeAt(j) >= 0x80) {
+        error('not-basic');
+      }
+      output.push(input.charCodeAt(j));
+    }
+    for (index = basic > 0 ? basic + 1 : 0; index < inputLength; ) {
+      for (oldi = i, w = 1, k = base; ; k += base) {
+        if (index >= inputLength) {
+          error('invalid-input');
+        }
+        digit = basicToDigit(input.charCodeAt(index++));
+        if (digit >= base || digit > floor((maxInt - i) / w)) {
+          error('overflow');
+        }
+        i += digit * w;
+        t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
+        if (digit < t) {
+          break;
+        }
+        baseMinusT = base - t;
+        if (w > floor(maxInt / baseMinusT)) {
+          error('overflow');
+        }
+        w *= baseMinusT;
+      }
+      out = output.length + 1;
+      bias = adapt(i - oldi, out, oldi == 0);
+      if (floor(i / out) > maxInt - n) {
+        error('overflow');
+      }
+      n += floor(i / out);
+      i %= out;
+      output.splice(i++, 0, n);
+    }
+    return ucs2encode(output);
+  }
+  function encode(input) {
+    var n,
+        delta,
+        handledCPCount,
+        basicLength,
+        bias,
+        j,
+        m,
+        q,
+        k,
+        t,
+        currentValue,
+        output = [],
+        inputLength,
+        handledCPCountPlusOne,
+        baseMinusT,
+        qMinusT;
+    input = ucs2decode(input);
+    inputLength = input.length;
+    n = initialN;
+    delta = 0;
+    bias = initialBias;
+    for (j = 0; j < inputLength; ++j) {
+      currentValue = input[j];
+      if (currentValue < 0x80) {
+        output.push(stringFromCharCode(currentValue));
+      }
+    }
+    handledCPCount = basicLength = output.length;
+    if (basicLength) {
+      output.push(delimiter);
+    }
+    while (handledCPCount < inputLength) {
+      for (m = maxInt, j = 0; j < inputLength; ++j) {
+        currentValue = input[j];
+        if (currentValue >= n && currentValue < m) {
+          m = currentValue;
+        }
+      }
+      handledCPCountPlusOne = handledCPCount + 1;
+      if (m - n > floor((maxInt - delta) / handledCPCountPlusOne)) {
+        error('overflow');
+      }
+      delta += (m - n) * handledCPCountPlusOne;
+      n = m;
+      for (j = 0; j < inputLength; ++j) {
+        currentValue = input[j];
+        if (currentValue < n && ++delta > maxInt) {
+          error('overflow');
+        }
+        if (currentValue == n) {
+          for (q = delta, k = base; ; k += base) {
+            t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
+            if (q < t) {
+              break;
+            }
+            qMinusT = q - t;
+            baseMinusT = base - t;
+            output.push(stringFromCharCode(digitToBasic(t + qMinusT % baseMinusT, 0)));
+            q = floor(qMinusT / baseMinusT);
+          }
+          output.push(stringFromCharCode(digitToBasic(q, 0)));
+          bias = adapt(delta, handledCPCountPlusOne, handledCPCount == basicLength);
+          delta = 0;
+          ++handledCPCount;
+        }
+      }
+      ++delta;
+      ++n;
+    }
+    return output.join('');
+  }
+  function toUnicode(input) {
+    return mapDomain(input, function(string) {
+      return regexPunycode.test(string) ? decode(string.slice(4).toLowerCase()) : string;
+    });
+  }
+  function toASCII(input) {
+    return mapDomain(input, function(string) {
+      return regexNonASCII.test(string) ? 'xn--' + encode(string) : string;
+    });
+  }
+  punycode = {
+    'version': '1.3.2',
+    'ucs2': {
+      'decode': ucs2decode,
+      'encode': ucs2encode
+    },
+    'decode': decode,
+    'encode': encode,
+    'toASCII': toASCII,
+    'toUnicode': toUnicode
+  };
+  if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) {
+    define("4", [], function() {
+      return punycode;
+    }) && define("punycode", ["4"], function(m) {
+      return m;
+    });
+  } else if (freeExports && freeModule) {
+    if (module.exports == freeExports) {
+      freeModule.exports = punycode;
+    } else {
+      for (key in punycode) {
+        punycode.hasOwnProperty(key) && (freeExports[key] = punycode[key]);
+      }
+    }
+  } else {
+    root.punycode = punycode;
+  }
+}(this));
+
+})();
+(function() {
+var define = $__System.amdDefine;
+(function(root, factory) {
+  'use strict';
+  if (typeof exports === 'object') {
+    module.exports = factory();
+  } else if (typeof define === 'function' && define.amd) {
+    define("5", [], factory);
+  } else {
+    root.IPv6 = factory(root);
+  }
+}(this, function(root) {
+  'use strict';
+  var _IPv6 = root && root.IPv6;
+  function bestPresentation(address) {
+    var _address = address.toLowerCase();
+    var segments = _address.split(':');
+    var length = segments.length;
+    var total = 8;
+    if (segments[0] === '' && segments[1] === '' && segments[2] === '') {
+      segments.shift();
+      segments.shift();
+    } else if (segments[0] === '' && segments[1] === '') {
+      segments.shift();
+    } else if (segments[length - 1] === '' && segments[length - 2] === '') {
+      segments.pop();
+    }
+    length = segments.length;
+    if (segments[length - 1].indexOf('.') !== -1) {
+      total = 7;
+    }
+    var pos;
+    for (pos = 0; pos < length; pos++) {
+      if (segments[pos] === '') {
+        break;
+      }
+    }
+    if (pos < total) {
+      segments.splice(pos, 1, '0000');
+      while (segments.length < total) {
+        segments.splice(pos, 0, '0000');
+      }
+    }
+    var _segments;
+    for (var i = 0; i < total; i++) {
+      _segments = segments[i].split('');
+      for (var j = 0; j < 3; j++) {
+        if (_segments[0] === '0' && _segments.length > 1) {
+          _segments.splice(0, 1);
+        } else {
+          break;
+        }
+      }
+      segments[i] = _segments.join('');
+    }
+    var best = -1;
+    var _best = 0;
+    var _current = 0;
+    var current = -1;
+    var inzeroes = false;
+    for (i = 0; i < total; i++) {
+      if (inzeroes) {
+        if (segments[i] === '0') {
+          _current += 1;
+        } else {
+          inzeroes = false;
+          if (_current > _best) {
+            best = current;
+            _best = _current;
+          }
+        }
+      } else {
+        if (segments[i] === '0') {
+          inzeroes = true;
+          current = i;
+          _current = 1;
+        }
+      }
+    }
+    if (_current > _best) {
+      best = current;
+      _best = _current;
+    }
+    if (_best > 1) {
+      segments.splice(best, _best, '');
+    }
+    length = segments.length;
+    var result = '';
+    if (segments[0] === '') {
+      result = ':';
+    }
+    for (i = 0; i < length; i++) {
+      result += segments[i];
+      if (i === length - 1) {
+        break;
+      }
+      result += ':';
+    }
+    if (segments[length - 1] === '') {
+      result += ':';
+    }
+    return result;
+  }
+  function noConflict() {
+    if (root.IPv6 === this) {
+      root.IPv6 = _IPv6;
+    }
+    return this;
+  }
+  return {
+    best: bestPresentation,
+    noConflict: noConflict
+  };
+}));
+
+})();
+(function() {
+var define = $__System.amdDefine;
+(function(root, factory) {
+  'use strict';
+  if (typeof exports === 'object') {
+    module.exports = factory();
+  } else if (typeof define === 'function' && define.amd) {
+    define("6", [], factory);
+  } else {
+    root.SecondLevelDomains = factory(root);
+  }
+}(this, function(root) {
+  'use strict';
+  var _SecondLevelDomains = root && root.SecondLevelDomains;
+  var SLD = {
+    list: {
+      'ac': ' com gov mil net org ',
+      'ae': ' ac co gov mil name net org pro sch ',
+      'af': ' com edu gov net org ',
+      'al': ' com edu gov mil net org ',
+      'ao': ' co ed gv it og pb ',
+      'ar': ' com edu gob gov int mil net org tur ',
+      'at': ' ac co gv or ',
+      'au': ' asn com csiro edu gov id net org ',
+      'ba': ' co com edu gov mil net org rs unbi unmo unsa untz unze ',
+      'bb': ' biz co com edu gov info net org store tv ',
+      'bh': ' biz cc com edu gov info net org ',
+      'bn': ' com edu gov net org ',
+      'bo': ' com edu gob gov int mil net org tv ',
+      'br': ' adm adv agr am arq art ato b bio blog bmd cim cng cnt com coop ecn edu eng esp etc eti far flog fm fnd fot fst g12 ggf gov imb ind inf jor jus lel mat med mil mus net nom not ntr odo org ppg pro psc psi qsl rec slg srv tmp trd tur tv vet vlog wiki zlg ',
+      'bs': ' com edu gov net org ',
+      'bz': ' du et om ov rg ',
+      'ca': ' ab bc mb nb nf nl ns nt nu on pe qc sk yk ',
+      'ck': ' biz co edu gen gov info net org ',
+      'cn': ' ac ah bj com cq edu fj gd gov gs gx gz ha hb he hi hl hn jl js jx ln mil net nm nx org qh sc sd sh sn sx tj tw xj xz yn zj ',
+      'co': ' com edu gov mil net nom org ',
+      'cr': ' ac c co ed fi go or sa ',
+      'cy': ' ac biz com ekloges gov ltd name net org parliament press pro tm ',
+      'do': ' art com edu gob gov mil net org sld web ',
+      'dz': ' art asso com edu gov net org pol ',
+      'ec': ' com edu fin gov info med mil net org pro ',
+      'eg': ' com edu eun gov mil name net org sci ',
+      'er': ' com edu gov ind mil net org rochest w ',
+      'es': ' com edu gob nom org ',
+      'et': ' biz com edu gov info name net org ',
+      'fj': ' ac biz com info mil name net org pro ',
+      'fk': ' ac co gov net nom org ',
+      'fr': ' asso com f gouv nom prd presse tm ',
+      'gg': ' co net org ',
+      'gh': ' com edu gov mil org ',
+      'gn': ' ac com gov net org ',
+      'gr': ' com edu gov mil net org ',
+      'gt': ' com edu gob ind mil net org ',
+      'gu': ' com edu gov net org ',
+      'hk': ' com edu gov idv net org ',
+      'hu': ' 2000 agrar bolt casino city co erotica erotika film forum games hotel info ingatlan jogasz konyvelo lakas media news org priv reklam sex shop sport suli szex tm tozsde utazas video ',
+      'id': ' ac co go mil net or sch web ',
+      'il': ' ac co gov idf k12 muni net org ',
+      'in': ' ac co edu ernet firm gen gov i ind mil net nic org res ',
+      'iq': ' com edu gov i mil net org ',
+      'ir': ' ac co dnssec gov i id net org sch ',
+      'it': ' edu gov ',
+      'je': ' co net org ',
+      'jo': ' com edu gov mil name net org sch ',
+      'jp': ' ac ad co ed go gr lg ne or ',
+      'ke': ' ac co go info me mobi ne or sc ',
+      'kh': ' com edu gov mil net org per ',
+      'ki': ' biz com de edu gov info mob net org tel ',
+      'km': ' asso com coop edu gouv k medecin mil nom notaires pharmaciens presse tm veterinaire ',
+      'kn': ' edu gov net org ',
+      'kr': ' ac busan chungbuk chungnam co daegu daejeon es gangwon go gwangju gyeongbuk gyeonggi gyeongnam hs incheon jeju jeonbuk jeonnam k kg mil ms ne or pe re sc seoul ulsan ',
+      'kw': ' com edu gov net org ',
+      'ky': ' com edu gov net org ',
+      'kz': ' com edu gov mil net org ',
+      'lb': ' com edu gov net org ',
+      'lk': ' assn com edu gov grp hotel int ltd net ngo org sch soc web ',
+      'lr': ' com edu gov net org ',
+      'lv': ' asn com conf edu gov id mil net org ',
+      'ly': ' com edu gov id med net org plc sch ',
+      'ma': ' ac co gov m net org press ',
+      'mc': ' asso tm ',
+      'me': ' ac co edu gov its net org priv ',
+      'mg': ' com edu gov mil nom org prd tm ',
+      'mk': ' com edu gov inf name net org pro ',
+      'ml': ' com edu gov net org presse ',
+      'mn': ' edu gov org ',
+      'mo': ' com edu gov net org ',
+      'mt': ' com edu gov net org ',
+      'mv': ' aero biz com coop edu gov info int mil museum name net org pro ',
+      'mw': ' ac co com coop edu gov int museum net org ',
+      'mx': ' com edu gob net org ',
+      'my': ' com edu gov mil name net org sch ',
+      'nf': ' arts com firm info net other per rec store web ',
+      'ng': ' biz com edu gov mil mobi name net org sch ',
+      'ni': ' ac co com edu gob mil net nom org ',
+      'np': ' com edu gov mil net org ',
+      'nr': ' biz com edu gov info net org ',
+      'om': ' ac biz co com edu gov med mil museum net org pro sch ',
+      'pe': ' com edu gob mil net nom org sld ',
+      'ph': ' com edu gov i mil net ngo org ',
+      'pk': ' biz com edu fam gob gok gon gop gos gov net org web ',
+      'pl': ' art bialystok biz com edu gda gdansk gorzow gov info katowice krakow lodz lublin mil net ngo olsztyn org poznan pwr radom slupsk szczecin torun warszawa waw wroc wroclaw zgora ',
+      'pr': ' ac biz com edu est gov info isla name net org pro prof ',
+      'ps': ' com edu gov net org plo sec ',
+      'pw': ' belau co ed go ne or ',
+      'ro': ' arts com firm info nom nt org rec store tm www ',
+      'rs': ' ac co edu gov in org ',
+      'sb': ' com edu gov net org ',
+      'sc': ' com edu gov net org ',
+      'sh': ' co com edu gov net nom org ',
+      'sl': ' com edu gov net org ',
+      'st': ' co com consulado edu embaixada gov mil net org principe saotome store ',
+      'sv': ' com edu gob org red ',
+      'sz': ' ac co org ',
+      'tr': ' av bbs bel biz com dr edu gen gov info k12 name net org pol tel tsk tv web ',
+      'tt': ' aero biz cat co com coop edu gov info int jobs mil mobi museum name net org pro tel travel ',
+      'tw': ' club com ebiz edu game gov idv mil net org ',
+      'mu': ' ac co com gov net or org ',
+      'mz': ' ac co edu gov org ',
+      'na': ' co com ',
+      'nz': ' ac co cri geek gen govt health iwi maori mil net org parliament school ',
+      'pa': ' abo ac com edu gob ing med net nom org sld ',
+      'pt': ' com edu gov int net nome org publ ',
+      'py': ' com edu gov mil net org ',
+      'qa': ' com edu gov mil net org ',
+      're': ' asso com nom ',
+      'ru': ' ac adygeya altai amur arkhangelsk astrakhan bashkiria belgorod bir bryansk buryatia cbg chel chelyabinsk chita chukotka chuvashia com dagestan e-burg edu gov grozny int irkutsk ivanovo izhevsk jar joshkar-ola kalmykia kaluga kamchatka karelia kazan kchr kemerovo khabarovsk khakassia khv kirov koenig komi kostroma kranoyarsk kuban kurgan kursk lipetsk magadan mari mari-el marine mil mordovia mosreg msk murmansk nalchik net nnov nov novosibirsk nsk omsk orenburg org oryol penza perm pp pskov ptz rnd ryazan sakhalin samara saratov simbirsk smolensk spb stavropol stv surgut tambov tatarstan tom tomsk tsaritsyn tsk tula tuva tver tyumen udm udmurtia ulan-ude vladikavkaz vladimir vladivostok volgograd vologda voronezh vrn vyatka yakutia yamal yekaterinburg yuzhno-sakhalinsk ',
+      'rw': ' ac co com edu gouv gov int mil net ',
+      'sa': ' com edu gov med net org pub sch ',
+      'sd': ' com edu gov info med net org tv ',
+      'se': ' a ac b bd c d e f g h i k l m n o org p parti pp press r s t tm u w x y z ',
+      'sg': ' com edu gov idn net org per ',
+      'sn': ' art com edu gouv org perso univ ',
+      'sy': ' com edu gov mil net news org ',
+      'th': ' ac co go in mi net or ',
+      'tj': ' ac biz co com edu go gov info int mil name net nic org test web ',
+      'tn': ' agrinet com defense edunet ens fin gov ind info intl mincom nat net org perso rnrt rns rnu tourism ',
+      'tz': ' ac co go ne or ',
+      'ua': ' biz cherkassy chernigov chernovtsy ck cn co com crimea cv dn dnepropetrovsk donetsk dp edu gov if in ivano-frankivsk kh kharkov kherson khmelnitskiy kiev kirovograd km kr ks kv lg lugansk lutsk lviv me mk net nikolaev od odessa org pl poltava pp rovno rv sebastopol sumy te ternopil uzhgorod vinnica vn zaporizhzhe zhitomir zp zt ',
+      'ug': ' ac co go ne or org sc ',
+      'uk': ' ac bl british-library co cym gov govt icnet jet lea ltd me mil mod national-library-scotland nel net nhs nic nls org orgn parliament plc police sch scot soc ',
+      'us': ' dni fed isa kids nsn ',
+      'uy': ' com edu gub mil net org ',
+      've': ' co com edu gob info mil net org web ',
+      'vi': ' co com k12 net org ',
+      'vn': ' ac biz com edu gov health info int name net org pro ',
+      'ye': ' co com gov ltd me net org plc ',
+      'yu': ' ac co edu gov org ',
+      'za': ' ac agric alt bourse city co cybernet db edu gov grondar iaccess imt inca landesign law mil net ngo nis nom olivetti org pix school tm web ',
+      'zm': ' ac co com edu gov net org sch '
+    },
+    has: function(domain) {
+      var tldOffset = domain.lastIndexOf('.');
+      if (tldOffset <= 0 || tldOffset >= (domain.length - 1)) {
+        return false;
+      }
+      var sldOffset = domain.lastIndexOf('.', tldOffset - 1);
+      if (sldOffset <= 0 || sldOffset >= (tldOffset - 1)) {
+        return false;
+      }
+      var sldList = SLD.list[domain.slice(tldOffset + 1)];
+      if (!sldList) {
+        return false;
+      }
+      return sldList.indexOf(' ' + domain.slice(sldOffset + 1, tldOffset) + ' ') >= 0;
+    },
+    is: function(domain) {
+      var tldOffset = domain.lastIndexOf('.');
+      if (tldOffset <= 0 || tldOffset >= (domain.length - 1)) {
+        return false;
+      }
+      var sldOffset = domain.lastIndexOf('.', tldOffset - 1);
+      if (sldOffset >= 0) {
+        return false;
+      }
+      var sldList = SLD.list[domain.slice(tldOffset + 1)];
+      if (!sldList) {
+        return false;
+      }
+      return sldList.indexOf(' ' + domain.slice(0, tldOffset) + ' ') >= 0;
+    },
+    get: function(domain) {
+      var tldOffset = domain.lastIndexOf('.');
+      if (tldOffset <= 0 || tldOffset >= (domain.length - 1)) {
+        return null;
+      }
+      var sldOffset = domain.lastIndexOf('.', tldOffset - 1);
+      if (sldOffset <= 0 || sldOffset >= (tldOffset - 1)) {
+        return null;
+      }
+      var sldList = SLD.list[domain.slice(tldOffset + 1)];
+      if (!sldList) {
+        return null;
+      }
+      if (sldList.indexOf(' ' + domain.slice(sldOffset + 1, tldOffset) + ' ') < 0) {
+        return null;
+      }
+      return domain.slice(sldOffset + 1);
+    },
+    noConflict: function() {
+      if (root.SecondLevelDomains === this) {
+        root.SecondLevelDomains = _SecondLevelDomains;
+      }
+      return this;
+    }
+  };
+  return SLD;
+}));
+
+})();
+(function() {
+var define = $__System.amdDefine;
+(function(root, factory) {
+  'use strict';
+  if (typeof exports === 'object') {
+    module.exports = factory(require('./punycode'), require('./IPv6'), require('./SecondLevelDomains'));
+  } else if (typeof define === 'function' && define.amd) {
+    define("7", ["4", "5", "6"], factory);
+  } else {
+    root.URI = factory(root.punycode, root.IPv6, root.SecondLevelDomains, root);
+  }
+}(this, function(punycode, IPv6, SLD, root) {
+  'use strict';
+  var _URI = root && root.URI;
+  function URI(url, base) {
+    var _urlSupplied = arguments.length >= 1;
+    var _baseSupplied = arguments.length >= 2;
+    if (!(this instanceof URI)) {
+      if (_urlSupplied) {
+        if (_baseSupplied) {
+          return new URI(url, base);
+        }
+        return new URI(url);
+      }
+      return new URI();
+    }
+    if (url === undefined) {
+      if (_urlSupplied) {
+        throw new TypeError('undefined is not a valid argument for URI');
+      }
+      if (typeof location !== 'undefined') {
+        url = location.href + '';
+      } else {
+        url = '';
+      }
+    }
+    this.href(url);
+    if (base !== undefined) {
+      return this.absoluteTo(base);
+    }
+    return this;
+  }
+  URI.version = '1.18.1';
+  var p = URI.prototype;
+  var hasOwn = Object.prototype.hasOwnProperty;
+  function escapeRegEx(string) {
+    return string.replace(/([.*+?^=!:${}()|[\]\/\\])/g, '\\$1');
+  }
+  function getType(value) {
+    if (value === undefined) {
+      return 'Undefined';
+    }
+    return String(Object.prototype.toString.call(value)).slice(8, -1);
+  }
+  function isArray(obj) {
+    return getType(obj) === 'Array';
+  }
+  function filterArrayValues(data, value) {
+    var lookup = {};
+    var i,
+        length;
+    if (getType(value) === 'RegExp') {
+      lookup = null;
+    } else if (isArray(value)) {
+      for (i = 0, length = value.length; i < length; i++) {
+        lookup[value[i]] = true;
+      }
+    } else {
+      lookup[value] = true;
+    }
+    for (i = 0, length = data.length; i < length; i++) {
+      var _match = lookup && lookup[data[i]] !== undefined || !lookup && value.test(data[i]);
+      if (_match) {
+        data.splice(i, 1);
+        length--;
+        i--;
+      }
+    }
+    return data;
+  }
+  function arrayContains(list, value) {
+    var i,
+        length;
+    if (isArray(value)) {
+      for (i = 0, length = value.length; i < length; i++) {
+        if (!arrayContains(list, value[i])) {
+          return false;
+        }
+      }
+      return true;
+    }
+    var _type = getType(value);
+    for (i = 0, length = list.length; i < length; i++) {
+      if (_type === 'RegExp') {
+        if (typeof list[i] === 'string' && list[i].match(value)) {
+          return true;
+        }
+      } else if (list[i] === value) {
+        return true;
+      }
+    }
+    return false;
+  }
+  function arraysEqual(one, two) {
+    if (!isArray(one) || !isArray(two)) {
+      return false;
+    }
+    if (one.length !== two.length) {
+      return false;
+    }
+    one.sort();
+    two.sort();
+    for (var i = 0,
+        l = one.length; i < l; i++) {
+      if (one[i] !== two[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
+  function trimSlashes(text) {
+    var trim_expression = /^\/+|\/+$/g;
+    return text.replace(trim_expression, '');
+  }
+  URI._parts = function() {
+    return {
+      protocol: null,
+      username: null,
+      password: null,
+      hostname: null,
+      urn: null,
+      port: null,
+      path: null,
+      query: null,
+      fragment: null,
+      duplicateQueryParameters: URI.duplicateQueryParameters,
+      escapeQuerySpace: URI.escapeQuerySpace
+    };
+  };
+  URI.duplicateQueryParameters = false;
+  URI.escapeQuerySpace = true;
+  URI.protocol_expression = /^[a-z][a-z0-9.+-]*$/i;
+  URI.idn_expression = /[^a-z0-9\.-]/i;
+  URI.punycode_expression = /(xn--)/i;
+  URI.ip4_expression = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/;
+  URI.ip6_expression = /^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/;
+  URI.find_uri_expression = /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/ig;
+  URI.findUri = {
+    start: /\b(?:([a-z][a-z0-9.+-]*:\/\/)|www\.)/gi,
+    end: /[\s\r\n]|$/,
+    trim: /[`!()\[\]{};:'".,<>?«»“”„‘’]+$/
+  };
+  URI.defaultPorts = {
+    http: '80',
+    https: '443',
+    ftp: '21',
+    gopher: '70',
+    ws: '80',
+    wss: '443'
+  };
+  URI.invalid_hostname_characters = /[^a-zA-Z0-9\.-]/;
+  URI.domAttributes = {
+    'a': 'href',
+    'blockquote': 'cite',
+    'link': 'href',
+    'base': 'href',
+    'script': 'src',
+    'form': 'action',
+    'img': 'src',
+    'area': 'href',
+    'iframe': 'src',
+    'embed': 'src',
+    'source': 'src',
+    'track': 'src',
+    'input': 'src',
+    'audio': 'src',
+    'video': 'src'
+  };
+  URI.getDomAttribute = function(node) {
+    if (!node || !node.nodeName) {
+      return undefined;
+    }
+    var nodeName = node.nodeName.toLowerCase();
+    if (nodeName === 'input' && node.type !== 'image') {
+      return undefined;
+    }
+    return URI.domAttributes[nodeName];
+  };
+  function escapeForDumbFirefox36(value) {
+    return escape(value);
+  }
+  function strictEncodeURIComponent(string) {
+    return encodeURIComponent(string).replace(/[!'()*]/g, escapeForDumbFirefox36).replace(/\*/g, '%2A');
+  }
+  URI.encode = strictEncodeURIComponent;
+  URI.decode = decodeURIComponent;
+  URI.iso8859 = function() {
+    URI.encode = escape;
+    URI.decode = unescape;
+  };
+  URI.unicode = function() {
+    URI.encode = strictEncodeURIComponent;
+    URI.decode = decodeURIComponent;
+  };
+  URI.characters = {
+    pathname: {
+      encode: {
+        expression: /%(24|26|2B|2C|3B|3D|3A|40)/ig,
+        map: {
+          '%24': '$',
+          '%26': '&',
+          '%2B': '+',
+          '%2C': ',',
+          '%3B': ';',
+          '%3D': '=',
+          '%3A': ':',
+          '%40': '@'
+        }
+      },
+      decode: {
+        expression: /[\/\?#]/g,
+        map: {
+          '/': '%2F',
+          '?': '%3F',
+          '#': '%23'
+        }
+      }
+    },
+    reserved: {encode: {
+        expression: /%(21|23|24|26|27|28|29|2A|2B|2C|2F|3A|3B|3D|3F|40|5B|5D)/ig,
+        map: {
+          '%3A': ':',
+          '%2F': '/',
+          '%3F': '?',
+          '%23': '#',
+          '%5B': '[',
+          '%5D': ']',
+          '%40': '@',
+          '%21': '!',
+          '%24': '$',
+          '%26': '&',
+          '%27': '\'',
+          '%28': '(',
+          '%29': ')',
+          '%2A': '*',
+          '%2B': '+',
+          '%2C': ',',
+          '%3B': ';',
+          '%3D': '='
+        }
+      }},
+    urnpath: {
+      encode: {
+        expression: /%(21|24|27|28|29|2A|2B|2C|3B|3D|40)/ig,
+        map: {
+          '%21': '!',
+          '%24': '$',
+          '%27': '\'',
+          '%28': '(',
+          '%29': ')',
+          '%2A': '*',
+          '%2B': '+',
+          '%2C': ',',
+          '%3B': ';',
+          '%3D': '=',
+          '%40': '@'
+        }
+      },
+      decode: {
+        expression: /[\/\?#:]/g,
+        map: {
+          '/': '%2F',
+          '?': '%3F',
+          '#': '%23',
+          ':': '%3A'
+        }
+      }
+    }
+  };
+  URI.encodeQuery = function(string, escapeQuerySpace) {
+    var escaped = URI.encode(string + '');
+    if (escapeQuerySpace === undefined) {
+      escapeQuerySpace = URI.escapeQuerySpace;
+    }
+    return escapeQuerySpace ? escaped.replace(/%20/g, '+') : escaped;
+  };
+  URI.decodeQuery = function(string, escapeQuerySpace) {
+    string += '';
+    if (escapeQuerySpace === undefined) {
+      escapeQuerySpace = URI.escapeQuerySpace;
+    }
+    try {
+      return URI.decode(escapeQuerySpace ? string.replace(/\+/g, '%20') : string);
+    } catch (e) {
+      return string;
+    }
+  };
+  var _parts = {
+    'encode': 'encode',
+    'decode': 'decode'
+  };
+  var _part;
+  var generateAccessor = function(_group, _part) {
+    return function(string) {
+      try {
+        return URI[_part](string + '').replace(URI.characters[_group][_part].expression, function(c) {
+          return URI.characters[_group][_part].map[c];
+        });
+      } catch (e) {
+        return string;
+      }
+    };
+  };
+  for (_part in _parts) {
+    URI[_part + 'PathSegment'] = generateAccessor('pathname', _parts[_part]);
+    URI[_part + 'UrnPathSegment'] = generateAccessor('urnpath', _parts[_part]);
+  }
+  var generateSegmentedPathFunction = function(_sep, _codingFuncName, _innerCodingFuncName) {
+    return function(string) {
+      var actualCodingFunc;
+      if (!_innerCodingFuncName) {
+        actualCodingFunc = URI[_codingFuncName];
+      } else {
+        actualCodingFunc = function(string) {
+          return URI[_codingFuncName](URI[_innerCodingFuncName](string));
+        };
+      }
+      var segments = (string + '').split(_sep);
+      for (var i = 0,
+          length = segments.length; i < length; i++) {
+        segments[i] = actualCodingFunc(segments[i]);
+      }
+      return segments.join(_sep);
+    };
+  };
+  URI.decodePath = generateSegmentedPathFunction('/', 'decodePathSegment');
+  URI.decodeUrnPath = generateSegmentedPathFunction(':', 'decodeUrnPathSegment');
+  URI.recodePath = generateSegmentedPathFunction('/', 'encodePathSegment', 'decode');
+  URI.recodeUrnPath = generateSegmentedPathFunction(':', 'encodeUrnPathSegment', 'decode');
+  URI.encodeReserved = generateAccessor('reserved', 'encode');
+  URI.parse = function(string, parts) {
+    var pos;
+    if (!parts) {
+      parts = {};
+    }
+    pos = string.indexOf('#');
+    if (pos > -1) {
+      parts.fragment = string.substring(pos + 1) || null;
+      string = string.substring(0, pos);
+    }
+    pos = string.indexOf('?');
+    if (pos > -1) {
+      parts.query = string.substring(pos + 1) || null;
+      string = string.substring(0, pos);
+    }
+    if (string.substring(0, 2) === '//') {
+      parts.protocol = null;
+      string = string.substring(2);
+      string = URI.parseAuthority(string, parts);
+    } else {
+      pos = string.indexOf(':');
+      if (pos > -1) {
+        parts.protocol = string.substring(0, pos) || null;
+        if (parts.protocol && !parts.protocol.match(URI.protocol_expression)) {
+          parts.protocol = undefined;
+        } else if (string.substring(pos + 1, pos + 3) === '//') {
+          string = string.substring(pos + 3);
+          string = URI.parseAuthority(string, parts);
+        } else {
+          string = string.substring(pos + 1);
+          parts.urn = true;
+        }
+      }
+    }
+    parts.path = string;
+    return parts;
+  };
+  URI.parseHost = function(string, parts) {
+    string = string.replace(/\\/g, '/');
+    var pos = string.indexOf('/');
+    var bracketPos;
+    var t;
+    if (pos === -1) {
+      pos = string.length;
+    }
+    if (string.charAt(0) === '[') {
+      bracketPos = string.indexOf(']');
+      parts.hostname = string.substring(1, bracketPos) || null;
+      parts.port = string.substring(bracketPos + 2, pos) || null;
+      if (parts.port === '/') {
+        parts.port = null;
+      }
+    } else {
+      var firstColon = string.indexOf(':');
+      var firstSlash = string.indexOf('/');
+      var nextColon = string.indexOf(':', firstColon + 1);
+      if (nextColon !== -1 && (firstSlash === -1 || nextColon < firstSlash)) {
+        parts.hostname = string.substring(0, pos) || null;
+        parts.port = null;
+      } else {
+        t = string.substring(0, pos).split(':');
+        parts.hostname = t[0] || null;
+        parts.port = t[1] || null;
+      }
+    }
+    if (parts.hostname && string.substring(pos).charAt(0) !== '/') {
+      pos++;
+      string = '/' + string;
+    }
+    return string.substring(pos) || '/';
+  };
+  URI.parseAuthority = function(string, parts) {
+    string = URI.parseUserinfo(string, parts);
+    return URI.parseHost(string, parts);
+  };
+  URI.parseUserinfo = function(string, parts) {
+    var firstSlash = string.indexOf('/');
+    var pos = string.lastIndexOf('@', firstSlash > -1 ? firstSlash : string.length - 1);
+    var t;
+    if (pos > -1 && (firstSlash === -1 || pos < firstSlash)) {
+      t = string.substring(0, pos).split(':');
+      parts.username = t[0] ? URI.decode(t[0]) : null;
+      t.shift();
+      parts.password = t[0] ? URI.decode(t.join(':')) : null;
+      string = string.substring(pos + 1);
+    } else {
+      parts.username = null;
+      parts.password = null;
+    }
+    return string;
+  };
+  URI.parseQuery = function(string, escapeQuerySpace) {
+    if (!string) {
+      return {};
+    }
+    string = string.replace(/&+/g, '&').replace(/^\?*&*|&+$/g, '');
+    if (!string) {
+      return {};
+    }
+    var items = {};
+    var splits = string.split('&');
+    var length = splits.length;
+    var v,
+        name,
+        value;
+    for (var i = 0; i < length; i++) {
+      v = splits[i].split('=');
+      name = URI.decodeQuery(v.shift(), escapeQuerySpace);
+      value = v.length ? URI.decodeQuery(v.join('='), escapeQuerySpace) : null;
+      if (hasOwn.call(items, name)) {
+        if (typeof items[name] === 'string' || items[name] === null) {
+          items[name] = [items[name]];
+        }
+        items[name].push(value);
+      } else {
+        items[name] = value;
+      }
+    }
+    return items;
+  };
+  URI.build = function(parts) {
+    var t = '';
+    if (parts.protocol) {
+      t += parts.protocol + ':';
+    }
+    if (!parts.urn && (t || parts.hostname)) {
+      t += '//';
+    }
+    t += (URI.buildAuthority(parts) || '');
+    if (typeof parts.path === 'string') {
+      if (parts.path.charAt(0) !== '/' && typeof parts.hostname === 'string') {
+        t += '/';
+      }
+      t += parts.path;
+    }
+    if (typeof parts.query === 'string' && parts.query) {
+      t += '?' + parts.query;
+    }
+    if (typeof parts.fragment === 'string' && parts.fragment) {
+      t += '#' + parts.fragment;
+    }
+    return t;
+  };
+  URI.buildHost = function(parts) {
+    var t = '';
+    if (!parts.hostname) {
+      return '';
+    } else if (URI.ip6_expression.test(parts.hostname)) {
+      t += '[' + parts.hostname + ']';
+    } else {
+      t += parts.hostname;
+    }
+    if (parts.port) {
+      t += ':' + parts.port;
+    }
+    return t;
+  };
+  URI.buildAuthority = function(parts) {
+    return URI.buildUserinfo(parts) + URI.buildHost(parts);
+  };
+  URI.buildUserinfo = function(parts) {
+    var t = '';
+    if (parts.username) {
+      t += URI.encode(parts.username);
+    }
+    if (parts.password) {
+      t += ':' + URI.encode(parts.password);
+    }
+    if (t) {
+      t += '@';
+    }
+    return t;
+  };
+  URI.buildQuery = function(data, duplicateQueryParameters, escapeQuerySpace) {
+    var t = '';
+    var unique,
+        key,
+        i,
+        length;
+    for (key in data) {
+      if (hasOwn.call(data, key) && key) {
+        if (isArray(data[key])) {
+          unique = {};
+          for (i = 0, length = data[key].length; i < length; i++) {
+            if (data[key][i] !== undefined && unique[data[key][i] + ''] === undefined) {
+              t += '&' + URI.buildQueryParameter(key, data[key][i], escapeQuerySpace);
+              if (duplicateQueryParameters !== true) {
+                unique[data[key][i] + ''] = true;
+              }
+            }
+          }
+        } else if (data[key] !== undefined) {
+          t += '&' + URI.buildQueryParameter(key, data[key], escapeQuerySpace);
+        }
+      }
+    }
+    return t.substring(1);
+  };
+  URI.buildQueryParameter = function(name, value, escapeQuerySpace) {
+    return URI.encodeQuery(name, escapeQuerySpace) + (value !== null ? '=' + URI.encodeQuery(value, escapeQuerySpace) : '');
+  };
+  URI.addQuery = function(data, name, value) {
+    if (typeof name === 'object') {
+      for (var key in name) {
+        if (hasOwn.call(name, key)) {
+          URI.addQuery(data, key, name[key]);
+        }
+      }
+    } else if (typeof name === 'string') {
+      if (data[name] === undefined) {
+        data[name] = value;
+        return;
+      } else if (typeof data[name] === 'string') {
+        data[name] = [data[name]];
+      }
+      if (!isArray(value)) {
+        value = [value];
+      }
+      data[name] = (data[name] || []).concat(value);
+    } else {
+      throw new TypeError('URI.addQuery() accepts an object, string as the name parameter');
+    }
+  };
+  URI.removeQuery = function(data, name, value) {
+    var i,
+        length,
+        key;
+    if (isArray(name)) {
+      for (i = 0, length = name.length; i < length; i++) {
+        data[name[i]] = undefined;
+      }
+    } else if (getType(name) === 'RegExp') {
+      for (key in data) {
+        if (name.test(key)) {
+          data[key] = undefined;
+        }
+      }
+    } else if (typeof name === 'object') {
+      for (key in name) {
+        if (hasOwn.call(name, key)) {
+          URI.removeQuery(data, key, name[key]);
+        }
+      }
+    } else if (typeof name === 'string') {
+      if (value !== undefined) {
+        if (getType(value) === 'RegExp') {
+          if (!isArray(data[name]) && value.test(data[name])) {
+            data[name] = undefined;
+          } else {
+            data[name] = filterArrayValues(data[name], value);
+          }
+        } else if (data[name] === String(value) && (!isArray(value) || value.length === 1)) {
+          data[name] = undefined;
+        } else if (isArray(data[name])) {
+          data[name] = filterArrayValues(data[name], value);
+        }
+      } else {
+        data[name] = undefined;
+      }
+    } else {
+      throw new TypeError('URI.removeQuery() accepts an object, string, RegExp as the first parameter');
+    }
+  };
+  URI.hasQuery = function(data, name, value, withinArray) {
+    switch (getType(name)) {
+      case 'String':
+        break;
+      case 'RegExp':
+        for (var key in data) {
+          if (hasOwn.call(data, key)) {
+            if (name.test(key) && (value === undefined || URI.hasQuery(data, key, value))) {
+              return true;
+            }
+          }
+        }
+        return false;
+      case 'Object':
+        for (var _key in name) {
+          if (hasOwn.call(name, _key)) {
+            if (!URI.hasQuery(data, _key, name[_key])) {
+              return false;
+            }
+          }
+        }
+        return true;
+      default:
+        throw new TypeError('URI.hasQuery() accepts a string, regular expression or object as the name parameter');
+    }
+    switch (getType(value)) {
+      case 'Undefined':
+        return name in data;
+      case 'Boolean':
+        var _booly = Boolean(isArray(data[name]) ? data[name].length : data[name]);
+        return value === _booly;
+      case 'Function':
+        return !!value(data[name], name, data);
+      case 'Array':
+        if (!isArray(data[name])) {
+          return false;
+        }
+        var op = withinArray ? arrayContains : arraysEqual;
+        return op(data[name], value);
+      case 'RegExp':
+        if (!isArray(data[name])) {
+          return Boolean(data[name] && data[name].match(value));
+        }
+        if (!withinArray) {
+          return false;
+        }
+        return arrayContains(data[name], value);
+      case 'Number':
+        value = String(value);
+      case 'String':
+        if (!isArray(data[name])) {
+          return data[name] === value;
+        }
+        if (!withinArray) {
+          return false;
+        }
+        return arrayContains(data[name], value);
+      default:
+        throw new TypeError('URI.hasQuery() accepts undefined, boolean, string, number, RegExp, Function as the value parameter');
+    }
+  };
+  URI.joinPaths = function() {
+    var input = [];
+    var segments = [];
+    var nonEmptySegments = 0;
+    for (var i = 0; i < arguments.length; i++) {
+      var url = new URI(arguments[i]);
+      input.push(url);
+      var _segments = url.segment();
+      for (var s = 0; s < _segments.length; s++) {
+        if (typeof _segments[s] === 'string') {
+          segments.push(_segments[s]);
+        }
+        if (_segments[s]) {
+          nonEmptySegments++;
+        }
+      }
+    }
+    if (!segments.length || !nonEmptySegments) {
+      return new URI('');
+    }
+    var uri = new URI('').segment(segments);
+    if (input[0].path() === '' || input[0].path().slice(0, 1) === '/') {
+      uri.path('/' + uri.path());
+    }
+    return uri.normalize();
+  };
+  URI.commonPath = function(one, two) {
+    var length = Math.min(one.length, two.length);
+    var pos;
+    for (pos = 0; pos < length; pos++) {
+      if (one.charAt(pos) !== two.charAt(pos)) {
+        pos--;
+        break;
+      }
+    }
+    if (pos < 1) {
+      return one.charAt(0) === two.charAt(0) && one.charAt(0) === '/' ? '/' : '';
+    }
+    if (one.charAt(pos) !== '/' || two.charAt(pos) !== '/') {
+      pos = one.substring(0, pos).lastIndexOf('/');
+    }
+    return one.substring(0, pos + 1);
+  };
+  URI.withinString = function(string, callback, options) {
+    options || (options = {});
+    var _start = options.start || URI.findUri.start;
+    var _end = options.end || URI.findUri.end;
+    var _trim = options.trim || URI.findUri.trim;
+    var _attributeOpen = /[a-z0-9-]=["']?$/i;
+    _start.lastIndex = 0;
+    while (true) {
+      var match = _start.exec(string);
+      if (!match) {
+        break;
+      }
+      var start = match.index;
+      if (options.ignoreHtml) {
+        var attributeOpen = string.slice(Math.max(start - 3, 0), start);
+        if (attributeOpen && _attributeOpen.test(attributeOpen)) {
+          continue;
+        }
+      }
+      var end = start + string.slice(start).search(_end);
+      var slice = string.slice(start, end).replace(_trim, '');
+      if (options.ignore && options.ignore.test(slice)) {
+        continue;
+      }
+      end = start + slice.length;
+      var result = callback(slice, start, end, string);
+      string = string.slice(0, start) + result + string.slice(end);
+      _start.lastIndex = start + result.length;
+    }
+    _start.lastIndex = 0;
+    return string;
+  };
+  URI.ensureValidHostname = function(v) {
+    if (v.match(URI.invalid_hostname_characters)) {
+      if (!punycode) {
+        throw new TypeError('Hostname "' + v + '" contains characters other than [A-Z0-9.-] and Punycode.js is not available');
+      }
+      if (punycode.toASCII(v).match(URI.invalid_hostname_characters)) {
+        throw new TypeError('Hostname "' + v + '" contains characters other than [A-Z0-9.-]');
+      }
+    }
+  };
+  URI.noConflict = function(removeAll) {
+    if (removeAll) {
+      var unconflicted = {URI: this.noConflict()};
+      if (root.URITemplate && typeof root.URITemplate.noConflict === 'function') {
+        unconflicted.URITemplate = root.URITemplate.noConflict();
+      }
+      if (root.IPv6 && typeof root.IPv6.noConflict === 'function') {
+        unconflicted.IPv6 = root.IPv6.noConflict();
+      }
+      if (root.SecondLevelDomains && typeof root.SecondLevelDomains.noConflict === 'function') {
+        unconflicted.SecondLevelDomains = root.SecondLevelDomains.noConflict();
+      }
+      return unconflicted;
+    } else if (root.URI === this) {
+      root.URI = _URI;
+    }
+    return this;
+  };
+  p.build = function(deferBuild) {
+    if (deferBuild === true) {
+      this._deferred_build = true;
+    } else if (deferBuild === undefined || this._deferred_build) {
+      this._string = URI.build(this._parts);
+      this._deferred_build = false;
+    }
+    return this;
+  };
+  p.clone = function() {
+    return new URI(this);
+  };
+  p.valueOf = p.toString = function() {
+    return this.build(false)._string;
+  };
+  function generateSimpleAccessor(_part) {
+    return function(v, build) {
+      if (v === undefined) {
+        return this._parts[_part] || '';
+      } else {
+        this._parts[_part] = v || null;
+        this.build(!build);
+        return this;
+      }
+    };
+  }
+  function generatePrefixAccessor(_part, _key) {
+    return function(v, build) {
+      if (v === undefined) {
+        return this._parts[_part] || '';
+      } else {
+        if (v !== null) {
+          v = v + '';
+          if (v.charAt(0) === _key) {
+            v = v.substring(1);
+          }
+        }
+        this._parts[_part] = v;
+        this.build(!build);
+        return this;
+      }
+    };
+  }
+  p.protocol = generateSimpleAccessor('protocol');
+  p.username = generateSimpleAccessor('username');
+  p.password = generateSimpleAccessor('password');
+  p.hostname = generateSimpleAccessor('hostname');
+  p.port = generateSimpleAccessor('port');
+  p.query = generatePrefixAccessor('query', '?');
+  p.fragment = generatePrefixAccessor('fragment', '#');
+  p.search = function(v, build) {
+    var t = this.query(v, build);
+    return typeof t === 'string' && t.length ? ('?' + t) : t;
+  };
+  p.hash = function(v, build) {
+    var t = this.fragment(v, build);
+    return typeof t === 'string' && t.length ? ('#' + t) : t;
+  };
+  p.pathname = function(v, build) {
+    if (v === undefined || v === true) {
+      var res = this._parts.path || (this._parts.hostname ? '/' : '');
+      return v ? (this._parts.urn ? URI.decodeUrnPath : URI.decodePath)(res) : res;
+    } else {
+      if (this._parts.urn) {
+        this._parts.path = v ? URI.recodeUrnPath(v) : '';
+      } else {
+        this._parts.path = v ? URI.recodePath(v) : '/';
+      }
+      this.build(!build);
+      return this;
+    }
+  };
+  p.path = p.pathname;
+  p.href = function(href, build) {
+    var key;
+    if (href === undefined) {
+      return this.toString();
+    }
+    this._string = '';
+    this._parts = URI._parts();
+    var _URI = href instanceof URI;
+    var _object = typeof href === 'object' && (href.hostname || href.path || href.pathname);
+    if (href.nodeName) {
+      var attribute = URI.getDomAttribute(href);
+      href = href[attribute] || '';
+      _object = false;
+    }
+    if (!_URI && _object && href.pathname !== undefined) {
+      href = href.toString();
+    }
+    if (typeof href === 'string' || href instanceof String) {
+      this._parts = URI.parse(String(href), this._parts);
+    } else if (_URI || _object) {
+      var src = _URI ? href._parts : href;
+      for (key in src) {
+        if (hasOwn.call(this._parts, key)) {
+          this._parts[key] = src[key];
+        }
+      }
+    } else {
+      throw new TypeError('invalid input');
+    }
+    this.build(!build);
+    return this;
+  };
+  p.is = function(what) {
+    var ip = false;
+    var ip4 = false;
+    var ip6 = false;
+    var name = false;
+    var sld = false;
+    var idn = false;
+    var punycode = false;
+    var relative = !this._parts.urn;
+    if (this._parts.hostname) {
+      relative = false;
+      ip4 = URI.ip4_expression.test(this._parts.hostname);
+      ip6 = URI.ip6_expression.test(this._parts.hostname);
+      ip = ip4 || ip6;
+      name = !ip;
+      sld = name && SLD && SLD.has(this._parts.hostname);
+      idn = name && URI.idn_expression.test(this._parts.hostname);
+      punycode = name && URI.punycode_expression.test(this._parts.hostname);
+    }
+    switch (what.toLowerCase()) {
+      case 'relative':
+        return relative;
+      case 'absolute':
+        return !relative;
+      case 'domain':
+      case 'name':
+        return name;
+      case 'sld':
+        return sld;
+      case 'ip':
+        return ip;
+      case 'ip4':
+      case 'ipv4':
+      case 'inet4':
+        return ip4;
+      case 'ip6':
+      case 'ipv6':
+      case 'inet6':
+        return ip6;
+      case 'idn':
+        return idn;
+      case 'url':
+        return !this._parts.urn;
+      case 'urn':
+        return !!this._parts.urn;
+      case 'punycode':
+        return punycode;
+    }
+    return null;
+  };
+  var _protocol = p.protocol;
+  var _port = p.port;
+  var _hostname = p.hostname;
+  p.protocol = function(v, build) {
+    if (v !== undefined) {
+      if (v) {
+        v = v.replace(/:(\/\/)?$/, '');
+        if (!v.match(URI.protocol_expression)) {
+          throw new TypeError('Protocol "' + v + '" contains characters other than [A-Z0-9.+-] or doesn\'t start with [A-Z]');
+        }
+      }
+    }
+    return _protocol.call(this, v, build);
+  };
+  p.scheme = p.protocol;
+  p.port = function(v, build) {
+    if (this._parts.urn) {
+      return v === undefined ? '' : this;
+    }
+    if (v !== undefined) {
+      if (v === 0) {
+        v = null;
+      }
+      if (v) {
+        v += '';
+        if (v.charAt(0) === ':') {
+          v = v.substring(1);
+        }
+        if (v.match(/[^0-9]/)) {
+          throw new TypeError('Port "' + v + '" contains characters other than [0-9]');
+        }
+      }
+    }
+    return _port.call(this, v, build);
+  };
+  p.hostname = function(v, build) {
+    if (this._parts.urn) {
+      return v === undefined ? '' : this;
+    }
+    if (v !== undefined) {
+      var x = {};
+      var res = URI.parseHost(v, x);
+      if (res !== '/') {
+        throw new TypeError('Hostname "' + v + '" contains characters other than [A-Z0-9.-]');
+      }
+      v = x.hostname;
+    }
+    return _hostname.call(this, v, build);
+  };
+  p.origin = function(v, build) {
+    if (this._parts.urn) {
+      return v === undefined ? '' : this;
+    }
+    if (v === undefined) {
+      var protocol = this.protocol();
+      var authority = this.authority();
+      if (!authority) {
+        return '';
+      }
+      return (protocol ? protocol + '://' : '') + this.authority();
+    } else {
+      var origin = URI(v);
+      this.protocol(origin.protocol()).authority(origin.authority()).build(!build);
+      return this;
+    }
+  };
+  p.host = function(v, build) {
+    if (this._parts.urn) {
+      return v === undefined ? '' : this;
+    }
+    if (v === undefined) {
+      return this._parts.hostname ? URI.buildHost(this._parts) : '';
+    } else {
+      var res = URI.parseHost(v, this._parts);
+      if (res !== '/') {
+        throw new TypeError('Hostname "' + v + '" contains characters other than [A-Z0-9.-]');
+      }
+      this.build(!build);
+      return this;
+    }
+  };
+  p.authority = function(v, build) {
+    if (this._parts.urn) {
+      return v === undefined ? '' : this;
+    }
+    if (v === undefined) {
+      return this._parts.hostname ? URI.buildAuthority(this._parts) : '';
+    } else {
+      var res = URI.parseAuthority(v, this._parts);
+      if (res !== '/') {
+        throw new TypeError('Hostname "' + v + '" contains characters other than [A-Z0-9.-]');
+      }
+      this.build(!build);
+      return this;
+    }
+  };
+  p.userinfo = function(v, build) {
+    if (this._parts.urn) {
+      return v === undefined ? '' : this;
+    }
+    if (v === undefined) {
+      var t = URI.buildUserinfo(this._parts);
+      return t ? t.substring(0, t.length - 1) : t;
+    } else {
+      if (v[v.length - 1] !== '@') {
+        v += '@';
+      }
+      URI.parseUserinfo(v, this._parts);
+      this.build(!build);
+      return this;
+    }
+  };
+  p.resource = function(v, build) {
+    var parts;
+    if (v === undefined) {
+      return this.path() + this.search() + this.hash();
+    }
+    parts = URI.parse(v);
+    this._parts.path = parts.path;
+    this._parts.query = parts.query;
+    this._parts.fragment = parts.fragment;
+    this.build(!build);
+    return this;
+  };
+  p.subdomain = function(v, build) {
+    if (this._parts.urn) {
+      return v === undefined ? '' : this;
+    }
+    if (v === undefined) {
+      if (!this._parts.hostname || this.is('IP')) {
+        return '';
+      }
+      var end = this._parts.hostname.length - this.domain().length - 1;
+      return this._parts.hostname.substring(0, end) || '';
+    } else {
+      var e = this._parts.hostname.length - this.domain().length;
+      var sub = this._parts.hostname.substring(0, e);
+      var replace = new RegExp('^' + escapeRegEx(sub));
+      if (v && v.charAt(v.length - 1) !== '.') {
+        v += '.';
+      }
+      if (v) {
+        URI.ensureValidHostname(v);
+      }
+      this._parts.hostname = this._parts.hostname.replace(replace, v);
+      this.build(!build);
+      return this;
+    }
+  };
+  p.domain = function(v, build) {
+    if (this._parts.urn) {
+      return v === undefined ? '' : this;
+    }
+    if (typeof v === 'boolean') {
+      build = v;
+      v = undefined;
+    }
+    if (v === undefined) {
+      if (!this._parts.hostname || this.is('IP')) {
+        return '';
+      }
+      var t = this._parts.hostname.match(/\./g);
+      if (t && t.length < 2) {
+        return this._parts.hostname;
+      }
+      var end = this._parts.hostname.length - this.tld(build).length - 1;
+      end = this._parts.hostname.lastIndexOf('.', end - 1) + 1;
+      return this._parts.hostname.substring(end) || '';
+    } else {
+      if (!v) {
+        throw new TypeError('cannot set domain empty');
+      }
+      URI.ensureValidHostname(v);
+      if (!this._parts.hostname || this.is('IP')) {
+        this._parts.hostname = v;
+      } else {
+        var replace = new RegExp(escapeRegEx(this.domain()) + '$');
+        this._parts.hostname = this._parts.hostname.replace(replace, v);
+      }
+      this.build(!build);
+      return this;
+    }
+  };
+  p.tld = function(v, build) {
+    if (this._parts.urn) {
+      return v === undefined ? '' : this;
+    }
+    if (typeof v === 'boolean') {
+      build = v;
+      v = undefined;
+    }
+    if (v === undefined) {
+      if (!this._parts.hostname || this.is('IP')) {
+        return '';
+      }
+      var pos = this._parts.hostname.lastIndexOf('.');
+      var tld = this._parts.hostname.substring(pos + 1);
+      if (build !== true && SLD && SLD.list[tld.toLowerCase()]) {
+        return SLD.get(this._parts.hostname) || tld;
+      }
+      return tld;
+    } else {
+      var replace;
+      if (!v) {
+        throw new TypeError('cannot set TLD empty');
+      } else if (v.match(/[^a-zA-Z0-9-]/)) {
+        if (SLD && SLD.is(v)) {
+          replace = new RegExp(escapeRegEx(this.tld()) + '$');
+          this._parts.hostname = this._parts.hostname.replace(replace, v);
+        } else {
+          throw new TypeError('TLD "' + v + '" contains characters other than [A-Z0-9]');
+        }
+      } else if (!this._parts.hostname || this.is('IP')) {
+        throw new ReferenceError('cannot set TLD on non-domain host');
+      } else {
+        replace = new RegExp(escapeRegEx(this.tld()) + '$');
+        this._parts.hostname = this._parts.hostname.replace(replace, v);
+      }
+      this.build(!build);
+      return this;
+    }
+  };
+  p.directory = function(v, build) {
+    if (this._parts.urn) {
+      return v === undefined ? '' : this;
+    }
+    if (v === undefined || v === true) {
+      if (!this._parts.path && !this._parts.hostname) {
+        return '';
+      }
+      if (this._parts.path === '/') {
+        return '/';
+      }
+      var end = this._parts.path.length - this.filename().length - 1;
+      var res = this._parts.path.substring(0, end) || (this._parts.hostname ? '/' : '');
+      return v ? URI.decodePath(res) : res;
+    } else {
+      var e = this._parts.path.length - this.filename().length;
+      var directory = this._parts.path.substring(0, e);
+      var replace = new RegExp('^' + escapeRegEx(directory));
+      if (!this.is('relative')) {
+        if (!v) {
+          v = '/';
+        }
+        if (v.charAt(0) !== '/') {
+          v = '/' + v;
+        }
+      }
+      if (v && v.charAt(v.length - 1) !== '/') {
+        v += '/';
+      }
+      v = URI.recodePath(v);
+      this._parts.path = this._parts.path.replace(replace, v);
+      this.build(!build);
+      return this;
+    }
+  };
+  p.filename = function(v, build) {
+    if (this._parts.urn) {
+      return v === undefined ? '' : this;
+    }
+    if (v === undefined || v === true) {
+      if (!this._parts.path || this._parts.path === '/') {
+        return '';
+      }
+      var pos = this._parts.path.lastIndexOf('/');
+      var res = this._parts.path.substring(pos + 1);
+      return v ? URI.decodePathSegment(res) : res;
+    } else {
+      var mutatedDirectory = false;
+      if (v.charAt(0) === '/') {
+        v = v.substring(1);
+      }
+      if (v.match(/\.?\//)) {
+        mutatedDirectory = true;
+      }
+      var replace = new RegExp(escapeRegEx(this.filename()) + '$');
+      v = URI.recodePath(v);
+      this._parts.path = this._parts.path.replace(replace, v);
+      if (mutatedDirectory) {
+        this.normalizePath(build);
+      } else {
+        this.build(!build);
+      }
+      return this;
+    }
+  };
+  p.suffix = function(v, build) {
+    if (this._parts.urn) {
+      return v === undefined ? '' : this;
+    }
+    if (v === undefined || v === true) {
+      if (!this._parts.path || this._parts.path === '/') {
+        return '';
+      }
+      var filename = this.filename();
+      var pos = filename.lastIndexOf('.');
+      var s,
+          res;
+      if (pos === -1) {
+        return '';
+      }
+      s = filename.substring(pos + 1);
+      res = (/^[a-z0-9%]+$/i).test(s) ? s : '';
+      return v ? URI.decodePathSegment(res) : res;
+    } else {
+      if (v.charAt(0) === '.') {
+        v = v.substring(1);
+      }
+      var suffix = this.suffix();
+      var replace;
+      if (!suffix) {
+        if (!v) {
+          return this;
+        }
+        this._parts.path += '.' + URI.recodePath(v);
+      } else if (!v) {
+        replace = new RegExp(escapeRegEx('.' + suffix) + '$');
+      } else {
+        replace = new RegExp(escapeRegEx(suffix) + '$');
+      }
+      if (replace) {
+        v = URI.recodePath(v);
+        this._parts.path = this._parts.path.replace(replace, v);
+      }
+      this.build(!build);
+      return this;
+    }
+  };
+  p.segment = function(segment, v, build) {
+    var separator = this._parts.urn ? ':' : '/';
+    var path = this.path();
+    var absolute = path.substring(0, 1) === '/';
+    var segments = path.split(separator);
+    if (segment !== undefined && typeof segment !== 'number') {
+      build = v;
+      v = segment;
+      segment = undefined;
+    }
+    if (segment !== undefined && typeof segment !== 'number') {
+      throw new Error('Bad segment "' + segment + '", must be 0-based integer');
+    }
+    if (absolute) {
+      segments.shift();
+    }
+    if (segment < 0) {
+      segment = Math.max(segments.length + segment, 0);
+    }
+    if (v === undefined) {
+      return segment === undefined ? segments : segments[segment];
+    } else if (segment === null || segments[segment] === undefined) {
+      if (isArray(v)) {
+        segments = [];
+        for (var i = 0,
+            l = v.length; i < l; i++) {
+          if (!v[i].length && (!segments.length || !segments[segments.length - 1].length)) {
+            continue;
+          }
+          if (segments.length && !segments[segments.length - 1].length) {
+            segments.pop();
+          }
+          segments.push(trimSlashes(v[i]));
+        }
+      } else if (v || typeof v === 'string') {
+        v = trimSlashes(v);
+        if (segments[segments.length - 1] === '') {
+          segments[segments.length - 1] = v;
+        } else {
+          segments.push(v);
+        }
+      }
+    } else {
+      if (v) {
+        segments[segment] = trimSlashes(v);
+      } else {
+        segments.splice(segment, 1);
+      }
+    }
+    if (absolute) {
+      segments.unshift('');
+    }
+    return this.path(segments.join(separator), build);
+  };
+  p.segmentCoded = function(segment, v, build) {
+    var segments,
+        i,
+        l;
+    if (typeof segment !== 'number') {
+      build = v;
+      v = segment;
+      segment = undefined;
+    }
+    if (v === undefined) {
+      segments = this.segment(segment, v, build);
+      if (!isArray(segments)) {
+        segments = segments !== undefined ? URI.decode(segments) : undefined;
+      } else {
+        for (i = 0, l = segments.length; i < l; i++) {
+          segments[i] = URI.decode(segments[i]);
+        }
+      }
+      return segments;
+    }
+    if (!isArray(v)) {
+      v = (typeof v === 'string' || v instanceof String) ? URI.encode(v) : v;
+    } else {
+      for (i = 0, l = v.length; i < l; i++) {
+        v[i] = URI.encode(v[i]);
+      }
+    }
+    return this.segment(segment, v, build);
+  };
+  var q = p.query;
+  p.query = function(v, build) {
+    if (v === true) {
+      return URI.parseQuery(this._parts.query, this._parts.escapeQuerySpace);
+    } else if (typeof v === 'function') {
+      var data = URI.parseQuery(this._parts.query, this._parts.escapeQuerySpace);
+      var result = v.call(this, data);
+      this._parts.query = URI.buildQuery(result || data, this._parts.duplicateQueryParameters, this._parts.escapeQuerySpace);
+      this.build(!build);
+      return this;
+    } else if (v !== undefined && typeof v !== 'string') {
+      this._parts.query = URI.buildQuery(v, this._parts.duplicateQueryParameters, this._parts.escapeQuerySpace);
+      this.build(!build);
+      return this;
+    } else {
+      return q.call(this, v, build);
+    }
+  };
+  p.setQuery = function(name, value, build) {
+    var data = URI.parseQuery(this._parts.query, this._parts.escapeQuerySpace);
+    if (typeof name === 'string' || name instanceof String) {
+      data[name] = value !== undefined ? value : null;
+    } else if (typeof name === 'object') {
+      for (var key in name) {
+        if (hasOwn.call(name, key)) {
+          data[key] = name[key];
+        }
+      }
+    } else {
+      throw new TypeError('URI.addQuery() accepts an object, string as the name parameter');
+    }
+    this._parts.query = URI.buildQuery(data, this._parts.duplicateQueryParameters, this._parts.escapeQuerySpace);
+    if (typeof name !== 'string') {
+      build = value;
+    }
+    this.build(!build);
+    return this;
+  };
+  p.addQuery = function(name, value, build) {
+    var data = URI.parseQuery(this._parts.query, this._parts.escapeQuerySpace);
+    URI.addQuery(data, name, value === undefined ? null : value);
+    this._parts.query = URI.buildQuery(data, this._parts.duplicateQueryParameters, this._parts.escapeQuerySpace);
+    if (typeof name !== 'string') {
+      build = value;
+    }
+    this.build(!build);
+    return this;
+  };
+  p.removeQuery = function(name, value, build) {
+    var data = URI.parseQuery(this._parts.query, this._parts.escapeQuerySpace);
+    URI.removeQuery(data, name, value);
+    this._parts.query = URI.buildQuery(data, this._parts.duplicateQueryParameters, this._parts.escapeQuerySpace);
+    if (typeof name !== 'string') {
+      build = value;
+    }
+    this.build(!build);
+    return this;
+  };
+  p.hasQuery = function(name, value, withinArray) {
+    var data = URI.parseQuery(this._parts.query, this._parts.escapeQuerySpace);
+    return URI.hasQuery(data, name, value, withinArray);
+  };
+  p.setSearch = p.setQuery;
+  p.addSearch = p.addQuery;
+  p.removeSearch = p.removeQuery;
+  p.hasSearch = p.hasQuery;
+  p.normalize = function() {
+    if (this._parts.urn) {
+      return this.normalizeProtocol(false).normalizePath(false).normalizeQuery(false).normalizeFragment(false).build();
+    }
+    return this.normalizeProtocol(false).normalizeHostname(false).normalizePort(false).normalizePath(false).normalizeQuery(false).normalizeFragment(false).build();
+  };
+  p.normalizeProtocol = function(build) {
+    if (typeof this._parts.protocol === 'string') {
+      this._parts.protocol = this._parts.protocol.toLowerCase();
+      this.build(!build);
+    }
+    return this;
+  };
+  p.normalizeHostname = function(build) {
+    if (this._parts.hostname) {
+      if (this.is('IDN') && punycode) {
+        this._parts.hostname = punycode.toASCII(this._parts.hostname);
+      } else if (this.is('IPv6') && IPv6) {
+        this._parts.hostname = IPv6.best(this._parts.hostname);
+      }
+      this._parts.hostname = this._parts.hostname.toLowerCase();
+      this.build(!build);
+    }
+    return this;
+  };
+  p.normalizePort = function(build) {
+    if (typeof this._parts.protocol === 'string' && this._parts.port === URI.defaultPorts[this._parts.protocol]) {
+      this._parts.port = null;
+      this.build(!build);
+    }
+    return this;
+  };
+  p.normalizePath = function(build) {
+    var _path = this._parts.path;
+    if (!_path) {
+      return this;
+    }
+    if (this._parts.urn) {
+      this._parts.path = URI.recodeUrnPath(this._parts.path);
+      this.build(!build);
+      return this;
+    }
+    if (this._parts.path === '/') {
+      return this;
+    }
+    _path = URI.recodePath(_path);
+    var _was_relative;
+    var _leadingParents = '';
+    var _parent,
+        _pos;
+    if (_path.charAt(0) !== '/') {
+      _was_relative = true;
+      _path = '/' + _path;
+    }
+    if (_path.slice(-3) === '/..' || _path.slice(-2) === '/.') {
+      _path += '/';
+    }
+    _path = _path.replace(/(\/(\.\/)+)|(\/\.$)/g, '/').replace(/\/{2,}/g, '/');
+    if (_was_relative) {
+      _leadingParents = _path.substring(1).match(/^(\.\.\/)+/) || '';
+      if (_leadingParents) {
+        _leadingParents = _leadingParents[0];
+      }
+    }
+    while (true) {
+      _parent = _path.search(/\/\.\.(\/|$)/);
+      if (_parent === -1) {
+        break;
+      } else if (_parent === 0) {
+        _path = _path.substring(3);
+        continue;
+      }
+      _pos = _path.substring(0, _parent).lastIndexOf('/');
+      if (_pos === -1) {
+        _pos = _parent;
+      }
+      _path = _path.substring(0, _pos) + _path.substring(_parent + 3);
+    }
+    if (_was_relative && this.is('relative')) {
+      _path = _leadingParents + _path.substring(1);
+    }
+    this._parts.path = _path;
+    this.build(!build);
+    return this;
+  };
+  p.normalizePathname = p.normalizePath;
+  p.normalizeQuery = function(build) {
+    if (typeof this._parts.query === 'string') {
+      if (!this._parts.query.length) {
+        this._parts.query = null;
+      } else {
+        this.query(URI.parseQuery(this._parts.query, this._parts.escapeQuerySpace));
+      }
+      this.build(!build);
+    }
+    return this;
+  };
+  p.normalizeFragment = function(build) {
+    if (!this._parts.fragment) {
+      this._parts.fragment = null;
+      this.build(!build);
+    }
+    return this;
+  };
+  p.normalizeSearch = p.normalizeQuery;
+  p.normalizeHash = p.normalizeFragment;
+  p.iso8859 = function() {
+    var e = URI.encode;
+    var d = URI.decode;
+    URI.encode = escape;
+    URI.decode = decodeURIComponent;
+    try {
+      this.normalize();
+    } finally {
+      URI.encode = e;
+      URI.decode = d;
+    }
+    return this;
+  };
+  p.unicode = function() {
+    var e = URI.encode;
+    var d = URI.decode;
+    URI.encode = strictEncodeURIComponent;
+    URI.decode = unescape;
+    try {
+      this.normalize();
+    } finally {
+      URI.encode = e;
+      URI.decode = d;
+    }
+    return this;
+  };
+  p.readable = function() {
+    var uri = this.clone();
+    uri.username('').password('').normalize();
+    var t = '';
+    if (uri._parts.protocol) {
+      t += uri._parts.protocol + '://';
+    }
+    if (uri._parts.hostname) {
+      if (uri.is('punycode') && punycode) {
+        t += punycode.toUnicode(uri._parts.hostname);
+        if (uri._parts.port) {
+          t += ':' + uri._parts.port;
+        }
+      } else {
+        t += uri.host();
+      }
+    }
+    if (uri._parts.hostname && uri._parts.path && uri._parts.path.charAt(0) !== '/') {
+      t += '/';
+    }
+    t += uri.path(true);
+    if (uri._parts.query) {
+      var q = '';
+      for (var i = 0,
+          qp = uri._parts.query.split('&'),
+          l = qp.length; i < l; i++) {
+        var kv = (qp[i] || '').split('=');
+        q += '&' + URI.decodeQuery(kv[0], this._parts.escapeQuerySpace).replace(/&/g, '%26');
+        if (kv[1] !== undefined) {
+          q += '=' + URI.decodeQuery(kv[1], this._parts.escapeQuerySpace).replace(/&/g, '%26');
+        }
+      }
+      t += '?' + q.substring(1);
+    }
+    t += URI.decodeQuery(uri.hash(), true);
+    return t;
+  };
+  p.absoluteTo = function(base) {
+    var resolved = this.clone();
+    var properties = ['protocol', 'username', 'password', 'hostname', 'port'];
+    var basedir,
+        i,
+        p;
+    if (this._parts.urn) {
+      throw new Error('URNs do not have any generally defined hierarchical components');
+    }
+    if (!(base instanceof URI)) {
+      base = new URI(base);
+    }
+    if (!resolved._parts.protocol) {
+      resolved._parts.protocol = base._parts.protocol;
+    }
+    if (this._parts.hostname) {
+      return resolved;
+    }
+    for (i = 0; (p = properties[i]); i++) {
+      resolved._parts[p] = base._parts[p];
+    }
+    if (!resolved._parts.path) {
+      resolved._parts.path = base._parts.path;
+      if (!resolved._parts.query) {
+        resolved._parts.query = base._parts.query;
+      }
+    } else if (resolved._parts.path.substring(-2) === '..') {
+      resolved._parts.path += '/';
+    }
+    if (resolved.path().charAt(0) !== '/') {
+      basedir = base.directory();
+      basedir = basedir ? basedir : base.path().indexOf('/') === 0 ? '/' : '';
+      resolved._parts.path = (basedir ? (basedir + '/') : '') + resolved._parts.path;
+      resolved.normalizePath();
+    }
+    resolved.build();
+    return resolved;
+  };
+  p.relativeTo = function(base) {
+    var relative = this.clone().normalize();
+    var relativeParts,
+        baseParts,
+        common,
+        relativePath,
+        basePath;
+    if (relative._parts.urn) {
+      throw new Error('URNs do not have any generally defined hierarchical components');
+    }
+    base = new URI(base).normalize();
+    relativeParts = relative._parts;
+    baseParts = base._parts;
+    relativePath = relative.path();
+    basePath = base.path();
+    if (relativePath.charAt(0) !== '/') {
+      throw new Error('URI is already relative');
+    }
+    if (basePath.charAt(0) !== '/') {
+      throw new Error('Cannot calculate a URI relative to another relative URI');
+    }
+    if (relativeParts.protocol === baseParts.protocol) {
+      relativeParts.protocol = null;
+    }
+    if (relativeParts.username !== baseParts.username || relativeParts.password !== baseParts.password) {
+      return relative.build();
+    }
+    if (relativeParts.protocol !== null || relativeParts.username !== null || relativeParts.password !== null) {
+      return relative.build();
+    }
+    if (relativeParts.hostname === baseParts.hostname && relativeParts.port === baseParts.port) {
+      relativeParts.hostname = null;
+      relativeParts.port = null;
+    } else {
+      return relative.build();
+    }
+    if (relativePath === basePath) {
+      relativeParts.path = '';
+      return relative.build();
+    }
+    common = URI.commonPath(relativePath, basePath);
+    if (!common) {
+      return relative.build();
+    }
+    var parents = baseParts.path.substring(common.length).replace(/[^\/]*$/, '').replace(/.*?\//g, '../');
+    relativeParts.path = (parents + relativeParts.path.substring(common.length)) || './';
+    return relative.build();
+  };
+  p.equals = function(uri) {
+    var one = this.clone();
+    var two = new URI(uri);
+    var one_map = {};
+    var two_map = {};
+    var checked = {};
+    var one_query,
+        two_query,
+        key;
+    one.normalize();
+    two.normalize();
+    if (one.toString() === two.toString()) {
+      return true;
+    }
+    one_query = one.query();
+    two_query = two.query();
+    one.query('');
+    two.query('');
+    if (one.toString() !== two.toString()) {
+      return false;
+    }
+    if (one_query.length !== two_query.length) {
+      return false;
+    }
+    one_map = URI.parseQuery(one_query, this._parts.escapeQuerySpace);
+    two_map = URI.parseQuery(two_query, this._parts.escapeQuerySpace);
+    for (key in one_map) {
+      if (hasOwn.call(one_map, key)) {
+        if (!isArray(one_map[key])) {
+          if (one_map[key] !== two_map[key]) {
+            return false;
+          }
+        } else if (!arraysEqual(one_map[key], two_map[key])) {
+          return false;
+        }
+        checked[key] = true;
+      }
+    }
+    for (key in two_map) {
+      if (hasOwn.call(two_map, key)) {
+        if (!checked[key]) {
+          return false;
+        }
+      }
+    }
+    return true;
+  };
+  p.duplicateQueryParameters = function(v) {
+    this._parts.duplicateQueryParameters = !!v;
+    return this;
+  };
+  p.escapeQuerySpace = function(v) {
+    this._parts.escapeQuerySpace = !!v;
+    return this;
+  };
+  return URI;
+}));
+
+})();
+$__System.registerDynamic("8", [], true, function($__require, exports, module) {
   ;
   var define,
       global = this,
@@ -893,7 +3216,7 @@ $__System.registerDynamic("4", [], true, function($__require, exports, module) {
   return module.exports;
 });
 
-$__System.register("5", ["8", "6", "7", "4"], function(exports_1, context_1) {
+$__System.register("9", ["c", "a", "b", "8"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
@@ -912,26 +3235,7 @@ $__System.register("5", ["8", "6", "7", "4"], function(exports_1, context_1) {
       cesium_imports_1,
       context_2,
       mobile_detect_1;
-  var DeviceService,
-      rotationAxis,
-      projection,
-      swing,
-      twist;
-  function swingTwistDecomposition(q, direction) {
-    cesium_imports_1.Cartesian3.clone(q, rotationAxis);
-    cesium_imports_1.Cartesian3.multiplyByScalar(direction, cesium_imports_1.Cartesian3.dot(rotationAxis, direction), projection);
-    twist.x = projection.x;
-    twist.y = projection.y;
-    twist.z = projection.z;
-    twist.w = q.w;
-    cesium_imports_1.Quaternion.normalize(twist, twist);
-    cesium_imports_1.Quaternion.conjugate(twist, swing);
-    cesium_imports_1.Quaternion.multiply(q, swing, swing);
-    return {
-      swing: swing,
-      twist: twist
-    };
-  }
+  var DeviceService;
   return {
     setters: [function(aurelia_dependency_injection_1_1) {
       aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
@@ -945,7 +3249,6 @@ $__System.register("5", ["8", "6", "7", "4"], function(exports_1, context_1) {
     execute: function() {
       DeviceService = (function() {
         function DeviceService(context) {
-          this.context = context;
           this.locationUpdatesEnabled = true;
           this.orientationUpdatesEnabled = true;
           this.geolocationEntity = new cesium_imports_1.Entity({
@@ -969,7 +3272,6 @@ $__System.register("5", ["8", "6", "7", "4"], function(exports_1, context_1) {
           this._scratchCartesian = new cesium_imports_1.Cartesian3;
           this._scratchQuaternion1 = new cesium_imports_1.Quaternion;
           this._scratchQuaternion2 = new cesium_imports_1.Quaternion;
-          this._scratchMatrix3 = new cesium_imports_1.Matrix3;
           this._x90Rot = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_X, cesium_imports_1.CesiumMath.PI_OVER_TWO);
           this._headingDrift = 0;
           context.wellKnownReferenceFrames.add(this.geolocationEntity);
@@ -1085,15 +3387,11 @@ $__System.register("5", ["8", "6", "7", "4"], function(exports_1, context_1) {
         return DeviceService;
       }());
       exports_1("DeviceService", DeviceService);
-      rotationAxis = new cesium_imports_1.Cartesian3;
-      projection = new cesium_imports_1.Cartesian3;
-      swing = new cesium_imports_1.Quaternion;
-      twist = new cesium_imports_1.Quaternion;
     }
   };
 });
 
-$__System.register("9", ["6"], function(exports_1, context_1) {
+$__System.register("d", ["a"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var cesium_imports_1;
@@ -1145,7 +3443,7 @@ $__System.register("9", ["6"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("a", ["8", "b", "c", "5", "9", "d", "e"], function(exports_1, context_1) {
+$__System.register("e", ["c", "f", "10", "9", "d", "11", "12"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __extends = (this && this.__extends) || function(d, b) {
@@ -1205,7 +3503,7 @@ $__System.register("a", ["8", "b", "c", "5", "9", "d", "e"], function(exports_1,
         }
         EmptyRealityLoader.prototype.load = function(reality, callback) {
           var _this = this;
-          var realitySession = this.sessionService.addManagedSessionPort();
+          var realitySession = this.sessionService.addManagedSessionPort(reality.uri);
           var remoteRealitySession = this.sessionService.createSessionPort();
           var doUpdate = true;
           remoteRealitySession.on['ar.context.update'] = function() {};
@@ -1230,10 +3528,7 @@ $__System.register("a", ["8", "b", "c", "5", "9", "d", "e"], function(exports_1,
           callback(realitySession);
           var messageChannel = this.sessionService.createSynchronousMessageChannel();
           realitySession.open(messageChannel.port1, this.sessionService.configuration);
-          remoteRealitySession.open(messageChannel.port2, {
-            role: common_1.Role.REALITY_VIEW,
-            name: 'empty'
-          });
+          remoteRealitySession.open(messageChannel.port2, {role: common_1.Role.REALITY_VIEW});
         };
         EmptyRealityLoader = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, device_1.DeviceService, timer_1.TimerService)], EmptyRealityLoader);
         return EmptyRealityLoader;
@@ -1243,7 +3538,7 @@ $__System.register("a", ["8", "b", "c", "5", "9", "d", "e"], function(exports_1,
   };
 });
 
-$__System.register("f", ["8", "10", "c", "e"], function(exports_1, context_1) {
+$__System.register("13", ["c", "14", "10", "12"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __extends = (this && this.__extends) || function(d, b) {
@@ -1374,10 +3669,8 @@ $__System.register("f", ["8", "10", "c", "e"], function(exports_1, context_1) {
           this._sessionInitOptions = new WeakMap();
           this._sessionInitPromise = new WeakMap();
           this._sessionIsInitialized = new WeakMap();
-          this._sessionObjectTrackerStarted = new WeakMap();
           this._sessionCreatedDataSets = new WeakMap();
           this._sessionActivatedDataSets = new WeakMap();
-          this._isInitialized = false;
           if (sessionService.isManager) {
             this._sessionSwitcherCommandQueue.errorEvent.addEventListener(function(err) {
               _this.sessionService.errorEvent.raiseEvent(err);
@@ -1519,7 +3812,7 @@ $__System.register("f", ["8", "10", "c", "e"], function(exports_1, context_1) {
           var _this = this;
           if (this._controllingSession === session)
             return;
-          console.log("VuforiaService: Setting controlling session to " + session.info.name);
+          console.log("VuforiaService: Setting controlling session to " + session.uri);
           this._sessionSwitcherCommandQueue.clear();
           this._sessionSwitcherCommandQueue.push(function() {
             return _this._pauseSession().then(function() {
@@ -1531,7 +3824,7 @@ $__System.register("f", ["8", "10", "c", "e"], function(exports_1, context_1) {
           if (this._controllingSession)
             throw new Error('Attempted to resume a session while a session is still in control');
           if (session)
-            console.log("VuforiaService: Resuming session " + session.info.name);
+            console.log("VuforiaService: Resuming session " + session.uri);
           var initOptions = this._sessionInitOptions.get(session);
           if (!initOptions) {
             throw new Error('Attempted to resume a session without initialization options');
@@ -1554,7 +3847,7 @@ $__System.register("f", ["8", "10", "c", "e"], function(exports_1, context_1) {
           var session = this._controllingSession;
           if (!session)
             return Promise.resolve(undefined);
-          console.log("VuforiaService: Pausing session " + session.info.name);
+          console.log("VuforiaService: Pausing session " + session.uri);
           var commandQueue = this._sessionCommandQueue.get(session);
           return commandQueue.push(function() {
             commandQueue.pause();
@@ -1568,12 +3861,12 @@ $__System.register("f", ["8", "10", "c", "e"], function(exports_1, context_1) {
             return;
           this._sessionInitOptions.delete(session);
           var createdDataSets = this._sessionCreatedDataSets.get(session);
-          console.log('VuforiaService: Deactivating datasets for session ' + session.info.name);
+          console.log('VuforiaService: Deactivating datasets for session ' + session.uri);
           this._sessionActivatedDataSets.get(session).forEach(function(id) {
             _this.delegate.objectTrackerDeactivateDataSet(id);
           });
           this._sessionActivatedDataSets.delete(session);
-          console.log('VuforiaService: Destroying objects for session ' + session.info.name);
+          console.log('VuforiaService: Destroying objects for session ' + session.uri);
           createdDataSets.forEach(function(id) {
             _this.delegate.objectTrackerDestroyDataSet(id);
           });
@@ -1582,7 +3875,12 @@ $__System.register("f", ["8", "10", "c", "e"], function(exports_1, context_1) {
         VuforiaService.prototype._init = function(session) {
           var _this = this;
           var options = this._sessionInitOptions.get(session);
-          return this.delegate.init(options).then(function(initResult) {
+          var detailedOptions = {
+            licenseKey: options.licenseKey,
+            encryptedLicenseData: options.encryptedLicenseData,
+            origin: session.uri || ''
+          };
+          return this.delegate.init(detailedOptions).then(function(initResult) {
             if (initResult !== VuforiaInitResult.SUCCESS) {
               throw new Error("Vuforia init failed: " + VuforiaInitResult[initResult]);
             }
@@ -1627,7 +3925,6 @@ $__System.register("f", ["8", "10", "c", "e"], function(exports_1, context_1) {
       exports_1("VuforiaService", VuforiaService);
       VuforiaAPI = (function() {
         function VuforiaAPI(manager) {
-          this.manager = manager;
           this.objectTracker = new VuforiaObjectTracker(manager);
         }
         return VuforiaAPI;
@@ -1684,7 +3981,6 @@ $__System.register("f", ["8", "10", "c", "e"], function(exports_1, context_1) {
         function VuforiaDataSet(id, manager) {
           this.id = id;
           this.manager = manager;
-          this._isLoaded = false;
           this._isActive = false;
         }
         VuforiaDataSet.prototype._onActivate = function() {
@@ -1716,7 +4012,7 @@ $__System.register("f", ["8", "10", "c", "e"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("11", ["8", "b", "c", "d", "f"], function(exports_1, context_1) {
+$__System.register("15", ["c", "f", "10", "11", "13"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __extends = (this && this.__extends) || function(d, b) {
@@ -1769,7 +4065,7 @@ $__System.register("11", ["8", "b", "c", "d", "f"], function(exports_1, context_
         }
         LiveVideoRealityLoader.prototype.load = function(reality, callback) {
           var _this = this;
-          var realitySession = this.sessionService.addManagedSessionPort();
+          var realitySession = this.sessionService.addManagedSessionPort(reality.uri);
           var remoteRealitySession = this.sessionService.createSessionPort();
           remoteRealitySession.on['ar.context.update'] = function() {};
           remoteRealitySession.connectEvent.addEventListener(function() {
@@ -1787,10 +4083,7 @@ $__System.register("11", ["8", "b", "c", "d", "f"], function(exports_1, context_
           callback(realitySession);
           var messageChannel = this.sessionService.createSynchronousMessageChannel();
           realitySession.open(messageChannel.port1, this.sessionService.configuration);
-          remoteRealitySession.open(messageChannel.port2, {
-            role: common_1.Role.REALITY_VIEW,
-            name: 'live_video'
-          });
+          remoteRealitySession.open(messageChannel.port2, {role: common_1.Role.REALITY_VIEW});
         };
         LiveVideoRealityLoader = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, vuforia_1.VuforiaServiceDelegate)], LiveVideoRealityLoader);
         return LiveVideoRealityLoader;
@@ -1800,7 +4093,7 @@ $__System.register("11", ["8", "b", "c", "d", "f"], function(exports_1, context_
   };
 });
 
-$__System.register("7", ["8", "6", "c", "d", "e"], function(exports_1, context_1) {
+$__System.register("b", ["c", "a", "10", "11", "12"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
@@ -1821,7 +4114,6 @@ $__System.register("7", ["8", "6", "c", "d", "e"], function(exports_1, context_1
       reality_1,
       utils_1;
   var PoseStatus,
-      scratchDate,
       scratchCartesian3,
       scratchQuaternion,
       scratchOriginCartesian3,
@@ -1849,7 +4141,6 @@ $__System.register("7", ["8", "6", "c", "d", "e"], function(exports_1, context_1
         PoseStatus[PoseStatus["LOST"] = 4] = "LOST";
       })(PoseStatus || (PoseStatus = {}));
       exports_1("PoseStatus", PoseStatus);
-      scratchDate = new cesium_imports_1.JulianDate(0, 0);
       scratchCartesian3 = new cesium_imports_1.Cartesian3(0, 0);
       scratchQuaternion = new cesium_imports_1.Quaternion(0, 0);
       scratchOriginCartesian3 = new cesium_imports_1.Cartesian3(0, 0);
@@ -1894,7 +4185,6 @@ $__System.register("7", ["8", "6", "c", "d", "e"], function(exports_1, context_1
           this._subscribedEntities = new WeakMap();
           this._updatingEntities = new Set();
           this._knownEntities = new Set();
-          this._subviewEntities = [];
           this.entities.addCollection(this.wellKnownReferenceFrames);
           this.entities.addCollection(this.subscribedEntities);
           this.subscribedEntities.add(this.user);
@@ -2129,7 +4419,7 @@ $__System.register("7", ["8", "6", "c", "d", "e"], function(exports_1, context_1
   };
 });
 
-$__System.register("10", ["8", "c", "e"], function(exports_1, context_1) {
+$__System.register("14", ["c", "10", "12"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
@@ -2246,7 +4536,7 @@ $__System.register("10", ["8", "c", "e"], function(exports_1, context_1) {
 
 (function() {
 var define = $__System.amdDefine;
-define("12", ["exports", "3"], function(exports, _aureliaPal) {
+define("16", ["exports", "3"], function(exports, _aureliaPal) {
   'use strict';
   exports.__esModule = true;
   var _extends = Object.assign || function(target) {
@@ -2542,7 +4832,7 @@ define("3", ["exports"], function(exports) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("8", ["exports", "12", "3"], function(exports, _aureliaMetadata, _aureliaPal) {
+define("c", ["exports", "16", "3"], function(exports, _aureliaMetadata, _aureliaPal) {
   'use strict';
   exports.__esModule = true;
   var _classInvokers;
@@ -3034,11 +5324,12 @@ define("8", ["exports", "12", "3"], function(exports, _aureliaMetadata, _aurelia
 });
 
 })();
-$__System.register("b", [], function(exports_1, context_1) {
+$__System.register("f", [], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var Role,
-      SubviewType;
+      SubviewType,
+      RealityView;
   return {
     setters: [],
     execute: function() {
@@ -3055,11 +5346,29 @@ $__System.register("b", [], function(exports_1, context_1) {
         SubviewType[SubviewType["OTHER"] = "Other"] = "OTHER";
       })(SubviewType || (SubviewType = {}));
       exports_1("SubviewType", SubviewType);
+      RealityView = (function() {
+        function RealityView() {}
+        RealityView.getType = function(reality) {
+          var uri = reality.uri;
+          var parts = uri.split(':');
+          if (parts[0] === 'reality') {
+            return parts[1];
+          }
+          return 'hosted';
+        };
+        RealityView.EMPTY = {
+          uri: 'reality:empty',
+          title: 'Reality',
+          providedReferenceFrames: ['FIXED']
+        };
+        return RealityView;
+      }());
+      exports_1("RealityView", RealityView);
     }
   };
 });
 
-$__System.register("c", ["6", "8", "b", "e"], function(exports_1, context_1) {
+$__System.register("10", ["a", "c", "f", "12"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __extends = (this && this.__extends) || function(d, b) {
@@ -3108,8 +5417,9 @@ $__System.register("c", ["6", "8", "b", "e"], function(exports_1, context_1) {
     execute: function() {
       ;
       SessionPort = (function() {
-        function SessionPort() {
+        function SessionPort(uri) {
           var _this = this;
+          this.uri = uri;
           this._connectEvent = new utils_1.Event();
           this.closeEvent = new utils_1.Event();
           this.errorEvent = new utils_1.Event();
@@ -3126,7 +5436,7 @@ $__System.register("c", ["6", "8", "b", "e"], function(exports_1, context_1) {
             _this._isConnected = true;
             _this._connectEvent.raiseEvent(undefined);
           };
-          this.on[SessionPort.CLOSE] = function(message) {
+          this.on[SessionPort.CLOSE] = function() {
             _this._isClosed = true;
             _this._isConnected = false;
             if (_this.messagePort && _this.messagePort.close)
@@ -3311,8 +5621,8 @@ $__System.register("c", ["6", "8", "b", "e"], function(exports_1, context_1) {
       exports_1("SessionPort", SessionPort);
       SessionPortFactory = (function() {
         function SessionPortFactory() {}
-        SessionPortFactory.prototype.create = function() {
-          return new SessionPort();
+        SessionPortFactory.prototype.create = function(uri) {
+          return new SessionPort(uri);
         };
         return SessionPortFactory;
       }());
@@ -3329,7 +5639,7 @@ $__System.register("c", ["6", "8", "b", "e"], function(exports_1, context_1) {
           this.connectService = connectService;
           this.sessionPortFactory = sessionPortFactory;
           this.messageChannelFactory = messageChannelFactory;
-          this.manager = this.createSessionPort();
+          this.manager = this.createSessionPort('argon:manager');
           this.errorEvent = new utils_1.Event();
           this._connectEvent = new utils_1.Event();
           this._managedSessions = [];
@@ -3365,10 +5675,10 @@ $__System.register("c", ["6", "8", "b", "e"], function(exports_1, context_1) {
             console.warn('Argon: Unable to connect to a manager session; a connect service is not available');
           }
         };
-        SessionService.prototype.addManagedSessionPort = function() {
+        SessionService.prototype.addManagedSessionPort = function(uri) {
           var _this = this;
           this.ensureIsManager();
-          var session = this.sessionPortFactory.create();
+          var session = this.sessionPortFactory.create(uri);
           session.errorEvent.addEventListener(function(error) {
             _this.errorEvent.raiseEvent(error);
           });
@@ -3383,8 +5693,8 @@ $__System.register("c", ["6", "8", "b", "e"], function(exports_1, context_1) {
           });
           return session;
         };
-        SessionService.prototype.createSessionPort = function() {
-          return this.sessionPortFactory.create();
+        SessionService.prototype.createSessionPort = function(uri) {
+          return this.sessionPortFactory.create(uri);
         };
         SessionService.prototype.createMessageChannel = function() {
           return this.messageChannelFactory.create();
@@ -3506,7 +5816,7 @@ $__System.register("c", ["6", "8", "b", "e"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("d", ["8", "6", "b", "10", "c", "e"], function(exports_1, context_1) {
+$__System.register("11", ["c", "a", "f", "14", "10", "12"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
@@ -3527,8 +5837,7 @@ $__System.register("d", ["8", "6", "b", "10", "c", "e"], function(exports_1, con
       focus_1,
       session_1,
       utils_1;
-  var RealityView,
-      RealityLoader,
+  var RealityLoader,
       RealityZoomState,
       RealityService;
   return {
@@ -3546,20 +5855,6 @@ $__System.register("d", ["8", "6", "b", "10", "c", "e"], function(exports_1, con
       utils_1 = utils_1_1;
     }],
     execute: function() {
-      RealityView = (function() {
-        function RealityView(type, name, options) {
-          this.type = type;
-          this.name = name;
-          if (options) {
-            for (var k in options) {
-              this[k] = options[k];
-            }
-          }
-        }
-        RealityView.EMPTY = new RealityView('empty', 'Empty', {providedReferenceFrames: ['FIXED']});
-        return RealityView;
-      }());
-      exports_1("RealityView", RealityView);
       RealityLoader = (function() {
         function RealityLoader() {}
         return RealityLoader;
@@ -3586,7 +5881,6 @@ $__System.register("d", ["8", "6", "b", "10", "c", "e"], function(exports_1, con
           this.sessionDesiredRealityChangeEvent = new utils_1.Event();
           this._loaders = [];
           this._defaultFov = Math.PI / 2;
-          this._frustum = new cesium_imports_1.PerspectiveFrustum;
           this._scratchFrustum = new cesium_imports_1.PerspectiveFrustum();
           this._scratchArray = new Array();
           this._loadID = -1;
@@ -3600,7 +5894,7 @@ $__System.register("d", ["8", "6", "b", "10", "c", "e"], function(exports_1, con
           }
           sessionService.connectEvent.addEventListener(function(session) {
             if (session.info.role !== common_1.Role.REALITY_VIEW) {
-              session.on['ar.reality.desired'] = function(message, event) {
+              session.on['ar.reality.desired'] = function(message) {
                 var reality = message.reality;
                 var previous = _this.desiredRealityMap.get(session);
                 console.log('Session set desired reality: ' + JSON.stringify(reality));
@@ -3637,7 +5931,7 @@ $__System.register("d", ["8", "6", "b", "10", "c", "e"], function(exports_1, con
             _this.sessionService.manager.on[SEND_MESSAGE_KEY] = function(message) {
               messageChannel.port1.postMessage(message);
             };
-            _this.sessionService.manager.on[CLOSE_SESSION_KEY] = function(message) {
+            _this.sessionService.manager.on[CLOSE_SESSION_KEY] = function() {
               realityControlSession.close();
             };
             realityControlSession.connectEvent.addEventListener(function() {
@@ -3681,9 +5975,9 @@ $__System.register("d", ["8", "6", "b", "10", "c", "e"], function(exports_1, con
           this.sessionService.ensureIsManager();
           return this._current;
         };
-        RealityService.prototype.isSupported = function(type) {
+        RealityService.prototype.isSupported = function(reality) {
           this.sessionService.ensureIsManager();
-          return !!this._getLoader(type);
+          return !!this._getLoader(reality);
         };
         RealityService.prototype.publishFrame = function(state) {
           this.sessionService.ensureIsReality();
@@ -3753,7 +6047,7 @@ $__System.register("d", ["8", "6", "b", "10", "c", "e"], function(exports_1, con
               if (!session.isConnected)
                 continue;
               var desiredReality = this.desiredRealityMap.get(session);
-              if (desiredReality && this.isSupported(desiredReality.type)) {
+              if (desiredReality && this.isSupported(desiredReality)) {
                 selectedReality = desiredReality;
                 break;
               }
@@ -3814,8 +6108,8 @@ $__System.register("d", ["8", "6", "b", "10", "c", "e"], function(exports_1, con
             reality = this._default;
           }
           if (cesium_imports_1.defined(reality)) {
-            if (!this.isSupported(reality.type)) {
-              this.sessionService.errorEvent.raiseEvent(new Error('Reality of type "' + reality.type + '" is not available on this platform'));
+            if (!this.isSupported(reality)) {
+              this.sessionService.errorEvent.raiseEvent(new Error('Reality of type "' + reality.uri + '" is not available on this platform'));
               return;
             }
             var loadID_1 = ++this._loadID;
@@ -3827,7 +6121,6 @@ $__System.register("d", ["8", "6", "b", "10", "c", "e"], function(exports_1, con
                 return;
               }
               var previousRealitySession = _this._realitySession;
-              var previousReality = _this._current;
               _this._realitySession = realitySession;
               _this._setCurrent(reality);
               realitySession.on['ar.reality.frameState'] = function(serializedState) {
@@ -3857,7 +6150,7 @@ $__System.register("d", ["8", "6", "b", "10", "c", "e"], function(exports_1, con
                 if (realitySession.info.role !== common_1.Role.REALITY_VIEW) {
                   realitySession.sendError({message: "Expected a reality session"});
                   realitySession.close();
-                  throw new Error('The application "' + realitySession.info.name + '" does not support being loaded as a reality');
+                  throw new Error('The application "' + realitySession.uri + '" does not support being loaded as a reality');
                 }
                 if (previousRealitySession) {
                   previousRealitySession.close();
@@ -3888,12 +6181,12 @@ $__System.register("d", ["8", "6", "b", "10", "c", "e"], function(exports_1, con
             });
           }
         };
-        RealityService.prototype._getLoader = function(type) {
+        RealityService.prototype._getLoader = function(reality) {
           var found;
           for (var _i = 0,
               _a = this._loaders; _i < _a.length; _i++) {
             var loader = _a[_i];
-            if (loader.type === type) {
+            if (loader.type === common_1.RealityView.getType(reality)) {
               found = loader;
               break;
             }
@@ -3913,9 +6206,9 @@ $__System.register("d", ["8", "6", "b", "10", "c", "e"], function(exports_1, con
         };
         RealityService.prototype._executeRealityLoader = function(reality, callback) {
           this.sessionService.ensureIsManager();
-          var loader = this._getLoader(reality.type);
+          var loader = this._getLoader(reality);
           if (!loader)
-            throw new Error('Unable to setup unsupported reality type: ' + reality.type);
+            throw new Error('Unable to setup unsupported reality type: ' + reality.uri);
           loader.load(reality, callback);
         };
         RealityService = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, focus_1.FocusService)], RealityService);
@@ -3926,7 +6219,7 @@ $__System.register("d", ["8", "6", "b", "10", "c", "e"], function(exports_1, con
   };
 });
 
-$__System.register("13", ["8", "6", "c", "7", "e", "10", "d"], function(exports_1, context_1) {
+$__System.register("17", ["c", "a", "10", "b", "12", "14", "11"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
@@ -4144,7 +6437,7 @@ $__System.register("13", ["8", "6", "c", "7", "e", "10", "d"], function(exports_
           this.contextService = contextService;
           this.sessionService = sessionService;
           if (this.sessionService.isManager) {
-            viewService.containingElementPromise.then(function(el) {
+            this.viewService.containingElementPromise.then(function(el) {
               el.style.pointerEvents = 'auto';
               var fov = -1;
               if (typeof PointerEvent !== 'undefined') {
@@ -4251,7 +6544,7 @@ $__System.register("13", ["8", "6", "c", "7", "e", "10", "d"], function(exports_
   };
 });
 
-$__System.register("14", ["8", "c", "d", "13"], function(exports_1, context_1) {
+$__System.register("18", ["c", "10", "11", "17"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var __extends = (this && this.__extends) || function(d, b) {
@@ -4325,13 +6618,13 @@ $__System.register("14", ["8", "c", "d", "13"], function(exports_1, context_1) {
               if (frame !== _this.iframeElement)
                 return;
               window.removeEventListener('message', handleConnectMessage);
-              var realitySession = _this.sessionService.addManagedSessionPort();
+              var realitySession = _this.sessionService.addManagedSessionPort(reality.uri);
               callback(realitySession);
               realitySession.open(messagePort, _this.sessionService.configuration);
             };
             window.addEventListener('message', handleConnectMessage);
             _this.iframeElement.src = '';
-            _this.iframeElement.src = reality['url'];
+            _this.iframeElement.src = reality.uri;
             _this.iframeElement.style.pointerEvents = 'auto';
           });
         };
@@ -4345,7 +6638,7 @@ $__System.register("14", ["8", "c", "d", "13"], function(exports_1, context_1) {
 
 (function() {
 var define = $__System.amdDefine;
-define("15", ["16", "17", "18", "19"], function(defined, defineProperties, DeveloperError, Event) {
+define("19", ["1a", "1b", "1c", "1d"], function(defined, defineProperties, DeveloperError, Event) {
   'use strict';
   function CallbackProperty(callback, isConstant) {
     this._callback = undefined;
@@ -4387,7 +6680,7 @@ define("15", ["16", "17", "18", "19"], function(defined, defineProperties, Devel
 })();
 (function() {
 var define = $__System.amdDefine;
-define("1a", ["1b"], function(freezeObject) {
+define("1e", ["1f"], function(freezeObject) {
   'use strict';
   var ClockRange = {
     UNBOUNDED: 0,
@@ -4400,7 +6693,7 @@ define("1a", ["1b"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("1c", ["16"], function(defined) {
+define("20", ["1a"], function(defined) {
   'use strict';
   var getTimestamp;
   if (typeof performance !== 'undefined' && defined(performance.now)) {
@@ -4418,7 +6711,7 @@ define("1c", ["16"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("1d", ["1a", "1e", "1f", "16", "18", "19", "1c", "20"], function(ClockRange, ClockStep, defaultValue, defined, DeveloperError, Event, getTimestamp, JulianDate) {
+define("21", ["1e", "22", "23", "1a", "1c", "1d", "20", "24"], function(ClockRange, ClockStep, defaultValue, defined, DeveloperError, Event, getTimestamp, JulianDate) {
   'use strict';
   function Clock(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
@@ -4505,7 +6798,7 @@ define("1d", ["1a", "1e", "1f", "16", "18", "19", "1c", "20"], function(ClockRan
 })();
 (function() {
 var define = $__System.amdDefine;
-define("1e", ["1b"], function(freezeObject) {
+define("22", ["1f"], function(freezeObject) {
   'use strict';
   var ClockStep = {
     TICK_DEPENDENT: 0,
@@ -4518,7 +6811,7 @@ define("1e", ["1b"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("21", ["22", "16", "17", "18", "23", "24", "25"], function(createGuid, defined, defineProperties, DeveloperError, CesiumMath, Entity, EntityCollection) {
+define("25", ["26", "1a", "1b", "1c", "27", "28", "29"], function(createGuid, defined, defineProperties, DeveloperError, CesiumMath, Entity, EntityCollection) {
   'use strict';
   var entityOptionsScratch = {id: undefined};
   var entityIdScratch = new Array(2);
@@ -4839,7 +7132,7 @@ define("21", ["22", "16", "17", "18", "23", "24", "25"], function(createGuid, de
 })();
 (function() {
 var define = $__System.amdDefine;
-define("26", ["16", "17", "18"], function(defined, defineProperties, DeveloperError) {
+define("2a", ["1a", "1b", "1c"], function(defined, defineProperties, DeveloperError) {
   'use strict';
   function AssociativeArray() {
     this._array = [];
@@ -4902,7 +7195,7 @@ define("26", ["16", "17", "18"], function(defined, defineProperties, DeveloperEr
 })();
 (function() {
 var define = $__System.amdDefine;
-define("22", [], function() {
+define("26", [], function() {
   'use strict';
   function createGuid() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -4917,7 +7210,7 @@ define("22", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("27", ["28", "1f", "16", "17", "18", "19", "29", "2a"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, Event, ReferenceFrame, PositionProperty) {
+define("2b", ["2c", "23", "1a", "1b", "1c", "1d", "2d", "2e"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, Event, ReferenceFrame, PositionProperty) {
   'use strict';
   function ConstantPositionProperty(value, referenceFrame) {
     this._definitionChanged = new Event();
@@ -4970,7 +7263,7 @@ define("27", ["28", "1f", "16", "17", "18", "19", "29", "2a"], function(Cartesia
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2b", ["1f", "16", "17", "18", "19"], function(defaultValue, defined, defineProperties, DeveloperError, Event) {
+define("2f", ["23", "1a", "1b", "1c", "1d"], function(defaultValue, defined, defineProperties, DeveloperError, Event) {
   'use strict';
   function ConstantProperty(value) {
     this._value = undefined;
@@ -5012,7 +7305,7 @@ define("2b", ["1f", "16", "17", "18", "19"], function(defaultValue, defined, def
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2c", ["1f", "16", "2b"], function(defaultValue, defined, ConstantProperty) {
+define("30", ["23", "1a", "2f"], function(defaultValue, defined, ConstantProperty) {
   'use strict';
   function createProperty(name, privateName, subscriptionName, configurable, createPropertyCallback) {
     return {
@@ -5055,7 +7348,7 @@ define("2c", ["1f", "16", "2b"], function(defaultValue, defined, ConstantPropert
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2d", ["2c"], function(createPropertyDescriptor) {
+define("31", ["30"], function(createPropertyDescriptor) {
   'use strict';
   function createRawProperty(value) {
     return value;
@@ -5069,7 +7362,7 @@ define("2d", ["2c"], function(createPropertyDescriptor) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("24", ["28", "22", "1f", "16", "17", "18", "19", "2e", "2f", "30", "31", "@empty", "@empty", "27", "@empty", "2c", "2d", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "32", "@empty", "@empty"], function(Cartesian3, createGuid, defaultValue, defined, defineProperties, DeveloperError, Event, Matrix3, Matrix4, Quaternion, Transforms, BillboardGraphics, BoxGraphics, ConstantPositionProperty, CorridorGraphics, createPropertyDescriptor, createRawPropertyDescriptor, CylinderGraphics, EllipseGraphics, EllipsoidGraphics, LabelGraphics, ModelGraphics, PathGraphics, PointGraphics, PolygonGraphics, PolylineGraphics, PolylineVolumeGraphics, Property, RectangleGraphics, WallGraphics) {
+define("28", ["2c", "26", "23", "1a", "1b", "1c", "1d", "32", "33", "34", "35", "@empty", "@empty", "2b", "@empty", "30", "31", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "36", "@empty", "@empty"], function(Cartesian3, createGuid, defaultValue, defined, defineProperties, DeveloperError, Event, Matrix3, Matrix4, Quaternion, Transforms, BillboardGraphics, BoxGraphics, ConstantPositionProperty, CorridorGraphics, createPropertyDescriptor, createRawPropertyDescriptor, CylinderGraphics, EllipseGraphics, EllipsoidGraphics, LabelGraphics, ModelGraphics, PathGraphics, PointGraphics, PolygonGraphics, PolylineGraphics, PolylineVolumeGraphics, Property, RectangleGraphics, WallGraphics) {
   'use strict';
   function createConstantPositionProperty(value) {
     return new ConstantPositionProperty(value);
@@ -5321,7 +7614,7 @@ define("24", ["28", "22", "1f", "16", "17", "18", "19", "2e", "2f", "30", "31", 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("25", ["26", "22", "16", "17", "18", "19", "33", "20", "34", "35", "24"], function(AssociativeArray, createGuid, defined, defineProperties, DeveloperError, Event, Iso8601, JulianDate, RuntimeError, TimeInterval, Entity) {
+define("29", ["2a", "26", "1a", "1b", "1c", "1d", "37", "24", "38", "39", "28"], function(AssociativeArray, createGuid, defined, defineProperties, DeveloperError, Event, Iso8601, JulianDate, RuntimeError, TimeInterval, Entity) {
   'use strict';
   var entityOptionsScratch = {id: undefined};
   function fireChangedEvent(collection) {
@@ -5549,7 +7842,7 @@ define("25", ["26", "22", "16", "17", "18", "19", "33", "20", "34", "35", "24"],
 })();
 (function() {
 var define = $__System.amdDefine;
-define("36", ["28", "37", "1f", "16", "17", "18", "38"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, Ellipsoid) {
+define("3a", ["2c", "3b", "23", "1a", "1b", "1c", "3c"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, Ellipsoid) {
   'use strict';
   function GeographicProjection(ellipsoid) {
     this._ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
@@ -5594,7 +7887,7 @@ define("36", ["28", "37", "1f", "16", "17", "18", "38"], function(Cartesian3, Ca
 })();
 (function() {
 var define = $__System.amdDefine;
-define("39", ["1f", "16", "18", "23"], function(defaultValue, defined, DeveloperError, CesiumMath) {
+define("3d", ["23", "1a", "1c", "27"], function(defaultValue, defined, DeveloperError, CesiumMath) {
   'use strict';
   var factorial = CesiumMath.factorial;
   function calculateCoefficientTerm(x, zIndices, xTable, derivOrder, termOrder, reservedIndices) {
@@ -5794,7 +8087,7 @@ define("39", ["1f", "16", "18", "23"], function(defaultValue, defined, Developer
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3a", ["16", "17", "18", "2e", "30", "29", "31"], function(defined, defineProperties, DeveloperError, Matrix3, Quaternion, ReferenceFrame, Transforms) {
+define("3e", ["1a", "1b", "1c", "32", "34", "2d", "35"], function(defined, defineProperties, DeveloperError, Matrix3, Quaternion, ReferenceFrame, Transforms) {
   "use strict";
   var OrientationProperty = function() {
     DeveloperError.throwInstantiationError();
@@ -5922,7 +8215,7 @@ define("3a", ["16", "17", "18", "2e", "30", "29", "31"], function(defined, defin
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3b", ["16", "17", "18", "3c"], function(defined, defineProperties, DeveloperError, PerspectiveOffCenterFrustum) {
+define("3f", ["1a", "1b", "1c", "40"], function(defined, defineProperties, DeveloperError, PerspectiveOffCenterFrustum) {
   'use strict';
   function PerspectiveFrustum() {
     this._offCenterFrustum = new PerspectiveOffCenterFrustum();
@@ -6031,7 +8324,7 @@ define("3b", ["16", "17", "18", "3c"], function(defined, defineProperties, Devel
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3d", ["1b"], function(freezeObject) {
+define("41", ["1f"], function(freezeObject) {
   'use strict';
   var Intersect = {
     OUTSIDE: -1,
@@ -6044,7 +8337,7 @@ define("3d", ["1b"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3e", ["28", "3f", "1f", "16", "18", "3d", "40"], function(Cartesian3, Cartesian4, defaultValue, defined, DeveloperError, Intersect, Plane) {
+define("42", ["2c", "43", "23", "1a", "1c", "41", "44"], function(Cartesian3, Cartesian4, defaultValue, defined, DeveloperError, Intersect, Plane) {
   'use strict';
   function CullingVolume(planes) {
     this.planes = defaultValue(planes, []);
@@ -6148,7 +8441,7 @@ define("3e", ["28", "3f", "1f", "16", "18", "3d", "40"], function(Cartesian3, Ca
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3c", ["41", "28", "3f", "1f", "16", "17", "18", "2f", "3e"], function(Cartesian2, Cartesian3, Cartesian4, defaultValue, defined, defineProperties, DeveloperError, Matrix4, CullingVolume) {
+define("40", ["45", "2c", "43", "23", "1a", "1b", "1c", "33", "42"], function(Cartesian2, Cartesian3, Cartesian4, defaultValue, defined, defineProperties, DeveloperError, Matrix4, CullingVolume) {
   'use strict';
   function PerspectiveOffCenterFrustum() {
     this.left = undefined;
@@ -6354,7 +8647,7 @@ define("3c", ["41", "28", "3f", "1f", "16", "17", "18", "2f", "3e"], function(Ca
 })();
 (function() {
 var define = $__System.amdDefine;
-define("42", ["16", "17", "18", "19", "32"], function(defined, defineProperties, DeveloperError, Event, Property) {
+define("46", ["1a", "1b", "1c", "1d", "36"], function(defined, defineProperties, DeveloperError, Event, Property) {
   "use strict";
   function resolve(that) {
     var targetEntity = that._targetEntity;
@@ -6425,7 +8718,7 @@ define("42", ["16", "17", "18", "19", "32"], function(defined, defineProperties,
 })();
 (function() {
 var define = $__System.amdDefine;
-define("43", ["16", "17", "18", "19", "34", "32"], function(defined, defineProperties, DeveloperError, Event, RuntimeError, Property) {
+define("47", ["1a", "1b", "1c", "1d", "38", "36"], function(defined, defineProperties, DeveloperError, Event, RuntimeError, Property) {
   'use strict';
   function resolveEntity(that) {
     var entityIsResolved = true;
@@ -6599,7 +8892,7 @@ define("43", ["16", "17", "18", "19", "34", "32"], function(defined, definePrope
 })();
 (function() {
 var define = $__System.amdDefine;
-define("29", ["1b"], function(freezeObject) {
+define("2d", ["1f"], function(freezeObject) {
   'use strict';
   var ReferenceFrame = {
     FIXED: 0,
@@ -6611,7 +8904,7 @@ define("29", ["1b"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2a", ["28", "16", "17", "18", "2e", "2f", "30", "29", "31"], function(Cartesian3, defined, defineProperties, DeveloperError, Matrix3, Matrix4, Quaternion, ReferenceFrame, Transforms) {
+define("2e", ["2c", "1a", "1b", "1c", "32", "33", "34", "2d", "35"], function(Cartesian3, defined, defineProperties, DeveloperError, Matrix3, Matrix4, Quaternion, ReferenceFrame, Transforms) {
   'use strict';
   function PositionProperty() {
     DeveloperError.throwInstantiationError();
@@ -6764,7 +9057,7 @@ define("2a", ["28", "16", "17", "18", "2e", "2f", "30", "29", "31"], function(Ca
 })();
 (function() {
 var define = $__System.amdDefine;
-define("35", ["1f", "16", "17", "18", "1b", "20"], function(defaultValue, defined, defineProperties, DeveloperError, freezeObject, JulianDate) {
+define("39", ["23", "1a", "1b", "1c", "1f", "24"], function(defaultValue, defined, defineProperties, DeveloperError, freezeObject, JulianDate) {
   'use strict';
   function TimeInterval(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
@@ -6917,7 +9210,7 @@ define("35", ["1f", "16", "17", "18", "1b", "20"], function(defaultValue, define
 })();
 (function() {
 var define = $__System.amdDefine;
-define("33", ["1b", "20", "35"], function(freezeObject, JulianDate, TimeInterval) {
+define("37", ["1f", "24", "39"], function(freezeObject, JulianDate, TimeInterval) {
   'use strict';
   var MINIMUM_VALUE = freezeObject(JulianDate.fromIso8601('0000-01-01T00:00:00Z'));
   var MAXIMUM_VALUE = freezeObject(JulianDate.fromIso8601('9999-12-31T24:00:00Z'));
@@ -6936,7 +9229,7 @@ define("33", ["1b", "20", "35"], function(freezeObject, JulianDate, TimeInterval
 })();
 (function() {
 var define = $__System.amdDefine;
-define("32", ["1f", "16", "17", "18", "33"], function(defaultValue, defined, defineProperties, DeveloperError, Iso8601) {
+define("36", ["23", "1a", "1b", "1c", "37"], function(defaultValue, defined, defineProperties, DeveloperError, Iso8601) {
   'use strict';
   function Property() {
     DeveloperError.throwInstantiationError();
@@ -6990,7 +9283,7 @@ define("32", ["1f", "16", "17", "18", "33"], function(defaultValue, defined, def
 })();
 (function() {
 var define = $__System.amdDefine;
-define("44", ["28", "1f", "16", "17", "18", "19", "29", "2a", "32", "45"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, Event, ReferenceFrame, PositionProperty, Property, SampledProperty) {
+define("48", ["2c", "23", "1a", "1b", "1c", "1d", "2d", "2e", "36", "49"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, Event, ReferenceFrame, PositionProperty, Property, SampledProperty) {
   'use strict';
   function SampledPositionProperty(referenceFrame, numberOfDerivatives) {
     numberOfDerivatives = defaultValue(numberOfDerivatives, 0);
@@ -7102,7 +9395,7 @@ define("44", ["28", "1f", "16", "17", "18", "19", "29", "2a", "32", "45"], funct
 })();
 (function() {
 var define = $__System.amdDefine;
-define("19", ["16", "17", "18"], function(defined, defineProperties, DeveloperError) {
+define("1d", ["1a", "1b", "1c"], function(defined, defineProperties, DeveloperError) {
   'use strict';
   function Event() {
     this._listeners = [];
@@ -7178,7 +9471,7 @@ define("19", ["16", "17", "18"], function(defined, defineProperties, DeveloperEr
 })();
 (function() {
 var define = $__System.amdDefine;
-define("46", ["1b"], function(freezeObject) {
+define("4a", ["1f"], function(freezeObject) {
   'use strict';
   var ExtrapolationType = {
     NONE: 0,
@@ -7191,7 +9484,7 @@ define("46", ["1b"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("47", ["16", "18"], function(defined, DeveloperError) {
+define("4b", ["1a", "1c"], function(defined, DeveloperError) {
   'use strict';
   var LinearApproximation = {type: 'Linear'};
   LinearApproximation.getRequiredDataPoints = function(degree) {
@@ -7227,7 +9520,7 @@ define("47", ["16", "18"], function(defined, DeveloperError) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("45", ["48", "1f", "16", "17", "18", "19", "46", "20", "47"], function(binarySearch, defaultValue, defined, defineProperties, DeveloperError, Event, ExtrapolationType, JulianDate, LinearApproximation) {
+define("49", ["4c", "23", "1a", "1b", "1c", "1d", "4a", "24", "4b"], function(binarySearch, defaultValue, defined, defineProperties, DeveloperError, Event, ExtrapolationType, JulianDate, LinearApproximation) {
   'use strict';
   var PackableNumber = {
     packedLength: 1,
@@ -7676,7 +9969,7 @@ define("45", ["48", "1f", "16", "17", "18", "19", "46", "20", "47"], function(bi
 })();
 (function() {
 var define = $__System.amdDefine;
-define("41", ["1f", "16", "18", "1b", "23"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
+define("45", ["23", "1a", "1c", "1f", "27"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
   'use strict';
   function Cartesian2(x, y) {
     this.x = defaultValue(x, 0.0);
@@ -8014,7 +10307,7 @@ define("41", ["1f", "16", "18", "1b", "23"], function(defaultValue, defined, Dev
 })();
 (function() {
 var define = $__System.amdDefine;
-define("49", ["4a", "48", "1f", "16", "4b", "1b", "20", "4c", "4d", "34", "4e", "4f"], function(when, binarySearch, defaultValue, defined, EarthOrientationParametersSample, freezeObject, JulianDate, LeapSecond, loadJson, RuntimeError, TimeConstants, TimeStandard) {
+define("4d", ["4e", "4c", "23", "1a", "4f", "1f", "24", "50", "51", "38", "52", "53"], function(when, binarySearch, defaultValue, defined, EarthOrientationParametersSample, freezeObject, JulianDate, LeapSecond, loadJson, RuntimeError, TimeConstants, TimeStandard) {
   'use strict';
   function EarthOrientationParameters(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
@@ -8240,7 +10533,7 @@ define("49", ["4a", "48", "1f", "16", "4b", "1b", "20", "4c", "4d", "34", "4e", 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4b", [], function() {
+define("4f", [], function() {
   'use strict';
   function EarthOrientationParametersSample(xPoleWander, yPoleWander, xPoleOffset, yPoleOffset, ut1MinusUtc) {
     this.xPoleWander = xPoleWander;
@@ -8255,7 +10548,7 @@ define("4b", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("50", ["51", "1f", "16", "18"], function(Uri, defaultValue, defined, DeveloperError) {
+define("54", ["55", "23", "1a", "1c"], function(Uri, defaultValue, defined, DeveloperError) {
   'use strict';
   function getAbsoluteUri(relative, base) {
     if (!defined(relative)) {
@@ -8272,7 +10565,7 @@ define("50", ["51", "1f", "16", "18"], function(Uri, defaultValue, defined, Deve
 })();
 (function() {
 var define = $__System.amdDefine;
-define("51", [], function() {
+define("55", [], function() {
   function URI(uri) {
     if (uri instanceof URI) {
       this.scheme = uri.scheme;
@@ -8420,7 +10713,7 @@ define("51", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("52", ["51", "1f", "16", "18"], function(Uri, defaultValue, defined, DeveloperError) {
+define("56", ["55", "23", "1a", "1c"], function(Uri, defaultValue, defined, DeveloperError) {
   'use strict';
   function joinUrls(first, second, appendSlash) {
     if (!defined(first)) {
@@ -8490,7 +10783,7 @@ define("52", ["51", "1f", "16", "18"], function(Uri, defaultValue, defined, Deve
 })();
 (function() {
 var define = $__System.amdDefine;
-define("53", ["51", "16", "18", "50", "52", "require"], function(Uri, defined, DeveloperError, getAbsoluteUri, joinUrls, require) {
+define("57", ["55", "1a", "1c", "54", "56", "require"], function(Uri, defined, DeveloperError, getAbsoluteUri, joinUrls, require) {
   'use strict';
   var cesiumScriptRegex = /((?:.*\/)|^)cesium[\w-]*\.js(?:\W|$)/i;
   function getBaseUrlFromCesiumScript() {
@@ -8556,7 +10849,7 @@ define("53", ["51", "16", "18", "50", "52", "require"], function(Uri, defined, D
 })();
 (function() {
 var define = $__System.amdDefine;
-define("54", ["1f"], function(defaultValue) {
+define("58", ["23"], function(defaultValue) {
   'use strict';
   function clone(object, deep) {
     if (object === null || typeof object !== 'object') {
@@ -8583,7 +10876,7 @@ define("54", ["1f"], function(defaultValue) {
 var define = $__System.amdDefine;
 (function(define) {
   'use strict';
-  define("4a", [], function() {
+  define("4e", [], function() {
     var reduceArray,
         slice,
         undef;
@@ -8926,7 +11219,7 @@ var define = $__System.amdDefine;
 })();
 (function() {
 var define = $__System.amdDefine;
-define("55", [], function() {
+define("59", [], function() {
   'use strict';
   function parseResponseHeaders(headerString) {
     var headers = {};
@@ -8951,7 +11244,7 @@ define("55", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("56", ["16", "55"], function(defined, parseResponseHeaders) {
+define("5a", ["1a", "59"], function(defined, parseResponseHeaders) {
   'use strict';
   function RequestErrorEvent(statusCode, response, responseHeaders) {
     this.statusCode = statusCode;
@@ -8974,7 +11267,7 @@ define("56", ["16", "55"], function(defined, parseResponseHeaders) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("57", ["4a", "1f", "16", "18", "56", "34"], function(when, defaultValue, defined, DeveloperError, RequestErrorEvent, RuntimeError) {
+define("5b", ["4e", "23", "1a", "1c", "5a", "38"], function(when, defaultValue, defined, DeveloperError, RequestErrorEvent, RuntimeError) {
   'use strict';
   function loadWithXhr(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
@@ -9082,7 +11375,7 @@ define("57", ["4a", "1f", "16", "18", "56", "34"], function(when, defaultValue, 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("58", ["57"], function(loadWithXhr) {
+define("5c", ["5b"], function(loadWithXhr) {
   'use strict';
   function loadText(url, headers) {
     return loadWithXhr({
@@ -9096,7 +11389,7 @@ define("58", ["57"], function(loadWithXhr) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4d", ["54", "16", "18", "58"], function(clone, defined, DeveloperError, loadText) {
+define("51", ["58", "1a", "1c", "5c"], function(clone, defined, DeveloperError, loadText) {
   'use strict';
   var defaultHeaders = {Accept: 'application/json,*/*;q=0.01'};
   function loadJson(url, headers) {
@@ -9119,7 +11412,7 @@ define("4d", ["54", "16", "18", "58"], function(clone, defined, DeveloperError, 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("59", ["4a", "53", "1f", "16", "5a", "20", "4d", "4f"], function(when, buildModuleUrl, defaultValue, defined, Iau2006XysSample, JulianDate, loadJson, TimeStandard) {
+define("5d", ["4e", "57", "23", "1a", "5e", "24", "51", "53"], function(when, buildModuleUrl, defaultValue, defined, Iau2006XysSample, JulianDate, loadJson, TimeStandard) {
   'use strict';
   function Iau2006XysData(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
@@ -9274,7 +11567,7 @@ define("59", ["4a", "53", "1f", "16", "5a", "20", "4d", "4f"], function(when, bu
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5a", [], function() {
+define("5e", [], function() {
   'use strict';
   function Iau2006XysSample(x, y, s) {
     this.x = x;
@@ -9287,7 +11580,7 @@ define("5a", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5b", ["16", "17"], function(defined, defineProperties) {
+define("5f", ["1a", "1b"], function(defined, defineProperties) {
   'use strict';
   var _supportsFullscreen;
   var _names = {
@@ -9425,7 +11718,7 @@ define("5b", ["16", "17"], function(defined, defineProperties) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5c", ["1f", "16", "5b"], function(defaultValue, defined, Fullscreen) {
+define("60", ["23", "1a", "5f"], function(defaultValue, defined, Fullscreen) {
   'use strict';
   var theNavigator;
   if (typeof navigator !== 'undefined') {
@@ -9596,7 +11889,7 @@ define("5c", ["1f", "16", "5b"], function(defaultValue, defined, Fullscreen) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("30", ["28", "1f", "16", "18", "5c", "1b", "23", "2e"], function(Cartesian3, defaultValue, defined, DeveloperError, FeatureDetection, freezeObject, CesiumMath, Matrix3) {
+define("34", ["2c", "23", "1a", "1c", "60", "1f", "27", "32"], function(Cartesian3, defaultValue, defined, DeveloperError, FeatureDetection, freezeObject, CesiumMath, Matrix3) {
   'use strict';
   function Quaternion(x, y, z, w) {
     this.x = defaultValue(x, 0.0);
@@ -10172,7 +12465,7 @@ define("30", ["28", "1f", "16", "18", "5c", "1b", "23", "2e"], function(Cartesia
 })();
 (function() {
 var define = $__System.amdDefine;
-define("31", ["4a", "41", "28", "3f", "37", "1f", "16", "18", "49", "4b", "38", "59", "5a", "20", "23", "2e", "2f", "30", "4e"], function(when, Cartesian2, Cartesian3, Cartesian4, Cartographic, defaultValue, defined, DeveloperError, EarthOrientationParameters, EarthOrientationParametersSample, Ellipsoid, Iau2006XysData, Iau2006XysSample, JulianDate, CesiumMath, Matrix3, Matrix4, Quaternion, TimeConstants) {
+define("35", ["4e", "45", "2c", "43", "3b", "23", "1a", "1c", "4d", "4f", "3c", "5d", "5e", "24", "27", "32", "33", "34", "52"], function(when, Cartesian2, Cartesian3, Cartesian4, Cartographic, defaultValue, defined, DeveloperError, EarthOrientationParameters, EarthOrientationParametersSample, Ellipsoid, Iau2006XysData, Iau2006XysSample, JulianDate, CesiumMath, Matrix3, Matrix4, Quaternion, TimeConstants) {
   'use strict';
   var Transforms = {};
   var eastNorthUpToFixedFrameNormal = new Cartesian3();
@@ -10625,7 +12918,7 @@ define("31", ["4a", "41", "28", "3f", "37", "1f", "16", "18", "49", "4b", "38", 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5d", [], function() {
+define("61", [], function() {
   function sprintf() {
     var regex = /%%|%(\d+\$)?([-+\'#0 ]*)(\*\d+\$|\*|\d+)?(\.(\*\d+\$|\*|\d+))?([scboxXuideEfFgG])/g;
     var a = arguments,
@@ -10774,7 +13067,7 @@ define("5d", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("48", ["16", "18"], function(defined, DeveloperError) {
+define("4c", ["1a", "1c"], function(defined, DeveloperError) {
   'use strict';
   function binarySearch(array, itemToFind, comparator) {
     if (!defined(array)) {
@@ -10811,7 +13104,7 @@ define("48", ["16", "18"], function(defined, DeveloperError) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5e", [], function() {
+define("62", [], function() {
   'use strict';
   function GregorianDate(year, month, day, hour, minute, second, millisecond, isLeapSecond) {
     this.year = year;
@@ -10829,7 +13122,7 @@ define("5e", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5f", ["18"], function(DeveloperError) {
+define("63", ["1c"], function(DeveloperError) {
   'use strict';
   function isLeapYear(year) {
     if (year === null || isNaN(year)) {
@@ -10843,7 +13136,7 @@ define("5f", ["18"], function(DeveloperError) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4c", [], function() {
+define("50", [], function() {
   'use strict';
   function LeapSecond(date, offset) {
     this.julianDate = date;
@@ -10855,7 +13148,7 @@ define("4c", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("20", ["5d", "48", "1f", "16", "18", "5e", "5f", "4c", "4e", "4f"], function(sprintf, binarySearch, defaultValue, defined, DeveloperError, GregorianDate, isLeapYear, LeapSecond, TimeConstants, TimeStandard) {
+define("24", ["61", "4c", "23", "1a", "1c", "62", "63", "50", "52", "53"], function(sprintf, binarySearch, defaultValue, defined, DeveloperError, GregorianDate, isLeapYear, LeapSecond, TimeConstants, TimeStandard) {
   'use strict';
   var gregorianDateScratch = new GregorianDate();
   var daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -11391,7 +13684,7 @@ define("20", ["5d", "48", "1f", "16", "18", "5e", "5f", "4c", "4e", "4f"], funct
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4e", ["1b"], function(freezeObject) {
+define("52", ["1f"], function(freezeObject) {
   'use strict';
   var TimeConstants = {
     SECONDS_PER_MILLISECOND: 0.001,
@@ -11411,7 +13704,7 @@ define("4e", ["1b"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4f", ["1b"], function(freezeObject) {
+define("53", ["1f"], function(freezeObject) {
   'use strict';
   var TimeStandard = {
     UTC: 0,
@@ -11423,7 +13716,7 @@ define("4f", ["1b"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("60", ["28", "16", "18", "20", "23", "2e", "4e", "4f"], function(Cartesian3, defined, DeveloperError, JulianDate, CesiumMath, Matrix3, TimeConstants, TimeStandard) {
+define("64", ["2c", "1a", "1c", "24", "27", "32", "52", "53"], function(Cartesian3, defined, DeveloperError, JulianDate, CesiumMath, Matrix3, TimeConstants, TimeStandard) {
   'use strict';
   var Simon1994PlanetaryPositions = {};
   function computeTdbMinusTtSpice(daysSinceJ2000InTerrestrialTime) {
@@ -11714,7 +14007,7 @@ define("60", ["28", "16", "18", "20", "23", "2e", "4e", "4f"], function(Cartesia
 })();
 (function() {
 var define = $__System.amdDefine;
-define("38", ["28", "37", "1f", "16", "17", "18", "1b", "23", "61"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
+define("3c", ["2c", "3b", "23", "1a", "1b", "1c", "1f", "27", "65"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
   'use strict';
   function initialize(ellipsoid, x, y, z) {
     x = defaultValue(x, 0.0);
@@ -11952,7 +14245,7 @@ define("38", ["28", "37", "1f", "16", "17", "18", "1b", "23", "61"], function(Ca
 })();
 (function() {
 var define = $__System.amdDefine;
-define("62", ["28", "37", "1f", "16", "17", "18", "38", "23"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, Ellipsoid, CesiumMath) {
+define("66", ["2c", "3b", "23", "1a", "1b", "1c", "3c", "27"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, Ellipsoid, CesiumMath) {
   'use strict';
   function setConstants(ellipsoidGeodesic) {
     var uSquared = ellipsoidGeodesic._uSquared;
@@ -12180,7 +14473,7 @@ define("62", ["28", "37", "1f", "16", "17", "18", "38", "23"], function(Cartesia
 })();
 (function() {
 var define = $__System.amdDefine;
-define("61", ["28", "16", "18", "23"], function(Cartesian3, defined, DeveloperError, CesiumMath) {
+define("65", ["2c", "1a", "1c", "27"], function(Cartesian3, defined, DeveloperError, CesiumMath) {
   'use strict';
   var scaleToGeodeticSurfaceIntersection = new Cartesian3();
   var scaleToGeodeticSurfaceGradient = new Cartesian3();
@@ -12262,7 +14555,7 @@ define("61", ["28", "16", "18", "23"], function(Cartesian3, defined, DeveloperEr
 })();
 (function() {
 var define = $__System.amdDefine;
-define("37", ["28", "1f", "16", "18", "1b", "23", "61"], function(Cartesian3, defaultValue, defined, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
+define("3b", ["2c", "23", "1a", "1c", "1f", "27", "65"], function(Cartesian3, defaultValue, defined, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
   'use strict';
   function Cartographic(longitude, latitude, height) {
     this.longitude = defaultValue(longitude, 0.0);
@@ -12364,7 +14657,7 @@ define("37", ["28", "1f", "16", "18", "1b", "23", "61"], function(Cartesian3, de
 })();
 (function() {
 var define = $__System.amdDefine;
-define("63", ["18", "64"], function(DeveloperError, QuadraticRealPolynomial) {
+define("67", ["1c", "68"], function(DeveloperError, QuadraticRealPolynomial) {
   'use strict';
   var CubicRealPolynomial = {};
   CubicRealPolynomial.computeDiscriminant = function(a, b, c, d) {
@@ -12531,7 +14824,7 @@ define("63", ["18", "64"], function(DeveloperError, QuadraticRealPolynomial) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("64", ["18", "23"], function(DeveloperError, CesiumMath) {
+define("68", ["1c", "27"], function(DeveloperError, CesiumMath) {
   'use strict';
   var QuadraticRealPolynomial = {};
   QuadraticRealPolynomial.computeDiscriminant = function(a, b, c) {
@@ -12612,7 +14905,7 @@ define("64", ["18", "23"], function(DeveloperError, CesiumMath) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("65", ["63", "18", "23", "64"], function(CubicRealPolynomial, DeveloperError, CesiumMath, QuadraticRealPolynomial) {
+define("69", ["67", "1c", "27", "68"], function(CubicRealPolynomial, DeveloperError, CesiumMath, QuadraticRealPolynomial) {
   'use strict';
   var QuarticRealPolynomial = {};
   QuarticRealPolynomial.computeDiscriminant = function(a, b, c, d, e) {
@@ -12858,7 +15151,7 @@ define("65", ["63", "18", "23", "64"], function(CubicRealPolynomial, DeveloperEr
 })();
 (function() {
 var define = $__System.amdDefine;
-define("66", ["28", "1f", "16", "18"], function(Cartesian3, defaultValue, defined, DeveloperError) {
+define("6a", ["2c", "23", "1a", "1c"], function(Cartesian3, defaultValue, defined, DeveloperError) {
   'use strict';
   function Ray(origin, direction) {
     direction = Cartesian3.clone(defaultValue(direction, Cartesian3.ZERO));
@@ -12887,7 +15180,7 @@ define("66", ["28", "1f", "16", "18"], function(Cartesian3, defaultValue, define
 })();
 (function() {
 var define = $__System.amdDefine;
-define("67", ["28", "37", "1f", "16", "18", "23", "2e", "64", "65", "66"], function(Cartesian3, Cartographic, defaultValue, defined, DeveloperError, CesiumMath, Matrix3, QuadraticRealPolynomial, QuarticRealPolynomial, Ray) {
+define("6b", ["2c", "3b", "23", "1a", "1c", "27", "32", "68", "69", "6a"], function(Cartesian3, Cartographic, defaultValue, defined, DeveloperError, CesiumMath, Matrix3, QuadraticRealPolynomial, QuarticRealPolynomial, Ray) {
   'use strict';
   var IntersectionTests = {};
   IntersectionTests.rayPlane = function(ray, plane, result) {
@@ -13438,7 +15731,7 @@ define("67", ["28", "37", "1f", "16", "18", "23", "2e", "64", "65", "66"], funct
 })();
 (function() {
 var define = $__System.amdDefine;
-define("68", ["16"], function(defined) {
+define("6c", ["1a"], function(defined) {
   'use strict';
   var isArray = Array.isArray;
   if (!defined(isArray)) {
@@ -13452,7 +15745,7 @@ define("68", ["16"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3f", ["1f", "16", "18", "1b", "23"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
+define("43", ["23", "1a", "1c", "1f", "27"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
   'use strict';
   function Cartesian4(x, y, z, w) {
     this.x = defaultValue(x, 0.0);
@@ -13838,7 +16131,7 @@ define("3f", ["1f", "16", "18", "1b", "23"], function(defaultValue, defined, Dev
 })();
 (function() {
 var define = $__System.amdDefine;
-define("17", ["16"], function(defined) {
+define("1b", ["1a"], function(defined) {
   'use strict';
   var definePropertyWorks = (function() {
     try {
@@ -13859,7 +16152,7 @@ define("17", ["16"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2e", ["28", "1f", "16", "17", "18", "1b", "23"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath) {
+define("32", ["2c", "23", "1a", "1b", "1c", "1f", "27"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath) {
   'use strict';
   function Matrix3(column0Row0, column1Row0, column2Row0, column0Row1, column1Row1, column2Row1, column0Row2, column1Row2, column2Row2) {
     this[0] = defaultValue(column0Row0, 0.0);
@@ -14614,7 +16907,7 @@ define("2e", ["28", "1f", "16", "17", "18", "1b", "23"], function(Cartesian3, de
 })();
 (function() {
 var define = $__System.amdDefine;
-define("34", ["16"], function(defined) {
+define("38", ["1a"], function(defined) {
   'use strict';
   function RuntimeError(message) {
     this.name = 'RuntimeError';
@@ -14644,7 +16937,7 @@ define("34", ["16"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2f", ["28", "3f", "1f", "16", "17", "18", "1b", "23", "2e", "34"], function(Cartesian3, Cartesian4, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath, Matrix3, RuntimeError) {
+define("33", ["2c", "43", "23", "1a", "1b", "1c", "1f", "27", "32", "38"], function(Cartesian3, Cartesian4, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath, Matrix3, RuntimeError) {
   'use strict';
   function Matrix4(column0Row0, column1Row0, column2Row0, column3Row0, column0Row1, column1Row1, column2Row1, column3Row1, column0Row2, column1Row2, column2Row2, column3Row2, column0Row3, column1Row3, column2Row3, column3Row3) {
     this[0] = defaultValue(column0Row0, 0.0);
@@ -16126,7 +18419,7 @@ define("2f", ["28", "3f", "1f", "16", "17", "18", "1b", "23", "2e", "34"], funct
 })();
 (function() {
 var define = $__System.amdDefine;
-define("69", [], function() {
+define("6d", [], function() {
   var MersenneTwister = function(seed) {
     if (seed == undefined) {
       seed = new Date().getTime();
@@ -16183,7 +18476,7 @@ define("69", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("1f", ["1b"], function(freezeObject) {
+define("23", ["1f"], function(freezeObject) {
   'use strict';
   function defaultValue(a, b) {
     if (a !== undefined) {
@@ -16198,7 +18491,7 @@ define("1f", ["1b"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("23", ["69", "1f", "16", "18"], function(MersenneTwister, defaultValue, defined, DeveloperError) {
+define("27", ["6d", "23", "1a", "1c"], function(MersenneTwister, defaultValue, defined, DeveloperError) {
   'use strict';
   var CesiumMath = {};
   CesiumMath.EPSILON1 = 0.1;
@@ -16442,7 +18735,7 @@ define("23", ["69", "1f", "16", "18"], function(MersenneTwister, defaultValue, d
 })();
 (function() {
 var define = $__System.amdDefine;
-define("28", ["1f", "16", "18", "1b", "23"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
+define("2c", ["23", "1a", "1c", "1f", "27"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
   'use strict';
   function Cartesian3(x, y, z) {
     this.x = defaultValue(x, 0.0);
@@ -16957,7 +19250,7 @@ define("28", ["1f", "16", "18", "1b", "23"], function(defaultValue, defined, Dev
 })();
 (function() {
 var define = $__System.amdDefine;
-define("18", ["16"], function(defined) {
+define("1c", ["1a"], function(defined) {
   'use strict';
   function DeveloperError(message) {
     this.name = 'DeveloperError';
@@ -16990,7 +19283,7 @@ define("18", ["16"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("16", [], function() {
+define("1a", [], function() {
   'use strict';
   function defined(value) {
     return value !== undefined && value !== null;
@@ -17001,7 +19294,7 @@ define("16", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("1b", ["16"], function(defined) {
+define("1f", ["1a"], function(defined) {
   'use strict';
   var freezeObject = Object.freeze;
   if (!defined(freezeObject)) {
@@ -17015,7 +19308,7 @@ define("1b", ["16"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("40", ["28", "16", "18", "1b"], function(Cartesian3, defined, DeveloperError, freezeObject) {
+define("44", ["2c", "1a", "1c", "1f"], function(Cartesian3, defined, DeveloperError, freezeObject) {
   'use strict';
   function Plane(normal, distance) {
     if (!defined(normal)) {
@@ -17075,7 +19368,7 @@ define("40", ["28", "16", "18", "1b"], function(Cartesian3, defined, DeveloperEr
 })();
 (function() {
 var define = $__System.amdDefine;
-define("6a", ["28", "37", "1f", "16", "18", "38", "62", "67", "68", "23", "2f", "40"], function(Cartesian3, Cartographic, defaultValue, defined, DeveloperError, Ellipsoid, EllipsoidGeodesic, IntersectionTests, isArray, CesiumMath, Matrix4, Plane) {
+define("6e", ["2c", "3b", "23", "1a", "1c", "3c", "66", "6b", "6c", "27", "33", "44"], function(Cartesian3, Cartographic, defaultValue, defined, DeveloperError, Ellipsoid, EllipsoidGeodesic, IntersectionTests, isArray, CesiumMath, Matrix4, Plane) {
   'use strict';
   var PolylinePipeline = {};
   PolylinePipeline.numberOfPoints = function(p0, p1, minDistance) {
@@ -17254,12 +19547,11 @@ define("6a", ["28", "37", "1f", "16", "18", "38", "62", "67", "68", "23", "2f", 
 });
 
 })();
-$__System.register("6b", ["6"], function(exports_1, context_1) {
+$__System.register("6f", ["a"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var cesium_imports_1;
-  var __slice,
-      after;
+  var after;
   function removeBeforeDate(property, time) {
     var times = property._times;
     var index = ~cesium_imports_1.binarySearch(times, time, cesium_imports_1.JulianDate.compare);
@@ -17285,7 +19577,6 @@ $__System.register("6b", ["6"], function(exports_1, context_1) {
       cesium_imports_1 = cesium_imports_1_1;
     }],
     execute: function() {
-      __slice = Array.prototype.slice;
       after = function(fn, after) {
         return function() {
           var result = fn.apply(this, arguments);
@@ -17321,7 +19612,7 @@ $__System.register("6b", ["6"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("6", ["48", "15", "41", "28", "3f", "1d", "1e", "21", "27", "2b", "22", "1f", "16", "18", "38", "24", "25", "19", "46", "36", "39", "20", "23", "2e", "2f", "3a", "3b", "3c", "2a", "32", "30", "42", "29", "43", "44", "45", "31", "60", "6a", "6b"], function(exports_1, context_1) {
+$__System.register("a", ["4c", "19", "45", "2c", "43", "21", "22", "25", "2b", "2f", "26", "23", "1a", "1c", "3c", "28", "29", "1d", "4a", "3a", "3d", "24", "27", "32", "33", "3e", "3f", "40", "2e", "36", "34", "46", "2d", "47", "48", "49", "35", "64", "6e", "6f"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   return {
@@ -17408,16 +19699,13 @@ $__System.register("6", ["48", "15", "41", "28", "3f", "1d", "1e", "21", "27", "
   };
 });
 
-$__System.register("e", ["19", "6"], function(exports_1, context_1) {
+$__System.register("12", ["1d", "a"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var Event_1,
       cesium_imports_1;
   var Event,
       CommandQueue,
-      scratchCartesianPositionFIXED,
-      scratchMatrix4,
-      scratchMatrix3,
       getEntityPosition,
       getEntityOrientation,
       urlParser,
@@ -17500,7 +19788,6 @@ $__System.register("e", ["19", "6"], function(exports_1, context_1) {
   exports_1("parseURL", parseURL);
   function decomposePerspectiveOffCenterProjectionMatrix(mat, result) {
     var m11 = mat[cesium_imports_1.Matrix4.COLUMN0ROW0];
-    var m12 = mat[cesium_imports_1.Matrix4.COLUMN0ROW1];
     var m22 = mat[cesium_imports_1.Matrix4.COLUMN1ROW1];
     var m31 = mat[cesium_imports_1.Matrix4.COLUMN2ROW0];
     var m32 = mat[cesium_imports_1.Matrix4.COLUMN2ROW1];
@@ -17521,10 +19808,8 @@ $__System.register("e", ["19", "6"], function(exports_1, context_1) {
     var yOffset = (f.top + f.bottom) / 2;
     var near = f.near;
     var far = f.far;
-    var left = f.left - xOffset;
     var right = f.right - xOffset;
     var top = f.top - yOffset;
-    var bottom = f.bottom - yOffset;
     var aspectRatio = right / top;
     var fovy = 2 * Math.atan(top / near);
     var fov;
@@ -17634,9 +19919,6 @@ $__System.register("e", ["19", "6"], function(exports_1, context_1) {
         return CommandQueue;
       }());
       exports_1("CommandQueue", CommandQueue);
-      scratchCartesianPositionFIXED = new cesium_imports_1.Cartesian3;
-      scratchMatrix4 = new cesium_imports_1.Matrix4;
-      scratchMatrix3 = new cesium_imports_1.Matrix3;
       exports_1("getEntityPosition", getEntityPosition = getEntityPositionInReferenceFrame);
       exports_1("getEntityOrientation", getEntityOrientation = getEntityOrientationInReferenceFrame);
       urlParser = typeof document !== 'undefined' ? document.createElement("a") : undefined;
@@ -17647,7 +19929,7 @@ $__System.register("e", ["19", "6"], function(exports_1, context_1) {
           var _port1ready;
           var _port2ready;
           var _port1onmessage;
-          _port1ready = new Promise(function(resolve, reject) {
+          _port1ready = new Promise(function(resolve) {
             messageChannel.port1 = {
               set onmessage(func) {
                 _port1onmessage = func;
@@ -17670,7 +19952,7 @@ $__System.register("e", ["19", "6"], function(exports_1, context_1) {
             };
           });
           var _port2onmessage;
-          _port2ready = new Promise(function(resolve, reject) {
+          _port2ready = new Promise(function(resolve) {
             messageChannel.port2 = {
               set onmessage(func) {
                 _port2onmessage = func;
@@ -17770,11 +20052,12 @@ $__System.register("e", ["19", "6"], function(exports_1, context_1) {
   };
 });
 
-$__System.register("1", ["2", "8", "6", "c", "b", "7", "5", "10", "d", "9", "13", "f", "a", "11", "14", "e"], function(exports_1, context_1) {
+$__System.register("1", ["2", "c", "a", "7", "10", "f", "b", "9", "14", "11", "d", "17", "13", "e", "15", "18", "12"], function(exports_1, context_1) {
   "use strict";
   var __moduleName = context_1 && context_1.id;
   var DI,
       Cesium,
+      URI,
       session_1,
       common_1,
       context_2,
@@ -17836,6 +20119,7 @@ $__System.register("1", ["2", "8", "6", "c", "b", "7", "5", "10", "d", "9", "13"
     'initLocal': true,
     'DI': true,
     'Cesium': true,
+    'URI': true,
     'EmptyRealityLoader': true,
     'LiveVideoRealityLoader': true,
     'HostedRealityLoader': true
@@ -17853,6 +20137,8 @@ $__System.register("1", ["2", "8", "6", "c", "b", "7", "5", "10", "d", "9", "13"
       DI = DI_1;
     }, function(Cesium_1) {
       Cesium = Cesium_1;
+    }, function(URI_1) {
+      URI = URI_1;
     }, function(session_1_1) {
       session_1 = session_1_1;
       exportStar_1(session_1_1);
@@ -17892,6 +20178,7 @@ $__System.register("1", ["2", "8", "6", "c", "b", "7", "5", "10", "d", "9", "13"
     execute: function() {
       exports_1("DI", DI);
       exports_1("Cesium", Cesium);
+      exports_1("URI", URI);
       exports_1("EmptyRealityLoader", empty_1.EmptyRealityLoader);
       exports_1("LiveVideoRealityLoader", live_video_1.LiveVideoRealityLoader);
       exports_1("HostedRealityLoader", hosted_1.HostedRealityLoader);
@@ -17923,7 +20210,7 @@ $__System.register("1", ["2", "8", "6", "c", "b", "7", "5", "10", "d", "9", "13"
               this.reality.registerLoader(container.get(hosted_1.HostedRealityLoader));
               container.get(view_1.PinchZoomService);
             }
-            this.reality.setDefault(reality_1.RealityView.EMPTY);
+            this.reality.setDefault(common_1.RealityView.EMPTY);
           }
           for (var _i = 0,
               _a = Object.keys(ArgonSystem.prototype); _i < _a.length; _i++) {

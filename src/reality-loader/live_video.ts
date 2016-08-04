@@ -1,11 +1,8 @@
-import {inject} from 'aurelia-dependency-injection'
-import {Matrix4, JulianDate} from '../cesium/cesium-imports'
-
-import {Role, SerializedFrameState, SubviewType} from '../common'
-import {SessionService, SessionPort} from '../session'
-import {RealityLoader, RealityView} from '../reality'
-import {getSerializedEntityPose} from '../utils'
-import {VuforiaServiceDelegate} from '../vuforia'
+import { inject } from 'aurelia-dependency-injection'
+import { Role, RealityView } from '../common'
+import { SessionService, SessionPort } from '../session'
+import { RealityLoader } from '../reality'
+import { VuforiaServiceDelegate } from '../vuforia'
 
 @inject(SessionService, VuforiaServiceDelegate)
 export class LiveVideoRealityLoader extends RealityLoader {
@@ -18,7 +15,7 @@ export class LiveVideoRealityLoader extends RealityLoader {
     }
 
     public load(reality: RealityView, callback: (realitySession: SessionPort) => void): void {
-        const realitySession = this.sessionService.addManagedSessionPort();
+        const realitySession = this.sessionService.addManagedSessionPort(reality.uri);
         const remoteRealitySession = this.sessionService.createSessionPort();
 
         remoteRealitySession.on['ar.context.update'] = () => { };
@@ -42,6 +39,6 @@ export class LiveVideoRealityLoader extends RealityLoader {
         // Only connect after the caller is able to attach connectEvent handlers
         const messageChannel = this.sessionService.createSynchronousMessageChannel();
         realitySession.open(messageChannel.port1, this.sessionService.configuration);
-        remoteRealitySession.open(messageChannel.port2, { role: Role.REALITY_VIEW, name: 'live_video' });
+        remoteRealitySession.open(messageChannel.port2, { role: Role.REALITY_VIEW });
     }
 }

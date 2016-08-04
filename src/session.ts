@@ -1,9 +1,13 @@
-import * as Cesium from 'Cesium';
-import {createGuid} from './cesium/cesium-imports';
-import {inject} from 'aurelia-dependency-injection';
-import {Configuration, Role} from './common'
-import {Event, MessageChannelFactory, MessagePortLike, MessageChannelLike, SynchronousMessageChannel} from './utils';
-import {ContextService} from './context'
+import { createGuid } from './cesium/cesium-imports';
+import { inject } from 'aurelia-dependency-injection';
+import { Role, Configuration } from './common'
+import { 
+    Event, 
+    MessageChannelFactory, 
+    MessagePortLike, 
+    MessageChannelLike,
+    SynchronousMessageChannel
+} from './utils';
 
 export interface Message {
     [key: string]: any
@@ -79,7 +83,7 @@ export class SessionPort {
     private _isConnected = false;
     private _isClosed = false;
 
-    constructor() {
+    constructor(public uri?: string) {
 
         this.on[SessionPort.OPEN] = (info: Configuration) => {
             if (!info) throw new Error('Session did not provide a configuration');
@@ -89,7 +93,7 @@ export class SessionPort {
             this._connectEvent.raiseEvent(undefined);
         }
 
-        this.on[SessionPort.CLOSE] = (message) => {
+        this.on[SessionPort.CLOSE] = () => {
             this._isClosed = true;
             this._isConnected = false;
             if (this.messagePort && this.messagePort.close)
@@ -283,8 +287,8 @@ export class SessionPort {
  * A factory for creating SessionPort instances. 
  */
 export class SessionPortFactory {
-    public create() {
-        return new SessionPort();
+    public create(uri?: string) {
+        return new SessionPort(uri);
     }
 }
 
@@ -306,7 +310,7 @@ export class SessionService {
     /**
      * The port which handles communication between this session and the manager session.
      */
-    public manager = this.createSessionPort();
+    public manager = this.createSessionPort('argon:manager');
 
     /**
      * An event that is raised when an error occurs.
@@ -367,9 +371,9 @@ export class SessionService {
      * message handlers to the newly connected port. 
      * @return a new SessionPort instance
      */
-    public addManagedSessionPort() {
+    public addManagedSessionPort(uri: string) {
         this.ensureIsManager();
-        const session = this.sessionPortFactory.create();
+        const session = this.sessionPortFactory.create(uri);
         session.errorEvent.addEventListener((error) => {
             this.errorEvent.raiseEvent(error);
         });
@@ -390,15 +394,15 @@ export class SessionService {
      * this object. 
      * @return a new SessionPort instance
      */
-    public createSessionPort() {
-        return this.sessionPortFactory.create();
+    public createSessionPort(uri?: string) {
+        return this.sessionPortFactory.create(uri);
     }
 
     /**
      * Creates a message channel.
      * @return a new MessageChannel instance
      */
-    public createMessageChannel() {
+    public createMessageChannel() : MessageChannelLike {
         return this.messageChannelFactory.create();
     }
 
@@ -406,7 +410,7 @@ export class SessionService {
      * Creates a synchronous message channel.
      * @return a new SynchronousMessageChannel instance
      */
-    public createSynchronousMessageChannel() {
+    public createSynchronousMessageChannel() : SynchronousMessageChannel {
         return this.messageChannelFactory.createSynchronous();
     }
 

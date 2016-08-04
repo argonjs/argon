@@ -1,11 +1,9 @@
-import {resolver, Container} from 'aurelia-dependency-injection';
-import {SerializedEntityPose} from './common'
-import CesiumEvent from 'Cesium/Source/Core/Event';
+import { SerializedEntityPose } from './common'
+import CesiumEvent from 'cesium/Source/Core/Event';
 import {
     defined,
     Entity,
     JulianDate,
-    Ellipsoid,
     PerspectiveFrustum,
     PerspectiveOffCenterFrustum,
     PositionProperty,
@@ -13,8 +11,6 @@ import {
     Quaternion,
     Cartesian3,
     ReferenceFrame,
-    Transforms,
-    Matrix3,
     Matrix4,
     CesiumMath
 } from './cesium/cesium-imports'
@@ -182,10 +178,6 @@ export function getRootReferenceFrame(frame: Entity) {
     return getAncestorReferenceFrames(frame)[0]
 }
 
-const scratchCartesianPositionFIXED = new Cartesian3
-const scratchMatrix4 = new Matrix4
-const scratchMatrix3 = new Matrix3
-
 /**
  * Gets the value of the Position property at the provided time and in the provided reference frame.
  * @param entity The entity to get position. 
@@ -232,6 +224,11 @@ export function getEntityOrientationInReferenceFrame(
  */
 export const getEntityOrientation = getEntityOrientationInReferenceFrame;
 
+
+
+// const scratchCartesianPositionFIXED = new Cartesian3
+// const scratchMatrix4 = new Matrix4
+// const scratchMatrix3 = new Matrix3
 //  {
 //         // if no orientation is available, calculate an orientation based on position
 //         const entityPositionFIXED = getEntityPositionInReferenceFrame(entity, time, ReferenceFrame.FIXED, scratchCartesianPositionFIXED)
@@ -364,7 +361,7 @@ export class MessageChannelLike {
         let _port2ready: Promise<{}>;
 
         let _port1onmessage: (messageEvent: MessageEventLike) => void;
-        _port1ready = new Promise((resolve, reject) => {
+        _port1ready = new Promise((resolve) => {
             messageChannel.port1 = {
                 set onmessage(func) {
                     _port1onmessage = func;
@@ -388,7 +385,7 @@ export class MessageChannelLike {
         });
 
         let _port2onmessage: (messageEvent: MessageEventLike) => void;
-        _port2ready = new Promise((resolve, reject) => {
+        _port2ready = new Promise((resolve) => {
             messageChannel.port2 = <MessagePortLike>{
                 set onmessage(func) {
                     _port2onmessage = func;
@@ -504,7 +501,7 @@ export class MessageChannelFactory {
 
 export function decomposePerspectiveOffCenterProjectionMatrix(mat: Matrix4, result: PerspectiveOffCenterFrustum) {
     const m11 = mat[Matrix4.COLUMN0ROW0];
-    const m12 = mat[Matrix4.COLUMN0ROW1];
+    // const m12 = mat[Matrix4.COLUMN0ROW1];
     const m22 = mat[Matrix4.COLUMN1ROW1];
     const m31 = mat[Matrix4.COLUMN2ROW0];
     const m32 = mat[Matrix4.COLUMN2ROW1];
@@ -529,10 +526,10 @@ export function decomposePerspectiveProjectionMatrix(mat: Matrix4, result: Persp
     const yOffset = (f.top + f.bottom) / 2;
     const near = f.near;
     const far = f.far;
-    const left = f.left - xOffset;
+    // const left = f.left - xOffset;
     const right = f.right - xOffset;
     const top = f.top - yOffset;
-    const bottom = f.bottom - yOffset;
+    // const bottom = f.bottom - yOffset;
     const aspectRatio = right / top;
 
     const fovy = 2 * Math.atan(top / near);

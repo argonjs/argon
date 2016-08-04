@@ -1,56 +1,24 @@
-import {inject, All} from 'aurelia-dependency-injection'
+import { inject } from 'aurelia-dependency-injection'
 import {
     createGuid,
     defined,
-    Cartesian3,
     CesiumMath,
-    Entity,
-    JulianDate,
     Matrix4,
     PerspectiveFrustum,
-    Quaternion,
     ReferenceFrame
 } from './cesium/cesium-imports'
-import {TimerService} from './timer'
 import {
     Role,
+    RealityView,
     SerializedPartialFrameState,
     SerializedFrameState,
     SerializedViewParameters,
     SerializedEyeParameters,
     SubviewType
 } from './common'
-import {FocusService} from './focus'
-import {SessionPort, SessionService} from './session'
-import {DeviceService} from './device'
-import {MessagePortLike, Event, getSerializedEntityPose} from './utils'
-
-/**
-* Represents a view of Reality
-*/
-export class RealityView {
-    static EMPTY = new RealityView('empty', 'Empty', {
-        providedReferenceFrames: ['FIXED']
-    });
-
-    public providedReferenceFrames?: Array<string>;
-
-    [option: string]: any;
-
-    constructor(
-        public type: string,
-        public name: string,
-        options?: {
-            providedReferenceFrames?: Array<string>
-            [option: string]: any
-        }) {
-        if (options) {
-            for (var k in options) {
-                this[k] = options[k];
-            }
-        }
-    }
-}
+import { FocusService } from './focus'
+import { SessionPort, SessionService } from './session'
+import { Event } from './utils'
 
 /**
  * Abstract class for a reality setup handler
@@ -125,7 +93,7 @@ export class RealityService {
     /**
      * Manager-only. An event that is raised when a session changes it's desired reality. 
      */
-    public sessionDesiredRealityChangeEvent = new Event<{ session: SessionPort, previous: RealityView, current: RealityView }>();
+    public sessionDesiredRealityChangeEvent = new Event<{ session: SessionPort, previous: RealityView|undefined, current: RealityView|undefined }>();
 
     // Manager-only. The port which connects the manager to the current reality
     private _realitySession?: SessionPort;
@@ -145,8 +113,6 @@ export class RealityService {
     private _defaultFov = Math.PI / 2;
     private _desiredFov: number | undefined;
 
-    private _frustum = new PerspectiveFrustum;
-
     constructor(
         private sessionService: SessionService,
         private focusService: FocusService) {
@@ -162,7 +128,7 @@ export class RealityService {
 
         sessionService.connectEvent.addEventListener((session) => {
             if (session.info.role !== Role.REALITY_VIEW) {
-                session.on['ar.reality.desired'] = (message, event) => {
+                session.on['ar.reality.desired'] = (message) => {
                     const {reality} = message;
                     const previous = this.desiredRealityMap.get(session);
                     console.log('Session set desired reality: ' + JSON.stringify(reality));
@@ -199,7 +165,7 @@ export class RealityService {
                 messageChannel.port1.postMessage(message);
             }
 
-            this.sessionService.manager.on[CLOSE_SESSION_KEY] = (message) => {
+            this.sessionService.manager.on[CLOSE_SESSION_KEY] = () => {
                 realityControlSession.close();
             }
 
@@ -250,9 +216,9 @@ export class RealityService {
     * @param type reality type
     * @return true if a handler exists and false otherwise
     */
-    public isSupported(type: string): boolean {
+    public isSupported(reality: RealityView): boolean {
         this.sessionService.ensureIsManager();
-        return !!this._getLoader(type)
+        return !!this._getLoader(reality)
     }
 
     /**
@@ -355,7 +321,7 @@ export class RealityService {
     * @returns The reality chosen for this context. May be undefined if no
     * realities have been requested.
     */
-    public onSelectReality(): RealityView {
+    public onSelectReality(): RealityView|undefined {
 
         this.sessionService.ensureIsManager();
 
@@ -373,7 +339,7 @@ export class RealityService {
             for (const session of this.sessionService.managedSessions) {
                 if (!session.isConnected) continue;
                 const desiredReality = this.desiredRealityMap.get(session);
-                if (desiredReality && this.isSupported(desiredReality.type)) {
+                if (desiredReality && this.isSupported(desiredReality)) {
                     selectedReality = desiredReality;
                     break;
                 }
@@ -448,8 +414,8 @@ export class RealityService {
 
         if (defined(reality)) {
 
-            if (!this.isSupported(reality.type)) {
-                this.sessionService.errorEvent.raiseEvent(new Error('Reality of type "' + reality.type + '" is not available on this platform'))
+            if (!this.isSupported(reality)) {
+                this.sessionService.errorEvent.raiseEvent(new Error('Reality of type "' + reality.uri + '" is not available on this platform'))
                 return;
             }
 
@@ -463,7 +429,6 @@ export class RealityService {
                 }
 
                 const previousRealitySession = this._realitySession;
-                const previousReality = this._current;
 
                 this._realitySession = realitySession;
                 this._setCurrent(<RealityView>reality);
@@ -501,7 +466,7 @@ export class RealityService {
                     if (realitySession.info.role !== Role.REALITY_VIEW) {
                         realitySession.sendError({ message: "Expected a reality session" });
                         realitySession.close();
-                        throw new Error('The application "' + realitySession.info.name + '" does not support being loaded as a reality');
+                        throw new Error('The application "' + realitySession.uri + '" does not support being loaded as a reality');
                     }
 
                     if (previousRealitySession) {
@@ -541,10 +506,10 @@ export class RealityService {
         }
     }
 
-    private _getLoader(type: string) {
+    private _getLoader(reality: RealityView) {
         let found: RealityLoader | undefined;
         for (const loader of this._loaders) {
-            if (loader.type === type) {
+            if (loader.type === RealityView.getType(reality)) {
                 found = loader;
                 break;
             }
@@ -563,8 +528,8 @@ export class RealityService {
 
     private _executeRealityLoader(reality: RealityView, callback: (realitySession: SessionPort) => void) {
         this.sessionService.ensureIsManager();
-        const loader = this._getLoader(reality.type);
-        if (!loader) throw new Error('Unable to setup unsupported reality type: ' + reality.type);
+        const loader = this._getLoader(reality);
+        if (!loader) throw new Error('Unable to setup unsupported reality type: ' + reality.uri);
         loader.load(reality, callback);
     }
 

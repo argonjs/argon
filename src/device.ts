@@ -1,4 +1,4 @@
-import {inject} from 'aurelia-dependency-injection'
+import { inject } from 'aurelia-dependency-injection'
 import {
     Entity,
     ExtrapolationType,
@@ -7,15 +7,13 @@ import {
     ConstantPositionProperty,
     ConstantProperty,
     Cartesian3,
-    Matrix3,
     Quaternion,
     CesiumMath,
     JulianDate,
     Transforms,
     defined
 } from './cesium/cesium-imports'
-import {ContextService} from './context'
-import * as utils from './utils'
+import { ContextService } from './context'
 
 import MobileDetect from 'mobile-detect'
 
@@ -28,7 +26,7 @@ export class DeviceService {
     /**
     * Initialize the DeviceService
     */
-    constructor(private context: ContextService) {
+    constructor(context: ContextService) {
         context.wellKnownReferenceFrames.add(this.geolocationEntity);
         context.wellKnownReferenceFrames.add(this.orientationEntity);
         context.wellKnownReferenceFrames.add(this.entity);
@@ -70,14 +68,12 @@ export class DeviceService {
     private _scratchCartesian = new Cartesian3;
     private _scratchQuaternion1 = new Quaternion;
     private _scratchQuaternion2 = new Quaternion;
-    private _scratchMatrix3 = new Matrix3;
     private _x90Rot = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, CesiumMath.PI_OVER_TWO);
     private _geolocationWatchId;
     private _deviceorientationListener;
 
     private _mobileDetect: MobileDetect;
 
-    private _webkitCompassHeading: number;
     private _alphaOffset?: number;
     private _headingDrift = 0;
 
@@ -231,33 +227,4 @@ export class DeviceService {
         this.onUpdate();
     }
 
-}
-
-const rotationAxis = new Cartesian3
-const projection = new Cartesian3
-const swing = new Quaternion
-const twist = new Quaternion
-
-/**
-   Decompose the rotation on to 2 parts.
-   1. Twist - rotation around the "direction" vector
-   2. Swing - rotation around axis that is perpendicular to "direction" vector
-   The rotation can be composed back by 
-   rotation = swing * twist
-
-   has singularity in case of swing_rotation close to 180 degrees rotation.
-   if the input quaternion is of non-unit length, the outputs are non-unit as well
-   otherwise, outputs are both unit
-*/
-function swingTwistDecomposition(q: Quaternion, direction: Cartesian3): { swing: Quaternion, twist: Quaternion } {
-    Cartesian3.clone(q, rotationAxis);
-    Cartesian3.multiplyByScalar(direction, Cartesian3.dot(rotationAxis, direction), projection);
-    twist.x = projection.x;
-    twist.y = projection.y;
-    twist.z = projection.z;
-    twist.w = q.w;
-    Quaternion.normalize(twist, twist);
-    Quaternion.conjugate(twist, swing);
-    Quaternion.multiply(q, swing, swing);
-    return { swing, twist };
 }

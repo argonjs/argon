@@ -1,9 +1,12 @@
 // Add functionality for keeping a moving window of samples per SampledProperty,
 // so that the data doesn't accumulate indefinitely
 
-import {SampledProperty, SampledPositionProperty, binarySearch, JulianDate, Matrix3, Matrix4} from './cesium-imports'
-
-var __slice = Array.prototype.slice
+import { 
+    SampledProperty, 
+    SampledPositionProperty, 
+    binarySearch, 
+    JulianDate
+} from './cesium-imports'
 
 var after = function <T extends Function>(fn: T, after: Function): T {
     return <T><any>function() {

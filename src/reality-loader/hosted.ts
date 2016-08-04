@@ -1,10 +1,9 @@
 
-import {inject, singleton} from 'aurelia-dependency-injection'
-
-import {Role, SerializedFrameState, SubviewType} from '../common'
-import {SessionService, SessionPort} from '../session'
-import {RealityLoader, RealityView} from '../reality'
-import {ViewService} from '../view'
+import { inject } from 'aurelia-dependency-injection'
+import { RealityView } from '../common'
+import { SessionService, SessionPort } from '../session'
+import { RealityLoader } from '../reality'
+import { ViewService } from '../view'
 
 @inject(SessionService, ViewService)
 export class HostedRealityLoader extends RealityLoader {
@@ -48,13 +47,13 @@ export class HostedRealityLoader extends RealityLoader {
 
                 window.removeEventListener('message', handleConnectMessage);
 
-                const realitySession = this.sessionService.addManagedSessionPort();
+                const realitySession = this.sessionService.addManagedSessionPort(reality.uri);
                 callback(realitySession);
                 realitySession.open(messagePort, this.sessionService.configuration);
             };
             window.addEventListener('message', handleConnectMessage);
             this.iframeElement.src = '';
-            this.iframeElement.src = reality['url'];
+            this.iframeElement.src = reality.uri;
             this.iframeElement.style.pointerEvents = 'auto';
         });
     }

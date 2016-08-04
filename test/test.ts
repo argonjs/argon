@@ -1,4 +1,4 @@
-/// <reference path="../typings/index.d.ts"/>
+/// <reference types="mocha"/>
 import * as chai from 'chai'
 import * as Argon from '../src/argon'
 
@@ -7,7 +7,7 @@ const expect = chai.expect;
 describe('Argon', () => {
 
     afterEach(() => {
-        Argon.ArgonSystem.instance = null;
+        Argon.ArgonSystem.instance = undefined;
     })
 
     describe('#init', () => {
@@ -81,10 +81,10 @@ describe('RealityService', () => {
             const sessionService:Argon.SessionService = container.get(Argon.SessionService);
             
             realityService.registerLoader(container.get(Argon.EmptyRealityLoader));
-            realityService.setDefault({type:'empty', name:'My Custom Reality'})
+            realityService.setDefault({uri:'reality:empty', title:'My Custom Reality'})
             
-            const removeListener = realityService.frameEvent.addEventListener((state) => {
-                expect(state.reality.type === 'empty')
+            let removeListener = realityService.frameEvent.addEventListener((state) => {
+                expect(Argon.RealityView.getType(state.reality) === 'empty')
                 expect(state.time).to.haveOwnProperty('dayNumber');
                 expect(state.time).to.haveOwnProperty('secondsOfDay');
                 expect(realityService.getDesired()).to.be.undefined;
@@ -100,12 +100,14 @@ describe('RealityService', () => {
     describe('#setDesired', () => {
 
         it('should support setting a custom reality', (done) => {
+
+            const type = 'custom_type';
             
             class CustomRealitySetupHandler implements Argon.RealityLoader {
-                public type = 'custom_type';
+                public type = type;
                 
                 public load(reality : Argon.RealityView, callback:(realitySession:Argon.SessionPort)=>void) : void {
-                    const realitySession = sessionService.addManagedSessionPort();
+                    const realitySession = sessionService.addManagedSessionPort('reality:' + type);
                     const remoteRealitySession = sessionService.createSessionPort();
                     const messageChannel = sessionService.createMessageChannel();
                     callback(realitySession);
@@ -122,14 +124,14 @@ describe('RealityService', () => {
             
             realityService.registerLoader(container.get(CustomRealitySetupHandler));
 
-            const removeListener = realityService.changeEvent.addEventListener(() => {
-                expect(realityService.getCurrent().type).to.equal('custom_type');
+            let removeListener = realityService.changeEvent.addEventListener(() => {
+                expect(Argon.RealityView.getType(realityService.getCurrent()!)).to.equal(type);
                 removeListener();
                 done();
             });
             
             sessionService.connect();
-            realityService.setDesired({type: 'custom_type', name:'My Custom Reality'});
+            realityService.setDesired({uri: 'reality:custom_type', title:'My Custom Reality'});
         });
 
         it('should raise an error for unsupported realities', (done) => {
@@ -145,7 +147,7 @@ describe('RealityService', () => {
             })
             
             sessionService.connect();
-            realityService.setDesired({ type: 'unsupported', name:'My Custom Reality'});
+            realityService.setDesired({ uri: 'reality:unsupported' });
         });
 
     });
@@ -160,7 +162,6 @@ describe('MessageChannelLike', () => {
             const messageChannel = new Argon.MessageChannelLike();
             const port1 = messageChannel.port1;
             const port2 = messageChannel.port2;
-            var testPort = {};
 
             const p1 = new Promise((resolve, reject) => {
                 port1.onmessage = (ev) => {
@@ -338,7 +339,6 @@ describe('SessionPort', () => {
             const session = new Argon.SessionPort();
             const remoteSession = new Argon.SessionPort();
             const messageChannel = new MessageChannel();
-            let openCount = 0;
             session.on['test.message'] = (message:{hi:number}, event) => {
                 expect(message.hi).to.equal(42);
                 done();
@@ -352,7 +352,6 @@ describe('SessionPort', () => {
             const session = new Argon.SessionPort();
             const remoteSession = new Argon.SessionPort();
             const messageChannel = new Argon.MessageChannelLike();
-            let openCount = 0;
             session.on['test.message'] = (message:{hi:number}, event) => {
                 expect(message.hi).to.equal(42);
                 done();
@@ -366,7 +365,6 @@ describe('SessionPort', () => {
             const session = new Argon.SessionPort();
             const remoteSession = new Argon.SessionPort();
             const messageChannel = new Argon.MessageChannelLike();
-            let openCount = 0;
             session.on['test.message'] = (message:{hi:number}, event) => {
                 expect(message.hi).to.equal(42);
                 done();
@@ -477,8 +475,8 @@ describe('Context', () => {
         })
         it('should emit update events with default reality', (done) => {
             const {context} = createSystem();
-            const removeListener = context.updateEvent.addEventListener(() => {
-                expect(context.serializedFrameState.reality.type).to.equal('empty');
+            let removeListener = context.updateEvent.addEventListener(() => {
+                expect(Argon.RealityView.getType(context.serializedFrameState!.reality)).to.equal('empty');
                 removeListener();
                 done();
             })
@@ -489,7 +487,7 @@ describe('Context', () => {
         it('poseStatus should not have KNOWN bit set when pose is undefined', (done) => {
             const {context} = createSystem();
             const entity = new Argon.Cesium.Entity;
-            const removeListener = context.updateEvent.addEventListener(()=>{
+            let removeListener = context.updateEvent.addEventListener(()=>{
                 const state = context.getEntityPose(entity);
                 expect(state.poseStatus & Argon.PoseStatus.KNOWN).to.equal(0);
                 removeListener();
@@ -502,7 +500,7 @@ describe('Context', () => {
                 position: new Argon.Cesium.ConstantPositionProperty(Argon.Cesium.Cartesian3.ZERO, context.getDefaultReferenceFrame()),
                 orientation: new Argon.Cesium.ConstantProperty(Argon.Cesium.Quaternion.IDENTITY)
             });
-            const removeListener = context.updateEvent.addEventListener(()=>{
+            let removeListener = context.updateEvent.addEventListener(()=>{
                 const state = context.getEntityPose(entity);
                 expect(state.poseStatus & Argon.PoseStatus.FOUND).to.be.ok;
                 expect(state.poseStatus & Argon.PoseStatus.KNOWN).to.be.ok;
@@ -517,7 +515,7 @@ describe('Context', () => {
                 orientation: new Argon.Cesium.ConstantProperty(Argon.Cesium.Quaternion.IDENTITY)
             });
             let found = false;
-            const removeListener = context.updateEvent.addEventListener(()=>{
+            let removeListener = context.updateEvent.addEventListener(()=>{
                 const state = context.getEntityPose(entity);
                 if (!found) {
                     expect(state.poseStatus & Argon.PoseStatus.FOUND).to.be.ok;
@@ -562,13 +560,14 @@ describe('VuforiaService', () => {
         });
         it('should add a live-video reality handler to the reality service', () => {
             const {reality} = createManagerWithVuforiaDelegate(Argon.VuforiaServiceDelegate);
-            expect(reality.isSupported('live-video')).to.be.true;
+            expect(reality.isSupported({uri:'reality:live-video'})).to.be.true;
         })
         it('should load the live-video reality when it is the default', (done) => {
-            const {vuforia, reality} = createManagerWithVuforiaDelegate(Argon.VuforiaServiceDelegate);
-            reality.setDefault({type:'live-video', name:'My Custom Reality'})
-            reality.changeEvent.addEventListener(() => {
-                expect(reality.getCurrent().type).to.equal('live-video');
+            const {reality} = createManagerWithVuforiaDelegate(Argon.VuforiaServiceDelegate);
+            reality.setDefault({uri:'reality:live-video'})
+            reality.changeEvent.addEventListener(({current}) => {
+                expect(current.uri).to.equal('reality:live-video');
+                expect(current === reality.getCurrent()).to.be.true;
                 done();
             })
         })

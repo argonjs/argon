@@ -1,6 +1,6 @@
-import {inject} from 'aurelia-dependency-injection';
-import {SessionService, SessionPort} from './session';
-import {Event} from './utils';
+import { inject } from 'aurelia-dependency-injection';
+import { SessionService, SessionPort } from './session';
+import { Event } from './utils';
 
 /**
  * Manages focus state
