@@ -2,7 +2,7 @@
     "compilerOptions": {
         "target": "es5",
         "module": "system",
-        "outDir": "dist/src",
+        "outDir": "dist",
         "declaration": true,
         "emitDecoratorMetadata": false,
         "experimentalDecorators": true,
