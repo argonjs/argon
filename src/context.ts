@@ -47,8 +47,19 @@ const scratchQuaternion = new Quaternion(0, 0);
 const scratchOriginCartesian3 = new Cartesian3(0, 0);
 
 export interface Frame {
+    /**
+     * The absolute time for this frame (as determined by the current reality)
+     */
     time: JulianDate,
-    deltaTime: number // ms since last frame, capped to 1/30s
+    /**
+     * The time in milliseconds when this frame was received, 
+     * based on performance.now() (or Date.now() if performance.now is not available)
+     */
+    systemTime: number,
+    /**
+     * The time in milliseconds since the previous frame's systemTime, capped to context.maxDeltaTime
+     */
+    deltaTime: number
 }
 
 /**
@@ -159,11 +170,12 @@ export class ContextService {
      */
     public maxDeltaTime = 1 / 3 * 1000;
 
+    // the current serialized frame state
     private _serializedState?: SerializedFrameState;
-    private _lastFrameUpdateTime = 0;
 
     private _frame: Frame = {
         time: new JulianDate(0, 0),
+        systemTime: 0,
         deltaTime: 0
     }
 
@@ -345,13 +357,13 @@ export class ContextService {
         // update our local origin
         this._updateLocalOrigin(serializedState);
 
-        // update our frame
+        // update our frame object
         const frame = this._frame;
-        const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
-        frame.deltaTime = Math.max(now - this._lastFrameUpdateTime, this.maxDeltaTime);
+        const now = typeof performance !== 'undefined' ? performance.now() :  Date.now();
+        frame.deltaTime = Math.max(now - frame.systemTime, this.maxDeltaTime);
+        frame.systemTime = now;
         JulianDate.clone(<JulianDate>serializedState.time, frame.time);
         this._serializedState = serializedState;
-        this._lastFrameUpdateTime = now;
 
         // raise an event for the user update and render the scene
         this.updateEvent.raiseEvent(frame);
