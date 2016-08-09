@@ -110,7 +110,7 @@ export class DeviceService {
                         const sampledPostionProperty = new SampledPositionProperty(ReferenceFrame.FIXED);
                         sampledPostionProperty.forwardExtrapolationType = ExtrapolationType.HOLD;
                         sampledPostionProperty.backwardExtrapolationType = ExtrapolationType.HOLD;
-                        sampledPostionProperty['maxNumSamples'] = 10;
+                        sampledPostionProperty.maxNumSamples = 10;
                         this.geolocationEntity.position = sampledPostionProperty;
                     }
                     const positionTime = JulianDate.fromDate(new Date(pos.timestamp));

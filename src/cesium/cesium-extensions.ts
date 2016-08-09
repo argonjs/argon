@@ -8,6 +8,15 @@ import {
     JulianDate
 } from './cesium-imports'
 
+declare module 'cesium' {
+    interface SampledProperty {
+        maxNumSamples: number;
+    }
+    interface SampledPositionProperty {
+        maxNumSamples: number;
+    }
+}
+
 var after = function <T extends Function>(fn: T, after: Function): T {
     return <T><any>function() {
         var result = fn.apply(this, arguments)

@@ -1,6 +1,5 @@
-build
 node_modules
 jspm_packages
-typings
 docs
 .vscode/tasks.json
+*.js.map

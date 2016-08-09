@@ -141,7 +141,7 @@ export class VuforiaService {
                     return Promise.resolve({ available: delegate.isAvailable() });
                 }
 
-                session.on['ar.vuforia.init'] = (options: VuforiaInitOptions, event) => {
+                session.on['ar.vuforia.init'] = (options: VuforiaInitOptions) => {
                     if (!delegate.isAvailable()) throw new Error("Vuforia is not supported");
                     if (this._sessionIsInitialized.get(session)) throw new Error("Vuforia has already been initialized");
 
@@ -162,7 +162,7 @@ export class VuforiaService {
                     return result;
                 }
 
-                session.on['ar.vuforia.objectTrackerCreateDataSet'] = ({url}: { url: string }, event) => {
+                session.on['ar.vuforia.objectTrackerCreateDataSet'] = ({url}: { url: string }) => {
                     return commandQueue.push(() => {
                         const id = delegate.objectTrackerCreateDataSet(url);
                         if (id) {
@@ -173,7 +173,7 @@ export class VuforiaService {
                     }, this._controllingSession === session);
                 }
 
-                session.on['ar.vuforia.objectTrackerActivateDataSet'] = ({id}: { id: string }, event) => {
+                session.on['ar.vuforia.objectTrackerActivateDataSet'] = ({id}: { id: string }) => {
                     return commandQueue.push(() => {
                         if (delegate.objectTrackerActivateDataSet(id)) {
                             activatedDataSets.add(id);
@@ -184,7 +184,7 @@ export class VuforiaService {
                     }, this._controllingSession === session);
                 }
 
-                session.on['ar.vuforia.objectTrackerDeactivateDataSet'] = ({id}: { id: string }, event) => {
+                session.on['ar.vuforia.objectTrackerDeactivateDataSet'] = ({id}: { id: string }) => {
                     return commandQueue.push(() => {
                         if (delegate.objectTrackerDeactivateDataSet(id)) {
                             activatedDataSets.delete(id);
@@ -195,13 +195,13 @@ export class VuforiaService {
                     }, this._controllingSession === session);
                 }
 
-                session.on['ar.vuforia.dataSetFetch'] = ({id}: { id: string }, event) => {
+                session.on['ar.vuforia.dataSetFetch'] = ({id}: { id: string }) => {
                     return commandQueue.push(() => {
                         return delegate.dataSetFetch(id)
                     }, this._controllingSession === session);
                 }
 
-                session.on['ar.vuforia.dataSetLoad'] = ({id}: { id: string }, event) => {
+                session.on['ar.vuforia.dataSetLoad'] = ({id}: { id: string }) => {
                     return commandQueue.push(() => {
                         return delegate.dataSetLoad(id)
                     }, this._controllingSession === session);
@@ -448,13 +448,13 @@ export class VuforiaObjectTracker extends VuforiaTracker {
     constructor(private manager: SessionPort) {
         super();
 
-        manager.on['ar.vuforia.objectTrackerActivateDataSetEvent'] = ({id}: { id: string }, event) => {
+        manager.on['ar.vuforia.objectTrackerActivateDataSetEvent'] = ({id}: { id: string }) => {
             const dataSet = this._dataSetMap.get(id)!;
             dataSet._onActivate();
             this.dataSetActivateEvent.raiseEvent(dataSet);
         }
 
-        manager.on['ar.vuforia.objectTrackerDeactivateDataSetEvent'] = ({id}: { id: string }, event) => {
+        manager.on['ar.vuforia.objectTrackerDeactivateDataSetEvent'] = ({id}: { id: string }) => {
             const dataSet = this._dataSetMap.get(id)!;
             dataSet._onDeactivate();
             this.dataSetDeactivateEvent.raiseEvent(dataSet);

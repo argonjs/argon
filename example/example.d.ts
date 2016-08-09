@@ -1,0 +1,12 @@
+import * as Argon from '../src/argon';
+export declare const app: Argon.ArgonSystem;
+export declare const scene: any;
+export declare const camera: any;
+export declare const user: any;
+export declare const userLocation: any;
+export declare const posXSphere: any;
+export declare const negXSphere: any;
+export declare const posYSphere: any;
+export declare const negYSphere: any;
+export declare const posZSphere: any;
+export declare const negZSphere: any;
