@@ -564,7 +564,7 @@ var scratchOrientation = new Quaternion;
  * @return a boolean indicating success or failure.  Will be false if either property is
  * not constant, or if either property cannot be converted to the new frame.
  */
-export function convertEntityReferenceFrame(entity, time, frame) {
+export function convertEntityReferenceFrame(entity:Entity, time:JulianDate, frame:ReferenceFrame|Entity) {
     if (!entity.position || !(entity.position instanceof ConstantPositionProperty) ||
         !entity.orientation || !(entity.orientation instanceof ConstantProperty)) {
             return false;
