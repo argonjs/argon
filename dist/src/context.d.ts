@@ -25,7 +25,18 @@ export declare enum PoseStatus {
     LOST = 4,
 }
 export interface Frame {
+    /**
+     * The absolute time for this frame (as determined by the current reality)
+     */
     time: JulianDate;
+    /**
+     * The time in milliseconds when this frame was received,
+     * based on performance.now() (or Date.now() if performance.now is not available)
+     */
+    systemTime: number;
+    /**
+     * The time in milliseconds since the previous frame's systemTime, capped to context.maxDeltaTime
+     */
     deltaTime: number;
 }
 /**
@@ -104,7 +115,6 @@ export declare class ContextService {
      */
     maxDeltaTime: number;
     private _serializedState?;
-    private _lastFrameUpdateTime;
     private _frame;
     private _defaultReferenceFrame;
     private _entityPoseCache;

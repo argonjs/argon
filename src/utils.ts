@@ -7,7 +7,9 @@ import {
     PerspectiveFrustum,
     PerspectiveOffCenterFrustum,
     PositionProperty,
+    ConstantPositionProperty,
     OrientationProperty,
+    ConstantProperty,
     Quaternion,
     Cartesian3,
     ReferenceFrame,
@@ -549,4 +551,39 @@ export function decomposePerspectiveProjectionMatrix(mat: Matrix4, result: Persp
     result.yOffset = yOffset;
 
     return result;
+}
+
+var scratchCartesian = new Cartesian3;
+var scratchOrientation = new Quaternion;
+/**
+ * Convert an Entity's position and orientation properties to a new reference frame.  
+ * The properties must be constant properties.
+ * @param entity The entity to convert. 
+ * @param time The time which to retrieve the pose up the reference chain.
+ * @param referenceFrame The reference frame to convert the position and oriention to. 
+ * @return a boolean indicating success or failure.  Will be false if either property is
+ * not constant, or if either property cannot be converted to the new frame.
+ */
+export function convertEntityReferenceFrame(entity, time, frame) {
+    if (!entity.position || !(entity.position instanceof ConstantPositionProperty) ||
+        !entity.orientation || !(entity.orientation instanceof ConstantProperty)) {
+            return false;
+    }
+    if (!getEntityPositionInReferenceFrame(
+        entity,
+        time,
+        frame,
+        scratchCartesian)) {
+            return false;
+    }
+    if (!getEntityOrientationInReferenceFrame(
+        entity,
+        time,
+        frame,
+        scratchOrientation)) {
+            return false;        
+    }
+    entity.position.setValue(scratchCartesian, frame);
+    entity.orientation.setValue(scratchOrientation);
+    return true;
 }

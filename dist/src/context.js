@@ -130,9 +130,9 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                      * This value caps the deltaTime for each frame
                      */
                     this.maxDeltaTime = 1 / 3 * 1000;
-                    this._lastFrameUpdateTime = 0;
                     this._frame = {
                         time: new cesium_imports_1.JulianDate(0, 0),
+                        systemTime: 0,
                         deltaTime: 0
                     };
                     // The default origin to use when calling `getEntityPose`.
@@ -299,13 +299,13 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                     });
                     // update our local origin
                     this._updateLocalOrigin(serializedState);
-                    // update our frame
+                    // update our frame object
                     var frame = this._frame;
                     var now = typeof performance !== 'undefined' ? performance.now() : Date.now();
-                    frame.deltaTime = Math.max(now - this._lastFrameUpdateTime, this.maxDeltaTime);
+                    frame.deltaTime = Math.max(now - frame.systemTime, this.maxDeltaTime);
+                    frame.systemTime = now;
                     cesium_imports_1.JulianDate.clone(serializedState.time, frame.time);
                     this._serializedState = serializedState;
-                    this._lastFrameUpdateTime = now;
                     // raise an event for the user update and render the scene
                     this.updateEvent.raiseEvent(frame);
                     this.renderEvent.raiseEvent(frame);

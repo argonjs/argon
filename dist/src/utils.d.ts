@@ -215,3 +215,4 @@ export declare class MessageChannelFactory {
 }
 export declare function decomposePerspectiveOffCenterProjectionMatrix(mat: Matrix4, result: PerspectiveOffCenterFrustum): PerspectiveOffCenterFrustum;
 export declare function decomposePerspectiveProjectionMatrix(mat: Matrix4, result: PerspectiveFrustum): PerspectiveFrustum;
+export declare function convertEntityReferenceFrame(entity: any, time: any, frame: any): boolean;

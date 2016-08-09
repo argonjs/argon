@@ -2,7 +2,7 @@ System.register(['cesium/Source/Core/Event', './cesium/cesium-imports'], functio
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var Event_1, cesium_imports_1;
-    var Event, CommandQueue, getEntityPosition, getEntityOrientation, urlParser, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, scratchPerspectiveOffCenterFrustum;
+    var Event, CommandQueue, getEntityPosition, getEntityOrientation, urlParser, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation;
     /**
      * Get array of ancestor reference frames of a Cesium Entity.
      * @param frame A Cesium Entity to get ancestor reference frames.
@@ -182,6 +182,22 @@ System.register(['cesium/Source/Core/Event', './cesium/cesium-imports'], functio
         return result;
     }
     exports_1("decomposePerspectiveProjectionMatrix", decomposePerspectiveProjectionMatrix);
+    function convertEntityReferenceFrame(entity, time, frame) {
+        if (!entity.position || !(entity.position instanceof cesium_imports_1.ConstantPositionProperty) ||
+            !entity.orientation || !(entity.orientation instanceof cesium_imports_1.ConstantProperty)) {
+            return false;
+        }
+        if (!getEntityPositionInReferenceFrame(entity, time, frame, scratchCartesian)) {
+            return false;
+        }
+        if (!getEntityOrientationInReferenceFrame(entity, time, frame, scratchOrientation)) {
+            return false;
+        }
+        entity.position.setValue(scratchCartesian, frame);
+        entity.orientation.setValue(scratchOrientation);
+        return true;
+    }
+    exports_1("convertEntityReferenceFrame", convertEntityReferenceFrame);
     return {
         setters:[
             function (Event_1_1) {
@@ -474,6 +490,10 @@ System.register(['cesium/Source/Core/Event', './cesium/cesium-imports'], functio
             }());
             exports_1("MessageChannelFactory", MessageChannelFactory);
             scratchPerspectiveOffCenterFrustum = new cesium_imports_1.PerspectiveOffCenterFrustum;
+            // convert an entity with ConstantPosition and ConstantOrientation properties from
+            // one frame to another
+            scratchCartesian = new cesium_imports_1.Cartesian3;
+            scratchOrientation = new cesium_imports_1.Quaternion;
         }
     }
 });
