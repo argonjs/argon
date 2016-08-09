@@ -1,7 +1,6 @@
 /*
 !src
-src/*.ts
-!src/*.d.ts
+*.ts
 !types
 !*.d.ts
 !*.js
