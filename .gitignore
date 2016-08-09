@@ -1,7 +1,7 @@
 jspm_packages
 docs
 .vscode/tasks.json
-**/*.js.map
+*.js.map
 node_modules/*
 !node_modules/@types
 node_modules/@types/*

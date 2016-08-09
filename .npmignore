@@ -1,5 +1,6 @@
-jspm_packages
-docs
-.vscode
-**/*.ts
-!**/*.d.ts
+/*
+!src
+!*.d.ts
+!*.js
+!CopyrightNotice
+jspm.*
