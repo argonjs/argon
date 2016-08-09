@@ -144,7 +144,6 @@
     "typescript-formatter": "^2.3.0"
   },
   "bundledDependencies": [
-    "@types/cesium",
-    "@types/mobile-detect"
+    "@types"
   ]
 }
