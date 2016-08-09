@@ -127,8 +127,6 @@
   },
   "dependencies": {
     "@types/urijs": "^1.15.26",
-    "@types/cesium": "file:node_modules/@types/cesium",
-    "@types/mobile-detect": "file:node_modules/@types/mobile-detect",
     "aurelia-dependency-injection": "^1.0.0"
   },
   "devDependencies": {
@@ -142,5 +140,9 @@
     "typedoc": "^0.3.12",
     "typescript": "^2.0.0",
     "typescript-formatter": "^2.3.0"
-  }
+  },
+  "bundledDependencies": [
+    "@types/cesium",
+    "@types/mobile-detect"
+  ]
 }
