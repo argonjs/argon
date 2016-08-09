@@ -3,4 +3,3 @@ docs
 .vscode
 **/*.ts
 !**/*.d.ts
-!node_modules/
