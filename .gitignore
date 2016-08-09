@@ -1,9 +1,5 @@
+node_modules
 jspm_packages
 docs
 .vscode/tasks.json
 *.js.map
-node_modules/*
-!node_modules/@types
-node_modules/@types/*
-!node_modules/@types/cesium
-!node_modules/@types/mobile-detect
