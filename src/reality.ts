@@ -128,16 +128,21 @@ export class RealityService {
 
         sessionService.connectEvent.addEventListener((session) => {
             if (session.info.role !== Role.REALITY_VIEW) {
-                session.on['ar.reality.desired'] = (message) => {
+                session.on['ar.reality.desired'] = (message:{reality:RealityView}) => {
                     const {reality} = message;
                     const previous = this.desiredRealityMap.get(session);
                     console.log('Session set desired reality: ' + JSON.stringify(reality));
                     if (reality) {
-                        if (this.isSupported(reality.type)) {
+                        if (reality['type']) { // For backwards compatability. Remove in future version. 
+                            const type = reality['type'] as string;
+                            reality.uri = reality.uri || 'reality:' + type;
+                            if (type === 'hosted') reality.uri = reality['url'];
+                        }
+                        if (this.isSupported(reality)) {
                             this.desiredRealityMap.set(session, reality);
                             this.desiredRealityMapInverse.set(reality, session);
                         } else {
-                            session.sendError({ message: 'Reality of type "' + reality.type + '" is not available on this platform' });
+                            session.sendError({ message: 'Reality of type "' + reality.uri + '" is not available on this platform' });
                             return;
                         }
                     } else {

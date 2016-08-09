@@ -1,10 +1,9 @@
-/// <reference path="../typings/index.d.ts"/>
 // import * as Argon from 'argon'
 import * as Argon from '../src/argon'
 
 declare const THREE: any;
 
-window.Argon = Argon;
+window['Argon'] = Argon;
 
 export const app = Argon.initReality();
 
@@ -76,15 +75,13 @@ axisHelper.position.y = -50;
 var perspectiveProjection = new Argon.Cesium.PerspectiveFrustum();
 perspectiveProjection.fov = Math.PI / 2;
 
-var scratchArray = [];
-
 function update(time:Argon.Cesium.JulianDate, index:number) {
     app.device.update();
-    app.reality.publishState({
+    app.reality.publishFrame({
         time,
         index,
         eye: {
-            viewport: app.view.getMaximumViewport(),
+            viewport: app.reality.getMaximumViewport(),
             pose: Argon.getSerializedEntityPose(app.device.displayEntity, time)
         }
     })

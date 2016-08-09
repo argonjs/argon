@@ -1,0 +1,5 @@
+jspm_packages
+docs
+.vscode
+**/*.ts
+!**/*.d.ts

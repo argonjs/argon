@@ -2,13 +2,12 @@
     "compilerOptions": {
         "target": "es5",
         "module": "system",
-        "outDir": "dist",
         "declaration": true,
         "emitDecoratorMetadata": false,
         "experimentalDecorators": true,
         "allowSyntheticDefaultImports": true,
-        "pretty": true,
-        "sourceMap": true,
+        "pretty": false,
+        "sourceMap": false,
         "strictNullChecks": true,
         "noUnusedLocals": true,
         "traceResolution": false,
@@ -17,6 +16,7 @@
     },
     "include": [
         "src/**/*.ts",
+        "example/**/*.ts",
         "test/test.ts"
     ]
 }

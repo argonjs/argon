@@ -3,7 +3,6 @@ import {
     Entity,
     EntityCollection,
     CompositeEntityCollection,
-    ExtrapolationType,
     ConstantPositionProperty,
     ConstantProperty,
     SampledPositionProperty,
@@ -406,29 +405,25 @@ export class ContextService {
         if (!entityPosition || entityPosition.referenceFrame !== referenceFrame) {
             entityPosition = new ConstantPositionProperty(positionValue, referenceFrame);
             entity.position = entityPosition;
-        }
-
-        if (entityPosition instanceof ConstantPositionProperty) {
+        } else if (entityPosition instanceof ConstantPositionProperty) {
             entityPosition.setValue(positionValue, referenceFrame)
         } else if (entityPosition instanceof SampledPositionProperty) {
             entityPosition.addSample(JulianDate.clone(<JulianDate>state.time), positionValue);
         }
 
-        if (orientationValue && !entityOrientation) {
-            entityOrientation = new SampledProperty(Quaternion);
-            (entityOrientation as SampledProperty).forwardExtrapolationType = ExtrapolationType.HOLD;
-            (entityOrientation as SampledProperty).forwardExtrapolationDuration = 5 / 60;
-            entityOrientation['maxNumSamples'] = 10; // using our extension to limit memory consumption
-            entity.orientation = entityOrientation;
-        }
-
-        if (entityOrientation instanceof ConstantProperty) {
+        if (!entityOrientation) {
+            entityOrientation = new ConstantProperty(orientationValue);
+        } else if (entityOrientation instanceof ConstantProperty) {
             entityOrientation.setValue(orientationValue);
         } else if (entityOrientation instanceof SampledProperty) {
             entityOrientation.addSample(JulianDate.clone(<JulianDate>state.time), orientationValue);
         }
 
         return entity;
+    }
+
+    public publishEntityState(entity: Entity, referenceFrame: ReferenceFrame|Entity) {
+
     }
 
     private _updateLocalOrigin(state: SerializedFrameState) {

@@ -1,18 +1,16 @@
-/// <reference path="../typings/index.d.ts"/>
 // import * as Argon from 'argon'
 // import * as Argon from '../dist/src/argon'
 import * as Argon from '../src/argon'
 
 declare const THREE: any;
 
-window.Argon = Argon;
+window['Argon'] = Argon;
 
 export const app = Argon.init();
 
 app.reality.setDesired({
-    type:'hosted',
-    name: 'My Custom Reality',
-    url: Argon.resolveURL('custom_reality.html')
+    title: 'My Custom Reality',
+    uri: Argon.resolveURL('custom_reality.html')
 })
 
 export const scene = new THREE.Scene();
@@ -96,9 +94,7 @@ app.vuforia.init({
             const stonesEntity = app.context.subscribeToEntityById(trackables['stones'].id)
             const stonesObject = new THREE.Object3D;
             scene.add(stonesObject);
-            
-            var targetSize = trackables['stones'].size
-            
+                        
             var boxGeometry = new THREE.BoxGeometry(50, 50, 50);
             var material = new THREE.MeshNormalMaterial()
             material.side = THREE.DoubleSide;
