@@ -224,4 +224,4 @@ export declare function decomposePerspectiveProjectionMatrix(mat: Matrix4, resul
  * @return a boolean indicating success or failure.  Will be false if either property is
  * not constant, or if either property cannot be converted to the new frame.
  */
-export declare function convertEntityReferenceFrame(entity: any, time: any, frame: any): boolean;
+export declare function convertEntityReferenceFrame(entity: Entity, time: JulianDate, frame: ReferenceFrame | Entity): boolean;
