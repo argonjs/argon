@@ -137,6 +137,7 @@ export class RealityService {
                             const type = reality['type'] as string;
                             reality.uri = reality.uri || 'reality:' + type;
                             if (type === 'hosted') reality.uri = reality['url'];
+                            if (!reality.title && reality['name']) reality.title = reality['name']; 
                         }
                         if (this.isSupported(reality)) {
                             this.desiredRealityMap.set(session, reality);

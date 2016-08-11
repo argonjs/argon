@@ -112,6 +112,8 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                                         reality.uri = reality.uri || 'reality:' + type;
                                         if (type === 'hosted')
                                             reality.uri = reality['url'];
+                                        if (!reality.title && reality['name'])
+                                            reality.title = reality['name'];
                                     }
                                     if (_this.isSupported(reality)) {
                                         _this.desiredRealityMap.set(session, reality);
