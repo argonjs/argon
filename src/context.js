@@ -351,6 +351,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                     }
                     if (!entityOrientation) {
                         entityOrientation = new cesium_imports_1.ConstantProperty(orientationValue);
+                        entity.orientation = entityOrientation;
                     }
                     else if (entityOrientation instanceof cesium_imports_1.ConstantProperty) {
                         entityOrientation.setValue(orientationValue);

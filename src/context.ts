@@ -413,6 +413,7 @@ export class ContextService {
 
         if (!entityOrientation) {
             entityOrientation = new ConstantProperty(orientationValue);
+            entity.orientation = entityOrientation;
         } else if (entityOrientation instanceof ConstantProperty) {
             entityOrientation.setValue(orientationValue);
         } else if (entityOrientation instanceof SampledProperty) {
