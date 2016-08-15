@@ -3280,11 +3280,12 @@ $__System.register('9', ['c', 'a', 'b', '8'], function (exports_1, context_1) {
                     context.wellKnownReferenceFrames.add(this.orientationEntity);
                     context.wellKnownReferenceFrames.add(this.entity);
                     context.wellKnownReferenceFrames.add(this.displayEntity);
-                    if (typeof window !== 'undefined' && window.navigator) {
-                        this._mobileDetect = new mobile_detect_1.default(window.navigator.userAgent);
+                    if (typeof navigator !== 'undefined') {
+                        this._mobileDetect = new mobile_detect_1.default(navigator.userAgent);
                     }
                 }
                 DeviceService.prototype.onIdle = function () {
+                    if (typeof navigator === 'undefined') return;
                     if (cesium_imports_1.defined(this._geolocationWatchId)) {
                         navigator.geolocation.clearWatch(this._geolocationWatchId);
                         this._geolocationWatchId = undefined;
@@ -3297,7 +3298,7 @@ $__System.register('9', ['c', 'a', 'b', '8'], function (exports_1, context_1) {
                 };
                 DeviceService.prototype.onUpdate = function () {
                     var _this = this;
-                    if (typeof window !== 'undefined') {
+                    if (typeof navigator !== 'undefined') {
                         var interfaceOrientationProperty = this.displayEntity.orientation;
                         var interfaceOrientation = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_Z, (-window.orientation || 0) * cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE, this._scratchQuaternion1);
                         if (this._mobileDetect && !this._mobileDetect.mobile()) {
@@ -3648,6 +3649,9 @@ $__System.register('13', ['c', '14', '10', '12'], function (exports_1, context_1
                 VuforiaServiceDelegate.prototype.setHint = function (hint, value) {
                     return true;
                 };
+                VuforiaServiceDelegate.prototype.decryptLicenseKey = function (encryptedLicenseData, session) {
+                    return Promise.resolve(undefined);
+                };
                 VuforiaServiceDelegate.prototype.init = function (options) {
                     return Promise.resolve(VuforiaInitResult.SUCCESS);
                 };
@@ -3720,17 +3724,22 @@ $__System.register('13', ['c', '14', '10', '12'], function (exports_1, context_1
                             session.on['ar.vuforia.init'] = function (options) {
                                 if (!delegate.isAvailable()) throw new Error("Vuforia is not supported");
                                 if (_this._sessionIsInitialized.get(session)) throw new Error("Vuforia has already been initialized");
-                                _this._sessionInitOptions.set(session, options);
-                                var result = commandQueue.push(function () {
-                                    return _this._init(session).then(function () {
-                                        _this._sessionIsInitialized.set(session, true);
+                                var keyPromise = options.key ? Promise.resolve(options.key) : delegate.decryptLicenseKey(options.encryptedLicenseData, session);
+                                return keyPromise.then(function (key) {
+                                    _this._sessionInitOptions.set(session, {
+                                        key: key
                                     });
-                                }, _this._controllingSession === session);
-                                if (_this.focusService.getSession() === session) {
-                                    _this._setControllingSession(session);
-                                }
-                                _this._sessionInitPromise.set(session, result);
-                                return result;
+                                    var result = commandQueue.push(function () {
+                                        return _this._init(session).then(function () {
+                                            _this._sessionIsInitialized.set(session, true);
+                                        });
+                                    }, _this._controllingSession === session);
+                                    if (_this.focusService.getSession() === session) {
+                                        _this._setControllingSession(session);
+                                    }
+                                    _this._sessionInitPromise.set(session, result);
+                                    return result;
+                                });
                             };
                             session.on['ar.vuforia.objectTrackerCreateDataSet'] = function (_a) {
                                 var url = _a.url;
@@ -3805,8 +3814,24 @@ $__System.register('13', ['c', '14', '10', '12'], function (exports_1, context_1
                         return message.available;
                     });
                 };
+                /**
+                 * Initialize vuforia with an unecrypted key. Manager-only, unless the "force" (flag) is used.
+                 * It's a bad idea to publish your private vuforia key on the internet.
+                 */
+                VuforiaService.prototype.initWithUnencryptedKey = function (options, force) {
+                    var _this = this;
+                    if (!force) this.sessionService.ensureIsManager();
+                    return this.sessionService.manager.request('ar.vuforia.init', options).then(function () {
+                        return new VuforiaAPI(_this.sessionService.manager);
+                    });
+                };
+                /**
+                 * Initialize vuforia using an encrypted license key.
+                 * You can encrypt your license key at http://docs.argonjs.io/start/vuforia-pgp-encryptor
+                 */
                 VuforiaService.prototype.init = function (options) {
                     var _this = this;
+                    if (!options.encryptedLicenseData || typeof options.encryptedLicenseData !== 'string') throw new Error('options.encryptedLicenseData is required.');
                     return this.sessionService.manager.request('ar.vuforia.init', options).then(function () {
                         return new VuforiaAPI(_this.sessionService.manager);
                     });
@@ -3895,13 +3920,9 @@ $__System.register('13', ['c', '14', '10', '12'], function (exports_1, context_1
                 };
                 VuforiaService.prototype._init = function (session) {
                     var _this = this;
+                    console.log("Attempting to initialize vuforia for " + session.uri);
                     var options = this._sessionInitOptions.get(session);
-                    var detailedOptions = {
-                        licenseKey: options.licenseKey,
-                        encryptedLicenseData: options.encryptedLicenseData,
-                        origin: session.uri || ''
-                    };
-                    return this.delegate.init(detailedOptions).then(function (initResult) {
+                    return this.delegate.init(options).then(function (initResult) {
                         if (initResult !== VuforiaInitResult.SUCCESS) {
                             throw new Error("Vuforia init failed: " + VuforiaInitResult[initResult]);
                         }
@@ -3927,7 +3948,9 @@ $__System.register('13', ['c', '14', '10', '12'], function (exports_1, context_1
                         if (!_this.delegate.cameraDeviceInitAndStart()) {
                             throw new Error("Vuforia init failed: Unable to complete initialization");
                         }
+                        console.log("Vuforia init success");
                     }).catch(function (err) {
+                        console.log("Vuforia init fail: " + err.message);
                         _this._sessionInitOptions.delete(session);
                         _this._sessionIsInitialized.set(session, false);
                         _this._deinit(session);
@@ -4472,6 +4495,7 @@ $__System.register('b', ['c', 'a', '10', '11', '12'], function (exports_1, conte
                     }
                     if (!entityOrientation) {
                         entityOrientation = new cesium_imports_1.ConstantProperty(orientationValue);
+                        entity.orientation = entityOrientation;
                     } else if (entityOrientation instanceof cesium_imports_1.ConstantProperty) {
                         entityOrientation.setValue(orientationValue);
                     } else if (entityOrientation instanceof cesium_imports_1.SampledProperty) {
@@ -6186,6 +6210,7 @@ $__System.register('11', ['c', 'a', 'f', '14', '10', '12'], function (exports_1,
                                         var type = reality['type'];
                                         reality.uri = reality.uri || 'reality:' + type;
                                         if (type === 'hosted') reality.uri = reality['url'];
+                                        if (!reality.title && reality['name']) reality.title = reality['name'];
                                     }
                                     if (_this.isSupported(reality)) {
                                         _this.desiredRealityMap.set(session, reality);
@@ -20443,10 +20468,12 @@ $__System.register('12', ['1d', 'a'], function (exports_1, context_1) {
                 };
                 CommandQueue.prototype._executeNextCommand = function () {
                     var _this = this;
+                    this._currentCommand = undefined;
                     this._currentCommandPending = undefined;
                     if (this._paused) return;
                     var item = this._queue.shift();
                     if (!item) return;
+                    this._currentCommand = item.command;
                     this._currentCommandPending = item.execute().then(this._executeNextCommand.bind(this)).catch(function (e) {
                         _this.errorEvent.raiseEvent(e);
                         _this._executeNextCommand();
@@ -20622,7 +20649,7 @@ $__System.register('1', ['2', 'c', 'a', '7', '10', 'f', 'b', '9', '14', '11', 'd
             _c = _b.container,
             container = _c === void 0 ? new DI.Container() : _c;
         var role;
-        if (typeof window === 'undefined') {
+        if (typeof HTMLElement === 'undefined') {
             role = common_1.Role.MANAGER;
         } else if (navigator.userAgent.indexOf('Argon') > 0 || window.top !== window) {
             role = common_1.Role.APPLICATION;

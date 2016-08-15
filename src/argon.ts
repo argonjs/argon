@@ -160,7 +160,7 @@ export interface InitParameters {
 
 export function init({ configuration, container = new DI.Container }: InitParameters = {}) {
     let role: Role;
-    if (typeof window === 'undefined') {
+    if (typeof HTMLElement === 'undefined') {
         role = Role.MANAGER
     } else if (navigator.userAgent.indexOf('Argon') > 0 || window.top !== window) {
         role = Role.APPLICATION

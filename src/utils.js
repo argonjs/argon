@@ -333,12 +333,14 @@ System.register(['cesium/Source/Core/Event', './cesium/cesium-imports'], functio
                 };
                 CommandQueue.prototype._executeNextCommand = function () {
                     var _this = this;
+                    this._currentCommand = undefined;
                     this._currentCommandPending = undefined;
                     if (this._paused)
                         return;
                     var item = this._queue.shift();
                     if (!item)
                         return;
+                    this._currentCommand = item.command;
                     this._currentCommandPending = item.execute()
                         .then(this._executeNextCommand.bind(this))
                         .catch(function (e) {

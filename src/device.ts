@@ -32,8 +32,8 @@ export class DeviceService {
         context.wellKnownReferenceFrames.add(this.entity);
         context.wellKnownReferenceFrames.add(this.displayEntity);
 
-        if (typeof window !== 'undefined' && window.navigator) {
-            this._mobileDetect = new MobileDetect(window.navigator.userAgent);
+        if (typeof navigator !== 'undefined') {
+            this._mobileDetect = new MobileDetect(navigator.userAgent);
         }
     }
 
@@ -72,7 +72,7 @@ export class DeviceService {
     private _geolocationWatchId;
     private _deviceorientationListener;
 
-    private _mobileDetect: MobileDetect;
+    private _mobileDetect?: MobileDetect;
 
     private _alphaOffset?: number;
     private _headingDrift = 0;
@@ -80,6 +80,8 @@ export class DeviceService {
     private _idleTimeoutId: number;
 
     protected onIdle() {
+        if (typeof navigator === 'undefined') return; 
+
         if (defined(this._geolocationWatchId)) {
             navigator.geolocation.clearWatch(this._geolocationWatchId);
             this._geolocationWatchId = undefined;
@@ -93,7 +95,7 @@ export class DeviceService {
     }
 
     protected onUpdate() {
-        if (typeof window !== 'undefined') {
+        if (typeof navigator !== 'undefined') {
 
             const interfaceOrientationProperty = <ConstantProperty>this.displayEntity.orientation;
             let interfaceOrientation = Quaternion.fromAxisAngle(Cartesian3.UNIT_Z, (-window.orientation || 0) * CesiumMath.RADIANS_PER_DEGREE, this._scratchQuaternion1);

@@ -8,10 +8,10 @@ window['Argon'] = Argon;
 
 export const app = Argon.init();
 
-app.reality.setDesired({
-    title: 'My Custom Reality',
-    uri: Argon.resolveURL('custom_reality.html')
-})
+// app.reality.setDesired({
+//     title: 'My Custom Reality',
+//     uri: Argon.resolveURL('custom_reality.html')
+// })
 
 export const scene = new THREE.Scene();
 export const camera = new THREE.PerspectiveCamera();
@@ -84,8 +84,37 @@ axisHelper.position.y = -50;
 // scene.add(textMesh);
 
 app.vuforia.init({
-	licenseKey: "AXRIsu7/////AAAAAaYn+sFgpkAomH+Z+tK/Wsc8D+x60P90Nz8Oh0J8onzjVUIP5RbYjdDfyatmpnNgib3xGo1v8iWhkU1swiCaOM9V2jmpC4RZommwQzlgFbBRfZjV8DY3ggx9qAq8mijhN7nMzFDMgUhOlRWeN04VOcJGVUxnKn+R+oot1XTF5OlJZk3oXK2UfGkZo5DzSYafIVA0QS3Qgcx6j2qYAa/SZcPqiReiDM9FpaiObwxV3/xYJhXPUGVxI4wMcDI0XBWtiPR2yO9jAnv+x8+p88xqlMH8GHDSUecG97NbcTlPB0RayGGg1F6Y7v0/nQyk1OIp7J8VQ2YrTK25kKHST0Ny2s3M234SgvNCvnUHfAKFQ5KV"
-}).then((api)=>{
+    encryptedLicenseData: `-----BEGIN PGP MESSAGE-----
+Version: OpenPGP.js v2.3.2
+Comment: http://openpgpjs.org
+
+wcFMA47tt+RhMWHyARAAjCQMsEFdWg+udo7+Q5ae435LS+dMAJq8oPwvMlFn
+cqEZu0M1JqjFMdxn383WjN7oXB0sG30pF9ErzEIJ+fp/BGURp8l3L8qp5e+a
+0MeRolFavpH9iyUZY3oGd56JkwOfgoF4lDyiO0tpsueYxAUPuHONY0YqGGyZ
+xRv/Q711OaZcjg6XuIx0Ook1Dux2B/+yBTABSANwdxBAfWcg8cBoK2ZylXzR
+v3pqRtivV+bnuw+BnPAx4Kp0t1yfPWRdzo1qSnOPjaNTwv7G65y4zGD5jaf6
+Sb6o/kEJafoRLvp2wXVyM46fcDXQzElho6WSEfhXQdcGSfIhl15cXyi8u9+J
+9P6IhLA5tF+OZ5trqN1P6lwcennMeO28eXV3CgD3QGuhCDMmw2YdGnQFHmPK
+9erW840Az/PYdY0RgTuxHfl4gS/41+XL72pFYqjXaxJEDfhwT/NnCNmqUGLG
+x/OjDFVlpkhPBzT+iz9Caw4+iicc6AiRhMXun9kYMcI8IkYfELvi6+C5aSXA
+zRqPHVAGg/stf6jHm+wVMfIblb3nR62Ji7Kl0X3NVxXJxPVl+0eZS57G/Sk4
+9y92GI8xzNese3w15LpaNSnYSiqAFHlScEj4a3r/xna/T1BBSddffMVYhuGS
+Kvdee5vPMYoG8EXXuJLf8Yf9l5k3GiiAeAu8ZYWaVtjSwUMBrUSnLQWpMVhf
+RbYgvjxhWm9RPMkNJXsqzUeP3jTXO5mUarHoTIpQSaWzGdFu0OYagvl4dI1S
+cwkaE1MvygX3QBsr075APV+ZzQgOl0ulkH8kgQJz897MGthIfZkNf6h9zynt
+A1wY6+appAAQRgl7HUAEEqLq0GWCrnz4U7kh6Bci/JRVy0XgoO/vSzmZkIXg
+msPMMHhT2dznjuC9eF5iTcrCBuBxgXBvA9aYIHDdqeV/ooCVe2hwytRQGc0R
+OT8Nh1EU3oDZ+3z67bcUQ6q+fF/JMle1l0lE9rt+BSZ0SFMOz/VtqV/AX9fj
+wmZb0fyIHnwxoQflpzz1L2ybS3H2Bory8/eZ8bOLTDui/6KfZJsyxJwRFFCp
+geqXHxg9lNd23j/LFbAMGWvZK1DCp+9xJ9lbySN126+6U6frnSAxA5k7zMb0
+UHjcBDft3lvlKQaCKw2iku5iCFiafXbNngbOkikc5xyy2hjxoqbMqrb+ftRo
+CpeVreuyq4Z6h0hLKJ03BR4vOn5OKuBbbTwBnE5OKmzh0ueC1QFK/nud0yef
+lIE1scmi5Q0Q+iVobgQk+KLD/Cw15SQoNcwN5w9RYRbptPePNKLkS1AzyeOg
+aGQjq0ARmfm+o2KNLNAafSwASnpbwP+xR+Y/EjY9YO3ZbIfr46mFmyzbdozA
+dXDH5w12UOKvzA==
+=YVL+
+-----END PGP MESSAGE-----
+`}).then((api)=>{
     api.objectTracker.createDataSet('dataset/StonesAndChips.xml').then( (dataSet)=>{
 
         dataSet.load().then(()=>{

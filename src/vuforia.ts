@@ -8,14 +8,11 @@ import { Event, CommandQueue, resolveURL } from './utils'
  * The set of options accepted by Vuforia for initialization.
  */
 export interface VuforiaInitOptions {
-    licenseKey?: string,
-    encryptedLicenseData?: string,
-}
-
-export interface DetailedVuforiaInitOptions {
-    licenseKey?: string,
-    encryptedLicenseData?: string,
-    origin: string
+    /**
+     * The encrypted vuforia license data for your app.
+     * You can encrypt your license key at http://docs.argonjs.io/start/vuforia-pgp-encryptor
+     */
+    encryptedLicenseData: string,
 }
 
 /**
@@ -52,6 +49,10 @@ export const enum VuforiaHint {
     DelayedLoadingObjectDatasets = 2
 }
 
+export interface VuforiaServiceDelegateInitOptions {
+    key: string
+}
+
 /**
  * An abstract class representing the Vuforia API. 
  */
@@ -61,7 +62,8 @@ export abstract class VuforiaServiceDelegateBase {
     stateUpdateEvent: Event<SerializedPartialFrameState> = new Event();
     abstract isAvailable(): boolean
     abstract setHint(hint: VuforiaHint, value: number): boolean;
-    abstract init(options: DetailedVuforiaInitOptions): Promise<VuforiaInitResult>;
+    abstract decryptLicenseKey(encryptedLicenseData:string, session:SessionPort) : Promise<string>;
+    abstract init(options:VuforiaServiceDelegateInitOptions): Promise<VuforiaInitResult>;
     abstract deinit(): void;
     abstract cameraDeviceInitAndStart(): boolean;
     abstract cameraDeviceSetFlashTorchMode(on: boolean): boolean;
@@ -80,7 +82,8 @@ export abstract class VuforiaServiceDelegateBase {
 export class VuforiaServiceDelegate extends VuforiaServiceDelegateBase {
     isAvailable() { return false }
     setHint(hint: VuforiaHint, value: number): boolean { return true }
-    init(options: DetailedVuforiaInitOptions): Promise<VuforiaInitResult> { return Promise.resolve(VuforiaInitResult.SUCCESS) }
+    decryptLicenseKey(encryptedLicenseData:string, session:SessionPort) : Promise<string> { return Promise.resolve(undefined) }
+    init(options: VuforiaServiceDelegateInitOptions): Promise<VuforiaInitResult> { return Promise.resolve(VuforiaInitResult.SUCCESS) }
     deinit(): void { }
     cameraDeviceInitAndStart(): boolean { return true }
     cameraDeviceSetFlashTorchMode(on: boolean): boolean { return true }
@@ -104,7 +107,7 @@ export class VuforiaService {
     private _sessionSwitcherCommandQueue = new CommandQueue();
     private _sessionCommandQueue = new WeakMap<SessionPort, CommandQueue>();
 
-    private _sessionInitOptions = new WeakMap<SessionPort, VuforiaInitOptions>();
+    private _sessionInitOptions = new WeakMap<SessionPort, VuforiaServiceDelegateInitOptions>();
     private _sessionInitPromise = new WeakMap<SessionPort, Promise<any>>();
     private _sessionIsInitialized = new WeakMap<SessionPort, boolean>();
 
@@ -141,25 +144,34 @@ export class VuforiaService {
                     return Promise.resolve({ available: delegate.isAvailable() });
                 }
 
-                session.on['ar.vuforia.init'] = (options: VuforiaInitOptions) => {
+                session.on['ar.vuforia.init'] = (options: VuforiaInitOptions&{key?:string}) => {
                     if (!delegate.isAvailable()) throw new Error("Vuforia is not supported");
                     if (this._sessionIsInitialized.get(session)) throw new Error("Vuforia has already been initialized");
 
-                    this._sessionInitOptions.set(session, options);
+                    const keyPromise = options.key ? 
+                        Promise.resolve(options.key) : 
+                        delegate.decryptLicenseKey(options.encryptedLicenseData, session);
+                    
+                    return keyPromise.then((key)=>{
+                        this._sessionInitOptions.set(session, {
+                            key
+                        });
 
-                    const result = commandQueue.push(() => {
-                        return this._init(session).then(() => {
-                            this._sessionIsInitialized.set(session, true);
-                        })
-                    }, this._controllingSession === session);
+                        const result = commandQueue.push(() => {
+                            return this._init(session).then(() => {
+                                this._sessionIsInitialized.set(session, true);
+                            })
+                        }, this._controllingSession === session);
 
-                    if (this.focusService.getSession() === session) {
-                        this._setControllingSession(session);
-                    }
+                        if (this.focusService.getSession() === session) {
+                            this._setControllingSession(session);
+                        }
 
-                    this._sessionInitPromise.set(session, result);
+                        this._sessionInitPromise.set(session, result);
 
-                    return result;
+                        return result;
+                    });
+                    
                 }
 
                 session.on['ar.vuforia.objectTrackerCreateDataSet'] = ({url}: { url: string }) => {
@@ -238,7 +250,24 @@ export class VuforiaService {
         });
     }
 
+    /**
+     * Initialize vuforia with an unecrypted key. Manager-only, unless the "force" (flag) is used.
+     * It's a bad idea to publish your private vuforia key on the internet.
+     */
+    public initWithUnencryptedKey(options: VuforiaInitOptions|{key:string}, force?:boolean) : Promise<VuforiaAPI> {
+        if (!force) this.sessionService.ensureIsManager();
+        return this.sessionService.manager.request('ar.vuforia.init', options).then(() => {
+            return new VuforiaAPI(this.sessionService.manager);
+        });
+    }
+
+    /**
+     * Initialize vuforia using an encrypted license key.
+     * You can encrypt your license key at http://docs.argonjs.io/start/vuforia-pgp-encryptor
+     */
     public init(options: VuforiaInitOptions): Promise<VuforiaAPI> {
+        if (!options.encryptedLicenseData || typeof options.encryptedLicenseData !== 'string') 
+            throw new Error('options.encryptedLicenseData is required.')
         return this.sessionService.manager.request('ar.vuforia.init', options).then(() => {
             return new VuforiaAPI(this.sessionService.manager);
         });
@@ -343,14 +372,10 @@ export class VuforiaService {
     }
 
     private _init(session: SessionPort) {
-        const options = this._sessionInitOptions.get(session)!;
-        const detailedOptions: DetailedVuforiaInitOptions = {
-            licenseKey: options.licenseKey,
-            encryptedLicenseData: options.encryptedLicenseData,
-            origin: session.uri || ''
-        }
+        console.log("Attempting to initialize vuforia for " + session.uri);
 
-        return this.delegate.init(detailedOptions).then((initResult: VuforiaInitResult) => {
+        const options = this._sessionInitOptions.get(session)!;
+        return this.delegate.init(options).then((initResult: VuforiaInitResult) => {
 
             if (initResult !== VuforiaInitResult.SUCCESS) {
                 throw new Error("Vuforia init failed: " + VuforiaInitResult[initResult]);
@@ -384,7 +409,11 @@ export class VuforiaService {
                 throw new Error("Vuforia init failed: Unable to complete initialization");
             }
 
-        }).catch((err) => {
+            console.log("Vuforia init success");
+
+        }).catch((err:Error) => {
+            
+            console.log("Vuforia init fail: " + err.message);
 
             this._sessionInitOptions.delete(session);
             this._sessionIsInitialized.set(session, false);

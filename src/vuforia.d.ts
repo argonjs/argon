@@ -6,13 +6,11 @@ import { Event } from './utils';
  * The set of options accepted by Vuforia for initialization.
  */
 export interface VuforiaInitOptions {
-    licenseKey?: string;
-    encryptedLicenseData?: string;
-}
-export interface DetailedVuforiaInitOptions {
-    licenseKey?: string;
-    encryptedLicenseData?: string;
-    origin: string;
+    /**
+     * The encrypted vuforia license data for your app.
+     * You can encrypt your license key at http://docs.argonjs.io/start/vuforia-pgp-encryptor
+     */
+    encryptedLicenseData: string;
 }
 /**
  * The set of possible error codes that can be returned from vuforia's
@@ -46,6 +44,9 @@ export declare const enum VuforiaHint {
     MaxSimultaneousObjectTargets = 1,
     DelayedLoadingObjectDatasets = 2,
 }
+export interface VuforiaServiceDelegateInitOptions {
+    key: string;
+}
 /**
  * An abstract class representing the Vuforia API.
  */
@@ -55,7 +56,8 @@ export declare abstract class VuforiaServiceDelegateBase {
     stateUpdateEvent: Event<SerializedPartialFrameState>;
     abstract isAvailable(): boolean;
     abstract setHint(hint: VuforiaHint, value: number): boolean;
-    abstract init(options: DetailedVuforiaInitOptions): Promise<VuforiaInitResult>;
+    abstract decryptLicenseKey(encryptedLicenseData: string, session: SessionPort): Promise<string>;
+    abstract init(options: VuforiaServiceDelegateInitOptions): Promise<VuforiaInitResult>;
     abstract deinit(): void;
     abstract cameraDeviceInitAndStart(): boolean;
     abstract cameraDeviceSetFlashTorchMode(on: boolean): boolean;
@@ -73,7 +75,8 @@ export declare abstract class VuforiaServiceDelegateBase {
 export declare class VuforiaServiceDelegate extends VuforiaServiceDelegateBase {
     isAvailable(): boolean;
     setHint(hint: VuforiaHint, value: number): boolean;
-    init(options: DetailedVuforiaInitOptions): Promise<VuforiaInitResult>;
+    decryptLicenseKey(encryptedLicenseData: string, session: SessionPort): Promise<string>;
+    init(options: VuforiaServiceDelegateInitOptions): Promise<VuforiaInitResult>;
     deinit(): void;
     cameraDeviceInitAndStart(): boolean;
     cameraDeviceSetFlashTorchMode(on: boolean): boolean;
@@ -103,6 +106,17 @@ export declare class VuforiaService {
     private _sessionActivatedDataSets;
     constructor(sessionService: SessionService, focusService: FocusService, delegate: VuforiaServiceDelegate);
     isAvailable(): Promise<boolean>;
+    /**
+     * Initialize vuforia with an unecrypted key. Manager-only, unless the "force" (flag) is used.
+     * It's a bad idea to publish your private vuforia key on the internet.
+     */
+    initWithUnencryptedKey(options: VuforiaInitOptions | {
+        key: string;
+    }, force?: boolean): Promise<VuforiaAPI>;
+    /**
+     * Initialize vuforia using an encrypted license key.
+     * You can encrypt your license key at http://docs.argonjs.io/start/vuforia-pgp-encryptor
+     */
     init(options: VuforiaInitOptions): Promise<VuforiaAPI>;
     private _ensureActiveSession();
     private _selectControllingSession();

@@ -77,6 +77,7 @@ System.register(['aurelia-dependency-injection', './focus', './session', './util
                 }
                 VuforiaServiceDelegate.prototype.isAvailable = function () { return false; };
                 VuforiaServiceDelegate.prototype.setHint = function (hint, value) { return true; };
+                VuforiaServiceDelegate.prototype.decryptLicenseKey = function (encryptedLicenseData, session) { return Promise.resolve(undefined); };
                 VuforiaServiceDelegate.prototype.init = function (options) { return Promise.resolve(VuforiaInitResult.SUCCESS); };
                 VuforiaServiceDelegate.prototype.deinit = function () { };
                 VuforiaServiceDelegate.prototype.cameraDeviceInitAndStart = function () { return true; };
@@ -131,17 +132,24 @@ System.register(['aurelia-dependency-injection', './focus', './session', './util
                                     throw new Error("Vuforia is not supported");
                                 if (_this._sessionIsInitialized.get(session))
                                     throw new Error("Vuforia has already been initialized");
-                                _this._sessionInitOptions.set(session, options);
-                                var result = commandQueue.push(function () {
-                                    return _this._init(session).then(function () {
-                                        _this._sessionIsInitialized.set(session, true);
+                                var keyPromise = options.key ?
+                                    Promise.resolve(options.key) :
+                                    delegate.decryptLicenseKey(options.encryptedLicenseData, session);
+                                return keyPromise.then(function (key) {
+                                    _this._sessionInitOptions.set(session, {
+                                        key: key
                                     });
-                                }, _this._controllingSession === session);
-                                if (_this.focusService.getSession() === session) {
-                                    _this._setControllingSession(session);
-                                }
-                                _this._sessionInitPromise.set(session, result);
-                                return result;
+                                    var result = commandQueue.push(function () {
+                                        return _this._init(session).then(function () {
+                                            _this._sessionIsInitialized.set(session, true);
+                                        });
+                                    }, _this._controllingSession === session);
+                                    if (_this.focusService.getSession() === session) {
+                                        _this._setControllingSession(session);
+                                    }
+                                    _this._sessionInitPromise.set(session, result);
+                                    return result;
+                                });
                             };
                             session.on['ar.vuforia.objectTrackerCreateDataSet'] = function (_a) {
                                 var url = _a.url;
@@ -217,8 +225,26 @@ System.register(['aurelia-dependency-injection', './focus', './session', './util
                         return message.available;
                     });
                 };
+                /**
+                 * Initialize vuforia with an unecrypted key. Manager-only, unless the "force" (flag) is used.
+                 * It's a bad idea to publish your private vuforia key on the internet.
+                 */
+                VuforiaService.prototype.initWithUnencryptedKey = function (options, force) {
+                    var _this = this;
+                    if (!force)
+                        this.sessionService.ensureIsManager();
+                    return this.sessionService.manager.request('ar.vuforia.init', options).then(function () {
+                        return new VuforiaAPI(_this.sessionService.manager);
+                    });
+                };
+                /**
+                 * Initialize vuforia using an encrypted license key.
+                 * You can encrypt your license key at http://docs.argonjs.io/start/vuforia-pgp-encryptor
+                 */
                 VuforiaService.prototype.init = function (options) {
                     var _this = this;
+                    if (!options.encryptedLicenseData || typeof options.encryptedLicenseData !== 'string')
+                        throw new Error('options.encryptedLicenseData is required.');
                     return this.sessionService.manager.request('ar.vuforia.init', options).then(function () {
                         return new VuforiaAPI(_this.sessionService.manager);
                     });
@@ -315,13 +341,9 @@ System.register(['aurelia-dependency-injection', './focus', './session', './util
                 };
                 VuforiaService.prototype._init = function (session) {
                     var _this = this;
+                    console.log("Attempting to initialize vuforia for " + session.uri);
                     var options = this._sessionInitOptions.get(session);
-                    var detailedOptions = {
-                        licenseKey: options.licenseKey,
-                        encryptedLicenseData: options.encryptedLicenseData,
-                        origin: session.uri || ''
-                    };
-                    return this.delegate.init(detailedOptions).then(function (initResult) {
+                    return this.delegate.init(options).then(function (initResult) {
                         if (initResult !== VuforiaInitResult.SUCCESS) {
                             throw new Error("Vuforia init failed: " + VuforiaInitResult[initResult]);
                         }
@@ -347,7 +369,9 @@ System.register(['aurelia-dependency-injection', './focus', './session', './util
                         if (!_this.delegate.cameraDeviceInitAndStart()) {
                             throw new Error("Vuforia init failed: Unable to complete initialization");
                         }
+                        console.log("Vuforia init success");
                     }).catch(function (err) {
+                        console.log("Vuforia init fail: " + err.message);
                         _this._sessionInitOptions.delete(session);
                         _this._sessionIsInitialized.set(session, false);
                         _this._deinit(session);

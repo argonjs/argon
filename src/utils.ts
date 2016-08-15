@@ -70,6 +70,7 @@ export class Event<T> {
 */
 export class CommandQueue {
     private _queue: Array<{ command: Function, execute: Function, reject: (reason: any) => void }> = [];
+    private _currentCommand: Function | undefined;
     private _currentCommandPending: Promise<any> | undefined;
     private _paused = true;
 
@@ -139,11 +140,12 @@ export class CommandQueue {
     }
 
     private _executeNextCommand() {
+        this._currentCommand = undefined;
         this._currentCommandPending = undefined;
         if (this._paused) return;
         const item = this._queue.shift();
         if (!item) return;
-
+        this._currentCommand = item.command;
         this._currentCommandPending = item.execute()
             .then(this._executeNextCommand.bind(this))
             .catch((e) => {

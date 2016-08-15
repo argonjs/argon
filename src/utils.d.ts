@@ -39,6 +39,7 @@ export declare class Event<T> {
 */
 export declare class CommandQueue {
     private _queue;
+    private _currentCommand;
     private _currentCommandPending;
     private _paused;
     /**

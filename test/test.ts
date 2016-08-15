@@ -587,17 +587,6 @@ describe('VuforiaService', () => {
         //         })
         //     })
         // })
-        it('should call init on the delegate when init is called', () => {
-            const myInitOptions = {licenseKey:'key'}
-            class MockVuforiaServiceDelegate extends MockVuforiaServiceDelegateBase {
-                init(options: Argon.VuforiaInitOptions) {
-                    expect(options.licenseKey).to.equal(myInitOptions.licenseKey);
-                    return Promise.resolve(Argon.VuforiaInitResult.SUCCESS);
-                }
-            }
-            const {vuforia} = createManagerWithVuforiaDelegate(MockVuforiaServiceDelegate);
-            return vuforia.init(myInitOptions);
-        })
     })
 
     describe('#isAvailable', () => {
@@ -613,14 +602,13 @@ describe('VuforiaService', () => {
     describe('#init', () => {
         it('should call init on the VuforiaServiceDelegate', (done) => {
             class MockVuforiaServiceDelegate extends MockVuforiaServiceDelegateBase {
-                init(options: Argon.VuforiaInitOptions) {
-                    expect(options.licenseKey).to.equal('test');
+                init(options: Argon.VuforiaServiceDelegateInitOptions) {
                     done()
                     return Promise.resolve(Argon.VuforiaInitResult.SUCCESS);
                 }
             }
             const {vuforia} = createManagerWithVuforiaDelegate(MockVuforiaServiceDelegate);
-            return vuforia.init({ licenseKey: 'test' }).then((api)=>{
+            return vuforia.init({ encryptedLicenseData: 'test' }).then((api)=>{
                 expect(api).to.be.instanceof(Argon.VuforiaAPI);
             })
         });

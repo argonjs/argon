@@ -6,7 +6,7 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
     function init(_a) {
         var _b = _a === void 0 ? {} : _a, configuration = _b.configuration, _c = _b.container, container = _c === void 0 ? new DI.Container : _c;
         var role;
-        if (typeof window === 'undefined') {
+        if (typeof HTMLElement === 'undefined') {
             role = common_1.Role.MANAGER;
         }
         else if (navigator.userAgent.indexOf('Argon') > 0 || window.top !== window) {

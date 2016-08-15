@@ -33,7 +33,7 @@ export declare class DeviceService {
     private _x90Rot;
     private _geolocationWatchId;
     private _deviceorientationListener;
-    private _mobileDetect;
+    private _mobileDetect?;
     private _alphaOffset?;
     private _headingDrift;
     private _idleTimeoutId;

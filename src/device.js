@@ -64,11 +64,13 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     context.wellKnownReferenceFrames.add(this.orientationEntity);
                     context.wellKnownReferenceFrames.add(this.entity);
                     context.wellKnownReferenceFrames.add(this.displayEntity);
-                    if (typeof window !== 'undefined' && window.navigator) {
-                        this._mobileDetect = new mobile_detect_1.default(window.navigator.userAgent);
+                    if (typeof navigator !== 'undefined') {
+                        this._mobileDetect = new mobile_detect_1.default(navigator.userAgent);
                     }
                 }
                 DeviceService.prototype.onIdle = function () {
+                    if (typeof navigator === 'undefined')
+                        return;
                     if (cesium_imports_1.defined(this._geolocationWatchId)) {
                         navigator.geolocation.clearWatch(this._geolocationWatchId);
                         this._geolocationWatchId = undefined;
@@ -81,7 +83,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                 };
                 DeviceService.prototype.onUpdate = function () {
                     var _this = this;
-                    if (typeof window !== 'undefined') {
+                    if (typeof navigator !== 'undefined') {
                         var interfaceOrientationProperty = this.displayEntity.orientation;
                         var interfaceOrientation = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_Z, (-window.orientation || 0) * cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE, this._scratchQuaternion1);
                         if (this._mobileDetect && !this._mobileDetect.mobile()) {

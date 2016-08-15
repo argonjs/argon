@@ -546,22 +546,6 @@ System.register(['chai', '../src/argon'], function(exports_1, context_1) {
                     //         })
                     //     })
                     // })
-                    it('should call init on the delegate when init is called', function () {
-                        var myInitOptions = { licenseKey: 'key' };
-                        var MockVuforiaServiceDelegate = (function (_super) {
-                            __extends(MockVuforiaServiceDelegate, _super);
-                            function MockVuforiaServiceDelegate() {
-                                _super.apply(this, arguments);
-                            }
-                            MockVuforiaServiceDelegate.prototype.init = function (options) {
-                                expect(options.licenseKey).to.equal(myInitOptions.licenseKey);
-                                return Promise.resolve(Argon.VuforiaInitResult.SUCCESS);
-                            };
-                            return MockVuforiaServiceDelegate;
-                        }(MockVuforiaServiceDelegateBase));
-                        var vuforia = createManagerWithVuforiaDelegate(MockVuforiaServiceDelegate).vuforia;
-                        return vuforia.init(myInitOptions);
-                    });
                 });
                 describe('#isAvailable', function () {
                     it('should call isAvailable on the VuforiaServiceDelegate', function (done) {
@@ -580,14 +564,13 @@ System.register(['chai', '../src/argon'], function(exports_1, context_1) {
                                 _super.apply(this, arguments);
                             }
                             MockVuforiaServiceDelegate.prototype.init = function (options) {
-                                expect(options.licenseKey).to.equal('test');
                                 done();
                                 return Promise.resolve(Argon.VuforiaInitResult.SUCCESS);
                             };
                             return MockVuforiaServiceDelegate;
                         }(MockVuforiaServiceDelegateBase));
                         var vuforia = createManagerWithVuforiaDelegate(MockVuforiaServiceDelegate).vuforia;
-                        return vuforia.init({ licenseKey: 'test' }).then(function (api) {
+                        return vuforia.init({ encryptedLicenseData: 'test' }).then(function (api) {
                             expect(api).to.be.instanceof(Argon.VuforiaAPI);
                         });
                     });
