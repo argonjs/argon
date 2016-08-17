@@ -11,10 +11,10 @@ System.register(['../src/argon'], function(exports_1, context_1) {
         execute: function() {
             window['Argon'] = Argon;
             exports_1("app", app = Argon.init());
-            app.reality.setDesired({
-                title: 'My Custom Reality',
-                uri: Argon.resolveURL('custom_reality.html')
-            });
+            // app.reality.setDesired({
+            //     title: 'My Custom Reality',
+            //     uri: Argon.resolveURL('custom_reality.html')
+            // })
             exports_1("scene", scene = new THREE.Scene());
             exports_1("camera", camera = new THREE.PerspectiveCamera());
             exports_1("user", user = new THREE.Object3D());
@@ -66,7 +66,7 @@ System.register(['../src/argon'], function(exports_1, context_1) {
             // var textMesh = new THREE.Mesh( text, new THREE.MeshBasicMaterial( { color: 0xff0000 } ) ) ;
             // scene.add(textMesh);
             app.vuforia.init({
-                encryptedLicenseData: "-----BEGIN PGP MESSAGE-----\nVersion: OpenPGP.js v2.3.2\nComment: http://openpgpjs.org\n\nwcFMA47tt+RhMWHyARAAgDxpfoRWdm+lJ4CGitL/PJz86t602rtiwAtNXsfK\nKgGFOkWIevbiPlIxTmxcIZPPWzkZcgQ5S2I+zpMzHKYB/WdrVHw9qreLuBU4\nYA9YA9e6aAub4bLIR7Oc3xt08e6dPrW1UOv35kNzpNtbd1TOWosVmXfEgm1J\nRwxH/86Vw3eDXcwh39hjvik2MohbEeNjDDOyHWLtXsL6wL+3UowGR1P09d8o\nAMuXgj7oJeEFHOWE809qDvS5xrdguFE5zqhxqForTXKwS7z99weWu/z936Hm\nti7aLvjwNutcTgxCuROjiQnba6Aem1ZolibSI6btr/l/2/srqTTznY5VywGv\nd/jksvydHSbr1E2lUfgPeaROy3X+xlR5D6ZQAVhWJ+uptDMrY8iJNi+dRGR9\nlDVd0X6EEqYqfmScoYpz3YTLRvxpSC4XS7KA1k1sunAXb2p6tJRcSmcVEOD/\nR/OO2eUgtm68oQVQPyuKEk2siOY4Mic1A/kGy1FXGVtIL8BeukCRVEFKu60r\nQl8Vowe69MM7AwKQ9Qv4UJLZvK4V9yMJxFrbTm3tQZWr9gv40aQyPJSKhKRv\nK9kl6qiXiuXL5F7w9oVJ1vAz3LWoAd3qopeCL827hCFDn7BKr+Ml0RQF/0mw\nWrtyICzI/UlSUE1ASor8K2VO8tRNCtpcYB64VhXDz9PSwTgBWder7uJiydHj\n3HcCrjdKIu4Il/U34L6US7J1B+GlihCAyuqBB0cPpgPUL3oK0bp5wOiBNejf\nQn9RiXSYCo9Mckmj4v8k7dLgdNdR7jJ/N8jdhDItXOJSRsSF6FjpXABYR5fL\nhtL64IjzhoO63oRXkgH7d5fNil6cS2o/jwj2031qmXZP+/UK0rXwSDQc+Kx6\njLSTi09dZS8NG1i50cRwjVsubbAs9TgVKsd7UoIh13JzBT//+OCAbUKpS5PS\nHEoa0yUMTc73HRQWLsaNaMpZoy3brgdNbjvNIN4CY81US+gusWTarIgQXre5\nJYUUa15pFp89eTpCGdIAamX0wEAUnuNNcKNLLPZkEPhpyMro+/GKhf6iVXL4\nx9XaB1Gpr8TsHKqX9QeB/Q2mgmhedJaxMhT9EiAq0jLQ2VfL59qAEfnJ15nA\nskPVoi8TfcXbdsohzM/vIeSd9Nx7Y1KfWWXXt3dSfMMgmrKgqgC1YSWY5k7Z\nuJA95zMGzs/Iqiw1qSyNozpIyyUo48jX7AQAoxeawUko8DKiN/EqlFQP6gt1\n6zMltdt3jgI2f4SgrSkUo9NuEDn2xzN1chRMraTUWBwarg9M1K40m70D2r2B\nyR62Ceuq0eru4yJ0aD6SsbRjTbl6l/PEJOxjW3G+3bTVWVJ5vzzINxkDfa8=\n=eWB/\n-----END PGP MESSAGE-----\n" }).then(function (api) {
+                encryptedLicenseData: "-----BEGIN PGP MESSAGE-----\nVersion: OpenPGP.js v2.3.2\nComment: http://openpgpjs.org\n\nwcFMA1AUQCNdm8lhAQ/8DgunMAyO2CdJGDaWqz+XhS+TNIl9i1g4kDxY8jpV\nWH0cw8R9f2G8z/bj+6KviOBEUnV/7XORp4CnwxsVrbQyGZAJwTn+MzNZjFkl\ncg963F/LiUqfMwL4A3GIAZfAK8H8QYOUm9NUEYKNR5KSbBR/Q2GmgQy0bFSU\n2UTfdq4upQMHYWSA7Bhb4+TNziZC1RNY5s0UGoMpYCrpuqRrI0PzY+Y+Upm/\n62p2QdCwdO6VwtZrYrU6geoiry0a773WgCwXGgoJcm7cwn4ZBzVLTvq2iUc6\nZsQloVX5+w3aIovbqSY8iAv/LUTZRaxj4fsrXENUbus9hXr5QsILMDviKNws\nAQQDCuxKxZn4P/Kr5cSuj5CInYcR1+43jLdYOSrdvx5R6akcPMoOH0Jf4O0y\nG2O7tuHmD/eUYIO4cJqMzPsopl4+lEVheOCNg6XvfEMpgGKj7x2b8Ah5NYqZ\nR7dfKypwuk4KAScN9Sv0AL7gBGEHMgH2tey6jK/FN4LhoYWGpSiYYF8ESefj\ny8dR+OEon0689U9Qx0SFpIf3N8sv65PcgvEG0q88U3MP0ILVrblJi/1nPjH3\nwdHC5gOFHQ7znGc8b8ULK5LWJglFSZSAEuyQKf/VzeLrMCYmf5VojMoHkCF0\nt/JLV90N3D9Xq4VTJb+LwZSefOd3cM2JioaX84oIkV/SwUgBlFdPT1pl2QCd\nHiH3xFzI5Aqo1ou9+hSia7i/Wy+0tcrQGSN/EVgLUnaOAhtS+nGvLIEaQ7CK\nstNgWcgs3RV6l0j08OIBAePUAq4VA/eXNdhf+Kr0kTQHBWNJynOTSfMPOd40\ncX6j08oymiXCoo14M9KbcGYzW/SviBcyYRjpFCJoyEA21peh9T+1r5/ysAS9\nTqZesOtTqzyq3Cl1/RD9mWhbyNA+uy7UtiADB2n3TfRhotHexCw6mc+ViuDy\nJqas6reSRrzlbsdgW0QWt7NsCKXR/PFWjDLcFxU1Si+UCzrQmj6KKVem9J+j\njCooRgZdNhBkk1YI1YN6Rk1CS57vYyJzguGRLtd5oNGiyWHWKcFycGWtS4hQ\nzOctD+6v+9jVekg2CZpK3l8CZV8VfKQweEJqHL8Rz0oVxbE4cXUbkoqdZITc\ngThpqJ3BFdCek921yT8M/qKjvJNvfHKkjVNfR94Id+rpW05fvjyAQIgQ+eaI\nS2cxPSB2C/Fke2goHc9yOQsOeouXI1U0xI4IWT9h8yaxsZ4DUzkOdITBACKQ\ntxkkd41URb2UQZnnU/UEbkOBblj3/m7XDb7tq5tQG+vhiFzBa/R70E23Xfun\n8hgeolsw+e7qQKzylZtMi1AFu+FLg2+NCTTru3Pjw2M0tKl0Q+VcsqyXE+3G\nNPXVCPzd/pPn6J0Mx/6l\n=RBAV\n-----END PGP MESSAGE-----\n" }).then(function (api) {
                 api.objectTracker.createDataSet('dataset/StonesAndChips.xml').then(function (dataSet) {
                     dataSet.load().then(function () {
                         var trackables = dataSet.getTrackables();

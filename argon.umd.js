@@ -3724,6 +3724,7 @@ $__System.register('13', ['c', '14', '10', '12'], function (exports_1, context_1
                             session.on['ar.vuforia.init'] = function (options) {
                                 if (!delegate.isAvailable()) throw new Error("Vuforia is not supported");
                                 if (_this._sessionIsInitialized.get(session)) throw new Error("Vuforia has already been initialized");
+                                if (!options.key && !options.encryptedLicenseData) throw new Error("Expected `encryptedLicenseData` field. You can encrypt your Vuforia license key at http://docs.argonjs.io/start/vuforia-pgp-encryptor");
                                 var keyPromise = options.key ? Promise.resolve(options.key) : delegate.decryptLicenseKey(options.encryptedLicenseData, session);
                                 return keyPromise.then(function (key) {
                                     _this._sessionInitOptions.set(session, {
