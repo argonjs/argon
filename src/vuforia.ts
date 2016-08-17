@@ -148,6 +148,9 @@ export class VuforiaService {
                     if (!delegate.isAvailable()) throw new Error("Vuforia is not supported");
                     if (this._sessionIsInitialized.get(session)) throw new Error("Vuforia has already been initialized");
 
+                    if (!options.key && !options.encryptedLicenseData) 
+                        throw new Error("Expected `encryptedLicenseData` field. You can encrypt your Vuforia license key at http://docs.argonjs.io/start/vuforia-pgp-encryptor");
+
                     const keyPromise = options.key ? 
                         Promise.resolve(options.key) : 
                         delegate.decryptLicenseKey(options.encryptedLicenseData, session);
