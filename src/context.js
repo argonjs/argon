@@ -294,6 +294,10 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                             var entity = _this.subscribedEntities.getById(id);
                             entity.position = undefined;
                             entity.orientation = undefined;
+                            // WORKAROUND until https://github.com/AnalyticalGraphicsInc/cesium/issues/4225 is fixed
+                            entity = _this.entities.getById(id);
+                            entity.position = undefined;
+                            entity.orientation = undefined;
                             _this._updatingEntities.delete(id);
                         }
                     });

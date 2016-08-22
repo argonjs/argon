@@ -346,9 +346,15 @@ export class ContextService {
         // assume the manager no longer knows about it
         this._updatingEntities.forEach((id) => {
             if (!this._knownEntities.has(id)) {
-                const entity = this.subscribedEntities.getById(id);
+                let entity = this.subscribedEntities.getById(id);
                 entity.position = undefined;
                 entity.orientation = undefined;
+
+                // WORKAROUND until https://github.com/AnalyticalGraphicsInc/cesium/issues/4225 is fixed
+                entity = this.entities.getById(id);
+                entity.position = undefined;
+                entity.orientation = undefined;
+
                 this._updatingEntities.delete(id);
             }
         })
