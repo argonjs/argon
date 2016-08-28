@@ -7,6 +7,11 @@ Augmented Environments Lab at Georgia Tech.  To support our research,
 we request that if you make use of this software, you let us know 
 how you used it by sending mail to Blair MacIntyre (blair@cc.gatech.edu).*
 
+## Support
+
+* [Documentation](http://docs.argonjs.io/)
+* [API Reference](http://argonjs.io/argon/)
+
 ## Quick Start
 
 To install the argon.js library manually, include this script in your html:
@@ -73,11 +78,6 @@ compiler options:
 After that, you should have rich typings in any editor that 
 supports Typescript! 
 We recommend [Visual Studio Code](https://code.visualstudio.com).
-
-## Support
-
-* [Documentation](http://docs.argonjs.io/)
-* [API Reference](http://argonjs.io/argon/)
 
 ## Build Guide
 
