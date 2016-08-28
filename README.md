@@ -9,7 +9,7 @@ how you used it by sending mail to Blair MacIntyre (blair@cc.gatech.edu).*
 
 ## Quick Start
 
-To install this library manually, include this file in your project:
+To install the argon.js library manually, include this script in your html:
 
 * [argon.umd.js](https://github.com/argonjs/argon/raw/master/argon.umd.js)
 
@@ -39,15 +39,15 @@ If you aren't using es6 modules, `require` the package `"@argonjs/argon"`:
 var Argon = require('@argonjs/argon');
 ```
 
-If you aren't using modules at all, the `argon.umd.js` script creates a 
+If you aren't using modules at all, no worries! The `argon.umd.js` script creates a 
 global `Argon` namespace that exposes the same API. 
 
 ## Typescript
 
 If you are using Typescript 2.0 and would like to leverage 
-*argon.js* typings, simply install *argon.js* using `npm` 
+*argon.js* typings (you should!), simply install *argon.js* using `npm` 
 as described above (even if you are not using modules in your 
-probject). However, if you aren't using modules, just be sure
+project). However, if you aren't using modules, just be sure
 to include a triple-slash reference so that the typescript 
 compiler knows you are using *argon.js* globally:
 
