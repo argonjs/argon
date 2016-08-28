@@ -28,7 +28,11 @@ export * from './view';
 export * from './vuforia';
 export { EmptyRealityLoader, LiveVideoRealityLoader, HostedRealityLoader };
 /**
- * A composition root which instantiates the object graph based on a provided configuration
+ * A composition root which instantiates the object graph based on a provided configuration.
+ * You generally want to create a new ArgonSystem via the provided [[init]] or [[initReality]] functions:
+ * ```ts
+ * var app = Argon.init(); // app is an instance of ArgonSystem
+ * ```
  */
 export declare class ArgonSystem {
     container: DI.Container;
@@ -51,9 +55,24 @@ export interface InitParameters {
     configuration?: Configuration;
     container?: DI.Container;
 }
+/**
+ * Create an ArgonSystem instance.
+ * If we are running within a [[REALITY_MANAGER]],
+ * this function will create an ArgonSystem which has the [[REALITY_AUGMENTOR]] role.
+ * If we are not running within a [[REALITY_MANAGER]],
+ * this function will create an ArgonSystem which has the [[REALITY_MANAGER]] role.
+ * @param initParameters InitParameters
+ */
 export declare function init({configuration, container}?: InitParameters): ArgonSystem;
+/**
+ * Initialize an [[ArgonSystem]] with the [[REALITY_VIEW]] role
+ */
 export declare function initReality({configuration, container}?: InitParameters): ArgonSystem;
 export interface InitLocalParameters extends InitParameters {
     containerElement: HTMLElement;
 }
+/**
+ * Not yet implemented.
+ * @private
+ */
 export declare function initLocal({containerElement, configuration, container}: InitLocalParameters): ArgonSystem;

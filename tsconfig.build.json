@@ -8,9 +8,6 @@
         "allowSyntheticDefaultImports": true,
         "pretty": true,
         "sourceMap": false,
-        "strictNullChecks": true,
-        "noUnusedLocals": true,
-        "traceResolution": false,
         "lib": null,
         "moduleResolution": "node"
     },

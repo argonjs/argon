@@ -92,7 +92,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     this._scratchFrustum = new cesium_imports_1.PerspectiveFrustum();
                     this._scratchArray = new Array();
                     this._loadID = -1;
-                    if (sessionService.isManager) {
+                    if (sessionService.isRealityManager) {
                         sessionService.manager.connectEvent.addEventListener(function () {
                             setTimeout(function () {
                                 if (_this._loadID === -1)
@@ -164,7 +164,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                 }
                 Object.defineProperty(RealityService.prototype, "changeEvent", {
                     get: function () {
-                        this.sessionService.ensureIsManager();
+                        this.sessionService.ensureIsRealityManager();
                         return this._changeEvent;
                     },
                     enumerable: true,
@@ -172,7 +172,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                 });
                 Object.defineProperty(RealityService.prototype, "frameEvent", {
                     get: function () {
-                        this.sessionService.ensureIsManager();
+                        this.sessionService.ensureIsRealityManager();
                         return this._frameEvent;
                     },
                     enumerable: true,
@@ -188,7 +188,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                  * Manager-only. Register a reality loader
                  */
                 RealityService.prototype.registerLoader = function (handler) {
-                    this.sessionService.ensureIsManager();
+                    this.sessionService.ensureIsRealityManager();
                     this._loaders.push(handler);
                 };
                 /**
@@ -196,7 +196,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                  * @deprecated. Use app.context.getCurrentReality()
                  */
                 RealityService.prototype.getCurrent = function () {
-                    this.sessionService.ensureIsManager();
+                    this.sessionService.ensureIsRealityManager();
                     return this._current;
                 };
                 /**
@@ -205,14 +205,14 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                 * @return true if a handler exists and false otherwise
                 */
                 RealityService.prototype.isSupported = function (reality) {
-                    this.sessionService.ensureIsManager();
+                    this.sessionService.ensureIsRealityManager();
                     return !!this._getLoader(reality);
                 };
                 /**
                  * Reality-only. Publish the next frame state.
                  */
                 RealityService.prototype.publishFrame = function (state) {
-                    this.sessionService.ensureIsReality();
+                    this.sessionService.ensureIsRealityView();
                     if (this.sessionService.manager.isConnected) {
                         this.sessionService.manager.send('ar.reality.frameState', state);
                     }
@@ -221,9 +221,9 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                  * Set the desired reality.
                  */
                 RealityService.prototype.setDesired = function (reality) {
-                    this.sessionService.ensureNotReality();
+                    this.sessionService.ensureNotRealityView();
                     this._desired = reality;
-                    if (this.sessionService.isManager) {
+                    if (this.sessionService.isRealityManager) {
                         this._setNextReality(reality, true);
                     }
                     else {
@@ -298,7 +298,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                 * realities have been requested.
                 */
                 RealityService.prototype.onSelectReality = function () {
-                    this.sessionService.ensureIsManager();
+                    this.sessionService.ensureIsRealityManager();
                     var selectedReality = this.desiredRealityMap.get(this.sessionService.manager);
                     if (!selectedReality) {
                         var focusSession = this.focusService.getSession();
@@ -472,7 +472,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     }
                 };
                 RealityService.prototype._executeRealityLoader = function (reality, callback) {
-                    this.sessionService.ensureIsManager();
+                    this.sessionService.ensureIsRealityManager();
                     var loader = this._getLoader(reality);
                     if (!loader)
                         throw new Error('Unable to setup unsupported reality type: ' + reality.uri);

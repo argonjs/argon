@@ -21,14 +21,13 @@ export interface ErrorMessage {
     stack?: string;
 }
 /**
- * Provides two-way communication between sessions, either
- * Application and Manager, or Reality and Manager.
+ * Provides two-way communication between two [[SessionPort]] instances.
  */
 export declare class SessionPort {
     uri?: string;
     /**
      * An event which fires when a connection has been
-     * established to the remote session.
+     * established to the other [[SessionPort]].
      */
     readonly connectEvent: Event<undefined>;
     private _connectEvent;
@@ -64,9 +63,9 @@ export declare class SessionPort {
      */
     supportsProtocol(name: string, versions?: number | number[]): boolean;
     /**
-     * Establish a connection to another session via the provided MessagePort.
+     * Establish a connection to another [[SessionPort]] via the provided [[MessagePort]] instance.
      * @param messagePort the message port to post and receive messages.
-     * @param options the configuration which describes this system.
+     * @param options the configuration which describes this [[ArgonSystem]].
      */
     open(messagePort: MessagePortLike, options: Configuration): void;
     /**
@@ -98,20 +97,28 @@ export declare class SessionPort {
     close(): void;
     readonly isConnected: boolean;
 }
+/**
+ * A factory for creating [[SessionPort]] instances.
+ */
 export declare class SessionPortFactory {
     create(uri?: string): SessionPort;
 }
 /**
- * Establishes a connection to the manager.
+ * A service for establishing a connection to the [[REALITY_MANAGER]].
  */
 export declare abstract class ConnectService {
     /**
-     * @param manager The manager session port.
-     * @param config The configuration for this session.
+     * Connect to the reality manager.
      */
     abstract connect(sessionService: SessionService): void;
 }
+/**
+ * A service for managing connections to other ArgonSystem instances
+ */
 export declare class SessionService {
+    /**
+     * The configuration of this [[ArgonSystem]]
+     */
     configuration: Configuration;
     private connectService;
     private sessionPortFactory;
@@ -134,86 +141,88 @@ export declare class SessionService {
      */
     readonly managedSessions: SessionPort[];
     private _managedSessions;
-    constructor(configuration: Configuration, connectService: ConnectService, sessionPortFactory: SessionPortFactory, messageChannelFactory: MessageChannelFactory);
+    constructor(
+        /**
+         * The configuration of this [[ArgonSystem]]
+         */
+        configuration: Configuration, connectService: ConnectService, sessionPortFactory: SessionPortFactory, messageChannelFactory: MessageChannelFactory);
     /**
-     * Establishes a connection with the manager.
-     * Called internally by the composition root (ArgonSystem).
+     * Establishes a connection with the [[REALITY_MANAGER]].
+     * Called internally by the composition root ([[ArgonSystem]]).
      */
     connect(): void;
     /**
-     * Manager-only. Creates a session port that is managed by this service.
-     * Session ports that are managed will automatically
-     * forward open events to this.sessionConnectEvent and error
-     * events to this.errorEvent. Other services are likely to add
-     * message handlers to the newly connected port.
-     * @return a new SessionPort instance
+     * Manager-only. Creates a [[SessionPort]] that is managed by the current [[ArgonSystem]].
+     * Session ports that are managed will automatically forward open events to
+     * [[SessionService#sessionConnectEvent]] and error events to [[SessionService#errorEvent]].
+     * Other services that are part of the current [[ArgonSystem]] are likely to
+     * add message handlers to a newly connected [[SessionPort]].
+     * @return a new [[SessionPort]] instance
      */
     addManagedSessionPort(uri: string): SessionPort;
     /**
-     * Creates a session port that is not managed by this service.
-     * Unmanaged session ports will not forward any events to
-     * this object.
+     * Creates a [[SessionPort]] that is not managed by the current [[ArgonSystem]].
+     * Unmanaged session ports will not forward open events or error events
+     * to this [[ArgonSystem]].
      * @return a new SessionPort instance
      */
     createSessionPort(uri?: string): SessionPort;
     /**
-     * Creates a message channel.
-     * @return a new MessageChannel instance
+     * Creates a message channel which asyncrhonously sends and receives messages.
      */
     createMessageChannel(): MessageChannelLike;
     /**
-     * Creates a synchronous message channel.
-     * @return a new SynchronousMessageChannel instance
+     * Creates a message channel which syncrhonously sends and receives messages.
      */
     createSynchronousMessageChannel(): SynchronousMessageChannel;
     /**
-     * Returns true if this session is the Manager
+     * Returns true if this system represents a [[REALITY_MANAGER]]
      */
-    readonly isManager: boolean;
+    readonly isRealityManager: boolean;
+    readonly isManager: any;
     /**
-     * Returns true if this session is an Application, meaning,
-     * it is running within a Manager.
+     * Returns true if this system represents a [[REALITY_AUGMENTOR]], meaning,
+     * it is running within a [[REALITY_MANAGER]]
      */
-    readonly isApplication: boolean;
+    readonly isRealityAugmenter: boolean;
+    readonly isApplicatsion: boolean;
     /**
-     * Returns true if this session is a Reality View
+     * Returns true if this system is a [[REALITY_VIEW]]
      */
     readonly isRealityView: boolean;
     /**
-     * Throws an error if this session is not a manager
+     * Throws an error if this system is not a [[REALITY_MANAGER]]
      */
-    ensureIsManager(): void;
+    ensureIsRealityManager(): void;
     /**
-     * Throws an error if this session is not a reality
+     * Throws an error if this session is not a [[REALITY_VIEW]]
      */
-    ensureIsReality(): void;
+    ensureIsRealityView(): void;
     /**
-     * Throws an error if this session is a reality
+     * Throws an error if this session is a [[REALITY_VIEW]]
      */
-    ensureNotReality(): void;
+    ensureNotRealityView(): void;
 }
 /**
- * Connect this session to itself as the manager.
+ * Connect the current [[ArgonSystem]] to itself as the [[REALITY_MANAGER]].
  */
 export declare class LoopbackConnectService extends ConnectService {
     /**
      * Create a loopback connection.
-     * @param sessionService The session service instance.
      */
     connect(sessionService: SessionService): void;
 }
 /**
- * Connect this session to the manager via the parent document (assuming this system is running in an iFrame).
+ * Connect this [[ArgonSystem]] to the [[REALITY_MANAGER]] via the parent document
+ * (assuming this system is running in an iFrame).
  */
 export declare class DOMConnectService extends ConnectService {
     /**
       * Check whether this connect method is available or not.
-      * @return true if this method is availble, otherwise false
       */
     static isAvailable(): boolean;
     /**
      * Connect to the manager.
-     * @param sessionService The session service instance.
      */
     connect(sessionService: SessionService): void;
 }
@@ -223,27 +232,23 @@ export declare class DOMConnectService extends ConnectService {
 export declare class DebugConnectService extends ConnectService {
     /**
      * Check whether this connect method is available or not.
-     * @return true if this method is availble, otherwise false
      */
     static isAvailable(): boolean;
     /**
      * Connect to the manager.
-     * @param sessionService The session service instance.
      */
     connect({manager, configuration}: SessionService): void;
 }
 /**
- * A service which connects this system to the manager via a WKWebview message handler.
+ * A service which connects this system to the [[REALITY_MANAGER]] via a WKWebview message handler.
  */
 export declare class WKWebViewConnectService extends ConnectService {
     /**
      * Check whether this connect method is available or not.
-     * @return true if this method is availble, otherwise false
      */
     static isAvailable(): boolean;
     /**
      * Connect to the manager.
-     * @param sessionService The session service instance.
      */
     connect(sessionService: SessionService): void;
 }

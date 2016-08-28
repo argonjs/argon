@@ -44,7 +44,11 @@ export {
 }
 
 /**
- * A composition root which instantiates the object graph based on a provided configuration
+ * A composition root which instantiates the object graph based on a provided configuration.
+ * You generally want to create a new ArgonSystem via the provided [[init]] or [[initReality]] functions:
+ * ```ts
+ * var app = Argon.init(); // app is an instance of ArgonSystem
+ * ```
  */
 export class ArgonSystem {
 
@@ -59,7 +63,7 @@ export class ArgonSystem {
         if (!container.hasResolver('containerElement'))
             container.registerInstance('containerElement', null);
 
-        if (config.role === Role.MANAGER) {
+        if (config.role === Role.REALITY_MANAGER) {
             container.registerSingleton(
                 ConnectService,
                 LoopbackConnectService
@@ -81,7 +85,7 @@ export class ArgonSystem {
             );
         }
 
-        if (config.role === Role.MANAGER) {
+        if (config.role === Role.REALITY_MANAGER) {
             this.reality.registerLoader(container.get(EmptyRealityLoader));
             this.reality.registerLoader(container.get(LiveVideoRealityLoader));
 
@@ -158,14 +162,22 @@ export interface InitParameters {
     container?: DI.Container
 }
 
+/**
+ * Create an ArgonSystem instance. 
+ * If we are running within a [[REALITY_MANAGER]], 
+ * this function will create an ArgonSystem which has the [[REALITY_AUGMENTOR]] role. 
+ * If we are not running within a [[REALITY_MANAGER]], 
+ * this function will create an ArgonSystem which has the [[REALITY_MANAGER]] role. 
+ * @param initParameters InitParameters
+ */
 export function init({ configuration, container = new DI.Container }: InitParameters = {}) {
     let role: Role;
     if (typeof HTMLElement === 'undefined') {
-        role = Role.MANAGER
+        role = Role.REALITY_MANAGER
     } else if (navigator.userAgent.indexOf('Argon') > 0 || window.top !== window) {
-        role = Role.APPLICATION
+        role = Role.REALITY_AUGMENTOR
     } else {
-        role = Role.MANAGER
+        role = Role.REALITY_MANAGER
     }
     const config = Object.assign(configuration || {}, <Configuration>{
         role,
@@ -174,6 +186,9 @@ export function init({ configuration, container = new DI.Container }: InitParame
     return new ArgonSystem(config, container);
 }
 
+/**
+ * Initialize an [[ArgonSystem]] with the [[REALITY_VIEW]] role
+ */
 export function initReality({ configuration, container = new DI.Container }: InitParameters = {}) {
     const config = Object.assign(configuration || {}, <Configuration>{
         role: Role.REALITY_VIEW,
@@ -187,9 +202,13 @@ export interface InitLocalParameters extends InitParameters {
     containerElement: HTMLElement
 }
 
+/**
+ * Not yet implemented. 
+ * @private
+ */
 export function initLocal({ containerElement, configuration, container = new DI.Container }: InitLocalParameters) {
     const config = Object.assign(configuration || {}, <Configuration>{
-        role: Role.MANAGER
+        role: Role.REALITY_MANAGER
     });
     container.registerInstance('containerElement', containerElement);
     return new ArgonSystem(config, container);

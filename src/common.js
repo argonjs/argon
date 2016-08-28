@@ -5,27 +5,43 @@ System.register([], function(exports_1, context_1) {
     return {
         setters:[],
         execute: function() {
-            /*
-             * Describes the role of a session
+            /**
+             * Describes the role of an [[ArgonSystem]]
              */
             (function (Role) {
-                /*
-                 * An application can augment a reality view.
+                /**
+                 * A system with this role is responsible for augmenting an arbitrary view of reality,
+                 * generally by overlaying computer generated graphics. A reality augmentor may also,
+                 * if appropriate, be elevated to the role of a [[REALITY_MANAGER]].
                  */
-                Role[Role["APPLICATION"] = "Application"] = "APPLICATION";
-                /*
-                 * A reality view is a representation of reality.
+                Role[Role["REALITY_AUGMENTOR"] = "RealityAugmentor"] = "REALITY_AUGMENTOR";
+                /**
+                 * A system with this role is responsible for (at minimum) describing (and providing,
+                 * if necessary) a visual representation of the world and the 3D eye pose of the viewer.
                  */
                 Role[Role["REALITY_VIEW"] = "RealityView"] = "REALITY_VIEW";
-                /*
-                 * The manager mediates access to sensors / trackers
-                 * and keeps track of known entities in the world.
+                /**
+                 * A system with this role is responsible for mediating access to sensors/trackers
+                 * and pose data for known entities in the world, selecting/configuring/loading
+                 * [[REALITY_VIEW]]s, and providing the mechanism by which any given [[REALITY_AUGMENTOR]]
+                 * can augment any given [[REALITY_VIEW]]. The reality manager may also, when appropriate,
+                 * take on the role of [[REALITY_AUGMENTOR]].
+                 */
+                Role[Role["REALITY_MANAGER"] = "RealityManager"] = "REALITY_MANAGER";
+                /**
+                 * Deprecated. Use [[REALITY_AUGMENTOR]].
+                 * @private
+                 */
+                Role[Role["APPLICATION"] = "Application"] = "APPLICATION";
+                /**
+                 * Deprecated. Use [[REALITY_MANAGER]].
+                 * @private
                  */
                 Role[Role["MANAGER"] = "Manager"] = "MANAGER";
             })(Role || (Role = {}));
             exports_1("Role", Role);
             /**
-             * Identifies a subview in a view configuration
+             * Identifies a subview in a [[SerializedSubview]]
              */
             (function (SubviewType) {
                 /*

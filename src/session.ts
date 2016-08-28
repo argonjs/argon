@@ -34,14 +34,13 @@ export interface ErrorMessage {
 }
 
 /**
- * Provides two-way communication between sessions, either 
- * Application and Manager, or Reality and Manager.
+ * Provides two-way communication between two [[SessionPort]] instances.
  */
 export class SessionPort {
 
     /**
      * An event which fires when a connection has been 
-     * established to the remote session.
+     * established to the other [[SessionPort]].
      */
     public get connectEvent() {
         if (this._isConnected)
@@ -147,9 +146,9 @@ export class SessionPort {
     }
 
     /**
-     * Establish a connection to another session via the provided MessagePort.
+     * Establish a connection to another [[SessionPort]] via the provided [[MessagePort]] instance.
      * @param messagePort the message port to post and receive messages.
-     * @param options the configuration which describes this system.
+     * @param options the configuration which describes this [[ArgonSystem]].
      */
     open(messagePort: MessagePortLike, options: Configuration) {
         if (this._isClosed) return;
@@ -283,27 +282,28 @@ export class SessionPort {
 }
 
 
-/*
- * A factory for creating SessionPort instances. 
+/**
+ * A factory for creating [[SessionPort]] instances. 
  */
 export class SessionPortFactory {
-    public create(uri?: string) {
+    public create(uri?: string) : SessionPort {
         return new SessionPort(uri);
     }
 }
 
 /**
- * Establishes a connection to the manager.
+ * A service for establishing a connection to the [[REALITY_MANAGER]].
  */
 export abstract class ConnectService {
-
     /**
-     * @param manager The manager session port.
-     * @param config The configuration for this session.
+     * Connect to the reality manager.
      */
     abstract connect(sessionService: SessionService): void;
 }
 
+/**
+ * A service for managing connections to other ArgonSystem instances
+ */
 @inject('config', ConnectService, SessionPortFactory, MessageChannelFactory)
 export class SessionService {
 
@@ -329,12 +329,15 @@ export class SessionService {
      * Manager-only. A collection of ports for the sessions managed by this session.
      */
     public get managedSessions() {
-        this.ensureIsManager();
+        this.ensureIsRealityManager();
         return this._managedSessions;
     }
     private _managedSessions: SessionPort[] = [];
 
     constructor(
+        /**
+         * The configuration of this [[ArgonSystem]]
+         */
         public configuration: Configuration,
         private connectService: ConnectService,
         private sessionPortFactory: SessionPortFactory,
@@ -352,8 +355,8 @@ export class SessionService {
     }
 
     /**
-     * Establishes a connection with the manager.
-     * Called internally by the composition root (ArgonSystem).
+     * Establishes a connection with the [[REALITY_MANAGER]].
+     * Called internally by the composition root ([[ArgonSystem]]).
      */
     public connect() {
         if (this.connectService && this.connectService.connect) {
@@ -364,15 +367,15 @@ export class SessionService {
     }
 
     /**
-     * Manager-only. Creates a session port that is managed by this service.
-     * Session ports that are managed will automatically 
-     * forward open events to this.sessionConnectEvent and error 
-     * events to this.errorEvent. Other services are likely to add 
-     * message handlers to the newly connected port. 
-     * @return a new SessionPort instance
+     * Manager-only. Creates a [[SessionPort]] that is managed by the current [[ArgonSystem]].
+     * Session ports that are managed will automatically forward open events to 
+     * [[SessionService#sessionConnectEvent]] and error events to [[SessionService#errorEvent]]. 
+     * Other services that are part of the current [[ArgonSystem]] are likely to 
+     * add message handlers to a newly connected [[SessionPort]]. 
+     * @return a new [[SessionPort]] instance
      */
     public addManagedSessionPort(uri: string) {
-        this.ensureIsManager();
+        this.ensureIsRealityManager();
         const session = this.sessionPortFactory.create(uri);
         session.errorEvent.addEventListener((error) => {
             this.errorEvent.raiseEvent(error);
@@ -389,9 +392,9 @@ export class SessionService {
     }
 
     /**
-     * Creates a session port that is not managed by this service.
-     * Unmanaged session ports will not forward any events to
-     * this object. 
+     * Creates a [[SessionPort]] that is not managed by the current [[ArgonSystem]].
+     * Unmanaged session ports will not forward open events or error events 
+     * to this [[ArgonSystem]].
      * @return a new SessionPort instance
      */
     public createSessionPort(uri?: string) {
@@ -399,76 +402,79 @@ export class SessionService {
     }
 
     /**
-     * Creates a message channel.
-     * @return a new MessageChannel instance
+     * Creates a message channel which asyncrhonously sends and receives messages.
      */
     public createMessageChannel() : MessageChannelLike {
         return this.messageChannelFactory.create();
     }
 
     /**
-     * Creates a synchronous message channel.
-     * @return a new SynchronousMessageChannel instance
+     * Creates a message channel which syncrhonously sends and receives messages. 
      */
     public createSynchronousMessageChannel() : SynchronousMessageChannel {
         return this.messageChannelFactory.createSynchronous();
     }
 
     /**
-     * Returns true if this session is the Manager
+     * Returns true if this system represents a [[REALITY_MANAGER]]
      */
-    get isManager() {
-        return this.configuration.role === Role.MANAGER;
+    get isRealityManager() {
+        return this.configuration.role === Role.REALITY_MANAGER || 
+            this.configuration.role === Role.MANAGER; // TODO: phase out of using Role.MANAGER enum
     }
 
-    /**
-     * Returns true if this session is an Application, meaning, 
-     * it is running within a Manager. 
-     */
-    get isApplication() {
-        return this.configuration.role === Role.APPLICATION;
-    }
+    get isManager() { console.warn("Deprecated. Use isRealityManager()"); return this.isManager }
 
     /**
-     * Returns true if this session is a Reality View
+     * Returns true if this system represents a [[REALITY_AUGMENTOR]], meaning, 
+     * it is running within a [[REALITY_MANAGER]]
+     */
+    get isRealityAugmenter() {
+        return this.configuration.role === Role.REALITY_AUGMENTOR ||
+            this.configuration.role === Role.APPLICATION; // TODO: phase out use of Role.APPLICATION
+    }
+    
+    get isApplicatsion() { console.warn("Deprecated. Use isRealityAugmenter()"); return this.isRealityAugmenter }
+
+    /**
+     * Returns true if this system is a [[REALITY_VIEW]]
      */
     get isRealityView() {
         return this.configuration.role === Role.REALITY_VIEW;
     }
 
     /**
-     * Throws an error if this session is not a manager
+     * Throws an error if this system is not a [[REALITY_MANAGER]]
      */
-    public ensureIsManager() {
-        if (!this.isManager)
-            throw new Error('An manager-only API was accessed in a non-manager session.')
+    public ensureIsRealityManager() {
+        if (!this.isRealityManager)
+            throw new Error('An reality-manager only API was accessed from a non reality-manager.')
     }
 
     /**
-     * Throws an error if this session is not a reality
+     * Throws an error if this session is not a [[REALITY_VIEW]]
      */
-    public ensureIsReality() {
+    public ensureIsRealityView() {
         if (!this.isRealityView)
-            throw new Error('An reality-only API was accessed in a non-reality session.')
+            throw new Error('An reality-view only API was accessed from a non reality-view.')
     }
 
     /**
-     * Throws an error if this session is a reality
+     * Throws an error if this session is a [[REALITY_VIEW]]
      */
-    public ensureNotReality() {
+    public ensureNotRealityView() {
         if (this.isRealityView)
-            throw new Error('An non-reality API was accessed in a reality session.')
+            throw new Error('An non-permitted API was accessed from a reality-view.')
     }
 }
 
 /**
- * Connect this session to itself as the manager. 
+ * Connect the current [[ArgonSystem]] to itself as the [[REALITY_MANAGER]]. 
  */
 export class LoopbackConnectService extends ConnectService {
 
     /**
      * Create a loopback connection.
-     * @param sessionService The session service instance.
      */
     connect(sessionService: SessionService) {
         const messageChannel = sessionService.createSynchronousMessageChannel();
@@ -484,13 +490,13 @@ export class LoopbackConnectService extends ConnectService {
 }
 
 /**
- * Connect this session to the manager via the parent document (assuming this system is running in an iFrame).
+ * Connect this [[ArgonSystem]] to the [[REALITY_MANAGER]] via the parent document
+ * (assuming this system is running in an iFrame).
  */
 export class DOMConnectService extends ConnectService {
 
     /**
       * Check whether this connect method is available or not.
-      * @return true if this method is availble, otherwise false
       */
     public static isAvailable(): boolean {
         return typeof window !== 'undefined' && typeof window.parent !== 'undefined';
@@ -498,7 +504,6 @@ export class DOMConnectService extends ConnectService {
 
     /**
      * Connect to the manager.
-     * @param sessionService The session service instance.
      */
     connect(sessionService: SessionService) {
         const messageChannel = sessionService.createMessageChannel();
@@ -514,7 +519,6 @@ export class DebugConnectService extends ConnectService {
 
     /**
      * Check whether this connect method is available or not.
-     * @return true if this method is availble, otherwise false
      */
     public static isAvailable(): boolean {
         return typeof window !== 'undefined' &&
@@ -523,7 +527,6 @@ export class DebugConnectService extends ConnectService {
 
     /**
      * Connect to the manager.
-     * @param sessionService The session service instance.
      */
     connect({manager, configuration}: SessionService) {
         manager.open(window['__ARGON_DEBUG_PORT__'], configuration);
@@ -533,13 +536,12 @@ export class DebugConnectService extends ConnectService {
 declare const webkit: any;
 
 /**
- * A service which connects this system to the manager via a WKWebview message handler.
+ * A service which connects this system to the [[REALITY_MANAGER]] via a WKWebview message handler.
  */
 export class WKWebViewConnectService extends ConnectService {
 
     /**
      * Check whether this connect method is available or not.
-     * @return true if this method is availble, otherwise false
      */
     public static isAvailable(): boolean {
         return typeof window !== 'undefined' &&
@@ -548,7 +550,6 @@ export class WKWebViewConnectService extends ConnectService {
 
     /**
      * Connect to the manager.
-     * @param sessionService The session service instance.
      */
     connect(sessionService: SessionService) {
         const messageChannel = sessionService.createSynchronousMessageChannel();

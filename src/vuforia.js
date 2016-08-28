@@ -109,7 +109,7 @@ System.register(['aurelia-dependency-injection', './focus', './session', './util
                     this._sessionIsInitialized = new WeakMap();
                     this._sessionCreatedDataSets = new WeakMap();
                     this._sessionActivatedDataSets = new WeakMap();
-                    if (sessionService.isManager) {
+                    if (sessionService.isRealityManager) {
                         this._sessionSwitcherCommandQueue.errorEvent.addEventListener(function (err) {
                             _this.sessionService.errorEvent.raiseEvent(err);
                         });
@@ -234,7 +234,7 @@ System.register(['aurelia-dependency-injection', './focus', './session', './util
                 VuforiaService.prototype.initWithUnencryptedKey = function (options, force) {
                     var _this = this;
                     if (!force)
-                        this.sessionService.ensureIsManager();
+                        this.sessionService.ensureIsRealityManager();
                     return this.sessionService.manager.request('ar.vuforia.init', options).then(function () {
                         return new VuforiaAPI(_this.sessionService.manager);
                     });

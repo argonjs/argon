@@ -197,7 +197,7 @@ export class ContextService {
 
         this.subscribedEntities.add(this.user);
 
-        if (this.sessionService.isManager) {
+        if (this.sessionService.isRealityManager) {
             this.realityService.frameEvent.addEventListener((state) => {
                 this._update(state);
             });
@@ -323,7 +323,7 @@ export class ContextService {
     // TODO: This function is called a lot. Potential for optimization. 
     private _update(serializedState: SerializedFrameState) {
         // if this session is the manager, we need to update our child sessions a.s.a.p
-        if (this.sessionService.isManager) {
+        if (this.sessionService.isRealityManager) {
             delete serializedState.entities[this.user.id]; // children don't need this
             this._entityPoseCache = {};
             for (const session of this.sessionService.managedSessions) {

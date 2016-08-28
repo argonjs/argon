@@ -1,0 +1,472 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>argon.js</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+	<script src="assets/js/modernizr.js"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">argon.js</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1> argon.js</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<h1 id="argon-js">argon.js</h1>
+				<p>An open-standards augmented reality platform for the web</p>
+				<p><em>This software was created as part of a research project at the
+						Augmented Environments Lab at Georgia Tech.  To support our research,
+						we request that if you make use of this software, you let us know
+				how you used it by sending mail to Blair MacIntyre (blair@cc.gatech.edu).</em></p>
+				<h2 id="api">API</h2>
+				<p>There are essentially 3 types of systems that are defined by the <em>argon.js</em> framework:</p>
+				<ul>
+					<li><strong><a href="enums/role.html#reality_augmentor">REALITY_AUGMENTOR</a></strong> - a system that is responsible for <em>augmenting</em> a view of reality. </li>
+					<li><strong><a href="enums/role.html#reality_view">REALITY_VIEW</a></strong> - a system that is responsible for <em>presenting</em> a view of reality</li>
+					<li><strong><a href="enums/role.html#reality_manager">REALITY_MANAGER</a></strong> - a system that is responsible for <em>blending</em> a particular <strong>Reality View</strong> with
+					one or more <strong>Reality Augmentors</strong></li>
+				</ul>
+				<p>Traditionally, Augmented Reality (AR) apps have had to take on all three of these roles
+					at once. However, by separating these concerns out, each role can be easily swapped out
+					with another implmentation, allowing for a much for flexible and adaptive AR application
+				ecosystem. </p>
+				<p>The <em>argon.js</em> framework also anticipates a future in which AR-enabled browsers
+					(functioning as a <strong>Reality Manager</strong>) may give users control over the way they interact
+					with AR content, and let the user (not the applications) control how they are displayed
+					by allowing the user to change their view of reality. For example, a user may want to
+					switch from live video, to remote video, to a virtual flyover of their—all while an AR
+					application is running. Similarly, in these future browsers, users may want to run
+					multiple AR applications simultaneously, and different application requirements may
+					cause the browser to use different views of reality for the different applications.
+					We are exploring these ideas within the <a href="http://argonjs.io/argon-app/">Argon</a> browser
+					(which already allows multiple apps to run and be visible at the same time, for example),
+				and these use-cases have informed the design of <em>argon.js</em>.</p>
+				<h3 id="the-structure-of-an-ar-enabled-app">The structure of an AR-enabled app</h3>
+				<p>In general, we simply call <a href="classes/vuforiaservicedelegatebase.html#init">init</a> to initailize our app:</p>
+				<pre><code class="lang-js"><span class="hljs-keyword">var</span> app = Argon.init();
+</code></pre>
+				<blockquote>
+					<p><sub> <strong><em>Note:</em></strong> By default, this will initialize your app with a role appropriate for
+							the environment in which it is executing. If your app is running within a
+							<strong>Reality Manager</strong> such as the <a href="http://argonjs.io/argon-app/">Argon Browser</a>,
+							then it will be initialized with the role of a <strong>Reality Augmentor</strong>. If your app
+							is running in a standalone manner, then it will be elevated to the role of a
+							<strong>Reality Manager</strong>. In general, this detail does not affect the way you write your app,
+							as <em>argon.js</em> includes default implementations of the responsbilities of a
+							<strong>Reality Manager</strong>. However, if your app detects that it is running as a
+					<strong>Reality Manager</strong>, it may assume more control over the entire experience.</sub></p>
+				</blockquote>
+				<p>The object returned by <a href="classes/vuforiaservicedelegatebase.html#init">init</a> is an instance of <a href="classes/argonsystem.html">ArgonSystem</a>. By convention, we
+					store this instance in a variable called <code>app</code>. Various services are made available
+					via this instance. For example, your app will need to continually respond to changes
+					in the world in order to update it&#39;s augmentations. <a href="classes/argonsystem.html#updateevent">ArgonSystem.updateEvent</a>
+				let&#39;s you setup a callback for that purpose:</p>
+				<pre><code class="lang-ts">app.updateEvent.addEventListener(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>)</span>{
+    <span class="hljs-comment">// update our augmentations</span>
+})
+</code></pre>
+				<p>In <em>argon.js</em>, all objects are represented in geospatial coordinates, using <a href="https://cesiumjs.org/Cesium/Build/Documentation/Entity.html">cesium.js
+					Entities</a> (a subset
+					of Cesium&#39;s API is availabe in the <code>Argon.Cesium</code> namespace). <a href="classes/argonsystem.html#context">ArgonSystem.context</a>
+					is a <a href="classes/contextservice.html">ContextService</a> instance whose purpose is to keep track of entities that you
+				can augment, or subscribe to new entities so that your app can be made aware of them.</p>
+				<p>In your <code>update</code> event handler, you can, for example, query the current
+					pose of an Entity by calling <a href="classes/contextservice.html#getentitypose">ContextService.getEntityPose</a> and
+				passing the desired entity instance.</p>
+				<p>Finally, we can listen to the render event in order to render
+				our augmentations in a timely manner:</p>
+				<pre><code class="lang-ts">app.renderEvent.addEventListener(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>)</span>{
+    <span class="hljs-comment">// render our augmentations</span>
+})
+</code></pre>
+				<p><em>argon.js</em> is itself entirely decoupled from any particular rendering library,
+					but does aim to provide a level of abstraction that makes it easy to integrate
+				with the library of your choice. </p>
+				<p>Check out the <a href="http://docs.argonjs.io/tutorials/">tutorials</a> for more
+				concrete examples of <em>argon.js</em> AR-enabled apps. </p>
+				<h3 id="the-structure-of-a-reality-view">The structure of a Reality View</h3>
+				<p>TODO</p>
+				<h3 id="the-structure-of-a-reality-manager">The structure of a Reality Manager</h3>
+				<p>TODO</p>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-enum">
+						<a href="enums/posestatus.html" class="tsd-kind-icon">Pose<wbr>Status</a>
+					</li>
+					<li class=" tsd-kind-enum">
+						<a href="enums/realityzoomstate.html" class="tsd-kind-icon">Reality<wbr>Zoom<wbr>State</a>
+					</li>
+					<li class=" tsd-kind-enum">
+						<a href="enums/role.html" class="tsd-kind-icon">Role</a>
+					</li>
+					<li class=" tsd-kind-enum">
+						<a href="enums/subviewtype.html" class="tsd-kind-icon">Subview<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-enum">
+						<a href="enums/vuforiahint.html" class="tsd-kind-icon">Vuforia<wbr>Hint</a>
+					</li>
+					<li class=" tsd-kind-enum">
+						<a href="enums/vuforiainitresult.html" class="tsd-kind-icon">Vuforia<wbr>Init<wbr>Result</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/argonsystem.html" class="tsd-kind-icon">Argon<wbr>System</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/commandqueue.html" class="tsd-kind-icon">Command<wbr>Queue</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/connectservice.html" class="tsd-kind-icon">Connect<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/contextservice.html" class="tsd-kind-icon">Context<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/domconnectservice.html" class="tsd-kind-icon">DOMConnect<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/debugconnectservice.html" class="tsd-kind-icon">Debug<wbr>Connect<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/deviceservice.html" class="tsd-kind-icon">Device<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/emptyrealityloader.html" class="tsd-kind-icon">Empty<wbr>Reality<wbr>Loader</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/event.html" class="tsd-kind-icon">Event</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/focusservice.html" class="tsd-kind-icon">Focus<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/hostedrealityloader.html" class="tsd-kind-icon">Hosted<wbr>Reality<wbr>Loader</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/livevideorealityloader.html" class="tsd-kind-icon">Live<wbr>Video<wbr>Reality<wbr>Loader</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/loopbackconnectservice.html" class="tsd-kind-icon">Loopback<wbr>Connect<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/messagechannelfactory.html" class="tsd-kind-icon">Message<wbr>Channel<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/messagechannellike.html" class="tsd-kind-icon">Message<wbr>Channel<wbr>Like</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/messageeventlike.html" class="tsd-kind-icon">Message<wbr>Event<wbr>Like</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/pinchzoomservice.html" class="tsd-kind-icon">Pinch<wbr>Zoom<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/realityloader.html" class="tsd-kind-icon">Reality<wbr>Loader</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/realityservice.html" class="tsd-kind-icon">Reality<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/realityview.html" class="tsd-kind-icon">Reality<wbr>View</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/sessionport.html" class="tsd-kind-icon">Session<wbr>Port</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/sessionportfactory.html" class="tsd-kind-icon">Session<wbr>Port<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/sessionservice.html" class="tsd-kind-icon">Session<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/synchronousmessagechannel.html" class="tsd-kind-icon">Synchronous<wbr>Message<wbr>Channel</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/timerservice.html" class="tsd-kind-icon">Timer<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/viewservice.html" class="tsd-kind-icon">View<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/vuforiaapi.html" class="tsd-kind-icon">VuforiaAPI</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/vuforiadataset.html" class="tsd-kind-icon">Vuforia<wbr>Data<wbr>Set</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/vuforiaobjecttracker.html" class="tsd-kind-icon">Vuforia<wbr>Object<wbr>Tracker</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/vuforiaservice.html" class="tsd-kind-icon">Vuforia<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/vuforiaservicedelegate.html" class="tsd-kind-icon">Vuforia<wbr>Service<wbr>Delegate</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/vuforiaservicedelegatebase.html" class="tsd-kind-icon">Vuforia<wbr>Service<wbr>Delegate<wbr>Base</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/vuforiatracker.html" class="tsd-kind-icon">Vuforia<wbr>Tracker</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/wkwebviewconnectservice.html" class="tsd-kind-icon">WKWeb<wbr>View<wbr>Connect<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/configuration.html" class="tsd-kind-icon">Configuration</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/entitypose.html" class="tsd-kind-icon">Entity<wbr>Pose</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/errormessage.html" class="tsd-kind-icon">Error<wbr>Message</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/frame.html" class="tsd-kind-icon">Frame</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/initlocalparameters.html" class="tsd-kind-icon">Init<wbr>Local<wbr>Parameters</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/initparameters.html" class="tsd-kind-icon">Init<wbr>Parameters</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/message.html" class="tsd-kind-icon">Message</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/messagehandlermap.html" class="tsd-kind-icon">Message<wbr>Handler<wbr>Map</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/messageportlike.html" class="tsd-kind-icon">Message<wbr>Port<wbr>Like</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/realityzoomdata.html" class="tsd-kind-icon">Reality<wbr>Zoom<wbr>Data</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/serializedentitypose.html" class="tsd-kind-icon">Serialized<wbr>Entity<wbr>Pose</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/serializedentityposemap.html" class="tsd-kind-icon">Serialized<wbr>Entity<wbr>Pose<wbr>Map</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/serializedeyeparameters.html" class="tsd-kind-icon">Serialized<wbr>Eye<wbr>Parameters</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/serializedframestate.html" class="tsd-kind-icon">Serialized<wbr>Frame<wbr>State</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/serializedfrustum.html" class="tsd-kind-icon">Serialized<wbr>Frustum</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/serializedpartialframestate.html" class="tsd-kind-icon">Serialized<wbr>Partial<wbr>Frame<wbr>State</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/serializedsubview.html" class="tsd-kind-icon">Serialized<wbr>Subview</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/serializedviewparameters.html" class="tsd-kind-icon">Serialized<wbr>View<wbr>Parameters</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/subview.html" class="tsd-kind-icon">Subview</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/viewport.html" class="tsd-kind-icon">Viewport</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/vuforiainitoptions.html" class="tsd-kind-icon">Vuforia<wbr>Init<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/vuforiaservicedelegateinitoptions.html" class="tsd-kind-icon">Vuforia<wbr>Service<wbr>Delegate<wbr>Init<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/vuforiatrackables.html" class="tsd-kind-icon">Vuforia<wbr>Trackables</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#messagehandler" class="tsd-kind-icon">Message<wbr>Handler</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#removecallback" class="tsd-kind-icon">Remove<wbr>Callback</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#getentityorientation" class="tsd-kind-icon">get<wbr>Entity<wbr>Orientation</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#getentityposition" class="tsd-kind-icon">get<wbr>Entity<wbr>Position</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#convertentityreferenceframe" class="tsd-kind-icon">convert<wbr>Entity<wbr>Reference<wbr>Frame</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#decomposeperspectiveoffcenterprojectionmatrix" class="tsd-kind-icon">decompose<wbr>Perspective<wbr>Off<wbr>Center<wbr>Projection<wbr>Matrix</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#decomposeperspectiveprojectionmatrix" class="tsd-kind-icon">decompose<wbr>Perspective<wbr>Projection<wbr>Matrix</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#getancestorreferenceframes" class="tsd-kind-icon">get<wbr>Ancestor<wbr>Reference<wbr>Frames</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#getentityorientationinreferenceframe" class="tsd-kind-icon">get<wbr>Entity<wbr>Orientation<wbr>InReference<wbr>Frame</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#getentitypositioninreferenceframe" class="tsd-kind-icon">get<wbr>Entity<wbr>Position<wbr>InReference<wbr>Frame</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#getrootreferenceframe" class="tsd-kind-icon">get<wbr>Root<wbr>Reference<wbr>Frame</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#getserializedentitypose" class="tsd-kind-icon">get<wbr>Serialized<wbr>Entity<wbr>Pose</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#init" class="tsd-kind-icon">init</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-private">
+						<a href="globals.html#initlocal" class="tsd-kind-icon">init<wbr>Local</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#initreality" class="tsd-kind-icon">init<wbr>Reality</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#parseurl" class="tsd-kind-icon">parseURL</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#resolveurl" class="tsd-kind-icon">resolveURL</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="http://typedoc.io" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
+<script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-63191442-2', '');
+        ga('send', 'pageview');
+    </script>
+</body>
+</html>

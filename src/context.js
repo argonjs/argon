@@ -145,7 +145,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                     this.entities.addCollection(this.wellKnownReferenceFrames);
                     this.entities.addCollection(this.subscribedEntities);
                     this.subscribedEntities.add(this.user);
-                    if (this.sessionService.isManager) {
+                    if (this.sessionService.isRealityManager) {
                         this.realityService.frameEvent.addEventListener(function (state) {
                             _this._update(state);
                         });
@@ -270,7 +270,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                 ContextService.prototype._update = function (serializedState) {
                     var _this = this;
                     // if this session is the manager, we need to update our child sessions a.s.a.p
-                    if (this.sessionService.isManager) {
+                    if (this.sessionService.isRealityManager) {
                         delete serializedState.entities[this.user.id]; // children don't need this
                         this._entityPoseCache = {};
                         for (var _i = 0, _a = this.sessionService.managedSessions; _i < _a.length; _i++) {

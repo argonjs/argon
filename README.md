@@ -2,9 +2,84 @@
 
 An open-standards augmented reality platform for the web
 
-*This software was created as part of a research project at the Augmented Environments Lab at Georgia Tech.  To support our research, we request that if you make use of this software, you let us know how you used it by sending mail to Blair MacIntyre (blair@cc.gatech.edu).*
+*This software was created as part of a research project at the 
+Augmented Environments Lab at Georgia Tech.  To support our research, 
+we request that if you make use of this software, you let us know 
+how you used it by sending mail to Blair MacIntyre (blair@cc.gatech.edu).*
 
-### Quick Build Guide
+## Quick Start
+
+To install this library manually, include this file in your project:
+
+* [argon.umd.js](https://github.com/argonjs/argon/raw/master/argon.umd.js)
+
+To install with npm:
+
+```sh
+npm install @argonjs/argon@^1.0
+```
+
+To install with jspm:
+
+```sh
+jspm install npm:@argonjs/argon@^1.0
+```
+
+### Usage
+
+In your es6 modules, `import` the package `"@argonjs/argon"`:
+
+```js
+import * as Argon from '@argonjs/argon'
+```
+
+If you aren't using es6 modules, `require` the package `"@argonjs/argon"`:
+
+```js
+var Argon = require('@argonjs/argon');
+```
+
+If you aren't using modules at all, the `argon.umd.js` script creates a 
+global `Argon` namespace that exposes the same API. 
+
+## Typescript
+
+If you are using Typescript 2.0 and would like to leverage 
+*argon.js* typings, simply install *argon.js* using `npm` 
+as described above (even if you are not using modules in your 
+probject). However, if you aren't using modules, just be sure
+to include a triple-slash reference so that the typescript 
+compiler knows you are using *argon.js* globally:
+
+```ts
+/// <reference types="@argonjs/argon" />
+```
+
+Finally, make sure your `tsconfig.json` contains the following 
+compiler options:
+
+```json
+{
+    "compilerOptions": {
+        "moduleResolution": "node",
+        "lib": [
+            "dom",
+            "es2015"
+        ]
+    }
+}
+```
+
+After that, you should have rich typings in any editor that 
+supports Typescript! 
+We recommend [Visual Studio Code](https://code.visualstudio.com).
+
+## Support
+
+* [Documentation](http://docs.argonjs.io/)
+* [API Reference](http://argonjs.io/argon/)
+
+## Build Guide
 
 * Clone argon
 
@@ -14,30 +89,10 @@ git clone https://github.com/argonjs/argon.git
 
 * Make sure you have Node.js/npm installed (There are many guides for this online)
 
-* Install `jspm` and (optionally) `typescript` globally so they can be run from the command line.
-Depending on how `node` is setup on your system, you may have to use `sudo`.
-
-```sh
-npm install -g typescript@next jspm
-```
-
-* Go to the directory where you have argon.js downloaded and install dependencies using npm and jspm
+* Go to the directory where you have argon.js downloaded and install dependencies
 
 ```sh
 npm install
-jspm install
-```
-
-* To execute the typescript compiler, run: 
- 
-```sh
-tsc
-```
-
-* To test Argon, execute: 
- 
-```sh
-npm run test
 ```
 
 * To run the typescript compiler and create a build, execute:  
@@ -46,10 +101,8 @@ npm run test
 npm run build
 ```
 
-### Potential Problems
-
-On Debian based systems, node.js has a name conflict with another module and as a result npm will not work properly. To fix this, run the following:
-
+* To test Argon, execute: 
+ 
 ```sh
-sudo apt-get install nodejs-legacy
+npm run test
 ```

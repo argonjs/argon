@@ -1,7 +1,7 @@
 /// <reference types="cesium" />
 import { Matrix4 } from './cesium/cesium-imports';
 /**
- * Describes the session configuration
+ * Configuration options for an [[ArgonSystem]]
  */
 export interface Configuration {
     role?: Role;
@@ -12,13 +12,42 @@ export interface Configuration {
     'reality.handlesZoom'?: boolean;
     'reality.providedReferenceFrames'?: (number | string)[];
 }
+/**
+ * Describes the role of an [[ArgonSystem]]
+ */
 export declare enum Role {
-    APPLICATION,
+    /**
+     * A system with this role is responsible for augmenting an arbitrary view of reality,
+     * generally by overlaying computer generated graphics. A reality augmentor may also,
+     * if appropriate, be elevated to the role of a [[REALITY_MANAGER]].
+     */
+    REALITY_AUGMENTOR,
+    /**
+     * A system with this role is responsible for (at minimum) describing (and providing,
+     * if necessary) a visual representation of the world and the 3D eye pose of the viewer.
+     */
     REALITY_VIEW,
+    /**
+     * A system with this role is responsible for mediating access to sensors/trackers
+     * and pose data for known entities in the world, selecting/configuring/loading
+     * [[REALITY_VIEW]]s, and providing the mechanism by which any given [[REALITY_AUGMENTOR]]
+     * can augment any given [[REALITY_VIEW]]. The reality manager may also, when appropriate,
+     * take on the role of [[REALITY_AUGMENTOR]].
+     */
+    REALITY_MANAGER,
+    /**
+     * Deprecated. Use [[REALITY_AUGMENTOR]].
+     * @private
+     */
+    APPLICATION,
+    /**
+     * Deprecated. Use [[REALITY_MANAGER]].
+     * @private
+     */
     MANAGER,
 }
 /**
- * Viewport is expressed using a right-handed coordinate system with the origin
+ * Viewport values are expressed using a right-handed coordinate system with the origin
  * at the bottom left corner.
  */
 export interface Viewport {
@@ -28,7 +57,7 @@ export interface Viewport {
     height: number;
 }
 /**
- * Identifies a subview in a view configuration
+ * Identifies a subview in a [[SerializedSubview]]
  */
 export declare enum SubviewType {
     SINGULAR,

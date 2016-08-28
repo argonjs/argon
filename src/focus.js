@@ -41,7 +41,7 @@ System.register(['aurelia-dependency-injection', './session', './utils'], functi
                     sessionService.manager.on['ar.focus.state'] = function (message) {
                         _this._setFocus(message.state);
                     };
-                    if (sessionService.isManager) {
+                    if (sessionService.isRealityManager) {
                         sessionService.manager.connectEvent.addEventListener(function () {
                             setTimeout(function () {
                                 if (!_this._session)
@@ -63,7 +63,7 @@ System.register(['aurelia-dependency-injection', './session', './utils'], functi
                      * Manager-only. An event that is raised when a managed session has acquired focus.
                      */
                     get: function () {
-                        this.sessionService.ensureIsManager();
+                        this.sessionService.ensureIsRealityManager();
                         return this._sessionFocusEvent;
                     },
                     enumerable: true,
@@ -73,14 +73,14 @@ System.register(['aurelia-dependency-injection', './session', './utils'], functi
                  * Manager-only. The managed session which currently has focus.
                  */
                 FocusService.prototype.getSession = function () {
-                    this.sessionService.ensureIsManager();
+                    this.sessionService.ensureIsRealityManager();
                     return this._session;
                 };
                 /**
                  *  Manager-only. Grant focus to a managed session.
                  */
                 FocusService.prototype.setSession = function (session) {
-                    this.sessionService.ensureIsManager();
+                    this.sessionService.ensureIsRealityManager();
                     if (session && !session.isConnected)
                         throw new Error('Only a connected session can be granted focus');
                     var previousFocussedSession = this._session;
@@ -98,7 +98,7 @@ System.register(['aurelia-dependency-injection', './session', './utils'], functi
                 };
                 FocusService.prototype.whenSessionHasFocus = function (session) {
                     var _this = this;
-                    this.sessionService.ensureIsManager();
+                    this.sessionService.ensureIsRealityManager();
                     return new Promise(function (resolve) {
                         var remove = _this.sessionFocusEvent.addEventListener(function (_a) {
                             var current = _a.current;

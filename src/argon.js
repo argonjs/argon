@@ -3,17 +3,25 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
     var __moduleName = context_1 && context_1.id;
     var DI, Cesium, URI, session_1, common_1, context_2, device_1, focus_1, reality_1, timer_1, view_1, vuforia_1, empty_1, live_video_1, hosted_1;
     var ArgonSystem;
+    /**
+     * Create an ArgonSystem instance.
+     * If we are running within a [[REALITY_MANAGER]],
+     * this function will create an ArgonSystem which has the [[REALITY_AUGMENTOR]] role.
+     * If we are not running within a [[REALITY_MANAGER]],
+     * this function will create an ArgonSystem which has the [[REALITY_MANAGER]] role.
+     * @param initParameters InitParameters
+     */
     function init(_a) {
         var _b = _a === void 0 ? {} : _a, configuration = _b.configuration, _c = _b.container, container = _c === void 0 ? new DI.Container : _c;
         var role;
         if (typeof HTMLElement === 'undefined') {
-            role = common_1.Role.MANAGER;
+            role = common_1.Role.REALITY_MANAGER;
         }
         else if (navigator.userAgent.indexOf('Argon') > 0 || window.top !== window) {
-            role = common_1.Role.APPLICATION;
+            role = common_1.Role.REALITY_AUGMENTOR;
         }
         else {
-            role = common_1.Role.MANAGER;
+            role = common_1.Role.REALITY_MANAGER;
         }
         var config = Object.assign(configuration || {}, {
             role: role,
@@ -22,6 +30,9 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
         return new ArgonSystem(config, container);
     }
     exports_1("init", init);
+    /**
+     * Initialize an [[ArgonSystem]] with the [[REALITY_VIEW]] role
+     */
     function initReality(_a) {
         var _b = _a === void 0 ? {} : _a, configuration = _b.configuration, _c = _b.container, container = _c === void 0 ? new DI.Container : _c;
         var config = Object.assign(configuration || {}, {
@@ -32,10 +43,14 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
         return new ArgonSystem(config, container);
     }
     exports_1("initReality", initReality);
+    /**
+     * Not yet implemented.
+     * @private
+     */
     function initLocal(_a) {
         var containerElement = _a.containerElement, configuration = _a.configuration, _b = _a.container, container = _b === void 0 ? new DI.Container : _b;
         var config = Object.assign(configuration || {}, {
-            role: common_1.Role.MANAGER
+            role: common_1.Role.REALITY_MANAGER
         });
         container.registerInstance('containerElement', containerElement);
         return new ArgonSystem(config, container);
@@ -128,7 +143,11 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
             exports_1("LiveVideoRealityLoader", live_video_1.LiveVideoRealityLoader);
             exports_1("HostedRealityLoader", hosted_1.HostedRealityLoader);
             /**
-             * A composition root which instantiates the object graph based on a provided configuration
+             * A composition root which instantiates the object graph based on a provided configuration.
+             * You generally want to create a new ArgonSystem via the provided [[init]] or [[initReality]] functions:
+             * ```ts
+             * var app = Argon.init(); // app is an instance of ArgonSystem
+             * ```
              */
             ArgonSystem = (function () {
                 function ArgonSystem(config, container) {
@@ -140,7 +159,7 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
                     container.registerInstance(ArgonSystem, this);
                     if (!container.hasResolver('containerElement'))
                         container.registerInstance('containerElement', null);
-                    if (config.role === common_1.Role.MANAGER) {
+                    if (config.role === common_1.Role.REALITY_MANAGER) {
                         container.registerSingleton(session_1.ConnectService, session_1.LoopbackConnectService);
                     }
                     else if (session_1.WKWebViewConnectService.isAvailable()) {
@@ -152,7 +171,7 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
                     else if (session_1.DebugConnectService.isAvailable()) {
                         container.registerSingleton(session_1.ConnectService, session_1.DebugConnectService);
                     }
-                    if (config.role === common_1.Role.MANAGER) {
+                    if (config.role === common_1.Role.REALITY_MANAGER) {
                         this.reality.registerLoader(container.get(empty_1.EmptyRealityLoader));
                         this.reality.registerLoader(container.get(live_video_1.LiveVideoRealityLoader));
                         if (typeof document !== 'undefined') {

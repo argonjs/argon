@@ -136,7 +136,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                             }
                         });
                     }
-                    if (this.sessionService.isManager) {
+                    if (this.sessionService.isRealityManager) {
                         this.sessionService.connectEvent.addEventListener(function (session) {
                             session.on['ar.viewport.desired'] = function (viewport) {
                                 _this.desiredViewportMap.set(session, viewport);
@@ -248,7 +248,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                     this.realityService = realityService;
                     this.contextService = contextService;
                     this.sessionService = sessionService;
-                    if (this.sessionService.isManager) {
+                    if (this.sessionService.isRealityManager) {
                         this.viewService.containingElementPromise.then(function (el) {
                             el.style.pointerEvents = 'auto';
                             var fov = -1;

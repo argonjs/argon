@@ -31,8 +31,7 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
         execute: function() {
             ;
             /**
-             * Provides two-way communication between sessions, either
-             * Application and Manager, or Reality and Manager.
+             * Provides two-way communication between two [[SessionPort]] instances.
              */
             SessionPort = (function () {
                 function SessionPort(uri) {
@@ -84,7 +83,7 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                 Object.defineProperty(SessionPort.prototype, "connectEvent", {
                     /**
                      * An event which fires when a connection has been
-                     * established to the remote session.
+                     * established to the other [[SessionPort]].
                      */
                     get: function () {
                         if (this._isConnected)
@@ -132,9 +131,9 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                     return supported;
                 };
                 /**
-                 * Establish a connection to another session via the provided MessagePort.
+                 * Establish a connection to another [[SessionPort]] via the provided [[MessagePort]] instance.
                  * @param messagePort the message port to post and receive messages.
-                 * @param options the configuration which describes this system.
+                 * @param options the configuration which describes this [[ArgonSystem]].
                  */
                 SessionPort.prototype.open = function (messagePort, options) {
                     var _this = this;
@@ -285,8 +284,8 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                 return SessionPort;
             }());
             exports_1("SessionPort", SessionPort);
-            /*
-             * A factory for creating SessionPort instances.
+            /**
+             * A factory for creating [[SessionPort]] instances.
              */
             SessionPortFactory = (function () {
                 function SessionPortFactory() {
@@ -298,7 +297,7 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
             }());
             exports_1("SessionPortFactory", SessionPortFactory);
             /**
-             * Establishes a connection to the manager.
+             * A service for establishing a connection to the [[REALITY_MANAGER]].
              */
             ConnectService = (function () {
                 function ConnectService() {
@@ -306,8 +305,15 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                 return ConnectService;
             }());
             exports_1("ConnectService", ConnectService);
+            /**
+             * A service for managing connections to other ArgonSystem instances
+             */
             SessionService = (function () {
-                function SessionService(configuration, connectService, sessionPortFactory, messageChannelFactory) {
+                function SessionService(
+                    /**
+                     * The configuration of this [[ArgonSystem]]
+                     */
+                    configuration, connectService, sessionPortFactory, messageChannelFactory) {
                     var _this = this;
                     this.configuration = configuration;
                     this.connectService = connectService;
@@ -348,15 +354,15 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                      * Manager-only. A collection of ports for the sessions managed by this session.
                      */
                     get: function () {
-                        this.ensureIsManager();
+                        this.ensureIsRealityManager();
                         return this._managedSessions;
                     },
                     enumerable: true,
                     configurable: true
                 });
                 /**
-                 * Establishes a connection with the manager.
-                 * Called internally by the composition root (ArgonSystem).
+                 * Establishes a connection with the [[REALITY_MANAGER]].
+                 * Called internally by the composition root ([[ArgonSystem]]).
                  */
                 SessionService.prototype.connect = function () {
                     if (this.connectService && this.connectService.connect) {
@@ -367,16 +373,16 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                     }
                 };
                 /**
-                 * Manager-only. Creates a session port that is managed by this service.
-                 * Session ports that are managed will automatically
-                 * forward open events to this.sessionConnectEvent and error
-                 * events to this.errorEvent. Other services are likely to add
-                 * message handlers to the newly connected port.
-                 * @return a new SessionPort instance
+                 * Manager-only. Creates a [[SessionPort]] that is managed by the current [[ArgonSystem]].
+                 * Session ports that are managed will automatically forward open events to
+                 * [[SessionService#sessionConnectEvent]] and error events to [[SessionService#errorEvent]].
+                 * Other services that are part of the current [[ArgonSystem]] are likely to
+                 * add message handlers to a newly connected [[SessionPort]].
+                 * @return a new [[SessionPort]] instance
                  */
                 SessionService.prototype.addManagedSessionPort = function (uri) {
                     var _this = this;
-                    this.ensureIsManager();
+                    this.ensureIsRealityManager();
                     var session = this.sessionPortFactory.create(uri);
                     session.errorEvent.addEventListener(function (error) {
                         _this.errorEvent.raiseEvent(error);
@@ -393,52 +399,62 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                     return session;
                 };
                 /**
-                 * Creates a session port that is not managed by this service.
-                 * Unmanaged session ports will not forward any events to
-                 * this object.
+                 * Creates a [[SessionPort]] that is not managed by the current [[ArgonSystem]].
+                 * Unmanaged session ports will not forward open events or error events
+                 * to this [[ArgonSystem]].
                  * @return a new SessionPort instance
                  */
                 SessionService.prototype.createSessionPort = function (uri) {
                     return this.sessionPortFactory.create(uri);
                 };
                 /**
-                 * Creates a message channel.
-                 * @return a new MessageChannel instance
+                 * Creates a message channel which asyncrhonously sends and receives messages.
                  */
                 SessionService.prototype.createMessageChannel = function () {
                     return this.messageChannelFactory.create();
                 };
                 /**
-                 * Creates a synchronous message channel.
-                 * @return a new SynchronousMessageChannel instance
+                 * Creates a message channel which syncrhonously sends and receives messages.
                  */
                 SessionService.prototype.createSynchronousMessageChannel = function () {
                     return this.messageChannelFactory.createSynchronous();
                 };
-                Object.defineProperty(SessionService.prototype, "isManager", {
+                Object.defineProperty(SessionService.prototype, "isRealityManager", {
                     /**
-                     * Returns true if this session is the Manager
+                     * Returns true if this system represents a [[REALITY_MANAGER]]
                      */
                     get: function () {
-                        return this.configuration.role === common_1.Role.MANAGER;
+                        return this.configuration.role === common_1.Role.REALITY_MANAGER ||
+                            this.configuration.role === common_1.Role.MANAGER; // TODO: phase out of using Role.MANAGER enum
                     },
                     enumerable: true,
                     configurable: true
                 });
-                Object.defineProperty(SessionService.prototype, "isApplication", {
+                Object.defineProperty(SessionService.prototype, "isManager", {
+                    get: function () { console.warn("Deprecated. Use isRealityManager()"); return this.isManager; },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(SessionService.prototype, "isRealityAugmenter", {
                     /**
-                     * Returns true if this session is an Application, meaning,
-                     * it is running within a Manager.
+                     * Returns true if this system represents a [[REALITY_AUGMENTOR]], meaning,
+                     * it is running within a [[REALITY_MANAGER]]
                      */
                     get: function () {
-                        return this.configuration.role === common_1.Role.APPLICATION;
+                        return this.configuration.role === common_1.Role.REALITY_AUGMENTOR ||
+                            this.configuration.role === common_1.Role.APPLICATION; // TODO: phase out use of Role.APPLICATION
                     },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(SessionService.prototype, "isApplicatsion", {
+                    get: function () { console.warn("Deprecated. Use isRealityAugmenter()"); return this.isRealityAugmenter; },
                     enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(SessionService.prototype, "isRealityView", {
                     /**
-                     * Returns true if this session is a Reality View
+                     * Returns true if this system is a [[REALITY_VIEW]]
                      */
                     get: function () {
                         return this.configuration.role === common_1.Role.REALITY_VIEW;
@@ -447,25 +463,25 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                     configurable: true
                 });
                 /**
-                 * Throws an error if this session is not a manager
+                 * Throws an error if this system is not a [[REALITY_MANAGER]]
                  */
-                SessionService.prototype.ensureIsManager = function () {
-                    if (!this.isManager)
-                        throw new Error('An manager-only API was accessed in a non-manager session.');
+                SessionService.prototype.ensureIsRealityManager = function () {
+                    if (!this.isRealityManager)
+                        throw new Error('An reality-manager only API was accessed from a non reality-manager.');
                 };
                 /**
-                 * Throws an error if this session is not a reality
+                 * Throws an error if this session is not a [[REALITY_VIEW]]
                  */
-                SessionService.prototype.ensureIsReality = function () {
+                SessionService.prototype.ensureIsRealityView = function () {
                     if (!this.isRealityView)
-                        throw new Error('An reality-only API was accessed in a non-reality session.');
+                        throw new Error('An reality-view only API was accessed from a non reality-view.');
                 };
                 /**
-                 * Throws an error if this session is a reality
+                 * Throws an error if this session is a [[REALITY_VIEW]]
                  */
-                SessionService.prototype.ensureNotReality = function () {
+                SessionService.prototype.ensureNotRealityView = function () {
                     if (this.isRealityView)
-                        throw new Error('An non-reality API was accessed in a reality session.');
+                        throw new Error('An non-permitted API was accessed from a reality-view.');
                 };
                 SessionService = __decorate([
                     aurelia_dependency_injection_1.inject('config', ConnectService, SessionPortFactory, utils_1.MessageChannelFactory)
@@ -474,7 +490,7 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
             }());
             exports_1("SessionService", SessionService);
             /**
-             * Connect this session to itself as the manager.
+             * Connect the current [[ArgonSystem]] to itself as the [[REALITY_MANAGER]].
              */
             LoopbackConnectService = (function (_super) {
                 __extends(LoopbackConnectService, _super);
@@ -483,7 +499,6 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                 }
                 /**
                  * Create a loopback connection.
-                 * @param sessionService The session service instance.
                  */
                 LoopbackConnectService.prototype.connect = function (sessionService) {
                     var messageChannel = sessionService.createSynchronousMessageChannel();
@@ -500,7 +515,8 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
             }(ConnectService));
             exports_1("LoopbackConnectService", LoopbackConnectService);
             /**
-             * Connect this session to the manager via the parent document (assuming this system is running in an iFrame).
+             * Connect this [[ArgonSystem]] to the [[REALITY_MANAGER]] via the parent document
+             * (assuming this system is running in an iFrame).
              */
             DOMConnectService = (function (_super) {
                 __extends(DOMConnectService, _super);
@@ -509,14 +525,12 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                 }
                 /**
                   * Check whether this connect method is available or not.
-                  * @return true if this method is availble, otherwise false
                   */
                 DOMConnectService.isAvailable = function () {
                     return typeof window !== 'undefined' && typeof window.parent !== 'undefined';
                 };
                 /**
                  * Connect to the manager.
-                 * @param sessionService The session service instance.
                  */
                 DOMConnectService.prototype.connect = function (sessionService) {
                     var messageChannel = sessionService.createMessageChannel();
@@ -536,7 +550,6 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                 }
                 /**
                  * Check whether this connect method is available or not.
-                 * @return true if this method is availble, otherwise false
                  */
                 DebugConnectService.isAvailable = function () {
                     return typeof window !== 'undefined' &&
@@ -544,7 +557,6 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                 };
                 /**
                  * Connect to the manager.
-                 * @param sessionService The session service instance.
                  */
                 DebugConnectService.prototype.connect = function (_a) {
                     var manager = _a.manager, configuration = _a.configuration;
@@ -554,7 +566,7 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
             }(ConnectService));
             exports_1("DebugConnectService", DebugConnectService);
             /**
-             * A service which connects this system to the manager via a WKWebview message handler.
+             * A service which connects this system to the [[REALITY_MANAGER]] via a WKWebview message handler.
              */
             WKWebViewConnectService = (function (_super) {
                 __extends(WKWebViewConnectService, _super);
@@ -563,7 +575,6 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                 }
                 /**
                  * Check whether this connect method is available or not.
-                 * @return true if this method is availble, otherwise false
                  */
                 WKWebViewConnectService.isAvailable = function () {
                     return typeof window !== 'undefined' &&
@@ -571,7 +582,6 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                 };
                 /**
                  * Connect to the manager.
-                 * @param sessionService The session service instance.
                  */
                 WKWebViewConnectService.prototype.connect = function (sessionService) {
                     var messageChannel = sessionService.createSynchronousMessageChannel();

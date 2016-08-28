@@ -28,7 +28,7 @@ export class FocusService {
      * Manager-only. An event that is raised when a managed session has acquired focus. 
      */
     public get sessionFocusEvent() {
-        this.sessionService.ensureIsManager();
+        this.sessionService.ensureIsRealityManager();
         return this._sessionFocusEvent;
     }
     private _sessionFocusEvent = new Event<{ previous?: SessionPort, current?: SessionPort }>();
@@ -40,7 +40,7 @@ export class FocusService {
             this._setFocus(message.state);
         }
 
-        if (sessionService.isManager) {
+        if (sessionService.isRealityManager) {
             sessionService.manager.connectEvent.addEventListener(() => {
                 setTimeout(() => {
                     if (!this._session)
@@ -54,7 +54,7 @@ export class FocusService {
      * Manager-only. The managed session which currently has focus. 
      */
     public getSession() {
-        this.sessionService.ensureIsManager();
+        this.sessionService.ensureIsRealityManager();
         return this._session;
     }
 
@@ -62,7 +62,7 @@ export class FocusService {
      *  Manager-only. Grant focus to a managed session.
      */
     public setSession(session?: SessionPort) {
-        this.sessionService.ensureIsManager();
+        this.sessionService.ensureIsRealityManager();
         if (session && !session.isConnected)
             throw new Error('Only a connected session can be granted focus')
         const previousFocussedSession = this._session;
@@ -79,7 +79,7 @@ export class FocusService {
     }
 
     public whenSessionHasFocus(session: SessionPort) {
-        this.sessionService.ensureIsManager();
+        this.sessionService.ensureIsRealityManager();
         return new Promise((resolve) => {
             let remove = this.sessionFocusEvent.addEventListener(({current}) => {
                 if (current === session) {

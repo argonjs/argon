@@ -119,7 +119,7 @@ export class VuforiaService {
         private focusService: FocusService,
         private delegate: VuforiaServiceDelegate) {
 
-        if (sessionService.isManager) {
+        if (sessionService.isRealityManager) {
 
             this._sessionSwitcherCommandQueue.errorEvent.addEventListener((err) => {
                 this.sessionService.errorEvent.raiseEvent(err);
@@ -258,7 +258,7 @@ export class VuforiaService {
      * It's a bad idea to publish your private vuforia key on the internet.
      */
     public initWithUnencryptedKey(options: VuforiaInitOptions|{key:string}, force?:boolean) : Promise<VuforiaAPI> {
-        if (!force) this.sessionService.ensureIsManager();
+        if (!force) this.sessionService.ensureIsRealityManager();
         return this.sessionService.manager.request('ar.vuforia.init', options).then(() => {
             return new VuforiaAPI(this.sessionService.manager);
         });

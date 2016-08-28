@@ -165,7 +165,7 @@ export class ViewService {
             })
         }
 
-        if (this.sessionService.isManager) {
+        if (this.sessionService.isRealityManager) {
             this.sessionService.connectEvent.addEventListener((session) => {
                 session.on['ar.viewport.desired'] = (viewport: Viewport) => {
                     this.desiredViewportMap.set(session, viewport);
@@ -288,7 +288,7 @@ export class PinchZoomService {
         private realityService: RealityService,
         private contextService: ContextService,
         private sessionService: SessionService) {
-        if (this.sessionService.isManager) {
+        if (this.sessionService.isRealityManager) {
             this.viewService.containingElementPromise.then((el) => {
                 el.style.pointerEvents = 'auto';
                 let fov: number = -1;

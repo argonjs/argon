@@ -65,7 +65,7 @@ export class RealityService {
      */
     private _changeEvent = new Event<{ previous?: RealityView, current: RealityView }>();
     get changeEvent() {
-        this.sessionService.ensureIsManager();
+        this.sessionService.ensureIsRealityManager();
         return this._changeEvent;
     }
 
@@ -76,7 +76,7 @@ export class RealityService {
      */
     private _frameEvent = new Event<SerializedFrameState>();
     get frameEvent() {
-        this.sessionService.ensureIsManager();
+        this.sessionService.ensureIsRealityManager();
         return this._frameEvent;
     }
 
@@ -117,7 +117,7 @@ export class RealityService {
         private sessionService: SessionService,
         private focusService: FocusService) {
 
-        if (sessionService.isManager) {
+        if (sessionService.isRealityManager) {
             sessionService.manager.connectEvent.addEventListener(() => {
                 setTimeout(() => {
                     if (this._loadID === -1)
@@ -204,7 +204,7 @@ export class RealityService {
      * Manager-only. Register a reality loader
      */
     public registerLoader(handler: RealityLoader) {
-        this.sessionService.ensureIsManager();
+        this.sessionService.ensureIsRealityManager();
         this._loaders.push(handler);
     }
 
@@ -213,7 +213,7 @@ export class RealityService {
      * @deprecated. Use app.context.getCurrentReality()
      */
     public getCurrent(): RealityView | undefined {
-        this.sessionService.ensureIsManager();
+        this.sessionService.ensureIsRealityManager();
         return this._current;
     }
 
@@ -223,7 +223,7 @@ export class RealityService {
     * @return true if a handler exists and false otherwise
     */
     public isSupported(reality: RealityView): boolean {
-        this.sessionService.ensureIsManager();
+        this.sessionService.ensureIsRealityManager();
         return !!this._getLoader(reality)
     }
 
@@ -231,7 +231,7 @@ export class RealityService {
      * Reality-only. Publish the next frame state. 
      */
     public publishFrame(state: SerializedPartialFrameState) {
-        this.sessionService.ensureIsReality();
+        this.sessionService.ensureIsRealityView();
         if (this.sessionService.manager.isConnected) {
             this.sessionService.manager.send('ar.reality.frameState', state);
         }
@@ -241,9 +241,9 @@ export class RealityService {
      * Set the desired reality. 
      */
     public setDesired(reality: RealityView | undefined) {
-        this.sessionService.ensureNotReality();
+        this.sessionService.ensureNotRealityView();
         this._desired = reality;
-        if (this.sessionService.isManager) {
+        if (this.sessionService.isRealityManager) {
             this._setNextReality(reality, true);
         } else {
             this.sessionService.manager.send('ar.reality.desired', { reality });
@@ -329,7 +329,7 @@ export class RealityService {
     */
     public onSelectReality(): RealityView|undefined {
 
-        this.sessionService.ensureIsManager();
+        this.sessionService.ensureIsRealityManager();
 
         let selectedReality = this.desiredRealityMap.get(this.sessionService.manager);
 
@@ -533,7 +533,7 @@ export class RealityService {
     }
 
     private _executeRealityLoader(reality: RealityView, callback: (realitySession: SessionPort) => void) {
-        this.sessionService.ensureIsManager();
+        this.sessionService.ensureIsRealityManager();
         const loader = this._getLoader(reality);
         if (!loader) throw new Error('Unable to setup unsupported reality type: ' + reality.uri);
         loader.load(reality, callback);

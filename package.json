@@ -1,6 +1,6 @@
 {
-  "name": "argon",
-  "version": "0.3.3",
+  "name": "@argonjs/argon",
+  "version": "1.0.0",
   "main": "argon.umd.js",
   "typings": "argon.umd.d.ts",
   "jspm": {
@@ -123,8 +123,9 @@
     "browser-sync": "browser-sync  start --server --directory --startPath \"index.html\" --files \"src/**\"",
     "test": "npm run browser-sync",
     "static": "static -p 3000",
-    "typedoc": "typedoc --out docs --gaID UA-63191442-2 --name argon.js --readme README.md --target ES5 --module commonjs --experimentalDecorators --excludeNotExported --excludeExternals --ignoreCompilerErrors -p src src/argon.ts src/camera.ts src/config.ts src/context.ts src/focus.ts src/mode.ts src/device.ts src/reality.ts src/viewport.ts src/session.ts src/timer.ts src/utils.ts src/vuforia.ts typings/browser.d.ts jspm_packages/npm/aurelia-dependency-injection@1.0.0-beta.1.1.4/aurelia-dependency-injection.d.ts jspm_packages/npm/aurelia-logging@1.0.0-beta.1.1.2/aurelia-logging.d.ts jspm_packages/npm/aurelia-metadata@1.0.0-beta.1.1.5/aurelia-metadata.d.ts jspm_packages/npm/aurelia-pal@1.0.0-beta.1.1.1/aurelia-pal.d.ts jspm_packages/npm/aurelia-polyfills@1.0.0-beta.1.0.0/aurelia-polyfills.d.ts",
-    "postinstall": "npm install types/cesium types/mobile-detect"
+    "typedoc": "typedoc --tsconfig tsconfig.build.json --out docs --mode file --gaID UA-63191442-2 --name argon.js --readme src/README.md --target ES5 --module commonjs --experimentalDecorators --excludeNotExported --excludeExternals --ignoreCompilerErrors src",
+    "postinstall": "npm install types/cesium types/mobile-detect",
+    "prepublish": "jspm install"
   },
   "dependencies": {
     "@types/urijs": "^1.15.26",
@@ -138,7 +139,7 @@
     "jspm": "^0.17.0-beta.22",
     "node-static": "^0.7.7",
     "tsconfig-glob": "^0.2.1",
-    "typedoc": "^0.3.12",
+    "typedoc": "^0.4.5",
     "typescript": "^2.0.0",
     "typescript-formatter": "^2.3.0"
   }

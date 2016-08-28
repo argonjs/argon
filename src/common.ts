@@ -1,44 +1,61 @@
 import { Matrix4 } from './cesium/cesium-imports'
 
 /**
- * Describes the session configuration
+ * Configuration options for an [[ArgonSystem]] 
  */
 export interface Configuration {
     role?: Role;
     protocols?: string[];
     userData?: any;
-    // app options
+    // other options / manager hints
     'app.disablePinchZoom'?: boolean;
-    // reality options
     'reality.supportsControlPort'?: boolean;
     'reality.handlesZoom'?: boolean;
     'reality.providedReferenceFrames'?: (number | string)[];
 }
 
-/*
- * Describes the role of a session
+/**
+ * Describes the role of an [[ArgonSystem]]
  */
 export enum Role {
 
-    /*
-     * An application can augment a reality view.
+    /**
+     * A system with this role is responsible for augmenting an arbitrary view of reality,
+     * generally by overlaying computer generated graphics. A reality augmentor may also, 
+     * if appropriate, be elevated to the role of a [[REALITY_MANAGER]]. 
      */
-    APPLICATION = "Application" as any,
+    REALITY_AUGMENTOR = "RealityAugmentor" as any,
 
-    /*
-     * A reality view is a representation of reality.
+    /**
+     * A system with this role is responsible for (at minimum) describing (and providing, 
+     * if necessary) a visual representation of the world and the 3D eye pose of the viewer.
      */
     REALITY_VIEW = "RealityView" as any,
 
-    /*
-     * The manager mediates access to sensors / trackers 
-     * and keeps track of known entities in the world.
+    /**
+     * A system with this role is responsible for mediating access to sensors/trackers 
+     * and pose data for known entities in the world, selecting/configuring/loading 
+     * [[REALITY_VIEW]]s, and providing the mechanism by which any given [[REALITY_AUGMENTOR]]
+     * can augment any given [[REALITY_VIEW]]. The reality manager may also, when appropriate, 
+     * take on the role of [[REALITY_AUGMENTOR]].
+     */
+    REALITY_MANAGER = "RealityManager" as any,
+
+    /**
+     * Deprecated. Use [[REALITY_AUGMENTOR]]. 
+     * @private
+     */
+    APPLICATION = "Application" as any,
+
+    /**
+     * Deprecated. Use [[REALITY_MANAGER]]. 
+     * @private
      */
     MANAGER = "Manager" as any
 }
 
 /**
- * Viewport is expressed using a right-handed coordinate system with the origin
+ * Viewport values are expressed using a right-handed coordinate system with the origin
  * at the bottom left corner.
  */
 export interface Viewport {
@@ -49,7 +66,7 @@ export interface Viewport {
 }
 
 /**
- * Identifies a subview in a view configuration
+ * Identifies a subview in a [[SerializedSubview]]
  */
 export enum SubviewType {
     /*
