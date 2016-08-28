@@ -75,9 +75,9 @@ compiler options:
 }
 ```
 
-After that, you should have rich typings in any editor that 
-supports Typescript! 
-We recommend [Visual Studio Code](https://code.visualstudio.com).
+After that, you can enjoy rich editing support for
+*argon.js* in any editor that supports Typescript! We recommend 
+[Visual Studio Code](https://code.visualstudio.com).
 
 ## Build Guide
 
