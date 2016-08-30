@@ -175,7 +175,8 @@ export function init({ configuration, container = new DI.Container }: InitParame
     if (typeof HTMLElement === 'undefined') {
         role = Role.REALITY_MANAGER
     } else if (navigator.userAgent.indexOf('Argon') > 0 || window.top !== window) {
-        role = Role.REALITY_AUGMENTOR
+        role = Role.APPLICATION // TODO: switch to below after next argon-app release
+        // role = Role.REALITY_AUGMENTOR 
     } else {
         role = Role.REALITY_MANAGER
     }
@@ -203,7 +204,7 @@ export interface InitLocalParameters extends InitParameters {
 }
 
 /**
- * Not yet implemented. 
+ * Not yet implemented.
  * @private
  */
 export function initLocal({ containerElement, configuration, container = new DI.Container }: InitLocalParameters) {

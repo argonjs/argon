@@ -18,7 +18,7 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
             role = common_1.Role.REALITY_MANAGER;
         }
         else if (navigator.userAgent.indexOf('Argon') > 0 || window.top !== window) {
-            role = common_1.Role.REALITY_AUGMENTOR;
+            role = common_1.Role.APPLICATION; // TODO: switch to below after next argon-app release
         }
         else {
             role = common_1.Role.REALITY_MANAGER;
