@@ -1,11 +1,10 @@
 {
   "name": "@argonjs/argon",
   "version": "1.0.0",
-  "main": "argon.umd.js",
-  "typings": "argon.umd.d.ts",
+  "main": "dist/argon.js",
+  "typings": "index.d.ts",
   "jspm": {
-    "main": "src/argon.js",
-    "format": "register",
+    "format": "cjs",
     "jspmPackage": true,
     "dependencies": {
       "cesium": "github:aelatgt/cesium@referenceFrames",
@@ -119,13 +118,14 @@
   },
   "scripts": {
     "format": "tsfmt -r",
-    "build": "tsc && jspm build src/argon.ts argon.umd.js --format umd --global-name Argon --skip-source-maps",
+    "build:min": "jspm build src/argon.ts .tmp/argon-build.js --format umd --global-name Argon --skip-source-maps && derequire .tmp/argon-build.js > dist/argon.js",
+    "prebuild": "npm run build:min",
+    "build": "uglifyjs dist/argon.js -m -o dist/argon.min.js",
     "browser-sync": "browser-sync  start --server --directory --startPath \"index.html\" --files \"src/**\"",
     "test": "npm run browser-sync",
     "static": "static -p 3000",
     "typedoc": "typedoc --tsconfig tsconfig.build.json --out docs --mode file --gaID UA-63191442-2 --name argon.js --readme src/README.md --target ES5 --module commonjs --experimentalDecorators --excludeNotExported --excludeExternals --ignoreCompilerErrors src",
-    "postinstall": "npm install types/cesium types/mobile-detect",
-    "prepublish": "jspm install"
+    "postinstall": "npm install types/cesium types/mobile-detect"
   },
   "dependencies": {
     "@types/urijs": "^1.15.26",
@@ -136,11 +136,13 @@
     "@types/mocha": "^2.2.28",
     "@types/systemjs": "^0.18.27",
     "browser-sync": "^2.11.0",
+    "derequire": "^2.0.3",
     "jspm": "^0.17.0-beta.22",
     "node-static": "^0.7.7",
     "tsconfig-glob": "^0.2.1",
     "typedoc": "^0.4.5",
     "typescript": "^2.0.0",
-    "typescript-formatter": "^2.3.0"
+    "typescript-formatter": "^2.3.0",
+    "uglify-js": "^2.7.3"
   }
 }

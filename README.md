@@ -9,9 +9,9 @@ how you used it by sending mail to Blair MacIntyre (blair@cc.gatech.edu).*
 
 ## Quick Start
 
-To install this library manually, include this file in your project:
+To install this library manually, include this minified build in your project:
 
-* [argon.umd.js](https://github.com/argonjs/argon/raw/master/argon.umd.js)
+* [argon.min.js](https://github.com/argonjs/argon/raw/master/argon.min.js)
 
 To install with npm:
 
@@ -39,8 +39,8 @@ If you aren't using es6 modules, `require` the package `"@argonjs/argon"`:
 var Argon = require('@argonjs/argon');
 ```
 
-If you aren't using modules at all, the `argon.umd.js` script creates a 
-global `Argon` namespace that exposes the same API. 
+If you aren’t using a module loader at all, no worries! The *argon.js* library
+will create a global `Argon` variable that exposes the same API.
 
 ## Typescript
 
@@ -87,12 +87,18 @@ We recommend [Visual Studio Code](https://code.visualstudio.com).
 git clone https://github.com/argonjs/argon.git
 ```
 
-* Make sure you have Node.js/npm installed (There are many guides for this online)
+* Make sure you have node.js/npm installed (There are many guides for this online)
+* Install jspm globally:
+
+```sh
+npm install jspm -g
+```
 
 * Go to the directory where you have argon.js downloaded and install dependencies
 
 ```sh
 npm install
+jspm install
 ```
 
 * To run the typescript compiler and create a build, execute:  
