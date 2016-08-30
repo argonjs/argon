@@ -1,4 +1,5 @@
 node_modules
 jspm_packages
 .vscode/tasks.json
+.tmp
 *.js.map
