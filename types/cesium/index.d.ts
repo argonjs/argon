@@ -2159,7 +2159,7 @@ declare module 'cesium' {
         rectangle: RectangleGraphics;
         viewFrom: Property;
         wall: WallGraphics;
-        constructor(options?: { id?: string; name?: string; show?: boolean; description?: Property; position?: PositionProperty; orientation?: Property; viewFrom?: Property; parent?: Entity; billboard?: BillboardGraphics; box?: BoxGraphics; corridor?: CorridorGraphics; cylinder?: CylinderGraphics; ellipse?: EllipseGraphics; ellipsoid?: EllipsoidGraphics; label?: LabelGraphics; model?: ModelGraphics; path?: PathGraphics; point?: PointGraphics; polygon?: PolygonGraphics; polyline?: PolylineGraphics; polylineVolume?: PolylineVolumeGraphics; rectangle?: RectangleGraphics; wall?: WallGraphics });
+        constructor(options?: { id?: string; name?: string; show?: boolean; description?: Property; position?: Cartesian3|PositionProperty; orientation?: Quaternion|Property; viewFrom?: Property; parent?: Entity; billboard?: BillboardGraphics; box?: BoxGraphics; corridor?: CorridorGraphics; cylinder?: CylinderGraphics; ellipse?: EllipseGraphics; ellipsoid?: EllipsoidGraphics; label?: LabelGraphics; model?: ModelGraphics; path?: PathGraphics; point?: PointGraphics; polygon?: PolygonGraphics; polyline?: PolylineGraphics; polylineVolume?: PolylineVolumeGraphics; rectangle?: RectangleGraphics; wall?: WallGraphics });
         isAvailable(time: JulianDate);
         addProperty(propertyName: string);
         removeProperty(propertyName: string);

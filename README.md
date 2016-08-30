@@ -7,9 +7,14 @@ Augmented Environments Lab at Georgia Tech.  To support our research,
 we request that if you make use of this software, you let us know 
 how you used it by sending mail to Blair MacIntyre (blair@cc.gatech.edu).*
 
+## Support
+
+* [Documentation](http://docs.argonjs.io/)
+* [API Reference](http://argonjs.io/argon/)
+
 ## Quick Start
 
-To install this library manually, include this minified build in your project:
+To install the argon.js library manually, include this minified build in your project:
 
 * [argon.min.js](https://github.com/argonjs/argon/raw/master/argon.min.js)
 
@@ -39,15 +44,15 @@ If you aren't using es6 modules, `require` the package `"@argonjs/argon"`:
 var Argon = require('@argonjs/argon');
 ```
 
-If you aren’t using a module loader at all, no worries! The *argon.js* library
-will create a global `Argon` variable that exposes the same API.
+If you aren't using modules at all, no worries! The *argon.js* library will
+create a global `Argon` variable that exposes the same API. 
 
 ## Typescript
 
 If you are using Typescript 2.0 and would like to leverage 
-*argon.js* typings, simply install *argon.js* using `npm` 
+*argon.js* typings (you should!), simply install *argon.js* using `npm` 
 as described above (even if you are not using modules in your 
-probject). However, if you aren't using modules, just be sure
+project). However, if you aren't using modules, just be sure
 to include a triple-slash reference so that the typescript 
 compiler knows you are using *argon.js* globally:
 
@@ -70,14 +75,9 @@ compiler options:
 }
 ```
 
-After that, you should have rich typings in any editor that 
-supports Typescript! 
-We recommend [Visual Studio Code](https://code.visualstudio.com).
-
-## Support
-
-* [Documentation](http://docs.argonjs.io/)
-* [API Reference](http://argonjs.io/argon/)
+After that, you can enjoy rich editing support for
+*argon.js* in any editor that supports Typescript! We recommend 
+[Visual Studio Code](https://code.visualstudio.com).
 
 ## Build Guide
 
