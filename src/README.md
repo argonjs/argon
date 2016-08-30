@@ -18,7 +18,7 @@ one or more **Reality Augmentors**
 
 Traditionally, Augmented Reality (AR) apps have had to take on all three of these roles 
 at once. However, by separating these concerns out, each role can be easily swapped out 
-with another implmentation, allowing for a much for flexible and adaptive AR application 
+with another implmentation, allowing for a much more flexible and adaptive AR application 
 ecosystem. 
 
 The *argon.js* framework also anticipates a future in which AR-enabled browsers 
@@ -66,8 +66,10 @@ app.updateEvent.addEventListener(function (){
 In *argon.js*, all objects are represented in geospatial coordinates, using [cesium.js 
 Entities](https://cesiumjs.org/Cesium/Build/Documentation/Entity.html) (a subset 
 of Cesium's API is availabe in the `Argon.Cesium` namespace). [[ArgonSystem.context]] 
-is a [[ContextService]] instance whose purpose is to keep track of entities that you 
-can augment, or subscribe to new entities so that your app can be made aware of them.
+exposes a [[ContextService]] instance whose purpose is to keep track of entities that 
+you can augment, or subscribe to new entities so that your app can be made aware of 
+them. Via the [[ContextService.getEntityPose]] method, you can convert an Entity from 
+geospatial coordinates into your local scenegraph coordinates. 
 
 In your `update` event handler, you can, for example, query the current 
 pose of an Entity by calling [[ContextService.getEntityPose]] and 

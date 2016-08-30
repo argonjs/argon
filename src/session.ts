@@ -422,9 +422,6 @@ export class SessionService {
         return this.configuration.role === Role.REALITY_MANAGER || 
             this.configuration.role === Role.MANAGER; // TODO: phase out of using Role.MANAGER enum
     }
-
-    get isManager() { console.warn("Deprecated. Use isRealityManager()"); return this.isManager }
-
     /**
      * Returns true if this system represents a [[REALITY_AUGMENTOR]], meaning, 
      * it is running within a [[REALITY_MANAGER]]
@@ -433,8 +430,6 @@ export class SessionService {
         return this.configuration.role === Role.REALITY_AUGMENTOR ||
             this.configuration.role === Role.APPLICATION; // TODO: phase out use of Role.APPLICATION
     }
-    
-    get isApplicatsion() { console.warn("Deprecated. Use isRealityAugmenter()"); return this.isRealityAugmenter }
 
     /**
      * Returns true if this system is a [[REALITY_VIEW]]
@@ -442,6 +437,16 @@ export class SessionService {
     get isRealityView() {
         return this.configuration.role === Role.REALITY_VIEW;
     }
+
+    /**
+     * @private
+     */
+    private get isManager() { console.warn("Deprecated. Use isRealityManager()"); return this.isManager }
+
+    /**
+     * @private
+     */
+    private get isApplication() { console.warn("Deprecated. Use isRealityAugmenter()"); return this.isRealityAugmenter }
 
     /**
      * Throws an error if this system is not a [[REALITY_MANAGER]]

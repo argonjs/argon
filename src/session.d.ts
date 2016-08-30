@@ -179,17 +179,23 @@ export declare class SessionService {
      * Returns true if this system represents a [[REALITY_MANAGER]]
      */
     readonly isRealityManager: boolean;
-    readonly isManager: any;
     /**
      * Returns true if this system represents a [[REALITY_AUGMENTOR]], meaning,
      * it is running within a [[REALITY_MANAGER]]
      */
     readonly isRealityAugmenter: boolean;
-    readonly isApplicatsion: boolean;
     /**
      * Returns true if this system is a [[REALITY_VIEW]]
      */
     readonly isRealityView: boolean;
+    /**
+     * @private
+     */
+    private readonly isManager;
+    /**
+     * @private
+     */
+    private readonly isApplication;
     /**
      * Throws an error if this system is not a [[REALITY_MANAGER]]
      */

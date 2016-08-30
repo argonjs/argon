@@ -430,11 +430,6 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                     enumerable: true,
                     configurable: true
                 });
-                Object.defineProperty(SessionService.prototype, "isManager", {
-                    get: function () { console.warn("Deprecated. Use isRealityManager()"); return this.isManager; },
-                    enumerable: true,
-                    configurable: true
-                });
                 Object.defineProperty(SessionService.prototype, "isRealityAugmenter", {
                     /**
                      * Returns true if this system represents a [[REALITY_AUGMENTOR]], meaning,
@@ -447,11 +442,6 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                     enumerable: true,
                     configurable: true
                 });
-                Object.defineProperty(SessionService.prototype, "isApplicatsion", {
-                    get: function () { console.warn("Deprecated. Use isRealityAugmenter()"); return this.isRealityAugmenter; },
-                    enumerable: true,
-                    configurable: true
-                });
                 Object.defineProperty(SessionService.prototype, "isRealityView", {
                     /**
                      * Returns true if this system is a [[REALITY_VIEW]]
@@ -459,6 +449,22 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                     get: function () {
                         return this.configuration.role === common_1.Role.REALITY_VIEW;
                     },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(SessionService.prototype, "isManager", {
+                    /**
+                     * @private
+                     */
+                    get: function () { console.warn("Deprecated. Use isRealityManager()"); return this.isManager; },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(SessionService.prototype, "isApplication", {
+                    /**
+                     * @private
+                     */
+                    get: function () { console.warn("Deprecated. Use isRealityAugmenter()"); return this.isRealityAugmenter; },
                     enumerable: true,
                     configurable: true
                 });
