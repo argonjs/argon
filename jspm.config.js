@@ -17,9 +17,9 @@ SystemJS.config({
         "dist/src": {
             "defaultExtension": "js"
         },
-        "example": {
+        "test": {
             "map": {
-                "argon": "dist/argon.umd.js"
+                "@argonjs/argon": "dist/argon.min.js"
             }
         }
     },
