@@ -35,6 +35,10 @@ export class LiveVideoRealityLoader extends RealityLoader {
             });
         })
 
+        public isSupported() {
+            
+        }
+
         callback(realitySession);
         // Only connect after the caller is able to attach connectEvent handlers
         const messageChannel = this.sessionService.createSynchronousMessageChannel();
