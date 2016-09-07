@@ -8,10 +8,24 @@ import { VuforiaServiceDelegate } from '../vuforia'
 export class LiveVideoRealityLoader extends RealityLoader {
     public type = 'live-video';
 
+    public iframeElement: HTMLIFrameElement;
+    public videoElement: HTMLVideoElement;
+
     constructor(
-        private sessionService: SessionService,
-        private vuforiaDelegate: VuforiaServiceDelegate) {
+            private sessionService: SessionService,
+            private vuforiaDelegate: VuforiaServiceDelegate) {
         super();
+
+        this.iframeElement = document.createElement('iframe');
+        this.iframeElement.style.border = '0';
+        this.iframeElement.width = '100%';
+        this.iframeElement.height = '100%';
+
+        this.videoElement = document.createElement('video');
+        this.videoElement.width = this.iframeElement.width;
+        this.videoElement.height = this.iframeElement.height;
+        this.videoElement.controls = false;
+        this.iframeElement.appendChild(this.videoElement);
     }
 
     public load(reality: RealityView, callback: (realitySession: SessionPort) => void): void {
@@ -35,14 +49,14 @@ export class LiveVideoRealityLoader extends RealityLoader {
             });
         })
 
-        public isSupported() {
-            
-        }
-
         callback(realitySession);
         // Only connect after the caller is able to attach connectEvent handlers
         const messageChannel = this.sessionService.createSynchronousMessageChannel();
         realitySession.open(messageChannel.port1, this.sessionService.configuration);
         remoteRealitySession.open(messageChannel.port2, { role: Role.REALITY_VIEW });
+    }
+
+    public static isAvailable(): bool {
+        return false;
     }
 }

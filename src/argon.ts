@@ -95,7 +95,11 @@ export class ArgonSystem {
                 container.get(PinchZoomService);
             }
 
-            this.reality.setDefault(RealityView.EMPTY);
+            if (LiveVideoRealityLoader.isAvailable()) {
+                this.reality.setDefault(RealityView.LIVE_VIDEO);
+            } else {
+                this.reality.setDefault(RealityView.EMPTY);
+            }
         }
 
         // ensure the entire object graph is instantiated before connecting to the manager. 

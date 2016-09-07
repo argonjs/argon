@@ -4536,6 +4536,7 @@ $__System.register('15', ['c', 'f', '10', '11', '13'], function (exports_1, cont
             vuforia_1 = vuforia_1_1;
         }],
         execute: function () {
+            //import * as DetectRTC from 'detectrtc'
             LiveVideoRealityLoader = function (_super) {
                 __extends(LiveVideoRealityLoader, _super);
                 function LiveVideoRealityLoader(sessionService, vuforiaDelegate) {
@@ -4543,6 +4544,15 @@ $__System.register('15', ['c', 'f', '10', '11', '13'], function (exports_1, cont
                     this.sessionService = sessionService;
                     this.vuforiaDelegate = vuforiaDelegate;
                     this.type = 'live-video';
+                    this.iframeElement = document.createElement('iframe');
+                    this.iframeElement.style.border = '0';
+                    this.iframeElement.width = '100%';
+                    this.iframeElement.height = '100%';
+                    this.videoElement = document.createElement('video');
+                    this.videoElement.width = this.iframeElement.width;
+                    this.videoElement.height = this.iframeElement.height;
+                    this.videoElement.controls = false;
+                    this.iframeElement.appendChild(this.videoElement);
                 }
                 LiveVideoRealityLoader.prototype.load = function (reality, callback) {
                     var _this = this;
@@ -4566,6 +4576,9 @@ $__System.register('15', ['c', 'f', '10', '11', '13'], function (exports_1, cont
                     var messageChannel = this.sessionService.createSynchronousMessageChannel();
                     realitySession.open(messageChannel.port1, this.sessionService.configuration);
                     remoteRealitySession.open(messageChannel.port2, { role: common_1.Role.REALITY_VIEW });
+                };
+                LiveVideoRealityLoader.isAvailable = function () {
+                    return false;
                 };
                 LiveVideoRealityLoader = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, vuforia_1.VuforiaServiceDelegate)], LiveVideoRealityLoader);
                 return LiveVideoRealityLoader;
@@ -5984,6 +5997,10 @@ $__System.register("f", [], function (exports_1, context_1) {
           uri: 'reality:empty',
           title: 'Reality',
           providedReferenceFrames: ['FIXED']
+        };
+        RealityView.LIVE_VIDEO = {
+          uri: 'reality:live-video',
+          title: 'Live Video Reality'
         };
         return RealityView;
       }();
@@ -21266,7 +21283,11 @@ $__System.register('1', ['2', 'c', 'a', '7', '10', 'f', 'b', '9', '14', '11', 'd
                             // enable pinch-zoom
                             container.get(view_1.PinchZoomService);
                         }
-                        this.reality.setDefault(common_1.RealityView.EMPTY);
+                        if (live_video_1.LiveVideoRealityLoader.isAvailable()) {
+                            this.reality.setDefault(common_1.RealityView.LIVE_VIDEO);
+                        } else {
+                            this.reality.setDefault(common_1.RealityView.EMPTY);
+                        }
                     }
                     // ensure the entire object graph is instantiated before connecting to the manager. 
                     for (var _i = 0, _a = Object.keys(ArgonSystem.prototype); _i < _a.length; _i++) {
