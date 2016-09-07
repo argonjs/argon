@@ -8,7 +8,6 @@ import { VuforiaServiceDelegate } from '../vuforia'
 export class LiveVideoRealityLoader extends RealityLoader {
     public type = 'live-video';
 
-    public iframeElement: HTMLIFrameElement;
     public videoElement: HTMLVideoElement;
 
     constructor(
@@ -16,16 +15,10 @@ export class LiveVideoRealityLoader extends RealityLoader {
             private vuforiaDelegate: VuforiaServiceDelegate) {
         super();
 
-        this.iframeElement = document.createElement('iframe');
-        this.iframeElement.style.border = '0';
-        this.iframeElement.width = '100%';
-        this.iframeElement.height = '100%';
-
         this.videoElement = document.createElement('video');
-        this.videoElement.width = this.iframeElement.width;
-        this.videoElement.height = this.iframeElement.height;
+        this.videoElement.width = '100%';
+        this.videoElement.height = '100%';
         this.videoElement.controls = false;
-        this.iframeElement.appendChild(this.videoElement);
     }
 
     public load(reality: RealityView, callback: (realitySession: SessionPort) => void): void {
