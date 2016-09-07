@@ -4536,7 +4536,6 @@ $__System.register('15', ['c', 'f', '10', '11', '13'], function (exports_1, cont
             vuforia_1 = vuforia_1_1;
         }],
         execute: function () {
-            //import * as DetectRTC from 'detectrtc'
             LiveVideoRealityLoader = function (_super) {
                 __extends(LiveVideoRealityLoader, _super);
                 function LiveVideoRealityLoader(sessionService, vuforiaDelegate) {
@@ -4544,15 +4543,12 @@ $__System.register('15', ['c', 'f', '10', '11', '13'], function (exports_1, cont
                     this.sessionService = sessionService;
                     this.vuforiaDelegate = vuforiaDelegate;
                     this.type = 'live-video';
-                    this.iframeElement = document.createElement('iframe');
-                    this.iframeElement.style.border = '0';
-                    this.iframeElement.width = '100%';
-                    this.iframeElement.height = '100%';
-                    this.videoElement = document.createElement('video');
-                    this.videoElement.width = this.iframeElement.width;
-                    this.videoElement.height = this.iframeElement.height;
-                    this.videoElement.controls = false;
-                    this.iframeElement.appendChild(this.videoElement);
+                    if (typeof document !== 'undefined') {
+                        this.videoElement = document.createElement('video');
+                        this.videoElement.width = '100%';
+                        this.videoElement.height = '100%';
+                        this.videoElement.controls = false;
+                    }
                 }
                 LiveVideoRealityLoader.prototype.load = function (reality, callback) {
                     var _this = this;

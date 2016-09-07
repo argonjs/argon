@@ -8,17 +8,19 @@ import { VuforiaServiceDelegate } from '../vuforia'
 export class LiveVideoRealityLoader extends RealityLoader {
     public type = 'live-video';
 
-    public videoElement: HTMLVideoElement;
+    private videoElement: HTMLVideoElement;
 
     constructor(
             private sessionService: SessionService,
             private vuforiaDelegate: VuforiaServiceDelegate) {
         super();
 
-        this.videoElement = document.createElement('video');
-        this.videoElement.width = '100%';
-        this.videoElement.height = '100%';
-        this.videoElement.controls = false;
+        if (typeof document !== 'undefined') {
+            this.videoElement = document.createElement('video');
+            this.videoElement.width = '100%';
+            this.videoElement.height = '100%';
+            this.videoElement.controls = false;
+        }
     }
 
     public load(reality: RealityView, callback: (realitySession: SessionPort) => void): void {
