@@ -20,6 +20,7 @@ export class LiveVideoRealityLoader extends RealityLoader {
             this.videoElement.width = '100%';
             this.videoElement.height = '100%';
             this.videoElement.controls = false;
+            this.videoElement.autoplay = true;
         }
     }
 
@@ -44,6 +45,20 @@ export class LiveVideoRealityLoader extends RealityLoader {
             });
         })
 
+        if (typeof document !== 'undefined') {
+            const getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.webkitGetUserMedia;
+
+            let videoPromise = getUserMedia({ audio: false, video: true });
+
+            videoPromise.then((videoStream: MediaStream) => {
+                videoElement.src = window.URL.createObjectURL(videoStream);
+            });
+
+            videoPromise.catch((error: DOMException) => {
+                //remoteRealitySession.errorEvent.raiseEvent;
+            })
+        }
+
         callback(realitySession);
         // Only connect after the caller is able to attach connectEvent handlers
         const messageChannel = this.sessionService.createSynchronousMessageChannel();
@@ -52,6 +67,6 @@ export class LiveVideoRealityLoader extends RealityLoader {
     }
 
     public static isAvailable(): bool {
-        return !!(navigator.getUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
+        return !!(navigator.getUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.webkitGetUserMedia);
     }
 }
