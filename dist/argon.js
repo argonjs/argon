@@ -4574,7 +4574,7 @@ $__System.register('15', ['c', 'f', '10', '11', '13'], function (exports_1, cont
                     remoteRealitySession.open(messageChannel.port2, { role: common_1.Role.REALITY_VIEW });
                 };
                 LiveVideoRealityLoader.isAvailable = function () {
-                    return false;
+                    return !!(navigator.getUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
                 };
                 LiveVideoRealityLoader = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, vuforia_1.VuforiaServiceDelegate)], LiveVideoRealityLoader);
                 return LiveVideoRealityLoader;

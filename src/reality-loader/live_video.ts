@@ -52,6 +52,6 @@ export class LiveVideoRealityLoader extends RealityLoader {
     }
 
     public static isAvailable(): bool {
-        return false;
+        return !!(navigator.getUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
     }
 }
