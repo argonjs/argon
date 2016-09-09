@@ -4548,6 +4548,7 @@ $__System.register('15', ['c', 'f', '10', '11', '13'], function (exports_1, cont
                         this.videoElement.width = '100%';
                         this.videoElement.height = '100%';
                         this.videoElement.controls = false;
+                        this.videoElement.autoplay = true;
                     }
                 }
                 LiveVideoRealityLoader.prototype.load = function (reality, callback) {
@@ -4567,6 +4568,17 @@ $__System.register('15', ['c', 'f', '10', '11', '13'], function (exports_1, cont
                             _this.vuforiaDelegate.trackingEnabled = false;
                         });
                     });
+                    if (typeof document !== 'undefined') {
+                        var mediaDevices = navigator.mediaDevices;
+                        var getUserMedia = (mediaDevices.getUserMedia || mediaDevices.mozGetUserMedia || mediaDevices.msGetUserMedia || mediaDevices.webkitGetUserMedia).bind(mediaDevices);
+                        var videoPromise = getUserMedia({ audio: false, video: true });
+                        videoPromise.then(function (videoStream) {
+                            _this.videoElement.src = window.URL.createObjectURL(videoStream);
+                        });
+                        videoPromise.catch(function (error) {
+                            remoteRealitySession.errorEvent.raiseEvent(error);
+                        });
+                    }
                     callback(realitySession);
                     // Only connect after the caller is able to attach connectEvent handlers
                     var messageChannel = this.sessionService.createSynchronousMessageChannel();
@@ -4574,7 +4586,8 @@ $__System.register('15', ['c', 'f', '10', '11', '13'], function (exports_1, cont
                     remoteRealitySession.open(messageChannel.port2, { role: common_1.Role.REALITY_VIEW });
                 };
                 LiveVideoRealityLoader.isAvailable = function () {
-                    return !!(navigator.getUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
+                    var mediaDevices = navigator.mediaDevices;
+                    return !!(mediaDevices.getUserMedia || mediaDevices.mozGetUserMedia || mediaDevices.msGetUserMedia || mediaDevices.webkitGetUserMedia);
                 };
                 LiveVideoRealityLoader = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, vuforia_1.VuforiaServiceDelegate)], LiveVideoRealityLoader);
                 return LiveVideoRealityLoader;

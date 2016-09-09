@@ -46,16 +46,19 @@ export class LiveVideoRealityLoader extends RealityLoader {
         })
 
         if (typeof document !== 'undefined') {
-            const getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.webkitGetUserMedia;
+            const mediaDevices = navigator.mediaDevices;
 
-            let videoPromise = getUserMedia({ audio: false, video: true });
+            const getUserMedia = (mediaDevices.getUserMedia || mediaDevices.mozGetUserMedia ||
+                mediaDevices.msGetUserMedia || mediaDevices.webkitGetUserMedia).bind(mediaDevices);
+
+            const videoPromise = getUserMedia({ audio: false, video: true });
 
             videoPromise.then((videoStream: MediaStream) => {
-                videoElement.src = window.URL.createObjectURL(videoStream);
+                this.videoElement.src = window.URL.createObjectURL(videoStream);
             });
 
             videoPromise.catch((error: DOMException) => {
-                //remoteRealitySession.errorEvent.raiseEvent;
+                remoteRealitySession.errorEvent.raiseEvent(error);
             })
         }
 
@@ -67,6 +70,7 @@ export class LiveVideoRealityLoader extends RealityLoader {
     }
 
     public static isAvailable(): bool {
-        return !!(navigator.getUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.webkitGetUserMedia);
+        const mediaDevices = navigator.mediaDevices;
+        return !!(mediaDevices.getUserMedia || mediaDevices.mozGetUserMedia || mediaDevices.msGetUserMedia || mediaDevices.webkitGetUserMedia);
     }
 }
