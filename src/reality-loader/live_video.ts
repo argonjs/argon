@@ -17,8 +17,8 @@ export class LiveVideoRealityLoader extends RealityLoader {
 
         if (typeof document !== 'undefined') {
             this.videoElement = document.createElement('video');
-            this.videoElement.width = '100%';
-            this.videoElement.height = '100%';
+            document.body.appendChild(this.videoElement);
+            this.videoElement.style = 'width:100%; height:100%;';
             this.videoElement.controls = false;
             this.videoElement.autoplay = true;
         }

@@ -4545,8 +4545,8 @@ $__System.register('15', ['c', 'f', '10', '11', '13'], function (exports_1, cont
                     this.type = 'live-video';
                     if (typeof document !== 'undefined') {
                         this.videoElement = document.createElement('video');
-                        this.videoElement.width = '100%';
-                        this.videoElement.height = '100%';
+                        document.body.appendChild(this.videoElement);
+                        this.videoElement.style = 'width:100%; height:100%;';
                         this.videoElement.controls = false;
                         this.videoElement.autoplay = true;
                     }
