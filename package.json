@@ -5,6 +5,7 @@
   "typings": "index.d.ts",
   "jspm": {
     "format": "cjs",
+    "jspmPackage": true,
     "dependencies": {
       "aurelia-dependency-injection": "npm:aurelia-dependency-injection@^1.0.0-beta.1.1.4",
       "aurelia-polyfills": "npm:aurelia-polyfills@^1.0.0-beta.1.0.0",
@@ -148,4 +149,5 @@
     "typescript-formatter": "^2.3.0",
     "uglify-js": "^2.7.3"
   }
-}
+}
+
