@@ -19,7 +19,7 @@ SystemJS.config({
         },
         "test": {
             "map": {
-                "@argonjs/argon": "dist/argon.min.js"
+                "@argonjs/argon": "src/argon.ts!"
             }
         }
     },

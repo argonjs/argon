@@ -3,8 +3,9 @@ import { Role, RealityView } from '../common'
 import { SessionService, SessionPort } from '../session'
 import { RealityLoader } from '../reality'
 import { VuforiaServiceDelegate } from '../vuforia'
+import { ViewService } from '../view'
 
-@inject(SessionService, VuforiaServiceDelegate)
+@inject(SessionService, VuforiaServiceDelegate, ViewService)
 export class LiveVideoRealityLoader extends RealityLoader {
     public type = 'live-video';
 
@@ -12,15 +13,19 @@ export class LiveVideoRealityLoader extends RealityLoader {
 
     constructor(
             private sessionService: SessionService,
-            private vuforiaDelegate: VuforiaServiceDelegate) {
+            private vuforiaDelegate: VuforiaServiceDelegate,
+            private viewService: ViewService) {
         super();
 
         if (typeof document !== 'undefined') {
             this.videoElement = document.createElement('video');
-            document.body.appendChild(this.videoElement);
             this.videoElement.style = 'width:100%; height:100%;';
             this.videoElement.controls = false;
             this.videoElement.autoplay = true;
+
+            viewService.containingElementPromise.then((container) => {
+                container.insertBefore(this.videoElement, container.firstChild);
+            })
         }
     }
 
