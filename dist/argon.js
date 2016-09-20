@@ -4503,7 +4503,7 @@ $__System.register('13', ['c', '14', '10', '12'], function (exports_1, context_1
         }
     };
 });
-$__System.register('15', ['c', 'f', '10', '11', '13'], function (exports_1, context_1) {
+$__System.register('15', ['c', 'f', '10', '11', '13', '16'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -4521,7 +4521,7 @@ $__System.register('15', ['c', 'f', '10', '11', '13'], function (exports_1, cont
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
-    var aurelia_dependency_injection_1, common_1, session_1, reality_1, vuforia_1;
+    var aurelia_dependency_injection_1, common_1, session_1, reality_1, vuforia_1, view_1;
     var LiveVideoRealityLoader;
     return {
         setters: [function (aurelia_dependency_injection_1_1) {
@@ -4534,21 +4534,29 @@ $__System.register('15', ['c', 'f', '10', '11', '13'], function (exports_1, cont
             reality_1 = reality_1_1;
         }, function (vuforia_1_1) {
             vuforia_1 = vuforia_1_1;
+        }, function (view_1_1) {
+            view_1 = view_1_1;
         }],
         execute: function () {
             LiveVideoRealityLoader = function (_super) {
                 __extends(LiveVideoRealityLoader, _super);
-                function LiveVideoRealityLoader(sessionService, vuforiaDelegate) {
+                function LiveVideoRealityLoader(sessionService, vuforiaDelegate, viewService) {
+                    var _this = this;
                     _super.call(this);
                     this.sessionService = sessionService;
                     this.vuforiaDelegate = vuforiaDelegate;
+                    this.viewService = viewService;
                     this.type = 'live-video';
                     if (typeof document !== 'undefined') {
                         this.videoElement = document.createElement('video');
-                        document.body.appendChild(this.videoElement);
                         this.videoElement.style = 'width:100%; height:100%;';
                         this.videoElement.controls = false;
                         this.videoElement.autoplay = true;
+                        viewService.containingElementPromise.then(function (container) {
+                            container.insertBefore(_this.videoElement, container.firstChild);
+                        });
+                        this.canvas = document.createElement('canvas');
+                        this.context = this.canvas.getContext('2d');
                     }
                 }
                 LiveVideoRealityLoader.prototype.load = function (reality, callback) {
@@ -4589,7 +4597,13 @@ $__System.register('15', ['c', 'f', '10', '11', '13'], function (exports_1, cont
                     var mediaDevices = navigator.mediaDevices;
                     return !!(mediaDevices.getUserMedia || mediaDevices.mozGetUserMedia || mediaDevices.msGetUserMedia || mediaDevices.webkitGetUserMedia);
                 };
-                LiveVideoRealityLoader = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, vuforia_1.VuforiaServiceDelegate)], LiveVideoRealityLoader);
+                LiveVideoRealityLoader.prototype.getVideoFrame = function (x, y, width, height) {
+                    this.canvas.width = this.videoElement.videoWidth;
+                    this.canvas.height = this.videoElement.videoHeight;
+                    this.context.drawImage(this.videoElement, 0, 0, this.canvas.width, this.canvas.height);
+                    return this.context.getImageData(x, y, width, height);
+                };
+                LiveVideoRealityLoader = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, vuforia_1.VuforiaServiceDelegate, view_1.ViewService)], LiveVideoRealityLoader);
                 return LiveVideoRealityLoader;
             }(reality_1.RealityLoader);
             exports_1("LiveVideoRealityLoader", LiveVideoRealityLoader);
@@ -5136,7 +5150,7 @@ $__System.register('14', ['c', '10', '12'], function (exports_1, context_1) {
 });
 (function() {
 var define = $__System.amdDefine;
-define("16", ["exports", "3"], function(exports, _aureliaPal) {
+define("17", ["exports", "3"], function(exports, _aureliaPal) {
   'use strict';
   exports.__esModule = true;
   var _extends = Object.assign || function(target) {
@@ -5432,7 +5446,7 @@ define("3", ["exports"], function(exports) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("c", ["exports", "16", "3"], function(exports, _aureliaMetadata, _aureliaPal) {
+define("c", ["exports", "17", "3"], function(exports, _aureliaMetadata, _aureliaPal) {
   'use strict';
   exports.__esModule = true;
   var _classInvokers;
@@ -7055,7 +7069,7 @@ $__System.register('11', ['c', 'a', 'f', '14', '10', '12'], function (exports_1,
         }
     };
 });
-$__System.register('17', ['c', 'a', '10', 'b', '12', '14', '11'], function (exports_1, context_1) {
+$__System.register('16', ['c', 'a', '10', 'b', '12', '14', '11'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -7383,7 +7397,7 @@ $__System.register('17', ['c', 'a', '10', 'b', '12', '14', '11'], function (expo
         }
     };
 });
-$__System.register('18', ['c', '10', '11', '17'], function (exports_1, context_1) {
+$__System.register('18', ['c', '10', '11', '16'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -21123,7 +21137,7 @@ $__System.register('12', ['1d', 'a'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('1', ['2', 'c', 'a', '7', '10', 'f', 'b', '9', '14', '11', 'd', '17', '13', 'e', '15', '18', '12'], function (exports_1, context_1) {
+$__System.register('1', ['2', 'c', 'a', '7', '10', 'f', 'b', '9', '14', '11', 'd', '16', '13', 'e', '15', '18', '12'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;

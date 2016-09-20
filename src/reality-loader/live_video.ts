@@ -10,6 +10,8 @@ export class LiveVideoRealityLoader extends RealityLoader {
     public type = 'live-video';
 
     private videoElement: HTMLVideoElement;
+    private canvas: HTMLCanvasElement;
+    private context: RenderingContext;
 
     constructor(
             private sessionService: SessionService,
@@ -25,7 +27,10 @@ export class LiveVideoRealityLoader extends RealityLoader {
 
             viewService.containingElementPromise.then((container) => {
                 container.insertBefore(this.videoElement, container.firstChild);
-            })
+            });
+
+            this.canvas = document.createElement('canvas');
+            this.context = this.canvas.getContext('2d');
         }
     }
 
@@ -77,5 +82,12 @@ export class LiveVideoRealityLoader extends RealityLoader {
     public static isAvailable(): bool {
         const mediaDevices = navigator.mediaDevices;
         return !!(mediaDevices.getUserMedia || mediaDevices.mozGetUserMedia || mediaDevices.msGetUserMedia || mediaDevices.webkitGetUserMedia);
+    }
+
+    public getVideoFrame(x: number, y: number, width: number, height: number): ImageData {
+        this.canvas.width = this.videoElement.videoWidth;
+        this.canvas.height = this.videoElement.videoHeight;
+        this.context.drawImage(this.videoElement, 0, 0, this.canvas.width, this.canvas.height);
+        return this.context.getImageData(x, y, width, height);
     }
 }
