@@ -16,7 +16,7 @@ how you used it by sending mail to Blair MacIntyre (blair@cc.gatech.edu).*
 
 To install the argon.js library manually, include this minified build in your project:
 
-* [argon.min.js](https://github.com/argonjs/argon/raw/master/dust/argon.min.js)
+* [argon.min.js](https://github.com/argonjs/argon/raw/master/dist/argon.min.js)
 
 To install with npm:
 
