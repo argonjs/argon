@@ -1,23 +1,31 @@
 import { inject } from 'aurelia-dependency-injection'
 import { Role, RealityView } from '../common'
 import { SessionService, SessionPort } from '../session'
+import { DeviceService } from '../device'
+import { TimerService } from '../timer'
 import { RealityLoader } from '../reality'
 import { VuforiaServiceDelegate } from '../vuforia'
 import { ViewService } from '../view'
+import { getSerializedEntityPose } from '../utils'
 
-@inject(SessionService, VuforiaServiceDelegate, ViewService)
+@inject(SessionService, VuforiaServiceDelegate, ViewService, DeviceService, TimerService)
 export class LiveVideoRealityLoader extends RealityLoader {
     public type = 'live-video';
 
     private videoElement: HTMLVideoElement;
+    private lastFrameTime: number;
     private canvas: HTMLCanvasElement;
     private context: RenderingContext;
 
     constructor(
             private sessionService: SessionService,
             private vuforiaDelegate: VuforiaServiceDelegate,
-            private viewService: ViewService) {
+            private viewService: ViewService,
+            private deviceService: DeviceService,
+            private timer: TimerService) {
         super();
+
+        this.lastFrameTime = 0;
 
         if (typeof document !== 'undefined') {
             this.videoElement = document.createElement('video');
@@ -53,9 +61,9 @@ export class LiveVideoRealityLoader extends RealityLoader {
                 this.vuforiaDelegate.videoEnabled = false;
                 this.vuforiaDelegate.trackingEnabled = false;
             });
-        })
+        });
 
-        if (typeof document !== 'undefined') {
+        if (typeof document !== 'undefined' && typeof navigator !== 'undefined') {
             const mediaDevices = navigator.mediaDevices;
 
             const getUserMedia = (mediaDevices.getUserMedia || mediaDevices.mozGetUserMedia ||
@@ -68,8 +76,30 @@ export class LiveVideoRealityLoader extends RealityLoader {
             });
 
             videoPromise.catch((error: DOMException) => {
-                remoteRealitySession.errorEvent.raiseEvent(error);
-            })
+                remoteRealitySession.errorEvent.raiseEvent(error);  
+            });
+
+            let firstFrame = true;
+
+            const update = (time: JulianDate, index: number) => {
+                if (firstFrame || this.videoElement.currentTime != this.lastFrameTime) {
+                    firstFrame = false;
+                    this.lastFrameTime = this.videoElement.currentTime;
+                    this.deviceService.update();
+                    const frameState: SerializedPartialFrameState = {
+                        time,
+                        index,
+                        eye: {
+                            pose: getSerializedEntityPose(this.deviceService.displayEntity, time)
+                        }
+                    };
+                    remoteRealitySession.send('ar.reality.frameState', frameState);
+                }
+
+                this.timer.requestFrame(update);
+            };
+
+            this.timer.requestFrame(update);
         }
 
         callback(realitySession);
@@ -80,8 +110,12 @@ export class LiveVideoRealityLoader extends RealityLoader {
     }
 
     public static isAvailable(): bool {
-        const mediaDevices = navigator.mediaDevices;
-        return !!(mediaDevices.getUserMedia || mediaDevices.mozGetUserMedia || mediaDevices.msGetUserMedia || mediaDevices.webkitGetUserMedia);
+        if (typeof navigator !== 'undefined') {
+            const mediaDevices = navigator.mediaDevices;
+            return !!(mediaDevices.getUserMedia || mediaDevices.mozGetUserMedia || mediaDevices.msGetUserMedia || mediaDevices.webkitGetUserMedia);
+        } else {
+            return false;
+        }
     }
 
     public getVideoFrame(x: number, y: number, width: number, height: number): ImageData {

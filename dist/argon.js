@@ -2691,7 +2691,92 @@ var define = $__System.amdDefine;
 }));
 
 })();
-$__System.registerDynamic("8", [], true, function ($__require, exports, module) {
+$__System.register('8', ['f', '9', 'a', 'b', 'c', 'd', 'e'], function (exports_1, context_1) {
+    "use strict";
+
+    var __moduleName = context_1 && context_1.id;
+    var __extends = this && this.__extends || function (d, b) {
+        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+        function __() {
+            this.constructor = d;
+        }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+    var __decorate = this && this.__decorate || function (decorators, target, key, desc) {
+        var c = arguments.length,
+            r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+            d;
+        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+        return c > 3 && r && Object.defineProperty(target, key, r), r;
+    };
+    var aurelia_dependency_injection_1, common_1, session_1, device_1, timer_1, reality_1, utils_1;
+    var EmptyRealityLoader;
+    return {
+        setters: [function (aurelia_dependency_injection_1_1) {
+            aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
+        }, function (common_1_1) {
+            common_1 = common_1_1;
+        }, function (session_1_1) {
+            session_1 = session_1_1;
+        }, function (device_1_1) {
+            device_1 = device_1_1;
+        }, function (timer_1_1) {
+            timer_1 = timer_1_1;
+        }, function (reality_1_1) {
+            reality_1 = reality_1_1;
+        }, function (utils_1_1) {
+            utils_1 = utils_1_1;
+        }],
+        execute: function () {
+            EmptyRealityLoader = function (_super) {
+                __extends(EmptyRealityLoader, _super);
+                function EmptyRealityLoader(sessionService, deviceService, timer) {
+                    _super.call(this);
+                    this.sessionService = sessionService;
+                    this.deviceService = deviceService;
+                    this.timer = timer;
+                    this.type = 'empty';
+                }
+                EmptyRealityLoader.prototype.load = function (reality, callback) {
+                    var _this = this;
+                    var realitySession = this.sessionService.addManagedSessionPort(reality.uri);
+                    var remoteRealitySession = this.sessionService.createSessionPort();
+                    var doUpdate = true;
+                    remoteRealitySession.on['ar.context.update'] = function () {};
+                    remoteRealitySession.connectEvent.addEventListener(function () {
+                        var update = function (time, index) {
+                            if (doUpdate) {
+                                _this.deviceService.update();
+                                var frameState = {
+                                    time: time,
+                                    index: index,
+                                    eye: {
+                                        pose: utils_1.getSerializedEntityPose(_this.deviceService.displayEntity, time)
+                                    }
+                                };
+                                remoteRealitySession.send('ar.reality.frameState', frameState);
+                                _this.timer.requestFrame(update);
+                            }
+                        };
+                        _this.timer.requestFrame(update);
+                    });
+                    remoteRealitySession.closeEvent.addEventListener(function () {
+                        doUpdate = false;
+                    });
+                    callback(realitySession);
+                    // Only connect after the caller is able to attach connectEvent handlers
+                    var messageChannel = this.sessionService.createSynchronousMessageChannel();
+                    realitySession.open(messageChannel.port1, this.sessionService.configuration);
+                    remoteRealitySession.open(messageChannel.port2, { role: common_1.Role.REALITY_VIEW });
+                };
+                EmptyRealityLoader = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, device_1.DeviceService, timer_1.TimerService)], EmptyRealityLoader);
+                return EmptyRealityLoader;
+            }(reality_1.RealityLoader);
+            exports_1("EmptyRealityLoader", EmptyRealityLoader);
+        }
+    };
+});
+$__System.registerDynamic("10", [], true, function ($__require, exports, module) {
     var define,
         global = this || self,
         GLOBAL = global;
@@ -3637,7 +3722,7 @@ $__System.registerDynamic("8", [], true, function ($__require, exports, module) 
     }());
     return module.exports;
 });
-$__System.register('9', ['c', 'a', 'b', '8'], function (exports_1, context_1) {
+$__System.register('b', ['f', '11', '12', '10'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -3837,7 +3922,7 @@ $__System.register('9', ['c', 'a', 'b', '8'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('d', ['a'], function (exports_1, context_1) {
+$__System.register('c', ['11'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -3896,92 +3981,7 @@ $__System.register('d', ['a'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('e', ['c', 'f', '10', '9', 'd', '11', '12'], function (exports_1, context_1) {
-    "use strict";
-
-    var __moduleName = context_1 && context_1.id;
-    var __extends = this && this.__extends || function (d, b) {
-        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-        function __() {
-            this.constructor = d;
-        }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-    var __decorate = this && this.__decorate || function (decorators, target, key, desc) {
-        var c = arguments.length,
-            r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
-            d;
-        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-        return c > 3 && r && Object.defineProperty(target, key, r), r;
-    };
-    var aurelia_dependency_injection_1, common_1, session_1, device_1, timer_1, reality_1, utils_1;
-    var EmptyRealityLoader;
-    return {
-        setters: [function (aurelia_dependency_injection_1_1) {
-            aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
-        }, function (common_1_1) {
-            common_1 = common_1_1;
-        }, function (session_1_1) {
-            session_1 = session_1_1;
-        }, function (device_1_1) {
-            device_1 = device_1_1;
-        }, function (timer_1_1) {
-            timer_1 = timer_1_1;
-        }, function (reality_1_1) {
-            reality_1 = reality_1_1;
-        }, function (utils_1_1) {
-            utils_1 = utils_1_1;
-        }],
-        execute: function () {
-            EmptyRealityLoader = function (_super) {
-                __extends(EmptyRealityLoader, _super);
-                function EmptyRealityLoader(sessionService, deviceService, timer) {
-                    _super.call(this);
-                    this.sessionService = sessionService;
-                    this.deviceService = deviceService;
-                    this.timer = timer;
-                    this.type = 'empty';
-                }
-                EmptyRealityLoader.prototype.load = function (reality, callback) {
-                    var _this = this;
-                    var realitySession = this.sessionService.addManagedSessionPort(reality.uri);
-                    var remoteRealitySession = this.sessionService.createSessionPort();
-                    var doUpdate = true;
-                    remoteRealitySession.on['ar.context.update'] = function () {};
-                    remoteRealitySession.connectEvent.addEventListener(function () {
-                        var update = function (time, index) {
-                            if (doUpdate) {
-                                _this.deviceService.update();
-                                var frameState = {
-                                    time: time,
-                                    index: index,
-                                    eye: {
-                                        pose: utils_1.getSerializedEntityPose(_this.deviceService.displayEntity, time)
-                                    }
-                                };
-                                remoteRealitySession.send('ar.reality.frameState', frameState);
-                                _this.timer.requestFrame(update);
-                            }
-                        };
-                        _this.timer.requestFrame(update);
-                    });
-                    remoteRealitySession.closeEvent.addEventListener(function () {
-                        doUpdate = false;
-                    });
-                    callback(realitySession);
-                    // Only connect after the caller is able to attach connectEvent handlers
-                    var messageChannel = this.sessionService.createSynchronousMessageChannel();
-                    realitySession.open(messageChannel.port1, this.sessionService.configuration);
-                    remoteRealitySession.open(messageChannel.port2, { role: common_1.Role.REALITY_VIEW });
-                };
-                EmptyRealityLoader = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, device_1.DeviceService, timer_1.TimerService)], EmptyRealityLoader);
-                return EmptyRealityLoader;
-            }(reality_1.RealityLoader);
-            exports_1("EmptyRealityLoader", EmptyRealityLoader);
-        }
-    };
-});
-$__System.register('13', ['c', '14', '10', '12'], function (exports_1, context_1) {
+$__System.register('13', ['f', '14', 'a', 'e'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -4503,7 +4503,7 @@ $__System.register('13', ['c', '14', '10', '12'], function (exports_1, context_1
         }
     };
 });
-$__System.register('15', ['c', 'f', '10', '11', '13', '16'], function (exports_1, context_1) {
+$__System.register('15', ['f', '9', 'a', 'b', 'c', 'd', '13', '16', 'e'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -4521,7 +4521,7 @@ $__System.register('15', ['c', 'f', '10', '11', '13', '16'], function (exports_1
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
-    var aurelia_dependency_injection_1, common_1, session_1, reality_1, vuforia_1, view_1;
+    var aurelia_dependency_injection_1, common_1, session_1, device_1, timer_1, reality_1, vuforia_1, view_1, utils_1;
     var LiveVideoRealityLoader;
     return {
         setters: [function (aurelia_dependency_injection_1_1) {
@@ -4530,23 +4530,32 @@ $__System.register('15', ['c', 'f', '10', '11', '13', '16'], function (exports_1
             common_1 = common_1_1;
         }, function (session_1_1) {
             session_1 = session_1_1;
+        }, function (device_1_1) {
+            device_1 = device_1_1;
+        }, function (timer_1_1) {
+            timer_1 = timer_1_1;
         }, function (reality_1_1) {
             reality_1 = reality_1_1;
         }, function (vuforia_1_1) {
             vuforia_1 = vuforia_1_1;
         }, function (view_1_1) {
             view_1 = view_1_1;
+        }, function (utils_1_1) {
+            utils_1 = utils_1_1;
         }],
         execute: function () {
             LiveVideoRealityLoader = function (_super) {
                 __extends(LiveVideoRealityLoader, _super);
-                function LiveVideoRealityLoader(sessionService, vuforiaDelegate, viewService) {
+                function LiveVideoRealityLoader(sessionService, vuforiaDelegate, viewService, deviceService, timer) {
                     var _this = this;
                     _super.call(this);
                     this.sessionService = sessionService;
                     this.vuforiaDelegate = vuforiaDelegate;
                     this.viewService = viewService;
+                    this.deviceService = deviceService;
+                    this.timer = timer;
                     this.type = 'live-video';
+                    this.lastFrameTime = 0;
                     if (typeof document !== 'undefined') {
                         this.videoElement = document.createElement('video');
                         this.videoElement.style = 'width:100%; height:100%;';
@@ -4576,7 +4585,7 @@ $__System.register('15', ['c', 'f', '10', '11', '13', '16'], function (exports_1
                             _this.vuforiaDelegate.trackingEnabled = false;
                         });
                     });
-                    if (typeof document !== 'undefined') {
+                    if (typeof document !== 'undefined' && typeof navigator !== 'undefined') {
                         var mediaDevices = navigator.mediaDevices;
                         var getUserMedia = (mediaDevices.getUserMedia || mediaDevices.mozGetUserMedia || mediaDevices.msGetUserMedia || mediaDevices.webkitGetUserMedia).bind(mediaDevices);
                         var videoPromise = getUserMedia({ audio: false, video: true });
@@ -4586,6 +4595,24 @@ $__System.register('15', ['c', 'f', '10', '11', '13', '16'], function (exports_1
                         videoPromise.catch(function (error) {
                             remoteRealitySession.errorEvent.raiseEvent(error);
                         });
+                        var firstFrame_1 = true;
+                        var update_1 = function (time, index) {
+                            if (firstFrame_1 || _this.videoElement.currentTime != _this.lastFrameTime) {
+                                firstFrame_1 = false;
+                                _this.lastFrameTime = _this.videoElement.currentTime;
+                                _this.deviceService.update();
+                                var frameState = {
+                                    time: time,
+                                    index: index,
+                                    eye: {
+                                        pose: utils_1.getSerializedEntityPose(_this.deviceService.displayEntity, time)
+                                    }
+                                };
+                                remoteRealitySession.send('ar.reality.frameState', frameState);
+                            }
+                            _this.timer.requestFrame(update_1);
+                        };
+                        this.timer.requestFrame(update_1);
                     }
                     callback(realitySession);
                     // Only connect after the caller is able to attach connectEvent handlers
@@ -4594,8 +4621,12 @@ $__System.register('15', ['c', 'f', '10', '11', '13', '16'], function (exports_1
                     remoteRealitySession.open(messageChannel.port2, { role: common_1.Role.REALITY_VIEW });
                 };
                 LiveVideoRealityLoader.isAvailable = function () {
-                    var mediaDevices = navigator.mediaDevices;
-                    return !!(mediaDevices.getUserMedia || mediaDevices.mozGetUserMedia || mediaDevices.msGetUserMedia || mediaDevices.webkitGetUserMedia);
+                    if (typeof navigator !== 'undefined') {
+                        var mediaDevices = navigator.mediaDevices;
+                        return !!(mediaDevices.getUserMedia || mediaDevices.mozGetUserMedia || mediaDevices.msGetUserMedia || mediaDevices.webkitGetUserMedia);
+                    } else {
+                        return false;
+                    }
                 };
                 LiveVideoRealityLoader.prototype.getVideoFrame = function (x, y, width, height) {
                     this.canvas.width = this.videoElement.videoWidth;
@@ -4603,14 +4634,14 @@ $__System.register('15', ['c', 'f', '10', '11', '13', '16'], function (exports_1
                     this.context.drawImage(this.videoElement, 0, 0, this.canvas.width, this.canvas.height);
                     return this.context.getImageData(x, y, width, height);
                 };
-                LiveVideoRealityLoader = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, vuforia_1.VuforiaServiceDelegate, view_1.ViewService)], LiveVideoRealityLoader);
+                LiveVideoRealityLoader = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, vuforia_1.VuforiaServiceDelegate, view_1.ViewService, device_1.DeviceService, timer_1.TimerService)], LiveVideoRealityLoader);
                 return LiveVideoRealityLoader;
             }(reality_1.RealityLoader);
             exports_1("LiveVideoRealityLoader", LiveVideoRealityLoader);
         }
     };
 });
-$__System.register('b', ['c', 'a', '10', '11', '12'], function (exports_1, context_1) {
+$__System.register('12', ['f', '11', 'a', 'd', 'e'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -5023,7 +5054,7 @@ $__System.register('b', ['c', 'a', '10', '11', '12'], function (exports_1, conte
         }
     };
 });
-$__System.register('14', ['c', '10', '12'], function (exports_1, context_1) {
+$__System.register('14', ['f', 'a', 'e'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -5446,7 +5477,7 @@ define("3", ["exports"], function(exports) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("c", ["exports", "17", "3"], function(exports, _aureliaMetadata, _aureliaPal) {
+define("f", ["exports", "17", "3"], function(exports, _aureliaMetadata, _aureliaPal) {
   'use strict';
   exports.__esModule = true;
   var _classInvokers;
@@ -5938,7 +5969,7 @@ define("c", ["exports", "17", "3"], function(exports, _aureliaMetadata, _aurelia
 });
 
 })();
-$__System.register("f", [], function (exports_1, context_1) {
+$__System.register("9", [], function (exports_1, context_1) {
   "use strict";
 
   var __moduleName = context_1 && context_1.id;
@@ -6031,7 +6062,7 @@ $__System.register("f", [], function (exports_1, context_1) {
     }
   };
 });
-$__System.register('10', ['a', 'c', 'f', '12'], function (exports_1, context_1) {
+$__System.register('a', ['11', 'f', '9', 'e'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -6603,7 +6634,7 @@ $__System.register('10', ['a', 'c', 'f', '12'], function (exports_1, context_1) 
         }
     };
 });
-$__System.register('11', ['c', 'a', 'f', '14', '10', '12'], function (exports_1, context_1) {
+$__System.register('d', ['f', '11', '9', '14', 'a', 'e'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -7069,7 +7100,7 @@ $__System.register('11', ['c', 'a', 'f', '14', '10', '12'], function (exports_1,
         }
     };
 });
-$__System.register('16', ['c', 'a', '10', 'b', '12', '14', '11'], function (exports_1, context_1) {
+$__System.register('16', ['f', '11', 'a', '12', 'e', '14', 'd'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -7397,7 +7428,7 @@ $__System.register('16', ['c', 'a', '10', 'b', '12', '14', '11'], function (expo
         }
     };
 });
-$__System.register('18', ['c', '10', '11', '16'], function (exports_1, context_1) {
+$__System.register('18', ['f', 'a', 'd', '16'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -20417,7 +20448,7 @@ define("6e", ["2c", "3b", "23", "1a", "1c", "3c", "66", "6b", "6c", "27", "33", 
 })();
 // Add functionality for keeping a moving window of samples per SampledProperty,
 // so that the data doesn't accumulate indefinitely
-$__System.register("6f", ["a"], function (exports_1, context_1) {
+$__System.register("6f", ["11"], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -20481,7 +20512,7 @@ $__System.register("6f", ["a"], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('a', ['4c', '19', '45', '2c', '43', '21', '22', '25', '2b', '2f', '26', '23', '1a', '1c', '3c', '28', '29', '1d', '4a', '3a', '3d', '24', '27', '32', '33', '3e', '3f', '40', '2e', '36', '34', '46', '2d', '47', '48', '49', '35', '64', '6e', '6f'], function (exports_1, context_1) {
+$__System.register('11', ['4c', '19', '45', '2c', '43', '21', '22', '25', '2b', '2f', '26', '23', '1a', '1c', '3c', '28', '29', '1d', '4a', '3a', '3d', '24', '27', '32', '33', '3e', '3f', '40', '2e', '36', '34', '46', '2d', '47', '48', '49', '35', '64', '6e', '6f'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -20646,7 +20677,7 @@ $__System.register('a', ['4c', '19', '45', '2c', '43', '21', '22', '25', '2b', '
         execute: function () {}
     };
 });
-$__System.register('12', ['1d', 'a'], function (exports_1, context_1) {
+$__System.register('e', ['1d', '11'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -21137,7 +21168,7 @@ $__System.register('12', ['1d', 'a'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('1', ['2', 'c', 'a', '7', '10', 'f', 'b', '9', '14', '11', 'd', '16', '13', 'e', '15', '18', '12'], function (exports_1, context_1) {
+$__System.register('1', ['2', 'f', '11', '7', 'a', '9', '12', 'b', '14', 'd', 'c', '16', '13', '8', '15', '18', 'e'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
