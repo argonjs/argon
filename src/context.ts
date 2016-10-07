@@ -14,7 +14,7 @@ import {
     ReferenceFrame,
     defined
 } from './cesium/cesium-imports'
-import { SerializedEntityPoseMap, SerializedFrameState } from './common'
+import { SerializedEntityPoseMap, FrameState, Role } from './common'
 import { SessionService, SessionPort } from './session'
 import { RealityService } from './reality'
 import { Event, getRootReferenceFrame, getSerializedEntityPose, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame } from './utils'
@@ -95,12 +95,6 @@ export class ContextService {
     public renderEvent = new Event<Frame>();
 
     /**
-     * The set of entities representing well-known reference frames. 
-     * These are assumed to be readily available to applications. 
-     */
-    public wellKnownReferenceFrames = new EntityCollection();
-
-    /**
      * The set of subscribed entities.
      */
     public subscribedEntities = new EntityCollection();
@@ -160,7 +154,7 @@ export class ContextService {
     /**
      * The serialized frame state for this frame
      */
-    public get serializedFrameState(): SerializedFrameState | undefined {
+    public get serializedFrameState(): FrameState | undefined {
         return this._serializedState;
     }
 
@@ -170,7 +164,7 @@ export class ContextService {
     public maxDeltaTime = 1 / 3 * 1000;
 
     // the current serialized frame state
-    private _serializedState?: SerializedFrameState;
+    private _serializedState?: FrameState;
 
     private _frame: Frame = {
         time: new JulianDate(0, 0),
@@ -188,16 +182,27 @@ export class ContextService {
     private _updatingEntities = new Set<string>();
     private _knownEntities = new Set<string>();
 
+    private _frameIndex = 0;
+
     constructor(
         private sessionService: SessionService,
         private realityService: RealityService) {
 
-        this.entities.addCollection(this.wellKnownReferenceFrames);
         this.entities.addCollection(this.subscribedEntities);
-
         this.subscribedEntities.add(this.user);
 
-        if (this.sessionService.isRealityManager) {
+        if (this.sessionService.isRealityManager || this.sessionService.isRealityViewer) {
+
+            this.realityService.viewStateEvent.addEventListener((viewState) => {
+                this._update({
+                    time: viewState.time,
+                    index: this._frameIndex++,
+                    reality: this.realityService.getCurrent(),
+                    entities: {},
+                    view: viewState
+                });
+            })
+
             this.realityService.frameEvent.addEventListener((state) => {
                 this._update(state);
             });
@@ -213,7 +218,7 @@ export class ContextService {
 
             })
         } else {
-            this.sessionService.manager.on['ar.context.update'] = (state: SerializedFrameState) => {
+            this.sessionService.manager.on['ar.context.update'] = (state: FrameState) => {
                 this._update(state);
             }
         }
@@ -321,13 +326,14 @@ export class ContextService {
     }
 
     // TODO: This function is called a lot. Potential for optimization. 
-    private _update(serializedState: SerializedFrameState) {
+    private _update(serializedState: FrameState) {
         // if this session is the manager, we need to update our child sessions a.s.a.p
         if (this.sessionService.isRealityManager) {
             delete serializedState.entities[this.user.id]; // children don't need this
             this._entityPoseCache = {};
             for (const session of this.sessionService.managedSessions) {
-                this._sendUpdateForSession(serializedState, session);
+                if (Role.isRealityAugmenter(session.info.role))
+                    this._sendUpdateForSession(serializedState, session);
             }
         }
 
@@ -375,12 +381,10 @@ export class ContextService {
         this.renderEvent.raiseEvent(frame);
     }
 
-    public updateEntityFromFrameState(id: string, state: SerializedFrameState) {
+    public updateEntityFromFrameState(id: string, state: FrameState) {
         const entityPose = state.entities[id];
         if (!entityPose) {
-            if (!this.wellKnownReferenceFrames.getById(id)) {
-                this.subscribedEntities.getOrCreateEntity(id);
-            }
+            this.subscribedEntities.getOrCreateEntity(id);
             return;
         }
 
@@ -433,7 +437,7 @@ export class ContextService {
 
     }
 
-    private _updateLocalOrigin(state: SerializedFrameState) {
+    private _updateLocalOrigin(state: FrameState) {
         const userRootFrame = getRootReferenceFrame(this.user);
         const userPosition = this.user.position &&
             this.user.position.getValueInReferenceFrame(<JulianDate>state.time, userRootFrame, scratchCartesian3);
@@ -460,7 +464,7 @@ export class ContextService {
         }
     }
 
-    private _sendUpdateForSession(parentState: SerializedFrameState, session: SessionPort) {
+    private _sendUpdateForSession(parentState: FrameState, session: SessionPort) {
 
         const sessionPoseMap: SerializedEntityPoseMap = {}
 
@@ -473,7 +477,7 @@ export class ContextService {
             this._addEntityAndAncestorsToPoseMap(sessionPoseMap, id, <JulianDate>parentState.time);
         })
 
-        const sessionState: SerializedFrameState = {
+        const sessionState: FrameState = {
             reality: parentState.reality,
             index: parentState.index,
             time: parentState.time,

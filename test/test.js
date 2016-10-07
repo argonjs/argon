@@ -37,14 +37,14 @@ System.register(['chai', '../src/argon'], function(exports_1, context_1) {
                         expect(manager.session.configuration.role).to.equal(Argon.Role.REALITY_MANAGER);
                     });
                     it('should create an ArgonSystem with Role=Role.APPLICATION', function () {
-                        var app = new Argon.ArgonSystem({ role: Argon.Role.REALITY_AUGMENTOR });
+                        var app = new Argon.ArgonSystem({ role: Argon.Role.REALITY_AUGMENTER });
                         expect(app).to.be.an.instanceOf(Argon.ArgonSystem);
-                        expect(app.session.configuration.role).to.equal(Argon.Role.REALITY_AUGMENTOR);
+                        expect(app.session.configuration.role).to.equal(Argon.Role.REALITY_AUGMENTER);
                     });
                     it('should create an ArgonSystem with Role=Role.REALITY_VIEW', function () {
-                        var app = new Argon.ArgonSystem({ role: Argon.Role.REALITY_VIEW });
+                        var app = new Argon.ArgonSystem({ role: Argon.Role.REALITY_VIEWER });
                         expect(app).to.be.an.instanceOf(Argon.ArgonSystem);
-                        expect(app.session.configuration.role).to.equal(Argon.Role.REALITY_VIEW);
+                        expect(app.session.configuration.role).to.equal(Argon.Role.REALITY_VIEWER);
                     });
                     it('should raise a focus event when Role=Role.MANAGER', function (done) {
                         var manager = new Argon.ArgonSystem({ role: Argon.Role.REALITY_MANAGER });
@@ -84,8 +84,8 @@ System.register(['chai', '../src/argon'], function(exports_1, context_1) {
                         var sessionService = container.get(Argon.SessionService);
                         realityService.registerLoader(container.get(Argon.EmptyRealityLoader));
                         realityService.setDefault({ uri: 'reality:empty', title: 'My Custom Reality' });
-                        var removeListener = realityService.frameEvent.addEventListener(function (state) {
-                            expect(Argon.RealityView.getType(state.reality) === 'empty');
+                        var removeListener = realityService.viewStateEvent.addEventListener(function (state) {
+                            expect(Argon.RealityViewer.getType(realityService.getCurrent()) === 'empty');
                             expect(state.time).to.haveOwnProperty('dayNumber');
                             expect(state.time).to.haveOwnProperty('secondsOfDay');
                             expect(realityService.getDesired()).to.be.undefined;
@@ -107,7 +107,7 @@ System.register(['chai', '../src/argon'], function(exports_1, context_1) {
                                 var remoteRealitySession = sessionService.createSessionPort();
                                 var messageChannel = sessionService.createMessageChannel();
                                 callback(realitySession);
-                                remoteRealitySession.open(messageChannel.port1, { role: Argon.Role.REALITY_VIEW });
+                                remoteRealitySession.open(messageChannel.port1, { role: Argon.Role.REALITY_VIEWER });
                                 realitySession.open(messageChannel.port2, sessionService.configuration);
                             };
                             return CustomRealitySetupHandler;
@@ -119,7 +119,7 @@ System.register(['chai', '../src/argon'], function(exports_1, context_1) {
                         var sessionService = container.get(Argon.SessionService);
                         realityService.registerLoader(container.get(CustomRealitySetupHandler));
                         var removeListener = realityService.changeEvent.addEventListener(function () {
-                            expect(Argon.RealityView.getType(realityService.getCurrent())).to.equal(type);
+                            expect(Argon.RealityViewer.getType(realityService.getCurrent())).to.equal(type);
                             removeListener();
                             done();
                         });
@@ -184,11 +184,11 @@ System.register(['chai', '../src/argon'], function(exports_1, context_1) {
                             checkDone();
                         });
                         remoteSession.connectEvent.addEventListener(function () {
-                            expect(remoteSession.info.role).to.equal(Argon.Role.REALITY_AUGMENTOR);
+                            expect(remoteSession.info.role).to.equal(Argon.Role.REALITY_AUGMENTER);
                             expect(remoteSession.info.userData.test).to.equal('abc');
                             checkDone();
                         });
-                        session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTOR, userData: { test: 'abc' } });
+                        session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTER, userData: { test: 'abc' } });
                         remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_MANAGER, userData: { test: 'def' } });
                         function checkDone() {
                             connectCount++;
@@ -207,11 +207,11 @@ System.register(['chai', '../src/argon'], function(exports_1, context_1) {
                             checkDone();
                         });
                         remoteSession.connectEvent.addEventListener(function () {
-                            expect(remoteSession.info.role).to.equal(Argon.Role.REALITY_AUGMENTOR);
+                            expect(remoteSession.info.role).to.equal(Argon.Role.REALITY_AUGMENTER);
                             expect(remoteSession.info.userData.test).to.equal('abc');
                             checkDone();
                         });
-                        session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTOR, userData: { test: 'abc' } });
+                        session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTER, userData: { test: 'abc' } });
                         remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_MANAGER, userData: { test: 'def' } });
                         function checkDone() {
                             connectCount++;
@@ -230,11 +230,11 @@ System.register(['chai', '../src/argon'], function(exports_1, context_1) {
                             checkDone();
                         });
                         remoteSession.connectEvent.addEventListener(function () {
-                            expect(remoteSession.info.role).to.equal(Argon.Role.REALITY_AUGMENTOR);
+                            expect(remoteSession.info.role).to.equal(Argon.Role.REALITY_AUGMENTER);
                             expect(remoteSession.info.userData.test).to.equal('abc');
                             checkDone();
                         });
-                        session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTOR, userData: { test: 'abc' } });
+                        session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTER, userData: { test: 'abc' } });
                         remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_MANAGER, userData: { test: 'def' } });
                         function checkDone() {
                             connectCount++;
@@ -255,7 +255,7 @@ System.register(['chai', '../src/argon'], function(exports_1, context_1) {
                         remoteSession.closeEvent.addEventListener(function () {
                             checkDone();
                         });
-                        session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTOR });
+                        session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTER });
                         remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_MANAGER });
                         session.close();
                         function checkDone() {
@@ -275,7 +275,7 @@ System.register(['chai', '../src/argon'], function(exports_1, context_1) {
                         remoteSession.closeEvent.addEventListener(function () {
                             checkDone();
                         });
-                        session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTOR });
+                        session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTER });
                         remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_MANAGER });
                         session.close();
                         function checkDone() {
@@ -295,7 +295,7 @@ System.register(['chai', '../src/argon'], function(exports_1, context_1) {
                         remoteSession.closeEvent.addEventListener(function () {
                             checkDone();
                         });
-                        session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTOR });
+                        session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTER });
                         remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_MANAGER });
                         session.close();
                         function checkDone() {
@@ -314,8 +314,8 @@ System.register(['chai', '../src/argon'], function(exports_1, context_1) {
                             expect(message.hi).to.equal(42);
                             done();
                         };
-                        session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTOR });
-                        remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_AUGMENTOR });
+                        session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTER });
+                        remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_AUGMENTER });
                         remoteSession.send('test.message', { hi: 42 });
                     });
                     it('should send messages between two sessions (polyfill)', function (done) {
@@ -326,8 +326,8 @@ System.register(['chai', '../src/argon'], function(exports_1, context_1) {
                             expect(message.hi).to.equal(42);
                             done();
                         };
-                        session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTOR });
-                        remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_AUGMENTOR });
+                        session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTER });
+                        remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_AUGMENTER });
                         remoteSession.send('test.message', { hi: 42 });
                     });
                     it('should send messages between two sessions (synchronous)', function (done) {
@@ -338,8 +338,8 @@ System.register(['chai', '../src/argon'], function(exports_1, context_1) {
                             expect(message.hi).to.equal(42);
                             done();
                         };
-                        session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTOR });
-                        remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_AUGMENTOR });
+                        session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTER });
+                        remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_AUGMENTER });
                         remoteSession.send('test.message', { hi: 42 });
                     });
                 });
@@ -434,7 +434,7 @@ System.register(['chai', '../src/argon'], function(exports_1, context_1) {
                     it('should emit update events with default reality', function (done) {
                         var context = createSystem().context;
                         var removeListener = context.updateEvent.addEventListener(function () {
-                            expect(Argon.RealityView.getType(context.serializedFrameState.reality)).to.equal('empty');
+                            expect(Argon.RealityViewer.getType(context.serializedFrameState.reality)).to.equal('empty');
                             removeListener();
                             done();
                         });

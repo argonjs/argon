@@ -155,7 +155,6 @@ export class CommandQueue {
     }
 }
 
-
 /**
  * Get array of ancestor reference frames of a Cesium Entity.
  * @param frame A Cesium Entity to get ancestor reference frames.
@@ -164,11 +163,11 @@ export class CommandQueue {
 export function getAncestorReferenceFrames(frame: Entity) {
     const frames: Array<Entity | ReferenceFrame> = [];
     let f: Entity | ReferenceFrame | undefined = frame;
-    while (defined(f)) {
-        frames.unshift(f)
+    do {
         let position: PositionProperty | undefined = (f as Entity).position;
-        f = position && position.referenceFrame
-    }
+        f = position && position.referenceFrame;
+        if (defined(f)) frames.unshift(f);
+    } while (defined(f)) 
     return frames
 }
 
@@ -249,20 +248,40 @@ export const getEntityOrientation = getEntityOrientationInReferenceFrame;
  * @param entity The entity which the serialized pose represents. 
  * @param time The time which to retrieve the pose.
  * @param referenceFrame The reference frame to use for generating the pose. 
- *  By default, uses the root reference frame of the entity.  
+ * If a target reference frame is not provided, the entity pose will be 
+ * serialized according to the furthest ancestor frame that resolves to a valid pose.
  * @return An EntityPose object with orientation, position and referenceFrame.
  */
-export function getSerializedEntityPose(entity: Entity, time: JulianDate, referenceFrame?: ReferenceFrame | Entity): SerializedEntityPose | undefined {
-    let frame = referenceFrame ? referenceFrame : getRootReferenceFrame(entity);
+export function getSerializedEntityPose(entity: Entity, time: JulianDate, frame?: ReferenceFrame | Entity): SerializedEntityPose | undefined {
+    let frames:(ReferenceFrame|Entity|undefined)[]|undefined = undefined;
+    
+    if (!defined(frame)) {
+        frames = getAncestorReferenceFrames(entity);
+        frame = frames[0];
+    }
+
+    if (!defined(frame)) return;
+
     const p = getEntityPositionInReferenceFrame(entity, time, frame, <Cartesian3>{});
-    if (!p) return undefined;
+    if (!p && !frames) return undefined;
     const o = getEntityOrientationInReferenceFrame(entity, time, frame, <Quaternion>{});
-    if (!o) return undefined;
-    return {
-        p: Cartesian3.ZERO.equalsEpsilon(p, CesiumMath.EPSILON16) ? 0 : p,
-        o: Quaternion.IDENTITY.equalsEpsilon(o, CesiumMath.EPSILON16) ? 0 : o,
-        r: typeof frame === 'number' ? frame : frame.id
-    };
+    if (!o && !frames) return undefined;
+
+    if (p && o) {
+        return {
+            p: Cartesian3.ZERO.equalsEpsilon(p, CesiumMath.EPSILON16) ? 0 : p,
+            o: Quaternion.IDENTITY.equalsEpsilon(o, CesiumMath.EPSILON16) ? 0 : o,
+            r: typeof frame === 'number' ? frame : frame.id
+        };
+    } else if (frames) {
+        for (let i=1; i<frames.length; i++) {
+            frame = frames[i];
+            if (!defined(frame)) return undefined;
+            const result = getSerializedEntityPose(entity, time, frame);
+            if (result) return result;
+        }
+    }
+    return undefined;
 }
 
 
@@ -588,4 +607,19 @@ export function convertEntityReferenceFrame(entity:Entity, time:JulianDate, fram
     entity.position.setValue(scratchCartesian, frame);
     entity.orientation.setValue(scratchOrientation);
     return true;
+}
+
+export const detectIOS = typeof navigator !== 'undefined' &&  typeof window !== 'undefined' &&
+    /iPad|iPhone|iPod/.test(navigator.userAgent) && !window['MSStream'];
+
+export function openInArgonApp() {
+    if (detectIOS) {
+        // var now = Date.now();
+        // setTimeout(function () {
+        //     if (Date.now() - now > 1000) return;
+        //     window.location.href = "https://itunes.apple.com/us/app/argon4/id1089308600";
+        // }, 25);
+        const protocol = window.location.protocol;
+        window.location.protocol = protocol === 'https:' ? 'argon4s' : 'argon4';
+    }
 }

@@ -5,7 +5,7 @@ import { SessionService, SessionPort } from './session';
 import { EntityPose, ContextService } from './context';
 import { Event } from './utils';
 import { FocusService } from './focus';
-import { RealityService } from './reality';
+import { DeviceService } from './device';
 /**
  * The rendering paramters for a particular subview
  */
@@ -87,8 +87,8 @@ export declare class ViewService {
 }
 export declare class PinchZoomService {
     private viewService;
-    private realityService;
+    private deviceService;
     private contextService;
     private sessionService;
-    constructor(viewService: ViewService, realityService: RealityService, contextService: ContextService, sessionService: SessionService);
+    constructor(viewService: ViewService, deviceService: DeviceService, contextService: ContextService, sessionService: SessionService);
 }

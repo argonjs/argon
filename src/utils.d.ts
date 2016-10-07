@@ -112,10 +112,11 @@ export declare const getEntityOrientation: typeof getEntityOrientationInReferenc
  * @param entity The entity which the serialized pose represents.
  * @param time The time which to retrieve the pose.
  * @param referenceFrame The reference frame to use for generating the pose.
- *  By default, uses the root reference frame of the entity.
+ * If a target reference frame is not provided, the entity pose will be
+ * serialized according to the furthest ancestor frame that resolves to a valid pose.
  * @return An EntityPose object with orientation, position and referenceFrame.
  */
-export declare function getSerializedEntityPose(entity: Entity, time: JulianDate, referenceFrame?: ReferenceFrame | Entity): SerializedEntityPose | undefined;
+export declare function getSerializedEntityPose(entity: Entity, time: JulianDate, frame?: ReferenceFrame | Entity): SerializedEntityPose | undefined;
 /**
  * If urlParser does not have a value, throw error message "resolveURL requires DOM api".
  * If inURL is undefined, throw error message "expected inURL".
@@ -226,3 +227,5 @@ export declare function decomposePerspectiveProjectionMatrix(mat: Matrix4, resul
  * not constant, or if either property cannot be converted to the new frame.
  */
 export declare function convertEntityReferenceFrame(entity: Entity, time: JulianDate, frame: ReferenceFrame | Entity): boolean;
+export declare const detectIOS: boolean;
+export declare function openInArgonApp(): void;

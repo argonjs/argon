@@ -180,14 +180,14 @@ export declare class SessionService {
      */
     readonly isRealityManager: boolean;
     /**
-     * Returns true if this system represents a [[REALITY_AUGMENTOR]], meaning,
+     * Returns true if this system represents a [[REALITY_AUGMENTER]], meaning,
      * it is running within a [[REALITY_MANAGER]]
      */
     readonly isRealityAugmenter: boolean;
     /**
-     * Returns true if this system is a [[REALITY_VIEW]]
+     * Returns true if this system is a [[REALITY_VIEWER]]
      */
-    readonly isRealityView: boolean;
+    readonly isRealityViewer: boolean;
     /**
      * @private
      */
@@ -197,17 +197,25 @@ export declare class SessionService {
      */
     private readonly isApplication;
     /**
+     * @private
+     */
+    private readonly isRealityView;
+    /**
      * Throws an error if this system is not a [[REALITY_MANAGER]]
      */
     ensureIsRealityManager(): void;
     /**
-     * Throws an error if this session is not a [[REALITY_VIEW]]
+     * Throws an error if this session is not a [[REALITY_VIEWER]]
      */
-    ensureIsRealityView(): void;
+    ensureIsRealityViewer(): void;
     /**
-     * Throws an error if this session is a [[REALITY_VIEW]]
+     * Throws an error if this session is a [[REALITY_VIEWER]]
      */
-    ensureNotRealityView(): void;
+    ensureNotRealityViewer(): void;
+    /**
+     * Throws an error if this session is a [[REALITY_AUGMENTER]]
+     */
+    ensureNotRealityAugmenter(): void;
 }
 /**
  * Connect the current [[ArgonSystem]] to itself as the [[REALITY_MANAGER]].

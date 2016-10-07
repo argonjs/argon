@@ -2,7 +2,7 @@ System.register(['cesium/Source/Core/Event', './cesium/cesium-imports'], functio
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var Event_1, cesium_imports_1;
-    var Event, CommandQueue, getEntityPosition, getEntityOrientation, urlParser, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation;
+    var Event, CommandQueue, getEntityPosition, getEntityOrientation, urlParser, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, detectIOS;
     /**
      * Get array of ancestor reference frames of a Cesium Entity.
      * @param frame A Cesium Entity to get ancestor reference frames.
@@ -11,11 +11,12 @@ System.register(['cesium/Source/Core/Event', './cesium/cesium-imports'], functio
     function getAncestorReferenceFrames(frame) {
         var frames = [];
         var f = frame;
-        while (cesium_imports_1.defined(f)) {
-            frames.unshift(f);
+        do {
             var position = f.position;
             f = position && position.referenceFrame;
-        }
+            if (cesium_imports_1.defined(f))
+                frames.unshift(f);
+        } while (cesium_imports_1.defined(f));
         return frames;
     }
     exports_1("getAncestorReferenceFrames", getAncestorReferenceFrames);
@@ -76,22 +77,42 @@ System.register(['cesium/Source/Core/Event', './cesium/cesium-imports'], functio
      * @param entity The entity which the serialized pose represents.
      * @param time The time which to retrieve the pose.
      * @param referenceFrame The reference frame to use for generating the pose.
-     *  By default, uses the root reference frame of the entity.
+     * If a target reference frame is not provided, the entity pose will be
+     * serialized according to the furthest ancestor frame that resolves to a valid pose.
      * @return An EntityPose object with orientation, position and referenceFrame.
      */
-    function getSerializedEntityPose(entity, time, referenceFrame) {
-        var frame = referenceFrame ? referenceFrame : getRootReferenceFrame(entity);
+    function getSerializedEntityPose(entity, time, frame) {
+        var frames = undefined;
+        if (!cesium_imports_1.defined(frame)) {
+            frames = getAncestorReferenceFrames(entity);
+            frame = frames[0];
+        }
+        if (!cesium_imports_1.defined(frame))
+            return;
         var p = getEntityPositionInReferenceFrame(entity, time, frame, {});
-        if (!p)
+        if (!p && !frames)
             return undefined;
         var o = getEntityOrientationInReferenceFrame(entity, time, frame, {});
-        if (!o)
+        if (!o && !frames)
             return undefined;
-        return {
-            p: cesium_imports_1.Cartesian3.ZERO.equalsEpsilon(p, cesium_imports_1.CesiumMath.EPSILON16) ? 0 : p,
-            o: cesium_imports_1.Quaternion.IDENTITY.equalsEpsilon(o, cesium_imports_1.CesiumMath.EPSILON16) ? 0 : o,
-            r: typeof frame === 'number' ? frame : frame.id
-        };
+        if (p && o) {
+            return {
+                p: cesium_imports_1.Cartesian3.ZERO.equalsEpsilon(p, cesium_imports_1.CesiumMath.EPSILON16) ? 0 : p,
+                o: cesium_imports_1.Quaternion.IDENTITY.equalsEpsilon(o, cesium_imports_1.CesiumMath.EPSILON16) ? 0 : o,
+                r: typeof frame === 'number' ? frame : frame.id
+            };
+        }
+        else if (frames) {
+            for (var i = 1; i < frames.length; i++) {
+                frame = frames[i];
+                if (!cesium_imports_1.defined(frame))
+                    return undefined;
+                var result = getSerializedEntityPose(entity, time, frame);
+                if (result)
+                    return result;
+            }
+        }
+        return undefined;
     }
     exports_1("getSerializedEntityPose", getSerializedEntityPose);
     /**
@@ -207,6 +228,18 @@ System.register(['cesium/Source/Core/Event', './cesium/cesium-imports'], functio
         return true;
     }
     exports_1("convertEntityReferenceFrame", convertEntityReferenceFrame);
+    function openInArgonApp() {
+        if (detectIOS) {
+            // var now = Date.now();
+            // setTimeout(function () {
+            //     if (Date.now() - now > 1000) return;
+            //     window.location.href = "https://itunes.apple.com/us/app/argon4/id1089308600";
+            // }, 25);
+            var protocol = window.location.protocol;
+            window.location.protocol = protocol === 'https:' ? 'argon4s' : 'argon4';
+        }
+    }
+    exports_1("openInArgonApp", openInArgonApp);
     return {
         setters:[
             function (Event_1_1) {
@@ -503,6 +536,8 @@ System.register(['cesium/Source/Core/Event', './cesium/cesium-imports'], functio
             scratchPerspectiveOffCenterFrustum = new cesium_imports_1.PerspectiveOffCenterFrustum;
             scratchCartesian = new cesium_imports_1.Cartesian3;
             scratchOrientation = new cesium_imports_1.Quaternion;
+            exports_1("detectIOS", detectIOS = typeof navigator !== 'undefined' && typeof window !== 'undefined' &&
+                /iPad|iPhone|iPod/.test(navigator.userAgent) && !window['MSStream']);
         }
     }
 });

@@ -1,6 +1,6 @@
-import * as Argon from '@argonjs/argon'
+// import * as Argon from '@argonjs/argon'
 // import * as Argon from '../dist/src/argon'
-// import * as Argon from '../../src/argon'
+import * as Argon from '../../src/argon'
 
 declare const THREE: any;
 

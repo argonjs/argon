@@ -1,4 +1,4 @@
-System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './common', './focus', './session', './utils'], function(exports_1, context_1) {
+System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './common', './focus', './session', './utils', './argon'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -7,8 +7,8 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
         else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
-    var aurelia_dependency_injection_1, cesium_imports_1, common_1, focus_1, session_1, utils_1;
-    var RealityLoader, RealityZoomState, RealityService;
+    var aurelia_dependency_injection_1, cesium_imports_1, common_1, focus_1, session_1, utils_1, argon_1;
+    var RealityLoader, RealityService;
     return {
         setters:[
             function (aurelia_dependency_injection_1_1) {
@@ -28,6 +28,9 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
             },
             function (utils_1_1) {
                 utils_1 = utils_1_1;
+            },
+            function (argon_1_1) {
+                argon_1 = argon_1_1;
             }],
         execute: function() {
             /**
@@ -39,13 +42,6 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                 return RealityLoader;
             }());
             exports_1("RealityLoader", RealityLoader);
-            (function (RealityZoomState) {
-                RealityZoomState[RealityZoomState["OTHER"] = 0] = "OTHER";
-                RealityZoomState[RealityZoomState["START"] = 1] = "START";
-                RealityZoomState[RealityZoomState["CHANGE"] = 2] = "CHANGE";
-                RealityZoomState[RealityZoomState["END"] = 3] = "END";
-            })(RealityZoomState || (RealityZoomState = {}));
-            exports_1("RealityZoomState", RealityZoomState);
             /**
             * A service which manages the reality view.
             * For an app developer, the RealityService instance can be used to
@@ -69,10 +65,13 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                      */
                     this._changeEvent = new utils_1.Event();
                     /**
-                     * Manager-only. An event that is raised when the current reality emits the next frame state.
-                     * This event contains pose updates for the entities that are managed by
-                     * the current reality.
+                     * Manager/Viewer-only. An event that is raised when the current reality emits the next view state.
                      */
+                    this._viewStateEvent = new utils_1.Event();
+                    /**
+                     * Deprecated. Use viewStateEvent.
+                     */
+                    // Remove after v1.2
                     this._frameEvent = new utils_1.Event();
                     /**
                      * Manager-only. A map from a managed session to the desired reality
@@ -88,7 +87,6 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     this.sessionDesiredRealityChangeEvent = new utils_1.Event();
                     // RealitySetupHandlers
                     this._loaders = [];
-                    this._defaultFov = Math.PI / 2;
                     this._scratchFrustum = new cesium_imports_1.PerspectiveFrustum();
                     this._scratchArray = new Array();
                     this._loadID = -1;
@@ -101,7 +99,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                         });
                     }
                     sessionService.connectEvent.addEventListener(function (session) {
-                        if (session.info.role !== common_1.Role.REALITY_VIEW) {
+                        if (!common_1.Role.isRealityViewer(session.info.role)) {
                             session.on['ar.reality.desired'] = function (message) {
                                 var reality = message.reality;
                                 var previous = _this.desiredRealityMap.get(session);
@@ -158,9 +156,6 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                         });
                         realityControlSession.open(messageChannel.port2, _this.sessionService.configuration);
                     };
-                    sessionService.manager.on['ar.reality.zoom'] = function (data) {
-                        _this.zoom(data);
-                    };
                 }
                 Object.defineProperty(RealityService.prototype, "changeEvent", {
                     get: function () {
@@ -170,10 +165,25 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     enumerable: true,
                     configurable: true
                 });
+                Object.defineProperty(RealityService.prototype, "viewStateEvent", {
+                    get: function () {
+                        this.sessionService.ensureNotRealityAugmenter();
+                        return this._viewStateEvent;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 Object.defineProperty(RealityService.prototype, "frameEvent", {
                     get: function () {
-                        this.sessionService.ensureIsRealityManager();
+                        this.sessionService.ensureNotRealityAugmenter();
                         return this._frameEvent;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(RealityService.prototype, "session", {
+                    get: function () {
+                        return this._session;
                     },
                     enumerable: true,
                     configurable: true
@@ -196,7 +206,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                  * @deprecated. Use app.context.getCurrentReality()
                  */
                 RealityService.prototype.getCurrent = function () {
-                    this.sessionService.ensureIsRealityManager();
+                    this.sessionService.ensureNotRealityAugmenter();
                     return this._current;
                 };
                 /**
@@ -209,19 +219,31 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     return !!this._getLoader(reality);
                 };
                 /**
-                 * Reality-only. Publish the next frame state.
+                 * Deprecated. Use pubishViewState.
+                 * @deprecated
                  */
                 RealityService.prototype.publishFrame = function (state) {
-                    this.sessionService.ensureIsRealityView();
+                    console.warn('publishFrame is deprecated. Use publishViewState()');
+                    this.sessionService.ensureIsRealityViewer();
                     if (this.sessionService.manager.isConnected) {
                         this.sessionService.manager.send('ar.reality.frameState', state);
+                    }
+                };
+                /**
+                 * RealityViewer-only. Publish the next view state.
+                 */
+                RealityService.prototype.publishViewState = function (view) {
+                    this.sessionService.ensureIsRealityViewer();
+                    if (this.sessionService.manager.isConnected) {
+                        this.sessionService.manager.send('ar.reality.viewState', view);
+                        this.viewStateEvent.raiseEvent(view);
                     }
                 };
                 /**
                  * Set the desired reality.
                  */
                 RealityService.prototype.setDesired = function (reality) {
-                    this.sessionService.ensureNotRealityView();
+                    this.sessionService.ensureNotRealityViewer();
                     this._desired = reality;
                     if (this.sessionService.isRealityManager) {
                         this._setNextReality(reality, true);
@@ -245,50 +267,6 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                  * Set the optional reference frames for this app
                  */
                 RealityService.prototype.setRequiredReferenceFrames = function (referenceFrames) {
-                };
-                /**
-                 * Set a desired fov in radians.
-                 */
-                RealityService.prototype.setDesiredFov = function (fov) {
-                    this._desiredFov = fov;
-                    this.zoom({ fov: fov || this._defaultFov, zoom: 1, state: RealityZoomState.OTHER });
-                };
-                /**
-                 * Get the desired fov in radians
-                 */
-                RealityService.prototype.getDesiredFov = function () {
-                    return this._desiredFov;
-                };
-                /**
-                 * Set the default fov in radians, and adjust the desired fov to match the
-                 * previous desired / default ratio.
-                 */
-                RealityService.prototype.setDefaultFov = function (fov) {
-                    if (cesium_imports_1.defined(this._desiredFov)) {
-                        var ratio = this._desiredFov / this._defaultFov;
-                        this.setDesiredFov(fov * ratio);
-                    }
-                    this._defaultFov = fov;
-                };
-                /**
-                 * Get the default fov in radians
-                 */
-                RealityService.prototype.getDefaultFov = function () {
-                    return this._defaultFov;
-                };
-                /**
-                 * Returns a maximum viewport
-                 */
-                RealityService.prototype.getMaximumViewport = function () {
-                    if (typeof document !== 'undefined' && document.documentElement) {
-                        return {
-                            x: 0,
-                            y: 0,
-                            width: document.documentElement.clientWidth,
-                            height: document.documentElement.clientHeight
-                        };
-                    }
-                    throw new Error("Not implemeneted for the current platform");
                 };
                 /**
                 * Manager-only. Selects the best reality based on the realites
@@ -321,15 +299,20 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     }
                     return selectedReality;
                 };
-                RealityService.prototype.onGenerateViewFromEyeParameters = function (eye) {
-                    var fov = eye.fov || this._desiredFov || this._defaultFov;
-                    var viewport = eye.viewport || this.getMaximumViewport();
+                /**
+                 * Deprecated. Remove after v1.2
+                 * @private
+                 */
+                RealityService.prototype.onGenerateViewFromEyeParameters = function (eye, t) {
+                    var fov = eye.fov || argon_1.ArgonSystem.instance.device.state.defaultFov;
+                    var viewport = eye.viewport || argon_1.ArgonSystem.instance.device.state.viewport;
                     var aspectRatio = eye.aspect || viewport.width / viewport.height;
                     this._scratchFrustum.fov = fov;
                     this._scratchFrustum.aspectRatio = aspectRatio;
                     this._scratchFrustum.near = 0.01;
                     this._scratchFrustum.far = 10000000;
-                    return {
+                    return eye.pose ? {
+                        time: t,
                         viewport: viewport,
                         pose: eye.pose,
                         subviews: [
@@ -343,35 +326,14 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                                 projectionMatrix: cesium_imports_1.Matrix4.toArray(this._scratchFrustum.projectionMatrix, this._scratchArray)
                             }
                         ]
-                    };
-                };
-                RealityService.prototype.zoom = function (data) {
-                    data.naturalFov = data.naturalFov || this._defaultFov;
-                    if (this._realitySession && this._realitySession.info['reality.handlesZoom']) {
-                        this._realitySession.send('ar.reality.zoom', data);
-                    }
-                    else {
-                        var fov = this._desiredFov = this.onZoom(data);
-                        if (this.sessionService.isRealityView) {
-                            this.sessionService.manager.send('ar.reality.desiredFov', { fov: fov });
-                        }
-                    }
-                };
-                RealityService.prototype.onZoom = function (data) {
-                    var newFov = 2 * Math.atan(Math.tan(data.fov * 0.5) / data.zoom);
-                    newFov = Math.max(10 * cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE, Math.min(newFov, 160 * cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE));
-                    if (data.state === RealityZoomState.END &&
-                        Math.abs(newFov - data.naturalFov) < 0.05 /* +-6deg */) {
-                        newFov = data.naturalFov;
-                    }
-                    return newFov;
+                    } : undefined;
                 };
                 RealityService.prototype._setNextReality = function (reality, force) {
                     var _this = this;
                     if (force === void 0) { force = false; }
                     if (this._current && reality && this._current === reality && !force)
                         return;
-                    if (this._current && !reality && this._realitySession)
+                    if (this._current && !reality && this._session)
                         return;
                     if (!this._current && !cesium_imports_1.defined(reality)) {
                         reality = this._default;
@@ -389,39 +351,43 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                                 realitySession.close();
                                 return;
                             }
-                            var previousRealitySession = _this._realitySession;
-                            _this._realitySession = realitySession;
+                            var previousRealitySession = _this._session;
+                            _this._session = realitySession;
                             _this._setCurrent(reality);
+                            realitySession.on['ar.reality.viewState'] = function (viewState) {
+                                _this.viewStateEvent.raiseEvent(viewState);
+                            };
+                            // Deprecated. Remove after v1.2
                             realitySession.on['ar.reality.frameState'] = function (serializedState) {
                                 var state = serializedState;
                                 if (!cesium_imports_1.defined(serializedState.view)) {
                                     if (!cesium_imports_1.defined(serializedState.eye))
                                         throw new Error("Unable to construct view configuration: missing eye parameters");
-                                    state.view = _this.onGenerateViewFromEyeParameters(serializedState.eye);
-                                    state.eye = undefined;
+                                    var view = _this.onGenerateViewFromEyeParameters(serializedState.eye, state.time);
+                                    if (!view)
+                                        return;
+                                    state.view = view;
+                                    state['eye'] = undefined;
                                     state.entities = serializedState.entities || {};
                                 }
                                 state.reality = _this.getCurrent();
                                 _this.frameEvent.raiseEvent(state);
-                            };
-                            realitySession.on['ar.reality.desiredFov'] = function (state) {
-                                _this._desiredFov = state.fov;
                             };
                             realitySession.closeEvent.addEventListener(function () {
                                 console.log('Reality session closed: ' + JSON.stringify(reality));
                                 // select a new reality if the current reality has closed without 
                                 // another reality having been requested
                                 if (_this._loadID === loadID_1) {
-                                    _this._realitySession = undefined;
+                                    _this._session = undefined;
                                     _this._current = undefined;
                                     _this._setNextReality(_this.onSelectReality());
                                 }
                             });
                             realitySession.connectEvent.addEventListener(function () {
-                                if (realitySession.info.role !== common_1.Role.REALITY_VIEW) {
-                                    realitySession.sendError({ message: "Expected a reality session" });
+                                if (!common_1.Role.isRealityViewer(realitySession.info.role)) {
+                                    realitySession.sendError({ message: "Expected a reality viewer" });
                                     realitySession.close();
-                                    throw new Error('The application "' + realitySession.uri + '" does not support being loaded as a reality');
+                                    throw new Error('The application "' + realitySession.uri + '" does not support being loaded as a reality viewer');
                                 }
                                 if (previousRealitySession) {
                                     previousRealitySession.close();
@@ -456,7 +422,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     var found;
                     for (var _i = 0, _a = this._loaders; _i < _a.length; _i++) {
                         var loader = _a[_i];
-                        if (loader.type === common_1.RealityView.getType(reality)) {
+                        if (loader.type === common_1.RealityViewer.getType(reality)) {
                             found = loader;
                             break;
                         }

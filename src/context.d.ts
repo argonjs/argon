@@ -1,6 +1,6 @@
 /// <reference types="cesium" />
 import { Entity, EntityCollection, CompositeEntityCollection, Cartesian3, Quaternion, JulianDate, ReferenceFrame } from './cesium/cesium-imports';
-import { SerializedFrameState } from './common';
+import { FrameState } from './common';
 import { SessionService } from './session';
 import { RealityService } from './reality';
 import { Event } from './utils';
@@ -71,11 +71,6 @@ export declare class ContextService {
      */
     renderEvent: Event<Frame>;
     /**
-     * The set of entities representing well-known reference frames.
-     * These are assumed to be readily available to applications.
-     */
-    wellKnownReferenceFrames: EntityCollection;
-    /**
      * The set of subscribed entities.
      */
     subscribedEntities: EntityCollection;
@@ -109,7 +104,7 @@ export declare class ContextService {
     /**
      * The serialized frame state for this frame
      */
-    readonly serializedFrameState: SerializedFrameState | undefined;
+    readonly serializedFrameState: FrameState | undefined;
     /**
      * This value caps the deltaTime for each frame
      */
@@ -122,6 +117,7 @@ export declare class ContextService {
     private _subscribedEntities;
     private _updatingEntities;
     private _knownEntities;
+    private _frameIndex;
     constructor(sessionService: SessionService, realityService: RealityService);
     /**
      * Get the current time
@@ -158,7 +154,7 @@ export declare class ContextService {
      */
     getCurrentEntityState(entity: Entity, referenceFrame: any): EntityPose;
     private _update(serializedState);
-    updateEntityFromFrameState(id: string, state: SerializedFrameState): Entity | undefined;
+    updateEntityFromFrameState(id: string, state: FrameState): Entity | undefined;
     publishEntityState(entity: Entity, referenceFrame: ReferenceFrame | Entity): void;
     private _updateLocalOrigin(state);
     private _sendUpdateForSession(parentState, session);

@@ -26,14 +26,14 @@ describe('Argon', () => {
             expect(manager.session.configuration.role).to.equal(Argon.Role.REALITY_MANAGER);
         });
         it('should create an ArgonSystem with Role=Role.APPLICATION', () => {
-            const app = new Argon.ArgonSystem({ role: Argon.Role.REALITY_AUGMENTOR });
+            const app = new Argon.ArgonSystem({ role: Argon.Role.REALITY_AUGMENTER });
             expect(app).to.be.an.instanceOf(Argon.ArgonSystem);
-            expect(app.session.configuration.role).to.equal(Argon.Role.REALITY_AUGMENTOR);
+            expect(app.session.configuration.role).to.equal(Argon.Role.REALITY_AUGMENTER);
         });
         it('should create an ArgonSystem with Role=Role.REALITY_VIEW', () => {
-            const app = new Argon.ArgonSystem({ role: Argon.Role.REALITY_VIEW });
+            const app = new Argon.ArgonSystem({ role: Argon.Role.REALITY_VIEWER });
             expect(app).to.be.an.instanceOf(Argon.ArgonSystem);
-            expect(app.session.configuration.role).to.equal(Argon.Role.REALITY_VIEW);
+            expect(app.session.configuration.role).to.equal(Argon.Role.REALITY_VIEWER);
         });
         it('should raise a focus event when Role=Role.MANAGER', (done) => {
             const manager = new Argon.ArgonSystem({ role: Argon.Role.REALITY_MANAGER });
@@ -83,8 +83,8 @@ describe('RealityService', () => {
             realityService.registerLoader(container.get(Argon.EmptyRealityLoader));
             realityService.setDefault({uri:'reality:empty', title:'My Custom Reality'})
             
-            let removeListener = realityService.frameEvent.addEventListener((state) => {
-                expect(Argon.RealityView.getType(state.reality) === 'empty')
+            let removeListener = realityService.viewStateEvent.addEventListener((state) => {
+                expect(Argon.RealityViewer.getType(realityService.getCurrent()) === 'empty')
                 expect(state.time).to.haveOwnProperty('dayNumber');
                 expect(state.time).to.haveOwnProperty('secondsOfDay');
                 expect(realityService.getDesired()).to.be.undefined;
@@ -106,12 +106,12 @@ describe('RealityService', () => {
             class CustomRealitySetupHandler implements Argon.RealityLoader {
                 public type = type;
                 
-                public load(reality : Argon.RealityView, callback:(realitySession:Argon.SessionPort)=>void) : void {
+                public load(reality : Argon.RealityViewer, callback:(realitySession:Argon.SessionPort)=>void) : void {
                     const realitySession = sessionService.addManagedSessionPort('reality:' + type);
                     const remoteRealitySession = sessionService.createSessionPort();
                     const messageChannel = sessionService.createMessageChannel();
                     callback(realitySession);
-                    remoteRealitySession.open(messageChannel.port1, { role: Argon.Role.REALITY_VIEW });
+                    remoteRealitySession.open(messageChannel.port1, { role: Argon.Role.REALITY_VIEWER });
                     realitySession.open(messageChannel.port2, sessionService.configuration);
                 }
             }
@@ -125,7 +125,7 @@ describe('RealityService', () => {
             realityService.registerLoader(container.get(CustomRealitySetupHandler));
 
             let removeListener = realityService.changeEvent.addEventListener(() => {
-                expect(Argon.RealityView.getType(realityService.getCurrent()!)).to.equal(type);
+                expect(Argon.RealityViewer.getType(realityService.getCurrent()!)).to.equal(type);
                 removeListener();
                 done();
             });
@@ -207,11 +207,11 @@ describe('SessionPort', () => {
                 checkDone();
             })
             remoteSession.connectEvent.addEventListener(() => {
-                expect(remoteSession.info.role).to.equal(Argon.Role.REALITY_AUGMENTOR);
+                expect(remoteSession.info.role).to.equal(Argon.Role.REALITY_AUGMENTER);
                 expect(remoteSession.info.userData.test).to.equal('abc');
                 checkDone();
             })
-            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTOR, userData: { test: 'abc' } });
+            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTER, userData: { test: 'abc' } });
             remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_MANAGER, userData: { test: 'def' } });
 
             function checkDone() {
@@ -231,11 +231,11 @@ describe('SessionPort', () => {
                 checkDone();
             })
             remoteSession.connectEvent.addEventListener(() => {
-                expect(remoteSession.info.role).to.equal(Argon.Role.REALITY_AUGMENTOR);
+                expect(remoteSession.info.role).to.equal(Argon.Role.REALITY_AUGMENTER);
                 expect(remoteSession.info.userData.test).to.equal('abc');
                 checkDone();
             })
-            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTOR, userData: { test: 'abc' } });
+            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTER, userData: { test: 'abc' } });
             remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_MANAGER, userData: { test: 'def' } });
 
             function checkDone() {
@@ -255,11 +255,11 @@ describe('SessionPort', () => {
                 checkDone();
             })
             remoteSession.connectEvent.addEventListener(() => {
-                expect(remoteSession.info.role).to.equal(Argon.Role.REALITY_AUGMENTOR);
+                expect(remoteSession.info.role).to.equal(Argon.Role.REALITY_AUGMENTER);
                 expect(remoteSession.info.userData.test).to.equal('abc');
                 checkDone();
             })
-            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTOR, userData: { test: 'abc' } });
+            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTER, userData: { test: 'abc' } });
             remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_MANAGER, userData: { test: 'def' } });
 
             function checkDone() {
@@ -282,7 +282,7 @@ describe('SessionPort', () => {
             remoteSession.closeEvent.addEventListener(() => {
                 checkDone();
             })
-            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTOR });
+            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTER });
             remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_MANAGER });
             session.close();
             function checkDone() {
@@ -302,7 +302,7 @@ describe('SessionPort', () => {
             remoteSession.closeEvent.addEventListener(() => {
                 checkDone();
             })
-            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTOR });
+            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTER });
             remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_MANAGER });
             session.close();
             function checkDone() {
@@ -322,7 +322,7 @@ describe('SessionPort', () => {
             remoteSession.closeEvent.addEventListener(() => {
                 checkDone();
             })
-            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTOR });
+            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTER });
             remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_MANAGER });
             session.close();
             function checkDone() {
@@ -343,8 +343,8 @@ describe('SessionPort', () => {
                 expect(message.hi).to.equal(42);
                 done();
             }
-            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTOR });
-            remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_AUGMENTOR });
+            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTER });
+            remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_AUGMENTER });
             remoteSession.send('test.message', { hi: 42 });
         });
 
@@ -356,8 +356,8 @@ describe('SessionPort', () => {
                 expect(message.hi).to.equal(42);
                 done();
             }
-            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTOR });
-            remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_AUGMENTOR });
+            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTER });
+            remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_AUGMENTER });
             remoteSession.send('test.message', { hi: 42 });
         });
 
@@ -369,8 +369,8 @@ describe('SessionPort', () => {
                 expect(message.hi).to.equal(42);
                 done();
             }
-            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTOR });
-            remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_AUGMENTOR });
+            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTER });
+            remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_AUGMENTER });
             remoteSession.send('test.message', { hi: 42 });
         });
     })
@@ -476,7 +476,7 @@ describe('Context', () => {
         it('should emit update events with default reality', (done) => {
             const {context} = createSystem();
             let removeListener = context.updateEvent.addEventListener(() => {
-                expect(Argon.RealityView.getType(context.serializedFrameState!.reality)).to.equal('empty');
+                expect(Argon.RealityViewer.getType(context.serializedFrameState!.reality)).to.equal('empty');
                 removeListener();
                 done();
             })

@@ -1,8 +1,13 @@
-System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/cesium-imports', 'urijs', './session', './common', './context', './device', './focus', './reality', './timer', './view', './vuforia', './reality-loader/empty', './reality-loader/live_video', './reality-loader/hosted', './utils'], function(exports_1, context_1) {
+System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/cesium-imports', 'urijs', './session', './common', './context', './device', './focus', './reality', './timer', './ui', './view', './vuforia', './reality-loader/empty', './reality-loader/live_video', './reality-loader/hosted', './utils'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var DI, Cesium, URI, session_1, common_1, context_2, device_1, focus_1, reality_1, timer_1, view_1, vuforia_1, empty_1, live_video_1, hosted_1;
-    var ArgonSystem;
+    var __extends = (this && this.__extends) || function (d, b) {
+        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+    var DI, Cesium, URI, session_1, common_1, context_2, device_1, focus_1, reality_1, timer_1, ui_1, view_1, vuforia_1, empty_1, live_video_1, hosted_1;
+    var ArgonSystem, RealityView;
     /**
      * Create an ArgonSystem instance.
      * If we are running within a [[REALITY_MANAGER]],
@@ -18,7 +23,7 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
             role = common_1.Role.REALITY_MANAGER;
         }
         else if (navigator.userAgent.indexOf('Argon') > 0 || window.top !== window) {
-            role = common_1.Role.APPLICATION; // TODO: switch to below after next argon-app release
+            role = common_1.Role.APPLICATION; // TODO: switch to below after several argon-app releases
         }
         else {
             role = common_1.Role.REALITY_MANAGER;
@@ -31,18 +36,28 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
     }
     exports_1("init", init);
     /**
+     * Deprecated. Use [[initRealityViewer]]
+     * @deprecated
+     */
+    function initReality(p) {
+        if (p === void 0) { p = {}; }
+        return initRealityViewer(p);
+    }
+    exports_1("initReality", initReality);
+    /**
      * Initialize an [[ArgonSystem]] with the [[REALITY_VIEW]] role
      */
-    function initReality(_a) {
+    function initRealityViewer(_a) {
         var _b = _a === void 0 ? {} : _a, configuration = _b.configuration, _c = _b.container, container = _c === void 0 ? new DI.Container : _c;
         var config = Object.assign(configuration || {}, {
             role: common_1.Role.REALITY_VIEW,
+            // role: Role.REALITY_VIEWER
             'reality.supportsControlPort': true
         });
         container.registerInstance('containerElement', null);
         return new ArgonSystem(config, container);
     }
-    exports_1("initReality", initReality);
+    exports_1("initRealityViewer", initRealityViewer);
     /**
      * Not yet implemented.
      * @private
@@ -58,8 +73,10 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
     exports_1("initLocal", initLocal);
     var exportedNames_1 = {
         'ArgonSystem': true,
+        'RealityView': true,
         'init': true,
         'initReality': true,
+        'initRealityViewer': true,
         'initLocal': true,
         'DI': true,
         'Cesium': true,
@@ -114,6 +131,10 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
             function (timer_1_1) {
                 timer_1 = timer_1_1;
                 exportStar_1(timer_1_1);
+            },
+            function (ui_1_1) {
+                ui_1 = ui_1_1;
+                exportStar_1(ui_1_1);
             },
             function (view_1_1) {
                 view_1 = view_1_1;
@@ -176,10 +197,10 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
                         this.reality.registerLoader(container.get(live_video_1.LiveVideoRealityLoader));
                         if (typeof document !== 'undefined') {
                             this.reality.registerLoader(container.get(hosted_1.HostedRealityLoader));
-                            // enable pinch-zoom
                             container.get(view_1.PinchZoomService);
+                            container.get(ui_1.DefaultUIService);
                         }
-                        this.reality.setDefault(common_1.RealityView.EMPTY);
+                        this.reality.setDefault(common_1.RealityViewer.EMPTY);
                     }
                     // ensure the entire object graph is instantiated before connecting to the manager. 
                     for (var _i = 0, _a = Object.keys(ArgonSystem.prototype); _i < _a.length; _i++) {
@@ -276,6 +297,19 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
                 return ArgonSystem;
             }());
             exports_1("ArgonSystem", ArgonSystem);
+            // expose RealityView for backwards compatability
+            /**
+             * @private
+             */
+            RealityView = (function (_super) {
+                __extends(RealityView, _super);
+                function RealityView() {
+                    _super.call(this);
+                    console.warn('RealityView class has been renamed to RealityViewer');
+                }
+                return RealityView;
+            }(common_1.RealityViewer));
+            exports_1("RealityView", RealityView);
         }
     }
 });

@@ -3,7 +3,7 @@ import * as DI from 'aurelia-dependency-injection';
 import * as Cesium from './cesium/cesium-imports';
 import * as URI from 'urijs';
 import { SessionService } from './session';
-import { Configuration } from './common';
+import { Configuration, RealityViewer } from './common';
 import { ContextService, Frame } from './context';
 import { DeviceService } from './device';
 import { FocusService } from './focus';
@@ -23,6 +23,7 @@ export * from './focus';
 export * from './reality';
 export * from './session';
 export * from './timer';
+export * from './ui';
 export * from './utils';
 export * from './view';
 export * from './vuforia';
@@ -65,9 +66,14 @@ export interface InitParameters {
  */
 export declare function init({configuration, container}?: InitParameters): ArgonSystem;
 /**
+ * Deprecated. Use [[initRealityViewer]]
+ * @deprecated
+ */
+export declare function initReality(p?: InitParameters): ArgonSystem;
+/**
  * Initialize an [[ArgonSystem]] with the [[REALITY_VIEW]] role
  */
-export declare function initReality({configuration, container}?: InitParameters): ArgonSystem;
+export declare function initRealityViewer({configuration, container}?: InitParameters): ArgonSystem;
 export interface InitLocalParameters extends InitParameters {
     containerElement: HTMLElement;
 }
@@ -76,3 +82,9 @@ export interface InitLocalParameters extends InitParameters {
  * @private
  */
 export declare function initLocal({containerElement, configuration, container}: InitLocalParameters): ArgonSystem;
+/**
+ * @private
+ */
+export declare class RealityView extends RealityViewer {
+    constructor();
+}

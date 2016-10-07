@@ -1,5 +1,4 @@
-import * as Argon from '../src/argon';
-export declare const app: Argon.ArgonSystem;
+export declare const app: any;
 export declare const scene: any;
 export declare const camera: any;
 export declare const user: any;

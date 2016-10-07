@@ -1,4 +1,4 @@
-System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './session', './reality', './utils'], function(exports_1, context_1) {
+System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './common', './session', './reality', './utils'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -7,7 +7,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
         else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
-    var aurelia_dependency_injection_1, cesium_imports_1, session_1, reality_1, utils_1;
+    var aurelia_dependency_injection_1, cesium_imports_1, common_1, session_1, reality_1, utils_1;
     var PoseStatus, scratchCartesian3, scratchQuaternion, scratchOriginCartesian3, ContextService;
     function _stringFromReferenceFrame(referenceFrame) {
         var rf = referenceFrame;
@@ -20,6 +20,9 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
             },
             function (cesium_imports_1_1) {
                 cesium_imports_1 = cesium_imports_1_1;
+            },
+            function (common_1_1) {
+                common_1 = common_1_1;
             },
             function (session_1_1) {
                 session_1 = session_1_1;
@@ -80,11 +83,6 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                      */
                     this.renderEvent = new utils_1.Event();
                     /**
-                     * The set of entities representing well-known reference frames.
-                     * These are assumed to be readily available to applications.
-                     */
-                    this.wellKnownReferenceFrames = new cesium_imports_1.EntityCollection();
-                    /**
                      * The set of subscribed entities.
                      */
                     this.subscribedEntities = new cesium_imports_1.EntityCollection();
@@ -142,10 +140,19 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                     this._subscribedEntities = new WeakMap();
                     this._updatingEntities = new Set();
                     this._knownEntities = new Set();
-                    this.entities.addCollection(this.wellKnownReferenceFrames);
+                    this._frameIndex = 0;
                     this.entities.addCollection(this.subscribedEntities);
                     this.subscribedEntities.add(this.user);
-                    if (this.sessionService.isRealityManager) {
+                    if (this.sessionService.isRealityManager || this.sessionService.isRealityViewer) {
+                        this.realityService.viewStateEvent.addEventListener(function (viewState) {
+                            _this._update({
+                                time: viewState.time,
+                                index: _this._frameIndex++,
+                                reality: _this.realityService.getCurrent(),
+                                entities: {},
+                                view: viewState
+                            });
+                        });
                         this.realityService.frameEvent.addEventListener(function (state) {
                             _this._update(state);
                         });
@@ -275,7 +282,8 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                         this._entityPoseCache = {};
                         for (var _i = 0, _a = this.sessionService.managedSessions; _i < _a.length; _i++) {
                             var session = _a[_i];
-                            this._sendUpdateForSession(serializedState, session);
+                            if (common_1.Role.isRealityAugmenter(session.info.role))
+                                this._sendUpdateForSession(serializedState, session);
                         }
                     }
                     // our user entity is defined by the current view pose (the current reality must provide this)
@@ -317,9 +325,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                 ContextService.prototype.updateEntityFromFrameState = function (id, state) {
                     var entityPose = state.entities[id];
                     if (!entityPose) {
-                        if (!this.wellKnownReferenceFrames.getById(id)) {
-                            this.subscribedEntities.getOrCreateEntity(id);
-                        }
+                        this.subscribedEntities.getOrCreateEntity(id);
                         return;
                     }
                     var referenceFrame;

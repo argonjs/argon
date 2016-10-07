@@ -1,5 +1,5 @@
 import { inject } from 'aurelia-dependency-injection'
-import { Role, RealityView } from '../common'
+import { Role, RealityViewer } from '../common'
 import { SessionService, SessionPort } from '../session'
 import { RealityLoader } from '../reality'
 import { VuforiaServiceDelegate } from '../vuforia'
@@ -14,7 +14,7 @@ export class LiveVideoRealityLoader extends RealityLoader {
         super();
     }
 
-    public load(reality: RealityView, callback: (realitySession: SessionPort) => void): void {
+    public load(reality: RealityViewer, callback: (realitySession: SessionPort) => void): void {
         const realitySession = this.sessionService.addManagedSessionPort(reality.uri);
         const remoteRealitySession = this.sessionService.createSessionPort();
 
@@ -39,6 +39,6 @@ export class LiveVideoRealityLoader extends RealityLoader {
         // Only connect after the caller is able to attach connectEvent handlers
         const messageChannel = this.sessionService.createSynchronousMessageChannel();
         realitySession.open(messageChannel.port1, this.sessionService.configuration);
-        remoteRealitySession.open(messageChannel.port2, { role: Role.REALITY_VIEW });
+        remoteRealitySession.open(messageChannel.port2, { role: Role.REALITY_VIEWER });
     }
 }

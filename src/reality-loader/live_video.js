@@ -61,7 +61,7 @@ System.register(['aurelia-dependency-injection', '../common', '../session', '../
                     // Only connect after the caller is able to attach connectEvent handlers
                     var messageChannel = this.sessionService.createSynchronousMessageChannel();
                     realitySession.open(messageChannel.port1, this.sessionService.configuration);
-                    remoteRealitySession.open(messageChannel.port2, { role: common_1.Role.REALITY_VIEW });
+                    remoteRealitySession.open(messageChannel.port2, { role: common_1.Role.REALITY_VIEWER });
                 };
                 LiveVideoRealityLoader = __decorate([
                     aurelia_dependency_injection_1.inject(session_1.SessionService, vuforia_1.VuforiaServiceDelegate)

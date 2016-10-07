@@ -12,12 +12,13 @@ import {
     WKWebViewConnectService
 } from './session'
 
-import { Configuration, Role, RealityView } from './common'
+import { Configuration, Role, RealityViewer } from './common'
 import { ContextService, Frame } from './context'
 import { DeviceService } from './device'
 import { FocusService } from './focus'
 import { RealityService } from './reality'
 import { TimerService } from './timer'
+import { DefaultUIService } from './ui'
 import { Event } from './utils'
 import { ViewService, PinchZoomService } from './view'
 import { VuforiaService } from './vuforia'
@@ -34,6 +35,7 @@ export * from './focus'
 export * from './reality'
 export * from './session'
 export * from './timer'
+export * from './ui'
 export * from './utils'
 export * from './view'
 export * from './vuforia'
@@ -91,11 +93,11 @@ export class ArgonSystem {
 
             if (typeof document !== 'undefined') {
                 this.reality.registerLoader(container.get(HostedRealityLoader));
-                // enable pinch-zoom
                 container.get(PinchZoomService);
+                container.get(DefaultUIService);
             }
 
-            this.reality.setDefault(RealityView.EMPTY);
+            this.reality.setDefault(RealityViewer.EMPTY);
         }
 
         // ensure the entire object graph is instantiated before connecting to the manager. 
@@ -175,8 +177,8 @@ export function init({ configuration, container = new DI.Container }: InitParame
     if (typeof HTMLElement === 'undefined') {
         role = Role.REALITY_MANAGER
     } else if (navigator.userAgent.indexOf('Argon') > 0 || window.top !== window) {
-        role = Role.APPLICATION // TODO: switch to below after next argon-app release
-        // role = Role.REALITY_AUGMENTOR 
+        role = Role.APPLICATION // TODO: switch to below after several argon-app releases
+        // role = Role.REALITY_AUGMENTER 
     } else {
         role = Role.REALITY_MANAGER
     }
@@ -188,11 +190,20 @@ export function init({ configuration, container = new DI.Container }: InitParame
 }
 
 /**
+ * Deprecated. Use [[initRealityViewer]]
+ * @deprecated
+ */
+export function initReality(p: InitParameters = {}) {
+    return initRealityViewer(p);
+}
+
+/**
  * Initialize an [[ArgonSystem]] with the [[REALITY_VIEW]] role
  */
-export function initReality({ configuration, container = new DI.Container }: InitParameters = {}) {
+export function initRealityViewer({ configuration, container = new DI.Container }: InitParameters = {}) {
     const config = Object.assign(configuration || {}, <Configuration>{
-        role: Role.REALITY_VIEW,
+        role: Role.REALITY_VIEW, // TODO: switch to below after several argon-app releases
+        // role: Role.REALITY_VIEWER
         'reality.supportsControlPort': true
     });
     container.registerInstance('containerElement', null);
@@ -218,4 +229,15 @@ export function initLocal({ containerElement, configuration, container = new DI.
 declare class Object {
     static keys(o: {}): string[];
     static assign(target, ...sources): any;
+}
+
+// expose RealityView for backwards compatability
+/**
+ * @private
+ */
+export class RealityView extends RealityViewer {
+    constructor() {
+        super();
+        console.warn('RealityView class has been renamed to RealityViewer');
+    }
 }
