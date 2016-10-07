@@ -3911,7 +3911,7 @@ $__System.register('16', ['c', 'e', '10', 'a', '12', 'b'], function (exports_1, 
                     // update our frame object
                     var frame = this._frame;
                     var now = typeof performance !== 'undefined' ? performance.now() : Date.now();
-                    frame.deltaTime = Math.max(now - frame.systemTime, this.maxDeltaTime);
+                    frame.deltaTime = Math.min(now - frame.systemTime, this.maxDeltaTime);
                     frame.systemTime = now;
                     cesium_imports_1.JulianDate.clone(serializedState.time, frame.time);
                     this._serializedState = serializedState;

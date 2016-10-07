@@ -371,7 +371,7 @@ export class ContextService {
         // update our frame object
         const frame = this._frame;
         const now = typeof performance !== 'undefined' ? performance.now() :  Date.now();
-        frame.deltaTime = Math.max(now - frame.systemTime, this.maxDeltaTime);
+        frame.deltaTime = Math.min(now - frame.systemTime, this.maxDeltaTime);
         frame.systemTime = now;
         JulianDate.clone(<JulianDate>serializedState.time, frame.time);
         this._serializedState = serializedState;
