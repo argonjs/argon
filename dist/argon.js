@@ -6702,7 +6702,10 @@ $__System.register('11', ['c', 'e', '17', '10', 'a', 'b', '12'], function (expor
                         // TODO: need a better way to update entities from arbitrary SerializedEntityPose. May have to 
                         // add functionality to ContextService
                         _this._updateEntity(deviceState.geolocationPose, _this.geolocationEntity, cesium_imports_1.ReferenceFrame.FIXED);
-                        _this._updateEntity(deviceState.orientationPose, _this.orientationEntity, _this.geolocationEntity);
+                        // only update orientation if we aren't already fetching it on our own
+                        if (!_this._deviceorientationListener) {
+                            _this._updateEntity(deviceState.orientationPose, _this.orientationEntity, _this.geolocationEntity);
+                        }
                         _this._updateEntity(deviceState.devicePose, _this.deviceEntity, _this.orientationEntity);
                         _this._updateEntity(deviceState.displayPose, _this.displayEntity, _this.deviceEntity);
                     };
@@ -6767,12 +6770,22 @@ $__System.register('11', ['c', 'e', '17', '10', 'a', 'b', '12'], function (expor
                             });
                         }
                     }
+                    if (this.sessionService.isRealityViewer) {
+                        this.sessionService.manager.connectEvent.addEventListener(function () {
+                            // when the manager connects, get orientation updates from it instead. 
+                            _this.stopOrientationUpdates();
+                        });
+                    }
                 }
                 /**
                 * Request device state updates.
                 */
                 DeviceService.prototype.update = function (o) {
                     var _this = this;
+                    this.updateDeviceState();
+                    if (this.sessionService.isRealityViewer && o && o.orientation) {
+                        this.startOrientationUpdates();
+                    }
                     if (this._subscriptionTimeoutId || !this.sessionService.manager.isConnected) return;
                     o = o || {};
                     o.timeout = o.timeout || 3000;
@@ -6788,7 +6801,7 @@ $__System.register('11', ['c', 'e', '17', '10', 'a', 'b', '12'], function (expor
                     var deviceState = this._state;
                     var time = cesium_imports_1.JulianDate.now(deviceState.time);
                     deviceState.geolocationPose = utils_1.getSerializedEntityPose(this.geolocationEntity, time, cesium_imports_1.ReferenceFrame.FIXED);
-                    deviceState.orientationPose = utils_1.getSerializedEntityPose(this.orientationEntity, time, this.orientationEntity.position && this.orientationEntity.position.referenceFrame);
+                    deviceState.orientationPose = utils_1.getSerializedEntityPose(this.orientationEntity, time, this.geolocationEntity);
                     deviceState.devicePose = utils_1.getSerializedEntityPose(this.deviceEntity, time, this.deviceEntity.position && this.deviceEntity.position.referenceFrame);
                     deviceState.displayPose = utils_1.getSerializedEntityPose(this.displayEntity, time, this.displayEntity.position && this.displayEntity.position.referenceFrame);
                     this.subscribers.forEach(function (options, session) {

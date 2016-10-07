@@ -56,7 +56,10 @@ export class DeviceService {
             // TODO: need a better way to update entities from arbitrary SerializedEntityPose. May have to 
             // add functionality to ContextService
             this._updateEntity(deviceState.geolocationPose, this.geolocationEntity, ReferenceFrame.FIXED);
-            this._updateEntity(deviceState.orientationPose, this.orientationEntity, this.geolocationEntity);
+            // only update orientation if we aren't already fetching it on our own
+            if (!this._deviceorientationListener) {
+                this._updateEntity(deviceState.orientationPose, this.orientationEntity, this.geolocationEntity);
+            }
             this._updateEntity(deviceState.devicePose, this.deviceEntity, this.orientationEntity);
             this._updateEntity(deviceState.displayPose, this.displayEntity, this.deviceEntity);
         }
@@ -143,12 +146,23 @@ export class DeviceService {
 
             }
         }
+
+        if (this.sessionService.isRealityViewer) {
+            this.sessionService.manager.connectEvent.addEventListener(()=>{
+                // when the manager connects, get orientation updates from it instead. 
+                this.stopOrientationUpdates();
+            });
+        }
     }
 
     /**
     * Request device state updates. 
     */
     public update(o?:DeviceStateSubscriptionOptions) {
+        this.updateDeviceState();
+        if (this.sessionService.isRealityViewer && o && o.orientation) {
+            this.startOrientationUpdates();
+        }
         if (this._subscriptionTimeoutId || !this.sessionService.manager.isConnected) return;
         o = o || {};
         o.timeout = o.timeout || 3000;
@@ -161,7 +175,7 @@ export class DeviceService {
     /**
      * Update the device state, and send to subscribers. 
      */
-    protected updateDeviceState() {
+    public updateDeviceState() {
         const deviceState = this._state;
 
         const time = JulianDate.now(<JulianDate>deviceState.time);
@@ -175,7 +189,7 @@ export class DeviceService {
         deviceState.orientationPose = getSerializedEntityPose(
             this.orientationEntity,
             time,
-            this.orientationEntity.position && this.orientationEntity.position.referenceFrame
+            this.geolocationEntity
         );
 
         deviceState.devicePose = getSerializedEntityPose(
