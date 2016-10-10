@@ -21,8 +21,8 @@ export class LiveVideoRealityLoader extends RealityLoader {
         remoteRealitySession.on['ar.context.update'] = () => { };
 
         remoteRealitySession.connectEvent.addEventListener(() => {
-            const remove = this.vuforiaDelegate.stateUpdateEvent.addEventListener((frameState) => {
-                remoteRealitySession.send('ar.reality.frameState', frameState);
+            const remove = this.vuforiaDelegate.stateUpdateEvent.addEventListener((viewState) => {
+                remoteRealitySession.send('ar.reality.viewState', viewState);
             });
 
             this.vuforiaDelegate.videoEnabled = true;

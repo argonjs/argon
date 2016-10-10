@@ -291,7 +291,9 @@ export class DeviceService {
             frustum: {
                 fov: Math.PI / 2,
             }
-        }]
+        }],
+        geolocationAccuracy: undefined,
+        geolocationAltitudeAccuracy: undefined
     };
 
     private _scratchCartesian = new Cartesian3;
@@ -357,7 +359,7 @@ export class DeviceService {
 
 
                 this._state.geolocationAccuracy = pos.coords.accuracy;
-                this._state.geolocationAltitudeAccuracy = pos.coords.altitudeAccuracy;
+                this._state.geolocationAltitudeAccuracy = pos.coords.altitudeAccuracy || undefined;
                 this.updateDeviceState();
             }, (error) => {
                 console.error(error)

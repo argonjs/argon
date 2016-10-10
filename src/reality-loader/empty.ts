@@ -34,12 +34,16 @@ export class EmptyRealityLoader extends RealityLoader {
                     const pose = getSerializedEntityPose(this.deviceService.displayEntity, time);
                     const viewport = deviceState.viewport;
                     const subviews = deviceState.subviews;
+                    const geolocationAccuracy = deviceState.geolocationAccuracy;
+                    const geolocationAltitudeAccuracy = deviceState.geolocationAltitudeAccuracy;
                     if (pose) {
                         const viewState: ViewState = {
                             time,
                             pose,
                             viewport,
-                            subviews
+                            subviews,
+                            geolocationAccuracy,
+                            geolocationAltitudeAccuracy
                         };
                         remoteRealitySession.send('ar.reality.viewState', viewState);
                     }

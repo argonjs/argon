@@ -1,5 +1,5 @@
 import { inject } from 'aurelia-dependency-injection'
-import { DeprecatedPartialFrameState } from './common'
+import { ViewState } from './common'
 import { FocusService } from './focus'
 import { SessionService, SessionPort } from './session'
 import { Event, CommandQueue, resolveURL } from './utils'
@@ -59,7 +59,7 @@ export interface VuforiaServiceDelegateInitOptions {
 export abstract class VuforiaServiceDelegateBase {
     videoEnabled: boolean;
     trackingEnabled: boolean;
-    stateUpdateEvent: Event<DeprecatedPartialFrameState> = new Event();
+    stateUpdateEvent: Event<ViewState> = new Event();
     abstract isAvailable(): boolean
     abstract setHint(hint: VuforiaHint, value: number): boolean;
     abstract decryptLicenseKey(encryptedLicenseData:string, session:SessionPort) : Promise<string>;

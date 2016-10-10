@@ -340,7 +340,9 @@ export class RealityService {
                     // TODO: remove this later  
                     projectionMatrix: Matrix4.toArray(this._scratchFrustum.projectionMatrix, this._scratchArray)
                 }
-            ]
+            ],
+            geolocationAccuracy: undefined,
+            geolocationAltitudeAccuracy: undefined
         } : undefined;
     }
 
@@ -376,7 +378,9 @@ export class RealityService {
                 this._setCurrent(<RealityViewer>reality);
 
                 realitySession.on['ar.reality.viewState'] = (viewState: ViewState) => {
-                    this.viewStateEvent.raiseEvent(viewState);
+                    if (viewState.pose) {
+                        this.viewStateEvent.raiseEvent(viewState);
+                    }
                 }
 
                 // Deprecated. Remove after v1.2
@@ -386,13 +390,13 @@ export class RealityService {
                         if (!defined(serializedState.eye))
                             throw new Error("Unable to construct view configuration: missing eye parameters");
                         const view = this.onGenerateViewFromEyeParameters(serializedState.eye, <JulianDate>state.time);
-                        if (!view) return;
-                        state.view = view;
-                        state['eye'] = undefined;
-                        state.entities = serializedState.entities || {};
+                        if (!view || !view.pose) return;
+                        this.viewStateEvent.raiseEvent(view);
+                    } else {
+                        if (state.view && state.view.pose) {
+                            this.viewStateEvent.raiseEvent(state.view);
+                        }
                     }
-                    state.reality = <RealityViewer>this.getCurrent();
-                    this.frameEvent.raiseEvent(state);
                 }
 
                 realitySession.closeEvent.addEventListener(() => {
