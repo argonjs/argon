@@ -314,7 +314,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     // update our frame object
                     var frame = this._frame;
                     var now = typeof performance !== 'undefined' ? performance.now() : Date.now();
-                    frame.deltaTime = Math.max(now - frame.systemTime, this.maxDeltaTime);
+                    frame.deltaTime = Math.min(now - frame.systemTime, this.maxDeltaTime);
                     frame.systemTime = now;
                     cesium_imports_1.JulianDate.clone(serializedState.time, frame.time);
                     this._serializedState = serializedState;

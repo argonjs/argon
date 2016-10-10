@@ -1,5 +1,5 @@
 // import * as Argon from 'argon'
-import * as Argon from '../src/argon'
+import * as Argon from '../../src/argon'
 
 declare const THREE: any;
 
@@ -76,15 +76,16 @@ var perspectiveProjection = new Argon.Cesium.PerspectiveFrustum();
 perspectiveProjection.fov = Math.PI / 2;
 
 function update(time:Argon.Cesium.JulianDate, index:number) {
-    app.device.update();
-    app.reality.publishFrame({
+    app.device.update({orientation:true});
+    const pose = Argon.getSerializedEntityPose(app.device.displayEntity, time);
+    app.reality.publishViewState({
         time,
-        index,
-        eye: {
-            viewport: app.reality.getMaximumViewport(),
-            pose: Argon.getSerializedEntityPose(app.device.displayEntity, time)
-        }
-    })
+        pose,
+        viewport: app.device.state.viewport,
+        subviews: app.device.state.subviews,
+        geolocationAccuracy: undefined,
+        geolocationAltitudeAccuracy: undefined
+    });
     app.timer.requestFrame(update);
 }
 app.timer.requestFrame(update)

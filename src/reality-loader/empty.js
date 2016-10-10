@@ -62,12 +62,16 @@ System.register(['aurelia-dependency-injection', '../common', '../session', '../
                                 var pose = utils_1.getSerializedEntityPose(_this.deviceService.displayEntity, time_1);
                                 var viewport = deviceState.viewport;
                                 var subviews = deviceState.subviews;
+                                var geolocationAccuracy = deviceState.geolocationAccuracy;
+                                var geolocationAltitudeAccuracy = deviceState.geolocationAltitudeAccuracy;
                                 if (pose) {
                                     var viewState = {
                                         time: time_1,
                                         pose: pose,
                                         viewport: viewport,
-                                        subviews: subviews
+                                        subviews: subviews,
+                                        geolocationAccuracy: geolocationAccuracy,
+                                        geolocationAltitudeAccuracy: geolocationAltitudeAccuracy
                                     };
                                     remoteRealitySession.send('ar.reality.viewState', viewState);
                                 }

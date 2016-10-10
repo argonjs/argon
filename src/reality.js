@@ -325,7 +325,9 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                                 // TODO: remove this later  
                                 projectionMatrix: cesium_imports_1.Matrix4.toArray(this._scratchFrustum.projectionMatrix, this._scratchArray)
                             }
-                        ]
+                        ],
+                        geolocationAccuracy: undefined,
+                        geolocationAltitudeAccuracy: undefined
                     } : undefined;
                 };
                 RealityService.prototype._setNextReality = function (reality, force) {
@@ -355,7 +357,9 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                             _this._session = realitySession;
                             _this._setCurrent(reality);
                             realitySession.on['ar.reality.viewState'] = function (viewState) {
-                                _this.viewStateEvent.raiseEvent(viewState);
+                                if (viewState.pose) {
+                                    _this.viewStateEvent.raiseEvent(viewState);
+                                }
                             };
                             // Deprecated. Remove after v1.2
                             realitySession.on['ar.reality.frameState'] = function (serializedState) {
@@ -364,14 +368,15 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                                     if (!cesium_imports_1.defined(serializedState.eye))
                                         throw new Error("Unable to construct view configuration: missing eye parameters");
                                     var view = _this.onGenerateViewFromEyeParameters(serializedState.eye, state.time);
-                                    if (!view)
+                                    if (!view || !view.pose)
                                         return;
-                                    state.view = view;
-                                    state['eye'] = undefined;
-                                    state.entities = serializedState.entities || {};
+                                    _this.viewStateEvent.raiseEvent(view);
                                 }
-                                state.reality = _this.getCurrent();
-                                _this.frameEvent.raiseEvent(state);
+                                else {
+                                    if (state.view && state.view.pose) {
+                                        _this.viewStateEvent.raiseEvent(state.view);
+                                    }
+                                }
                             };
                             realitySession.closeEvent.addEventListener(function () {
                                 console.log('Reality session closed: ' + JSON.stringify(reality));

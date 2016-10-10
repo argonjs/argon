@@ -31,7 +31,7 @@ export declare class DeviceService {
     /**
      * Update the device state, and send to subscribers.
      */
-    protected updateDeviceState(): void;
+    updateDeviceState(): void;
     /**
      * Set a desired fov in radians.
      */

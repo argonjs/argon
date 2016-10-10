@@ -2980,12 +2980,16 @@ $__System.register('f', ['c', '10', 'a', '11', 'd', '12', 'b'], function (export
                                 var pose = utils_1.getSerializedEntityPose(_this.deviceService.displayEntity, time_1);
                                 var viewport = deviceState.viewport;
                                 var subviews = deviceState.subviews;
+                                var geolocationAccuracy = deviceState.geolocationAccuracy;
+                                var geolocationAltitudeAccuracy = deviceState.geolocationAltitudeAccuracy;
                                 if (pose) {
                                     var viewState = {
                                         time: time_1,
                                         pose: pose,
                                         viewport: viewport,
-                                        subviews: subviews
+                                        subviews: subviews,
+                                        geolocationAccuracy: geolocationAccuracy,
+                                        geolocationAltitudeAccuracy: geolocationAltitudeAccuracy
                                     };
                                     remoteRealitySession.send('ar.reality.viewState', viewState);
                                 }
@@ -3579,8 +3583,8 @@ $__System.register('15', ['c', '10', 'a', '12', '13'], function (exports_1, cont
                     var remoteRealitySession = this.sessionService.createSessionPort();
                     remoteRealitySession.on['ar.context.update'] = function () {};
                     remoteRealitySession.connectEvent.addEventListener(function () {
-                        var remove = _this.vuforiaDelegate.stateUpdateEvent.addEventListener(function (frameState) {
-                            remoteRealitySession.send('ar.reality.frameState', frameState);
+                        var remove = _this.vuforiaDelegate.stateUpdateEvent.addEventListener(function (viewState) {
+                            remoteRealitySession.send('ar.reality.viewState', viewState);
                         });
                         _this.vuforiaDelegate.videoEnabled = true;
                         _this.vuforiaDelegate.trackingEnabled = true;
@@ -6467,7 +6471,9 @@ $__System.register('12', ['c', 'e', '10', '14', 'a', 'b', '1'], function (export
                             },
                             // TODO: remove this later  
                             projectionMatrix: cesium_imports_1.Matrix4.toArray(this._scratchFrustum.projectionMatrix, this._scratchArray)
-                        }]
+                        }],
+                        geolocationAccuracy: undefined,
+                        geolocationAltitudeAccuracy: undefined
                     } : undefined;
                 };
                 RealityService.prototype._setNextReality = function (reality, force) {
@@ -6496,7 +6502,9 @@ $__System.register('12', ['c', 'e', '10', '14', 'a', 'b', '1'], function (export
                             _this._session = realitySession;
                             _this._setCurrent(reality);
                             realitySession.on['ar.reality.viewState'] = function (viewState) {
-                                _this.viewStateEvent.raiseEvent(viewState);
+                                if (viewState.pose) {
+                                    _this.viewStateEvent.raiseEvent(viewState);
+                                }
                             };
                             // Deprecated. Remove after v1.2
                             realitySession.on['ar.reality.frameState'] = function (serializedState) {
@@ -6504,13 +6512,13 @@ $__System.register('12', ['c', 'e', '10', '14', 'a', 'b', '1'], function (export
                                 if (!cesium_imports_1.defined(serializedState.view)) {
                                     if (!cesium_imports_1.defined(serializedState.eye)) throw new Error("Unable to construct view configuration: missing eye parameters");
                                     var view = _this.onGenerateViewFromEyeParameters(serializedState.eye, state.time);
-                                    if (!view) return;
-                                    state.view = view;
-                                    state['eye'] = undefined;
-                                    state.entities = serializedState.entities || {};
+                                    if (!view || !view.pose) return;
+                                    _this.viewStateEvent.raiseEvent(view);
+                                } else {
+                                    if (state.view && state.view.pose) {
+                                        _this.viewStateEvent.raiseEvent(state.view);
+                                    }
                                 }
-                                state.reality = _this.getCurrent();
-                                _this.frameEvent.raiseEvent(state);
                             };
                             realitySession.closeEvent.addEventListener(function () {
                                 console.log('Reality session closed: ' + JSON.stringify(reality));
@@ -6686,7 +6694,9 @@ $__System.register('11', ['c', 'e', '17', '10', 'a', 'b', '12'], function (expor
                             frustum: {
                                 fov: Math.PI / 2
                             }
-                        }]
+                        }],
+                        geolocationAccuracy: undefined,
+                        geolocationAltitudeAccuracy: undefined
                     };
                     this._scratchCartesian = new cesium_imports_1.Cartesian3();
                     this._scratchQuaternion1 = new cesium_imports_1.Quaternion();
@@ -6877,7 +6887,7 @@ $__System.register('11', ['c', 'e', '17', '10', 'a', 'b', '12'], function (expor
                             var enuOrientation = cesium_imports_1.Transforms.headingPitchRollQuaternion(positionECEF, 0, 0, 0, undefined, _this._scratchQuaternion1);
                             _this.geolocationEntity.orientation.setValue(enuOrientation);
                             _this._state.geolocationAccuracy = pos.coords.accuracy;
-                            _this._state.geolocationAltitudeAccuracy = pos.coords.altitudeAccuracy;
+                            _this._state.geolocationAltitudeAccuracy = pos.coords.altitudeAccuracy || undefined;
                             _this.updateDeviceState();
                         }, function (error) {
                             console.error(error);

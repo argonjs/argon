@@ -68,8 +68,8 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                 style.type = 'text/css';
                 document.head.insertBefore(style, document.head.firstChild);
                 var sheet = style.sheet;
-                sheet.insertRule("\n        #argon {\n            position: fixed;\n            left: 0px;\n            bottom: 0px;\n            width: 100%;\n            height: 100%;\n            margin: 0;\n            border: 0;\n            padding: 0;\n        }\n    ", 0);
-                sheet.insertRule("\n        .argon-view > * {\n            position: absolute;\n        }\n    ", 1);
+                sheet.insertRule("\n        #argon {\n            position: fixed;\n            left: 0px;\n            bottom: 0px;\n            width: 100%;\n            height: 100%;\n            margin: 0;\n            border: 0;\n            padding: 0;\n            -webkit-user-select: none;\n            -webkit-tap-highlight-color: transparent;\n            user-select: none;\n        }\n    ", 0);
+                sheet.insertRule("\n        .argon-view > * {\n            position: absolute;\n            -webkit-tap-highlight-color: initial;\n        }\n    ", 1);
             }
             /**
              * Manages the view state
@@ -133,6 +133,13 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                                         argonContainer.classList.add('argon-no-focus');
                                     });
                                 });
+                                // prevent pinch-zoom of the page in ios 10.
+                                argonContainer.addEventListener('touchmove', function (event) {
+                                    event.preventDefault();
+                                }, true);
+                                argonContainer.addEventListener('gesturestart', function (event) {
+                                    event.preventDefault();
+                                }, true);
                             }
                         });
                         if (this.sessionService.isRealityViewer) {

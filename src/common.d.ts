@@ -141,8 +141,8 @@ export interface DeviceState {
     orientationPose?: SerializedEntityPose;
     devicePose?: SerializedEntityPose;
     displayPose?: SerializedEntityPose;
-    geolocationAccuracy?: number;
-    geolocationAltitudeAccuracy?: number | null;
+    geolocationAccuracy: number | undefined;
+    geolocationAltitudeAccuracy: number | undefined;
     defaultFov: number;
     viewport: Viewport;
     subviews: SerializedSubview[];
@@ -174,16 +174,16 @@ export interface ViewState {
      * For a stereo view, this should be the pose between both eyes.
      * For a projected view, this should be the pose of the user's head.
      */
-    pose: SerializedEntityPose;
+    pose: SerializedEntityPose | undefined;
     /**
      * The radius (in meters) of latitudinal and longitudinal uncertainty for the
      * primary pose, in relation to the FIXED reference frame.
      */
-    geolocationAccuracy?: number;
+    geolocationAccuracy: number | undefined;
     /**
      * The accuracy of the altitude for the primary pose in meters.
      */
-    geolocationAltitudeAccuracy?: number;
+    geolocationAltitudeAccuracy: number | undefined;
     /**
      * The primary viewport to render into. In a DOM environment, the bottom left corner of the document element
      * (document.documentElement) should be considered the origin.

@@ -46,8 +46,8 @@ System.register(['aurelia-dependency-injection', '../common', '../session', '../
                     var remoteRealitySession = this.sessionService.createSessionPort();
                     remoteRealitySession.on['ar.context.update'] = function () { };
                     remoteRealitySession.connectEvent.addEventListener(function () {
-                        var remove = _this.vuforiaDelegate.stateUpdateEvent.addEventListener(function (frameState) {
-                            remoteRealitySession.send('ar.reality.frameState', frameState);
+                        var remove = _this.vuforiaDelegate.stateUpdateEvent.addEventListener(function (viewState) {
+                            remoteRealitySession.send('ar.reality.viewState', viewState);
                         });
                         _this.vuforiaDelegate.videoEnabled = true;
                         _this.vuforiaDelegate.trackingEnabled = true;

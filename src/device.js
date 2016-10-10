@@ -100,7 +100,9 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', 'mob
                                 frustum: {
                                     fov: Math.PI / 2,
                                 }
-                            }]
+                            }],
+                        geolocationAccuracy: undefined,
+                        geolocationAltitudeAccuracy: undefined
                     };
                     this._scratchCartesian = new cesium_imports_1.Cartesian3;
                     this._scratchQuaternion1 = new cesium_imports_1.Quaternion;
@@ -117,7 +119,10 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', 'mob
                         // TODO: need a better way to update entities from arbitrary SerializedEntityPose. May have to 
                         // add functionality to ContextService
                         _this._updateEntity(deviceState.geolocationPose, _this.geolocationEntity, cesium_imports_1.ReferenceFrame.FIXED);
-                        _this._updateEntity(deviceState.orientationPose, _this.orientationEntity, _this.geolocationEntity);
+                        // only update orientation if we aren't already fetching it on our own
+                        if (!_this._deviceorientationListener) {
+                            _this._updateEntity(deviceState.orientationPose, _this.orientationEntity, _this.geolocationEntity);
+                        }
                         _this._updateEntity(deviceState.devicePose, _this.deviceEntity, _this.orientationEntity);
                         _this._updateEntity(deviceState.displayPose, _this.displayEntity, _this.deviceEntity);
                     };
@@ -134,6 +139,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', 'mob
                             _this.startOrientationUpdates();
                         else
                             _this.stopOrientationUpdates();
+                        _this.updateDeviceState();
                     };
                     this.sessionService.connectEvent.addEventListener(function (session) {
                         session.on['ar.device.subscribe'] = function (o) {
@@ -162,7 +168,14 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', 'mob
                             session.on['ar.device.desiredFov'] = function (_a) {
                                 var fov = _a.fov;
                                 _this.onDesiredFov(fov);
+                                _this.updateDeviceState();
                             };
+                        // temporary hack until there is a better way for apps to say they need geopose
+                        if (common_1.Role.isRealityAugmenter(session.info.role)) {
+                            _this.locationSubscribers.add(session);
+                            _this.orientationSubscribers.add(session);
+                        }
+                        _this.updateDeviceState();
                     });
                     if (this.sessionService.isRealityManager) {
                         this.startOrientationUpdates();
@@ -189,12 +202,22 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', 'mob
                             });
                         }
                     }
+                    if (this.sessionService.isRealityViewer) {
+                        this.sessionService.manager.connectEvent.addEventListener(function () {
+                            // when the manager connects, get orientation updates from it instead. 
+                            _this.stopOrientationUpdates();
+                        });
+                    }
                 }
                 /**
                 * Request device state updates.
                 */
                 DeviceService.prototype.update = function (o) {
                     var _this = this;
+                    this.updateDeviceState();
+                    if (this.sessionService.isRealityViewer && o && o.orientation) {
+                        this.startOrientationUpdates();
+                    }
                     if (this._subscriptionTimeoutId || !this.sessionService.manager.isConnected)
                         return;
                     o = o || {};
@@ -211,7 +234,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', 'mob
                     var deviceState = this._state;
                     var time = cesium_imports_1.JulianDate.now(deviceState.time);
                     deviceState.geolocationPose = utils_1.getSerializedEntityPose(this.geolocationEntity, time, cesium_imports_1.ReferenceFrame.FIXED);
-                    deviceState.orientationPose = utils_1.getSerializedEntityPose(this.orientationEntity, time, this.orientationEntity.position && this.orientationEntity.position.referenceFrame);
+                    deviceState.orientationPose = utils_1.getSerializedEntityPose(this.orientationEntity, time, this.geolocationEntity);
                     deviceState.devicePose = utils_1.getSerializedEntityPose(this.deviceEntity, time, this.deviceEntity.position && this.deviceEntity.position.referenceFrame);
                     deviceState.displayPose = utils_1.getSerializedEntityPose(this.displayEntity, time, this.displayEntity.position && this.displayEntity.position.referenceFrame);
                     this.subscribers.forEach(function (options, session) {
@@ -291,7 +314,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', 'mob
                             var enuOrientation = cesium_imports_1.Transforms.headingPitchRollQuaternion(positionECEF, 0, 0, 0, undefined, _this._scratchQuaternion1);
                             _this.geolocationEntity.orientation.setValue(enuOrientation);
                             _this._state.geolocationAccuracy = pos.coords.accuracy;
-                            _this._state.geolocationAltitudeAccuracy = pos.coords.altitudeAccuracy;
+                            _this._state.geolocationAltitudeAccuracy = pos.coords.altitudeAccuracy || undefined;
                             _this.updateDeviceState();
                         }, function (error) {
                             console.error(error);
