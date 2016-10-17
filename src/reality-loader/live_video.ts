@@ -17,6 +17,9 @@ export class LiveVideoRealityLoader extends RealityLoader {
     private canvas: HTMLCanvasElement;
     private context: RenderingContext;
 
+    private videoFov: number;
+    private fovSlider: HTMLInputElement;
+
     constructor(
             private sessionService: SessionService,
             private vuforiaDelegate: VuforiaServiceDelegate,
@@ -28,6 +31,37 @@ export class LiveVideoRealityLoader extends RealityLoader {
         this.lastFrameTime = 0;
 
         if (typeof document !== 'undefined') {
+            if (document.cookie.length > 0) {
+                const regex = /argon_fov=([0-9]+)/;
+                const match = regex.exec(document.cookie);
+
+                if (match) {
+                    //match[1] will be the first capture, which is the value of the field of view as a string
+                    this.videoFov = Number(match[1]) * Math.PI / 180;
+                }
+            }
+
+            if (!this.videoFov) {
+                this.fovSlider = document.createElement('input');
+                this.fovSlider.type = 'range';
+                this.fovSlider.min = '0';
+                this.fovSlider.max = '180';
+                this.fovSlider.value = '90';
+                this.fovSlider.step = '1';
+                this.fovSlider.style = 'position:absolute;';
+                this.fovSlider.addEventListener('change', (event) => {
+                    this.videoFov = event.target.value * Math.PI / 180;
+                });
+
+                document.body.appendChild(this.fovSlider);
+
+                this.videoFov = this.fovSlider.value * Math.PI / 180;
+
+                window.addEventListener('beforeunload', (event) => {
+                    document.cookie = "argon_fov=" + this.fovSlider.value.toString();
+                });
+            }
+
             this.videoElement = document.createElement('video');
             this.videoElement.style = 'width:100%; height:100%;';
             this.videoElement.controls = false;
@@ -90,7 +124,8 @@ export class LiveVideoRealityLoader extends RealityLoader {
                         time,
                         index,
                         eye: {
-                            pose: getSerializedEntityPose(this.deviceService.displayEntity, time)
+                            pose: getSerializedEntityPose(this.deviceService.displayEntity, time),
+                            fov: this.videoFov
                         }
                     };
                     remoteRealitySession.send('ar.reality.frameState', frameState);

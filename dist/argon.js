@@ -4566,6 +4566,30 @@ $__System.register('15', ['f', '9', 'a', 'b', 'c', 'd', '13', '16', 'e'], functi
                         });
                         this.canvas = document.createElement('canvas');
                         this.context = this.canvas.getContext('2d');
+                        if (document.cookie.length > 0) {
+                            var regex = /argon_fov=([0-9]+)/;
+                            var match = regex.exec(document.cookie);
+                            if (match) {
+                                //match[1] will be the first capture, which is the value of the field of view as a string
+                                this.videoFov = Number(match[1]);
+                            }
+                        }
+                        if (!this.videoFov) {
+                            this.fovSlider = document.createElement('input');
+                            this.fovSlider.type = 'range';
+                            this.fovSlider.min = '1';
+                            this.fovSlider.max = '180';
+                            this.fovSlider.value = '90';
+                            this.fovSlider.step = '1';
+                            this.fovSlider.style = 'position:relative; top:-10px; right:-10px';
+                            this.fovSlider.onchange = function (event) {
+                                _this.videoFov = event.target.value;
+                            };
+                            this.videoFov = this.fovSlider.value;
+                            viewService.containingElementPromise.then(function (container) {
+                                container.insertBefore(_this.fovSlider, container.firstChild);
+                            });
+                        }
                     }
                 }
                 LiveVideoRealityLoader.prototype.load = function (reality, callback) {
@@ -4605,7 +4629,8 @@ $__System.register('15', ['f', '9', 'a', 'b', 'c', 'd', '13', '16', 'e'], functi
                                     time: time,
                                     index: index,
                                     eye: {
-                                        pose: utils_1.getSerializedEntityPose(_this.deviceService.displayEntity, time)
+                                        pose: utils_1.getSerializedEntityPose(_this.deviceService.displayEntity, time),
+                                        fov: videoFov
                                     }
                                 };
                                 remoteRealitySession.send('ar.reality.frameState', frameState);
