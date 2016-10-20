@@ -238,7 +238,7 @@ export class RealityService {
         this.sessionService.ensureIsRealityViewer();
         if (this.sessionService.manager.isConnected) {
             this.sessionService.manager.send('ar.reality.viewState', view);
-            this.viewStateEvent.raiseEvent(view);
+            if (view.pose) this.viewStateEvent.raiseEvent(view);
         }
     }
 
@@ -341,8 +341,8 @@ export class RealityService {
                     projectionMatrix: Matrix4.toArray(this._scratchFrustum.projectionMatrix, this._scratchArray)
                 }
             ],
-            geolocationAccuracy: undefined,
-            geolocationAltitudeAccuracy: undefined
+            locationAccuracy: undefined,
+            locationAltitudeAccuracy: undefined
         } : undefined;
     }
 

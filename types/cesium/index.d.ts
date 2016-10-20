@@ -18,6 +18,10 @@ declare module 'cesium/Source/Core/Cartesian4' {
     import { Cartesian4 } from 'cesium';
     export default Cartesian4;
 }
+declare module 'cesium/Source/Core/Cartographic' {
+    import { Cartographic } from 'cesium';
+    export default Cartographic;
+}
 declare module 'cesium/Source/Core/Clock' {
     import { Clock } from 'cesium';
     export default Clock;
@@ -435,6 +439,7 @@ declare module 'cesium' {
         equalsEpsilon(right: Cartographic, epsilon: number): boolean;
         toString(): string;
         static fromRadians(longitude: number, latitude: number, height?: number, result?: Cartographic): Cartographic;
+        static fromCartesian(cartesian:Cartesian3, ellipsoid?:Ellipsoid, result?:Cartographic): Cartographic|undefined;
         static fromDegrees(longitude: number, latitude: number, height?: number, result?: Cartographic): Cartographic;
         static clone(cartographic: Cartographic, result?: Cartographic): Cartographic;
         static equals(left?: Cartographic, right?: Cartographic): boolean;
@@ -491,8 +496,8 @@ declare module 'cesium' {
         clockRange: ClockRange;
         canAnimate: boolean;
         shouldAnimate: boolean;
-        onTick;
-        constructor(options: { startTime?: JulianDate; stopTime?: JulianDate; currentTime?: JulianDate; multiplier?: number; clockStep?: ClockStep; clockRange?: ClockRange; canAnimate?: boolean; shouldAnimate?: boolean });
+        onTick: Event;
+        constructor(options?: { startTime?: JulianDate; stopTime?: JulianDate; currentTime?: JulianDate; multiplier?: number; clockStep?: ClockStep; clockRange?: ClockRange; canAnimate?: boolean; shouldAnimate?: boolean });
         tick(): JulianDate;
     }
 
@@ -1077,15 +1082,15 @@ declare module 'cesium' {
         static unpack(array: number[], startingIndex?: number, result?: Matrix3);
         static clone(matrix: Matrix3, result?: Matrix3): Matrix3;
         static fromArray(array: number[], startingIndex?: number, result?: Matrix3): Matrix3;
-        static fromColumnMajorArray(values: number[], result?: Matrix3);
-        static fromRowMajorArray(values: number[], result?: Matrix3);
-        static fromQuaternion(quaternion: Quaternion): Matrix3;
-        static fromScale(scale: Cartesian3, result?: Matrix3);
-        static fromUniformScale(scale: number, result?: Matrix3);
-        static fromCrossProduct(the: Cartesian3, result?: Matrix3);
-        static fromRotationX(angle: number, result?: Matrix3);
-        static fromRotationY(angle: number, result?: Matrix3);
-        static fromRotationZ(angle: number, result?: Matrix3);
+        static fromColumnMajorArray(values: number[], result?: Matrix3): Matrix3;
+        static fromRowMajorArray(values: number[], result?: Matrix3): Matrix3;
+        static fromQuaternion(quaternion: Quaternion, result?:Matrix3): Matrix3;
+        static fromScale(scale: Cartesian3, result?: Matrix3): Matrix3;
+        static fromUniformScale(scale: number, result?: Matrix3): Matrix3;
+        static fromCrossProduct(the: Cartesian3, result?: Matrix3): Matrix3;
+        static fromRotationX(angle: number, result?: Matrix3): Matrix3;
+        static fromRotationY(angle: number, result?: Matrix3): Matrix3;
+        static fromRotationZ(angle: number, result?: Matrix3): Matrix3;
         static toArray(matrix: Matrix3, result?: number[]): number[];
         static getElementIndex(row: number, column: number): number;
         static getColumn(matrix: Matrix3, index: number, result: Cartesian3): Cartesian3;
@@ -1820,7 +1825,7 @@ declare module 'cesium' {
         suspendEvents();
         resumeEvents();
         computeAvailability(): TimeInterval;
-        getById(id: any): Entity;
+        getById(id: any): Entity|undefined;
     }
 
     class CompositeMaterialProperty {
@@ -2173,12 +2178,12 @@ declare module 'cesium' {
         suspendEvents();
         resumeEvents();
         computeAvailability(): TimeInterval;
-        add(entity: Entity);
+        add(entity: Entity) : Entity;
         remove(entity: Entity): boolean;
         contains(entity): boolean;
         removeById(id: any): boolean;
         removeAll();
-        getById(id: any): Entity;
+        getById(id: any): Entity|undefined;
         getOrCreateEntity(id: any): Entity;
         static collectionChangedEventCallback(collection: EntityCollection, added: Entity[], removed: Entity[], changed: Entity[]);
     }

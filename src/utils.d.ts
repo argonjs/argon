@@ -76,12 +76,6 @@ export declare class CommandQueue {
  */
 export declare function getAncestorReferenceFrames(frame: Entity): (Entity | ReferenceFrame)[];
 /**
- * Get root reference frame of the Cesium Entity.
- * @param frames An array of reference frames of the Cesium Entity.
- * @return the first frame from ancestor reference frames array.
- */
-export declare function getRootReferenceFrame(frame: Entity): Entity | ReferenceFrame;
-/**
  * Gets the value of the Position property at the provided time and in the provided reference frame.
  * @param entity The entity to get position.
  * @param time The time for which to retrieve the value.
@@ -229,3 +223,16 @@ export declare function decomposePerspectiveProjectionMatrix(mat: Matrix4, resul
 export declare function convertEntityReferenceFrame(entity: Entity, time: JulianDate, frame: ReferenceFrame | Entity): boolean;
 export declare const detectIOS: boolean;
 export declare function openInArgonApp(): void;
+export declare function blockAllUIEventBubbling(element: HTMLElement): void;
+export declare enum ZoomState {
+    START = 0,
+    CHANGE = 1,
+    END = 2,
+}
+export interface ZoomData {
+    zoom: number;
+    state: ZoomState;
+}
+export declare function addZoomHandler(this: void, el: HTMLElement, callback: (zoomData: ZoomData) => void): () => void;
+export declare function removeZoomHandler(this: void, el: HTMLElement, callback: (zoomData: ZoomData) => void): void;
+export declare const requestAnimationFrame: (callback: FrameRequestCallback) => number;

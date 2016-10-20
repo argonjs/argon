@@ -75,7 +75,7 @@ axisHelper.position.y = -50;
 var perspectiveProjection = new Argon.Cesium.PerspectiveFrustum();
 perspectiveProjection.fov = Math.PI / 2;
 
-function update(time:Argon.Cesium.JulianDate, index:number) {
+function update(time:Argon.Cesium.JulianDate) {
     app.device.update({orientation:true});
     const pose = Argon.getSerializedEntityPose(app.device.displayEntity, time);
     app.reality.publishViewState({
@@ -83,8 +83,8 @@ function update(time:Argon.Cesium.JulianDate, index:number) {
         pose,
         viewport: app.device.state.viewport,
         subviews: app.device.state.subviews,
-        geolocationAccuracy: undefined,
-        geolocationAltitudeAccuracy: undefined
+        locationAccuracy: undefined,
+        locationAltitudeAccuracy: undefined
     });
     app.timer.requestFrame(update);
 }

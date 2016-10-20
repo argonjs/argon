@@ -1,74 +1,61 @@
+/// <reference types="webvr-api" />
 /// <reference types="cesium" />
-import { Entity } from './cesium/cesium-imports';
+import { Entity, Cartographic, JulianDate } from './cesium/cesium-imports';
 import { DeviceState, Viewport } from './common';
+import { ContextService } from './context';
 import { SessionService, SessionPort } from './session';
-import { RealityService } from './reality';
-export declare enum ZoomState {
-    OTHER = 0,
-    START = 1,
-    CHANGE = 2,
-    END = 3,
-}
-export interface ZoomData {
-    zoom: number;
-    fov: number;
-    state: ZoomState;
+declare global  {
+    class VRFrameData {
+        timestamp: number;
+        leftProjectionMatrix: Float32Array;
+        leftViewMatrix: Float32Array;
+        rightProjectionMatrix: Float32Array;
+        rightViewMatrix: Float32Array;
+        pose: VRPose;
+    }
+    interface VRDisplay {
+        getFrameData(frameData: VRFrameData): boolean;
+    }
 }
 /**
 * Provides device state.
 */
 export declare class DeviceService {
     private sessionService;
-    private realityService;
+    private contextService;
     /**
-    * Initialize the DeviceService
-    */
-    constructor(sessionService: SessionService, realityService: RealityService);
-    /**
-    * Request device state updates.
-    */
-    update(o?: DeviceStateSubscriptionOptions): void;
-    /**
-     * Update the device state, and send to subscribers.
+     * The current vrDisplay, if there is one.
      */
-    updateDeviceState(): void;
+    vrDisplay?: VRDisplay;
     /**
-     * Set a desired fov in radians.
-     */
-    setDesiredFov(fov: number | undefined): void;
-    /**
-     * Set the default fov in radians, and adjust the desired fov to match the
-     * previous desired / default ratio.
-     */
-    setDefaultFov(fov: number): void;
-    /**
-     * Get the current device state
+     * The current device state
      */
     readonly state: DeviceState;
     /**
-     * An ENU coordinate frame centered at the gps location reported by the device.
+     * An ENU coordinate frame centered at the device location.
      * The reference frame of this frame is the FIXED (ECEF) reference frame.
      */
-    geolocationEntity: Entity;
+    locationEntity: Entity;
     /**
-     * A frame which represents the orientation of the device. If the orientation of the
-     * device is known absolutely, then the reference frame of this frame is the ENU
-     * coordinate frame, [[geolocationEntity]]. Otherwise, the reference frame of this
-     * frame is arbitrary.
-     */
-    orientationEntity: Entity;
-    /**
-     * A frame which represents the device. If the geopose is known, the reference frame
-     * for this frame is the [[orientationEntity]]. Otherwise, the reference frame is arbitrary.
-     */
-    deviceEntity: Entity;
-    /**
-     * A frame which represents the display for the current device.
-     * The reference frame for this frame is always the [[deviceEntity]].
+     * A frame which represents the display being used.
+     * The reference frame of this frame is the [[orientationEntity]].
      */
     displayEntity: Entity;
     /**
-     * The sessions that are subscribed to device state
+     * The current cartographic position
+     */
+    readonly location: Cartographic | undefined;
+    /**
+     * The radius (in meters) of latitudinal and longitudinal uncertainty,
+     * in relation to the FIXED reference frame.
+     */
+    readonly locationAccuracy: number | undefined;
+    /**
+     * The accuracy of the altitude in meters.
+     */
+    readonly locationAltitudeAccuracy: number | undefined;
+    /**
+     * The sessions that are subscribed to the device state
      */
     protected subscribers: Set<SessionPort>;
     /**
@@ -78,24 +65,35 @@ export declare class DeviceService {
     /**
      * The sessions that are subscribed to the device location
      */
-    protected orientationSubscribers: Set<SessionPort>;
-    private _subscriberTimeoutIds;
+    protected poseSubscribers: Set<SessionPort>;
+    /**
+    * Initialize the DeviceService
+    */
+    constructor(sessionService: SessionService, contextService: ContextService);
     private _state;
-    private _scratchCartesian;
-    private _scratchQuaternion1;
-    private _scratchQuaternion2;
-    private _x90Rot;
-    private _geolocationWatchId;
-    private _deviceorientationListener;
-    private _mobileDetect?;
-    private _alphaOffset?;
-    private _headingDrift;
+    private _exposedState;
+    private _location?;
+    private _subscriberTimeoutIds;
     private _subscriptionTimeoutId?;
-    private _updateEntity(pose, entity, referenceFrame);
-    protected startLocationUpdates(): void;
-    protected startOrientationUpdates(): void;
-    protected stopLocationUpdates(): void;
-    protected stopOrientationUpdates(): void;
+    /**
+    * Request device state updates.
+    */
+    update(o?: DeviceStateSubscriptionOptions): void;
+    /**
+     * Request that the callback function be called for the next frame.
+     * @param callback function
+     */
+    requestFrame(callback: (now: JulianDate) => any): number;
+    /**
+     * Get the current system time
+     */
+    getSystemTime(result?: JulianDate): JulianDate;
+    /**
+     * Send device state to subscribers.
+     */
+    publishDeviceState(): void;
+    private updatePoseLocallyIfNecessary(o?);
+    private subscribeToUpdatesIfTimeoutExpired(o?);
     /**
      * Returns the maximum allowed viewport
      */
@@ -103,24 +101,25 @@ export declare class DeviceService {
     /**
      * Attempt to zoom
      */
-    zoom(data: {
-        zoom: number;
-        fov: number;
-        state: ZoomState;
-    }): void;
     /**
      * Handle zoom. Overridable for custom behavior.
-     * Only called within a [[REALITY_VIEWER]].
      */
-    onZoom(data: ZoomData): number;
     /**
-     * Handle desired fov. Overridable for custom behavior.
-     * Only called within a [[REALITY_MANAGER]]
+     * Set a desired fov in radians.
      */
-    protected onDesiredFov(fov: any): void;
+    /**
+     * Set the default fov in radians, and adjust the desired fov to match the
+     * previous desired / default ratio.
+     */
+    private _geolocationWatchId;
+    private _vrFrameData;
+    protected updateLocation(): void;
+    protected updatePose(): void;
+    protected stopLocationUpdates(): void;
+    protected stopPoseUpdates(): void;
 }
 export interface DeviceStateSubscriptionOptions {
     location?: boolean;
-    orientation?: boolean;
+    pose?: boolean;
     timeout?: number;
 }

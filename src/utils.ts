@@ -13,8 +13,7 @@ import {
     Quaternion,
     Cartesian3,
     ReferenceFrame,
-    Matrix4,
-    CesiumMath
+    Matrix4
 } from './cesium/cesium-imports'
 
 /**
@@ -171,16 +170,6 @@ export function getAncestorReferenceFrames(frame: Entity) {
     return frames
 }
 
-
-/**
- * Get root reference frame of the Cesium Entity.
- * @param frames An array of reference frames of the Cesium Entity.
- * @return the first frame from ancestor reference frames array.
- */
-export function getRootReferenceFrame(frame: Entity) {
-    return getAncestorReferenceFrames(frame)[0]
-}
-
 /**
  * Gets the value of the Position property at the provided time and in the provided reference frame.
  * @param entity The entity to get position. 
@@ -269,8 +258,8 @@ export function getSerializedEntityPose(entity: Entity, time: JulianDate, frame?
 
     if (p && o) {
         return {
-            p: Cartesian3.ZERO.equalsEpsilon(p, CesiumMath.EPSILON16) ? 0 : p,
-            o: Quaternion.IDENTITY.equalsEpsilon(o, CesiumMath.EPSILON16) ? 0 : o,
+            p,
+            o,
             r: typeof frame === 'number' ? frame : frame.id
         };
     } else if (frames) {
@@ -622,4 +611,160 @@ export function openInArgonApp() {
         const protocol = window.location.protocol;
         window.location.protocol = protocol === 'https:' ? 'argon4s' : 'argon4';
     }
+}
+
+const eventTypes = Object.keys(typeof window !== undefined ? window : {}).filter((k) => {
+    return k.substring(0,2)=='on' && 
+        (document[k]==null||typeof document[k]=='function');
+}).map((e) => e.substring(2))
+
+export function blockAllUIEventBubbling(element:HTMLElement) { 
+    const stopPropagation = (e:UIEvent) => e.stopPropagation();
+    eventTypes.forEach((type)=>{
+        element.addEventListener(type, stopPropagation, false);
+    });
+}
+
+export enum ZoomState {
+    START,
+    CHANGE,
+    END
+}
+
+export interface ZoomData {
+    zoom:number, 
+    state:ZoomState
+}
+
+export function addZoomHandler(this:void, el:HTMLElement, callback:(zoomData:ZoomData)=>void) {
+    let eventListeners : EventListenerMap;
+
+    if (typeof PointerEvent !== 'undefined') {
+
+        const evCache = new Array();
+        let startDistSquared = -1;
+        let zoom = 1;
+
+        const remove_event = (ev) => {
+            // Remove this event from the target's cache
+            for (var i = 0; i < evCache.length; i++) {
+                if (evCache[i].pointerId == ev.pointerId) {
+                    evCache.splice(i, 1);
+                    break;
+                }
+            }
+        }
+
+        const pointerdown_handler = (ev) => {
+            // The pointerdown event signals the start of a touch interaction.
+            // This event is cached to support 2-finger gestures
+            evCache.push(ev);
+        }
+
+        const pointermove_handler = (ev) => {
+            // This function implements a 2-pointer pinch/zoom gesture. 
+
+            // Find this event in the cache and update its record with this event
+            for (var i = 0; i < evCache.length; i++) {
+                if (ev.pointerId == evCache[i].pointerId) {
+                    evCache[i] = ev;
+                    break;
+                }
+            }
+
+            // If two pointers are down, check for pinch gestures
+            if (evCache.length == 2) {
+                // Calculate the distance between the two pointers
+                const curDiffX = Math.abs(evCache[0].clientX - evCache[1].clientX);
+                const curDiffY = Math.abs(evCache[0].clientY - evCache[1].clientY);
+                const currDistSquared = curDiffX * curDiffX + curDiffY * curDiffY;
+
+                if (startDistSquared == -1) {
+                    // start pinch
+                    startDistSquared = currDistSquared;
+                    zoom = 1;
+                    callback({ zoom, state: ZoomState.START });
+                } else {
+                    // change pinch
+                    zoom = currDistSquared / startDistSquared;
+                    callback({ zoom, state: ZoomState.CHANGE });
+                }
+            } else {
+                // end pinch                            
+                callback({ zoom, state: ZoomState.END });
+                startDistSquared = -1;
+            }
+        }
+
+        const pointerup_handler = (ev) => {
+            // Remove this pointer from the cache
+            remove_event(ev);
+
+            // If the number of pointers down is less than two then reset diff tracker
+            if (evCache.length < 2) startDistSquared = -1;
+        }
+
+        eventListeners = {
+            pointerdown: pointerdown_handler,
+            pointermove: pointermove_handler,
+            // Use same handler for pointer{up,cancel,out,leave} events since
+            // the semantics for these events - in this app - are the same.
+            pointerup: pointerup_handler,
+            pointercancel: pointerup_handler,
+            pointerout: pointerup_handler,
+            pointerleave: pointerup_handler
+        };
+    } else {
+        eventListeners = {
+            gesturestart: (ev: MSGestureEvent) => {;
+                callback({ zoom: ev.scale, state: ZoomState.START });
+            },
+            gesturechange: (ev: MSGestureEvent) => {
+                callback({ zoom: ev.scale, state: ZoomState.CHANGE });
+            },
+            gestureend: (ev: MSGestureEvent) => {
+                callback({ zoom: ev.scale, state: ZoomState.END });
+            }
+        };
+    }
+
+    for (const event in eventListeners) {
+        el.addEventListener(event, eventListeners[event]);
+    }
+    
+    const callbackToListeners = new Map<(zoomData:ZoomData)=>void, EventListenerMap>();
+    callbackToListeners.set(callback, eventListeners);
+    elementToCallbacksMap.set(el, callbackToListeners);
+
+    return () => {
+        removeZoomHandler(el, callback);
+    }
+}
+
+export function removeZoomHandler(this:void, el:HTMLElement, callback:(zoomData:ZoomData)=>void) {
+    const callbackToListeners = elementToCallbacksMap.get(el)!;
+    const eventListeners = callbackToListeners.get(callback)!;
+    for (const event in eventListeners) {
+        el.removeEventListener(event, eventListeners[event]);
+    }
+    callbackToListeners.delete(callback);
+    if (callbackToListeners.size === 0) 
+        elementToCallbacksMap.delete(el);
+}
+
+interface EventListenerMap { [eventName:string] : (evt:UIEvent) => void };
+
+const elementToCallbacksMap = new Map<HTMLElement, Map<(zoomData:ZoomData)=>void, EventListenerMap>>();
+
+var lastTime = 0;
+
+export const requestAnimationFrame = 
+    (window && window.requestAnimationFrame) ? 
+    window.requestAnimationFrame : (callback) => {
+    var currTime = performance.now();
+    var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+    var id = setTimeout(function() { callback(currTime + timeToCall); },
+        timeToCall);
+    lastTime = currTime + timeToCall;
+    return id;
 }

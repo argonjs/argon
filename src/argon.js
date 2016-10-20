@@ -1,4 +1,4 @@
-System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/cesium-imports', 'urijs', './session', './common', './context', './device', './focus', './reality', './timer', './ui', './view', './vuforia', './reality-loader/empty', './reality-loader/live_video', './reality-loader/hosted', './utils'], function(exports_1, context_1) {
+System.register(['googlevr/webvr-polyfill', 'aurelia-polyfills', 'aurelia-dependency-injection', './cesium/cesium-imports', 'urijs', './session', './common', './context', './device', './focus', './reality', './ui', './view', './vuforia', './reality-loader/empty', './reality-loader/live_video', './reality-loader/hosted', './timer', './utils'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __extends = (this && this.__extends) || function (d, b) {
@@ -6,7 +6,7 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
-    var DI, Cesium, URI, session_1, common_1, context_2, device_1, focus_1, reality_1, timer_1, ui_1, view_1, vuforia_1, empty_1, live_video_1, hosted_1;
+    var DI, Cesium, URI, session_1, common_1, context_2, device_1, focus_1, reality_1, ui_1, view_1, vuforia_1, empty_1, live_video_1, hosted_1;
     var ArgonSystem, RealityView;
     /**
      * Create an ArgonSystem instance.
@@ -95,6 +95,7 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
     return {
         setters:[
             function (_1) {},
+            function (_2) {},
             function (DI_1) {
                 DI = DI_1;
             },
@@ -128,10 +129,6 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
                 reality_1 = reality_1_1;
                 exportStar_1(reality_1_1);
             },
-            function (timer_1_1) {
-                timer_1 = timer_1_1;
-                exportStar_1(timer_1_1);
-            },
             function (ui_1_1) {
                 ui_1 = ui_1_1;
                 exportStar_1(ui_1_1);
@@ -152,6 +149,9 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
             },
             function (hosted_1_1) {
                 hosted_1 = hosted_1_1;
+            },
+            function (timer_1_1) {
+                exportStar_1(timer_1_1);
             },
             function (utils_1_1) {
                 exportStar_1(utils_1_1);
@@ -197,7 +197,6 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
                         this.reality.registerLoader(container.get(live_video_1.LiveVideoRealityLoader));
                         if (typeof document !== 'undefined') {
                             this.reality.registerLoader(container.get(hosted_1.HostedRealityLoader));
-                            container.get(view_1.PinchZoomService);
                             container.get(ui_1.DefaultUIService);
                         }
                         this.reality.setDefault(common_1.RealityViewer.EMPTY);
@@ -240,13 +239,6 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
                 Object.defineProperty(ArgonSystem.prototype, "session", {
                     get: function () {
                         return this.container.get(session_1.SessionService);
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(ArgonSystem.prototype, "timer", {
-                    get: function () {
-                        return this.container.get(timer_1.TimerService);
                     },
                     enumerable: true,
                     configurable: true

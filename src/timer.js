@@ -2,8 +2,8 @@ System.register(['./cesium/cesium-imports'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var cesium_imports_1;
-    var TimerService, lastTime;
-    function requestAnimationFramePoly(callback) {
+    var _clock, _scratchTime, TimerService, lastTime, rAF;
+    function requestAnimationFramePolyfill(callback) {
         var currTime = Date.now();
         var timeToCall = Math.max(0, 16 - (currTime - lastTime));
         var id = setTimeout(function () { callback(currTime + timeToCall); }, timeToCall);
@@ -16,43 +16,52 @@ System.register(['./cesium/cesium-imports'], function(exports_1, context_1) {
                 cesium_imports_1 = cesium_imports_1_1;
             }],
         execute: function() {
+            _clock = new cesium_imports_1.Clock();
+            _scratchTime = new cesium_imports_1.JulianDate(0, 0);
             /**
              * Provides timer service
              */
             TimerService = (function () {
                 function TimerService() {
-                    this.frameNumbers = new WeakMap();
                 }
                 /**
                  * Request that the callback function be called for the next frame.
-                 *
                  * @param callback function
                  */
                 TimerService.prototype.requestFrame = function (callback) {
                     var _this = this;
-                    if (typeof requestAnimationFrame !== 'undefined' && typeof performance !== 'undefined') {
-                        this.navigationStartDate = this.navigationStartDate || cesium_imports_1.JulianDate.fromDate(new Date(performance.timing.navigationStart));
-                        requestAnimationFrame(function (time) {
-                            var frameTime = cesium_imports_1.JulianDate.addSeconds(_this.navigationStartDate, time / 1000, new cesium_imports_1.JulianDate(0, 0));
-                            callback(frameTime, _this.getNextFrameNumber(callback));
-                        });
-                    }
-                    else {
-                        requestAnimationFramePoly(function (time) {
-                            var frameTime = cesium_imports_1.JulianDate.fromDate(new Date(time));
-                            callback(frameTime, _this.getNextFrameNumber(callback));
-                        });
-                    }
+                    rAF(function () {
+                        _this._tick();
+                        callback(_clock.currentTime);
+                    });
                 };
-                TimerService.prototype.getNextFrameNumber = function (callback) {
-                    var frameNumber = this.frameNumbers.get(callback) || 0;
-                    this.frameNumbers.set(callback, frameNumber + 1);
-                    return frameNumber;
+                TimerService.prototype.getSystemTime = function (result) {
+                    this._tick();
+                    return cesium_imports_1.JulianDate.clone(_clock.currentTime, result);
+                };
+                // Enforce monotonically increasing time, and deal with 
+                // clock drift by either slowing down or speeding up,
+                // while never going backwards
+                TimerService.prototype._tick = function () {
+                    var secondsBeforeTick = _clock.currentTime.secondsOfDay;
+                    _clock.tick();
+                    var secondsAfterTick = _clock.currentTime.secondsOfDay;
+                    var now = cesium_imports_1.JulianDate.now(_scratchTime);
+                    var secondsDrift = cesium_imports_1.JulianDate.secondsDifference(_clock.currentTime, now);
+                    if (secondsDrift > 0.033) {
+                        var halfTimeStep = (secondsAfterTick - secondsBeforeTick) / 2;
+                        _clock.currentTime.secondsOfDay -= halfTimeStep;
+                    }
+                    else if (secondsDrift < 0.5) {
+                        cesium_imports_1.JulianDate.clone(now, _clock.currentTime);
+                    }
                 };
                 return TimerService;
             }());
             exports_1("TimerService", TimerService);
             lastTime = 0;
+            rAF = typeof requestAnimationFrame !== 'undefined' ?
+                requestAnimationFrame : requestAnimationFramePolyfill;
         }
     }
 });

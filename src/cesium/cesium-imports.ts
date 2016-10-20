@@ -3,6 +3,7 @@ export { default as CallbackProperty } from 'cesium/Source/DataSources/CallbackP
 export { default as Cartesian2 } from 'cesium/Source/Core/Cartesian2'
 export { default as Cartesian3 } from 'cesium/Source/Core/Cartesian3'
 export { default as Cartesian4 } from 'cesium/Source/Core/Cartesian4'
+export { default as Cartographic } from 'cesium/Source/Core/Cartographic'
 export { default as Clock } from 'cesium/Source/Core/Clock'
 export { default as ClockStep } from 'cesium/Source/Core/ClockStep'
 // export {default as Color} from 'cesium/Source/Core/Color'

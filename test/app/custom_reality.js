@@ -3,7 +3,7 @@ System.register(['../../src/argon'], function(exports_1, context_1) {
     var __moduleName = context_1 && context_1.id;
     var Argon;
     var app, scene, camera, user, userLocation, renderer, geometry, mat, posXSphere, negXSphere, posYSphere, negYSphere, posZSphere, negZSphere, axisHelper, perspectiveProjection;
-    function update(time, index) {
+    function update(time) {
         app.device.update({ orientation: true });
         var pose = Argon.getSerializedEntityPose(app.device.displayEntity, time);
         app.reality.publishViewState({
@@ -11,8 +11,8 @@ System.register(['../../src/argon'], function(exports_1, context_1) {
             pose: pose,
             viewport: app.device.state.viewport,
             subviews: app.device.state.subviews,
-            geolocationAccuracy: undefined,
-            geolocationAltitudeAccuracy: undefined
+            locationAccuracy: undefined,
+            locationAltitudeAccuracy: undefined
         });
         app.timer.requestFrame(update);
     }

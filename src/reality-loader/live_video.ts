@@ -2,14 +2,17 @@ import { inject } from 'aurelia-dependency-injection'
 import { Role, RealityViewer } from '../common'
 import { SessionService, SessionPort } from '../session'
 import { RealityLoader } from '../reality'
+import { ViewService } from '../view'
 import { VuforiaServiceDelegate } from '../vuforia'
+import * as utils from '../utils'
 
-@inject(SessionService, VuforiaServiceDelegate)
+@inject(SessionService, ViewService, VuforiaServiceDelegate)
 export class LiveVideoRealityLoader extends RealityLoader {
     public type = 'live-video';
 
     constructor(
         private sessionService: SessionService,
+        private viewService: ViewService,
         private vuforiaDelegate: VuforiaServiceDelegate) {
         super();
     }
@@ -21,12 +24,19 @@ export class LiveVideoRealityLoader extends RealityLoader {
         remoteRealitySession.on['ar.context.update'] = () => { };
 
         remoteRealitySession.connectEvent.addEventListener(() => {
-            const remove = this.vuforiaDelegate.stateUpdateEvent.addEventListener((viewState) => {
-                remoteRealitySession.send('ar.reality.viewState', viewState);
-            });
+            if (this.viewService.element) {
+                const remove = utils.addZoomHandler(this.viewService.element, (zoomData) => {
+                    
+                });
+                remoteRealitySession.closeEvent.addEventListener(remove);
+            }
 
             this.vuforiaDelegate.videoEnabled = true;
             this.vuforiaDelegate.trackingEnabled = true;
+
+            const remove = this.vuforiaDelegate.stateUpdateEvent.addEventListener((viewState) => {
+                remoteRealitySession.send('ar.reality.viewState', viewState);
+            });
 
             remoteRealitySession.closeEvent.addEventListener(() => {
                 remove();

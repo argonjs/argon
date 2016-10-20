@@ -1,3 +1,4 @@
+import 'googlevr/webvr-polyfill'
 import 'aurelia-polyfills'
 import * as DI from 'aurelia-dependency-injection'
 import * as Cesium from './cesium/cesium-imports'
@@ -13,14 +14,13 @@ import {
 } from './session'
 
 import { Configuration, Role, RealityViewer } from './common'
-import { ContextService, Frame } from './context'
+import { ContextService } from './context'
 import { DeviceService } from './device'
 import { FocusService } from './focus'
 import { RealityService } from './reality'
-import { TimerService } from './timer'
 import { DefaultUIService } from './ui'
 import { Event } from './utils'
-import { ViewService, PinchZoomService } from './view'
+import { ViewService } from './view'
 import { VuforiaService } from './vuforia'
 
 import { EmptyRealityLoader } from './reality-loader/empty'
@@ -93,7 +93,6 @@ export class ArgonSystem {
 
             if (typeof document !== 'undefined') {
                 this.reality.registerLoader(container.get(HostedRealityLoader));
-                container.get(PinchZoomService);
                 container.get(DefaultUIService);
             }
 
@@ -128,10 +127,6 @@ export class ArgonSystem {
         return this.container.get(SessionService);
     }
 
-    public get timer(): TimerService {
-        return this.container.get(TimerService);
-    }
-
     public get view(): ViewService {
         return this.container.get(ViewService);
     }
@@ -142,11 +137,11 @@ export class ArgonSystem {
 
     // events
 
-    public get updateEvent(): Event<Frame> {
+    public get updateEvent(): Event<any> {
         return this.context.updateEvent;
     }
 
-    public get renderEvent(): Event<Frame> {
+    public get renderEvent(): Event<any> {
         return this.context.renderEvent;
     }
 

@@ -1,4 +1,4 @@
-System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './session', './context', './utils', './focus', './device'], function(exports_1, context_1) {
+System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './common', './device', './session', './context', './utils', './focus', './reality'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -7,8 +7,8 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
         else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
-    var aurelia_dependency_injection_1, cesium_imports_1, session_1, context_2, utils_1, focus_1, device_1;
-    var argonContainer, argonContainerPromise, ViewService, PinchZoomService;
+    var aurelia_dependency_injection_1, cesium_imports_1, common_1, device_1, session_1, context_2, utils_1, focus_1, reality_1;
+    var argonContainer, argonContainerPromise, ViewService;
     return {
         setters:[
             function (aurelia_dependency_injection_1_1) {
@@ -16,6 +16,12 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
             },
             function (cesium_imports_1_1) {
                 cesium_imports_1 = cesium_imports_1_1;
+            },
+            function (common_1_1) {
+                common_1 = common_1_1;
+            },
+            function (device_1_1) {
+                device_1 = device_1_1;
             },
             function (session_1_1) {
                 session_1 = session_1_1;
@@ -29,8 +35,8 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
             function (focus_1_1) {
                 focus_1 = focus_1_1;
             },
-            function (device_1_1) {
-                device_1 = device_1_1;
+            function (reality_1_1) {
+                reality_1 = reality_1_1;
             }],
         execute: function() {
             // setup our DOM environment
@@ -55,6 +61,13 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                         container.classList.add('argon-view');
                         document.body.appendChild(container);
                         argonContainer = container;
+                        // prevent pinch-zoom of the page in ios 10.
+                        argonContainer.addEventListener('touchmove', function (event) {
+                            event.preventDefault();
+                        }, true);
+                        argonContainer.addEventListener('gesturestart', function (event) {
+                            event.preventDefault();
+                        }, true);
                         resolve(container);
                     };
                     if (document.readyState == 'loading') {
@@ -68,17 +81,20 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                 style.type = 'text/css';
                 document.head.insertBefore(style, document.head.firstChild);
                 var sheet = style.sheet;
-                sheet.insertRule("\n        #argon {\n            position: fixed;\n            left: 0px;\n            bottom: 0px;\n            width: 100%;\n            height: 100%;\n            margin: 0;\n            border: 0;\n            padding: 0;\n            -webkit-user-select: none;\n            -webkit-tap-highlight-color: transparent;\n            user-select: none;\n        }\n    ", 0);
-                sheet.insertRule("\n        .argon-view > * {\n            position: absolute;\n            -webkit-tap-highlight-color: initial;\n        }\n    ", 1);
+                sheet.insertRule("\n        #argon {\n            position: fixed;\n            left: 0px;\n            bottom: 0px;\n            width: 100%;\n            height: 100%;\n            margin: 0;\n            border: 0;\n            padding: 0;\n        }\n    ", sheet.cssRules.length);
+                sheet.insertRule("\n        .argon-view {\n            overflow: hidden;\n            -webkit-tap-highlight-color: initial;\n            -webkit-user-select: none;\n            -webkit-tap-highlight-color: transparent;\n            user-select: none;\n        }\n    ", sheet.cssRules.length);
+                sheet.insertRule("\n        .argon-view > * {\n            position: absolute;\n            -webkit-tap-highlight-color: initial;\n        }\n    ", sheet.cssRules.length);
             }
             /**
              * Manages the view state
              */
             ViewService = (function () {
-                function ViewService(containerElement, sessionService, focusService, contextService) {
+                function ViewService(containerElement, sessionService, focusService, deviceService, realityService, contextService) {
                     var _this = this;
                     this.sessionService = sessionService;
                     this.focusService = focusService;
+                    this.deviceService = deviceService;
+                    this.realityService = realityService;
                     this.contextService = contextService;
                     /**
                      * An event that is raised when the root viewport has changed
@@ -97,7 +113,6 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                      */
                     this.desiredViewportMap = new WeakMap();
                     this._subviews = [];
-                    this._subviewEntities = [];
                     this._frustums = [];
                     if (typeof document !== 'undefined' && document.createElement) {
                         var element_1 = this.element = document.createElement('div');
@@ -133,28 +148,13 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                                         argonContainer.classList.add('argon-no-focus');
                                     });
                                 });
-                                // prevent pinch-zoom of the page in ios 10.
-                                argonContainer.addEventListener('touchmove', function (event) {
-                                    event.preventDefault();
-                                }, true);
-                                argonContainer.addEventListener('gesturestart', function (event) {
-                                    event.preventDefault();
-                                }, true);
                             }
                         });
                         if (this.sessionService.isRealityViewer) {
-                            this.sessionService.manager.on['ar.view.uievent'] = function (uievent) {
-                                uievent.view = window;
-                                var e;
-                                switch (uievent.type) {
-                                    case 'wheel':
-                                        e = new WheelEvent(uievent.type, uievent);
-                                    default:
-                                        e = new MouseEvent(uievent.type, uievent);
-                                }
-                                var target = document.elementFromPoint(e.clientX, e.clientY) || window;
-                                target.dispatchEvent(e);
-                            };
+                            this._setupEventSynthesizing();
+                        }
+                        else {
+                            this._setupEventForwarding();
                         }
                     }
                     if (this.sessionService.isRealityManager) {
@@ -166,14 +166,10 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                     }
                     this.contextService.renderEvent.addEventListener(function () {
                         var state = _this.contextService.serializedFrameState;
-                        var subviewEntities = _this._subviewEntities;
-                        subviewEntities.length = 0;
                         state.view.subviews.forEach(function (subview, index) {
                             var id = 'ar.view_' + index;
-                            state.entities[id] = subview.pose || state.view.pose;
-                            _this.contextService.updateEntityFromFrameState(id, state);
-                            delete state.entities[id];
-                            subviewEntities[index] = _this.contextService.entities.getById(id);
+                            var subviewPose = subview.pose || state.view.pose;
+                            _this.contextService.updateEntityFromSerializedPose(id, subviewPose);
                         });
                         _this._update();
                     });
@@ -182,9 +178,11 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                     var _this = this;
                     this._update();
                     var subviews = this._subviews;
-                    subviews.length = this._current.subviews.length;
-                    this._current.subviews.forEach(function (serializedSubview, index) {
-                        var subviewEntity = _this._subviewEntities[index];
+                    var viewState = this.contextService.serializedFrameState.view;
+                    subviews.length = viewState.subviews.length;
+                    viewState.subviews.forEach(function (serializedSubview, index) {
+                        var id = 'ar.view_' + index;
+                        var subviewEntity = _this.contextService.entities.getById(id);
                         var subview = subviews[index] = subviews[index] || {};
                         subview.index = index;
                         subview.type = serializedSubview.type;
@@ -192,8 +190,8 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                         subview.viewport = serializedSubview.viewport || {
                             x: 0,
                             y: 0,
-                            width: _this._current.viewport.width,
-                            height: _this._current.viewport.height
+                            width: viewState.viewport.width,
+                            height: viewState.viewport.height
                         };
                         subview.frustum = _this._frustums[index];
                         if (!subview.frustum) {
@@ -209,11 +207,58 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                     });
                     return subviews;
                 };
+                /**
+                 * Get the current viewport
+                 */
                 ViewService.prototype.getViewport = function () {
-                    return this._current.viewport;
+                    return this.contextService.serializedFrameState.view.viewport;
+                };
+                /**
+                 * Request to present the view in an HMD.
+                 */
+                ViewService.prototype.requestPresent = function () {
+                    if (this.deviceService.vrDisplay) {
+                        var layers = [];
+                        layers[0] = { source: this.element.querySelector('canvas') };
+                        return this.deviceService.vrDisplay.requestPresent(layers);
+                    }
+                    else {
+                        return this.requestFullscreen();
+                    }
+                };
+                /**
+                 * Exit preseting in an HMD
+                 */
+                ViewService.prototype.exitPresent = function () {
+                    if (this.deviceService.vrDisplay) {
+                        return this.deviceService.vrDisplay.exitPresent();
+                    }
+                    return Promise.reject(new Error("Not presenting"));
+                };
+                /**
+                 * Request to present the view in fullscreen
+                 */
+                ViewService.prototype.requestFullscreen = function () {
+                    return this.containingElementPromise.then(function (container) {
+                        if (container.requestFullscreen)
+                            return container.requestFullscreen();
+                        if (container.webkitRequestFullscreen)
+                            return container.webkitRequestFullscreen();
+                    });
+                };
+                /**
+                 * Handle UI Events. Meant to be overwritten by apps.
+                 * By default, an event will be forwarded to the reality viewer.
+                 * If the event is handled by the app, then evt.stopImmediatePropagation()
+                 * should be called to stop the event from being forwarded to the
+                 * reality viewer.
+                 */
+                ViewService.prototype.onUIEvent = function (evt) {
+                    // default: do nothing
                 };
                 /**
                  * Set the desired root viewport
+                 * @private
                  */
                 ViewService.prototype.setDesiredViewport = function (viewport) {
                     this.sessionService.manager.send('ar.view.desiredViewport', viewport);
@@ -224,16 +269,19 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                  * When running on an HMD, this request will always fail. If the current reality view
                  * does not support custom views, this request will fail. The manager may revoke
                  * ownership at any time (even without this application calling releaseOwnership)
+                 * @private
                  */
                 ViewService.prototype.requestOwnership = function () {
                 };
                 /**
                  * Release control over the view.
+                 * @private
                  */
                 ViewService.prototype.releaseOwnership = function () {
                 };
                 /**
                  * Returns true if this application has control over the view.
+                 * @private
                  */
                 ViewService.prototype.isOwner = function () {
                 };
@@ -245,8 +293,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                         throw new Error('Expected state to be defined');
                     var view = state.view;
                     var viewportJSON = JSON.stringify(view.viewport);
-                    var previousViewport = this._current && this._current.viewport;
-                    this._current = view;
+                    var previousViewport = this._currentViewport;
                     if (!this._currentViewportJSON || this._currentViewportJSON !== viewportJSON) {
                         this._currentViewportJSON = viewportJSON;
                         if (this.element) {
@@ -260,120 +307,221 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                         }
                         this.viewportChangeEvent.raiseEvent({ previous: previousViewport });
                     }
+                    this._currentViewport = common_1.Viewport.clone(view.viewport, this._currentViewport);
+                };
+                ViewService.prototype._setupEventForwarding = function () {
+                    var _this = this;
+                    this.realityService.connectEvent.addEventListener(function (realitySession) {
+                        _this._currentRealitySession = realitySession;
+                        realitySession.closeEvent.addEventListener(function () {
+                            _this._currentRealitySession = undefined;
+                        });
+                    });
+                    var cloneTouch = function (touch, boundingRect) {
+                        return {
+                            identifier: touch.identifier,
+                            clientX: touch.clientX - boundingRect.left,
+                            clientY: touch.clientY - boundingRect.top,
+                            screenX: touch.screenX,
+                            screenY: touch.screenY
+                        };
+                    };
+                    var cloneTouches = function (touches, boundingRect) {
+                        if (!touches)
+                            return undefined;
+                        var touchList = [];
+                        for (var i = 0; i < touches.length; i++) {
+                            var touch = touches.item(i);
+                            touchList[i] = cloneTouch(touch, boundingRect);
+                        }
+                        return touchList;
+                    };
+                    var forwardEvents = function (e) {
+                        if (e.type !== 'touchstart' && e.type !== 'touchmove' && e.type !== 'touchend')
+                            e.preventDefault();
+                        if (_this._currentRealitySession) {
+                            var boundingRect = _this.element.getBoundingClientRect();
+                            var touches = cloneTouches(e.touches, boundingRect);
+                            var changedTouches = cloneTouches(e.changedTouches, boundingRect);
+                            var targetTouches = cloneTouches(e.targetTouches, boundingRect);
+                            _this._currentRealitySession.send('ar.view.uievent', {
+                                type: e.type,
+                                bubbles: e.bubbles,
+                                cancelable: e.cancelable,
+                                detail: e.detail,
+                                altKey: e.altKey,
+                                ctrlKey: e.ctrlKey,
+                                metaKey: e.metaKey,
+                                button: e.button,
+                                buttons: e.buttons,
+                                clientX: e.clientX - boundingRect.left,
+                                clientY: e.clientY - boundingRect.top,
+                                screenX: e.screenX,
+                                screenY: e.screenY,
+                                movementX: e.movementX,
+                                movementY: e.movementY,
+                                deltaX: e.deltaX,
+                                deltaY: e.deltaY,
+                                deltaZ: e.deltaZ,
+                                deltaMode: e.deltaMode,
+                                wheelDelta: e.wheelDelta,
+                                wheelDeltaX: e.wheelDeltaX,
+                                wheelDeltaY: e.wheelDeltaY,
+                                which: e.which,
+                                timeStamp: e.timeStamp,
+                                touches: touches,
+                                changedTouches: changedTouches,
+                                targetTouches: targetTouches
+                            });
+                        }
+                    };
+                    ['wheel',
+                        'click',
+                        'dblclick',
+                        'contextmenu',
+                        'mouseover',
+                        'mouseout',
+                        'mousemove',
+                        'mousedown',
+                        'mouseup',
+                        'touchstart',
+                        'touchend',
+                        'touchmove',
+                        'touchcancel'
+                    ].forEach(function (type) {
+                        _this.element.addEventListener(type, forwardEvents, false);
+                    });
+                };
+                ViewService.prototype._setupEventSynthesizing = function () {
+                    var currentTarget;
+                    var fireMouseLeaveEvents = function (target, relatedTarget, uievent) {
+                        if (!target)
+                            return;
+                        var eventInit = {
+                            view: uievent.view,
+                            clientX: uievent.clientX,
+                            clientY: uievent.clientY,
+                            screenX: uievent.screenX,
+                            screenY: uievent.screenY,
+                            relatedTarget: relatedTarget
+                        };
+                        // fire mouseout
+                        eventInit.bubbles = true;
+                        target.dispatchEvent(new MouseEvent('mouseout', eventInit));
+                        // fire mouseleave events
+                        eventInit.bubbles = false;
+                        var el = target;
+                        do {
+                            el.dispatchEvent(new MouseEvent('mouseleave', eventInit));
+                            el = el['parentElement'];
+                        } while (el);
+                    };
+                    var fireMouseEnterEvents = function (target, relatedTarget, uievent) {
+                        var eventInit = {
+                            view: uievent.view,
+                            clientX: uievent.clientX,
+                            clientY: uievent.clientY,
+                            screenX: uievent.screenX,
+                            screenY: uievent.screenY,
+                            relatedTarget: relatedTarget
+                        };
+                        // fire mouseover
+                        eventInit.bubbles = true;
+                        target.dispatchEvent(new MouseEvent('mouseover', eventInit));
+                        // fire mouseenter events
+                        eventInit.bubbles = false;
+                        var el = target;
+                        do {
+                            el.dispatchEvent(new MouseEvent('mouseenter', eventInit));
+                            el = el['parentElement'];
+                        } while (el);
+                    };
+                    var deserializeTouches = function (touches, target, uievent) {
+                        touches.forEach(function (t, i) {
+                            touches[i] = document.createTouch(uievent.view, target, t.identifier, t.clientX, t.clientY, t.screenX, t.screenY);
+                        });
+                        return touches;
+                    };
+                    var touchTargets = {};
+                    this.sessionService.manager.on['ar.view.uievent'] = function (uievent) {
+                        uievent.view = window;
+                        var target;
+                        switch (uievent.type) {
+                            case 'wheel':
+                                target = document.elementFromPoint(uievent.clientX, uievent.clientY) || window;
+                                target.dispatchEvent(new WheelEvent(uievent.type, uievent));
+                                break;
+                            case 'mouseout':
+                                target = document.elementFromPoint(uievent.clientX, uievent.clientY) || window;
+                                fireMouseLeaveEvents(currentTarget, undefined, uievent);
+                                currentTarget = undefined;
+                                break;
+                            case 'mouseover':
+                                target = document.elementFromPoint(uievent.clientX, uievent.clientY) || window;
+                                fireMouseEnterEvents(target, undefined, uievent);
+                                currentTarget = target;
+                                break;
+                            case 'mousemove':
+                                target = document.elementFromPoint(uievent.clientX, uievent.clientY) || window;
+                                if (target !== currentTarget) {
+                                    fireMouseLeaveEvents(currentTarget, target, uievent);
+                                    fireMouseEnterEvents(target, currentTarget, uievent);
+                                    currentTarget = target;
+                                }
+                                target.dispatchEvent(new MouseEvent(uievent.type, uievent));
+                                break;
+                            case 'touchstart':
+                                var x = 0, y = 0, length_1 = uievent.changedTouches.length;
+                                for (var _i = 0, _a = uievent.changedTouches; _i < _a.length; _i++) {
+                                    var t = _a[_i];
+                                    x += t.clientX;
+                                    y += t.clientY;
+                                }
+                                x /= length_1;
+                                y /= length_1;
+                                target = document.elementFromPoint(x, y);
+                                for (var _b = 0, _c = uievent.changedTouches; _b < _c.length; _b++) {
+                                    var t = _c[_b];
+                                    touchTargets[t.identifier] = target;
+                                }
+                            case 'touchmove':
+                            case 'touchend':
+                            case 'touchcancel':
+                                target = touchTargets[uievent.changedTouches[0].identifier];
+                                var evt = document.createEvent('TouchEvent');
+                                var touches = document.createTouchList.apply(document, deserializeTouches(uievent.touches, target, uievent));
+                                var targetTouches = document.createTouchList.apply(document, deserializeTouches(uievent.targetTouches, target, uievent));
+                                var changedTouches = document.createTouchList.apply(document, deserializeTouches(uievent.changedTouches, target, uievent));
+                                // Safari, Firefox: must use initTouchEvent.
+                                if (typeof evt['initTouchEvent'] === "function") {
+                                    evt['initTouchEvent'](uievent.type, uievent.bubbles, uievent.cancelable, uievent.view, uievent.detail, uievent.screenX, uievent.screenY, uievent.clientX, uievent.clientY, uievent.ctrlKey, uievent.altKey, uievent.shiftKey, uievent.metaKey, touches, targetTouches, changedTouches, 1.0, 0.0);
+                                }
+                                else {
+                                    evt.initUIEvent(uievent.type, uievent.bubbles, uievent.cancelable, uievent.view, uievent.detail);
+                                    evt.touches = touches;
+                                    evt.targetTouches = targetTouches;
+                                    evt.changedTouches = changedTouches;
+                                }
+                                target.dispatchEvent(evt);
+                                if (uievent.type === 'touchend' || uievent.type == 'touchcancel') {
+                                    for (var _d = 0, _e = uievent.changedTouches; _d < _e.length; _d++) {
+                                        var t = _e[_d];
+                                        delete touchTargets[t.identifier];
+                                    }
+                                }
+                                break;
+                            default:
+                                target = document.elementFromPoint(uievent.clientX, uievent.clientY) || window;
+                                target.dispatchEvent(new MouseEvent(uievent.type, uievent));
+                        }
+                    };
                 };
                 ViewService = __decorate([
-                    aurelia_dependency_injection_1.inject('containerElement', session_1.SessionService, focus_1.FocusService, context_2.ContextService)
+                    aurelia_dependency_injection_1.inject('containerElement', session_1.SessionService, focus_1.FocusService, device_1.DeviceService, reality_1.RealityService, context_2.ContextService)
                 ], ViewService);
                 return ViewService;
             }());
             exports_1("ViewService", ViewService);
-            PinchZoomService = (function () {
-                function PinchZoomService(viewService, deviceService, contextService, sessionService) {
-                    var _this = this;
-                    this.viewService = viewService;
-                    this.deviceService = deviceService;
-                    this.contextService = contextService;
-                    this.sessionService = sessionService;
-                    if (this.sessionService.isRealityManager &&
-                        !this.sessionService.configuration['app.disablePinchZoom']) {
-                        this.viewService.containingElementPromise.then(function (el) {
-                            var fov = -1;
-                            if (typeof PointerEvent !== 'undefined') {
-                                var evCache_1 = new Array();
-                                var startDistSquared_1 = -1;
-                                var zoom_1 = 1;
-                                var remove_event_1 = function (ev) {
-                                    // Remove this event from the target's cache
-                                    for (var i = 0; i < evCache_1.length; i++) {
-                                        if (evCache_1[i].pointerId == ev.pointerId) {
-                                            evCache_1.splice(i, 1);
-                                            break;
-                                        }
-                                    }
-                                };
-                                var pointerdown_handler = function (ev) {
-                                    // The pointerdown event signals the start of a touch interaction.
-                                    // This event is cached to support 2-finger gestures
-                                    evCache_1.push(ev);
-                                };
-                                var pointermove_handler = function (ev) {
-                                    // This function implements a 2-pointer pinch/zoom gesture. 
-                                    // Find this event in the cache and update its record with this event
-                                    for (var i = 0; i < evCache_1.length; i++) {
-                                        if (ev.pointerId == evCache_1[i].pointerId) {
-                                            evCache_1[i] = ev;
-                                            break;
-                                        }
-                                    }
-                                    var state = _this.contextService.serializedFrameState;
-                                    if (!state)
-                                        return;
-                                    // If two pointers are down, check for pinch gestures
-                                    if (evCache_1.length == 2) {
-                                        // Calculate the distance between the two pointers
-                                        var curDiffX = Math.abs(evCache_1[0].clientX - evCache_1[1].clientX);
-                                        var curDiffY = Math.abs(evCache_1[0].clientY - evCache_1[1].clientY);
-                                        var currDistSquared = curDiffX * curDiffX + curDiffY * curDiffY;
-                                        if (startDistSquared_1 == -1) {
-                                            // start pinch
-                                            startDistSquared_1 = currDistSquared;
-                                            fov = state.view.subviews[0].frustum.fov;
-                                            zoom_1 = 1;
-                                            _this.deviceService.zoom({ zoom: zoom_1, fov: fov, state: device_1.ZoomState.START });
-                                        }
-                                        else {
-                                            // change pinch
-                                            zoom_1 = currDistSquared / startDistSquared_1;
-                                            _this.deviceService.zoom({ zoom: zoom_1, fov: fov, state: device_1.ZoomState.CHANGE });
-                                        }
-                                    }
-                                    else {
-                                        // end pinch                            
-                                        _this.deviceService.zoom({ zoom: zoom_1, fov: fov, state: device_1.ZoomState.END });
-                                        startDistSquared_1 = -1;
-                                    }
-                                };
-                                var pointerup_handler = function (ev) {
-                                    // Remove this pointer from the cache
-                                    remove_event_1(ev);
-                                    // If the number of pointers down is less than two then reset diff tracker
-                                    if (evCache_1.length < 2)
-                                        startDistSquared_1 = -1;
-                                };
-                                el.onpointerdown = pointerdown_handler;
-                                el.onpointermove = pointermove_handler;
-                                // Use same handler for pointer{up,cancel,out,leave} events since
-                                // the semantics for these events - in this app - are the same.
-                                el.onpointerup = pointerup_handler;
-                                el.onpointercancel = pointerup_handler;
-                                el.onpointerout = pointerup_handler;
-                                el.onpointerleave = pointerup_handler;
-                            }
-                            else {
-                                el.addEventListener('gesturestart', function (ev) {
-                                    var state = _this.contextService.serializedFrameState;
-                                    if (state && state.view.subviews[0]) {
-                                        fov = state.view.subviews[0].frustum.fov;
-                                        _this.deviceService.zoom({ zoom: ev.scale, fov: fov, state: device_1.ZoomState.START });
-                                    }
-                                    ev.preventDefault();
-                                });
-                                el.addEventListener('gesturechange', function (ev) {
-                                    _this.deviceService.zoom({ zoom: ev.scale, fov: fov, state: device_1.ZoomState.CHANGE });
-                                });
-                                el.addEventListener('gestureend', function (ev) {
-                                    _this.deviceService.zoom({ zoom: ev.scale, fov: fov, state: device_1.ZoomState.END });
-                                });
-                            }
-                        });
-                    }
-                }
-                PinchZoomService = __decorate([
-                    aurelia_dependency_injection_1.inject(ViewService, device_1.DeviceService, context_2.ContextService, session_1.SessionService)
-                ], PinchZoomService);
-                return PinchZoomService;
-            }());
-            exports_1("PinchZoomService", PinchZoomService);
         }
     }
 });

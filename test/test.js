@@ -61,15 +61,10 @@ System.register(['chai', '../src/argon'], function(exports_1, context_1) {
                 describe('#requestFrame', function () {
                     it('should execute callback for animation frame', function (done) {
                         var timer = new Argon.TimerService();
-                        var stopAtFrame = 1;
-                        timer.requestFrame(function update(time, frameNumber) {
+                        timer.requestFrame(function update(time) {
                             expect(time).to.be.instanceof(Argon.Cesium.JulianDate);
                             expect(time.dayNumber).to.be.equal(Argon.Cesium.JulianDate.now().dayNumber);
-                            expect(frameNumber).to.be.a('number');
-                            if (frameNumber === stopAtFrame)
-                                done();
-                            else
-                                timer.requestFrame(update);
+                            done();
                         });
                     });
                 });

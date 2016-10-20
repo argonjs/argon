@@ -43,12 +43,13 @@ System.register(['aurelia-dependency-injection', './view', './session', './utils
                         var sheet = style.sheet;
                         sheet.insertRule("\n                .argon-button {\n                    background-image: " + argonAppIcon + ";\n                    width: 144px;\n                    height: 144px;\n                }\n            ", 0);
                         this.element = document.createElement('div');
-                        this.element.id = 'argon-ui';
+                        this.element.className = 'argon-ui';
                         this.element.style.bottom = '0';
                         this.element.style.right = '0';
                         this.element.style['userSelect'] = 'none';
                         this.element.style.webkitUserSelect = 'none';
                         this.element.style.zIndex = '10';
+                        utils.blockAllUIEventBubbling(this.element);
                         view.element.appendChild(this.element);
                         this.background = document.createElement('div');
                         this.background.style.position = 'absolute';

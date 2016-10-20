@@ -1,5 +1,5 @@
 /// <reference types="cesium" />
-import { Matrix4 } from './cesium/cesium-imports';
+import { Matrix4, JulianDate, Cartesian3, Quaternion } from './cesium/cesium-imports';
 /**
  * Configuration options for an [[ArgonSystem]]
  */
@@ -68,6 +68,9 @@ export interface Viewport {
     width: number;
     height: number;
 }
+export declare namespace Viewport {
+    function clone(viewport?: Viewport, result?: Viewport): Viewport | undefined;
+}
 /**
  * Identifies a subview in a [[SerializedSubview]]
  */
@@ -81,17 +84,8 @@ export declare enum SubviewType {
  * A serialized notation for the position, orientation, and referenceFrame of an entity.
  */
 export interface SerializedEntityPose {
-    p: {
-        x: number;
-        y: number;
-        z: number;
-    } | number;
-    o: {
-        x: number;
-        y: number;
-        z: number;
-        w: number;
-    } | number;
+    p: Cartesian3;
+    o: Quaternion;
     r: number | string;
 }
 /**
@@ -122,6 +116,9 @@ export interface SerializedSubview {
     pose?: SerializedEntityPose;
     viewport?: Viewport;
 }
+export declare namespace SerializedSubview {
+    function clone(subview: SerializedSubview, result?: SerializedSubview): SerializedSubview;
+}
 /**
  * The device state informs a [[REALITY_VIEWER]] about the current physical
  * configuration of the system, so that it may present a view that is compatible.
@@ -133,17 +130,14 @@ export interface SerializedSubview {
  * (or necessarily expected).
  */
 export interface DeviceState {
-    time: {
-        dayNumber: number;
-        secondsOfDay: number;
-    };
-    geolocationPose?: SerializedEntityPose;
-    orientationPose?: SerializedEntityPose;
-    devicePose?: SerializedEntityPose;
+    /**
+     * The (absolute) time for the latest device pose.
+     */
+    time: JulianDate;
+    locationPose?: SerializedEntityPose;
     displayPose?: SerializedEntityPose;
-    geolocationAccuracy: number | undefined;
-    geolocationAltitudeAccuracy: number | undefined;
-    defaultFov: number;
+    locationAccuracy: number | undefined;
+    locationAltitudeAccuracy: number | undefined;
     viewport: Viewport;
     subviews: SerializedSubview[];
     strictViewport?: boolean;
@@ -151,39 +145,33 @@ export interface DeviceState {
     strictSubviewFrustums?: boolean;
     strictSubviewPoses?: boolean;
 }
+export declare namespace DeviceState {
+    function clone(state: DeviceState, result?: DeviceState): DeviceState;
+}
 /**
  * The view state is provided by a [[REALITY_VIEWER]], and describes how a
  * [[REALITY_AUGMENTER]] should render the current frame.
  */
 export interface ViewState {
     /**
-     * The time according to the current view of reality. This does not
-     * necessarily reflect the current real-world time (i.e, the reality viewer
-     * may set this to a date in the far past, or sometime in the far future...).
-     * Likewise, this value may (or may not) be advancing forwards (or backwards)
-     * in real-time.
+     * The absolute time when this view state was created
      */
-    time: {
-        dayNumber: number;
-        secondsOfDay: number;
-    };
+    time: JulianDate;
     /**
-     * The primary pose for this view (the pose of the viewer). This pose does
+     * The primary pose for the view (the pose of the viewer). This pose does
      * not necessarily reflect the real-world (physical) pose of the viewer,
      * though it may.
-     * For a stereo view, this should be the pose between both eyes.
-     * For a projected view, this should be the pose of the user's head.
      */
     pose: SerializedEntityPose | undefined;
     /**
-     * The radius (in meters) of latitudinal and longitudinal uncertainty for the
-     * primary pose, in relation to the FIXED reference frame.
+     * The radius (in meters) of latitudinal and longitudinal uncertainty,
+     * in relation to the FIXED reference frame.
      */
-    geolocationAccuracy: number | undefined;
+    locationAccuracy: number | undefined;
     /**
-     * The accuracy of the altitude for the primary pose in meters.
+     * The accuracy of the altitude in meters.
      */
-    geolocationAltitudeAccuracy: number | undefined;
+    locationAltitudeAccuracy: number | undefined;
     /**
      * The primary viewport to render into. In a DOM environment, the bottom left corner of the document element
      * (document.documentElement) should be considered the origin.

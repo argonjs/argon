@@ -1,11 +1,12 @@
 /// <reference types="cesium" />
 import { Entity, Matrix4, PerspectiveFrustum } from './cesium/cesium-imports';
 import { Viewport, SubviewType } from './common';
+import { DeviceService } from './device';
 import { SessionService, SessionPort } from './session';
 import { EntityPose, ContextService } from './context';
 import { Event } from './utils';
 import { FocusService } from './focus';
-import { DeviceService } from './device';
+import { RealityService } from './reality';
 /**
  * The rendering paramters for a particular subview
  */
@@ -23,6 +24,8 @@ export interface Subview {
 export declare class ViewService {
     private sessionService;
     private focusService;
+    private deviceService;
+    private realityService;
     private contextService;
     /**
      * An event that is raised when the root viewport has changed
@@ -55,16 +58,40 @@ export declare class ViewService {
      *  Manager-only. A map of sessions to their desired viewports.
      */
     desiredViewportMap: WeakMap<SessionPort, Viewport>;
-    private _current;
+    private _currentViewport;
     private _currentViewportJSON;
     private _subviews;
-    private _subviewEntities;
     private _frustums;
-    constructor(containerElement: HTMLElement, sessionService: SessionService, focusService: FocusService, contextService: ContextService);
+    private _currentRealitySession?;
+    constructor(containerElement: HTMLElement, sessionService: SessionService, focusService: FocusService, deviceService: DeviceService, realityService: RealityService, contextService: ContextService);
     getSubviews(referenceFrame?: Entity): Subview[];
+    /**
+     * Get the current viewport
+     */
     getViewport(): Viewport;
     /**
+     * Request to present the view in an HMD.
+     */
+    requestPresent(): Promise<void>;
+    /**
+     * Exit preseting in an HMD
+     */
+    exitPresent(): Promise<void>;
+    /**
+     * Request to present the view in fullscreen
+     */
+    requestFullscreen(): Promise<void>;
+    /**
+     * Handle UI Events. Meant to be overwritten by apps.
+     * By default, an event will be forwarded to the reality viewer.
+     * If the event is handled by the app, then evt.stopImmediatePropagation()
+     * should be called to stop the event from being forwarded to the
+     * reality viewer.
+     */
+    onUIEvent(evt: MouseEvent | TouchEvent | WheelEvent): void;
+    /**
      * Set the desired root viewport
+     * @private
      */
     setDesiredViewport(viewport: Viewport): void;
     /**
@@ -73,22 +100,20 @@ export declare class ViewService {
      * When running on an HMD, this request will always fail. If the current reality view
      * does not support custom views, this request will fail. The manager may revoke
      * ownership at any time (even without this application calling releaseOwnership)
+     * @private
      */
     requestOwnership(): void;
     /**
      * Release control over the view.
+     * @private
      */
     releaseOwnership(): void;
     /**
      * Returns true if this application has control over the view.
+     * @private
      */
     isOwner(): void;
     private _update();
-}
-export declare class PinchZoomService {
-    private viewService;
-    private deviceService;
-    private contextService;
-    private sessionService;
-    constructor(viewService: ViewService, deviceService: DeviceService, contextService: ContextService, sessionService: SessionService);
+    private _setupEventForwarding();
+    private _setupEventSynthesizing();
 }

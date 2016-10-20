@@ -1,4 +1,4 @@
-import { Matrix4 } from './cesium/cesium-imports'
+import { Matrix4, JulianDate, Cartesian3, Quaternion } from './cesium/cesium-imports'
 
 /**
  * Configuration options for an [[ArgonSystem]] 
@@ -85,6 +85,17 @@ export interface Viewport {
     height: number
 }
 
+export namespace Viewport {
+    export function clone(viewport?:Viewport, result:Viewport=<any>{}) {
+        if (!viewport) return undefined;
+        result.x = viewport.x;
+        result.y = viewport.y;
+        result.width = viewport.width;
+        result.height = viewport.height;
+        return result;
+    }
+}
+
 /**
  * Identifies a subview in a [[SerializedSubview]]
  */
@@ -114,8 +125,8 @@ export enum SubviewType {
  * A serialized notation for the position, orientation, and referenceFrame of an entity.
  */
 export interface SerializedEntityPose {
-    p: { x: number, y: number, z: number } | number, // position, if 0, means Cartesian3.ZERO
-    o: { x: number, y: number, z: number, w: number } | number, // orientation, if 0, means Quaternion.IDENTITY
+    p: Cartesian3, // position
+    o: Quaternion, // orientation
     r: number | string, // reference frame
 }
 
@@ -150,6 +161,20 @@ export interface SerializedSubview {
     viewport?: Viewport // if undefined, the primary viewport size is used with no x or y offset
 }
 
+export namespace SerializedSubview {
+    export function clone(subview:SerializedSubview, result:SerializedSubview=<any>{}) {
+        result.type = subview.type;
+        result.frustum = result.frustum || <any>{};
+        result.frustum.xOffset = subview.frustum.xOffset;
+        result.frustum.yOffset = subview.frustum.yOffset;
+        result.frustum.fov = subview.frustum.fov;
+        result.frustum.aspectRatio = subview.frustum.aspectRatio;
+        result.pose = subview.pose;
+        result.viewport = Viewport.clone(subview.viewport, result.viewport);
+        return result;
+    }
+}
+
 /**
  * The device state informs a [[REALITY_VIEWER]] about the current physical
  * configuration of the system, so that it may present a view that is compatible. 
@@ -161,20 +186,41 @@ export interface SerializedSubview {
  * (or necessarily expected).
  */
 export interface DeviceState {
-    time: { dayNumber: number, secondsOfDay: number },
-    geolocationPose?: SerializedEntityPose,
-    orientationPose?: SerializedEntityPose,
-    devicePose?: SerializedEntityPose,
-    displayPose?: SerializedEntityPose,
-    geolocationAccuracy: number|undefined,
-    geolocationAltitudeAccuracy: number|undefined,
-    defaultFov: number,
-    viewport: Viewport,
-    subviews: SerializedSubview[],
-    strictViewport?: boolean,
-    strictSubviewViewports?: boolean,
+    /**
+     * The (absolute) time for the latest device pose.
+     */
+    time: JulianDate;
+    locationPose?: SerializedEntityPose;
+    displayPose?: SerializedEntityPose;
+    locationAccuracy: number|undefined;
+    locationAltitudeAccuracy: number|undefined;
+    viewport: Viewport;
+    subviews: SerializedSubview[];
+    strictViewport?: boolean;
+    strictSubviewViewports?: boolean;
     strictSubviewFrustums?: boolean
     strictSubviewPoses?: boolean
+}
+
+export namespace DeviceState {
+    export function clone(state:DeviceState, result:DeviceState=<any>{}) {
+        result.time = JulianDate.clone(<any>state.time, <any>result.time);
+        result.locationPose = state.locationPose;
+        result.displayPose = state.displayPose;
+        result.locationAccuracy = state.locationAccuracy;
+        result.locationAltitudeAccuracy = state.locationAltitudeAccuracy;
+        result.viewport = Viewport.clone(state.viewport, result.viewport)!;
+        result.subviews = state.subviews || [];
+        result.subviews.length = state.subviews.length;
+        state.subviews.forEach((subview, i)=>{
+            result.subviews[i] = SerializedSubview.clone(subview, result.subviews[i]);
+        })
+        result.strictViewport = state.strictViewport;
+        result.strictSubviewViewports = state.strictSubviewViewports;
+        result.strictSubviewFrustums = state.strictSubviewFrustums;
+        result.strictSubviewPoses = state.strictSubviewPoses;
+        return result;
+    } 
 }
 
 /**
@@ -183,33 +229,27 @@ export interface DeviceState {
  */
 export interface ViewState {
     /**
-     * The time according to the current view of reality. This does not 
-     * necessarily reflect the current real-world time (i.e, the reality viewer 
-     * may set this to a date in the far past, or sometime in the far future...). 
-     * Likewise, this value may (or may not) be advancing forwards (or backwards) 
-     * in real-time.
+     * The absolute time when this view state was created
      */
-    time: { dayNumber: number, secondsOfDay: number },
+    time: JulianDate,
 
     /**
-     * The primary pose for this view (the pose of the viewer). This pose does 
+     * The primary pose for the view (the pose of the viewer). This pose does 
      * not necessarily reflect the real-world (physical) pose of the viewer,
      * though it may.
-     * For a stereo view, this should be the pose between both eyes.
-     * For a projected view, this should be the pose of the user's head.
      */
     pose: SerializedEntityPose|undefined,
 
     /** 
-     * The radius (in meters) of latitudinal and longitudinal uncertainty for the 
-     * primary pose, in relation to the FIXED reference frame. 
+     * The radius (in meters) of latitudinal and longitudinal uncertainty,
+     * in relation to the FIXED reference frame. 
      */
-    geolocationAccuracy: number|undefined,
+    locationAccuracy: number|undefined,
 
     /**
-     * The accuracy of the altitude for the primary pose in meters. 
+     * The accuracy of the altitude in meters. 
      */
-    geolocationAltitudeAccuracy: number|undefined,
+    locationAltitudeAccuracy: number|undefined,
 
     /**
      * The primary viewport to render into. In a DOM environment, the bottom left corner of the document element 

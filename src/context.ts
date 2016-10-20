@@ -2,30 +2,29 @@ import { inject } from 'aurelia-dependency-injection'
 import {
     Entity,
     EntityCollection,
-    CompositeEntityCollection,
     ConstantPositionProperty,
     ConstantProperty,
-    SampledPositionProperty,
-    SampledProperty,
     Transforms,
     Cartesian3,
+    Cartographic,
     Quaternion,
     JulianDate,
     ReferenceFrame,
     defined
 } from './cesium/cesium-imports'
-import { SerializedEntityPoseMap, FrameState, Role } from './common'
+import { SerializedEntityPose, SerializedEntityPoseMap, FrameState, Role } from './common'
 import { SessionService, SessionPort } from './session'
 import { RealityService } from './reality'
-import { Event, getRootReferenceFrame, getSerializedEntityPose, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame } from './utils'
+import { TimerService } from './timer'
+import { Event, getSerializedEntityPose, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame } from './utils'
 
 /**
- * Describes the pose of an entity at a particular time relative to a particular reference frame
+ * Describes the current pose of an entity relative to a particular reference frame
  */
 export interface EntityPose {
     position: Cartesian3
     orientation: Quaternion,
-    time: JulianDate
+    referenceFrame: Entity|ReferenceFrame,
     poseStatus: PoseStatus
 }
 
@@ -44,22 +43,6 @@ export enum PoseStatus {
 const scratchCartesian3 = new Cartesian3(0, 0);
 const scratchQuaternion = new Quaternion(0, 0);
 const scratchOriginCartesian3 = new Cartesian3(0, 0);
-
-export interface Frame {
-    /**
-     * The absolute time for this frame (as determined by the current reality)
-     */
-    time: JulianDate,
-    /**
-     * The time in milliseconds when this frame was received, 
-     * based on performance.now() (or Date.now() if performance.now is not available)
-     */
-    systemTime: number,
-    /**
-     * The time in milliseconds since the previous frame's systemTime, capped to context.maxDeltaTime
-     */
-    deltaTime: number
-}
 
 /**
  * Provides a means of querying the current state of reality. 
@@ -86,23 +69,13 @@ export class ContextService {
      * the current frame. It is suggested that all modifications to locally managed entities 
      * should occur within this event. 
      */
-    public updateEvent = new Event<Frame>();
+    public updateEvent = new Event<ContextService>();
 
     /**
      * An event that is raised when it is an approriate time to render graphics. 
      * This event fires after the update event. 
      */
-    public renderEvent = new Event<Frame>();
-
-    /**
-     * The set of subscribed entities.
-     */
-    public subscribedEntities = new EntityCollection();
-
-    /**
-     * The set of entities that this session is aware of. 
-     */
-    public entities = new CompositeEntityCollection();
+    public renderEvent = new Event<ContextService>();
 
     /**
      * An event that fires when the local origin changes.
@@ -110,46 +83,81 @@ export class ContextService {
     public localOriginChangeEvent = new Event<void>();
 
     /**
+     * A monotonically increasing value (in milliseconds) for the current frame state.
+     * This value is useful only for doing accurate *timing*, not for determining 
+     * the absolute time. Use [[ContextService.time]] for absolute time. 
+     * This value is -1 until the first [[ContextService.updateEvent]]. 
+     */
+    public timestamp = -1;
+
+    /**
+     * The time in milliseconds since the previous timestamp, 
+     * capped to [[ContextService.maxDeltaTime]]
+     */
+    public deltaTime = 0;
+
+    /**
+     * This value caps the deltaTime for each frame. By default, 
+     * the value is 1/3s (333.3ms)
+     */
+    public maxDeltaTime = 1 / 3 * 1000;
+
+    /**
+     * The current (absolute) time according to the current reality.
+     * This value is arbitrary until the first [[ContextService.updateEvent]]. 
+     */
+    public time = new JulianDate(0,0);
+
+    /**
+     * The current cartographic position (WSG84)
+     */
+    public location?:Cartographic;
+    public locationAccuracy?:number;
+    public locationAltitudeAccuracy?:number;
+
+    /**
+     * The collection of all entities this application is aware of.
+     */
+    public entities = new EntityCollection();
+
+    /**
      * An entity representing the location and orientation of the user. 
      */
-    public user: Entity = new Entity({
+    public user: Entity = this.entities.add(new Entity({
         id: 'ar.user',
         name: 'user',
         position: new ConstantPositionProperty(undefined, ReferenceFrame.FIXED),
         orientation: new ConstantProperty(Quaternion.IDENTITY)
-    });
+    }));
 
     /**
      * An entity positioned near the user, aligned with the local East-North-Up
      * coordinate system.
      */
-    public localOriginEastNorthUp: Entity = new Entity({
+    public localOriginEastNorthUp: Entity = this.entities.add(new Entity({
         id: 'ar.localENU',
         name: 'localOriginENU',
         position: new ConstantPositionProperty(undefined, ReferenceFrame.FIXED),
         orientation: new ConstantProperty(Quaternion.IDENTITY)
-    });
+    }));
 
     /**
      * An entity positioned near the user, aligned with the East-Up-South 
      * coordinate system. This useful for converting to the Y-Up convention 
      * used in some libraries, such as three.js.
      */
-    public localOriginEastUpSouth: Entity = new Entity({
+    public localOriginEastUpSouth: Entity = this.entities.add(new Entity({
         id: 'ar.localEUS',
         name: 'localOriginEUS',
         position: new ConstantPositionProperty(Cartesian3.ZERO, this.localOriginEastNorthUp),
         orientation: new ConstantProperty(Quaternion.fromAxisAngle(Cartesian3.UNIT_X, Math.PI / 2))
-    });
+    }));
 
     /**
-     * The current frame
+     * The default origin to use when calling `getEntityPose`.
+     * By default, this is the `localOriginEastNorthUp` reference frame.
      */
-    public get frame(): Frame {
-        if (!defined(this.serializedFrameState))
-            throw new Error('A frame state has not yet been received');
-        return this._frame;
-    }
+    public defaultReferenceFrame = this.localOriginEastNorthUp;
 
     /**
      * The serialized frame state for this frame
@@ -158,22 +166,8 @@ export class ContextService {
         return this._serializedState;
     }
 
-    /**
-     * This value caps the deltaTime for each frame
-     */
-    public maxDeltaTime = 1 / 3 * 1000;
-
     // the current serialized frame state
     private _serializedState?: FrameState;
-
-    private _frame: Frame = {
-        time: new JulianDate(0, 0),
-        systemTime: 0,
-        deltaTime: 0
-    }
-
-    // The default origin to use when calling `getEntityPose`.
-    private _defaultReferenceFrame = this.localOriginEastNorthUp;
 
     private _entityPoseCache: SerializedEntityPoseMap = {};
     private _entityPoseMap = new Map<string, EntityPose | undefined>();
@@ -186,18 +180,16 @@ export class ContextService {
 
     constructor(
         private sessionService: SessionService,
-        private realityService: RealityService) {
-
-        this.entities.addCollection(this.subscribedEntities);
-        this.subscribedEntities.add(this.user);
+        private realityService: RealityService,
+        timerService: TimerService ) {
 
         if (this.sessionService.isRealityManager || this.sessionService.isRealityViewer) {
 
             this.realityService.viewStateEvent.addEventListener((viewState) => {
                 this._update({
-                    time: viewState.time,
+                    time: viewState.time, // deprecated
                     index: this._frameIndex++,
-                    reality: this.realityService.getCurrent(),
+                    reality: realityService.getCurrent(),
                     entities: {},
                     view: viewState
                 });
@@ -225,25 +217,45 @@ export class ContextService {
     }
 
     /**
-     * Get the current time
+     * Deprecated. Use timestamp property.
+     * @private
      */
-    public getTime(): JulianDate {
-        return this.frame.time;
+    public get systemTime() {
+        console.warn('systemTime property is deprecated. Use timestamp property');
+        Object.defineProperty(this, 'systemTime',{
+            get: () => this.timestamp
+        });
+        return this.systemTime;
+    } 
+
+    /**
+     * Deprecated. To be removed. 
+     * @private
+     */
+    private getTime(): JulianDate {
+        console.warn('getTime function is deprecated. Use the ContextService.time property instead.')
+        this.getTime = () => this.time;
+        return this.getTime();
     }
 
     /**
-     * Set the default reference frame for `getCurrentEntityState`.
+     * Deprecated. To be removed. 
+     * @private
      */
     public setDefaultReferenceFrame(origin: Entity) {
-        this._defaultReferenceFrame = origin;
+        console.warn('setDefaultReferenceFrame is deprecated. Use the ContextService.defaultReferenceFrame property directly.')
+        this.setDefaultReferenceFrame = (origin:Entity) => this.defaultReferenceFrame = origin;
+        this.setDefaultReferenceFrame(origin);
     }
 
     /**
-     * Get the default reference frame to use when calling `getEntityPose`. 
-     * By default, this is the `localOriginEastNorthUp` reference frame.
+     * Deprecated. To be removed. 
+     * @private
      */
-    public getDefaultReferenceFrame(): Entity {
-        return this._defaultReferenceFrame;
+    public getDefaultReferenceFrame(): Entity {        
+        console.warn('getDefaultReferenceFrame is deprecated. Use the ContextService.defaultReferenceFrame property directly.')
+        this.getDefaultReferenceFrame = () => this.defaultReferenceFrame;
+        return this.getDefaultReferenceFrame();
     }
 
     /**
@@ -254,7 +266,7 @@ export class ContextService {
      */
     public subscribeToEntityById(id: string): Entity {
         this.sessionService.manager.send('ar.context.subscribe', { id })
-        return this.subscribedEntities.getOrCreateEntity(id);
+        return this.entities.getOrCreateEntity(id);
     }
 
     /**
@@ -266,8 +278,8 @@ export class ContextService {
      * object with the fields `position` and `orientation`, both of type
      * `Cartesian3`. Otherwise undefined.
      */
-    public getEntityPose(entity: Entity, referenceFrame: ReferenceFrame | Entity = this._defaultReferenceFrame): EntityPose {
-        const time = this.getTime();
+    public getEntityPose(entity: Entity, referenceFrame: ReferenceFrame | Entity = this.defaultReferenceFrame): EntityPose {
+        const time = this.time;
 
         const key = entity.id + '@' + _stringFromReferenceFrame(referenceFrame);
         let entityPose = this._entityPoseMap.get(key);
@@ -276,12 +288,10 @@ export class ContextService {
             entityPose = {
                 position: new Cartesian3,
                 orientation: new Quaternion,
-                time: JulianDate.clone(time),
+                referenceFrame: referenceFrame,
                 poseStatus: 0
             }
             this._entityPoseMap.set(key, entityPose);
-        } else {
-            JulianDate.clone(time, entityPose.time);
         }
 
         const position = getEntityPositionInReferenceFrame(
@@ -317,14 +327,6 @@ export class ContextService {
         return entityPose;
     }
 
-    /**
-     * deprecated
-     */
-    public getCurrentEntityState(entity: Entity, referenceFrame: any) {
-        console.warn('getCurrentEntityState is deprecated. Use getEntityPose instead.');
-        return this.getEntityPose(entity, referenceFrame);
-    }
-
     // TODO: This function is called a lot. Potential for optimization. 
     private _update(serializedState: FrameState) {
         // if this session is the manager, we need to update our child sessions a.s.a.p
@@ -343,91 +345,68 @@ export class ContextService {
         // update the entities the manager knows about
         this._knownEntities.clear();
         for (const id in serializedState.entities) {
-            this.updateEntityFromFrameState(id, serializedState);
+            this.updateEntityFromSerializedPose(id, serializedState.entities[id]);
             this._updatingEntities.add(id);
             this._knownEntities.add(id);
         }
 
         // if the mangager didn't send us an update for a particular entity,
         // assume the manager no longer knows about it
-        this._updatingEntities.forEach((id) => {
+        for (const id of <string[]><any>this._updatingEntities) {
             if (!this._knownEntities.has(id)) {
-                let entity = this.subscribedEntities.getById(id);
-                entity.position = undefined;
-                entity.orientation = undefined;
-
-                // WORKAROUND until https://github.com/AnalyticalGraphicsInc/cesium/issues/4225 is fixed
-                entity = this.entities.getById(id);
-                entity.position = undefined;
-                entity.orientation = undefined;
-
+                let entity = this.entities.getById(id);
+                if (entity) {
+                    entity.position = undefined;
+                    entity.orientation = undefined;
+                }
                 this._updatingEntities.delete(id);
             }
-        })
+        }
 
         // update our local origin
         this._updateLocalOrigin(serializedState);
 
-        // update our frame object
-        const frame = this._frame;
-        const now = typeof performance !== 'undefined' ? performance.now() :  Date.now();
-        frame.deltaTime = Math.min(now - frame.systemTime, this.maxDeltaTime);
-        frame.systemTime = now;
-        JulianDate.clone(<JulianDate>serializedState.time, frame.time);
+        // update our time values
+        const timestamp = performance.now();
+        this.deltaTime = Math.min(timestamp - this.timestamp, this.maxDeltaTime);
+        this.timestamp = timestamp;
+        JulianDate.clone(<JulianDate>serializedState.time, this.time);
         this._serializedState = serializedState;
 
-        // raise an event for the user update and render the scene
-        this.updateEvent.raiseEvent(frame);
-        this.renderEvent.raiseEvent(frame);
+        // raise an event for the user to update and render the scene
+        this.updateEvent.raiseEvent(this);
+        this.renderEvent.raiseEvent(this);
     }
 
-    public updateEntityFromFrameState(id: string, state: FrameState) {
-        const entityPose = state.entities[id];
+    public updateEntityFromSerializedPose(id:string, entityPose?:SerializedEntityPose) {
+        const entity = this.entities.getOrCreateEntity(id);
+        
         if (!entityPose) {
-            this.subscribedEntities.getOrCreateEntity(id);
-            return;
+            entity.position = undefined;
+            entity.orientation = undefined;
+            return entity;
         }
+        
+        const positionValue = entityPose.p;
+        const orientationValue = entityPose.o;
+        const referenceFrame:Entity|ReferenceFrame = 
+            typeof entityPose.r === 'number' ?
+            entityPose.r : this.entities.getOrCreateEntity(entityPose.r);
 
-        let referenceFrame;
-
-        if (defined(entityPose.r)) {
-            if (typeof entityPose.r === 'number') {
-                referenceFrame = entityPose.r;
-            } else {
-                referenceFrame = this.entities.getById(entityPose.r)
-            }
-        } else {
-            referenceFrame = ReferenceFrame.FIXED;
-        }
-
-        if (!defined(referenceFrame)) {
-            this.updateEntityFromFrameState(<string>entityPose.r, state);
-            referenceFrame = this.entities.getById(entityPose.r);
-        }
-
-        const positionValue = entityPose.p === 0 ? Cartesian3.ZERO : <Cartesian3>entityPose.p;
-        const orientationValue = entityPose.o === 0 ? Quaternion.IDENTITY : <Quaternion>entityPose.o;
-
-        const entity = this.subscribedEntities.getOrCreateEntity(id);
         let entityPosition = entity.position;
         let entityOrientation = entity.orientation;
 
-        if (!entityPosition || entityPosition.referenceFrame !== referenceFrame) {
-            entityPosition = new ConstantPositionProperty(positionValue, referenceFrame);
-            entity.position = entityPosition;
-        } else if (entityPosition instanceof ConstantPositionProperty) {
-            entityPosition.setValue(positionValue, referenceFrame)
-        } else if (entityPosition instanceof SampledPositionProperty) {
-            entityPosition.addSample(JulianDate.clone(<JulianDate>state.time), positionValue);
+        if (entityPosition instanceof ConstantPositionProperty && 
+            entityPosition.referenceFrame === referenceFrame) {
+            entityPosition.setValue(positionValue, referenceFrame);
+        } else {
+            entity.position = new ConstantPositionProperty(positionValue, referenceFrame);
         }
 
-        if (!entityOrientation) {
-            entityOrientation = new ConstantProperty(orientationValue);
-            entity.orientation = entityOrientation;
-        } else if (entityOrientation instanceof ConstantProperty) {
+        if (entityOrientation instanceof ConstantProperty) {
             entityOrientation.setValue(orientationValue);
-        } else if (entityOrientation instanceof SampledProperty) {
-            entityOrientation.addSample(JulianDate.clone(<JulianDate>state.time), orientationValue);
+        } else {
+            entity.orientation = new ConstantProperty(orientationValue);
         }
 
         return entity;
@@ -438,23 +417,26 @@ export class ContextService {
     }
 
     private _updateLocalOrigin(state: FrameState) {
-        const userRootFrame = getRootReferenceFrame(this.user);
+        const pose = state.view.pose!;
+        const rootFrame:Entity|ReferenceFrame = 
+            typeof pose.r === 'number' ?
+            pose.r : this.entities.getOrCreateEntity(pose.r);
         const userPosition = this.user.position &&
-            this.user.position.getValueInReferenceFrame(<JulianDate>state.time, userRootFrame, scratchCartesian3);
+            this.user.position.getValueInReferenceFrame(<JulianDate>state.time, rootFrame, scratchCartesian3);
         const localENUFrame = this.localOriginEastNorthUp.position &&
             this.localOriginEastNorthUp.position.referenceFrame;
         const localENUPosition = this.localOriginEastNorthUp.position && localENUFrame &&
             this.localOriginEastNorthUp.position.getValueInReferenceFrame(<JulianDate>state.time, localENUFrame, scratchOriginCartesian3);
         if (userPosition && (
             !localENUPosition ||
-            localENUFrame !== userRootFrame ||
+            localENUFrame !== rootFrame ||
             Cartesian3.magnitudeSquared(
                 Cartesian3.subtract(userPosition, localENUPosition, scratchOriginCartesian3)
             ) > 25000000)) {
             const localENUPositionProperty = <ConstantPositionProperty>this.localOriginEastNorthUp.position;
             const localENUOrientationProperty = <ConstantProperty>this.localOriginEastNorthUp.orientation;
-            localENUPositionProperty.setValue(userPosition, userRootFrame);
-            if (userRootFrame === ReferenceFrame.FIXED) {
+            localENUPositionProperty.setValue(userPosition, rootFrame);
+            if (rootFrame === ReferenceFrame.FIXED) {
                 const enuOrientation = Transforms.headingPitchRollQuaternion(userPosition, 0, 0, 0, undefined, scratchQuaternion);
                 localENUOrientationProperty.setValue(enuOrientation);
             } else {
@@ -464,42 +446,41 @@ export class ContextService {
         }
     }
 
-    private _sendUpdateForSession(parentState: FrameState, session: SessionPort) {
+    private _sessionEntities:SerializedEntityPoseMap = {};
 
-        const sessionPoseMap: SerializedEntityPoseMap = {}
+    private _sendUpdateForSession(state: FrameState, session: SessionPort) {
+        const sessionEntities = this._sessionEntities;
 
-        for (var id in parentState.entities) {
-            sessionPoseMap[id] = parentState.entities[id];
+        // clear session entities
+        for (var id in sessionEntities) {
+            delete sessionEntities[id];
         }
 
-        const subscriptions = <Set<string>>this._subscribedEntities.get(session);
-        subscriptions.forEach((id) => {
-            this._addEntityAndAncestorsToPoseMap(sessionPoseMap, id, <JulianDate>parentState.time);
-        })
+        // reference all entities from the primary frame state (if any)
+        for (var id in state.entities) {
+            sessionEntities[id] = state.entities[id];
+        }
 
-        const sessionState: FrameState = {
-            reality: parentState.reality,
-            index: parentState.index,
-            time: parentState.time,
-            view: parentState.view,
-            entities: sessionPoseMap,
-            sendTime: JulianDate.now()
-        };
+        // get subscrbied entities for the session
+        for (const id of <string[]><any>this._subscribedEntities.get(session)) {
+            sessionEntities[id] = this._getSerializedEntityPose(id, <JulianDate>state.time);
+        }
 
-        session.send('ar.context.update', sessionState);
+        // recycle the parent frame state object, but with the session entities
+        const parentEntities = state.entities;
+        state.entities = sessionEntities;
+        state.sendTime = JulianDate.now(<JulianDate>state.sendTime);
+        session.send('ar.context.update', state);
+        state.entities = parentEntities;
     }
 
-    private _addEntityAndAncestorsToPoseMap(poseMap: SerializedEntityPoseMap, id: string, time: JulianDate) {
+    private _getSerializedEntityPose(id: string, time: JulianDate) {
         if (!defined(this._entityPoseCache[id])) {
-            const entity = this.subscribedEntities.getById(id);
-            if (!entity) return;
+            const entity = this.entities.getById(id);
+            if (!entity) return undefined;
             this._entityPoseCache[id] = getSerializedEntityPose(entity, time);
-            if (entity.position && entity.position.referenceFrame instanceof Entity) {
-                const refId = _stringFromReferenceFrame(entity.position.referenceFrame);
-                this._addEntityAndAncestorsToPoseMap(poseMap, refId, time);
-            }
         }
-        poseMap[id] = this._entityPoseCache[id];
+        return this._entityPoseCache[id];
     }
 }
 

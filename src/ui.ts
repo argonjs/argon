@@ -39,12 +39,13 @@ export class DefaultUIService {
             `, 0);
 
             this.element = document.createElement('div');
-            this.element.id = 'argon-ui';
+            this.element.className = 'argon-ui';
             this.element.style.bottom = '0';
             this.element.style.right = '0';
             this.element.style['userSelect'] = 'none';
             this.element.style.webkitUserSelect = 'none';
             this.element.style.zIndex = '10';
+            utils.blockAllUIEventBubbling(this.element);
             view.element.appendChild(this.element);
 
             this.background = document.createElement('div');

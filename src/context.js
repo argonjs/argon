@@ -67,7 +67,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
              *    to be focused on.
              */
             ContextService = (function () {
-                function ContextService(sessionService, realityService) {
+                function ContextService(sessionService, realityService, timerService) {
                     var _this = this;
                     this.sessionService = sessionService;
                     this.realityService = realityService;
@@ -83,72 +83,83 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                      */
                     this.renderEvent = new utils_1.Event();
                     /**
-                     * The set of subscribed entities.
-                     */
-                    this.subscribedEntities = new cesium_imports_1.EntityCollection();
-                    /**
-                     * The set of entities that this session is aware of.
-                     */
-                    this.entities = new cesium_imports_1.CompositeEntityCollection();
-                    /**
                      * An event that fires when the local origin changes.
                      */
                     this.localOriginChangeEvent = new utils_1.Event();
                     /**
+                     * A monotonically increasing value (in milliseconds) for the current frame state.
+                     * This value is useful only for doing accurate *timing*, not for determining
+                     * the absolute time. Use [[ContextService.time]] for absolute time.
+                     * This value is -1 until the first [[ContextService.updateEvent]].
+                     */
+                    this.timestamp = -1;
+                    /**
+                     * The time in milliseconds since the previous timestamp,
+                     * capped to [[ContextService.maxDeltaTime]]
+                     */
+                    this.deltaTime = 0;
+                    /**
+                     * This value caps the deltaTime for each frame. By default,
+                     * the value is 1/3s (333.3ms)
+                     */
+                    this.maxDeltaTime = 1 / 3 * 1000;
+                    /**
+                     * The current (absolute) time according to the current reality.
+                     * This value is arbitrary until the first [[ContextService.updateEvent]].
+                     */
+                    this.time = new cesium_imports_1.JulianDate(0, 0);
+                    /**
+                     * The collection of all entities this application is aware of.
+                     */
+                    this.entities = new cesium_imports_1.EntityCollection();
+                    /**
                      * An entity representing the location and orientation of the user.
                      */
-                    this.user = new cesium_imports_1.Entity({
+                    this.user = this.entities.add(new cesium_imports_1.Entity({
                         id: 'ar.user',
                         name: 'user',
                         position: new cesium_imports_1.ConstantPositionProperty(undefined, cesium_imports_1.ReferenceFrame.FIXED),
                         orientation: new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY)
-                    });
+                    }));
                     /**
                      * An entity positioned near the user, aligned with the local East-North-Up
                      * coordinate system.
                      */
-                    this.localOriginEastNorthUp = new cesium_imports_1.Entity({
+                    this.localOriginEastNorthUp = this.entities.add(new cesium_imports_1.Entity({
                         id: 'ar.localENU',
                         name: 'localOriginENU',
                         position: new cesium_imports_1.ConstantPositionProperty(undefined, cesium_imports_1.ReferenceFrame.FIXED),
                         orientation: new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY)
-                    });
+                    }));
                     /**
                      * An entity positioned near the user, aligned with the East-Up-South
                      * coordinate system. This useful for converting to the Y-Up convention
                      * used in some libraries, such as three.js.
                      */
-                    this.localOriginEastUpSouth = new cesium_imports_1.Entity({
+                    this.localOriginEastUpSouth = this.entities.add(new cesium_imports_1.Entity({
                         id: 'ar.localEUS',
                         name: 'localOriginEUS',
                         position: new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, this.localOriginEastNorthUp),
                         orientation: new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_X, Math.PI / 2))
-                    });
+                    }));
                     /**
-                     * This value caps the deltaTime for each frame
+                     * The default origin to use when calling `getEntityPose`.
+                     * By default, this is the `localOriginEastNorthUp` reference frame.
                      */
-                    this.maxDeltaTime = 1 / 3 * 1000;
-                    this._frame = {
-                        time: new cesium_imports_1.JulianDate(0, 0),
-                        systemTime: 0,
-                        deltaTime: 0
-                    };
-                    // The default origin to use when calling `getEntityPose`.
-                    this._defaultReferenceFrame = this.localOriginEastNorthUp;
+                    this.defaultReferenceFrame = this.localOriginEastNorthUp;
                     this._entityPoseCache = {};
                     this._entityPoseMap = new Map();
                     this._subscribedEntities = new WeakMap();
                     this._updatingEntities = new Set();
                     this._knownEntities = new Set();
                     this._frameIndex = 0;
-                    this.entities.addCollection(this.subscribedEntities);
-                    this.subscribedEntities.add(this.user);
+                    this._sessionEntities = {};
                     if (this.sessionService.isRealityManager || this.sessionService.isRealityViewer) {
                         this.realityService.viewStateEvent.addEventListener(function (viewState) {
                             _this._update({
                                 time: viewState.time,
                                 index: _this._frameIndex++,
-                                reality: _this.realityService.getCurrent(),
+                                reality: realityService.getCurrent(),
                                 entities: {},
                                 view: viewState
                             });
@@ -172,18 +183,6 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                         };
                     }
                 }
-                Object.defineProperty(ContextService.prototype, "frame", {
-                    /**
-                     * The current frame
-                     */
-                    get: function () {
-                        if (!cesium_imports_1.defined(this.serializedFrameState))
-                            throw new Error('A frame state has not yet been received');
-                        return this._frame;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
                 Object.defineProperty(ContextService.prototype, "serializedFrameState", {
                     /**
                      * The serialized frame state for this frame
@@ -194,24 +193,51 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     enumerable: true,
                     configurable: true
                 });
+                Object.defineProperty(ContextService.prototype, "systemTime", {
+                    /**
+                     * Deprecated. Use timestamp property.
+                     * @private
+                     */
+                    get: function () {
+                        var _this = this;
+                        console.warn('systemTime property is deprecated. Use timestamp property');
+                        Object.defineProperty(this, 'systemTime', {
+                            get: function () { return _this.timestamp; }
+                        });
+                        return this.systemTime;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 /**
-                 * Get the current time
+                 * Deprecated. To be removed.
+                 * @private
                  */
                 ContextService.prototype.getTime = function () {
-                    return this.frame.time;
+                    var _this = this;
+                    console.warn('getTime function is deprecated. Use the ContextService.time property instead.');
+                    this.getTime = function () { return _this.time; };
+                    return this.getTime();
                 };
                 /**
-                 * Set the default reference frame for `getCurrentEntityState`.
+                 * Deprecated. To be removed.
+                 * @private
                  */
                 ContextService.prototype.setDefaultReferenceFrame = function (origin) {
-                    this._defaultReferenceFrame = origin;
+                    var _this = this;
+                    console.warn('setDefaultReferenceFrame is deprecated. Use the ContextService.defaultReferenceFrame property directly.');
+                    this.setDefaultReferenceFrame = function (origin) { return _this.defaultReferenceFrame = origin; };
+                    this.setDefaultReferenceFrame(origin);
                 };
                 /**
-                 * Get the default reference frame to use when calling `getEntityPose`.
-                 * By default, this is the `localOriginEastNorthUp` reference frame.
+                 * Deprecated. To be removed.
+                 * @private
                  */
                 ContextService.prototype.getDefaultReferenceFrame = function () {
-                    return this._defaultReferenceFrame;
+                    var _this = this;
+                    console.warn('getDefaultReferenceFrame is deprecated. Use the ContextService.defaultReferenceFrame property directly.');
+                    this.getDefaultReferenceFrame = function () { return _this.defaultReferenceFrame; };
+                    return this.getDefaultReferenceFrame();
                 };
                 /**
                  * Adds an entity to this session's set of tracked entities.
@@ -221,7 +247,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                  */
                 ContextService.prototype.subscribeToEntityById = function (id) {
                     this.sessionService.manager.send('ar.context.subscribe', { id: id });
-                    return this.subscribedEntities.getOrCreateEntity(id);
+                    return this.entities.getOrCreateEntity(id);
                 };
                 /**
                  * Gets the current pose of an entity, relative to a given reference frame.
@@ -233,21 +259,18 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                  * `Cartesian3`. Otherwise undefined.
                  */
                 ContextService.prototype.getEntityPose = function (entity, referenceFrame) {
-                    if (referenceFrame === void 0) { referenceFrame = this._defaultReferenceFrame; }
-                    var time = this.getTime();
+                    if (referenceFrame === void 0) { referenceFrame = this.defaultReferenceFrame; }
+                    var time = this.time;
                     var key = entity.id + '@' + _stringFromReferenceFrame(referenceFrame);
                     var entityPose = this._entityPoseMap.get(key);
                     if (!cesium_imports_1.defined(entityPose)) {
                         entityPose = {
                             position: new cesium_imports_1.Cartesian3,
                             orientation: new cesium_imports_1.Quaternion,
-                            time: cesium_imports_1.JulianDate.clone(time),
+                            referenceFrame: referenceFrame,
                             poseStatus: 0
                         };
                         this._entityPoseMap.set(key, entityPose);
-                    }
-                    else {
-                        cesium_imports_1.JulianDate.clone(time, entityPose.time);
                     }
                     var position = utils_1.getEntityPositionInReferenceFrame(entity, time, referenceFrame, entityPose.position);
                     var orientation = utils_1.getEntityOrientationInReferenceFrame(entity, time, referenceFrame, entityPose.orientation);
@@ -266,16 +289,8 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     entityPose.poseStatus = poseStatus;
                     return entityPose;
                 };
-                /**
-                 * deprecated
-                 */
-                ContextService.prototype.getCurrentEntityState = function (entity, referenceFrame) {
-                    console.warn('getCurrentEntityState is deprecated. Use getEntityPose instead.');
-                    return this.getEntityPose(entity, referenceFrame);
-                };
                 // TODO: This function is called a lot. Potential for optimization. 
                 ContextService.prototype._update = function (serializedState) {
-                    var _this = this;
                     // if this session is the manager, we need to update our child sessions a.s.a.p
                     if (this.sessionService.isRealityManager) {
                         delete serializedState.entities[this.user.id]; // children don't need this
@@ -291,103 +306,82 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     // update the entities the manager knows about
                     this._knownEntities.clear();
                     for (var id in serializedState.entities) {
-                        this.updateEntityFromFrameState(id, serializedState);
+                        this.updateEntityFromSerializedPose(id, serializedState.entities[id]);
                         this._updatingEntities.add(id);
                         this._knownEntities.add(id);
                     }
                     // if the mangager didn't send us an update for a particular entity,
                     // assume the manager no longer knows about it
-                    this._updatingEntities.forEach(function (id) {
-                        if (!_this._knownEntities.has(id)) {
-                            var entity = _this.subscribedEntities.getById(id);
-                            entity.position = undefined;
-                            entity.orientation = undefined;
-                            // WORKAROUND until https://github.com/AnalyticalGraphicsInc/cesium/issues/4225 is fixed
-                            entity = _this.entities.getById(id);
-                            entity.position = undefined;
-                            entity.orientation = undefined;
-                            _this._updatingEntities.delete(id);
+                    for (var _b = 0, _c = this._updatingEntities; _b < _c.length; _b++) {
+                        var id = _c[_b];
+                        if (!this._knownEntities.has(id)) {
+                            var entity = this.entities.getById(id);
+                            if (entity) {
+                                entity.position = undefined;
+                                entity.orientation = undefined;
+                            }
+                            this._updatingEntities.delete(id);
                         }
-                    });
+                    }
                     // update our local origin
                     this._updateLocalOrigin(serializedState);
-                    // update our frame object
-                    var frame = this._frame;
-                    var now = typeof performance !== 'undefined' ? performance.now() : Date.now();
-                    frame.deltaTime = Math.min(now - frame.systemTime, this.maxDeltaTime);
-                    frame.systemTime = now;
-                    cesium_imports_1.JulianDate.clone(serializedState.time, frame.time);
+                    // update our time values
+                    var timestamp = performance.now();
+                    this.deltaTime = Math.min(timestamp - this.timestamp, this.maxDeltaTime);
+                    this.timestamp = timestamp;
+                    cesium_imports_1.JulianDate.clone(serializedState.time, this.time);
                     this._serializedState = serializedState;
-                    // raise an event for the user update and render the scene
-                    this.updateEvent.raiseEvent(frame);
-                    this.renderEvent.raiseEvent(frame);
+                    // raise an event for the user to update and render the scene
+                    this.updateEvent.raiseEvent(this);
+                    this.renderEvent.raiseEvent(this);
                 };
-                ContextService.prototype.updateEntityFromFrameState = function (id, state) {
-                    var entityPose = state.entities[id];
+                ContextService.prototype.updateEntityFromSerializedPose = function (id, entityPose) {
+                    var entity = this.entities.getOrCreateEntity(id);
                     if (!entityPose) {
-                        this.subscribedEntities.getOrCreateEntity(id);
-                        return;
+                        entity.position = undefined;
+                        entity.orientation = undefined;
+                        return entity;
                     }
-                    var referenceFrame;
-                    if (cesium_imports_1.defined(entityPose.r)) {
-                        if (typeof entityPose.r === 'number') {
-                            referenceFrame = entityPose.r;
-                        }
-                        else {
-                            referenceFrame = this.entities.getById(entityPose.r);
-                        }
-                    }
-                    else {
-                        referenceFrame = cesium_imports_1.ReferenceFrame.FIXED;
-                    }
-                    if (!cesium_imports_1.defined(referenceFrame)) {
-                        this.updateEntityFromFrameState(entityPose.r, state);
-                        referenceFrame = this.entities.getById(entityPose.r);
-                    }
-                    var positionValue = entityPose.p === 0 ? cesium_imports_1.Cartesian3.ZERO : entityPose.p;
-                    var orientationValue = entityPose.o === 0 ? cesium_imports_1.Quaternion.IDENTITY : entityPose.o;
-                    var entity = this.subscribedEntities.getOrCreateEntity(id);
+                    var positionValue = entityPose.p;
+                    var orientationValue = entityPose.o;
+                    var referenceFrame = typeof entityPose.r === 'number' ?
+                        entityPose.r : this.entities.getOrCreateEntity(entityPose.r);
                     var entityPosition = entity.position;
                     var entityOrientation = entity.orientation;
-                    if (!entityPosition || entityPosition.referenceFrame !== referenceFrame) {
-                        entityPosition = new cesium_imports_1.ConstantPositionProperty(positionValue, referenceFrame);
-                        entity.position = entityPosition;
-                    }
-                    else if (entityPosition instanceof cesium_imports_1.ConstantPositionProperty) {
+                    if (entityPosition instanceof cesium_imports_1.ConstantPositionProperty &&
+                        entityPosition.referenceFrame === referenceFrame) {
                         entityPosition.setValue(positionValue, referenceFrame);
                     }
-                    else if (entityPosition instanceof cesium_imports_1.SampledPositionProperty) {
-                        entityPosition.addSample(cesium_imports_1.JulianDate.clone(state.time), positionValue);
+                    else {
+                        entity.position = new cesium_imports_1.ConstantPositionProperty(positionValue, referenceFrame);
                     }
-                    if (!entityOrientation) {
-                        entityOrientation = new cesium_imports_1.ConstantProperty(orientationValue);
-                        entity.orientation = entityOrientation;
-                    }
-                    else if (entityOrientation instanceof cesium_imports_1.ConstantProperty) {
+                    if (entityOrientation instanceof cesium_imports_1.ConstantProperty) {
                         entityOrientation.setValue(orientationValue);
                     }
-                    else if (entityOrientation instanceof cesium_imports_1.SampledProperty) {
-                        entityOrientation.addSample(cesium_imports_1.JulianDate.clone(state.time), orientationValue);
+                    else {
+                        entity.orientation = new cesium_imports_1.ConstantProperty(orientationValue);
                     }
                     return entity;
                 };
                 ContextService.prototype.publishEntityState = function (entity, referenceFrame) {
                 };
                 ContextService.prototype._updateLocalOrigin = function (state) {
-                    var userRootFrame = utils_1.getRootReferenceFrame(this.user);
+                    var pose = state.view.pose;
+                    var rootFrame = typeof pose.r === 'number' ?
+                        pose.r : this.entities.getOrCreateEntity(pose.r);
                     var userPosition = this.user.position &&
-                        this.user.position.getValueInReferenceFrame(state.time, userRootFrame, scratchCartesian3);
+                        this.user.position.getValueInReferenceFrame(state.time, rootFrame, scratchCartesian3);
                     var localENUFrame = this.localOriginEastNorthUp.position &&
                         this.localOriginEastNorthUp.position.referenceFrame;
                     var localENUPosition = this.localOriginEastNorthUp.position && localENUFrame &&
                         this.localOriginEastNorthUp.position.getValueInReferenceFrame(state.time, localENUFrame, scratchOriginCartesian3);
                     if (userPosition && (!localENUPosition ||
-                        localENUFrame !== userRootFrame ||
+                        localENUFrame !== rootFrame ||
                         cesium_imports_1.Cartesian3.magnitudeSquared(cesium_imports_1.Cartesian3.subtract(userPosition, localENUPosition, scratchOriginCartesian3)) > 25000000)) {
                         var localENUPositionProperty = this.localOriginEastNorthUp.position;
                         var localENUOrientationProperty = this.localOriginEastNorthUp.orientation;
-                        localENUPositionProperty.setValue(userPosition, userRootFrame);
-                        if (userRootFrame === cesium_imports_1.ReferenceFrame.FIXED) {
+                        localENUPositionProperty.setValue(userPosition, rootFrame);
+                        if (rootFrame === cesium_imports_1.ReferenceFrame.FIXED) {
                             var enuOrientation = cesium_imports_1.Transforms.headingPitchRollQuaternion(userPosition, 0, 0, 0, undefined, scratchQuaternion);
                             localENUOrientationProperty.setValue(enuOrientation);
                         }
@@ -397,38 +391,36 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                         this.localOriginChangeEvent.raiseEvent(undefined);
                     }
                 };
-                ContextService.prototype._sendUpdateForSession = function (parentState, session) {
-                    var _this = this;
-                    var sessionPoseMap = {};
-                    for (var id in parentState.entities) {
-                        sessionPoseMap[id] = parentState.entities[id];
+                ContextService.prototype._sendUpdateForSession = function (state, session) {
+                    var sessionEntities = this._sessionEntities;
+                    // clear session entities
+                    for (var id in sessionEntities) {
+                        delete sessionEntities[id];
                     }
-                    var subscriptions = this._subscribedEntities.get(session);
-                    subscriptions.forEach(function (id) {
-                        _this._addEntityAndAncestorsToPoseMap(sessionPoseMap, id, parentState.time);
-                    });
-                    var sessionState = {
-                        reality: parentState.reality,
-                        index: parentState.index,
-                        time: parentState.time,
-                        view: parentState.view,
-                        entities: sessionPoseMap,
-                        sendTime: cesium_imports_1.JulianDate.now()
-                    };
-                    session.send('ar.context.update', sessionState);
+                    // reference all entities from the primary frame state (if any)
+                    for (var id in state.entities) {
+                        sessionEntities[id] = state.entities[id];
+                    }
+                    // get subscrbied entities for the session
+                    for (var _i = 0, _a = this._subscribedEntities.get(session); _i < _a.length; _i++) {
+                        var id_1 = _a[_i];
+                        sessionEntities[id_1] = this._getSerializedEntityPose(id_1, state.time);
+                    }
+                    // recycle the parent frame state object, but with the session entities
+                    var parentEntities = state.entities;
+                    state.entities = sessionEntities;
+                    state.sendTime = cesium_imports_1.JulianDate.now(state.sendTime);
+                    session.send('ar.context.update', state);
+                    state.entities = parentEntities;
                 };
-                ContextService.prototype._addEntityAndAncestorsToPoseMap = function (poseMap, id, time) {
+                ContextService.prototype._getSerializedEntityPose = function (id, time) {
                     if (!cesium_imports_1.defined(this._entityPoseCache[id])) {
-                        var entity = this.subscribedEntities.getById(id);
+                        var entity = this.entities.getById(id);
                         if (!entity)
-                            return;
+                            return undefined;
                         this._entityPoseCache[id] = utils_1.getSerializedEntityPose(entity, time);
-                        if (entity.position && entity.position.referenceFrame instanceof cesium_imports_1.Entity) {
-                            var refId = _stringFromReferenceFrame(entity.position.referenceFrame);
-                            this._addEntityAndAncestorsToPoseMap(poseMap, refId, time);
-                        }
                     }
-                    poseMap[id] = this._entityPoseCache[id];
+                    return this._entityPoseCache[id];
                 };
                 ContextService = __decorate([
                     aurelia_dependency_injection_1.inject(session_1.SessionService, reality_1.RealityService)

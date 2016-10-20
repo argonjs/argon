@@ -236,7 +236,8 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     this.sessionService.ensureIsRealityViewer();
                     if (this.sessionService.manager.isConnected) {
                         this.sessionService.manager.send('ar.reality.viewState', view);
-                        this.viewStateEvent.raiseEvent(view);
+                        if (view.pose)
+                            this.viewStateEvent.raiseEvent(view);
                     }
                 };
                 /**
@@ -326,8 +327,8 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                                 projectionMatrix: cesium_imports_1.Matrix4.toArray(this._scratchFrustum.projectionMatrix, this._scratchArray)
                             }
                         ],
-                        geolocationAccuracy: undefined,
-                        geolocationAltitudeAccuracy: undefined
+                        locationAccuracy: undefined,
+                        locationAltitudeAccuracy: undefined
                     } : undefined;
                 };
                 RealityService.prototype._setNextReality = function (reality, force) {

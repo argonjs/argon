@@ -54,13 +54,10 @@ describe('TimerService', () => {
     describe('#requestFrame', () => {
         it('should execute callback for animation frame', (done) => {
             var timer = new Argon.TimerService();
-            var stopAtFrame = 1;
-            timer.requestFrame(function update(time, frameNumber) {
+            timer.requestFrame(function update(time) {
                 expect(time).to.be.instanceof(Argon.Cesium.JulianDate);
                 expect(time.dayNumber).to.be.equal(Argon.Cesium.JulianDate.now().dayNumber);
-                expect(frameNumber).to.be.a('number');
-                if (frameNumber === stopAtFrame) done();
-                else timer.requestFrame(update);
+                done();
             })
         });
     })

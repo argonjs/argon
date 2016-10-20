@@ -64,6 +64,7 @@ SystemJS.config({
         "aurelia-pal": "npm:aurelia-pal@1.0.0-beta.1.1.1",
         "aurelia-polyfills": "npm:aurelia-polyfills@1.0.0-beta.1.0.0",
         "cesium": "github:aelatgt/cesium@referenceFrames",
+        "googlevr/webvr-polyfill": "github:googlevr/webvr-polyfill@0.9.3",
         "mobile-detect": "npm:mobile-detect@1.3.2",
         "os": "github:jspm/nodelibs-os@0.2.0-alpha",
         "ts": "github:frankwallis/plugin-typescript@5.0.9",

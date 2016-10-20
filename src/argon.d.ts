@@ -1,14 +1,14 @@
+import 'googlevr/webvr-polyfill';
 import 'aurelia-polyfills';
 import * as DI from 'aurelia-dependency-injection';
 import * as Cesium from './cesium/cesium-imports';
 import * as URI from 'urijs';
 import { SessionService } from './session';
 import { Configuration, RealityViewer } from './common';
-import { ContextService, Frame } from './context';
+import { ContextService } from './context';
 import { DeviceService } from './device';
 import { FocusService } from './focus';
 import { RealityService } from './reality';
-import { TimerService } from './timer';
 import { Event } from './utils';
 import { ViewService } from './view';
 import { VuforiaService } from './vuforia';
@@ -44,11 +44,10 @@ export declare class ArgonSystem {
     readonly focus: FocusService;
     readonly reality: RealityService;
     readonly session: SessionService;
-    readonly timer: TimerService;
     readonly view: ViewService;
     readonly vuforia: VuforiaService;
-    readonly updateEvent: Event<Frame>;
-    readonly renderEvent: Event<Frame>;
+    readonly updateEvent: Event<any>;
+    readonly renderEvent: Event<any>;
     readonly focusEvent: Event<void>;
     readonly blurEvent: Event<void>;
 }
