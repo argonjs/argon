@@ -18,7 +18,8 @@ export class LiveVideoRealityLoader extends RealityLoader {
     private context: RenderingContext;
 
     private videoFov: number;
-    private fovSlider: HTMLInputElement;
+    
+    private settingsIframe: HTMLIFrameElement;
 
     constructor(
             private sessionService: SessionService,
@@ -31,22 +32,16 @@ export class LiveVideoRealityLoader extends RealityLoader {
         this.lastFrameTime = 0;
 
         if (typeof document !== 'undefined') {
-            this.fovSlider = document.createElement('input');
-            this.fovSlider.type = 'range';
-            this.fovSlider.min = '0';
-            this.fovSlider.max = '179';
-            this.fovSlider.value = '90';
-            this.fovSlider.step = '1';
-            this.fovSlider.style = 'pointer-events: auto; position:absolute;';
-            this.fovSlider.addEventListener('change', (event) => {
-                this.videoFov = event.target.value * Math.PI / 180;
-            });
-
-            this.videoFov = this.fovSlider.value * Math.PI / 180;
+            this.settingsIframe = document.createElement('iframe');
+            this.settingsIframe.width = '0';
+            this.settingsIframe.height = '0';
+            this.settingsIframe.src = 'http://argonjs.io/tools.argonjs.io/';
 
             viewService.containingElementPromise.then((container) => {
-                container.insertBefore(this.fovSlider, container.firstChild);
+                container.insertBefore(this.settingsIframe, container.firstChild);
             });
+
+            this.videoFov = Math.PI / 2;
 
             this.videoElement = document.createElement('video');
             this.videoElement.style = 'width:100%; height:100%;';
@@ -84,6 +79,14 @@ export class LiveVideoRealityLoader extends RealityLoader {
         });
 
         if (typeof document !== 'undefined' && typeof navigator !== 'undefined') {
+            window.addEventListener('message', (event) => {
+                const origin = event.origin || event.originalEvent.origin;
+
+                if (origin === 'http://argonjs.io') {
+                    this.videoFov = event.data;
+                }
+            });
+
             const mediaDevices = navigator.mediaDevices;
 
             const getUserMedia = (mediaDevices.getUserMedia || mediaDevices.mozGetUserMedia ||
