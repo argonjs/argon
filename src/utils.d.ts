@@ -221,18 +221,7 @@ export declare function decomposePerspectiveProjectionMatrix(mat: Matrix4, resul
  * not constant, or if either property cannot be converted to the new frame.
  */
 export declare function convertEntityReferenceFrame(entity: Entity, time: JulianDate, frame: ReferenceFrame | Entity): boolean;
-export declare const detectIOS: boolean;
+export declare const isIOS: boolean;
 export declare function openInArgonApp(): void;
 export declare function blockAllUIEventBubbling(element: HTMLElement): void;
-export declare enum ZoomState {
-    START = 0,
-    CHANGE = 1,
-    END = 2,
-}
-export interface ZoomData {
-    zoom: number;
-    state: ZoomState;
-}
-export declare function addZoomHandler(this: void, el: HTMLElement, callback: (zoomData: ZoomData) => void): () => void;
-export declare function removeZoomHandler(this: void, el: HTMLElement, callback: (zoomData: ZoomData) => void): void;
-export declare const requestAnimationFrame: (callback: FrameRequestCallback) => number;
+export declare const requestAnimationFrame: any;

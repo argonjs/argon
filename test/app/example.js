@@ -115,7 +115,7 @@ System.register(['../../src/argon'], function(exports_1, context_1) {
                     var subview = _a[_i];
                     camera.position.copy(subview.pose.position);
                     camera.quaternion.copy(subview.pose.orientation);
-                    camera.projectionMatrix.fromArray(subview.projectionMatrix);
+                    camera.projectionMatrix.fromArray(subview.frustum.projectionMatrix);
                     var _b = subview.viewport, x = _b.x, y = _b.y, width = _b.width, height = _b.height;
                     renderer.setViewport(x, y, width, height);
                     renderer.setScissor(x, y, width, height);

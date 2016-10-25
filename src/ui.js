@@ -77,7 +77,7 @@ System.register(['aurelia-dependency-injection', './view', './session', './utils
                         menuButton.style.pointerEvents = 'auto';
                         menuButton.style.zIndex = '1';
                         this.addMenuItem();
-                        if (utils.detectIOS) {
+                        if (utils.isIOS) {
                             this.addMenuItem(openIcon, 'Open in Argon', function () {
                                 utils.openInArgonApp();
                             });

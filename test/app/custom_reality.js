@@ -4,17 +4,17 @@ System.register(['../../src/argon'], function(exports_1, context_1) {
     var Argon;
     var app, scene, camera, user, userLocation, renderer, geometry, mat, posXSphere, negXSphere, posYSphere, negYSphere, posZSphere, negZSphere, axisHelper, perspectiveProjection;
     function update(time) {
-        app.device.update({ orientation: true });
-        var pose = Argon.getSerializedEntityPose(app.device.displayEntity, time);
+        var pose = Argon.getSerializedEntityPose(app.device.eye, time);
         app.reality.publishViewState({
             time: time,
             pose: pose,
-            viewport: app.device.state.viewport,
-            subviews: app.device.state.subviews,
-            locationAccuracy: undefined,
-            locationAltitudeAccuracy: undefined
+            viewport: app.device.viewport,
+            subviews: app.device.subviews,
+            geolocationAccuracy: undefined,
+            altitudeAccuracy: undefined,
+            compassAccuracy: undefined
         });
-        app.timer.requestFrame(update);
+        app.device.requestFrame(update);
     }
     return {
         setters:[
@@ -37,8 +37,8 @@ System.register(['../../src/argon'], function(exports_1, context_1) {
             });
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             app.view.element.appendChild(renderer.domElement);
-            // app.context.setDefaultReferenceFrame(app.context.localOriginEastUpSouth);
-            app.context.setDefaultReferenceFrame(app.context.localOriginEastNorthUp);
+            // app.context.defaultReferenceFrame = app.context.localOriginEastUpSouth;
+            app.context.defaultReferenceFrame = app.context.localOriginEastNorthUp;
             geometry = new THREE.SphereGeometry(30, 32, 32);
             mat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
             exports_1("posXSphere", posXSphere = new THREE.Mesh(geometry, mat));
@@ -72,7 +72,7 @@ System.register(['../../src/argon'], function(exports_1, context_1) {
             axisHelper.position.y = -50;
             perspectiveProjection = new Argon.Cesium.PerspectiveFrustum();
             perspectiveProjection.fov = Math.PI / 2;
-            app.timer.requestFrame(update);
+            app.device.requestFrame(update);
             app.updateEvent.addEventListener(function () {
                 var userPose = app.context.getEntityPose(app.context.user);
                 if (userPose.poseStatus & Argon.PoseStatus.KNOWN) {
@@ -88,7 +88,7 @@ System.register(['../../src/argon'], function(exports_1, context_1) {
                     var subview = _a[_i];
                     camera.position.copy(subview.pose.position);
                     camera.quaternion.copy(subview.pose.orientation);
-                    camera.projectionMatrix.fromArray(subview.projectionMatrix);
+                    camera.projectionMatrix.fromArray(subview.frustum.projectionMatrix);
                     var _b = subview.viewport, x = _b.x, y = _b.y, width = _b.width, height = _b.height;
                     renderer.setViewport(x, y, width, height);
                     renderer.setScissor(x, y, width, height);

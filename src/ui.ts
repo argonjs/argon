@@ -77,7 +77,7 @@ export class DefaultUIService {
 
             this.addMenuItem();
 
-            if (utils.detectIOS) {
+            if (utils.isIOS) {
                 this.addMenuItem(openIcon, 'Open in Argon', ()=>{
                     utils.openInArgonApp();
                 });

@@ -22,8 +22,8 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 app.view.element.appendChild(renderer.domElement);
 
-// app.context.setDefaultReferenceFrame(app.context.localOriginEastUpSouth);
-app.context.setDefaultReferenceFrame(app.context.localOriginEastNorthUp);
+// app.context.defaultReferenceFrame = app.context.localOriginEastUpSouth;
+app.context.defaultReferenceFrame = app.context.localOriginEastNorthUp;
 
 const geometry = new THREE.SphereGeometry( 30, 32, 32 );
 
@@ -76,19 +76,19 @@ var perspectiveProjection = new Argon.Cesium.PerspectiveFrustum();
 perspectiveProjection.fov = Math.PI / 2;
 
 function update(time:Argon.Cesium.JulianDate) {
-    app.device.update({orientation:true});
-    const pose = Argon.getSerializedEntityPose(app.device.displayEntity, time);
+    const pose = Argon.getSerializedEntityPose(app.device.eye, time);
     app.reality.publishViewState({
         time,
         pose,
-        viewport: app.device.state.viewport,
-        subviews: app.device.state.subviews,
-        locationAccuracy: undefined,
-        locationAltitudeAccuracy: undefined
+        viewport: app.device.viewport,
+        subviews: app.device.subviews,
+        geolocationAccuracy: undefined,
+        altitudeAccuracy: undefined,
+        compassAccuracy: undefined
     });
-    app.timer.requestFrame(update);
+    app.device.requestFrame(update);
 }
-app.timer.requestFrame(update)
+app.device.requestFrame(update)
 
 app.updateEvent.addEventListener(() => {
     const userPose = app.context.getEntityPose(app.context.user);
@@ -107,7 +107,7 @@ app.renderEvent.addEventListener(() => {
     for (let subview of app.view.getSubviews()) {
         camera.position.copy(subview.pose.position);
         camera.quaternion.copy(subview.pose.orientation);
-        camera.projectionMatrix.fromArray(subview.projectionMatrix);
+        camera.projectionMatrix.fromArray(subview.frustum.projectionMatrix);
         let {x,y,width,height} = subview.viewport;
         renderer.setViewport(x,y,width,height);
         renderer.setScissor(x,y,width,height);

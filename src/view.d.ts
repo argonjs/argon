@@ -1,7 +1,6 @@
 /// <reference types="cesium" />
-import { Entity, Matrix4, PerspectiveFrustum } from './cesium/cesium-imports';
+import { Entity, PerspectiveFrustum } from './cesium/cesium-imports';
 import { Viewport, SubviewType } from './common';
-import { DeviceService } from './device';
 import { SessionService, SessionPort } from './session';
 import { EntityPose, ContextService } from './context';
 import { Event } from './utils';
@@ -13,7 +12,6 @@ import { RealityService } from './reality';
 export interface Subview {
     index: number;
     type: SubviewType;
-    projectionMatrix: Matrix4;
     frustum: PerspectiveFrustum;
     pose: EntityPose;
     viewport: Viewport;
@@ -24,9 +22,13 @@ export interface Subview {
 export declare class ViewService {
     private sessionService;
     private focusService;
-    private deviceService;
     private realityService;
     private contextService;
+    /**
+     * UI events that occur within this view. To handle an event (and prevent it from
+     * being forwarded to another layer) call event.stopImmediatePropagation().
+     */
+    uiEvent: Event<UIEvent | MouseEvent | TouchEvent | PointerEvent | WheelEvent>;
     /**
      * An event that is raised when the root viewport has changed
      */
@@ -55,6 +57,10 @@ export declare class ViewService {
      */
     containingElementPromise: Promise<HTMLElement>;
     /**
+     * The containing element.
+     */
+    containingElement?: HTMLElement;
+    /**
      *  Manager-only. A map of sessions to their desired viewports.
      */
     desiredViewportMap: WeakMap<SessionPort, Viewport>;
@@ -63,20 +69,12 @@ export declare class ViewService {
     private _subviews;
     private _frustums;
     private _currentRealitySession?;
-    constructor(containerElement: HTMLElement, sessionService: SessionService, focusService: FocusService, deviceService: DeviceService, realityService: RealityService, contextService: ContextService);
+    constructor(containerElement: HTMLElement, sessionService: SessionService, focusService: FocusService, realityService: RealityService, contextService: ContextService);
     getSubviews(referenceFrame?: Entity): Subview[];
     /**
      * Get the current viewport
      */
     getViewport(): Viewport;
-    /**
-     * Request to present the view in an HMD.
-     */
-    requestPresent(): Promise<void>;
-    /**
-     * Exit preseting in an HMD
-     */
-    exitPresent(): Promise<void>;
     /**
      * Request to present the view in fullscreen
      */

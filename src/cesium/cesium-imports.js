@@ -1,4 +1,4 @@
-System.register(['cesium/Source/Core/binarySearch', 'cesium/Source/DataSources/CallbackProperty', 'cesium/Source/Core/Cartesian2', 'cesium/Source/Core/Cartesian3', 'cesium/Source/Core/Cartesian4', 'cesium/Source/Core/Cartographic', 'cesium/Source/Core/Clock', 'cesium/Source/Core/ClockStep', 'cesium/Source/DataSources/CompositeEntityCollection', 'cesium/Source/DataSources/ConstantPositionProperty', 'cesium/Source/DataSources/ConstantProperty', 'cesium/Source/Core/createGuid', 'cesium/Source/Core/defaultValue', 'cesium/Source/Core/defined', 'cesium/Source/Core/DeveloperError', 'cesium/Source/Core/Ellipsoid', 'cesium/Source/DataSources/Entity', 'cesium/Source/DataSources/EntityCollection', 'cesium/Source/Core/Event', 'cesium/Source/Core/ExtrapolationType', 'cesium/Source/Core/GeographicProjection', 'cesium/Source/Core/HermitePolynomialApproximation', 'cesium/Source/Core/JulianDate', 'cesium/Source/Core/Math', 'cesium/Source/Core/Matrix3', 'cesium/Source/Core/Matrix4', 'cesium/Source/DataSources/OrientationProperty', 'cesium/Source/Scene/PerspectiveFrustum', 'cesium/Source/Scene/PerspectiveOffCenterFrustum', 'cesium/Source/DataSources/PositionProperty', 'cesium/Source/DataSources/Property', 'cesium/Source/Core/Quaternion', 'cesium/Source/DataSources/ReferenceEntity', 'cesium/Source/Core/ReferenceFrame', 'cesium/Source/DataSources/ReferenceProperty', 'cesium/Source/DataSources/SampledPositionProperty', 'cesium/Source/DataSources/SampledProperty', 'cesium/Source/Core/Transforms', 'cesium/Source/Core/Simon1994PlanetaryPositions', 'cesium/Source/Core/PolylinePipeline', './cesium-extensions'], function(exports_1, context_1) {
+System.register(['cesium/Source/Core/binarySearch', 'cesium/Source/DataSources/CallbackProperty', 'cesium/Source/Scene/CameraEventAggregator', 'cesium/Source/Scene/CameraEventType', 'cesium/Source/Core/Cartesian2', 'cesium/Source/Core/Cartesian3', 'cesium/Source/Core/Cartesian4', 'cesium/Source/Core/Cartographic', 'cesium/Source/Core/Clock', 'cesium/Source/Core/ClockStep', 'cesium/Source/DataSources/CompositeEntityCollection', 'cesium/Source/DataSources/ConstantPositionProperty', 'cesium/Source/DataSources/ConstantProperty', 'cesium/Source/Core/createGuid', 'cesium/Source/Core/defaultValue', 'cesium/Source/Core/defined', 'cesium/Source/Core/DeveloperError', 'cesium/Source/Core/Ellipsoid', 'cesium/Source/DataSources/Entity', 'cesium/Source/DataSources/EntityCollection', 'cesium/Source/Core/Event', 'cesium/Source/Core/ExtrapolationType', 'cesium/Source/Core/GeographicProjection', 'cesium/Source/Core/HermitePolynomialApproximation', 'cesium/Source/Core/JulianDate', 'cesium/Source/Core/Math', 'cesium/Source/Core/Matrix3', 'cesium/Source/Core/Matrix4', 'cesium/Source/DataSources/OrientationProperty', 'cesium/Source/Scene/PerspectiveFrustum', 'cesium/Source/Scene/PerspectiveOffCenterFrustum', 'cesium/Source/DataSources/PositionProperty', 'cesium/Source/DataSources/Property', 'cesium/Source/Core/Quaternion', 'cesium/Source/DataSources/ReferenceEntity', 'cesium/Source/Core/ReferenceFrame', 'cesium/Source/DataSources/ReferenceProperty', 'cesium/Source/DataSources/SampledPositionProperty', 'cesium/Source/DataSources/SampledProperty', 'cesium/Source/Core/ScreenSpaceEventHandler', 'cesium/Source/Core/ScreenSpaceEventType', 'cesium/Source/Core/Transforms', 'cesium/Source/Core/Simon1994PlanetaryPositions', 'cesium/Source/Core/PolylinePipeline', './cesium-extensions'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     return {
@@ -11,6 +11,16 @@ System.register(['cesium/Source/Core/binarySearch', 'cesium/Source/DataSources/C
             function (CallbackProperty_1_1) {
                 exports_1({
                     "CallbackProperty": CallbackProperty_1_1["default"]
+                });
+            },
+            function (CameraEventAggregator_1_1) {
+                exports_1({
+                    "CameraEventAggregator": CameraEventAggregator_1_1["default"]
+                });
+            },
+            function (CameraEventType_1_1) {
+                exports_1({
+                    "CameraEventType": CameraEventType_1_1["default"]
                 });
             },
             function (Cartesian2_1_1) {
@@ -186,6 +196,16 @@ System.register(['cesium/Source/Core/binarySearch', 'cesium/Source/DataSources/C
             function (SampledProperty_1_1) {
                 exports_1({
                     "SampledProperty": SampledProperty_1_1["default"]
+                });
+            },
+            function (ScreenSpaceEventHandler_1_1) {
+                exports_1({
+                    "ScreenSpaceEventHandler": ScreenSpaceEventHandler_1_1["default"]
+                });
+            },
+            function (ScreenSpaceEventType_1_1) {
+                exports_1({
+                    "ScreenSpaceEventType": ScreenSpaceEventType_1_1["default"]
                 });
             },
             function (Transforms_1_1) {

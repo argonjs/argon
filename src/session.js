@@ -454,7 +454,7 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                     /**
                      * @private
                      */
-                    get: function () { console.warn("Deprecated. Use isRealityManager()"); return this.isManager; },
+                    get: function () { console.warn("Deprecated. Use isRealityManager"); return this.isManager; },
                     enumerable: true,
                     configurable: true
                 });
@@ -462,7 +462,7 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                     /**
                      * @private
                      */
-                    get: function () { console.warn("Deprecated. Use isRealityAugmenter()"); return this.isRealityAugmenter; },
+                    get: function () { console.warn("Deprecated. Use isRealityAugmenter"); return this.isRealityAugmenter; },
                     enumerable: true,
                     configurable: true
                 });
@@ -470,7 +470,7 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                     /**
                      * @private
                      */
-                    get: function () { console.warn("Deprecated. Use isRealityViewer()"); return this.isRealityViewer; },
+                    get: function () { console.warn("Deprecated. Use isRealityViewer"); return this.isRealityViewer; },
                     enumerable: true,
                     configurable: true
                 });

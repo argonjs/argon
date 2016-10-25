@@ -1,4 +1,4 @@
-System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './common', './device', './session', './context', './utils', './focus', './reality'], function(exports_1, context_1) {
+System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './common', './session', './context', './utils', './focus', './reality'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -7,8 +7,8 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
         else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
-    var aurelia_dependency_injection_1, cesium_imports_1, common_1, device_1, session_1, context_2, utils_1, focus_1, reality_1;
-    var argonContainer, argonContainerPromise, ViewService;
+    var aurelia_dependency_injection_1, cesium_imports_1, common_1, session_1, context_2, utils_1, focus_1, reality_1;
+    var argonContainer, argonContainerPromise, IDENTITY_SUBVIEW_POSE, ViewService;
     return {
         setters:[
             function (aurelia_dependency_injection_1_1) {
@@ -19,9 +19,6 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
             },
             function (common_1_1) {
                 common_1 = common_1_1;
-            },
-            function (device_1_1) {
-                device_1 = device_1_1;
             },
             function (session_1_1) {
                 session_1 = session_1_1;
@@ -65,9 +62,6 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                         argonContainer.addEventListener('touchmove', function (event) {
                             event.preventDefault();
                         }, true);
-                        argonContainer.addEventListener('gesturestart', function (event) {
-                            event.preventDefault();
-                        }, true);
                         resolve(container);
                     };
                     if (document.readyState == 'loading') {
@@ -83,19 +77,25 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                 var sheet = style.sheet;
                 sheet.insertRule("\n        #argon {\n            position: fixed;\n            left: 0px;\n            bottom: 0px;\n            width: 100%;\n            height: 100%;\n            margin: 0;\n            border: 0;\n            padding: 0;\n        }\n    ", sheet.cssRules.length);
                 sheet.insertRule("\n        .argon-view {\n            overflow: hidden;\n            -webkit-tap-highlight-color: initial;\n            -webkit-user-select: none;\n            -webkit-tap-highlight-color: transparent;\n            user-select: none;\n        }\n    ", sheet.cssRules.length);
-                sheet.insertRule("\n        .argon-view > * {\n            position: absolute;\n            -webkit-tap-highlight-color: initial;\n        }\n    ", sheet.cssRules.length);
+                sheet.insertRule("\n        .argon-view > * {\n            position: absolute;\n        }\n    ", sheet.cssRules.length);
+                sheet.insertRule("\n        .argon-view > * > * {\n            -webkit-tap-highlight-color: initial;\n        }\n    ", sheet.cssRules.length);
             }
+            IDENTITY_SUBVIEW_POSE = { p: cesium_imports_1.Cartesian3.ZERO, o: cesium_imports_1.Quaternion.IDENTITY, r: 'ar.user' };
             /**
              * Manages the view state
              */
             ViewService = (function () {
-                function ViewService(containerElement, sessionService, focusService, deviceService, realityService, contextService) {
+                function ViewService(containerElement, sessionService, focusService, realityService, contextService) {
                     var _this = this;
                     this.sessionService = sessionService;
                     this.focusService = focusService;
-                    this.deviceService = deviceService;
                     this.realityService = realityService;
                     this.contextService = contextService;
+                    /**
+                     * UI events that occur within this view. To handle an event (and prevent it from
+                     * being forwarded to another layer) call event.stopImmediatePropagation().
+                     */
+                    this.uiEvent = new utils_1.Event();
                     /**
                      * An event that is raised when the root viewport has changed
                      */
@@ -150,6 +150,9 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                                 });
                             }
                         });
+                        this.containingElementPromise.then(function (container) {
+                            _this.containingElement = container;
+                        });
                         if (this.sessionService.isRealityViewer) {
                             this._setupEventSynthesizing();
                         }
@@ -162,13 +165,18 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                             session.on['ar.viewport.desired'] = function (viewport) {
                                 _this.desiredViewportMap.set(session, viewport);
                             };
+                            session.on['ar.view.uievent'] = function (uievent) {
+                                if (_this.realityService.session && _this.realityService.session.isConnected) {
+                                    _this.realityService.session.send('ar.view.uievent', uievent);
+                                }
+                            };
                         });
                     }
                     this.contextService.renderEvent.addEventListener(function () {
                         var state = _this.contextService.serializedFrameState;
                         state.view.subviews.forEach(function (subview, index) {
                             var id = 'ar.view_' + index;
-                            var subviewPose = subview.pose || state.view.pose;
+                            var subviewPose = subview.pose || IDENTITY_SUBVIEW_POSE;
                             _this.contextService.updateEntityFromSerializedPose(id, subviewPose);
                         });
                         _this._update();
@@ -183,7 +191,8 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     viewState.subviews.forEach(function (serializedSubview, index) {
                         var id = 'ar.view_' + index;
                         var subviewEntity = _this.contextService.entities.getById(id);
-                        var subview = subviews[index] = subviews[index] || {};
+                        var subview = subviews[index] =
+                            subviews[index] || {};
                         subview.index = index;
                         subview.type = serializedSubview.type;
                         subview.pose = _this.contextService.getEntityPose(subviewEntity, referenceFrame);
@@ -193,17 +202,10 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                             width: viewState.viewport.width,
                             height: viewState.viewport.height
                         };
-                        subview.frustum = _this._frustums[index];
-                        if (!subview.frustum) {
-                            subview.frustum = _this._frustums[index] = new cesium_imports_1.PerspectiveFrustum();
-                            subview.frustum.near = 0.01;
-                            subview.frustum.far = 10000000;
-                        }
-                        subview.frustum.fov = serializedSubview.frustum.fov;
-                        subview.frustum.aspectRatio = serializedSubview.frustum.aspectRatio || subview.viewport.width / subview.viewport.height;
-                        subview.frustum.xOffset = serializedSubview.frustum.xOffset || 0;
-                        subview.frustum.yOffset = serializedSubview.frustum.yOffset || 0;
-                        subview.projectionMatrix = serializedSubview.projectionMatrix || subview.frustum.infiniteProjectionMatrix;
+                        subview.frustum = _this._frustums[index] =
+                            _this._frustums[index] || new cesium_imports_1.PerspectiveFrustum();
+                        utils_1.decomposePerspectiveProjectionMatrix(serializedSubview.projectionMatrix, subview.frustum);
+                        subview['projectionMatrix'] = serializedSubview.projectionMatrix;
                     });
                     return subviews;
                 };
@@ -213,28 +215,27 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                 ViewService.prototype.getViewport = function () {
                     return this.contextService.serializedFrameState.view.viewport;
                 };
-                /**
-                 * Request to present the view in an HMD.
-                 */
-                ViewService.prototype.requestPresent = function () {
-                    if (this.deviceService.vrDisplay) {
-                        var layers = [];
-                        layers[0] = { source: this.element.querySelector('canvas') };
-                        return this.deviceService.vrDisplay.requestPresent(layers);
-                    }
-                    else {
-                        return this.requestFullscreen();
-                    }
-                };
-                /**
-                 * Exit preseting in an HMD
-                 */
-                ViewService.prototype.exitPresent = function () {
-                    if (this.deviceService.vrDisplay) {
-                        return this.deviceService.vrDisplay.exitPresent();
-                    }
-                    return Promise.reject(new Error("Not presenting"));
-                };
+                // /**
+                //  * Request to present the view in an HMD.
+                //  */
+                // public requestPresent() {
+                //     if (this.deviceService.vrDisplay) {
+                //         const layers:VRLayer[] = [];
+                //         layers[0] = {source:this.element.querySelector('canvas')};
+                //         return this.deviceService.vrDisplay.requestPresent(layers);
+                //     } else {
+                //         return this.requestFullscreen();
+                //     }
+                // }
+                // /**
+                //  * Exit preseting in an HMD
+                //  */
+                // public exitPresent() {
+                //     if (this.deviceService.vrDisplay) {
+                //         return this.deviceService.vrDisplay.exitPresent();
+                //     }
+                //     return Promise.reject(new Error("Not presenting"));
+                // }
                 /**
                  * Request to present the view in fullscreen
                  */
@@ -336,15 +337,17 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                         }
                         return touchList;
                     };
-                    var forwardEvents = function (e) {
-                        if (e.type !== 'touchstart' && e.type !== 'touchmove' && e.type !== 'touchend')
-                            e.preventDefault();
+                    var raiseEvent = function (uiEvent) {
+                        _this.uiEvent.raiseEvent(uiEvent);
+                    };
+                    var forwardEvent = function (e) {
+                        e.preventDefault();
                         if (_this._currentRealitySession) {
                             var boundingRect = _this.element.getBoundingClientRect();
                             var touches = cloneTouches(e.touches, boundingRect);
                             var changedTouches = cloneTouches(e.changedTouches, boundingRect);
                             var targetTouches = cloneTouches(e.targetTouches, boundingRect);
-                            _this._currentRealitySession.send('ar.view.uievent', {
+                            _this.sessionService.manager.send('ar.view.uievent', {
                                 type: e.type,
                                 bubbles: e.bubbles,
                                 cancelable: e.cancelable,
@@ -389,7 +392,8 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                         'touchmove',
                         'touchcancel'
                     ].forEach(function (type) {
-                        _this.element.addEventListener(type, forwardEvents, false);
+                        _this.element.addEventListener(type, raiseEvent, false);
+                        _this.element.addEventListener(type, forwardEvent, false);
                     });
                 };
                 ViewService.prototype._setupEventSynthesizing = function () {
@@ -517,7 +521,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     };
                 };
                 ViewService = __decorate([
-                    aurelia_dependency_injection_1.inject('containerElement', session_1.SessionService, focus_1.FocusService, device_1.DeviceService, reality_1.RealityService, context_2.ContextService)
+                    aurelia_dependency_injection_1.inject('containerElement', session_1.SessionService, focus_1.FocusService, reality_1.RealityService, context_2.ContextService)
                 ], ViewService);
                 return ViewService;
             }());

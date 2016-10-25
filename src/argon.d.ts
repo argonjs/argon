@@ -22,7 +22,6 @@ export * from './device';
 export * from './focus';
 export * from './reality';
 export * from './session';
-export * from './timer';
 export * from './ui';
 export * from './utils';
 export * from './view';

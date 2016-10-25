@@ -1,4 +1,4 @@
-System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './common', './focus', './session', './utils', './argon'], function(exports_1, context_1) {
+System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './common', './focus', './session', './utils'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -7,7 +7,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
         else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
-    var aurelia_dependency_injection_1, cesium_imports_1, common_1, focus_1, session_1, utils_1, argon_1;
+    var aurelia_dependency_injection_1, cesium_imports_1, common_1, focus_1, session_1, utils_1;
     var RealityLoader, RealityService;
     return {
         setters:[
@@ -28,9 +28,6 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
             },
             function (utils_1_1) {
                 utils_1 = utils_1_1;
-            },
-            function (argon_1_1) {
-                argon_1 = argon_1_1;
             }],
         execute: function() {
             /**
@@ -69,11 +66,6 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                      */
                     this._viewStateEvent = new utils_1.Event();
                     /**
-                     * Deprecated. Use viewStateEvent.
-                     */
-                    // Remove after v1.2
-                    this._frameEvent = new utils_1.Event();
-                    /**
                      * Manager-only. A map from a managed session to the desired reality
                      */
                     this.desiredRealityMap = new WeakMap();
@@ -87,8 +79,6 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     this.sessionDesiredRealityChangeEvent = new utils_1.Event();
                     // RealitySetupHandlers
                     this._loaders = [];
-                    this._scratchFrustum = new cesium_imports_1.PerspectiveFrustum();
-                    this._scratchArray = new Array();
                     this._loadID = -1;
                     if (sessionService.isRealityManager) {
                         sessionService.manager.connectEvent.addEventListener(function () {
@@ -173,14 +163,6 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     enumerable: true,
                     configurable: true
                 });
-                Object.defineProperty(RealityService.prototype, "frameEvent", {
-                    get: function () {
-                        this.sessionService.ensureNotRealityAugmenter();
-                        return this._frameEvent;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
                 Object.defineProperty(RealityService.prototype, "session", {
                     get: function () {
                         return this._session;
@@ -236,8 +218,7 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     this.sessionService.ensureIsRealityViewer();
                     if (this.sessionService.manager.isConnected) {
                         this.sessionService.manager.send('ar.reality.viewState', view);
-                        if (view.pose)
-                            this.viewStateEvent.raiseEvent(view);
+                        this.viewStateEvent.raiseEvent(view);
                     }
                 };
                 /**
@@ -300,37 +281,6 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     }
                     return selectedReality;
                 };
-                /**
-                 * Deprecated. Remove after v1.2
-                 * @private
-                 */
-                RealityService.prototype.onGenerateViewFromEyeParameters = function (eye, t) {
-                    var fov = eye.fov || argon_1.ArgonSystem.instance.device.state.defaultFov;
-                    var viewport = eye.viewport || argon_1.ArgonSystem.instance.device.state.viewport;
-                    var aspectRatio = eye.aspect || viewport.width / viewport.height;
-                    this._scratchFrustum.fov = fov;
-                    this._scratchFrustum.aspectRatio = aspectRatio;
-                    this._scratchFrustum.near = 0.01;
-                    this._scratchFrustum.far = 10000000;
-                    return eye.pose ? {
-                        time: t,
-                        viewport: viewport,
-                        pose: eye.pose,
-                        subviews: [
-                            {
-                                type: common_1.SubviewType.SINGULAR,
-                                frustum: {
-                                    fov: fov,
-                                    aspectRatio: aspectRatio
-                                },
-                                // TODO: remove this later  
-                                projectionMatrix: cesium_imports_1.Matrix4.toArray(this._scratchFrustum.projectionMatrix, this._scratchArray)
-                            }
-                        ],
-                        locationAccuracy: undefined,
-                        locationAltitudeAccuracy: undefined
-                    } : undefined;
-                };
                 RealityService.prototype._setNextReality = function (reality, force) {
                     var _this = this;
                     if (force === void 0) { force = false; }
@@ -358,26 +308,10 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                             _this._session = realitySession;
                             _this._setCurrent(reality);
                             realitySession.on['ar.reality.viewState'] = function (viewState) {
-                                if (viewState.pose) {
-                                    _this.viewStateEvent.raiseEvent(viewState);
-                                }
+                                _this.viewStateEvent.raiseEvent(viewState);
                             };
                             // Deprecated. Remove after v1.2
                             realitySession.on['ar.reality.frameState'] = function (serializedState) {
-                                var state = serializedState;
-                                if (!cesium_imports_1.defined(serializedState.view)) {
-                                    if (!cesium_imports_1.defined(serializedState.eye))
-                                        throw new Error("Unable to construct view configuration: missing eye parameters");
-                                    var view = _this.onGenerateViewFromEyeParameters(serializedState.eye, state.time);
-                                    if (!view || !view.pose)
-                                        return;
-                                    _this.viewStateEvent.raiseEvent(view);
-                                }
-                                else {
-                                    if (state.view && state.view.pose) {
-                                        _this.viewStateEvent.raiseEvent(state.view);
-                                    }
-                                }
                             };
                             realitySession.closeEvent.addEventListener(function () {
                                 console.log('Reality session closed: ' + JSON.stringify(reality));

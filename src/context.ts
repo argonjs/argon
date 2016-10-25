@@ -14,8 +14,6 @@ import {
 } from './cesium/cesium-imports'
 import { SerializedEntityPose, SerializedEntityPoseMap, FrameState, Role } from './common'
 import { SessionService, SessionPort } from './session'
-import { RealityService } from './reality'
-import { TimerService } from './timer'
 import { Event, getSerializedEntityPose, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame } from './utils'
 
 /**
@@ -61,7 +59,7 @@ const scratchOriginCartesian3 = new Cartesian3(0, 0);
  *  * `ar.context.update` - Indicates to this context that the session wants
  *    to be focused on.
  */
-@inject(SessionService, RealityService)
+@inject(SessionService)
 export class ContextService {
 
     /**
@@ -176,29 +174,10 @@ export class ContextService {
     private _updatingEntities = new Set<string>();
     private _knownEntities = new Set<string>();
 
-    private _frameIndex = 0;
-
     constructor(
-        private sessionService: SessionService,
-        private realityService: RealityService,
-        timerService: TimerService ) {
+        private sessionService: SessionService) {
 
         if (this.sessionService.isRealityManager || this.sessionService.isRealityViewer) {
-
-            this.realityService.viewStateEvent.addEventListener((viewState) => {
-                this._update({
-                    time: viewState.time, // deprecated
-                    index: this._frameIndex++,
-                    reality: realityService.getCurrent(),
-                    entities: {},
-                    view: viewState
-                });
-            })
-
-            this.realityService.frameEvent.addEventListener((state) => {
-                this._update(state);
-            });
-
             this.sessionService.connectEvent.addEventListener((session) => {
 
                 this._subscribedEntities.set(session, new Set<string>());
@@ -328,10 +307,9 @@ export class ContextService {
     }
 
     // TODO: This function is called a lot. Potential for optimization. 
-    private _update(serializedState: FrameState) {
+    public _update(serializedState: FrameState) {
         // if this session is the manager, we need to update our child sessions a.s.a.p
         if (this.sessionService.isRealityManager) {
-            delete serializedState.entities[this.user.id]; // children don't need this
             this._entityPoseCache = {};
             for (const session of this.sessionService.managedSessions) {
                 if (Role.isRealityAugmenter(session.info.role))
@@ -340,14 +318,16 @@ export class ContextService {
         }
 
         // our user entity is defined by the current view pose (the current reality must provide this)
-        serializedState.entities[this.user.id] = serializedState.view.pose;
+        this.updateEntityFromSerializedPose(this.user.id, serializedState.view.pose);
 
         // update the entities the manager knows about
         this._knownEntities.clear();
-        for (const id in serializedState.entities) {
-            this.updateEntityFromSerializedPose(id, serializedState.entities[id]);
-            this._updatingEntities.add(id);
-            this._knownEntities.add(id);
+        if (serializedState.entities) {
+            for (const id in serializedState.entities) {
+                this.updateEntityFromSerializedPose(id, serializedState.entities[id]);
+                this._updatingEntities.add(id);
+                this._knownEntities.add(id);
+            }
         }
 
         // if the mangager didn't send us an update for a particular entity,
@@ -370,7 +350,7 @@ export class ContextService {
         const timestamp = performance.now();
         this.deltaTime = Math.min(timestamp - this.timestamp, this.maxDeltaTime);
         this.timestamp = timestamp;
-        JulianDate.clone(<JulianDate>serializedState.time, this.time);
+        JulianDate.clone(<JulianDate>serializedState.view.time, this.time);
         this._serializedState = serializedState;
 
         // raise an event for the user to update and render the scene
@@ -417,29 +397,36 @@ export class ContextService {
     }
 
     private _updateLocalOrigin(state: FrameState) {
-        const pose = state.view.pose!;
+        const pose = state.view.pose;
         const rootFrame:Entity|ReferenceFrame = 
-            typeof pose.r === 'number' ?
-            pose.r : this.entities.getOrCreateEntity(pose.r);
+            pose ? 
+                typeof pose.r === 'number' ?
+                    pose.r : 
+                    this.entities.getOrCreateEntity(pose.r) : 
+                this.user;
         const userPosition = this.user.position &&
-            this.user.position.getValueInReferenceFrame(<JulianDate>state.time, rootFrame, scratchCartesian3);
+            this.user.position.getValueInReferenceFrame(<JulianDate>state.view.time, rootFrame, scratchCartesian3);
         const localENUFrame = this.localOriginEastNorthUp.position &&
             this.localOriginEastNorthUp.position.referenceFrame;
         const localENUPosition = this.localOriginEastNorthUp.position && localENUFrame &&
-            this.localOriginEastNorthUp.position.getValueInReferenceFrame(<JulianDate>state.time, localENUFrame, scratchOriginCartesian3);
-        if (userPosition && (
-            !localENUPosition ||
+            this.localOriginEastNorthUp.position.getValueInReferenceFrame(<JulianDate>state.view.time, localENUFrame, scratchOriginCartesian3);
+        if (!userPosition || !localENUPosition ||
             localENUFrame !== rootFrame ||
             Cartesian3.magnitudeSquared(
                 Cartesian3.subtract(userPosition, localENUPosition, scratchOriginCartesian3)
-            ) > 25000000)) {
-            const localENUPositionProperty = <ConstantPositionProperty>this.localOriginEastNorthUp.position;
-            const localENUOrientationProperty = <ConstantProperty>this.localOriginEastNorthUp.orientation;
-            localENUPositionProperty.setValue(userPosition, rootFrame);
-            if (rootFrame === ReferenceFrame.FIXED) {
-                const enuOrientation = Transforms.headingPitchRollQuaternion(userPosition, 0, 0, 0, undefined, scratchQuaternion);
-                localENUOrientationProperty.setValue(enuOrientation);
+            ) > 25000000) {
+                const localENUPositionProperty = <ConstantPositionProperty>this.localOriginEastNorthUp.position;
+                const localENUOrientationProperty = <ConstantProperty>this.localOriginEastNorthUp.orientation;
+            if (userPosition) {
+                localENUPositionProperty.setValue(userPosition, rootFrame);
+                if (rootFrame === ReferenceFrame.FIXED) {
+                    const enuOrientation = Transforms.headingPitchRollQuaternion(userPosition, 0, 0, 0, undefined, scratchQuaternion);
+                    localENUOrientationProperty.setValue(enuOrientation);
+                } else {
+                    localENUOrientationProperty.setValue(Quaternion.IDENTITY);
+                }
             } else {
+                localENUPositionProperty.setValue(Cartesian3.ZERO, this.user);
                 localENUOrientationProperty.setValue(Quaternion.IDENTITY);
             }
             this.localOriginChangeEvent.raiseEvent(undefined);
@@ -457,18 +444,21 @@ export class ContextService {
         }
 
         // reference all entities from the primary frame state (if any)
-        for (var id in state.entities) {
-            sessionEntities[id] = state.entities[id];
+        if (state.entities) {
+            for (var id in state.entities) {
+                sessionEntities[id] = state.entities[id];
+            }
         }
 
         // get subscrbied entities for the session
         for (const id of <string[]><any>this._subscribedEntities.get(session)) {
-            sessionEntities[id] = this._getSerializedEntityPose(id, <JulianDate>state.time);
+            sessionEntities[id] = this._getSerializedEntityPose(id, <JulianDate>state.view.time);
         }
 
         // recycle the parent frame state object, but with the session entities
         const parentEntities = state.entities;
         state.entities = sessionEntities;
+        state['time'] = state.view.time; // deprecated
         state.sendTime = JulianDate.now(<JulianDate>state.sendTime);
         session.send('ar.context.update', state);
         state.entities = parentEntities;

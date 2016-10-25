@@ -1,6 +1,6 @@
 /// <reference types="cesium" />
-import { ReferenceFrame, JulianDate } from './cesium/cesium-imports';
-import { RealityViewer, DeprecatedPartialFrameState, FrameState, ViewState, DeprecatedEyeParameters } from './common';
+import { ReferenceFrame } from './cesium/cesium-imports';
+import { RealityViewer, DeprecatedPartialFrameState, ViewState } from './common';
 import { FocusService } from './focus';
 import { SessionPort, SessionService } from './session';
 import { Event } from './utils';
@@ -40,11 +40,6 @@ export declare class RealityService {
      */
     private _viewStateEvent;
     readonly viewStateEvent: Event<ViewState>;
-    /**
-     * Deprecated. Use viewStateEvent.
-     */
-    private _frameEvent;
-    readonly frameEvent: Event<FrameState>;
     /**
      * Manager-only. A map from a managed session to the desired reality
      */
@@ -120,13 +115,6 @@ export declare class RealityService {
     * realities have been requested.
     */
     onSelectReality(): RealityViewer | undefined;
-    private _scratchFrustum;
-    private _scratchArray;
-    /**
-     * Deprecated. Remove after v1.2
-     * @private
-     */
-    onGenerateViewFromEyeParameters(eye: DeprecatedEyeParameters, t: JulianDate): ViewState | undefined;
     private _loadID;
     private _setNextReality(reality?, force?);
     private _getLoader(reality);

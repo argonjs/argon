@@ -1,5 +1,5 @@
 /// <reference types="cesium" />
-import { Matrix4, JulianDate, Cartesian3, Quaternion } from './cesium/cesium-imports';
+import { Matrix4, JulianDate, Cartesian3, Cartographic, Quaternion } from './cesium/cesium-imports';
 /**
  * Configuration options for an [[ArgonSystem]]
  */
@@ -10,10 +10,8 @@ export interface Configuration {
     defaultUI?: {
         disable?: boolean;
     };
-    'app.disablePinchZoom'?: boolean;
+    'needsGeopose'?: boolean;
     'reality.supportsControlPort'?: boolean;
-    'reality.handlesZoom'?: boolean;
-    'reality.providedReferenceFrames'?: (number | string)[];
 }
 /**
  * Describes the role of an [[ArgonSystem]]
@@ -106,18 +104,17 @@ export interface SerializedFrustum {
 export interface SerializedSubview {
     type: SubviewType;
     /**
-     * @deprecated
+     * The projection matrix for this subview
      */
-    projectionMatrix?: ArrayLike<number> | Matrix4;
+    projectionMatrix: Matrix4;
     /**
-     * The viewing frustum for this subview
+     * The pose for this subview (relative to the primary pose)
      */
-    frustum: SerializedFrustum;
     pose?: SerializedEntityPose;
+    /**
+     * The viewport for this subview (relative to the primary viewport)
+     */
     viewport?: Viewport;
-}
-export declare namespace SerializedSubview {
-    function clone(subview: SerializedSubview, result?: SerializedSubview): SerializedSubview;
 }
 /**
  * The device state informs a [[REALITY_VIEWER]] about the current physical
@@ -130,23 +127,16 @@ export declare namespace SerializedSubview {
  * (or necessarily expected).
  */
 export interface DeviceState {
-    /**
-     * The (absolute) time for the latest device pose.
-     */
-    time: JulianDate;
-    locationPose?: SerializedEntityPose;
-    displayPose?: SerializedEntityPose;
-    locationAccuracy: number | undefined;
-    locationAltitudeAccuracy: number | undefined;
+    cartographicPosition?: Cartographic;
+    geolocationAccuracy: number | undefined;
+    altitudeAccuracy: number | undefined;
     viewport: Viewport;
     subviews: SerializedSubview[];
     strictViewport?: boolean;
-    strictSubviewViewports?: boolean;
-    strictSubviewFrustums?: boolean;
-    strictSubviewPoses?: boolean;
-}
-export declare namespace DeviceState {
-    function clone(state: DeviceState, result?: DeviceState): DeviceState;
+    strictSubviewViewport?: boolean;
+    strictSubviewCount?: boolean;
+    strictSubviewProjectionMatrix?: boolean;
+    strictSubviewPose?: boolean;
 }
 /**
  * The view state is provided by a [[REALITY_VIEWER]], and describes how a
@@ -158,23 +148,30 @@ export interface ViewState {
      */
     time: JulianDate;
     /**
-     * The primary pose for the view (the pose of the viewer). This pose does
-     * not necessarily reflect the real-world (physical) pose of the viewer,
-     * though it may.
+     * The viewing pose. May or may not match the
+     * real-world (physical) viewing pose.
      */
     pose: SerializedEntityPose | undefined;
     /**
      * The radius (in meters) of latitudinal and longitudinal uncertainty,
-     * in relation to the FIXED reference frame.
+     * in relation to the FIXED reference frame. Value is greater
+     * than 0 or undefined.
      */
-    locationAccuracy: number | undefined;
+    geolocationAccuracy: number | undefined;
     /**
-     * The accuracy of the altitude in meters.
+     * The accuracy of the altitude in meters. Value is greater
+     * than 0 or undefined.
      */
-    locationAltitudeAccuracy: number | undefined;
+    altitudeAccuracy: number | undefined;
     /**
-     * The primary viewport to render into. In a DOM environment, the bottom left corner of the document element
-     * (document.documentElement) should be considered the origin.
+     * The accuracy of the compass in degrees. Value is greater
+     * than 0 or undefined.
+     */
+    compassAccuracy: number | undefined;
+    /**
+     * The primary viewport to render into. In a DOM environment,
+     * the bottom left corner of the document element (document.documentElement)
+     * should be considered the origin.
      */
     viewport: Viewport;
     /**
@@ -212,12 +209,8 @@ export interface DeprecatedPartialFrameState {
  */
 export interface FrameState {
     index: number;
-    time: {
-        dayNumber: number;
-        secondsOfDay: number;
-    };
     reality?: RealityViewer;
-    entities: SerializedEntityPoseMap;
+    entities?: SerializedEntityPoseMap;
     view: ViewState;
     sendTime?: {
         dayNumber: number;
@@ -229,6 +222,7 @@ export interface FrameState {
 */
 export declare class RealityViewer {
     static EMPTY: RealityViewer;
+    static LIVE_VIDEO: RealityViewer;
     uri: string;
     title?: string;
     providedReferenceFrames?: Array<string>;

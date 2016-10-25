@@ -170,7 +170,7 @@ app.renderEvent.addEventListener(() => {
     for (let subview of app.view.getSubviews()) {
         camera.position.copy(subview.pose.position);
         camera.quaternion.copy(subview.pose.orientation);
-        camera.projectionMatrix.fromArray(subview.projectionMatrix);
+        camera.projectionMatrix.fromArray(subview.frustum.projectionMatrix);
         let {x,y,width,height} = subview.viewport;
         renderer.setViewport(x,y,width,height);
         renderer.setScissor(x,y,width,height);

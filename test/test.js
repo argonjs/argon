@@ -57,18 +57,6 @@ System.register(['chai', '../src/argon'], function(exports_1, context_1) {
                     });
                 });
             });
-            describe('TimerService', function () {
-                describe('#requestFrame', function () {
-                    it('should execute callback for animation frame', function (done) {
-                        var timer = new Argon.TimerService();
-                        timer.requestFrame(function update(time) {
-                            expect(time).to.be.instanceof(Argon.Cesium.JulianDate);
-                            expect(time.dayNumber).to.be.equal(Argon.Cesium.JulianDate.now().dayNumber);
-                            done();
-                        });
-                    });
-                });
-            });
             describe('RealityService', function () {
                 describe('new RealityService()', function () {
                     it('the default reality should be used when no desired reality is set', function (done) {
@@ -429,7 +417,7 @@ System.register(['chai', '../src/argon'], function(exports_1, context_1) {
                     it('should emit update events with default reality', function (done) {
                         var context = createSystem().context;
                         var removeListener = context.updateEvent.addEventListener(function () {
-                            expect(Argon.RealityViewer.getType(context.serializedFrameState.reality)).to.equal('empty');
+                            // expect(Argon.RealityViewer.getType(context.serializedFrameState!.reality)).to.equal('empty');
                             removeListener();
                             done();
                         });

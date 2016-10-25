@@ -1,10 +1,9 @@
 import { inject } from 'aurelia-dependency-injection'
-import { Entity, Matrix4, PerspectiveFrustum } from './cesium/cesium-imports'
+import { Entity, Matrix4, PerspectiveFrustum, Cartesian3, Quaternion } from './cesium/cesium-imports'
 import { Viewport, SubviewType, FrameState } from './common'
-import { DeviceService } from './device'
 import { SessionService, SessionPort } from './session'
 import { EntityPose, ContextService } from './context'
-import { Event } from './utils'
+import { Event, decomposePerspectiveProjectionMatrix } from './utils'
 import { FocusService } from './focus'
 import { RealityService } from './reality'
 
@@ -33,9 +32,6 @@ if (typeof document !== 'undefined' && document.createElement) {
 
             // prevent pinch-zoom of the page in ios 10.
             argonContainer.addEventListener('touchmove', function (event) {
-                event.preventDefault();
-            }, true);
-            argonContainer.addEventListener('gesturestart', function (event) {
                 event.preventDefault();
             }, true);
 
@@ -76,6 +72,10 @@ if (typeof document !== 'undefined' && document.createElement) {
     sheet.insertRule(`
         .argon-view > * {
             position: absolute;
+        }
+    `, sheet.cssRules.length);
+    sheet.insertRule(`
+        .argon-view > * > * {
             -webkit-tap-highlight-color: initial;
         }
     `, sheet.cssRules.length);
@@ -87,17 +87,24 @@ if (typeof document !== 'undefined' && document.createElement) {
 export interface Subview {
     index: number,
     type: SubviewType,
-    projectionMatrix: Matrix4,
     frustum: PerspectiveFrustum,
     pose: EntityPose,
     viewport: Viewport
 }
 
+const IDENTITY_SUBVIEW_POSE = {p:Cartesian3.ZERO, o:Quaternion.IDENTITY, r:'ar.user'};
+
 /**
  * Manages the view state
  */
-@inject('containerElement', SessionService, FocusService, DeviceService, RealityService, ContextService)
+@inject('containerElement', SessionService, FocusService, RealityService, ContextService)
 export class ViewService {
+
+    /**
+     * UI events that occur within this view. To handle an event (and prevent it from
+     * being forwarded to another layer) call event.stopImmediatePropagation().
+     */
+    public uiEvent = new Event<UIEvent|MouseEvent|TouchEvent|PointerEvent|WheelEvent>();
 
     /**
      * An event that is raised when the root viewport has changed
@@ -128,6 +135,11 @@ export class ViewService {
      * This value is undefined in non-DOM environments.
      */
     public containingElementPromise: Promise<HTMLElement>;
+
+    /**
+     * The containing element.
+     */
+    public containingElement?: HTMLElement;
     
     /**
      *  Manager-only. A map of sessions to their desired viewports.
@@ -144,7 +156,6 @@ export class ViewService {
         containerElement: HTMLElement,
         private sessionService: SessionService,
         private focusService: FocusService,
-        private deviceService: DeviceService,
         private realityService: RealityService,
         private contextService: ContextService) {
 
@@ -184,6 +195,10 @@ export class ViewService {
                 }
             });
 
+            this.containingElementPromise.then((container)=>{
+                this.containingElement = container;
+            })
+
             if (this.sessionService.isRealityViewer) {
                 this._setupEventSynthesizing();
             } else {
@@ -196,6 +211,11 @@ export class ViewService {
                 session.on['ar.viewport.desired'] = (viewport: Viewport) => {
                     this.desiredViewportMap.set(session, viewport);
                 }
+                session.on['ar.view.uievent'] = (uievent) => {
+                    if (this.realityService.session && this.realityService.session.isConnected) {
+                        this.realityService.session.send('ar.view.uievent', uievent);
+                    }
+                }
             });
         }
 
@@ -203,7 +223,7 @@ export class ViewService {
             const state = <FrameState>this.contextService.serializedFrameState;
             state.view.subviews.forEach((subview, index) => {
                 const id = 'ar.view_' + index;
-                const subviewPose = subview.pose || state.view.pose;
+                const subviewPose = subview.pose || IDENTITY_SUBVIEW_POSE;
                 this.contextService.updateEntityFromSerializedPose(id, subviewPose);
             });
             this._update();
@@ -218,7 +238,8 @@ export class ViewService {
         viewState.subviews.forEach((serializedSubview, index) => {
             const id = 'ar.view_' + index;
             const subviewEntity = this.contextService.entities.getById(id)!;
-            const subview = subviews[index] = subviews[index] || <Subview>{};
+            const subview = subviews[index] = 
+                subviews[index] || <Subview>{};
             subview.index = index;
             subview.type = serializedSubview.type;
             subview.pose = this.contextService.getEntityPose(subviewEntity, referenceFrame);
@@ -229,18 +250,10 @@ export class ViewService {
                 height: viewState.viewport.height
             }
 
-            subview.frustum = this._frustums[index];
-            if (!subview.frustum) {
-                subview.frustum = this._frustums[index] = new PerspectiveFrustum();
-                subview.frustum.near = 0.01;
-                subview.frustum.far = 10000000;
-            }
-            subview.frustum.fov = serializedSubview.frustum.fov;
-            subview.frustum.aspectRatio = serializedSubview.frustum.aspectRatio || subview.viewport.width / subview.viewport.height;
-            subview.frustum.xOffset = serializedSubview.frustum.xOffset || 0;
-            subview.frustum.yOffset = serializedSubview.frustum.yOffset || 0;
-
-            subview.projectionMatrix = <Matrix4>serializedSubview.projectionMatrix || subview.frustum.infiniteProjectionMatrix;
+            subview.frustum = this._frustums[index] = 
+                this._frustums[index] || new PerspectiveFrustum();
+            decomposePerspectiveProjectionMatrix(serializedSubview.projectionMatrix, subview.frustum);
+            subview['projectionMatrix'] = <Matrix4>serializedSubview.projectionMatrix;
         })
         return subviews;
     }
@@ -252,28 +265,28 @@ export class ViewService {
         return this.contextService.serializedFrameState!.view.viewport;
     }
 
-    /**
-     * Request to present the view in an HMD.
-     */
-    public requestPresent() {
-        if (this.deviceService.vrDisplay) {
-            const layers:VRLayer[] = [];
-            layers[0] = {source:this.element.querySelector('canvas')};
-            return this.deviceService.vrDisplay.requestPresent(layers);
-        } else {
-            return this.requestFullscreen();
-        }
-    }
+    // /**
+    //  * Request to present the view in an HMD.
+    //  */
+    // public requestPresent() {
+    //     if (this.deviceService.vrDisplay) {
+    //         const layers:VRLayer[] = [];
+    //         layers[0] = {source:this.element.querySelector('canvas')};
+    //         return this.deviceService.vrDisplay.requestPresent(layers);
+    //     } else {
+    //         return this.requestFullscreen();
+    //     }
+    // }
 
-    /**
-     * Exit preseting in an HMD
-     */
-    public exitPresent() {
-        if (this.deviceService.vrDisplay) {
-            return this.deviceService.vrDisplay.exitPresent();
-        }
-        return Promise.reject(new Error("Not presenting"));
-    }
+    // /**
+    //  * Exit preseting in an HMD
+    //  */
+    // public exitPresent() {
+    //     if (this.deviceService.vrDisplay) {
+    //         return this.deviceService.vrDisplay.exitPresent();
+    //     }
+    //     return Promise.reject(new Error("Not presenting"));
+    // }
 
     /**
      * Request to present the view in fullscreen
@@ -390,10 +403,13 @@ export class ViewService {
             }
             return touchList;
         }
+
+        const raiseEvent = (uiEvent:UIEvent) => {
+            this.uiEvent.raiseEvent(uiEvent);
+        }
         
-        const forwardEvents = (e:MouseEvent&WheelEvent&TouchEvent)=>{
-            if (e.type !== 'touchstart' && e.type !== 'touchmove' && e.type !== 'touchend') 
-                e.preventDefault();
+        const forwardEvent = (e:MouseEvent&WheelEvent&TouchEvent)=>{
+            e.preventDefault();
             if (this._currentRealitySession) {
                 const boundingRect = this.element.getBoundingClientRect();
 
@@ -401,7 +417,7 @@ export class ViewService {
                 const changedTouches = cloneTouches(e.changedTouches, boundingRect);
                 const targetTouches = cloneTouches(e.targetTouches, boundingRect);
 
-                this._currentRealitySession.send('ar.view.uievent', {
+                this.sessionService.manager.send('ar.view.uievent', {
                     type: e.type,
                     bubbles: e.bubbles,
                     cancelable: e.cancelable,
@@ -446,7 +462,8 @@ export class ViewService {
         ,'touchmove'
         ,'touchcancel'
         ].forEach((type)=>{
-            this.element.addEventListener(type, forwardEvents, false);
+            this.element.addEventListener(type, raiseEvent, false);
+            this.element.addEventListener(type, forwardEvent, false);
         });
     }
 

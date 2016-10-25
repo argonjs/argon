@@ -2,25 +2,17 @@ import { inject } from 'aurelia-dependency-injection'
 import {
     createGuid,
     defined,
-    Matrix4,
-    PerspectiveFrustum,
-    ReferenceFrame,
-    JulianDate
+    ReferenceFrame
 } from './cesium/cesium-imports'
 import {
     Role,
     RealityViewer,
     DeprecatedPartialFrameState,
-    FrameState,
-    ViewState,
-    DeprecatedEyeParameters,
-    SubviewType
+    ViewState
 } from './common'
 import { FocusService } from './focus'
 import { SessionPort, SessionService } from './session'
 import { Event } from './utils'
-
-import {ArgonSystem} from './argon'
 
 /**
  * Abstract class for a reality setup handler
@@ -64,16 +56,6 @@ export class RealityService {
     get viewStateEvent() {
         this.sessionService.ensureNotRealityAugmenter();
         return this._viewStateEvent;
-    }
-
-    /**
-     * Deprecated. Use viewStateEvent. 
-     */
-    // Remove after v1.2
-    private _frameEvent = new Event<FrameState>();
-    get frameEvent() {
-        this.sessionService.ensureNotRealityAugmenter();
-        return this._frameEvent;
     }
 
     /**
@@ -238,7 +220,7 @@ export class RealityService {
         this.sessionService.ensureIsRealityViewer();
         if (this.sessionService.manager.isConnected) {
             this.sessionService.manager.send('ar.reality.viewState', view);
-            if (view.pose) this.viewStateEvent.raiseEvent(view);
+            this.viewStateEvent.raiseEvent(view);
         }
     }
 
@@ -311,41 +293,6 @@ export class RealityService {
         return selectedReality;
     }
 
-    private _scratchFrustum = new PerspectiveFrustum();
-    private _scratchArray = new Array<number>();
-
-    /**
-     * Deprecated. Remove after v1.2
-     * @private
-     */
-    public onGenerateViewFromEyeParameters(eye: DeprecatedEyeParameters, t:JulianDate): ViewState|undefined {
-        const fov = eye.fov || (ArgonSystem.instance!).device.state.defaultFov;
-        const viewport = eye.viewport || (ArgonSystem.instance!).device.state.viewport;
-        const aspectRatio = eye.aspect || viewport.width / viewport.height;
-        this._scratchFrustum.fov = fov;
-        this._scratchFrustum.aspectRatio = aspectRatio;
-        this._scratchFrustum.near = 0.01;
-        this._scratchFrustum.far = 10000000;
-        return eye.pose ? {
-            time:t,
-            viewport,
-            pose: eye.pose,
-            subviews: [
-                {
-                    type: SubviewType.SINGULAR,
-                    frustum: {
-                        fov,
-                        aspectRatio
-                    },
-                    // TODO: remove this later  
-                    projectionMatrix: Matrix4.toArray(this._scratchFrustum.projectionMatrix, this._scratchArray)
-                }
-            ],
-            locationAccuracy: undefined,
-            locationAltitudeAccuracy: undefined
-        } : undefined;
-    }
-
     private _loadID = -1;
 
     private _setNextReality(reality?: RealityViewer, force = false) {
@@ -378,25 +325,11 @@ export class RealityService {
                 this._setCurrent(<RealityViewer>reality);
 
                 realitySession.on['ar.reality.viewState'] = (viewState: ViewState) => {
-                    if (viewState.pose) {
-                        this.viewStateEvent.raiseEvent(viewState);
-                    }
+                    this.viewStateEvent.raiseEvent(viewState);
                 }
 
                 // Deprecated. Remove after v1.2
                 realitySession.on['ar.reality.frameState'] = (serializedState: DeprecatedPartialFrameState) => {
-                    const state = <FrameState>serializedState;
-                    if (!defined(serializedState.view)) {
-                        if (!defined(serializedState.eye))
-                            throw new Error("Unable to construct view configuration: missing eye parameters");
-                        const view = this.onGenerateViewFromEyeParameters(serializedState.eye, <JulianDate>state.time);
-                        if (!view || !view.pose) return;
-                        this.viewStateEvent.raiseEvent(view);
-                    } else {
-                        if (state.view && state.view.pose) {
-                            this.viewStateEvent.raiseEvent(state.view);
-                        }
-                    }
                 }
 
                 realitySession.closeEvent.addEventListener(() => {

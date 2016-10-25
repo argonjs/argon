@@ -1,8 +1,9 @@
 /// <reference types="webvr-api" />
 /// <reference types="cesium" />
 import { Entity, Cartographic, JulianDate } from './cesium/cesium-imports';
-import { DeviceState, Viewport } from './common';
+import { Viewport, SerializedSubview } from './common';
 import { ContextService } from './context';
+import { ViewService } from './view';
 import { SessionService, SessionPort } from './session';
 declare global  {
     class VRFrameData {
@@ -22,78 +23,84 @@ declare global  {
 */
 export declare class DeviceService {
     private sessionService;
+    private viewService;
     private contextService;
     /**
      * The current vrDisplay, if there is one.
      */
     vrDisplay?: VRDisplay;
     /**
-     * The current device state
+     * A coordinate system represeting the space in which the
+     * user is moving, positioned at the floor. For mobile devices,
+     * the stage follows the user. For non-mobile systems, the
+     * stage is fixed.
      */
-    readonly state: DeviceState;
+    stage: Entity;
     /**
-     * An ENU coordinate frame centered at the device location.
-     * The reference frame of this frame is the FIXED (ECEF) reference frame.
+     * The physical viewing pose as reported by the current device
      */
-    locationEntity: Entity;
+    eye: Entity;
     /**
-     * A frame which represents the display being used.
-     * The reference frame of this frame is the [[orientationEntity]].
+     * An East-North-Up coordinate frame centered at the eye position
      */
-    displayEntity: Entity;
+    eyeEastNorthUp: Entity;
     /**
-     * The current cartographic position
+     * The current cartographic position of the eye. Undefined if no geolocation is available.
      */
-    readonly location: Cartographic | undefined;
+    readonly eyeCartographicPosition: Cartographic | undefined;
     /**
      * The radius (in meters) of latitudinal and longitudinal uncertainty,
-     * in relation to the FIXED reference frame.
+     * in relation to the FIXED reference frame. Value is greater than
+     * 0 or undefined.
      */
-    readonly locationAccuracy: number | undefined;
+    readonly geolocationAccuracy: number | undefined;
     /**
-     * The accuracy of the altitude in meters.
+     * The accuracy of the altitude in meters. Value is greater than
+     * 0 or undefined.
      */
-    readonly locationAltitudeAccuracy: number | undefined;
+    readonly altitudeAccuracy: number | undefined;
     /**
-     * The sessions that are subscribed to the device state
+     * The accuracy of the compass in degrees. Value is greater than
+     * 0 or undefined.
      */
-    protected subscribers: Set<SessionPort>;
+    readonly compassAccuracy: number | undefined;
+    readonly viewport: Viewport;
+    readonly subviews: SerializedSubview[];
+    readonly strictSubviewPose: boolean | undefined;
+    readonly strictSubviewProjectionMatrix: boolean | undefined;
+    readonly strictSubviewViewport: boolean | undefined;
+    readonly strictViewport: boolean | undefined;
     /**
      * The sessions that are subscribed to the device location
      */
-    protected locationSubscribers: Set<SessionPort>;
-    /**
-     * The sessions that are subscribed to the device location
-     */
-    protected poseSubscribers: Set<SessionPort>;
+    protected geolocationSubscribers: Set<SessionPort>;
     /**
     * Initialize the DeviceService
     */
-    constructor(sessionService: SessionService, contextService: ContextService);
+    constructor(sessionService: SessionService, viewService: ViewService, contextService: ContextService);
     private _state;
-    private _exposedState;
-    private _location?;
-    private _subscriberTimeoutIds;
-    private _subscriptionTimeoutId?;
+    private _eyeCartographicPosition?;
+    private _frustum;
+    getSubviewEntity(index: number): Entity;
     /**
-    * Request device state updates.
+    * Update device state.
     */
-    update(o?: DeviceStateSubscriptionOptions): void;
+    private update();
+    protected updateState(): void;
+    private updateStateFromWebVR();
+    private updateStateMonocular();
+    private setEyePoseFromDeviceOrientation();
+    private setStagePoseFromGeolocation();
+    protected updateViewport(): void;
     /**
      * Request that the callback function be called for the next frame.
      * @param callback function
      */
-    requestFrame(callback: (now: JulianDate) => any): number;
+    requestFrame(callback: (now: JulianDate) => any): any;
     /**
-     * Get the current system time
-     */
-    getSystemTime(result?: JulianDate): JulianDate;
-    /**
-     * Send device state to subscribers.
+     * Send device state to reality viewers.
      */
     publishDeviceState(): void;
-    private updatePoseLocallyIfNecessary(o?);
-    private subscribeToUpdatesIfTimeoutExpired(o?);
     /**
      * Returns the maximum allowed viewport
      */
@@ -112,14 +119,12 @@ export declare class DeviceService {
      * previous desired / default ratio.
      */
     private _geolocationWatchId;
-    private _vrFrameData;
-    protected updateLocation(): void;
-    protected updatePose(): void;
-    protected stopLocationUpdates(): void;
-    protected stopPoseUpdates(): void;
-}
-export interface DeviceStateSubscriptionOptions {
-    location?: boolean;
-    pose?: boolean;
-    timeout?: number;
+    private _deviceorientationListener;
+    private _vrFrameData?;
+    protected startDeviceLocationUpdates(): void;
+    protected stopDeviceLocationUpdates(): void;
+    private _deviceOrientation?;
+    private _compassAccuracy?;
+    protected startDeviceOrientationUpdates(): void;
+    protected stopDeviceOrientationUpdates(): void;
 }

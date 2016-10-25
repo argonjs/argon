@@ -1,3 +1,9 @@
+declare const global;
+(window || global)['WebVRConfig'] = {
+    DEFER_INITIALIZATION: typeof navigator == 'undefined',
+    MOUSE_KEYBOARD_CONTROLS_DISABLED: true
+};
+
 import 'googlevr/webvr-polyfill'
 import 'aurelia-polyfills'
 import * as DI from 'aurelia-dependency-injection'
@@ -34,7 +40,6 @@ export * from './device'
 export * from './focus'
 export * from './reality'
 export * from './session'
-export * from './timer'
 export * from './ui'
 export * from './utils'
 export * from './view'
@@ -65,11 +70,24 @@ export class ArgonSystem {
         if (!container.hasResolver('containerElement'))
             container.registerInstance('containerElement', null);
 
-        if (config.role === Role.REALITY_MANAGER) {
+        if (Role.isRealityManager(config.role)) {
             container.registerSingleton(
                 ConnectService,
                 LoopbackConnectService
             );
+            this.reality.registerLoader(container.get(EmptyRealityLoader));
+            this.reality.registerLoader(container.get(LiveVideoRealityLoader));
+
+            if (typeof document !== 'undefined') {
+                this.reality.registerLoader(container.get(HostedRealityLoader));
+                container.get(DefaultUIService);
+            }
+
+            if (LiveVideoRealityLoader.isAvailable()) {
+                this.reality.setDefault(RealityView.LIVE_VIDEO);
+            } else {
+                this.reality.setDefault(RealityView.EMPTY);
+            }
         } else if (WKWebViewConnectService.isAvailable()) {
             container.registerSingleton(
                 ConnectService,
@@ -87,21 +105,21 @@ export class ArgonSystem {
             );
         }
 
-        if (config.role === Role.REALITY_MANAGER) {
-            this.reality.registerLoader(container.get(EmptyRealityLoader));
-            this.reality.registerLoader(container.get(LiveVideoRealityLoader));
-
-            if (typeof document !== 'undefined') {
-                this.reality.registerLoader(container.get(HostedRealityLoader));
-                container.get(DefaultUIService);
-            }
-
-            this.reality.setDefault(RealityViewer.EMPTY);
-        }
-
         // ensure the entire object graph is instantiated before connecting to the manager. 
         for (const key of Object.keys(ArgonSystem.prototype)) {
             this[key];
+        }
+
+        // route view state to the context
+        if (!Role.isRealityAugmenter(config.role)) {
+            let frameIndex = 0;
+            this.reality.viewStateEvent.addEventListener((view) => {
+                this.context._update({
+                    index: frameIndex++,
+                    reality: this.reality.getCurrent(),
+                    view
+                });
+            });
         }
 
         this.session.connect();

@@ -6,6 +6,14 @@ declare module 'cesium/Source/DataSources/CallbackProperty' {
     import { CallbackProperty } from 'cesium';
     export default CallbackProperty;
 }
+declare module 'cesium/Source/Scene/CameraEventAggregator' {
+    import { CameraEventAggregator } from 'cesium';
+    export default CameraEventAggregator;
+}
+declare module 'cesium/Source/Scene/CameraEventType' {
+    import { CameraEventType } from 'cesium';
+    export default CameraEventType;
+}
 declare module 'cesium/Source/Core/Cartesian2' {
     import { Cartesian2 } from 'cesium';
     export default Cartesian2;
@@ -158,6 +166,16 @@ declare module 'cesium/Source/DataSources/SampledProperty' {
     import { SampledProperty } from 'cesium';
     export default SampledProperty;
 }
+
+declare module 'cesium/Source/Core/ScreenSpaceEventHandler' {
+    import { ScreenSpaceEventHandler } from 'cesium'
+    export default ScreenSpaceEventHandler
+}
+declare module 'cesium/Source/Core/ScreenSpaceEventType' {
+    import { ScreenSpaceEventType } from 'cesium'
+    export default ScreenSpaceEventType
+}
+
 declare module 'cesium/Source/Core/Transforms' {
     import { Transforms } from 'cesium';
     export default Transforms;

@@ -2,8 +2,6 @@
 import { Entity, EntityCollection, Cartesian3, Cartographic, Quaternion, JulianDate, ReferenceFrame } from './cesium/cesium-imports';
 import { SerializedEntityPose, FrameState } from './common';
 import { SessionService } from './session';
-import { RealityService } from './reality';
-import { TimerService } from './timer';
 import { Event } from './utils';
 /**
  * Describes the current pose of an entity relative to a particular reference frame
@@ -44,7 +42,6 @@ export declare enum PoseStatus {
  */
 export declare class ContextService {
     private sessionService;
-    private realityService;
     /**
      * An event that is raised when all remotely managed entities are are up-to-date for
      * the current frame. It is suggested that all modifications to locally managed entities
@@ -122,8 +119,7 @@ export declare class ContextService {
     private _subscribedEntities;
     private _updatingEntities;
     private _knownEntities;
-    private _frameIndex;
-    constructor(sessionService: SessionService, realityService: RealityService, timerService: TimerService);
+    constructor(sessionService: SessionService);
     /**
      * Deprecated. Use timestamp property.
      * @private
@@ -161,7 +157,7 @@ export declare class ContextService {
      * `Cartesian3`. Otherwise undefined.
      */
     getEntityPose(entity: Entity, referenceFrame?: ReferenceFrame | Entity): EntityPose;
-    private _update(serializedState);
+    _update(serializedState: FrameState): void;
     updateEntityFromSerializedPose(id: string, entityPose?: SerializedEntityPose): Entity;
     publishEntityState(entity: Entity, referenceFrame: ReferenceFrame | Entity): void;
     private _updateLocalOrigin(state);

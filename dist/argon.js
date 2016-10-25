@@ -8218,7 +8218,7 @@ $__System.register('9', ['d', 'a', 'b', 'c'], function (exports_1, context_1) {
                         menuButton.style.pointerEvents = 'auto';
                         menuButton.style.zIndex = '1';
                         this.addMenuItem();
-                        if (utils.detectIOS) {
+                        if (utils.isIOS) {
                             this.addMenuItem(openIcon, 'Open in Argon', function () {
                                 utils.openInArgonApp();
                             });
@@ -8311,1481 +8311,7 @@ $__System.register('9', ['d', 'a', 'b', 'c'], function (exports_1, context_1) {
         }
     };
 });
-$__System.registerDynamic("e", [], true, function ($__require, exports, module) {
-    var define,
-        global = this || self,
-        GLOBAL = global;
-    // THIS FILE IS GENERATED - DO NOT EDIT!
-    /*global module:false, define:false*/
-
-    (function (define, undefined) {
-        define(function () {
-            'use strict';
-
-            var impl = {};
-
-            impl.mobileDetectRules = {
-                "phones": {
-                    "iPhone": "\\biPhone\\b|\\biPod\\b",
-                    "BlackBerry": "BlackBerry|\\bBB10\\b|rim[0-9]+",
-                    "HTC": "HTC|HTC.*(Sensation|Evo|Vision|Explorer|6800|8100|8900|A7272|S510e|C110e|Legend|Desire|T8282)|APX515CKT|Qtek9090|APA9292KT|HD_mini|Sensation.*Z710e|PG86100|Z715e|Desire.*(A8181|HD)|ADR6200|ADR6400L|ADR6425|001HT|Inspire 4G|Android.*\\bEVO\\b|T-Mobile G1|Z520m",
-                    "Nexus": "Nexus One|Nexus S|Galaxy.*Nexus|Android.*Nexus.*Mobile|Nexus 4|Nexus 5|Nexus 6",
-                    "Dell": "Dell.*Streak|Dell.*Aero|Dell.*Venue|DELL.*Venue Pro|Dell Flash|Dell Smoke|Dell Mini 3iX|XCD28|XCD35|\\b001DL\\b|\\b101DL\\b|\\bGS01\\b",
-                    "Motorola": "Motorola|DROIDX|DROID BIONIC|\\bDroid\\b.*Build|Android.*Xoom|HRI39|MOT-|A1260|A1680|A555|A853|A855|A953|A955|A956|Motorola.*ELECTRIFY|Motorola.*i1|i867|i940|MB200|MB300|MB501|MB502|MB508|MB511|MB520|MB525|MB526|MB611|MB612|MB632|MB810|MB855|MB860|MB861|MB865|MB870|ME501|ME502|ME511|ME525|ME600|ME632|ME722|ME811|ME860|ME863|ME865|MT620|MT710|MT716|MT720|MT810|MT870|MT917|Motorola.*TITANIUM|WX435|WX445|XT300|XT301|XT311|XT316|XT317|XT319|XT320|XT390|XT502|XT530|XT531|XT532|XT535|XT603|XT610|XT611|XT615|XT681|XT701|XT702|XT711|XT720|XT800|XT806|XT860|XT862|XT875|XT882|XT883|XT894|XT901|XT907|XT909|XT910|XT912|XT928|XT926|XT915|XT919|XT925|XT1021|\\bMoto E\\b",
-                    "Samsung": "Samsung|SM-G9250|GT-19300|SGH-I337|BGT-S5230|GT-B2100|GT-B2700|GT-B2710|GT-B3210|GT-B3310|GT-B3410|GT-B3730|GT-B3740|GT-B5510|GT-B5512|GT-B5722|GT-B6520|GT-B7300|GT-B7320|GT-B7330|GT-B7350|GT-B7510|GT-B7722|GT-B7800|GT-C3010|GT-C3011|GT-C3060|GT-C3200|GT-C3212|GT-C3212I|GT-C3262|GT-C3222|GT-C3300|GT-C3300K|GT-C3303|GT-C3303K|GT-C3310|GT-C3322|GT-C3330|GT-C3350|GT-C3500|GT-C3510|GT-C3530|GT-C3630|GT-C3780|GT-C5010|GT-C5212|GT-C6620|GT-C6625|GT-C6712|GT-E1050|GT-E1070|GT-E1075|GT-E1080|GT-E1081|GT-E1085|GT-E1087|GT-E1100|GT-E1107|GT-E1110|GT-E1120|GT-E1125|GT-E1130|GT-E1160|GT-E1170|GT-E1175|GT-E1180|GT-E1182|GT-E1200|GT-E1210|GT-E1225|GT-E1230|GT-E1390|GT-E2100|GT-E2120|GT-E2121|GT-E2152|GT-E2220|GT-E2222|GT-E2230|GT-E2232|GT-E2250|GT-E2370|GT-E2550|GT-E2652|GT-E3210|GT-E3213|GT-I5500|GT-I5503|GT-I5700|GT-I5800|GT-I5801|GT-I6410|GT-I6420|GT-I7110|GT-I7410|GT-I7500|GT-I8000|GT-I8150|GT-I8160|GT-I8190|GT-I8320|GT-I8330|GT-I8350|GT-I8530|GT-I8700|GT-I8703|GT-I8910|GT-I9000|GT-I9001|GT-I9003|GT-I9010|GT-I9020|GT-I9023|GT-I9070|GT-I9082|GT-I9100|GT-I9103|GT-I9220|GT-I9250|GT-I9300|GT-I9305|GT-I9500|GT-I9505|GT-M3510|GT-M5650|GT-M7500|GT-M7600|GT-M7603|GT-M8800|GT-M8910|GT-N7000|GT-S3110|GT-S3310|GT-S3350|GT-S3353|GT-S3370|GT-S3650|GT-S3653|GT-S3770|GT-S3850|GT-S5210|GT-S5220|GT-S5229|GT-S5230|GT-S5233|GT-S5250|GT-S5253|GT-S5260|GT-S5263|GT-S5270|GT-S5300|GT-S5330|GT-S5350|GT-S5360|GT-S5363|GT-S5369|GT-S5380|GT-S5380D|GT-S5560|GT-S5570|GT-S5600|GT-S5603|GT-S5610|GT-S5620|GT-S5660|GT-S5670|GT-S5690|GT-S5750|GT-S5780|GT-S5830|GT-S5839|GT-S6102|GT-S6500|GT-S7070|GT-S7200|GT-S7220|GT-S7230|GT-S7233|GT-S7250|GT-S7500|GT-S7530|GT-S7550|GT-S7562|GT-S7710|GT-S8000|GT-S8003|GT-S8500|GT-S8530|GT-S8600|SCH-A310|SCH-A530|SCH-A570|SCH-A610|SCH-A630|SCH-A650|SCH-A790|SCH-A795|SCH-A850|SCH-A870|SCH-A890|SCH-A930|SCH-A950|SCH-A970|SCH-A990|SCH-I100|SCH-I110|SCH-I400|SCH-I405|SCH-I500|SCH-I510|SCH-I515|SCH-I600|SCH-I730|SCH-I760|SCH-I770|SCH-I830|SCH-I910|SCH-I920|SCH-I959|SCH-LC11|SCH-N150|SCH-N300|SCH-R100|SCH-R300|SCH-R351|SCH-R400|SCH-R410|SCH-T300|SCH-U310|SCH-U320|SCH-U350|SCH-U360|SCH-U365|SCH-U370|SCH-U380|SCH-U410|SCH-U430|SCH-U450|SCH-U460|SCH-U470|SCH-U490|SCH-U540|SCH-U550|SCH-U620|SCH-U640|SCH-U650|SCH-U660|SCH-U700|SCH-U740|SCH-U750|SCH-U810|SCH-U820|SCH-U900|SCH-U940|SCH-U960|SCS-26UC|SGH-A107|SGH-A117|SGH-A127|SGH-A137|SGH-A157|SGH-A167|SGH-A177|SGH-A187|SGH-A197|SGH-A227|SGH-A237|SGH-A257|SGH-A437|SGH-A517|SGH-A597|SGH-A637|SGH-A657|SGH-A667|SGH-A687|SGH-A697|SGH-A707|SGH-A717|SGH-A727|SGH-A737|SGH-A747|SGH-A767|SGH-A777|SGH-A797|SGH-A817|SGH-A827|SGH-A837|SGH-A847|SGH-A867|SGH-A877|SGH-A887|SGH-A897|SGH-A927|SGH-B100|SGH-B130|SGH-B200|SGH-B220|SGH-C100|SGH-C110|SGH-C120|SGH-C130|SGH-C140|SGH-C160|SGH-C170|SGH-C180|SGH-C200|SGH-C207|SGH-C210|SGH-C225|SGH-C230|SGH-C417|SGH-C450|SGH-D307|SGH-D347|SGH-D357|SGH-D407|SGH-D415|SGH-D780|SGH-D807|SGH-D980|SGH-E105|SGH-E200|SGH-E315|SGH-E316|SGH-E317|SGH-E335|SGH-E590|SGH-E635|SGH-E715|SGH-E890|SGH-F300|SGH-F480|SGH-I200|SGH-I300|SGH-I320|SGH-I550|SGH-I577|SGH-I600|SGH-I607|SGH-I617|SGH-I627|SGH-I637|SGH-I677|SGH-I700|SGH-I717|SGH-I727|SGH-i747M|SGH-I777|SGH-I780|SGH-I827|SGH-I847|SGH-I857|SGH-I896|SGH-I897|SGH-I900|SGH-I907|SGH-I917|SGH-I927|SGH-I937|SGH-I997|SGH-J150|SGH-J200|SGH-L170|SGH-L700|SGH-M110|SGH-M150|SGH-M200|SGH-N105|SGH-N500|SGH-N600|SGH-N620|SGH-N625|SGH-N700|SGH-N710|SGH-P107|SGH-P207|SGH-P300|SGH-P310|SGH-P520|SGH-P735|SGH-P777|SGH-Q105|SGH-R210|SGH-R220|SGH-R225|SGH-S105|SGH-S307|SGH-T109|SGH-T119|SGH-T139|SGH-T209|SGH-T219|SGH-T229|SGH-T239|SGH-T249|SGH-T259|SGH-T309|SGH-T319|SGH-T329|SGH-T339|SGH-T349|SGH-T359|SGH-T369|SGH-T379|SGH-T409|SGH-T429|SGH-T439|SGH-T459|SGH-T469|SGH-T479|SGH-T499|SGH-T509|SGH-T519|SGH-T539|SGH-T559|SGH-T589|SGH-T609|SGH-T619|SGH-T629|SGH-T639|SGH-T659|SGH-T669|SGH-T679|SGH-T709|SGH-T719|SGH-T729|SGH-T739|SGH-T746|SGH-T749|SGH-T759|SGH-T769|SGH-T809|SGH-T819|SGH-T839|SGH-T919|SGH-T929|SGH-T939|SGH-T959|SGH-T989|SGH-U100|SGH-U200|SGH-U800|SGH-V205|SGH-V206|SGH-X100|SGH-X105|SGH-X120|SGH-X140|SGH-X426|SGH-X427|SGH-X475|SGH-X495|SGH-X497|SGH-X507|SGH-X600|SGH-X610|SGH-X620|SGH-X630|SGH-X700|SGH-X820|SGH-X890|SGH-Z130|SGH-Z150|SGH-Z170|SGH-ZX10|SGH-ZX20|SHW-M110|SPH-A120|SPH-A400|SPH-A420|SPH-A460|SPH-A500|SPH-A560|SPH-A600|SPH-A620|SPH-A660|SPH-A700|SPH-A740|SPH-A760|SPH-A790|SPH-A800|SPH-A820|SPH-A840|SPH-A880|SPH-A900|SPH-A940|SPH-A960|SPH-D600|SPH-D700|SPH-D710|SPH-D720|SPH-I300|SPH-I325|SPH-I330|SPH-I350|SPH-I500|SPH-I600|SPH-I700|SPH-L700|SPH-M100|SPH-M220|SPH-M240|SPH-M300|SPH-M305|SPH-M320|SPH-M330|SPH-M350|SPH-M360|SPH-M370|SPH-M380|SPH-M510|SPH-M540|SPH-M550|SPH-M560|SPH-M570|SPH-M580|SPH-M610|SPH-M620|SPH-M630|SPH-M800|SPH-M810|SPH-M850|SPH-M900|SPH-M910|SPH-M920|SPH-M930|SPH-N100|SPH-N200|SPH-N240|SPH-N300|SPH-N400|SPH-Z400|SWC-E100|SCH-i909|GT-N7100|GT-N7105|SCH-I535|SM-N900A|SGH-I317|SGH-T999L|GT-S5360B|GT-I8262|GT-S6802|GT-S6312|GT-S6310|GT-S5312|GT-S5310|GT-I9105|GT-I8510|GT-S6790N|SM-G7105|SM-N9005|GT-S5301|GT-I9295|GT-I9195|SM-C101|GT-S7392|GT-S7560|GT-B7610|GT-I5510|GT-S7582|GT-S7530E|GT-I8750|SM-G9006V|SM-G9008V|SM-G9009D|SM-G900A|SM-G900D|SM-G900F|SM-G900H|SM-G900I|SM-G900J|SM-G900K|SM-G900L|SM-G900M|SM-G900P|SM-G900R4|SM-G900S|SM-G900T|SM-G900V|SM-G900W8|SHV-E160K|SCH-P709|SCH-P729|SM-T2558|GT-I9205|SM-G9350",
-                    "LG": "\\bLG\\b;|LG[- ]?(C800|C900|E400|E610|E900|E-900|F160|F180K|F180L|F180S|730|855|L160|LS740|LS840|LS970|LU6200|MS690|MS695|MS770|MS840|MS870|MS910|P500|P700|P705|VM696|AS680|AS695|AX840|C729|E970|GS505|272|C395|E739BK|E960|L55C|L75C|LS696|LS860|P769BK|P350|P500|P509|P870|UN272|US730|VS840|VS950|LN272|LN510|LS670|LS855|LW690|MN270|MN510|P509|P769|P930|UN200|UN270|UN510|UN610|US670|US740|US760|UX265|UX840|VN271|VN530|VS660|VS700|VS740|VS750|VS910|VS920|VS930|VX9200|VX11000|AX840A|LW770|P506|P925|P999|E612|D955|D802|MS323)",
-                    "Sony": "SonyST|SonyLT|SonyEricsson|SonyEricssonLT15iv|LT18i|E10i|LT28h|LT26w|SonyEricssonMT27i|C5303|C6902|C6903|C6906|C6943|D2533",
-                    "Asus": "Asus.*Galaxy|PadFone.*Mobile",
-                    "Micromax": "Micromax.*\\b(A210|A92|A88|A72|A111|A110Q|A115|A116|A110|A90S|A26|A51|A35|A54|A25|A27|A89|A68|A65|A57|A90)\\b",
-                    "Palm": "PalmSource|Palm",
-                    "Vertu": "Vertu|Vertu.*Ltd|Vertu.*Ascent|Vertu.*Ayxta|Vertu.*Constellation(F|Quest)?|Vertu.*Monika|Vertu.*Signature",
-                    "Pantech": "PANTECH|IM-A850S|IM-A840S|IM-A830L|IM-A830K|IM-A830S|IM-A820L|IM-A810K|IM-A810S|IM-A800S|IM-T100K|IM-A725L|IM-A780L|IM-A775C|IM-A770K|IM-A760S|IM-A750K|IM-A740S|IM-A730S|IM-A720L|IM-A710K|IM-A690L|IM-A690S|IM-A650S|IM-A630K|IM-A600S|VEGA PTL21|PT003|P8010|ADR910L|P6030|P6020|P9070|P4100|P9060|P5000|CDM8992|TXT8045|ADR8995|IS11PT|P2030|P6010|P8000|PT002|IS06|CDM8999|P9050|PT001|TXT8040|P2020|P9020|P2000|P7040|P7000|C790",
-                    "Fly": "IQ230|IQ444|IQ450|IQ440|IQ442|IQ441|IQ245|IQ256|IQ236|IQ255|IQ235|IQ245|IQ275|IQ240|IQ285|IQ280|IQ270|IQ260|IQ250",
-                    "Wiko": "KITE 4G|HIGHWAY|GETAWAY|STAIRWAY|DARKSIDE|DARKFULL|DARKNIGHT|DARKMOON|SLIDE|WAX 4G|RAINBOW|BLOOM|SUNSET|GOA|LENNY|BARRY|IGGY|OZZY|CINK FIVE|CINK PEAX|CINK PEAX 2|CINK SLIM|CINK SLIM 2|CINK +|CINK KING|CINK PEAX|CINK SLIM|SUBLIM",
-                    "iMobile": "i-mobile (IQ|i-STYLE|idea|ZAA|Hitz)",
-                    "SimValley": "\\b(SP-80|XT-930|SX-340|XT-930|SX-310|SP-360|SP60|SPT-800|SP-120|SPT-800|SP-140|SPX-5|SPX-8|SP-100|SPX-8|SPX-12)\\b",
-                    "Wolfgang": "AT-B24D|AT-AS50HD|AT-AS40W|AT-AS55HD|AT-AS45q2|AT-B26D|AT-AS50Q",
-                    "Alcatel": "Alcatel",
-                    "Nintendo": "Nintendo 3DS",
-                    "Amoi": "Amoi",
-                    "INQ": "INQ",
-                    "GenericPhone": "Tapatalk|PDA;|SAGEM|\\bmmp\\b|pocket|\\bpsp\\b|symbian|Smartphone|smartfon|treo|up.browser|up.link|vodafone|\\bwap\\b|nokia|Series40|Series60|S60|SonyEricsson|N900|MAUI.*WAP.*Browser"
-                },
-                "tablets": {
-                    "iPad": "iPad|iPad.*Mobile",
-                    "NexusTablet": "Android.*Nexus[\\s]+(7|9|10)",
-                    "SamsungTablet": "SAMSUNG.*Tablet|Galaxy.*Tab|SC-01C|GT-P1000|GT-P1003|GT-P1010|GT-P3105|GT-P6210|GT-P6800|GT-P6810|GT-P7100|GT-P7300|GT-P7310|GT-P7500|GT-P7510|SCH-I800|SCH-I815|SCH-I905|SGH-I957|SGH-I987|SGH-T849|SGH-T859|SGH-T869|SPH-P100|GT-P3100|GT-P3108|GT-P3110|GT-P5100|GT-P5110|GT-P6200|GT-P7320|GT-P7511|GT-N8000|GT-P8510|SGH-I497|SPH-P500|SGH-T779|SCH-I705|SCH-I915|GT-N8013|GT-P3113|GT-P5113|GT-P8110|GT-N8010|GT-N8005|GT-N8020|GT-P1013|GT-P6201|GT-P7501|GT-N5100|GT-N5105|GT-N5110|SHV-E140K|SHV-E140L|SHV-E140S|SHV-E150S|SHV-E230K|SHV-E230L|SHV-E230S|SHW-M180K|SHW-M180L|SHW-M180S|SHW-M180W|SHW-M300W|SHW-M305W|SHW-M380K|SHW-M380S|SHW-M380W|SHW-M430W|SHW-M480K|SHW-M480S|SHW-M480W|SHW-M485W|SHW-M486W|SHW-M500W|GT-I9228|SCH-P739|SCH-I925|GT-I9200|GT-P5200|GT-P5210|GT-P5210X|SM-T311|SM-T310|SM-T310X|SM-T210|SM-T210R|SM-T211|SM-P600|SM-P601|SM-P605|SM-P900|SM-P901|SM-T217|SM-T217A|SM-T217S|SM-P6000|SM-T3100|SGH-I467|XE500|SM-T110|GT-P5220|GT-I9200X|GT-N5110X|GT-N5120|SM-P905|SM-T111|SM-T2105|SM-T315|SM-T320|SM-T320X|SM-T321|SM-T520|SM-T525|SM-T530NU|SM-T230NU|SM-T330NU|SM-T900|XE500T1C|SM-P605V|SM-P905V|SM-T337V|SM-T537V|SM-T707V|SM-T807V|SM-P600X|SM-P900X|SM-T210X|SM-T230|SM-T230X|SM-T325|GT-P7503|SM-T531|SM-T330|SM-T530|SM-T705|SM-T705C|SM-T535|SM-T331|SM-T800|SM-T700|SM-T537|SM-T807|SM-P907A|SM-T337A|SM-T537A|SM-T707A|SM-T807A|SM-T237|SM-T807P|SM-P607T|SM-T217T|SM-T337T|SM-T807T|SM-T116NQ|SM-P550|SM-T350|SM-T550|SM-T9000|SM-P9000|SM-T705Y|SM-T805|GT-P3113|SM-T710|SM-T810|SM-T815|SM-T360|SM-T533|SM-T113|SM-T335|SM-T715|SM-T560|SM-T670|SM-T677|SM-T377|SM-T567|SM-T357T|SM-T555|SM-T561",
-                    "Kindle": "Kindle|Silk.*Accelerated|Android.*\\b(KFOT|KFTT|KFJWI|KFJWA|KFOTE|KFSOWI|KFTHWI|KFTHWA|KFAPWI|KFAPWA|WFJWAE|KFSAWA|KFSAWI|KFASWI)\\b",
-                    "SurfaceTablet": "Windows NT [0-9.]+; ARM;.*(Tablet|ARMBJS)",
-                    "HPTablet": "HP Slate (7|8|10)|HP ElitePad 900|hp-tablet|EliteBook.*Touch|HP 8|Slate 21|HP SlateBook 10",
-                    "AsusTablet": "^.*PadFone((?!Mobile).)*$|Transformer|TF101|TF101G|TF300T|TF300TG|TF300TL|TF700T|TF700KL|TF701T|TF810C|ME171|ME301T|ME302C|ME371MG|ME370T|ME372MG|ME172V|ME173X|ME400C|Slider SL101|\\bK00F\\b|\\bK00C\\b|\\bK00E\\b|\\bK00L\\b|TX201LA|ME176C|ME102A|\\bM80TA\\b|ME372CL|ME560CG|ME372CG|ME302KL| K010 | K017 |ME572C|ME103K|ME170C|ME171C|\\bME70C\\b|ME581C|ME581CL|ME8510C|ME181C",
-                    "BlackBerryTablet": "PlayBook|RIM Tablet",
-                    "HTCtablet": "HTC_Flyer_P512|HTC Flyer|HTC Jetstream|HTC-P715a|HTC EVO View 4G|PG41200|PG09410",
-                    "MotorolaTablet": "xoom|sholest|MZ615|MZ605|MZ505|MZ601|MZ602|MZ603|MZ604|MZ606|MZ607|MZ608|MZ609|MZ615|MZ616|MZ617",
-                    "NookTablet": "Android.*Nook|NookColor|nook browser|BNRV200|BNRV200A|BNTV250|BNTV250A|BNTV400|BNTV600|LogicPD Zoom2",
-                    "AcerTablet": "Android.*; \\b(A100|A101|A110|A200|A210|A211|A500|A501|A510|A511|A700|A701|W500|W500P|W501|W501P|W510|W511|W700|G100|G100W|B1-A71|B1-710|B1-711|A1-810|A1-811|A1-830)\\b|W3-810|\\bA3-A10\\b|\\bA3-A11\\b",
-                    "ToshibaTablet": "Android.*(AT100|AT105|AT200|AT205|AT270|AT275|AT300|AT305|AT1S5|AT500|AT570|AT700|AT830)|TOSHIBA.*FOLIO",
-                    "LGTablet": "\\bL-06C|LG-V909|LG-V900|LG-V700|LG-V510|LG-V500|LG-V410|LG-V400|LG-VK810\\b",
-                    "FujitsuTablet": "Android.*\\b(F-01D|F-02F|F-05E|F-10D|M532|Q572)\\b",
-                    "PrestigioTablet": "PMP3170B|PMP3270B|PMP3470B|PMP7170B|PMP3370B|PMP3570C|PMP5870C|PMP3670B|PMP5570C|PMP5770D|PMP3970B|PMP3870C|PMP5580C|PMP5880D|PMP5780D|PMP5588C|PMP7280C|PMP7280C3G|PMP7280|PMP7880D|PMP5597D|PMP5597|PMP7100D|PER3464|PER3274|PER3574|PER3884|PER5274|PER5474|PMP5097CPRO|PMP5097|PMP7380D|PMP5297C|PMP5297C_QUAD|PMP812E|PMP812E3G|PMP812F|PMP810E|PMP880TD|PMT3017|PMT3037|PMT3047|PMT3057|PMT7008|PMT5887|PMT5001|PMT5002",
-                    "LenovoTablet": "Lenovo TAB|Idea(Tab|Pad)( A1|A10| K1|)|ThinkPad([ ]+)?Tablet|Lenovo.*(S2109|S2110|S5000|S6000|K3011|A3000|A3500|A1000|A2107|A2109|A1107|A5500|A7600|B6000|B8000|B8080)(-|)(FL|F|HV|H|)",
-                    "DellTablet": "Venue 11|Venue 8|Venue 7|Dell Streak 10|Dell Streak 7",
-                    "YarvikTablet": "Android.*\\b(TAB210|TAB211|TAB224|TAB250|TAB260|TAB264|TAB310|TAB360|TAB364|TAB410|TAB411|TAB420|TAB424|TAB450|TAB460|TAB461|TAB464|TAB465|TAB467|TAB468|TAB07-100|TAB07-101|TAB07-150|TAB07-151|TAB07-152|TAB07-200|TAB07-201-3G|TAB07-210|TAB07-211|TAB07-212|TAB07-214|TAB07-220|TAB07-400|TAB07-485|TAB08-150|TAB08-200|TAB08-201-3G|TAB08-201-30|TAB09-100|TAB09-211|TAB09-410|TAB10-150|TAB10-201|TAB10-211|TAB10-400|TAB10-410|TAB13-201|TAB274EUK|TAB275EUK|TAB374EUK|TAB462EUK|TAB474EUK|TAB9-200)\\b",
-                    "MedionTablet": "Android.*\\bOYO\\b|LIFE.*(P9212|P9514|P9516|S9512)|LIFETAB",
-                    "ArnovaTablet": "AN10G2|AN7bG3|AN7fG3|AN8G3|AN8cG3|AN7G3|AN9G3|AN7dG3|AN7dG3ST|AN7dG3ChildPad|AN10bG3|AN10bG3DT|AN9G2",
-                    "IntensoTablet": "INM8002KP|INM1010FP|INM805ND|Intenso Tab|TAB1004",
-                    "IRUTablet": "M702pro",
-                    "MegafonTablet": "MegaFon V9|\\bZTE V9\\b|Android.*\\bMT7A\\b",
-                    "EbodaTablet": "E-Boda (Supreme|Impresspeed|Izzycomm|Essential)",
-                    "AllViewTablet": "Allview.*(Viva|Alldro|City|Speed|All TV|Frenzy|Quasar|Shine|TX1|AX1|AX2)",
-                    "ArchosTablet": "\\b(101G9|80G9|A101IT)\\b|Qilive 97R|Archos5|\\bARCHOS (70|79|80|90|97|101|FAMILYPAD|)(b|)(G10| Cobalt| TITANIUM(HD|)| Xenon| Neon|XSK| 2| XS 2| PLATINUM| CARBON|GAMEPAD)\\b",
-                    "AinolTablet": "NOVO7|NOVO8|NOVO10|Novo7Aurora|Novo7Basic|NOVO7PALADIN|novo9-Spark",
-                    "SonyTablet": "Sony.*Tablet|Xperia Tablet|Sony Tablet S|SO-03E|SGPT12|SGPT13|SGPT114|SGPT121|SGPT122|SGPT123|SGPT111|SGPT112|SGPT113|SGPT131|SGPT132|SGPT133|SGPT211|SGPT212|SGPT213|SGP311|SGP312|SGP321|EBRD1101|EBRD1102|EBRD1201|SGP351|SGP341|SGP511|SGP512|SGP521|SGP541|SGP551|SGP621|SGP612|SOT31",
-                    "PhilipsTablet": "\\b(PI2010|PI3000|PI3100|PI3105|PI3110|PI3205|PI3210|PI3900|PI4010|PI7000|PI7100)\\b",
-                    "CubeTablet": "Android.*(K8GT|U9GT|U10GT|U16GT|U17GT|U18GT|U19GT|U20GT|U23GT|U30GT)|CUBE U8GT",
-                    "CobyTablet": "MID1042|MID1045|MID1125|MID1126|MID7012|MID7014|MID7015|MID7034|MID7035|MID7036|MID7042|MID7048|MID7127|MID8042|MID8048|MID8127|MID9042|MID9740|MID9742|MID7022|MID7010",
-                    "MIDTablet": "M9701|M9000|M9100|M806|M1052|M806|T703|MID701|MID713|MID710|MID727|MID760|MID830|MID728|MID933|MID125|MID810|MID732|MID120|MID930|MID800|MID731|MID900|MID100|MID820|MID735|MID980|MID130|MID833|MID737|MID960|MID135|MID860|MID736|MID140|MID930|MID835|MID733|MID4X10",
-                    "MSITablet": "MSI \\b(Primo 73K|Primo 73L|Primo 81L|Primo 77|Primo 93|Primo 75|Primo 76|Primo 73|Primo 81|Primo 91|Primo 90|Enjoy 71|Enjoy 7|Enjoy 10)\\b",
-                    "SMiTTablet": "Android.*(\\bMID\\b|MID-560|MTV-T1200|MTV-PND531|MTV-P1101|MTV-PND530)",
-                    "RockChipTablet": "Android.*(RK2818|RK2808A|RK2918|RK3066)|RK2738|RK2808A",
-                    "FlyTablet": "IQ310|Fly Vision",
-                    "bqTablet": "Android.*(bq)?.*(Elcano|Curie|Edison|Maxwell|Kepler|Pascal|Tesla|Hypatia|Platon|Newton|Livingstone|Cervantes|Avant|Aquaris E10)|Maxwell.*Lite|Maxwell.*Plus",
-                    "HuaweiTablet": "MediaPad|MediaPad 7 Youth|IDEOS S7|S7-201c|S7-202u|S7-101|S7-103|S7-104|S7-105|S7-106|S7-201|S7-Slim",
-                    "NecTablet": "\\bN-06D|\\bN-08D",
-                    "PantechTablet": "Pantech.*P4100",
-                    "BronchoTablet": "Broncho.*(N701|N708|N802|a710)",
-                    "VersusTablet": "TOUCHPAD.*[78910]|\\bTOUCHTAB\\b",
-                    "ZyncTablet": "z1000|Z99 2G|z99|z930|z999|z990|z909|Z919|z900",
-                    "PositivoTablet": "TB07STA|TB10STA|TB07FTA|TB10FTA",
-                    "NabiTablet": "Android.*\\bNabi",
-                    "KoboTablet": "Kobo Touch|\\bK080\\b|\\bVox\\b Build|\\bArc\\b Build",
-                    "DanewTablet": "DSlide.*\\b(700|701R|702|703R|704|802|970|971|972|973|974|1010|1012)\\b",
-                    "TexetTablet": "NaviPad|TB-772A|TM-7045|TM-7055|TM-9750|TM-7016|TM-7024|TM-7026|TM-7041|TM-7043|TM-7047|TM-8041|TM-9741|TM-9747|TM-9748|TM-9751|TM-7022|TM-7021|TM-7020|TM-7011|TM-7010|TM-7023|TM-7025|TM-7037W|TM-7038W|TM-7027W|TM-9720|TM-9725|TM-9737W|TM-1020|TM-9738W|TM-9740|TM-9743W|TB-807A|TB-771A|TB-727A|TB-725A|TB-719A|TB-823A|TB-805A|TB-723A|TB-715A|TB-707A|TB-705A|TB-709A|TB-711A|TB-890HD|TB-880HD|TB-790HD|TB-780HD|TB-770HD|TB-721HD|TB-710HD|TB-434HD|TB-860HD|TB-840HD|TB-760HD|TB-750HD|TB-740HD|TB-730HD|TB-722HD|TB-720HD|TB-700HD|TB-500HD|TB-470HD|TB-431HD|TB-430HD|TB-506|TB-504|TB-446|TB-436|TB-416|TB-146SE|TB-126SE",
-                    "PlaystationTablet": "Playstation.*(Portable|Vita)",
-                    "TrekstorTablet": "ST10416-1|VT10416-1|ST70408-1|ST702xx-1|ST702xx-2|ST80208|ST97216|ST70104-2|VT10416-2|ST10216-2A|SurfTab",
-                    "PyleAudioTablet": "\\b(PTBL10CEU|PTBL10C|PTBL72BC|PTBL72BCEU|PTBL7CEU|PTBL7C|PTBL92BC|PTBL92BCEU|PTBL9CEU|PTBL9CUK|PTBL9C)\\b",
-                    "AdvanTablet": "Android.* \\b(E3A|T3X|T5C|T5B|T3E|T3C|T3B|T1J|T1F|T2A|T1H|T1i|E1C|T1-E|T5-A|T4|E1-B|T2Ci|T1-B|T1-D|O1-A|E1-A|T1-A|T3A|T4i)\\b ",
-                    "DanyTechTablet": "Genius Tab G3|Genius Tab S2|Genius Tab Q3|Genius Tab G4|Genius Tab Q4|Genius Tab G-II|Genius TAB GII|Genius TAB GIII|Genius Tab S1",
-                    "GalapadTablet": "Android.*\\bG1\\b",
-                    "MicromaxTablet": "Funbook|Micromax.*\\b(P250|P560|P360|P362|P600|P300|P350|P500|P275)\\b",
-                    "KarbonnTablet": "Android.*\\b(A39|A37|A34|ST8|ST10|ST7|Smart Tab3|Smart Tab2)\\b",
-                    "AllFineTablet": "Fine7 Genius|Fine7 Shine|Fine7 Air|Fine8 Style|Fine9 More|Fine10 Joy|Fine11 Wide",
-                    "PROSCANTablet": "\\b(PEM63|PLT1023G|PLT1041|PLT1044|PLT1044G|PLT1091|PLT4311|PLT4311PL|PLT4315|PLT7030|PLT7033|PLT7033D|PLT7035|PLT7035D|PLT7044K|PLT7045K|PLT7045KB|PLT7071KG|PLT7072|PLT7223G|PLT7225G|PLT7777G|PLT7810K|PLT7849G|PLT7851G|PLT7852G|PLT8015|PLT8031|PLT8034|PLT8036|PLT8080K|PLT8082|PLT8088|PLT8223G|PLT8234G|PLT8235G|PLT8816K|PLT9011|PLT9045K|PLT9233G|PLT9735|PLT9760G|PLT9770G)\\b",
-                    "YONESTablet": "BQ1078|BC1003|BC1077|RK9702|BC9730|BC9001|IT9001|BC7008|BC7010|BC708|BC728|BC7012|BC7030|BC7027|BC7026",
-                    "ChangJiaTablet": "TPC7102|TPC7103|TPC7105|TPC7106|TPC7107|TPC7201|TPC7203|TPC7205|TPC7210|TPC7708|TPC7709|TPC7712|TPC7110|TPC8101|TPC8103|TPC8105|TPC8106|TPC8203|TPC8205|TPC8503|TPC9106|TPC9701|TPC97101|TPC97103|TPC97105|TPC97106|TPC97111|TPC97113|TPC97203|TPC97603|TPC97809|TPC97205|TPC10101|TPC10103|TPC10106|TPC10111|TPC10203|TPC10205|TPC10503",
-                    "GUTablet": "TX-A1301|TX-M9002|Q702|kf026",
-                    "PointOfViewTablet": "TAB-P506|TAB-navi-7-3G-M|TAB-P517|TAB-P-527|TAB-P701|TAB-P703|TAB-P721|TAB-P731N|TAB-P741|TAB-P825|TAB-P905|TAB-P925|TAB-PR945|TAB-PL1015|TAB-P1025|TAB-PI1045|TAB-P1325|TAB-PROTAB[0-9]+|TAB-PROTAB25|TAB-PROTAB26|TAB-PROTAB27|TAB-PROTAB26XL|TAB-PROTAB2-IPS9|TAB-PROTAB30-IPS9|TAB-PROTAB25XXL|TAB-PROTAB26-IPS10|TAB-PROTAB30-IPS10",
-                    "OvermaxTablet": "OV-(SteelCore|NewBase|Basecore|Baseone|Exellen|Quattor|EduTab|Solution|ACTION|BasicTab|TeddyTab|MagicTab|Stream|TB-08|TB-09)",
-                    "HCLTablet": "HCL.*Tablet|Connect-3G-2.0|Connect-2G-2.0|ME Tablet U1|ME Tablet U2|ME Tablet G1|ME Tablet X1|ME Tablet Y2|ME Tablet Sync",
-                    "DPSTablet": "DPS Dream 9|DPS Dual 7",
-                    "VistureTablet": "V97 HD|i75 3G|Visture V4( HD)?|Visture V5( HD)?|Visture V10",
-                    "CrestaTablet": "CTP(-)?810|CTP(-)?818|CTP(-)?828|CTP(-)?838|CTP(-)?888|CTP(-)?978|CTP(-)?980|CTP(-)?987|CTP(-)?988|CTP(-)?989",
-                    "MediatekTablet": "\\bMT8125|MT8389|MT8135|MT8377\\b",
-                    "ConcordeTablet": "Concorde([ ]+)?Tab|ConCorde ReadMan",
-                    "GoCleverTablet": "GOCLEVER TAB|A7GOCLEVER|M1042|M7841|M742|R1042BK|R1041|TAB A975|TAB A7842|TAB A741|TAB A741L|TAB M723G|TAB M721|TAB A1021|TAB I921|TAB R721|TAB I720|TAB T76|TAB R70|TAB R76.2|TAB R106|TAB R83.2|TAB M813G|TAB I721|GCTA722|TAB I70|TAB I71|TAB S73|TAB R73|TAB R74|TAB R93|TAB R75|TAB R76.1|TAB A73|TAB A93|TAB A93.2|TAB T72|TAB R83|TAB R974|TAB R973|TAB A101|TAB A103|TAB A104|TAB A104.2|R105BK|M713G|A972BK|TAB A971|TAB R974.2|TAB R104|TAB R83.3|TAB A1042",
-                    "ModecomTablet": "FreeTAB 9000|FreeTAB 7.4|FreeTAB 7004|FreeTAB 7800|FreeTAB 2096|FreeTAB 7.5|FreeTAB 1014|FreeTAB 1001 |FreeTAB 8001|FreeTAB 9706|FreeTAB 9702|FreeTAB 7003|FreeTAB 7002|FreeTAB 1002|FreeTAB 7801|FreeTAB 1331|FreeTAB 1004|FreeTAB 8002|FreeTAB 8014|FreeTAB 9704|FreeTAB 1003",
-                    "VoninoTablet": "\\b(Argus[ _]?S|Diamond[ _]?79HD|Emerald[ _]?78E|Luna[ _]?70C|Onyx[ _]?S|Onyx[ _]?Z|Orin[ _]?HD|Orin[ _]?S|Otis[ _]?S|SpeedStar[ _]?S|Magnet[ _]?M9|Primus[ _]?94[ _]?3G|Primus[ _]?94HD|Primus[ _]?QS|Android.*\\bQ8\\b|Sirius[ _]?EVO[ _]?QS|Sirius[ _]?QS|Spirit[ _]?S)\\b",
-                    "ECSTablet": "V07OT2|TM105A|S10OT1|TR10CS1",
-                    "StorexTablet": "eZee[_']?(Tab|Go)[0-9]+|TabLC7|Looney Tunes Tab",
-                    "VodafoneTablet": "SmartTab([ ]+)?[0-9]+|SmartTabII10|SmartTabII7",
-                    "EssentielBTablet": "Smart[ ']?TAB[ ]+?[0-9]+|Family[ ']?TAB2",
-                    "RossMoorTablet": "RM-790|RM-997|RMD-878G|RMD-974R|RMT-705A|RMT-701|RME-601|RMT-501|RMT-711",
-                    "iMobileTablet": "i-mobile i-note",
-                    "TolinoTablet": "tolino tab [0-9.]+|tolino shine",
-                    "AudioSonicTablet": "\\bC-22Q|T7-QC|T-17B|T-17P\\b",
-                    "AMPETablet": "Android.* A78 ",
-                    "SkkTablet": "Android.* (SKYPAD|PHOENIX|CYCLOPS)",
-                    "TecnoTablet": "TECNO P9",
-                    "JXDTablet": "Android.* \\b(F3000|A3300|JXD5000|JXD3000|JXD2000|JXD300B|JXD300|S5800|S7800|S602b|S5110b|S7300|S5300|S602|S603|S5100|S5110|S601|S7100a|P3000F|P3000s|P101|P200s|P1000m|P200m|P9100|P1000s|S6600b|S908|P1000|P300|S18|S6600|S9100)\\b",
-                    "iJoyTablet": "Tablet (Spirit 7|Essentia|Galatea|Fusion|Onix 7|Landa|Titan|Scooby|Deox|Stella|Themis|Argon|Unique 7|Sygnus|Hexen|Finity 7|Cream|Cream X2|Jade|Neon 7|Neron 7|Kandy|Scape|Saphyr 7|Rebel|Biox|Rebel|Rebel 8GB|Myst|Draco 7|Myst|Tab7-004|Myst|Tadeo Jones|Tablet Boing|Arrow|Draco Dual Cam|Aurix|Mint|Amity|Revolution|Finity 9|Neon 9|T9w|Amity 4GB Dual Cam|Stone 4GB|Stone 8GB|Andromeda|Silken|X2|Andromeda II|Halley|Flame|Saphyr 9,7|Touch 8|Planet|Triton|Unique 10|Hexen 10|Memphis 4GB|Memphis 8GB|Onix 10)",
-                    "FX2Tablet": "FX2 PAD7|FX2 PAD10",
-                    "XoroTablet": "KidsPAD 701|PAD[ ]?712|PAD[ ]?714|PAD[ ]?716|PAD[ ]?717|PAD[ ]?718|PAD[ ]?720|PAD[ ]?721|PAD[ ]?722|PAD[ ]?790|PAD[ ]?792|PAD[ ]?900|PAD[ ]?9715D|PAD[ ]?9716DR|PAD[ ]?9718DR|PAD[ ]?9719QR|PAD[ ]?9720QR|TelePAD1030|Telepad1032|TelePAD730|TelePAD731|TelePAD732|TelePAD735Q|TelePAD830|TelePAD9730|TelePAD795|MegaPAD 1331|MegaPAD 1851|MegaPAD 2151",
-                    "ViewsonicTablet": "ViewPad 10pi|ViewPad 10e|ViewPad 10s|ViewPad E72|ViewPad7|ViewPad E100|ViewPad 7e|ViewSonic VB733|VB100a",
-                    "OdysTablet": "LOOX|XENO10|ODYS[ -](Space|EVO|Xpress|NOON)|\\bXELIO\\b|Xelio10Pro|XELIO7PHONETAB|XELIO10EXTREME|XELIOPT2|NEO_QUAD10",
-                    "CaptivaTablet": "CAPTIVA PAD",
-                    "IconbitTablet": "NetTAB|NT-3702|NT-3702S|NT-3702S|NT-3603P|NT-3603P|NT-0704S|NT-0704S|NT-3805C|NT-3805C|NT-0806C|NT-0806C|NT-0909T|NT-0909T|NT-0907S|NT-0907S|NT-0902S|NT-0902S",
-                    "TeclastTablet": "T98 4G|\\bP80\\b|\\bX90HD\\b|X98 Air|X98 Air 3G|\\bX89\\b|P80 3G|\\bX80h\\b|P98 Air|\\bX89HD\\b|P98 3G|\\bP90HD\\b|P89 3G|X98 3G|\\bP70h\\b|P79HD 3G|G18d 3G|\\bP79HD\\b|\\bP89s\\b|\\bA88\\b|\\bP10HD\\b|\\bP19HD\\b|G18 3G|\\bP78HD\\b|\\bA78\\b|\\bP75\\b|G17s 3G|G17h 3G|\\bP85t\\b|\\bP90\\b|\\bP11\\b|\\bP98t\\b|\\bP98HD\\b|\\bG18d\\b|\\bP85s\\b|\\bP11HD\\b|\\bP88s\\b|\\bA80HD\\b|\\bA80se\\b|\\bA10h\\b|\\bP89\\b|\\bP78s\\b|\\bG18\\b|\\bP85\\b|\\bA70h\\b|\\bA70\\b|\\bG17\\b|\\bP18\\b|\\bA80s\\b|\\bA11s\\b|\\bP88HD\\b|\\bA80h\\b|\\bP76s\\b|\\bP76h\\b|\\bP98\\b|\\bA10HD\\b|\\bP78\\b|\\bP88\\b|\\bA11\\b|\\bA10t\\b|\\bP76a\\b|\\bP76t\\b|\\bP76e\\b|\\bP85HD\\b|\\bP85a\\b|\\bP86\\b|\\bP75HD\\b|\\bP76v\\b|\\bA12\\b|\\bP75a\\b|\\bA15\\b|\\bP76Ti\\b|\\bP81HD\\b|\\bA10\\b|\\bT760VE\\b|\\bT720HD\\b|\\bP76\\b|\\bP73\\b|\\bP71\\b|\\bP72\\b|\\bT720SE\\b|\\bC520Ti\\b|\\bT760\\b|\\bT720VE\\b|T720-3GE|T720-WiFi",
-                    "OndaTablet": "\\b(V975i|Vi30|VX530|V701|Vi60|V701s|Vi50|V801s|V719|Vx610w|VX610W|V819i|Vi10|VX580W|Vi10|V711s|V813|V811|V820w|V820|Vi20|V711|VI30W|V712|V891w|V972|V819w|V820w|Vi60|V820w|V711|V813s|V801|V819|V975s|V801|V819|V819|V818|V811|V712|V975m|V101w|V961w|V812|V818|V971|V971s|V919|V989|V116w|V102w|V973|Vi40)\\b[\\s]+",
-                    "JaytechTablet": "TPC-PA762",
-                    "BlaupunktTablet": "Endeavour 800NG|Endeavour 1010",
-                    "DigmaTablet": "\\b(iDx10|iDx9|iDx8|iDx7|iDxD7|iDxD8|iDsQ8|iDsQ7|iDsQ8|iDsD10|iDnD7|3TS804H|iDsQ11|iDj7|iDs10)\\b",
-                    "EvolioTablet": "ARIA_Mini_wifi|Aria[ _]Mini|Evolio X10|Evolio X7|Evolio X8|\\bEvotab\\b|\\bNeura\\b",
-                    "LavaTablet": "QPAD E704|\\bIvoryS\\b|E-TAB IVORY|\\bE-TAB\\b",
-                    "AocTablet": "MW0811|MW0812|MW0922|MTK8382",
-                    "MpmanTablet": "MP11 OCTA|MP10 OCTA|MPQC1114|MPQC1004|MPQC994|MPQC974|MPQC973|MPQC804|MPQC784|MPQC780|\\bMPG7\\b|MPDCG75|MPDCG71|MPDC1006|MP101DC|MPDC9000|MPDC905|MPDC706HD|MPDC706|MPDC705|MPDC110|MPDC100|MPDC99|MPDC97|MPDC88|MPDC8|MPDC77|MP709|MID701|MID711|MID170|MPDC703|MPQC1010",
-                    "CelkonTablet": "CT695|CT888|CT[\\s]?910|CT7 Tab|CT9 Tab|CT3 Tab|CT2 Tab|CT1 Tab|C820|C720|\\bCT-1\\b",
-                    "WolderTablet": "miTab \\b(DIAMOND|SPACE|BROOKLYN|NEO|FLY|MANHATTAN|FUNK|EVOLUTION|SKY|GOCAR|IRON|GENIUS|POP|MINT|EPSILON|BROADWAY|JUMP|HOP|LEGEND|NEW AGE|LINE|ADVANCE|FEEL|FOLLOW|LIKE|LINK|LIVE|THINK|FREEDOM|CHICAGO|CLEVELAND|BALTIMORE-GH|IOWA|BOSTON|SEATTLE|PHOENIX|DALLAS|IN 101|MasterChef)\\b",
-                    "MiTablet": "\\bMI PAD\\b|\\bHM NOTE 1W\\b",
-                    "NibiruTablet": "Nibiru M1|Nibiru Jupiter One",
-                    "NexoTablet": "NEXO NOVA|NEXO 10|NEXO AVIO|NEXO FREE|NEXO GO|NEXO EVO|NEXO 3G|NEXO SMART|NEXO KIDDO|NEXO MOBI",
-                    "LeaderTablet": "TBLT10Q|TBLT10I|TBL-10WDKB|TBL-10WDKBO2013|TBL-W230V2|TBL-W450|TBL-W500|SV572|TBLT7I|TBA-AC7-8G|TBLT79|TBL-8W16|TBL-10W32|TBL-10WKB|TBL-W100",
-                    "UbislateTablet": "UbiSlate[\\s]?7C",
-                    "PocketBookTablet": "Pocketbook",
-                    "Hudl": "Hudl HT7S3|Hudl 2",
-                    "TelstraTablet": "T-Hub2",
-                    "GenericTablet": "Android.*\\b97D\\b|Tablet(?!.*PC)|BNTV250A|MID-WCDMA|LogicPD Zoom2|\\bA7EB\\b|CatNova8|A1_07|CT704|CT1002|\\bM721\\b|rk30sdk|\\bEVOTAB\\b|M758A|ET904|ALUMIUM10|Smartfren Tab|Endeavour 1010|Tablet-PC-4|Tagi Tab|\\bM6pro\\b|CT1020W|arc 10HD|\\bJolla\\b|\\bTP750\\b"
-                },
-                "oss": {
-                    "AndroidOS": "Android",
-                    "BlackBerryOS": "blackberry|\\bBB10\\b|rim tablet os",
-                    "PalmOS": "PalmOS|avantgo|blazer|elaine|hiptop|palm|plucker|xiino",
-                    "SymbianOS": "Symbian|SymbOS|Series60|Series40|SYB-[0-9]+|\\bS60\\b",
-                    "WindowsMobileOS": "Windows CE.*(PPC|Smartphone|Mobile|[0-9]{3}x[0-9]{3})|Window Mobile|Windows Phone [0-9.]+|WCE;",
-                    "WindowsPhoneOS": "Windows Phone 10.0|Windows Phone 8.1|Windows Phone 8.0|Windows Phone OS|XBLWP7|ZuneWP7|Windows NT 6.[23]; ARM;",
-                    "iOS": "\\biPhone.*Mobile|\\biPod|\\biPad",
-                    "MeeGoOS": "MeeGo",
-                    "MaemoOS": "Maemo",
-                    "JavaOS": "J2ME\/|\\bMIDP\\b|\\bCLDC\\b",
-                    "webOS": "webOS|hpwOS",
-                    "badaOS": "\\bBada\\b",
-                    "BREWOS": "BREW"
-                },
-                "uas": {
-                    "Chrome": "\\bCrMo\\b|CriOS|Android.*Chrome\/[.0-9]* (Mobile)?",
-                    "Dolfin": "\\bDolfin\\b",
-                    "Opera": "Opera.*Mini|Opera.*Mobi|Android.*Opera|Mobile.*OPR\/[0-9.]+|Coast\/[0-9.]+",
-                    "Skyfire": "Skyfire",
-                    "IE": "IEMobile|MSIEMobile",
-                    "Firefox": "fennec|firefox.*maemo|(Mobile|Tablet).*Firefox|Firefox.*Mobile",
-                    "Bolt": "bolt",
-                    "TeaShark": "teashark",
-                    "Blazer": "Blazer",
-                    "Safari": "Version.*Mobile.*Safari|Safari.*Mobile|MobileSafari",
-                    "Tizen": "Tizen",
-                    "UCBrowser": "UC.*Browser|UCWEB",
-                    "baiduboxapp": "baiduboxapp",
-                    "baidubrowser": "baidubrowser",
-                    "DiigoBrowser": "DiigoBrowser",
-                    "Puffin": "Puffin",
-                    "Mercury": "\\bMercury\\b",
-                    "ObigoBrowser": "Obigo",
-                    "NetFront": "NF-Browser",
-                    "GenericBrowser": "NokiaBrowser|OviBrowser|OneBrowser|TwonkyBeamBrowser|SEMC.*Browser|FlyFlow|Minimo|NetFront|Novarra-Vision|MQQBrowser|MicroMessenger"
-                },
-                "props": {
-                    "Mobile": "Mobile\/[VER]",
-                    "Build": "Build\/[VER]",
-                    "Version": "Version\/[VER]",
-                    "VendorID": "VendorID\/[VER]",
-                    "iPad": "iPad.*CPU[a-z ]+[VER]",
-                    "iPhone": "iPhone.*CPU[a-z ]+[VER]",
-                    "iPod": "iPod.*CPU[a-z ]+[VER]",
-                    "Kindle": "Kindle\/[VER]",
-                    "Chrome": ["Chrome\/[VER]", "CriOS\/[VER]", "CrMo\/[VER]"],
-                    "Coast": ["Coast\/[VER]"],
-                    "Dolfin": "Dolfin\/[VER]",
-                    "Firefox": "Firefox\/[VER]",
-                    "Fennec": "Fennec\/[VER]",
-                    "IE": ["IEMobile\/[VER];", "IEMobile [VER]", "MSIE [VER];", "Trident\/[0-9.]+;.*rv:[VER]"],
-                    "NetFront": "NetFront\/[VER]",
-                    "NokiaBrowser": "NokiaBrowser\/[VER]",
-                    "Opera": [" OPR\/[VER]", "Opera Mini\/[VER]", "Version\/[VER]"],
-                    "Opera Mini": "Opera Mini\/[VER]",
-                    "Opera Mobi": "Version\/[VER]",
-                    "UC Browser": "UC Browser[VER]",
-                    "MQQBrowser": "MQQBrowser\/[VER]",
-                    "MicroMessenger": "MicroMessenger\/[VER]",
-                    "baiduboxapp": "baiduboxapp\/[VER]",
-                    "baidubrowser": "baidubrowser\/[VER]",
-                    "Iron": "Iron\/[VER]",
-                    "Safari": ["Version\/[VER]", "Safari\/[VER]"],
-                    "Skyfire": "Skyfire\/[VER]",
-                    "Tizen": "Tizen\/[VER]",
-                    "Webkit": "webkit[ \/][VER]",
-                    "Gecko": "Gecko\/[VER]",
-                    "Trident": "Trident\/[VER]",
-                    "Presto": "Presto\/[VER]",
-                    "iOS": " \\bi?OS\\b [VER][ ;]{1}",
-                    "Android": "Android [VER]",
-                    "BlackBerry": ["BlackBerry[\\w]+\/[VER]", "BlackBerry.*Version\/[VER]", "Version\/[VER]"],
-                    "BREW": "BREW [VER]",
-                    "Java": "Java\/[VER]",
-                    "Windows Phone OS": ["Windows Phone OS [VER]", "Windows Phone [VER]"],
-                    "Windows Phone": "Windows Phone [VER]",
-                    "Windows CE": "Windows CE\/[VER]",
-                    "Windows NT": "Windows NT [VER]",
-                    "Symbian": ["SymbianOS\/[VER]", "Symbian\/[VER]"],
-                    "webOS": ["webOS\/[VER]", "hpwOS\/[VER];"]
-                },
-                "utils": {
-                    "Bot": "Googlebot|facebookexternalhit|AdsBot-Google|Google Keyword Suggestion|Facebot|YandexBot|bingbot|ia_archiver|AhrefsBot|Ezooms|GSLFbot|WBSearchBot|Twitterbot|TweetmemeBot|Twikle|PaperLiBot|Wotbox|UnwindFetchor|Exabot|MJ12bot|YandexImages|TurnitinBot|Pingdom",
-                    "MobileBot": "Googlebot-Mobile|AdsBot-Google-Mobile|YahooSeeker\/M1A1-R2D2",
-                    "DesktopMode": "WPDesktop",
-                    "TV": "SonyDTV|HbbTV",
-                    "WebKit": "(webkit)[ \/]([\\w.]+)",
-                    "Console": "\\b(Nintendo|Nintendo WiiU|Nintendo 3DS|PLAYSTATION|Xbox)\\b",
-                    "Watch": "SM-V700"
-                }
-            };
-
-            // following patterns come from http://detectmobilebrowsers.com/
-            impl.detectMobileBrowsers = {
-                fullPattern: /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i,
-                shortPattern: /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i,
-                tabletPattern: /android|ipad|playbook|silk/i
-            };
-
-            var hasOwnProp = Object.prototype.hasOwnProperty,
-                isArray;
-
-            impl.FALLBACK_PHONE = 'UnknownPhone';
-            impl.FALLBACK_TABLET = 'UnknownTablet';
-            impl.FALLBACK_MOBILE = 'UnknownMobile';
-
-            isArray = 'isArray' in Array ? Array.isArray : function (value) {
-                return Object.prototype.toString.call(value) === '[object Array]';
-            };
-
-            function equalIC(a, b) {
-                return a != null && b != null && a.toLowerCase() === b.toLowerCase();
-            }
-
-            function containsIC(array, value) {
-                var valueLC,
-                    i,
-                    len = array.length;
-                if (!len || !value) {
-                    return false;
-                }
-                valueLC = value.toLowerCase();
-                for (i = 0; i < len; ++i) {
-                    if (valueLC === array[i].toLowerCase()) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-
-            function convertPropsToRegExp(object) {
-                for (var key in object) {
-                    if (hasOwnProp.call(object, key)) {
-                        object[key] = new RegExp(object[key], 'i');
-                    }
-                }
-            }
-
-            (function init() {
-                var key,
-                    values,
-                    value,
-                    i,
-                    len,
-                    verPos,
-                    mobileDetectRules = impl.mobileDetectRules;
-                for (key in mobileDetectRules.props) {
-                    if (hasOwnProp.call(mobileDetectRules.props, key)) {
-                        values = mobileDetectRules.props[key];
-                        if (!isArray(values)) {
-                            values = [values];
-                        }
-                        len = values.length;
-                        for (i = 0; i < len; ++i) {
-                            value = values[i];
-                            verPos = value.indexOf('[VER]');
-                            if (verPos >= 0) {
-                                value = value.substring(0, verPos) + '([\\w._\\+]+)' + value.substring(verPos + 5);
-                            }
-                            values[i] = new RegExp(value, 'i');
-                        }
-                        mobileDetectRules.props[key] = values;
-                    }
-                }
-                convertPropsToRegExp(mobileDetectRules.oss);
-                convertPropsToRegExp(mobileDetectRules.phones);
-                convertPropsToRegExp(mobileDetectRules.tablets);
-                convertPropsToRegExp(mobileDetectRules.uas);
-                convertPropsToRegExp(mobileDetectRules.utils);
-
-                // copy some patterns to oss0 which are tested first (see issue#15)
-                mobileDetectRules.oss0 = {
-                    WindowsPhoneOS: mobileDetectRules.oss.WindowsPhoneOS,
-                    WindowsMobileOS: mobileDetectRules.oss.WindowsMobileOS
-                };
-            })();
-
-            /**
-             * Test userAgent string against a set of rules and find the first matched key.
-             * @param {Object} rules (key is String, value is RegExp)
-             * @param {String} userAgent the navigator.userAgent (or HTTP-Header 'User-Agent').
-             * @returns {String|null} the matched key if found, otherwise <tt>null</tt>
-             * @private
-             */
-            impl.findMatch = function (rules, userAgent) {
-                for (var key in rules) {
-                    if (hasOwnProp.call(rules, key)) {
-                        if (rules[key].test(userAgent)) {
-                            return key;
-                        }
-                    }
-                }
-                return null;
-            };
-
-            /**
-             * Test userAgent string against a set of rules and return an array of matched keys.
-             * @param {Object} rules (key is String, value is RegExp)
-             * @param {String} userAgent the navigator.userAgent (or HTTP-Header 'User-Agent').
-             * @returns {Array} an array of matched keys, may be empty when there is no match, but not <tt>null</tt>
-             * @private
-             */
-            impl.findMatches = function (rules, userAgent) {
-                var result = [];
-                for (var key in rules) {
-                    if (hasOwnProp.call(rules, key)) {
-                        if (rules[key].test(userAgent)) {
-                            result.push(key);
-                        }
-                    }
-                }
-                return result;
-            };
-
-            /**
-             * Check the version of the given property in the User-Agent.
-             *
-             * @param {String} propertyName
-             * @param {String} userAgent
-             * @return {String} version or <tt>null</tt> if version not found
-             * @private
-             */
-            impl.getVersionStr = function (propertyName, userAgent) {
-                var props = impl.mobileDetectRules.props,
-                    patterns,
-                    i,
-                    len,
-                    match;
-                if (hasOwnProp.call(props, propertyName)) {
-                    patterns = props[propertyName];
-                    len = patterns.length;
-                    for (i = 0; i < len; ++i) {
-                        match = patterns[i].exec(userAgent);
-                        if (match !== null) {
-                            return match[1];
-                        }
-                    }
-                }
-                return null;
-            };
-
-            /**
-             * Check the version of the given property in the User-Agent.
-             * Will return a float number. (eg. 2_0 will return 2.0, 4.3.1 will return 4.31)
-             *
-             * @param {String} propertyName
-             * @param {String} userAgent
-             * @return {Number} version or <tt>NaN</tt> if version not found
-             * @private
-             */
-            impl.getVersion = function (propertyName, userAgent) {
-                var version = impl.getVersionStr(propertyName, userAgent);
-                return version ? impl.prepareVersionNo(version) : NaN;
-            };
-
-            /**
-             * Prepare the version number.
-             *
-             * @param {String} version
-             * @return {Number} the version number as a floating number
-             * @private
-             */
-            impl.prepareVersionNo = function (version) {
-                var numbers;
-
-                numbers = version.split(/[a-z._ \/\-]/i);
-                if (numbers.length === 1) {
-                    version = numbers[0];
-                }
-                if (numbers.length > 1) {
-                    version = numbers[0] + '.';
-                    numbers.shift();
-                    version += numbers.join('');
-                }
-                return Number(version);
-            };
-
-            impl.isMobileFallback = function (userAgent) {
-                return impl.detectMobileBrowsers.fullPattern.test(userAgent) || impl.detectMobileBrowsers.shortPattern.test(userAgent.substr(0, 4));
-            };
-
-            impl.isTabletFallback = function (userAgent) {
-                return impl.detectMobileBrowsers.tabletPattern.test(userAgent);
-            };
-
-            impl.prepareDetectionCache = function (cache, userAgent, maxPhoneWidth) {
-                if (cache.mobile !== undefined) {
-                    return;
-                }
-                var phone, tablet, phoneSized;
-
-                // first check for stronger tablet rules, then phone (see issue#5)
-                tablet = impl.findMatch(impl.mobileDetectRules.tablets, userAgent);
-                if (tablet) {
-                    cache.mobile = cache.tablet = tablet;
-                    cache.phone = null;
-                    return; // unambiguously identified as tablet
-                }
-
-                phone = impl.findMatch(impl.mobileDetectRules.phones, userAgent);
-                if (phone) {
-                    cache.mobile = cache.phone = phone;
-                    cache.tablet = null;
-                    return; // unambiguously identified as phone
-                }
-
-                // our rules haven't found a match -> try more general fallback rules
-                if (impl.isMobileFallback(userAgent)) {
-                    phoneSized = MobileDetect.isPhoneSized(maxPhoneWidth);
-                    if (phoneSized === undefined) {
-                        cache.mobile = impl.FALLBACK_MOBILE;
-                        cache.tablet = cache.phone = null;
-                    } else if (phoneSized) {
-                        cache.mobile = cache.phone = impl.FALLBACK_PHONE;
-                        cache.tablet = null;
-                    } else {
-                        cache.mobile = cache.tablet = impl.FALLBACK_TABLET;
-                        cache.phone = null;
-                    }
-                } else if (impl.isTabletFallback(userAgent)) {
-                    cache.mobile = cache.tablet = impl.FALLBACK_TABLET;
-                    cache.phone = null;
-                } else {
-                    // not mobile at all!
-                    cache.mobile = cache.tablet = cache.phone = null;
-                }
-            };
-
-            // t is a reference to a MobileDetect instance
-            impl.mobileGrade = function (t) {
-                // impl note:
-                // To keep in sync w/ Mobile_Detect.php easily, the following code is tightly aligned to the PHP version.
-                // When changes are made in Mobile_Detect.php, copy this method and replace:
-                //     $this-> / t.
-                //     self::MOBILE_GRADE_(.) / '$1'
-                //     , self::VERSION_TYPE_FLOAT / (nothing)
-                //     isIOS() / os('iOS')
-                //     [reg] / (nothing)   <-- jsdelivr complaining about unescaped unicode character U+00AE
-                var $isMobile = t.mobile() !== null;
-
-                if (
-                // Apple iOS 3.2-5.1 - Tested on the original iPad (4.3 / 5.0), iPad 2 (4.3), iPad 3 (5.1), original iPhone (3.1), iPhone 3 (3.2), 3GS (4.3), 4 (4.3 / 5.0), and 4S (5.1)
-                t.os('iOS') && t.version('iPad') >= 4.3 || t.os('iOS') && t.version('iPhone') >= 3.1 || t.os('iOS') && t.version('iPod') >= 3.1 ||
-
-                // Android 2.1-2.3 - Tested on the HTC Incredible (2.2), original Droid (2.2), HTC Aria (2.1), Google Nexus S (2.3). Functional on 1.5 & 1.6 but performance may be sluggish, tested on Google G1 (1.5)
-                // Android 3.1 (Honeycomb)  - Tested on the Samsung Galaxy Tab 10.1 and Motorola XOOM
-                // Android 4.0 (ICS)  - Tested on a Galaxy Nexus. Note: transition performance can be poor on upgraded devices
-                // Android 4.1 (Jelly Bean)  - Tested on a Galaxy Nexus and Galaxy 7
-                t.version('Android') > 2.1 && t.is('Webkit') ||
-
-                // Windows Phone 7-7.5 - Tested on the HTC Surround (7.0) HTC Trophy (7.5), LG-E900 (7.5), Nokia Lumia 800
-                t.version('Windows Phone OS') >= 7.0 ||
-
-                // Blackberry 7 - Tested on BlackBerry Torch 9810
-                // Blackberry 6.0 - Tested on the Torch 9800 and Style 9670
-                t.is('BlackBerry') && t.version('BlackBerry') >= 6.0 ||
-                // Blackberry Playbook (1.0-2.0) - Tested on PlayBook
-                t.match('Playbook.*Tablet') ||
-
-                // Palm WebOS (1.4-2.0) - Tested on the Palm Pixi (1.4), Pre (1.4), Pre 2 (2.0)
-                t.version('webOS') >= 1.4 && t.match('Palm|Pre|Pixi') ||
-                // Palm WebOS 3.0  - Tested on HP TouchPad
-                t.match('hp.*TouchPad') ||
-
-                // Firefox Mobile (12 Beta) - Tested on Android 2.3 device
-                t.is('Firefox') && t.version('Firefox') >= 12 ||
-
-                // Chrome for Android - Tested on Android 4.0, 4.1 device
-                t.is('Chrome') && t.is('AndroidOS') && t.version('Android') >= 4.0 ||
-
-                // Skyfire 4.1 - Tested on Android 2.3 device
-                t.is('Skyfire') && t.version('Skyfire') >= 4.1 && t.is('AndroidOS') && t.version('Android') >= 2.3 ||
-
-                // Opera Mobile 11.5-12: Tested on Android 2.3
-                t.is('Opera') && t.version('Opera Mobi') > 11 && t.is('AndroidOS') ||
-
-                // Meego 1.2 - Tested on Nokia 950 and N9
-                t.is('MeeGoOS') ||
-
-                // Tizen (pre-release) - Tested on early hardware
-                t.is('Tizen') ||
-
-                // Samsung Bada 2.0 - Tested on a Samsung Wave 3, Dolphin browser
-                // @todo: more tests here!
-                t.is('Dolfin') && t.version('Bada') >= 2.0 ||
-
-                // UC Browser - Tested on Android 2.3 device
-                (t.is('UC Browser') || t.is('Dolfin')) && t.version('Android') >= 2.3 ||
-
-                // Kindle 3 and Fire  - Tested on the built-in WebKit browser for each
-                t.match('Kindle Fire') || t.is('Kindle') && t.version('Kindle') >= 3.0 ||
-
-                // Nook Color 1.4.1 - Tested on original Nook Color, not Nook Tablet
-                t.is('AndroidOS') && t.is('NookTablet') ||
-
-                // Chrome Desktop 11-21 - Tested on OS X 10.7 and Windows 7
-                t.version('Chrome') >= 11 && !$isMobile ||
-
-                // Safari Desktop 4-5 - Tested on OS X 10.7 and Windows 7
-                t.version('Safari') >= 5.0 && !$isMobile ||
-
-                // Firefox Desktop 4-13 - Tested on OS X 10.7 and Windows 7
-                t.version('Firefox') >= 4.0 && !$isMobile ||
-
-                // Internet Explorer 7-9 - Tested on Windows XP, Vista and 7
-                t.version('MSIE') >= 7.0 && !$isMobile ||
-
-                // Opera Desktop 10-12 - Tested on OS X 10.7 and Windows 7
-                // @reference: http://my.opera.com/community/openweb/idopera/
-                t.version('Opera') >= 10 && !$isMobile) {
-                    return 'A';
-                }
-
-                if (t.os('iOS') && t.version('iPad') < 4.3 || t.os('iOS') && t.version('iPhone') < 3.1 || t.os('iOS') && t.version('iPod') < 3.1 ||
-
-                // Blackberry 5.0: Tested on the Storm 2 9550, Bold 9770
-                t.is('Blackberry') && t.version('BlackBerry') >= 5 && t.version('BlackBerry') < 6 ||
-
-                //Opera Mini (5.0-6.5) - Tested on iOS 3.2/4.3 and Android 2.3
-                t.version('Opera Mini') >= 5.0 && t.version('Opera Mini') <= 6.5 && (t.version('Android') >= 2.3 || t.is('iOS')) ||
-
-                // Nokia Symbian^3 - Tested on Nokia N8 (Symbian^3), C7 (Symbian^3), also works on N97 (Symbian^1)
-                t.match('NokiaN8|NokiaC7|N97.*Series60|Symbian/3') ||
-
-                // @todo: report this (tested on Nokia N71)
-                t.version('Opera Mobi') >= 11 && t.is('SymbianOS')) {
-                    return 'B';
-                }
-
-                if (
-                // Blackberry 4.x - Tested on the Curve 8330
-                t.version('BlackBerry') < 5.0 ||
-                // Windows Mobile - Tested on the HTC Leo (WinMo 5.2)
-                t.match('MSIEMobile|Windows CE.*Mobile') || t.version('Windows Mobile') <= 5.2) {
-                    return 'C';
-                }
-
-                //All older smartphone platforms and featurephones - Any device that doesn't support media queries
-                //will receive the basic, C grade experience.
-                return 'C';
-            };
-
-            impl.detectOS = function (ua) {
-                return impl.findMatch(impl.mobileDetectRules.oss0, ua) || impl.findMatch(impl.mobileDetectRules.oss, ua);
-            };
-
-            impl.getDeviceSmallerSide = function () {
-                return window.screen.width < window.screen.height ? window.screen.width : window.screen.height;
-            };
-
-            /**
-             * Constructor for MobileDetect object.
-             * <br>
-             * Such an object will keep a reference to the given user-agent string and cache most of the detect queries.<br>
-             * <div style="background-color: #d9edf7; border: 1px solid #bce8f1; color: #3a87ad; padding: 14px; border-radius: 2px; margin-top: 20px">
-             *     <strong>Find information how to download and install:</strong>
-             *     <a href="https://github.com/hgoebl/mobile-detect.js/">github.com/hgoebl/mobile-detect.js/</a>
-             * </div>
-             *
-             * @example <pre>
-             *     var md = new MobileDetect(window.navigator.userAgent);
-             *     if (md.mobile()) {
-             *         location.href = (md.mobileGrade() === 'A') ? '/mobile/' : '/lynx/';
-             *     }
-             * </pre>
-             *
-             * @param {string} userAgent typically taken from window.navigator.userAgent or http_header['User-Agent']
-             * @param {number} [maxPhoneWidth=600] <strong>only for browsers</strong> specify a value for the maximum
-             *        width of smallest device side (in logical "CSS" pixels) until a device detected as mobile will be handled
-             *        as phone.
-             *        This is only used in cases where the device cannot be classified as phone or tablet.<br>
-             *        See <a href="http://developer.android.com/guide/practices/screens_support.html">Declaring Tablet Layouts
-             *        for Android</a>.<br>
-             *        If you provide a value < 0, then this "fuzzy" check is disabled.
-             * @constructor
-             * @global
-             */
-            function MobileDetect(userAgent, maxPhoneWidth) {
-                this.ua = userAgent || '';
-                this._cache = {};
-                //600dp is typical 7" tablet minimum width
-                this.maxPhoneWidth = maxPhoneWidth || 600;
-            }
-
-            MobileDetect.prototype = {
-                constructor: MobileDetect,
-
-                /**
-                 * Returns the detected phone or tablet type or <tt>null</tt> if it is not a mobile device.
-                 * <br>
-                 * For a list of possible return values see {@link MobileDetect#phone} and {@link MobileDetect#tablet}.<br>
-                 * <br>
-                 * If the device is not detected by the regular expressions from Mobile-Detect, a test is made against
-                 * the patterns of <a href="http://detectmobilebrowsers.com/">detectmobilebrowsers.com</a>. If this test
-                 * is positive, a value of <code>UnknownPhone</code>, <code>UnknownTablet</code> or
-                 * <code>UnknownMobile</code> is returned.<br>
-                 * When used in browser, the decision whether phone or tablet is made based on <code>screen.width/height</code>.<br>
-                 * <br>
-                 * When used server-side (node.js), there is no way to tell the difference between <code>UnknownTablet</code>
-                 * and <code>UnknownMobile</code>, so you will get <code>UnknownMobile</code> here.<br>
-                 * Be aware that since v1.0.0 in this special case you will get <code>UnknownMobile</code> only for:
-                 * {@link MobileDetect#mobile}, not for {@link MobileDetect#phone} and {@link MobileDetect#tablet}.
-                 * In versions before v1.0.0 all 3 methods returned <code>UnknownMobile</code> which was tedious to use.
-                 * <br>
-                 * In most cases you will use the return value just as a boolean.
-                 *
-                 * @returns {String} the key for the phone family or tablet family, e.g. "Nexus".
-                 * @function MobileDetect#mobile
-                 */
-                mobile: function () {
-                    impl.prepareDetectionCache(this._cache, this.ua, this.maxPhoneWidth);
-                    return this._cache.mobile;
-                },
-
-                /**
-                 * Returns the detected phone type/family string or <tt>null</tt>.
-                 * <br>
-                 * The returned tablet (family or producer) is one of following keys:<br>
-                 * <br><tt>iPhone, BlackBerry, HTC, Nexus, Dell, Motorola, Samsung, LG, Sony, Asus,
-                 * Micromax, Palm, Vertu, Pantech, Fly, Wiko, iMobile, SimValley, Wolfgang,
-                 * Alcatel, Nintendo, Amoi, INQ, GenericPhone</tt><br>
-                 * <br>
-                 * If the device is not detected by the regular expressions from Mobile-Detect, a test is made against
-                 * the patterns of <a href="http://detectmobilebrowsers.com/">detectmobilebrowsers.com</a>. If this test
-                 * is positive, a value of <code>UnknownPhone</code> or <code>UnknownMobile</code> is returned.<br>
-                 * When used in browser, the decision whether phone or tablet is made based on <code>screen.width/height</code>.<br>
-                 * <br>
-                 * When used server-side (node.js), there is no way to tell the difference between <code>UnknownTablet</code>
-                 * and <code>UnknownMobile</code>, so you will get <code>null</code> here, while {@link MobileDetect#mobile}
-                 * will return <code>UnknownMobile</code>.<br>
-                 * Be aware that since v1.0.0 in this special case you will get <code>UnknownMobile</code> only for:
-                 * {@link MobileDetect#mobile}, not for {@link MobileDetect#phone} and {@link MobileDetect#tablet}.
-                 * In versions before v1.0.0 all 3 methods returned <code>UnknownMobile</code> which was tedious to use.
-                 * <br>
-                 * In most cases you will use the return value just as a boolean.
-                 *
-                 * @returns {String} the key of the phone family or producer, e.g. "iPhone"
-                 * @function MobileDetect#phone
-                 */
-                phone: function () {
-                    impl.prepareDetectionCache(this._cache, this.ua, this.maxPhoneWidth);
-                    return this._cache.phone;
-                },
-
-                /**
-                 * Returns the detected tablet type/family string or <tt>null</tt>.
-                 * <br>
-                 * The returned tablet (family or producer) is one of following keys:<br>
-                 * <br><tt>iPad, NexusTablet, SamsungTablet, Kindle, SurfaceTablet, HPTablet, AsusTablet,
-                 * BlackBerryTablet, HTCtablet, MotorolaTablet, NookTablet, AcerTablet,
-                 * ToshibaTablet, LGTablet, FujitsuTablet, PrestigioTablet, LenovoTablet,
-                 * DellTablet, YarvikTablet, MedionTablet, ArnovaTablet, IntensoTablet, IRUTablet,
-                 * MegafonTablet, EbodaTablet, AllViewTablet, ArchosTablet, AinolTablet,
-                 * SonyTablet, PhilipsTablet, CubeTablet, CobyTablet, MIDTablet, MSITablet,
-                 * SMiTTablet, RockChipTablet, FlyTablet, bqTablet, HuaweiTablet, NecTablet,
-                 * PantechTablet, BronchoTablet, VersusTablet, ZyncTablet, PositivoTablet,
-                 * NabiTablet, KoboTablet, DanewTablet, TexetTablet, PlaystationTablet,
-                 * TrekstorTablet, PyleAudioTablet, AdvanTablet, DanyTechTablet, GalapadTablet,
-                 * MicromaxTablet, KarbonnTablet, AllFineTablet, PROSCANTablet, YONESTablet,
-                 * ChangJiaTablet, GUTablet, PointOfViewTablet, OvermaxTablet, HCLTablet,
-                 * DPSTablet, VistureTablet, CrestaTablet, MediatekTablet, ConcordeTablet,
-                 * GoCleverTablet, ModecomTablet, VoninoTablet, ECSTablet, StorexTablet,
-                 * VodafoneTablet, EssentielBTablet, RossMoorTablet, iMobileTablet, TolinoTablet,
-                 * AudioSonicTablet, AMPETablet, SkkTablet, TecnoTablet, JXDTablet, iJoyTablet,
-                 * FX2Tablet, XoroTablet, ViewsonicTablet, OdysTablet, CaptivaTablet,
-                 * IconbitTablet, TeclastTablet, OndaTablet, JaytechTablet, BlaupunktTablet,
-                 * DigmaTablet, EvolioTablet, LavaTablet, AocTablet, MpmanTablet, CelkonTablet,
-                 * WolderTablet, MiTablet, NibiruTablet, NexoTablet, LeaderTablet, UbislateTablet,
-                 * PocketBookTablet, Hudl, TelstraTablet, GenericTablet</tt><br>
-                 * <br>
-                 * If the device is not detected by the regular expressions from Mobile-Detect, a test is made against
-                 * the patterns of <a href="http://detectmobilebrowsers.com/">detectmobilebrowsers.com</a>. If this test
-                 * is positive, a value of <code>UnknownTablet</code> or <code>UnknownMobile</code> is returned.<br>
-                 * When used in browser, the decision whether phone or tablet is made based on <code>screen.width/height</code>.<br>
-                 * <br>
-                 * When used server-side (node.js), there is no way to tell the difference between <code>UnknownTablet</code>
-                 * and <code>UnknownMobile</code>, so you will get <code>null</code> here, while {@link MobileDetect#mobile}
-                 * will return <code>UnknownMobile</code>.<br>
-                 * Be aware that since v1.0.0 in this special case you will get <code>UnknownMobile</code> only for:
-                 * {@link MobileDetect#mobile}, not for {@link MobileDetect#phone} and {@link MobileDetect#tablet}.
-                 * In versions before v1.0.0 all 3 methods returned <code>UnknownMobile</code> which was tedious to use.
-                 * <br>
-                 * In most cases you will use the return value just as a boolean.
-                 *
-                 * @returns {String} the key of the tablet family or producer, e.g. "SamsungTablet"
-                 * @function MobileDetect#tablet
-                 */
-                tablet: function () {
-                    impl.prepareDetectionCache(this._cache, this.ua, this.maxPhoneWidth);
-                    return this._cache.tablet;
-                },
-
-                /**
-                 * Returns the (first) detected user-agent string or <tt>null</tt>.
-                 * <br>
-                 * The returned user-agent is one of following keys:<br>
-                 * <br><tt>Chrome, Dolfin, Opera, Skyfire, IE, Firefox, Bolt, TeaShark, Blazer, Safari,
-                 * Tizen, UCBrowser, baiduboxapp, baidubrowser, DiigoBrowser, Puffin, Mercury,
-                 * ObigoBrowser, NetFront, GenericBrowser</tt><br>
-                 * <br>
-                 * In most cases calling {@link MobileDetect#userAgent} will be sufficient. But there are rare
-                 * cases where a mobile device pretends to be more than one particular browser. You can get the
-                 * list of all matches with {@link MobileDetect#userAgents} or check for a particular value by
-                 * providing one of the defined keys as first argument to {@link MobileDetect#is}.
-                 *
-                 * @returns {String} the key for the detected user-agent or <tt>null</tt>
-                 * @function MobileDetect#userAgent
-                 */
-                userAgent: function () {
-                    if (this._cache.userAgent === undefined) {
-                        this._cache.userAgent = impl.findMatch(impl.mobileDetectRules.uas, this.ua);
-                    }
-                    return this._cache.userAgent;
-                },
-
-                /**
-                 * Returns all detected user-agent strings.
-                 * <br>
-                 * The array is empty or contains one or more of following keys:<br>
-                 * <br><tt>Chrome, Dolfin, Opera, Skyfire, IE, Firefox, Bolt, TeaShark, Blazer, Safari,
-                 * Tizen, UCBrowser, baiduboxapp, baidubrowser, DiigoBrowser, Puffin, Mercury,
-                 * ObigoBrowser, NetFront, GenericBrowser</tt><br>
-                 * <br>
-                 * In most cases calling {@link MobileDetect#userAgent} will be sufficient. But there are rare
-                 * cases where a mobile device pretends to be more than one particular browser. You can get the
-                 * list of all matches with {@link MobileDetect#userAgents} or check for a particular value by
-                 * providing one of the defined keys as first argument to {@link MobileDetect#is}.
-                 *
-                 * @returns {Array} the array of detected user-agent keys or <tt>[]</tt>
-                 * @function MobileDetect#userAgents
-                 */
-                userAgents: function () {
-                    if (this._cache.userAgents === undefined) {
-                        this._cache.userAgents = impl.findMatches(impl.mobileDetectRules.uas, this.ua);
-                    }
-                    return this._cache.userAgents;
-                },
-
-                /**
-                 * Returns the detected operating system string or <tt>null</tt>.
-                 * <br>
-                 * The operating system is one of following keys:<br>
-                 * <br><tt>AndroidOS, BlackBerryOS, PalmOS, SymbianOS, WindowsMobileOS, WindowsPhoneOS,
-                 * iOS, MeeGoOS, MaemoOS, JavaOS, webOS, badaOS, BREWOS</tt><br>
-                 *
-                 * @returns {String} the key for the detected operating system.
-                 * @function MobileDetect#os
-                 */
-                os: function () {
-                    if (this._cache.os === undefined) {
-                        this._cache.os = impl.detectOS(this.ua);
-                    }
-                    return this._cache.os;
-                },
-
-                /**
-                 * Get the version (as Number) of the given property in the User-Agent.
-                 * <br>
-                 * Will return a float number. (eg. 2_0 will return 2.0, 4.3.1 will return 4.31)
-                 *
-                 * @param {String} key a key defining a thing which has a version.<br>
-                 *        You can use one of following keys:<br>
-                 * <br><tt>Mobile, Build, Version, VendorID, iPad, iPhone, iPod, Kindle, Chrome, Coast,
-                 * Dolfin, Firefox, Fennec, IE, NetFront, NokiaBrowser, Opera, Opera Mini, Opera
-                 * Mobi, UC Browser, MQQBrowser, MicroMessenger, baiduboxapp, baidubrowser, Iron,
-                 * Safari, Skyfire, Tizen, Webkit, Gecko, Trident, Presto, iOS, Android,
-                 * BlackBerry, BREW, Java, Windows Phone OS, Windows Phone, Windows CE, Windows
-                 * NT, Symbian, webOS</tt><br>
-                 *
-                 * @returns {Number} the version as float or <tt>NaN</tt> if User-Agent doesn't contain this version.
-                 *          Be careful when comparing this value with '==' operator!
-                 * @function MobileDetect#version
-                 */
-                version: function (key) {
-                    return impl.getVersion(key, this.ua);
-                },
-
-                /**
-                 * Get the version (as String) of the given property in the User-Agent.
-                 * <br>
-                 *
-                 * @param {String} key a key defining a thing which has a version.<br>
-                 *        You can use one of following keys:<br>
-                 * <br><tt>Mobile, Build, Version, VendorID, iPad, iPhone, iPod, Kindle, Chrome, Coast,
-                 * Dolfin, Firefox, Fennec, IE, NetFront, NokiaBrowser, Opera, Opera Mini, Opera
-                 * Mobi, UC Browser, MQQBrowser, MicroMessenger, baiduboxapp, baidubrowser, Iron,
-                 * Safari, Skyfire, Tizen, Webkit, Gecko, Trident, Presto, iOS, Android,
-                 * BlackBerry, BREW, Java, Windows Phone OS, Windows Phone, Windows CE, Windows
-                 * NT, Symbian, webOS</tt><br>
-                 *
-                 * @returns {String} the "raw" version as String or <tt>null</tt> if User-Agent doesn't contain this version.
-                 *
-                 * @function MobileDetect#versionStr
-                 */
-                versionStr: function (key) {
-                    return impl.getVersionStr(key, this.ua);
-                },
-
-                /**
-                 * Global test key against userAgent, os, phone, tablet and some other properties of userAgent string.
-                 *
-                 * @param {String} key the key (case-insensitive) of a userAgent, an operating system, phone or
-                 *        tablet family.<br>
-                 *        For a complete list of possible values, see {@link MobileDetect#userAgent},
-                 *        {@link MobileDetect#os}, {@link MobileDetect#phone}, {@link MobileDetect#tablet}.<br>
-                 *        Additionally you have following keys:<br>
-                 * <br><tt>Bot, MobileBot, DesktopMode, TV, WebKit, Console, Watch</tt><br>
-                 *
-                 * @returns {boolean} <tt>true</tt> when the given key is one of the defined keys of userAgent, os, phone,
-                 *                    tablet or one of the listed additional keys, otherwise <tt>false</tt>
-                 * @function MobileDetect#is
-                 */
-                is: function (key) {
-                    return containsIC(this.userAgents(), key) || equalIC(key, this.os()) || equalIC(key, this.phone()) || equalIC(key, this.tablet()) || containsIC(impl.findMatches(impl.mobileDetectRules.utils, this.ua), key);
-                },
-
-                /**
-                 * Do a quick test against navigator::userAgent.
-                 *
-                 * @param {String|RegExp} pattern the pattern, either as String or RegExp
-                 *                        (a string will be converted to a case-insensitive RegExp).
-                 * @returns {boolean} <tt>true</tt> when the pattern matches, otherwise <tt>false</tt>
-                 * @function MobileDetect#match
-                 */
-                match: function (pattern) {
-                    if (!(pattern instanceof RegExp)) {
-                        pattern = new RegExp(pattern, 'i');
-                    }
-                    return pattern.test(this.ua);
-                },
-
-                /**
-                 * Checks whether the mobile device can be considered as phone regarding <code>screen.width</code>.
-                 * <br>
-                 * Obviously this method makes sense in browser environments only (not for Node.js)!
-                 * @param {number} [maxPhoneWidth] the maximum logical pixels (aka. CSS-pixels) to be considered as phone.<br>
-                 *        The argument is optional and if not present or falsy, the value of the constructor is taken.
-                 * @returns {boolean|undefined} <code>undefined</code> if screen size wasn't detectable, else <code>true</code>
-                 *          when screen.width is less or equal to maxPhoneWidth, otherwise <code>false</code>.<br>
-                 *          Will always return <code>undefined</code> server-side.
-                 */
-                isPhoneSized: function (maxPhoneWidth) {
-                    return MobileDetect.isPhoneSized(maxPhoneWidth || this.maxPhoneWidth);
-                },
-
-                /**
-                 * Returns the mobile grade ('A', 'B', 'C').
-                 *
-                 * @returns {String} one of the mobile grades ('A', 'B', 'C').
-                 * @function MobileDetect#mobileGrade
-                 */
-                mobileGrade: function () {
-                    if (this._cache.grade === undefined) {
-                        this._cache.grade = impl.mobileGrade(this);
-                    }
-                    return this._cache.grade;
-                }
-            };
-
-            // environment-dependent
-            if (typeof window !== 'undefined' && window.screen) {
-                MobileDetect.isPhoneSized = function (maxPhoneWidth) {
-                    return maxPhoneWidth < 0 ? undefined : impl.getDeviceSmallerSide() <= maxPhoneWidth;
-                };
-            } else {
-                MobileDetect.isPhoneSized = function () {};
-            }
-
-            // should not be replaced by a completely new object - just overwrite existing methods
-            MobileDetect._impl = impl;
-
-            return MobileDetect;
-        }); // end of call of define()
-    })(function (undefined) {
-        if (typeof module !== 'undefined' && module.exports) {
-            return function (factory) {
-                module.exports = factory();
-            };
-        } else if (typeof define === 'function' && define.amd) {
-            return define;
-        } else if (typeof window !== 'undefined') {
-            return function (factory) {
-                window.MobileDetect = factory();
-            };
-        } else {
-            // please file a bug if you get this error!
-            throw new Error('unknown environment');
-        }
-    }());
-    return module.exports;
-});
-$__System.register('f', ['d', '10', 'e', '11', '12', 'b', 'c', '13', '14'], function (exports_1, context_1) {
-    "use strict";
-
-    var __moduleName = context_1 && context_1.id;
-    var __decorate = this && this.__decorate || function (decorators, target, key, desc) {
-        var c = arguments.length,
-            r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
-            d;
-        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-        return c > 3 && r && Object.defineProperty(target, key, r), r;
-    };
-    var aurelia_dependency_injection_1, cesium_imports_1, mobile_detect_1, common_1, context_2, session_1, utils_1, reality_1, timer_1;
-    var ZoomState, scratchCartesian, scratchQuaternion1, scratchQuaternion2, x90Rot, mobileDetect, DeviceService;
-    return {
-        setters: [function (aurelia_dependency_injection_1_1) {
-            aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
-        }, function (cesium_imports_1_1) {
-            cesium_imports_1 = cesium_imports_1_1;
-        }, function (mobile_detect_1_1) {
-            mobile_detect_1 = mobile_detect_1_1;
-        }, function (common_1_1) {
-            common_1 = common_1_1;
-        }, function (context_2_1) {
-            context_2 = context_2_1;
-        }, function (session_1_1) {
-            session_1 = session_1_1;
-        }, function (utils_1_1) {
-            utils_1 = utils_1_1;
-        }, function (reality_1_1) {
-            reality_1 = reality_1_1;
-        }, function (timer_1_1) {
-            timer_1 = timer_1_1;
-        }],
-        execute: function () {
-            (function (ZoomState) {
-                ZoomState[ZoomState["OTHER"] = 0] = "OTHER";
-                ZoomState[ZoomState["START"] = 1] = "START";
-                ZoomState[ZoomState["CHANGE"] = 2] = "CHANGE";
-                ZoomState[ZoomState["END"] = 3] = "END";
-            })(ZoomState || (ZoomState = {}));
-            exports_1("ZoomState", ZoomState);
-            scratchCartesian = new cesium_imports_1.Cartesian3();
-            scratchQuaternion1 = new cesium_imports_1.Quaternion();
-            scratchQuaternion2 = new cesium_imports_1.Quaternion();
-            x90Rot = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_X, cesium_imports_1.CesiumMath.PI_OVER_TWO);
-            if (typeof navigator !== 'undefined') {
-                mobileDetect = new mobile_detect_1.default(navigator.userAgent);
-            }
-            /**
-            * Provides device state.
-            */
-            DeviceService = function () {
-                /**
-                * Initialize the DeviceService
-                */
-                function DeviceService(sessionService, realityService, contextService, timerService) {
-                    var _this = this;
-                    this.sessionService = sessionService;
-                    this.realityService = realityService;
-                    this.contextService = contextService;
-                    this.timerService = timerService;
-                    /**
-                     * An ENU coordinate frame centered at the device location.
-                     * The reference frame of this frame is the FIXED (ECEF) reference frame.
-                     */
-                    this.locationEntity = this.contextService.entities.add(new cesium_imports_1.Entity({
-                        id: 'ar.device.location',
-                        name: 'Device Location',
-                        position: new cesium_imports_1.ConstantPositionProperty(undefined, cesium_imports_1.ReferenceFrame.FIXED),
-                        orientation: new cesium_imports_1.ConstantProperty(undefined)
-                    }));
-                    /**
-                     * A frame which represents the orientation of the device. The reference frame of this
-                     * frame is the [[locationEntity]].
-                     */
-                    this.orientationEntity = this.contextService.entities.add(new cesium_imports_1.Entity({
-                        id: 'ar.device.orientation',
-                        name: 'Device Orientation',
-                        position: new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, this.locationEntity),
-                        orientation: new cesium_imports_1.ConstantProperty(undefined)
-                    }));
-                    /**
-                     * A frame which represents the display for the current device.
-                     * The reference frame of this frame is the [[orientationEntity]].
-                     */
-                    this.displayEntity = this.contextService.entities.add(new cesium_imports_1.Entity({
-                        id: 'ar.device.display',
-                        name: 'Device Display',
-                        position: new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, this.orientationEntity),
-                        orientation: new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY)
-                    }));
-                    /**
-                     * The sessions that are subscribed to the device state
-                     */
-                    this.subscribers = new Set();
-                    /**
-                     * The sessions that are subscribed to the device location
-                     */
-                    this.locationSubscribers = new Set();
-                    /**
-                     * The sessions that are subscribed to the device location
-                     */
-                    this.orientationSubscribers = new Set();
-                    this._state = {
-                        time: cesium_imports_1.JulianDate.now(),
-                        viewport: this.getMaximumViewport(),
-                        defaultFov: Math.PI / 2,
-                        subviews: [{
-                            type: common_1.SubviewType.SINGULAR,
-                            frustum: {
-                                fov: Math.PI / 2
-                            }
-                        }],
-                        locationAccuracy: undefined,
-                        locationAltitudeAccuracy: undefined
-                    };
-                    this._exposedState = common_1.DeviceState.clone(this._state);
-                    this._subscriberTimeoutIds = new WeakMap();
-                    this._headingDrift = 0;
-                    this.sessionService.manager.on['ar.device.state'] = function (deviceState) {
-                        if (_this.sessionService.isRealityManager) return;
-                        _this._state = deviceState;
-                        // only use orientation if we aren't already fetching it on our own
-                        if (!_this._deviceorientationListener) {
-                            contextService.updateEntityFromSerializedPose(_this.orientationEntity.id, deviceState.orientationPose);
-                        }
-                        contextService.updateEntityFromSerializedPose(_this.locationEntity.id, deviceState.locationPose);
-                        contextService.updateEntityFromSerializedPose(_this.displayEntity.id, deviceState.displayPose);
-                        var fixedPosition = utils_1.getEntityPositionInReferenceFrame(_this.displayEntity, deviceState.time, cesium_imports_1.ReferenceFrame.FIXED, scratchCartesian);
-                        if (fixedPosition) {
-                            _this._location = cesium_imports_1.Cartographic.fromCartesian(fixedPosition, undefined, _this._location);
-                        } else {
-                            _this._location = undefined;
-                        }
-                    };
-                    sessionService.manager.on['ar.reality.zoom'] = sessionService.manager.on['ar.device.zoom'] = function (data) {
-                        _this.zoom(data);
-                    };
-                    var checkSubscribers = function () {
-                        if (_this.locationSubscribers.size > 0) _this.startLocationUpdates();else _this.stopLocationUpdates();
-                        if (_this.orientationSubscribers.size > 0) _this.startOrientationUpdates();else _this.stopOrientationUpdates();
-                        _this.publishDeviceState();
-                    };
-                    this.sessionService.connectEvent.addEventListener(function (session) {
-                        session.on['ar.device.subscribe'] = function (o) {
-                            _this.subscribers.add(session);
-                            if (o.location) _this.locationSubscribers.add(session);else _this.locationSubscribers.delete(session);
-                            if (o.orientation) _this.orientationSubscribers.add(session);else _this.orientationSubscribers.delete(session);
-                            var id = setTimeout(function () {
-                                _this.subscribers.delete(session);
-                                _this.locationSubscribers.delete(session);
-                                _this.orientationSubscribers.delete(session);
-                                checkSubscribers();
-                            }, o.timeout);
-                            var previousId = _this._subscriberTimeoutIds.get(session);
-                            if (previousId !== undefined) clearTimeout(previousId);
-                            _this._subscriberTimeoutIds.set(session, id);
-                            checkSubscribers();
-                        };
-                        session.on['ar.reality.desiredFov'] = session.on['ar.device.desiredFov'] = function (_a) {
-                            var fov = _a.fov;
-                            _this.onDesiredFov(fov);
-                            _this.publishDeviceState();
-                        };
-                        // temporary hack until there is a better way for apps to say they need geopose
-                        if (common_1.Role.isRealityAugmenter(session.info.role)) {
-                            _this.locationSubscribers.add(session);
-                            _this.orientationSubscribers.add(session);
-                        }
-                        _this.publishDeviceState();
-                    });
-                    if (this.sessionService.isRealityManager) {
-                        this.startOrientationUpdates();
-                        setTimeout(function () {
-                            checkSubscribers();
-                        }, 10000);
-                        if (typeof window !== 'undefined' && window.addEventListener) {
-                            var updateInterfaceOrientation_1 = function () {
-                                var interfaceOrientationProperty = _this.displayEntity.orientation;
-                                var interfaceOrientation = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_Z, (-window.orientation || 0) * cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE, scratchQuaternion1);
-                                if (mobileDetect && !mobileDetect.mobile()) {
-                                    // for laptops, rotate device orientation by 90° around +X so that it 
-                                    // corresponds to an upright display rather than the integrated keyboard
-                                    interfaceOrientation = cesium_imports_1.Quaternion.multiply(x90Rot, interfaceOrientation, interfaceOrientation);
-                                }
-                                interfaceOrientationProperty.setValue(interfaceOrientation);
-                            };
-                            window.addEventListener('resize', function () {
-                                _this.state.viewport = _this.getMaximumViewport();
-                                updateInterfaceOrientation_1();
-                            });
-                            window.addEventListener('orientationchange', function () {
-                                updateInterfaceOrientation_1();
-                            });
-                        }
-                    }
-                }
-                Object.defineProperty(DeviceService.prototype, "state", {
-                    /**
-                     * The current device state
-                     */
-                    get: function () {
-                        return this._exposedState;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(DeviceService.prototype, "location", {
-                    /**
-                     * The current cartographic position
-                     */
-                    get: function () {
-                        return this._location;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(DeviceService.prototype, "locationAccuracy", {
-                    /**
-                     * The radius (in meters) of latitudinal and longitudinal uncertainty,
-                     * in relation to the FIXED reference frame.
-                     */
-                    get: function () {
-                        return this.state.locationAccuracy;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(DeviceService.prototype, "locationAltitudeAccuracy", {
-                    /**
-                     * The accuracy of the altitude in meters.
-                     */
-                    get: function () {
-                        return this.state.locationAccuracy;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                /**
-                * Request device state updates.
-                */
-                DeviceService.prototype.update = function (o) {
-                    this.startOrientationUpdatesLocallyIfNecessary(o);
-                    this.subscribeIfTimeoutExpired(o);
-                    this.publishDeviceState();
-                    common_1.DeviceState.clone(this._state, this._exposedState);
-                };
-                DeviceService.prototype.startOrientationUpdatesLocallyIfNecessary = function (o) {
-                    if (o && o.orientation) {
-                        this.startOrientationUpdates();
-                    }
-                };
-                DeviceService.prototype.subscribeIfTimeoutExpired = function (o) {
-                    var _this = this;
-                    if (this._subscriptionTimeoutId || !this.sessionService.manager.isConnected) return;
-                    o = o || {};
-                    o.timeout = o.timeout || 3000;
-                    this._subscriptionTimeoutId = setTimeout(function () {
-                        _this._subscriptionTimeoutId = undefined;
-                        _this.sessionService.manager.send('ar.device.subscribe', o);
-                    }, o.timeout * 0.75);
-                };
-                /**
-                 * Send device state to subscribers.
-                 */
-                DeviceService.prototype.publishDeviceState = function () {
-                    var deviceState = this._state;
-                    var time = deviceState.time;
-                    deviceState.orientationPose = utils_1.getSerializedEntityPose(this.orientationEntity, time, this.locationEntity);
-                    if (this.sessionService.isRealityManager) {
-                        deviceState.viewport = this.getMaximumViewport();
-                        deviceState.locationPose = utils_1.getSerializedEntityPose(this.locationEntity, time, cesium_imports_1.ReferenceFrame.FIXED);
-                        deviceState.displayPose = utils_1.getSerializedEntityPose(this.displayEntity, time, this.orientationEntity);
-                        this.subscribers.forEach(function (options, session) {
-                            session.send('ar.device.state', deviceState);
-                        });
-                    }
-                };
-                /**
-                 * Request HMD mode, for immersive (generally stereo) viewing
-                 */
-                DeviceService.prototype.requestHMD = function () {
-                    this._cardboardHMDMode = true;
-                    this.publishDeviceState();
-                };
-                /**
-                 * Exit HMD mode
-                 */
-                DeviceService.prototype.exitHMD = function () {
-                    this._cardboardHMDMode = false;
-                    this.publishDeviceState();
-                };
-                /**
-                 * Returns the maximum allowed viewport
-                 */
-                DeviceService.prototype.getMaximumViewport = function () {
-                    if (typeof document !== 'undefined' && document.documentElement) {
-                        return {
-                            x: 0,
-                            y: 0,
-                            width: document.documentElement.clientWidth,
-                            height: document.documentElement.clientHeight
-                        };
-                    }
-                    throw new Error("Not implemeneted for the current platform");
-                };
-                /**
-                 * Attempt to zoom
-                 */
-                DeviceService.prototype.zoom = function (data) {
-                    if (this.realityService.session && this.realityService.session.info['reality.handlesZoom']) {
-                        this.realityService.session.send('ar.device.zoom', data);
-                        this.realityService.session.send('ar.reality.zoom', data); // backwards compatability, remove at v1.2
-                    } else {
-                        var fov = this.onZoom(data);
-                        if (this.sessionService.isRealityViewer || this.sessionService.isRealityManager) {
-                            this.sessionService.manager.send('ar.device.desiredFov', { fov: fov });
-                        }
-                    }
-                };
-                /**
-                 * Handle zoom. Overridable for custom behavior.
-                 */
-                DeviceService.prototype.onZoom = function (data) {
-                    this.state.subviews[0].frustum.fov;
-                    var newFov = 2 * Math.atan(Math.tan(data.fov * 0.5) / data.zoom);
-                    newFov = Math.max(10 * cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE, Math.min(newFov, 160 * cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE));
-                    // snap to default
-                    if (data.state === ZoomState.END && Math.abs(newFov - this.state.defaultFov) < 0.05 /* +-6deg */) {
-                            newFov = this.state.defaultFov;
-                        }
-                    return newFov;
-                };
-                /**
-                 * Set a desired fov in radians.
-                 */
-                DeviceService.prototype.setDesiredFov = function (fov) {
-                    this.zoom({ fov: fov || this.state.defaultFov, zoom: 1, state: ZoomState.OTHER });
-                };
-                /**
-                 * Set the default fov in radians, and adjust the desired fov to match the
-                 * previous desired / default ratio.
-                 */
-                DeviceService.prototype.setDefaultFov = function (fov) {
-                    var currentFov = this.state.subviews[0].frustum.fov;
-                    var ratio = currentFov / this.state.defaultFov;
-                    this.setDesiredFov(fov * ratio);
-                    this.state.defaultFov = fov;
-                };
-                DeviceService.prototype.startLocationUpdates = function () {
-                    var _this = this;
-                    // defer to the reality manager to get geolocation updates from the device 
-                    if (!this.sessionService.isRealityManager || typeof navigator == 'undefined') return;
-                    if (!cesium_imports_1.defined(this._geolocationWatchId)) {
-                        this._geolocationWatchId = navigator.geolocation.watchPosition(function (pos) {
-                            var positionECEF = cesium_imports_1.Cartesian3.fromDegrees(pos.coords.longitude, pos.coords.latitude, pos.coords.altitude || 0, undefined, scratchCartesian);
-                            var enuOrientation = cesium_imports_1.Transforms.headingPitchRollQuaternion(positionECEF, 0, 0, 0, undefined, scratchQuaternion1);
-                            if (_this.locationEntity.position instanceof cesium_imports_1.ConstantPositionProperty) {
-                                _this.locationEntity.position.setValue(enuOrientation);
-                            } else {
-                                _this.locationEntity.orientation = new cesium_imports_1.ConstantProperty(enuOrientation);
-                            }
-                            if (_this.locationEntity.orientation instanceof cesium_imports_1.ConstantProperty) {
-                                _this.locationEntity.orientation.setValue(enuOrientation);
-                            } else {
-                                _this.locationEntity.orientation = new cesium_imports_1.ConstantProperty(enuOrientation);
-                            }
-                            _this._state.locationAccuracy = pos.coords.accuracy > 0 ? pos.coords.accuracy : undefined;
-                            _this._state.locationAltitudeAccuracy = pos.coords.altitudeAccuracy || undefined;
-                            _this.timerService.getSystemTime(_this._state.time);
-                            _this.publishDeviceState();
-                        }, function (error) {
-                            console.error(error);
-                        }, {
-                            enableHighAccuracy: true
-                        });
-                    }
-                };
-                DeviceService.prototype.startOrientationUpdates = function () {
-                    var _this = this;
-                    if (typeof navigator == 'undefined') return;
-                    if (!cesium_imports_1.defined(this._deviceorientationListener)) {
-                        this._deviceorientationListener = function (e) {
-                            var alphaDegrees = e.alpha;
-                            if (!cesium_imports_1.defined(alphaDegrees)) {
-                                return;
-                            }
-                            if (e.absolute) {
-                                _this._alphaOffset = 0;
-                            }
-                            var webkitCompassHeading = e['webkitCompassHeading'];
-                            var webkitCompassAccuracy = +e['webkitCompassAccuracy'];
-                            // when the phone is almost updside down, webkit flips the compass heading 
-                            // (not documented anywhere, annoyingly)
-                            // if (e.beta >= 130 || e.beta <= -130) webkitCompassHeading = undefined;
-                            if ((!cesium_imports_1.defined(_this._alphaOffset) || Math.abs(_this._headingDrift) > 5) && cesium_imports_1.defined(webkitCompassHeading) && webkitCompassAccuracy >= 0 && webkitCompassAccuracy < 50 && webkitCompassHeading >= 0) {
-                                if (!cesium_imports_1.defined(_this._alphaOffset)) {
-                                    _this._alphaOffset = -webkitCompassHeading;
-                                } else {
-                                    _this._alphaOffset -= _this._headingDrift;
-                                }
-                            }
-                            var alphaOffset = _this._alphaOffset || -webkitCompassHeading || 0;
-                            // TODO: deal with various browser quirks :\
-                            // https://mobiforge.com/design-development/html5-mobile-web-device-orientation-events
-                            var alpha = cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE * (e.alpha + alphaOffset);
-                            var beta = cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE * e.beta;
-                            var gamma = cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE * e.gamma;
-                            var alphaQuat = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_Z, alpha, scratchQuaternion1);
-                            var betaQuat = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_X, beta, scratchQuaternion2);
-                            var alphaBetaQuat = cesium_imports_1.Quaternion.multiply(alphaQuat, betaQuat, scratchQuaternion1);
-                            var gammaQuat = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_Y, gamma, scratchQuaternion2);
-                            var alphaBetaGammaQuat = cesium_imports_1.Quaternion.multiply(alphaBetaQuat, gammaQuat, alphaBetaQuat);
-                            // update orientationEntity
-                            _this.orientationEntity.orientation.setValue(alphaBetaGammaQuat);
-                            // TODO: fix heading drift calculation (heading should match webkitCompassHeading)
-                            // if (defined(webkitCompassHeading)) {
-                            //     const q = alphaBetaGammaQuat//utils.getEntityOrientationInReferenceFrame(this.interfaceEntity, JulianDate.now(), this.locationEntity, this._scratchQuaternion1);
-                            //     var heading = -Math.atan2(2*(q.w*q.z + q.x*q.y), 1 - 2*(q.y*q.y + q.z*q.z));
-                            //     if (heading < 0) heading += 2*Math.PI;
-                            //     const {swing,twist} = swingTwistDecomposition(alphaBetaGammaQuat, Cartesian3.UNIT_Z);
-                            //     const twistAngle = 2 * Math.acos(twist.w);
-                            //     console.log(twist.w + ' ' + twistAngle * CesiumMath.DEGREES_PER_RADIAN + '\n' + webkitCompassHeading);
-                            //     // this._headingDrift = webkitCompassHeading - heading * CesiumMath.DEGREES_PER_RADIAN;
-                            // }
-                            _this.timerService.getSystemTime(_this._state.time);
-                            _this.publishDeviceState();
-                        };
-                        window.addEventListener('deviceorientation', this._deviceorientationListener);
-                    }
-                };
-                DeviceService.prototype.stopLocationUpdates = function () {
-                    if (typeof navigator === 'undefined') return;
-                    if (cesium_imports_1.defined(this._geolocationWatchId)) {
-                        navigator.geolocation.clearWatch(this._geolocationWatchId);
-                        this._geolocationWatchId = undefined;
-                    }
-                };
-                DeviceService.prototype.stopOrientationUpdates = function () {
-                    if (typeof navigator === 'undefined') return;
-                    if (cesium_imports_1.defined(this._deviceorientationListener)) {
-                        window.removeEventListener('deviceorientation', this._deviceorientationListener);
-                        this._deviceorientationListener = undefined;
-                        this._alphaOffset = undefined;
-                    }
-                };
-                /**
-                 * Handle desired fov. Overridable for custom behavior.
-                 * Only called within a [[REALITY_MANAGER]]
-                 */
-                DeviceService.prototype.onDesiredFov = function (fov) {
-                    this.state.subviews.forEach(function (s) {
-                        s.frustum.fov = fov;
-                    });
-                };
-                DeviceService = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, reality_1.RealityService, context_2.ContextService, timer_1.TimerService)], DeviceService);
-                return DeviceService;
-            }();
-            exports_1("DeviceService", DeviceService);
-        }
-    };
-});
-$__System.register("14", ["10"], function (exports_1, context_1) {
-    "use strict";
-
-    var __moduleName = context_1 && context_1.id;
-    var cesium_imports_1;
-    var _clock, _scratchTime, TimerService, lastTime, rAF;
-    function requestAnimationFramePolyfill(callback) {
-        var currTime = Date.now();
-        var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-        var id = setTimeout(function () {
-            callback(currTime + timeToCall);
-        }, timeToCall);
-        lastTime = currTime + timeToCall;
-        return id;
-    }
-    return {
-        setters: [function (cesium_imports_1_1) {
-            cesium_imports_1 = cesium_imports_1_1;
-        }],
-        execute: function () {
-            _clock = new cesium_imports_1.Clock();
-            _scratchTime = new cesium_imports_1.JulianDate(0, 0);
-            /**
-             * Provides timer service
-             */
-            TimerService = function () {
-                function TimerService() {}
-                /**
-                 * Request that the callback function be called for the next frame.
-                 * @param callback function
-                 */
-                TimerService.prototype.requestFrame = function (callback) {
-                    var _this = this;
-                    rAF(function () {
-                        _this._tick();
-                        callback(_clock.currentTime);
-                    });
-                };
-                TimerService.prototype.getSystemTime = function (result) {
-                    this._tick();
-                    return cesium_imports_1.JulianDate.clone(_clock.currentTime, result);
-                };
-                // Enforce monotonically increasing time, and deal with 
-                // clock drift by either slowing down or speeding up,
-                // while never going backwards
-                TimerService.prototype._tick = function () {
-                    var secondsBeforeTick = _clock.currentTime.secondsOfDay;
-                    _clock.tick();
-                    var secondsAfterTick = _clock.currentTime.secondsOfDay;
-                    var now = cesium_imports_1.JulianDate.now(_scratchTime);
-                    var secondsDrift = cesium_imports_1.JulianDate.secondsDifference(_clock.currentTime, now);
-                    if (secondsDrift > 0.033) {
-                        var halfTimeStep = (secondsAfterTick - secondsBeforeTick) / 2;
-                        _clock.currentTime.secondsOfDay -= halfTimeStep;
-                    } else if (secondsDrift < 0.5) {
-                        cesium_imports_1.JulianDate.clone(now, _clock.currentTime);
-                    }
-                };
-                return TimerService;
-            }();
-            exports_1("TimerService", TimerService);
-            lastTime = 0;
-            rAF = typeof requestAnimationFrame !== 'undefined' ? requestAnimationFrame : requestAnimationFramePolyfill;
-        }
-    };
-});
-$__System.register('15', ['d', '11', 'b', 'f', '14', '13', 'c', 'a'], function (exports_1, context_1) {
+$__System.register('e', ['d', 'f', '10', 'b', '11', '12', 'c', 'a'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -9803,19 +8329,19 @@ $__System.register('15', ['d', '11', 'b', 'f', '14', '13', 'c', 'a'], function (
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
-    var aurelia_dependency_injection_1, common_1, session_1, device_1, timer_1, reality_1, utils_1, view_1;
+    var aurelia_dependency_injection_1, cesium_imports_1, common_1, session_1, device_1, reality_1, utils_1, view_1;
     var EmptyRealityLoader;
     return {
         setters: [function (aurelia_dependency_injection_1_1) {
             aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
+        }, function (cesium_imports_1_1) {
+            cesium_imports_1 = cesium_imports_1_1;
         }, function (common_1_1) {
             common_1 = common_1_1;
         }, function (session_1_1) {
             session_1 = session_1_1;
         }, function (device_1_1) {
             device_1 = device_1_1;
-        }, function (timer_1_1) {
-            timer_1 = timer_1_1;
         }, function (reality_1_1) {
             reality_1 = reality_1_1;
         }, function (utils_1_1) {
@@ -9824,145 +8350,163 @@ $__System.register('15', ['d', '11', 'b', 'f', '14', '13', 'c', 'a'], function (
             view_1 = view_1_1;
         }],
         execute: function () {
+            // interface PinchMovement {
+            //     distance: Movement;
+            //     angleAndHeight: Movement
+            // }
             EmptyRealityLoader = function (_super) {
                 __extends(EmptyRealityLoader, _super);
-                function EmptyRealityLoader(sessionService, deviceService, viewService, timer) {
-                    var _this = this;
+                function EmptyRealityLoader(sessionService, deviceService, viewService) {
                     _super.call(this);
                     this.sessionService = sessionService;
                     this.deviceService = deviceService;
                     this.viewService = viewService;
-                    this.timer = timer;
                     this.type = 'empty';
-                    this.viewService.containingElementPromise.then(function (el) {
-                        var fov = -1;
-                        if (typeof PointerEvent !== 'undefined') {
-                            var evCache_1 = new Array();
-                            var startDistSquared_1 = -1;
-                            var zoom_1 = 1;
-                            var remove_event_1 = function (ev) {
-                                // Remove this event from the target's cache
-                                for (var i = 0; i < evCache_1.length; i++) {
-                                    if (evCache_1[i].pointerId == ev.pointerId) {
-                                        evCache_1.splice(i, 1);
-                                        break;
-                                    }
-                                }
-                            };
-                            var pointerdown_handler = function (ev) {
-                                // The pointerdown event signals the start of a touch interaction.
-                                // This event is cached to support 2-finger gestures
-                                evCache_1.push(ev);
-                            };
-                            var pointermove_handler = function (ev) {
-                                // This function implements a 2-pointer pinch/zoom gesture. 
-                                // Find this event in the cache and update its record with this event
-                                for (var i = 0; i < evCache_1.length; i++) {
-                                    if (ev.pointerId == evCache_1[i].pointerId) {
-                                        evCache_1[i] = ev;
-                                        break;
-                                    }
-                                }
-                                var state = _this.contextService.serializedFrameState;
-                                if (!state) return;
-                                // If two pointers are down, check for pinch gestures
-                                if (evCache_1.length == 2) {
-                                    // Calculate the distance between the two pointers
-                                    var curDiffX = Math.abs(evCache_1[0].clientX - evCache_1[1].clientX);
-                                    var curDiffY = Math.abs(evCache_1[0].clientY - evCache_1[1].clientY);
-                                    var currDistSquared = curDiffX * curDiffX + curDiffY * curDiffY;
-                                    if (startDistSquared_1 == -1) {
-                                        // start pinch
-                                        startDistSquared_1 = currDistSquared;
-                                        fov = state.view.subviews[0].frustum.fov;
-                                        zoom_1 = 1;
-                                        _this.deviceService.zoom({ zoom: zoom_1, fov: fov, state: ZoomState.START });
-                                    } else {
-                                        // change pinch
-                                        zoom_1 = currDistSquared / startDistSquared_1;
-                                        _this.deviceService.zoom({ zoom: zoom_1, fov: fov, state: ZoomState.CHANGE });
-                                    }
-                                } else {
-                                    // end pinch                            
-                                    _this.deviceService.zoom({ zoom: zoom_1, fov: fov, state: ZoomState.END });
-                                    startDistSquared_1 = -1;
-                                }
-                            };
-                            var pointerup_handler = function (ev) {
-                                // Remove this pointer from the cache
-                                remove_event_1(ev);
-                                // If the number of pointers down is less than two then reset diff tracker
-                                if (evCache_1.length < 2) startDistSquared_1 = -1;
-                            };
-                            el.onpointerdown = pointerdown_handler;
-                            el.onpointermove = pointermove_handler;
-                            // Use same handler for pointer{up,cancel,out,leave} events since
-                            // the semantics for these events - in this app - are the same.
-                            el.onpointerup = pointerup_handler;
-                            el.onpointercancel = pointerup_handler;
-                            el.onpointerout = pointerup_handler;
-                            el.onpointerleave = pointerup_handler;
-                        } else {
-                            el.addEventListener('gesturestart', function (ev) {
-                                var state = _this.contextService.serializedFrameState;
-                                if (state && state.view.subviews[0]) {
-                                    fov = state.view.subviews[0].frustum.fov;
-                                    _this.deviceService.zoom({ zoom: ev.scale, fov: fov, state: ZoomState.START });
-                                }
-                                ev.preventDefault();
-                            });
-                            el.addEventListener('gesturechange', function (ev) {
-                                _this.deviceService.zoom({ zoom: ev.scale, fov: fov, state: ZoomState.CHANGE });
-                            });
-                            el.addEventListener('gestureend', function (ev) {
-                                _this.deviceService.zoom({ zoom: ev.scale, fov: fov, state: ZoomState.END });
-                            });
-                        }
-                    });
                 }
-                EmptyRealityLoader.prototype._enablePinchZoom = function () {
-                    this.viewService.element;
-                };
-                EmptyRealityLoader.prototype._gesturestartListener = function () {};
-                EmptyRealityLoader.prototype._gesturechnageListener = function () {};
-                EmptyRealityLoader.prototype._gestureendListener = function () {};
                 EmptyRealityLoader.prototype.load = function (reality, callback) {
                     var _this = this;
                     var realitySession = this.sessionService.addManagedSessionPort(reality.uri);
                     var remoteRealitySession = this.sessionService.createSessionPort();
-                    var doUpdate = true;
-                    removeRealitySession.on['ar.view.uievent'] = function () {};
+                    remoteRealitySession.on['ar.device.state'] = function () {};
+                    remoteRealitySession.on['ar.view.uievent'] = function () {};
                     remoteRealitySession.on['ar.context.update'] = function () {};
                     remoteRealitySession.connectEvent.addEventListener(function () {
-                        var update = function (time) {
-                            if (doUpdate) {
-                                _this.deviceService.update({ orientation: true });
-                                var deviceState = _this.deviceService.state;
-                                var pose = utils_1.getSerializedEntityPose(_this.deviceService.displayEntity, time);
-                                var viewport = deviceState.viewport;
-                                var subviews = deviceState.subviews;
-                                var locationAccuracy = deviceState.locationAccuracy;
-                                var locationAltitudeAccuracy = deviceState.locationAltitudeAccuracy;
-                                if (pose) {
-                                    var viewState = {
-                                        time: time,
-                                        pose: pose,
-                                        viewport: viewport,
-                                        subviews: subviews,
-                                        locationAccuracy: locationAccuracy,
-                                        locationAltitudeAccuracy: locationAltitudeAccuracy
-                                    };
-                                    remoteRealitySession.send('ar.reality.viewState', viewState);
-                                }
-                                _this.timer.requestFrame(update);
+                        var element = _this.viewService.element;
+                        var aggregator = new cesium_imports_1.CameraEventAggregator(element);
+                        var flags = {
+                            moveForward: false,
+                            moveBackward: false,
+                            moveUp: false,
+                            moveDown: false,
+                            moveLeft: false,
+                            moveRight: false
+                        };
+                        function getFlagForKeyCode(keyCode) {
+                            switch (keyCode) {
+                                case 'W'.charCodeAt(0):
+                                    return 'moveForward';
+                                case 'S'.charCodeAt(0):
+                                    return 'moveBackward';
+                                case 'R'.charCodeAt(0):
+                                    return 'moveUp';
+                                case 'F'.charCodeAt(0):
+                                    return 'moveDown';
+                                case 'D'.charCodeAt(0):
+                                    return 'moveRight';
+                                case 'A'.charCodeAt(0):
+                                    return 'moveLeft';
+                                default:
+                                    return undefined;
+                            }
+                        }
+                        var keydownListener = function (e) {
+                            var flagName = getFlagForKeyCode(e.keyCode);
+                            if (typeof flagName !== 'undefined') {
+                                flags[flagName] = true;
                             }
                         };
-                        _this.timer.requestFrame(update);
-                    });
-                    this._enablePinchZoom();
-                    remoteRealitySession.closeEvent.addEventListener(function () {
-                        doUpdate = false;
-                        _this._disablePinchZoom();
+                        var keyupListener = function (e) {
+                            var flagName = getFlagForKeyCode(e.keyCode);
+                            if (typeof flagName !== 'undefined') {
+                                flags[flagName] = false;
+                            }
+                        };
+                        document.addEventListener('keydown', keydownListener, false);
+                        document.addEventListener('keyup', keyupListener, false);
+                        remoteRealitySession.closeEvent.addEventListener(function () {
+                            aggregator.destroy();
+                            document.removeEventListener('keydown', keydownListener);
+                            document.removeEventListener('keyup', keyupListener);
+                        });
+                        var yaw = 0;
+                        var pitch = 0;
+                        // const yawQuat = new Quaternion;
+                        // const pitchQuat = new Quaternion;
+                        var positionScratchCartesian = new cesium_imports_1.Cartesian3();
+                        var movementScratchCartesian = new cesium_imports_1.Cartesian3();
+                        var eyeOrientation = new cesium_imports_1.Quaternion();
+                        var orientationMatrix = new cesium_imports_1.Matrix3();
+                        var up = new cesium_imports_1.Cartesian3();
+                        var right = new cesium_imports_1.Cartesian3();
+                        var forward = new cesium_imports_1.Cartesian3();
+                        var AVERAGE_HUMAN_HEIGHT = 1.77;
+                        var NEGATIVE_UNIT_Z = new cesium_imports_1.Cartesian3(0, 0, -1);
+                        var X_90ROT = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_X, cesium_imports_1.CesiumMath.PI_OVER_TWO);
+                        var cameraPositionProperty = new cesium_imports_1.ConstantPositionProperty(new cesium_imports_1.Cartesian3(0, 0, AVERAGE_HUMAN_HEIGHT), _this.deviceService.stage);
+                        var cameraOrientationProperty = new cesium_imports_1.ConstantProperty(X_90ROT);
+                        cesium_imports_1.Matrix3.fromQuaternion(eyeOrientation, orientationMatrix);
+                        cesium_imports_1.Matrix3.multiplyByVector(orientationMatrix, cesium_imports_1.Cartesian3.UNIT_Y, up);
+                        cesium_imports_1.Matrix3.multiplyByVector(orientationMatrix, cesium_imports_1.Cartesian3.UNIT_X, right);
+                        cesium_imports_1.Matrix3.multiplyByVector(orientationMatrix, NEGATIVE_UNIT_Z, forward);
+                        var cameraEntity = new cesium_imports_1.Entity({
+                            position: cameraPositionProperty,
+                            orientation: cameraOrientationProperty
+                        });
+                        var deviceService = _this.deviceService;
+                        var update = function (time) {
+                            if (remoteRealitySession.isConnected) deviceService.requestFrame(update);
+                            var pose = utils_1.getSerializedEntityPose(_this.deviceService.eye, time);
+                            // provide controls if the device does not have a pose
+                            if (!pose) {
+                                if (aggregator.isMoving(cesium_imports_1.CameraEventType.LEFT_DRAG)) {
+                                    var width = element.clientWidth;
+                                    var height = element.clientHeight;
+                                    // Coordinate (0.0, 0.0) will be where the mouse was clicked.
+                                    var movement = aggregator.getMovement(cesium_imports_1.CameraEventType.LEFT_DRAG);
+                                    var movementX = (movement.endPosition.x - movement.startPosition.x) / width;
+                                    var movementY = -(movement.endPosition.y - movement.startPosition.y) / height;
+                                    var lookFactor = 0.05;
+                                    yaw -= movementX * lookFactor;
+                                    pitch -= movementY * lookFactor;
+                                    pitch = Math.max(-cesium_imports_1.CesiumMath.PI_OVER_TWO, Math.min(cesium_imports_1.CesiumMath.PI_OVER_TWO, pitch));
+                                    cesium_imports_1.Quaternion.fromHeadingPitchRoll(yaw, pitch, 0, eyeOrientation);
+                                    cesium_imports_1.Matrix3.fromQuaternion(eyeOrientation, orientationMatrix);
+                                    cesium_imports_1.Matrix3.multiplyByVector(orientationMatrix, cesium_imports_1.Cartesian3.UNIT_Y, up);
+                                    cesium_imports_1.Matrix3.multiplyByVector(orientationMatrix, cesium_imports_1.Cartesian3.UNIT_X, right);
+                                    cesium_imports_1.Matrix3.multiplyByVector(orientationMatrix, NEGATIVE_UNIT_Z, forward);
+                                    cameraOrientationProperty.setValue(eyeOrientation);
+                                }
+                                var position = cameraPositionProperty.getValue(time, positionScratchCartesian);
+                                var moveRate = 0.02;
+                                if (flags.moveForward) {
+                                    cesium_imports_1.Cartesian3.multiplyByScalar(forward, moveRate, movementScratchCartesian);
+                                    cesium_imports_1.Cartesian3.add(position, movementScratchCartesian, position);
+                                }
+                                if (flags.moveBackward) {
+                                    cesium_imports_1.Cartesian3.multiplyByScalar(forward, -moveRate, movementScratchCartesian);
+                                    cesium_imports_1.Cartesian3.add(position, movementScratchCartesian, position);
+                                }
+                                if (flags.moveUp) {
+                                    cesium_imports_1.Cartesian3.multiplyByScalar(up, moveRate, movementScratchCartesian);
+                                    cesium_imports_1.Cartesian3.add(position, movementScratchCartesian, position);
+                                }
+                                if (flags.moveDown) {
+                                    cesium_imports_1.Cartesian3.multiplyByScalar(up, -moveRate, movementScratchCartesian);
+                                    cesium_imports_1.Cartesian3.add(position, movementScratchCartesian, position);
+                                }
+                                if (flags.moveLeft) {
+                                    cesium_imports_1.Cartesian3.multiplyByScalar(right, -moveRate, movementScratchCartesian);
+                                    cesium_imports_1.Cartesian3.add(position, movementScratchCartesian, position);
+                                }
+                                if (flags.moveRight) {
+                                    cesium_imports_1.Cartesian3.multiplyByScalar(right, moveRate, movementScratchCartesian);
+                                    cesium_imports_1.Cartesian3.add(position, movementScratchCartesian, position);
+                                }
+                                pose = utils_1.getSerializedEntityPose(cameraEntity, time);
+                            }
+                            aggregator.reset();
+                            var viewState = {
+                                time: time,
+                                pose: pose,
+                                geolocationAccuracy: deviceService.geolocationAccuracy,
+                                altitudeAccuracy: deviceService.altitudeAccuracy,
+                                compassAccuracy: deviceService.compassAccuracy,
+                                viewport: deviceService.viewport,
+                                subviews: deviceService.subviews
+                            };
+                            remoteRealitySession.send('ar.reality.viewState', viewState);
+                        };
+                        deviceService.requestFrame(update);
                     });
                     callback(realitySession);
                     // Only connect after the caller is able to attach connectEvent handlers
@@ -9970,14 +8514,512 @@ $__System.register('15', ['d', '11', 'b', 'f', '14', '13', 'c', 'a'], function (
                     realitySession.open(messageChannel.port1, this.sessionService.configuration);
                     remoteRealitySession.open(messageChannel.port2, { role: common_1.Role.REALITY_VIEWER });
                 };
-                EmptyRealityLoader = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, device_1.DeviceService, view_1.ViewService, timer_1.TimerService)], EmptyRealityLoader);
+                EmptyRealityLoader = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, device_1.DeviceService, view_1.ViewService)], EmptyRealityLoader);
                 return EmptyRealityLoader;
             }(reality_1.RealityLoader);
             exports_1("EmptyRealityLoader", EmptyRealityLoader);
         }
     };
 });
-$__System.register('16', ['d', '17', 'b', 'c'], function (exports_1, context_1) {
+$__System.register('11', ['d', 'f', '10', '13', 'a', 'b', 'c'], function (exports_1, context_1) {
+    "use strict";
+
+    var __moduleName = context_1 && context_1.id;
+    var __decorate = this && this.__decorate || function (decorators, target, key, desc) {
+        var c = arguments.length,
+            r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+            d;
+        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+        return c > 3 && r && Object.defineProperty(target, key, r), r;
+    };
+    var aurelia_dependency_injection_1, cesium_imports_1, common_1, context_2, view_1, session_1, utils_1;
+    var scratchCartesian, scratchQuaternion, scratchQuaternion2, scratchMatrix3, scratchMatrix4, clock, scratchTime, AVERAGE_HUMAN_HEIGHT, DeviceService;
+    // Enforce monotonically increasing time, and deal with 
+    // clock drift by either slowing down or speeding up,
+    // while never going backwards
+    function tick() {
+        var secondsBeforeTick = clock.currentTime.secondsOfDay;
+        clock.tick();
+        var secondsAfterTick = clock.currentTime.secondsOfDay;
+        var now = cesium_imports_1.JulianDate.now(scratchTime);
+        var secondsDrift = cesium_imports_1.JulianDate.secondsDifference(clock.currentTime, now);
+        if (secondsDrift > 0.033) {
+            var halfTimeStep = (secondsAfterTick - secondsBeforeTick) / 2;
+            clock.currentTime.secondsOfDay -= halfTimeStep;
+        } else if (secondsDrift < 0.5) {
+            cesium_imports_1.JulianDate.clone(now, clock.currentTime);
+        }
+    }
+    return {
+        setters: [function (aurelia_dependency_injection_1_1) {
+            aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
+        }, function (cesium_imports_1_1) {
+            cesium_imports_1 = cesium_imports_1_1;
+        }, function (common_1_1) {
+            common_1 = common_1_1;
+        }, function (context_2_1) {
+            context_2 = context_2_1;
+        }, function (view_1_1) {
+            view_1 = view_1_1;
+        }, function (session_1_1) {
+            session_1 = session_1_1;
+        }, function (utils_1_1) {
+            utils_1 = utils_1_1;
+        }],
+        execute: function () {
+            scratchCartesian = new cesium_imports_1.Cartesian3();
+            scratchQuaternion = new cesium_imports_1.Quaternion();
+            scratchQuaternion2 = new cesium_imports_1.Quaternion();
+            scratchMatrix3 = new cesium_imports_1.Matrix3();
+            scratchMatrix4 = new cesium_imports_1.Matrix4();
+            clock = new cesium_imports_1.Clock();
+            scratchTime = new cesium_imports_1.JulianDate(0, 0);
+            AVERAGE_HUMAN_HEIGHT = 1.77;
+            /**
+            * Provides device state.
+            */
+            DeviceService = function () {
+                /**
+                * Initialize the DeviceService
+                */
+                function DeviceService(sessionService, viewService, contextService) {
+                    var _this = this;
+                    this.sessionService = sessionService;
+                    this.viewService = viewService;
+                    this.contextService = contextService;
+                    /**
+                     * A coordinate system represeting the space in which the
+                     * user is moving, positioned at the floor. For mobile devices,
+                     * the stage follows the user. For non-mobile systems, the
+                     * stage is fixed.
+                     */
+                    this.stage = this.contextService.entities.add(new cesium_imports_1.Entity({
+                        id: 'ar.device.stage',
+                        name: 'Device Stage',
+                        position: new cesium_imports_1.ConstantPositionProperty(undefined, cesium_imports_1.ReferenceFrame.FIXED),
+                        orientation: new cesium_imports_1.ConstantProperty(undefined)
+                    }));
+                    // TODO
+                    // public stageSittingSpace = this.contextService.entities.add(new Entity({
+                    //     id: 'ar.device.stageSittingSpace',
+                    //     name: 'Device Stage Sitting Space',
+                    //     position: new ConstantPositionProperty(undefined, ReferenceFrame.FIXED),
+                    //     orientation: new ConstantProperty(undefined)
+                    // }));
+                    /**
+                     * The physical viewing pose as reported by the current device
+                     */
+                    this.eye = this.contextService.entities.add(new cesium_imports_1.Entity({
+                        id: 'ar.device.eye',
+                        name: 'Device Eye',
+                        position: new cesium_imports_1.ConstantPositionProperty(undefined, undefined),
+                        orientation: new cesium_imports_1.ConstantProperty(undefined)
+                    }));
+                    /**
+                     * An East-North-Up coordinate frame centered at the eye position
+                     */
+                    this.eyeEastNorthUp = this.contextService.entities.add(new cesium_imports_1.Entity({
+                        id: 'ar.device.eyeEastNorthUp',
+                        name: 'Device Eye - ENU',
+                        position: new cesium_imports_1.ConstantPositionProperty(undefined, undefined),
+                        orientation: new cesium_imports_1.ConstantProperty(undefined)
+                    }));
+                    /**
+                     * The sessions that are subscribed to the device location
+                     */
+                    this.geolocationSubscribers = new Set();
+                    this._state = {
+                        viewport: { x: 0, y: 0, width: 1, height: 1 },
+                        subviews: [{
+                            type: common_1.SubviewType.SINGULAR,
+                            projectionMatrix: new cesium_imports_1.Matrix4()
+                        }],
+                        geolocationAccuracy: undefined,
+                        altitudeAccuracy: undefined
+                    };
+                    this._frustum = new cesium_imports_1.PerspectiveFrustum();
+                    this.sessionService.manager.on['ar.device.state'] = function (deviceState) {
+                        _this._state = deviceState;
+                    };
+                    this.sessionService.connectEvent.addEventListener(function (session) {
+                        if (session.info.needsGeopose) {
+                            _this.geolocationSubscribers.add(session);
+                            _this.startDeviceLocationUpdates();
+                            session.closeEvent.addEventListener(function () {
+                                _this.geolocationSubscribers.delete(session);
+                                if (_this.geolocationSubscribers.size === 0) _this.stopDeviceLocationUpdates();
+                            });
+                        }
+                    });
+                    if (this.sessionService.isRealityManager || this.sessionService.isRealityViewer) {
+                        this.startDeviceOrientationUpdates();
+                    }
+                    var frustum = this._frustum;
+                    frustum.near = 0.01;
+                    frustum.far = 500000000;
+                    frustum.fov = Math.PI / 3;
+                    frustum.aspectRatio = 1;
+                    cesium_imports_1.Matrix4.clone(frustum.projectionMatrix, this.subviews[0].projectionMatrix);
+                    if (this.sessionService.isRealityManager) {
+                        this.viewService.containingElementPromise.then(function () {
+                            _this.publishDeviceState();
+                            setInterval(_this.publishDeviceState.bind(_this), 500);
+                            window.addEventListener('resize', _this.publishDeviceState.bind(_this));
+                        });
+                    }
+                }
+                Object.defineProperty(DeviceService.prototype, "eyeCartographicPosition", {
+                    /**
+                     * The current cartographic position of the eye. Undefined if no geolocation is available.
+                     */
+                    get: function () {
+                        return this._eyeCartographicPosition;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(DeviceService.prototype, "geolocationAccuracy", {
+                    /**
+                     * The radius (in meters) of latitudinal and longitudinal uncertainty,
+                     * in relation to the FIXED reference frame. Value is greater than
+                     * 0 or undefined.
+                     */
+                    get: function () {
+                        return this._state.geolocationAccuracy;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(DeviceService.prototype, "altitudeAccuracy", {
+                    /**
+                     * The accuracy of the altitude in meters. Value is greater than
+                     * 0 or undefined.
+                     */
+                    get: function () {
+                        return this._state.altitudeAccuracy;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(DeviceService.prototype, "compassAccuracy", {
+                    /**
+                     * The accuracy of the compass in degrees. Value is greater than
+                     * 0 or undefined.
+                     */
+                    get: function () {
+                        return this._compassAccuracy;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(DeviceService.prototype, "viewport", {
+                    get: function () {
+                        return this._state.viewport;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(DeviceService.prototype, "subviews", {
+                    get: function () {
+                        return this._state.subviews;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(DeviceService.prototype, "strictSubviewPose", {
+                    get: function () {
+                        return this._state.strictSubviewPose;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(DeviceService.prototype, "strictSubviewProjectionMatrix", {
+                    get: function () {
+                        return this._state.strictSubviewProjectionMatrix;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(DeviceService.prototype, "strictSubviewViewport", {
+                    get: function () {
+                        return this._state.strictSubviewViewport;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(DeviceService.prototype, "strictViewport", {
+                    get: function () {
+                        return this._state.strictViewport;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                DeviceService.prototype.getSubviewEntity = function (index) {
+                    var subviewEntity = this.contextService.entities.getOrCreateEntity('ar.device.view_' + index);
+                    if (!subviewEntity.position) {
+                        subviewEntity.position = new cesium_imports_1.ConstantPositionProperty();
+                    }
+                    if (!subviewEntity.orientation) {
+                        subviewEntity.orientation = new cesium_imports_1.ConstantProperty();
+                    }
+                    return subviewEntity;
+                };
+                /**
+                * Update device state.
+                */
+                DeviceService.prototype.update = function () {
+                    this.sessionService.ensureNotRealityAugmenter();
+                    if (this.sessionService.isRealityManager) {
+                        this.updateViewport();
+                        this.updateState();
+                    } else {
+                        this.setEyePoseFromDeviceOrientation();
+                    }
+                    var positionFIXED = utils_1.getEntityPositionInReferenceFrame(this.eye, clock.currentTime, cesium_imports_1.ReferenceFrame.FIXED, scratchCartesian);
+                    this._eyeCartographicPosition = positionFIXED ? cesium_imports_1.Cartographic.fromCartesian(positionFIXED, undefined, this._eyeCartographicPosition) : positionFIXED;
+                };
+                DeviceService.prototype.updateState = function () {
+                    if (typeof navigator !== 'undefined' && navigator.activeVRDisplays && navigator.activeVRDisplays.length) {
+                        this.updateStateFromWebVR();
+                    } else {
+                        this.updateStateMonocular();
+                    }
+                };
+                DeviceService.prototype.updateStateFromWebVR = function () {
+                    var vrDisplay = navigator.activeVRDisplays[0];
+                    var vrFrameData = this._vrFrameData = this._vrFrameData || new VRFrameData();
+                    if (!vrDisplay.getFrameData(vrFrameData)) return;
+                    var deviceState = this._state;
+                    var subviews = deviceState.subviews;
+                    var leftSubview = subviews[0];
+                    var rightSubview = subviews[1] = subviews[1] || {};
+                    var leftViewport = leftSubview.viewport || {};
+                    leftViewport.x = 0;
+                    leftViewport.y = 0;
+                    leftViewport.width = deviceState.viewport.width * 0.5;
+                    leftViewport.height = deviceState.viewport.height;
+                    var rightViewport = rightSubview.viewport || {};
+                    rightViewport.x = leftViewport.width;
+                    rightViewport.y = 0;
+                    rightViewport.width = leftViewport.width;
+                    rightViewport.height = deviceState.viewport.height;
+                    leftSubview.projectionMatrix = cesium_imports_1.Matrix4.fromColumnMajorArray(vrFrameData.leftProjectionMatrix, leftSubview.projectionMatrix);
+                    rightSubview.projectionMatrix = cesium_imports_1.Matrix4.clone(vrFrameData.rightProjectionMatrix, rightSubview.projectionMatrix);
+                    var inverseStandingMatrix = cesium_imports_1.Matrix4.inverseTransformation(vrDisplay.stageParameters.sittingToStandingTransform, scratchMatrix4);
+                    var inverseStandingRotationMatrix = cesium_imports_1.Matrix4.getRotation(inverseStandingMatrix, scratchMatrix3);
+                    var inverseStandingOrientation = cesium_imports_1.Quaternion.fromRotationMatrix(inverseStandingRotationMatrix, scratchQuaternion);
+                    var leftStandingViewMatrix = cesium_imports_1.Matrix4.multiplyTransformation(vrFrameData.leftViewMatrix, inverseStandingMatrix, scratchMatrix4);
+                    var rightStandingViewMatrix = cesium_imports_1.Matrix4.multiplyTransformation(vrFrameData.rightViewMatrix, inverseStandingMatrix, scratchMatrix4);
+                    this.setStagePoseFromGeolocation();
+                    if (!vrDisplay.displayName.match(/polyfill/g)) {
+                        var sittingEyePosition = cesium_imports_1.Cartesian3.unpack(vrFrameData.pose.position, 0, scratchCartesian);
+                        var stageEyePosition = cesium_imports_1.Matrix4.multiplyByPoint(inverseStandingMatrix, sittingEyePosition, scratchCartesian);
+                        var sittingEyeOrientation = cesium_imports_1.Quaternion.unpack(vrFrameData.pose.orientation, 0, scratchQuaternion2);
+                        var stageEyeOrientation = cesium_imports_1.Quaternion.multiply(inverseStandingOrientation, sittingEyeOrientation, scratchQuaternion);
+                        var eye = this.eye;
+                        eye.position.setValue(stageEyePosition, this.stage);
+                        eye.orientation.setValue(stageEyeOrientation);
+                        var leftEye = this.getSubviewEntity(0);
+                        var stageLeftEyePosition = cesium_imports_1.Matrix4.getTranslation(leftStandingViewMatrix, scratchCartesian);
+                        leftEye.position.setValue(stageLeftEyePosition, this.stage);
+                        var rightEye = this.getSubviewEntity(1);
+                        var stageRightEyePosition = cesium_imports_1.Matrix4.getTranslation(rightStandingViewMatrix, scratchCartesian);
+                        rightEye.position.setValue(stageRightEyePosition, this.stage);
+                    } else {
+                        // The polyfill does not support reporting an absolute orientation (yet), 
+                        // so fall back to our own pose calculation if we are using the polyfill device
+                        this.setEyePoseFromDeviceOrientation();
+                    }
+                };
+                DeviceService.prototype.updateStateMonocular = function () {
+                    this.setStagePoseFromGeolocation();
+                    this.setEyePoseFromDeviceOrientation();
+                    var state = this._state;
+                    state.subviews.length = 1;
+                    state.subviews[0].viewport = undefined;
+                    cesium_imports_1.Matrix4.clone(this._frustum.projectionMatrix, state.subviews[0].projectionMatrix);
+                };
+                DeviceService.prototype.setEyePoseFromDeviceOrientation = function () {
+                    var stageOffset = cesium_imports_1.Cartesian3.fromElements(0, 0, AVERAGE_HUMAN_HEIGHT, scratchCartesian);
+                    this.eye.position.setValue(stageOffset, this.stage);
+                    this.eye.orientation.setValue(this._deviceOrientation);
+                };
+                DeviceService.prototype.setStagePoseFromGeolocation = function () {
+                    var deviceCartographicPosition = this._state.cartographicPosition;
+                    if (deviceCartographicPosition) {
+                        var lon = deviceCartographicPosition.longitude;
+                        var lat = deviceCartographicPosition.latitude;
+                        var height = deviceCartographicPosition.height - AVERAGE_HUMAN_HEIGHT;
+                        var positionECEF = cesium_imports_1.Cartesian3.fromDegrees(lon, lat, height, undefined, scratchCartesian);
+                        var enuOrientation = cesium_imports_1.Transforms.headingPitchRollQuaternion(positionECEF, 0, 0, 0, undefined, scratchQuaternion);
+                        this.stage.position.setValue(positionECEF, cesium_imports_1.ReferenceFrame.FIXED);
+                        this.stage.orientation.setValue(enuOrientation);
+                    } else {
+                        this.stage.position.setValue(undefined, cesium_imports_1.ReferenceFrame.FIXED);
+                        this.stage.orientation.setValue(undefined);
+                    }
+                };
+                DeviceService.prototype.updateViewport = function () {
+                    this._frustum.aspectRatio = this._state.viewport.width / this._state.viewport.height;
+                    if (this.viewService.containingElement) {
+                        this.viewport.x = 0;
+                        this.viewport.y = 0;
+                        var width = this.viewService.containingElement.clientWidth;
+                        var height = this.viewService.containingElement.clientHeight;
+                        this.viewport.width = width;
+                        this.viewport.height = height;
+                    }
+                };
+                /**
+                 * Request that the callback function be called for the next frame.
+                 * @param callback function
+                 */
+                DeviceService.prototype.requestFrame = function (callback) {
+                    var _this = this;
+                    var onFrame = function () {
+                        tick();
+                        _this.update();
+                        callback(clock.currentTime);
+                    };
+                    if (this.vrDisplay) {
+                        return this.vrDisplay.requestAnimationFrame(onFrame);
+                    } else {
+                        return utils_1.requestAnimationFrame(onFrame);
+                    }
+                };
+                /**
+                 * Send device state to reality viewers.
+                 */
+                DeviceService.prototype.publishDeviceState = function () {
+                    var _this = this;
+                    this.sessionService.ensureIsRealityManager();
+                    if (this.sessionService.isRealityManager) {
+                        this.update();
+                        this.sessionService.managedSessions.forEach(function (session) {
+                            if (common_1.Role.isRealityViewer(session.info.role)) session.send('ar.device.state', _this._state);
+                        });
+                    }
+                };
+                /**
+                 * Returns the maximum allowed viewport
+                 */
+                DeviceService.prototype.getMaximumViewport = function () {
+                    if (typeof document !== 'undefined' && document.documentElement) {
+                        return {
+                            x: 0,
+                            y: 0,
+                            width: document.documentElement.clientWidth,
+                            height: document.documentElement.clientHeight
+                        };
+                    }
+                    throw new Error("Not implemeneted for the current platform");
+                };
+                DeviceService.prototype.startDeviceLocationUpdates = function () {
+                    var _this = this;
+                    if (typeof navigator == 'undefined') return;
+                    if (!cesium_imports_1.defined(this._geolocationWatchId)) {
+                        this._geolocationWatchId = navigator.geolocation.watchPosition(function (pos) {
+                            var cartographic = _this._state.cartographicPosition = _this._state.cartographicPosition || new cesium_imports_1.Cartographic();
+                            cartographic.latitude = pos.coords.latitude;
+                            cartographic.longitude = pos.coords.longitude;
+                            cartographic.height = pos.coords.altitude || 0;
+                            _this._state.geolocationAccuracy = pos.coords.accuracy > 0 ? pos.coords.accuracy : undefined;
+                            _this._state.altitudeAccuracy = pos.coords.altitudeAccuracy || undefined;
+                            _this.publishDeviceState();
+                        }, function (error) {
+                            console.error(error);
+                        }, {
+                            enableHighAccuracy: true
+                        });
+                    }
+                };
+                DeviceService.prototype.stopDeviceLocationUpdates = function () {
+                    if (typeof navigator !== 'undefined' && cesium_imports_1.defined(this._geolocationWatchId)) {
+                        navigator.geolocation.clearWatch(this._geolocationWatchId);
+                        this._geolocationWatchId = undefined;
+                    }
+                    this._state.cartographicPosition = undefined;
+                    this._state.geolocationAccuracy = undefined;
+                    this._state.altitudeAccuracy = undefined;
+                    this.publishDeviceState();
+                };
+                DeviceService.prototype.startDeviceOrientationUpdates = function () {
+                    var _this = this;
+                    if (typeof window == 'undefined' || !window.addEventListener) return;
+                    if (!cesium_imports_1.defined(this._deviceorientationListener)) {
+                        var headingDrift_1 = 0;
+                        var alphaOffset_1 = undefined;
+                        this._deviceorientationListener = function (e) {
+                            var alphaDegrees = e.alpha;
+                            var webkitCompassHeading = e['webkitCompassHeading'];
+                            var webkitCompassAccuracy = +e['webkitCompassAccuracy'];
+                            if (!cesium_imports_1.defined(alphaDegrees)) {
+                                return;
+                            }
+                            if (e.absolute) {
+                                alphaOffset_1 = 0;
+                            }
+                            // when the phone is almost updside down, webkit flips the compass heading 
+                            // (not documented anywhere, annoyingly)
+                            // if (e.beta >= 130 || e.beta <= -130) webkitCompassHeading = undefined;
+                            if ((!cesium_imports_1.defined(alphaOffset_1) || Math.abs(headingDrift_1) > 5) && cesium_imports_1.defined(webkitCompassHeading) && webkitCompassAccuracy >= 0 && webkitCompassAccuracy < 50 && webkitCompassHeading >= 0) {
+                                if (!cesium_imports_1.defined(alphaOffset_1)) {
+                                    alphaOffset_1 = -webkitCompassHeading;
+                                } else {
+                                    alphaOffset_1 -= headingDrift_1;
+                                }
+                                _this._compassAccuracy = webkitCompassAccuracy > 0 ? webkitCompassAccuracy : undefined;
+                            }
+                            var alpha = cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE * (e.alpha + alphaOffset_1 || -webkitCompassHeading || 0);
+                            var beta = cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE * e.beta;
+                            var gamma = cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE * e.gamma;
+                            var alphaQuat = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_Z, alpha, scratchQuaternion);
+                            var betaQuat = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_X, beta, scratchQuaternion2);
+                            var alphaBetaQuat = cesium_imports_1.Quaternion.multiply(alphaQuat, betaQuat, scratchQuaternion);
+                            var gammaQuat = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_Y, gamma, scratchQuaternion2);
+                            var alphaBetaGammaQuat = cesium_imports_1.Quaternion.multiply(alphaBetaQuat, gammaQuat, scratchQuaternion);
+                            var screenOrientationAngle = screen['orientation'] && screen['orientation'].angle || window.orientation || 0;
+                            var screenOrientationQuat = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_Z, -screenOrientationAngle * cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE, scratchQuaternion2);
+                            _this._deviceOrientation = cesium_imports_1.Quaternion.multiply(alphaBetaGammaQuat, screenOrientationQuat, _this._deviceOrientation || new cesium_imports_1.Quaternion());
+                            // TODO: fix heading drift calculation (heading should match webkitCompassHeading)
+                            // if (defined(webkitCompassHeading)) {
+                            //     const q = alphaBetaGammaQuat//utils.getEntityOrientationInReferenceFrame(this.interfaceEntity, JulianDate.now(), this.locationEntity, this._scratchQuaternion1);
+                            //     var heading = -Math.atan2(2*(q.w*q.z + q.x*q.y), 1 - 2*(q.y*q.y + q.z*q.z));
+                            //     if (heading < 0) heading += 2*Math.PI;
+                            //     const {swing,twist} = swingTwistDecomposition(alphaBetaGammaQuat, Cartesian3.UNIT_Z);
+                            //     const twistAngle = 2 * Math.acos(twist.w);
+                            //     console.log(twist.w + ' ' + twistAngle * CesiumMath.DEGREES_PER_RADIAN + '\n' + webkitCompassHeading);
+                            //     // this._headingDrift = webkitCompassHeading - heading * CesiumMath.DEGREES_PER_RADIAN;
+                            // }
+                        };
+                        if ('ondeviceorientationabsolute' in window) {
+                            window.addEventListener('deviceorientationabsolute', this._deviceorientationListener);
+                        } else if ('ondeviceorientation' in window) {
+                            window.addEventListener('deviceorientation', this._deviceorientationListener);
+                        }
+                    }
+                };
+                DeviceService.prototype.stopDeviceOrientationUpdates = function () {
+                    if (typeof window == 'undefined' || !window.removeEventListener) return;
+                    this._deviceOrientation = undefined;
+                    this._compassAccuracy = undefined;
+                    if (this._deviceorientationListener) {
+                        if ('ondeviceorientationabsolute' in window) {
+                            window.removeEventListener('deviceorientationabsolute', this._deviceorientationListener);
+                        } else if ('ondeviceorientation' in window) {
+                            window.removeEventListener('deviceorientation', this._deviceorientationListener);
+                        }
+                        this._deviceorientationListener = undefined;
+                    }
+                };
+                DeviceService = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, view_1.ViewService, context_2.ContextService)], DeviceService);
+                return DeviceService;
+            }();
+            exports_1("DeviceService", DeviceService);
+        }
+    };
+});
+$__System.register('14', ['d', '15', 'b', 'c'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -10499,7 +9541,7 @@ $__System.register('16', ['d', '17', 'b', 'c'], function (exports_1, context_1) 
         }
     };
 });
-$__System.register('18', ['d', '11', 'b', '13', 'a', '16', 'c'], function (exports_1, context_1) {
+$__System.register('16', ['d', '10', 'b', '11', '12', 'a', '14', 'c'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -10517,7 +9559,7 @@ $__System.register('18', ['d', '11', 'b', '13', 'a', '16', 'c'], function (expor
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
-    var aurelia_dependency_injection_1, common_1, session_1, reality_1, view_1, vuforia_1, utils;
+    var aurelia_dependency_injection_1, common_1, session_1, device_1, reality_1, view_1, vuforia_1, utils;
     var LiveVideoRealityLoader;
     return {
         setters: [function (aurelia_dependency_injection_1_1) {
@@ -10526,6 +9568,8 @@ $__System.register('18', ['d', '11', 'b', '13', 'a', '16', 'c'], function (expor
             common_1 = common_1_1;
         }, function (session_1_1) {
             session_1 = session_1_1;
+        }, function (device_1_1) {
+            device_1 = device_1_1;
         }, function (reality_1_1) {
             reality_1 = reality_1_1;
         }, function (view_1_1) {
@@ -10538,12 +9582,40 @@ $__System.register('18', ['d', '11', 'b', '13', 'a', '16', 'c'], function (expor
         execute: function () {
             LiveVideoRealityLoader = function (_super) {
                 __extends(LiveVideoRealityLoader, _super);
-                function LiveVideoRealityLoader(sessionService, viewService, vuforiaDelegate) {
+                function LiveVideoRealityLoader(sessionService, vuforiaDelegate, viewService, deviceService) {
+                    var _this = this;
                     _super.call(this);
                     this.sessionService = sessionService;
-                    this.viewService = viewService;
                     this.vuforiaDelegate = vuforiaDelegate;
+                    this.viewService = viewService;
+                    this.deviceService = deviceService;
                     this.type = 'live-video';
+                    if (typeof document !== 'undefined') {
+                        this.fovSlider = document.createElement('input');
+                        this.fovSlider.type = 'range';
+                        this.fovSlider.min = '0';
+                        this.fovSlider.max = '179';
+                        this.fovSlider.value = '90';
+                        this.fovSlider.step = '1';
+                        this.fovSlider.style.position = 'absolute;';
+                        this.fovSlider.addEventListener('change', function (event) {
+                            _this.videoFov = Number.parseInt(_this.fovSlider.value) * Math.PI / 180;
+                        });
+                        this.videoFov = Number.parseInt(this.fovSlider.value) * Math.PI / 180;
+                        this.viewService.containingElementPromise.then(function (container) {
+                            container.insertBefore(_this.fovSlider, container.firstChild);
+                        });
+                        this.videoElement = document.createElement('video');
+                        this.videoElement.style.width = '100%';
+                        this.videoElement.style.height = 'height:100%';
+                        this.videoElement.controls = false;
+                        this.videoElement.autoplay = true;
+                        this.viewService.containingElementPromise.then(function (container) {
+                            container.insertBefore(_this.videoElement, container.firstChild);
+                        });
+                        this.canvas = document.createElement('canvas');
+                        this.context = this.canvas.getContext('2d');
+                    }
                 }
                 LiveVideoRealityLoader.prototype.load = function (reality, callback) {
                     var _this = this;
@@ -10551,9 +9623,36 @@ $__System.register('18', ['d', '11', 'b', '13', 'a', '16', 'c'], function (expor
                     var remoteRealitySession = this.sessionService.createSessionPort();
                     remoteRealitySession.on['ar.context.update'] = function () {};
                     remoteRealitySession.connectEvent.addEventListener(function () {
-                        if (_this.viewService.element) {
-                            var remove_1 = utils.addZoomHandler(_this.viewService.element, function (zoomData) {});
-                            remoteRealitySession.closeEvent.addEventListener(remove_1);
+                        if (_this.videoElement) {
+                            var videoElement_1 = _this.videoElement;
+                            var mediaDevices = navigator.mediaDevices;
+                            var getUserMedia = (mediaDevices.getUserMedia || mediaDevices['mozGetUserMedia'] || mediaDevices['msGetUserMedia'] || mediaDevices['webkitGetUserMedia']).bind(mediaDevices);
+                            getUserMedia({ audio: false, video: true }).then(function (videoStream) {
+                                videoElement_1.src = window.URL.createObjectURL(videoStream);
+                            }).catch(function (error) {
+                                remoteRealitySession.errorEvent.raiseEvent(error);
+                            });
+                            var deviceService_1 = _this.deviceService;
+                            var lastFrameTime_1 = -1;
+                            var update_1 = function (time) {
+                                if (realitySession.isConnected) _this.deviceService.requestFrame(update_1);
+                                if (videoElement_1.currentTime != lastFrameTime_1) {
+                                    lastFrameTime_1 = videoElement_1.currentTime;
+                                    // const videoWidth = videoElement.videoWidth;
+                                    // const videoHeight = videoElement.videoHeight;
+                                    var viewState = {
+                                        time: time,
+                                        pose: utils.getSerializedEntityPose(deviceService_1.eye, time),
+                                        geolocationAccuracy: deviceService_1.geolocationAccuracy,
+                                        altitudeAccuracy: deviceService_1.altitudeAccuracy,
+                                        compassAccuracy: deviceService_1.compassAccuracy,
+                                        viewport: deviceService_1.viewport,
+                                        subviews: deviceService_1.subviews
+                                    };
+                                    remoteRealitySession.send('ar.reality.viewState', viewState);
+                                }
+                            };
+                            _this.deviceService.requestFrame(update_1);
                         }
                         _this.vuforiaDelegate.videoEnabled = true;
                         _this.vuforiaDelegate.trackingEnabled = true;
@@ -10572,14 +9671,28 @@ $__System.register('18', ['d', '11', 'b', '13', 'a', '16', 'c'], function (expor
                     realitySession.open(messageChannel.port1, this.sessionService.configuration);
                     remoteRealitySession.open(messageChannel.port2, { role: common_1.Role.REALITY_VIEWER });
                 };
-                LiveVideoRealityLoader = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, view_1.ViewService, vuforia_1.VuforiaServiceDelegate)], LiveVideoRealityLoader);
+                LiveVideoRealityLoader.isAvailable = function () {
+                    if (typeof navigator !== 'undefined' && navigator.mediaDevices) {
+                        var mediaDevices = navigator.mediaDevices;
+                        return !!(mediaDevices.getUserMedia || mediaDevices['mozGetUserMedia'] || mediaDevices['msGetUserMedia'] || mediaDevices['webkitGetUserMedia']);
+                    } else {
+                        return false;
+                    }
+                };
+                LiveVideoRealityLoader.prototype.getVideoFrame = function (x, y, width, height) {
+                    this.canvas.width = this.videoElement.videoWidth;
+                    this.canvas.height = this.videoElement.videoHeight;
+                    this.context.drawImage(this.videoElement, 0, 0, this.canvas.width, this.canvas.height);
+                    return this.context.getImageData(x, y, width, height);
+                };
+                LiveVideoRealityLoader = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, vuforia_1.VuforiaServiceDelegate, view_1.ViewService, device_1.DeviceService)], LiveVideoRealityLoader);
                 return LiveVideoRealityLoader;
             }(reality_1.RealityLoader);
             exports_1("LiveVideoRealityLoader", LiveVideoRealityLoader);
         }
     };
 });
-$__System.register('12', ['d', '10', '11', 'b', '13', 'c'], function (exports_1, context_1) {
+$__System.register('13', ['d', 'f', '10', 'b', 'c'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -10590,7 +9703,7 @@ $__System.register('12', ['d', '10', '11', 'b', '13', 'c'], function (exports_1,
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
-    var aurelia_dependency_injection_1, cesium_imports_1, common_1, session_1, reality_1, utils_1;
+    var aurelia_dependency_injection_1, cesium_imports_1, common_1, session_1, utils_1;
     var PoseStatus, scratchCartesian3, scratchQuaternion, scratchOriginCartesian3, ContextService;
     function _stringFromReferenceFrame(referenceFrame) {
         var rf = referenceFrame;
@@ -10605,8 +9718,6 @@ $__System.register('12', ['d', '10', '11', 'b', '13', 'c'], function (exports_1,
             common_1 = common_1_1;
         }, function (session_1_1) {
             session_1 = session_1_1;
-        }, function (reality_1_1) {
-            reality_1 = reality_1_1;
         }, function (utils_1_1) {
             utils_1 = utils_1_1;
         }],
@@ -10644,10 +9755,9 @@ $__System.register('12', ['d', '10', '11', 'b', '13', 'c'], function (exports_1,
              *    to be focused on.
              */
             ContextService = function () {
-                function ContextService(sessionService, realityService, timerService) {
+                function ContextService(sessionService) {
                     var _this = this;
                     this.sessionService = sessionService;
-                    this.realityService = realityService;
                     /**
                      * An event that is raised when all remotely managed entities are are up-to-date for
                      * the current frame. It is suggested that all modifications to locally managed entities
@@ -10729,21 +9839,8 @@ $__System.register('12', ['d', '10', '11', 'b', '13', 'c'], function (exports_1,
                     this._subscribedEntities = new WeakMap();
                     this._updatingEntities = new Set();
                     this._knownEntities = new Set();
-                    this._frameIndex = 0;
                     this._sessionEntities = {};
                     if (this.sessionService.isRealityManager || this.sessionService.isRealityViewer) {
-                        this.realityService.viewStateEvent.addEventListener(function (viewState) {
-                            _this._update({
-                                time: viewState.time,
-                                index: _this._frameIndex++,
-                                reality: realityService.getCurrent(),
-                                entities: {},
-                                view: viewState
-                            });
-                        });
-                        this.realityService.frameEvent.addEventListener(function (state) {
-                            _this._update(state);
-                        });
                         this.sessionService.connectEvent.addEventListener(function (session) {
                             _this._subscribedEntities.set(session, new Set());
                             session.on['ar.context.subscribe'] = function (_a) {
@@ -10877,7 +9974,6 @@ $__System.register('12', ['d', '10', '11', 'b', '13', 'c'], function (exports_1,
                 ContextService.prototype._update = function (serializedState) {
                     // if this session is the manager, we need to update our child sessions a.s.a.p
                     if (this.sessionService.isRealityManager) {
-                        delete serializedState.entities[this.user.id]; // children don't need this
                         this._entityPoseCache = {};
                         for (var _i = 0, _a = this.sessionService.managedSessions; _i < _a.length; _i++) {
                             var session = _a[_i];
@@ -10885,13 +9981,15 @@ $__System.register('12', ['d', '10', '11', 'b', '13', 'c'], function (exports_1,
                         }
                     }
                     // our user entity is defined by the current view pose (the current reality must provide this)
-                    serializedState.entities[this.user.id] = serializedState.view.pose;
+                    this.updateEntityFromSerializedPose(this.user.id, serializedState.view.pose);
                     // update the entities the manager knows about
                     this._knownEntities.clear();
-                    for (var id in serializedState.entities) {
-                        this.updateEntityFromSerializedPose(id, serializedState.entities[id]);
-                        this._updatingEntities.add(id);
-                        this._knownEntities.add(id);
+                    if (serializedState.entities) {
+                        for (var id in serializedState.entities) {
+                            this.updateEntityFromSerializedPose(id, serializedState.entities[id]);
+                            this._updatingEntities.add(id);
+                            this._knownEntities.add(id);
+                        }
                     }
                     // if the mangager didn't send us an update for a particular entity,
                     // assume the manager no longer knows about it
@@ -10912,7 +10010,7 @@ $__System.register('12', ['d', '10', '11', 'b', '13', 'c'], function (exports_1,
                     var timestamp = performance.now();
                     this.deltaTime = Math.min(timestamp - this.timestamp, this.maxDeltaTime);
                     this.timestamp = timestamp;
-                    cesium_imports_1.JulianDate.clone(serializedState.time, this.time);
+                    cesium_imports_1.JulianDate.clone(serializedState.view.time, this.time);
                     this._serializedState = serializedState;
                     // raise an event for the user to update and render the scene
                     this.updateEvent.raiseEvent(this);
@@ -10945,18 +10043,23 @@ $__System.register('12', ['d', '10', '11', 'b', '13', 'c'], function (exports_1,
                 ContextService.prototype.publishEntityState = function (entity, referenceFrame) {};
                 ContextService.prototype._updateLocalOrigin = function (state) {
                     var pose = state.view.pose;
-                    var rootFrame = typeof pose.r === 'number' ? pose.r : this.entities.getOrCreateEntity(pose.r);
-                    var userPosition = this.user.position && this.user.position.getValueInReferenceFrame(state.time, rootFrame, scratchCartesian3);
+                    var rootFrame = pose ? typeof pose.r === 'number' ? pose.r : this.entities.getOrCreateEntity(pose.r) : this.user;
+                    var userPosition = this.user.position && this.user.position.getValueInReferenceFrame(state.view.time, rootFrame, scratchCartesian3);
                     var localENUFrame = this.localOriginEastNorthUp.position && this.localOriginEastNorthUp.position.referenceFrame;
-                    var localENUPosition = this.localOriginEastNorthUp.position && localENUFrame && this.localOriginEastNorthUp.position.getValueInReferenceFrame(state.time, localENUFrame, scratchOriginCartesian3);
-                    if (userPosition && (!localENUPosition || localENUFrame !== rootFrame || cesium_imports_1.Cartesian3.magnitudeSquared(cesium_imports_1.Cartesian3.subtract(userPosition, localENUPosition, scratchOriginCartesian3)) > 25000000)) {
+                    var localENUPosition = this.localOriginEastNorthUp.position && localENUFrame && this.localOriginEastNorthUp.position.getValueInReferenceFrame(state.view.time, localENUFrame, scratchOriginCartesian3);
+                    if (!userPosition || !localENUPosition || localENUFrame !== rootFrame || cesium_imports_1.Cartesian3.magnitudeSquared(cesium_imports_1.Cartesian3.subtract(userPosition, localENUPosition, scratchOriginCartesian3)) > 25000000) {
                         var localENUPositionProperty = this.localOriginEastNorthUp.position;
                         var localENUOrientationProperty = this.localOriginEastNorthUp.orientation;
-                        localENUPositionProperty.setValue(userPosition, rootFrame);
-                        if (rootFrame === cesium_imports_1.ReferenceFrame.FIXED) {
-                            var enuOrientation = cesium_imports_1.Transforms.headingPitchRollQuaternion(userPosition, 0, 0, 0, undefined, scratchQuaternion);
-                            localENUOrientationProperty.setValue(enuOrientation);
+                        if (userPosition) {
+                            localENUPositionProperty.setValue(userPosition, rootFrame);
+                            if (rootFrame === cesium_imports_1.ReferenceFrame.FIXED) {
+                                var enuOrientation = cesium_imports_1.Transforms.headingPitchRollQuaternion(userPosition, 0, 0, 0, undefined, scratchQuaternion);
+                                localENUOrientationProperty.setValue(enuOrientation);
+                            } else {
+                                localENUOrientationProperty.setValue(cesium_imports_1.Quaternion.IDENTITY);
+                            }
                         } else {
+                            localENUPositionProperty.setValue(cesium_imports_1.Cartesian3.ZERO, this.user);
                             localENUOrientationProperty.setValue(cesium_imports_1.Quaternion.IDENTITY);
                         }
                         this.localOriginChangeEvent.raiseEvent(undefined);
@@ -10969,17 +10072,20 @@ $__System.register('12', ['d', '10', '11', 'b', '13', 'c'], function (exports_1,
                         delete sessionEntities[id];
                     }
                     // reference all entities from the primary frame state (if any)
-                    for (var id in state.entities) {
-                        sessionEntities[id] = state.entities[id];
+                    if (state.entities) {
+                        for (var id in state.entities) {
+                            sessionEntities[id] = state.entities[id];
+                        }
                     }
                     // get subscrbied entities for the session
                     for (var _i = 0, _a = this._subscribedEntities.get(session); _i < _a.length; _i++) {
                         var id_1 = _a[_i];
-                        sessionEntities[id_1] = this._getSerializedEntityPose(id_1, state.time);
+                        sessionEntities[id_1] = this._getSerializedEntityPose(id_1, state.view.time);
                     }
                     // recycle the parent frame state object, but with the session entities
                     var parentEntities = state.entities;
                     state.entities = sessionEntities;
+                    state['time'] = state.view.time; // deprecated
                     state.sendTime = cesium_imports_1.JulianDate.now(state.sendTime);
                     session.send('ar.context.update', state);
                     state.entities = parentEntities;
@@ -10992,14 +10098,14 @@ $__System.register('12', ['d', '10', '11', 'b', '13', 'c'], function (exports_1,
                     }
                     return this._entityPoseCache[id];
                 };
-                ContextService = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, reality_1.RealityService)], ContextService);
+                ContextService = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService)], ContextService);
                 return ContextService;
             }();
             exports_1("ContextService", ContextService);
         }
     };
 });
-$__System.register('17', ['d', 'b', 'c'], function (exports_1, context_1) {
+$__System.register('15', ['d', 'b', 'c'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -11126,7 +10232,7 @@ $__System.register('17', ['d', 'b', 'c'], function (exports_1, context_1) {
 });
 (function() {
 var define = $__System.amdDefine;
-define("19", ["exports", "4"], function(exports, _aureliaPal) {
+define("17", ["exports", "4"], function(exports, _aureliaPal) {
   'use strict';
   exports.__esModule = true;
   var _extends = Object.assign || function(target) {
@@ -11422,7 +10528,7 @@ define("4", ["exports"], function(exports) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("d", ["exports", "19", "4"], function(exports, _aureliaMetadata, _aureliaPal) {
+define("d", ["exports", "17", "4"], function(exports, _aureliaMetadata, _aureliaPal) {
   'use strict';
   exports.__esModule = true;
   var _classInvokers;
@@ -11914,16 +11020,13 @@ define("d", ["exports", "19", "4"], function(exports, _aureliaMetadata, _aurelia
 });
 
 })();
-$__System.register("11", ["10"], function (exports_1, context_1) {
+$__System.register("10", [], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
-    var cesium_imports_1;
-    var Role, Viewport, SubviewType, SerializedSubview, DeviceState, RealityViewer;
+    var Role, Viewport, SubviewType, RealityViewer;
     return {
-        setters: [function (cesium_imports_1_1) {
-            cesium_imports_1 = cesium_imports_1_1;
-        }],
+        setters: [],
         execute: function () {
             /**
              * Describes the role of an [[ArgonSystem]]
@@ -12016,51 +11119,6 @@ $__System.register("11", ["10"], function (exports_1, context_1) {
                 SubviewType[SubviewType["OTHER"] = "Other"] = "OTHER";
             })(SubviewType || (SubviewType = {}));
             exports_1("SubviewType", SubviewType);
-            (function (SerializedSubview) {
-                function clone(subview, result) {
-                    if (result === void 0) {
-                        result = {};
-                    }
-                    result.type = subview.type;
-                    result.frustum = result.frustum || {};
-                    result.frustum.xOffset = subview.frustum.xOffset;
-                    result.frustum.yOffset = subview.frustum.yOffset;
-                    result.frustum.fov = subview.frustum.fov;
-                    result.frustum.aspectRatio = subview.frustum.aspectRatio;
-                    result.pose = subview.pose;
-                    result.viewport = Viewport.clone(subview.viewport, result.viewport);
-                    return result;
-                }
-                SerializedSubview.clone = clone;
-            })(SerializedSubview = SerializedSubview || (SerializedSubview = {}));
-            exports_1("SerializedSubview", SerializedSubview);
-            (function (DeviceState) {
-                function clone(state, result) {
-                    if (result === void 0) {
-                        result = {};
-                    }
-                    result.time = cesium_imports_1.JulianDate.clone(state.time, result.time);
-                    result.locationPose = state.locationPose;
-                    result.orientationPose = state.orientationPose;
-                    result.displayPose = state.displayPose;
-                    result.locationAccuracy = state.locationAccuracy;
-                    result.locationAltitudeAccuracy = state.locationAltitudeAccuracy;
-                    result.defaultFov = state.defaultFov;
-                    result.viewport = Viewport.clone(state.viewport, result.viewport);
-                    result.subviews = state.subviews || [];
-                    result.subviews.length = state.subviews.length;
-                    state.subviews.forEach(function (subview, i) {
-                        result.subviews[i] = SerializedSubview.clone(subview, result.subviews[i]);
-                    });
-                    result.strictViewport = state.strictViewport;
-                    result.strictSubviewViewports = state.strictSubviewViewports;
-                    result.strictSubviewFrustums = state.strictSubviewFrustums;
-                    result.strictSubviewPoses = state.strictSubviewPoses;
-                    return result;
-                }
-                DeviceState.clone = clone;
-            })(DeviceState = DeviceState || (DeviceState = {}));
-            exports_1("DeviceState", DeviceState);
             /**
             * Represents a view of Reality
             */
@@ -12077,8 +11135,11 @@ $__System.register("11", ["10"], function (exports_1, context_1) {
                 };
                 RealityViewer.EMPTY = {
                     uri: 'reality:empty',
-                    title: 'Empty Reality',
-                    providedReferenceFrames: ['FIXED']
+                    title: 'Empty Reality'
+                };
+                RealityViewer.LIVE_VIDEO = {
+                    uri: 'reality:live-video',
+                    title: 'Live Video Reality'
                 };
                 return RealityViewer;
             }();
@@ -12086,7 +11147,7 @@ $__System.register("11", ["10"], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('b', ['10', 'd', '11', 'c'], function (exports_1, context_1) {
+$__System.register('b', ['f', 'd', '10', 'c'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -12511,7 +11572,7 @@ $__System.register('b', ['10', 'd', '11', 'c'], function (exports_1, context_1) 
                      * @private
                      */
                     get: function () {
-                        console.warn("Deprecated. Use isRealityManager()");return this.isManager;
+                        console.warn("Deprecated. Use isRealityManager");return this.isManager;
                     },
                     enumerable: true,
                     configurable: true
@@ -12521,7 +11582,7 @@ $__System.register('b', ['10', 'd', '11', 'c'], function (exports_1, context_1) 
                      * @private
                      */
                     get: function () {
-                        console.warn("Deprecated. Use isRealityAugmenter()");return this.isRealityAugmenter;
+                        console.warn("Deprecated. Use isRealityAugmenter");return this.isRealityAugmenter;
                     },
                     enumerable: true,
                     configurable: true
@@ -12531,7 +11592,7 @@ $__System.register('b', ['10', 'd', '11', 'c'], function (exports_1, context_1) 
                      * @private
                      */
                     get: function () {
-                        console.warn("Deprecated. Use isRealityViewer()");return this.isRealityViewer;
+                        console.warn("Deprecated. Use isRealityViewer");return this.isRealityViewer;
                     },
                     enumerable: true,
                     configurable: true
@@ -12674,7 +11735,7 @@ $__System.register('b', ['10', 'd', '11', 'c'], function (exports_1, context_1) 
         }
     };
 });
-$__System.register('13', ['d', '10', '11', '17', 'b', 'c', '1'], function (exports_1, context_1) {
+$__System.register('12', ['d', 'f', '10', '15', 'b', 'c'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -12685,7 +11746,7 @@ $__System.register('13', ['d', '10', '11', '17', 'b', 'c', '1'], function (expor
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
-    var aurelia_dependency_injection_1, cesium_imports_1, common_1, focus_1, session_1, utils_1, argon_1;
+    var aurelia_dependency_injection_1, cesium_imports_1, common_1, focus_1, session_1, utils_1;
     var RealityLoader, RealityService;
     return {
         setters: [function (aurelia_dependency_injection_1_1) {
@@ -12700,8 +11761,6 @@ $__System.register('13', ['d', '10', '11', '17', 'b', 'c', '1'], function (expor
             session_1 = session_1_1;
         }, function (utils_1_1) {
             utils_1 = utils_1_1;
-        }, function (argon_1_1) {
-            argon_1 = argon_1_1;
         }],
         execute: function () {
             /**
@@ -12739,11 +11798,6 @@ $__System.register('13', ['d', '10', '11', '17', 'b', 'c', '1'], function (expor
                      */
                     this._viewStateEvent = new utils_1.Event();
                     /**
-                     * Deprecated. Use viewStateEvent.
-                     */
-                    // Remove after v1.2
-                    this._frameEvent = new utils_1.Event();
-                    /**
                      * Manager-only. A map from a managed session to the desired reality
                      */
                     this.desiredRealityMap = new WeakMap();
@@ -12757,8 +11811,6 @@ $__System.register('13', ['d', '10', '11', '17', 'b', 'c', '1'], function (expor
                     this.sessionDesiredRealityChangeEvent = new utils_1.Event();
                     // RealitySetupHandlers
                     this._loaders = [];
-                    this._scratchFrustum = new cesium_imports_1.PerspectiveFrustum();
-                    this._scratchArray = new Array();
                     this._loadID = -1;
                     if (sessionService.isRealityManager) {
                         sessionService.manager.connectEvent.addEventListener(function () {
@@ -12838,14 +11890,6 @@ $__System.register('13', ['d', '10', '11', '17', 'b', 'c', '1'], function (expor
                     enumerable: true,
                     configurable: true
                 });
-                Object.defineProperty(RealityService.prototype, "frameEvent", {
-                    get: function () {
-                        this.sessionService.ensureNotRealityAugmenter();
-                        return this._frameEvent;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
                 Object.defineProperty(RealityService.prototype, "session", {
                     get: function () {
                         return this._session;
@@ -12901,7 +11945,7 @@ $__System.register('13', ['d', '10', '11', '17', 'b', 'c', '1'], function (expor
                     this.sessionService.ensureIsRealityViewer();
                     if (this.sessionService.manager.isConnected) {
                         this.sessionService.manager.send('ar.reality.viewState', view);
-                        if (view.pose) this.viewStateEvent.raiseEvent(view);
+                        this.viewStateEvent.raiseEvent(view);
                     }
                 };
                 /**
@@ -12960,35 +12004,6 @@ $__System.register('13', ['d', '10', '11', '17', 'b', 'c', '1'], function (expor
                     }
                     return selectedReality;
                 };
-                /**
-                 * Deprecated. Remove after v1.2
-                 * @private
-                 */
-                RealityService.prototype.onGenerateViewFromEyeParameters = function (eye, t) {
-                    var fov = eye.fov || argon_1.ArgonSystem.instance.device.state.defaultFov;
-                    var viewport = eye.viewport || argon_1.ArgonSystem.instance.device.state.viewport;
-                    var aspectRatio = eye.aspect || viewport.width / viewport.height;
-                    this._scratchFrustum.fov = fov;
-                    this._scratchFrustum.aspectRatio = aspectRatio;
-                    this._scratchFrustum.near = 0.01;
-                    this._scratchFrustum.far = 10000000;
-                    return eye.pose ? {
-                        time: t,
-                        viewport: viewport,
-                        pose: eye.pose,
-                        subviews: [{
-                            type: common_1.SubviewType.SINGULAR,
-                            frustum: {
-                                fov: fov,
-                                aspectRatio: aspectRatio
-                            },
-                            // TODO: remove this later  
-                            projectionMatrix: cesium_imports_1.Matrix4.toArray(this._scratchFrustum.projectionMatrix, this._scratchArray)
-                        }],
-                        locationAccuracy: undefined,
-                        locationAltitudeAccuracy: undefined
-                    } : undefined;
-                };
                 RealityService.prototype._setNextReality = function (reality, force) {
                     var _this = this;
                     if (force === void 0) {
@@ -13015,24 +12030,10 @@ $__System.register('13', ['d', '10', '11', '17', 'b', 'c', '1'], function (expor
                             _this._session = realitySession;
                             _this._setCurrent(reality);
                             realitySession.on['ar.reality.viewState'] = function (viewState) {
-                                if (viewState.pose) {
-                                    _this.viewStateEvent.raiseEvent(viewState);
-                                }
+                                _this.viewStateEvent.raiseEvent(viewState);
                             };
                             // Deprecated. Remove after v1.2
-                            realitySession.on['ar.reality.frameState'] = function (serializedState) {
-                                var state = serializedState;
-                                if (!cesium_imports_1.defined(serializedState.view)) {
-                                    if (!cesium_imports_1.defined(serializedState.eye)) throw new Error("Unable to construct view configuration: missing eye parameters");
-                                    var view = _this.onGenerateViewFromEyeParameters(serializedState.eye, state.time);
-                                    if (!view || !view.pose) return;
-                                    _this.viewStateEvent.raiseEvent(view);
-                                } else {
-                                    if (state.view && state.view.pose) {
-                                        _this.viewStateEvent.raiseEvent(state.view);
-                                    }
-                                }
-                            };
+                            realitySession.on['ar.reality.frameState'] = function (serializedState) {};
                             realitySession.closeEvent.addEventListener(function () {
                                 console.log('Reality session closed: ' + JSON.stringify(reality));
                                 // select a new reality if the current reality has closed without 
@@ -13110,7 +12111,7 @@ $__System.register('13', ['d', '10', '11', '17', 'b', 'c', '1'], function (expor
         }
     };
 });
-$__System.register('a', ['d', '10', '11', 'b', '12', 'c', '17', '13'], function (exports_1, context_1) {
+$__System.register('a', ['d', 'f', '10', 'b', '13', 'c', '15', '12'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -13122,7 +12123,7 @@ $__System.register('a', ['d', '10', '11', 'b', '12', 'c', '17', '13'], function 
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
     var aurelia_dependency_injection_1, cesium_imports_1, common_1, session_1, context_2, utils_1, focus_1, reality_1;
-    var argonContainer, argonContainerPromise, ViewService;
+    var argonContainer, argonContainerPromise, IDENTITY_SUBVIEW_POSE, ViewService;
     return {
         setters: [function (aurelia_dependency_injection_1_1) {
             aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
@@ -13165,9 +12166,6 @@ $__System.register('a', ['d', '10', '11', 'b', '12', 'c', '17', '13'], function 
                         argonContainer.addEventListener('touchmove', function (event) {
                             event.preventDefault();
                         }, true);
-                        argonContainer.addEventListener('gesturestart', function (event) {
-                            event.preventDefault();
-                        }, true);
                         resolve(container);
                     };
                     if (document.readyState == 'loading') {
@@ -13182,8 +12180,10 @@ $__System.register('a', ['d', '10', '11', 'b', '12', 'c', '17', '13'], function 
                 var sheet = style.sheet;
                 sheet.insertRule("\n        #argon {\n            position: fixed;\n            left: 0px;\n            bottom: 0px;\n            width: 100%;\n            height: 100%;\n            margin: 0;\n            border: 0;\n            padding: 0;\n        }\n    ", sheet.cssRules.length);
                 sheet.insertRule("\n        .argon-view {\n            overflow: hidden;\n            -webkit-tap-highlight-color: initial;\n            -webkit-user-select: none;\n            -webkit-tap-highlight-color: transparent;\n            user-select: none;\n        }\n    ", sheet.cssRules.length);
-                sheet.insertRule("\n        .argon-view > * {\n            position: absolute;\n            -webkit-tap-highlight-color: initial;\n        }\n    ", sheet.cssRules.length);
+                sheet.insertRule("\n        .argon-view > * {\n            position: absolute;\n        }\n    ", sheet.cssRules.length);
+                sheet.insertRule("\n        .argon-view > * > * {\n            -webkit-tap-highlight-color: initial;\n        }\n    ", sheet.cssRules.length);
             }
+            IDENTITY_SUBVIEW_POSE = { p: cesium_imports_1.Cartesian3.ZERO, o: cesium_imports_1.Quaternion.IDENTITY, r: 'ar.user' };
             /**
              * Manages the view state
              */
@@ -13194,6 +12194,11 @@ $__System.register('a', ['d', '10', '11', 'b', '12', 'c', '17', '13'], function 
                     this.focusService = focusService;
                     this.realityService = realityService;
                     this.contextService = contextService;
+                    /**
+                     * UI events that occur within this view. To handle an event (and prevent it from
+                     * being forwarded to another layer) call event.stopImmediatePropagation().
+                     */
+                    this.uiEvent = new utils_1.Event();
                     /**
                      * An event that is raised when the root viewport has changed
                      */
@@ -13246,6 +12251,9 @@ $__System.register('a', ['d', '10', '11', 'b', '12', 'c', '17', '13'], function 
                                 });
                             }
                         });
+                        this.containingElementPromise.then(function (container) {
+                            _this.containingElement = container;
+                        });
                         if (this.sessionService.isRealityViewer) {
                             this._setupEventSynthesizing();
                         } else {
@@ -13257,13 +12265,18 @@ $__System.register('a', ['d', '10', '11', 'b', '12', 'c', '17', '13'], function 
                             session.on['ar.viewport.desired'] = function (viewport) {
                                 _this.desiredViewportMap.set(session, viewport);
                             };
+                            session.on['ar.view.uievent'] = function (uievent) {
+                                if (_this.realityService.session && _this.realityService.session.isConnected) {
+                                    _this.realityService.session.send('ar.view.uievent', uievent);
+                                }
+                            };
                         });
                     }
                     this.contextService.renderEvent.addEventListener(function () {
                         var state = _this.contextService.serializedFrameState;
                         state.view.subviews.forEach(function (subview, index) {
                             var id = 'ar.view_' + index;
-                            var subviewPose = subview.pose || state.view.pose;
+                            var subviewPose = subview.pose || IDENTITY_SUBVIEW_POSE;
                             _this.contextService.updateEntityFromSerializedPose(id, subviewPose);
                         });
                         _this._update();
@@ -13288,17 +12301,9 @@ $__System.register('a', ['d', '10', '11', 'b', '12', 'c', '17', '13'], function 
                             width: viewState.viewport.width,
                             height: viewState.viewport.height
                         };
-                        subview.frustum = _this._frustums[index];
-                        if (!subview.frustum) {
-                            subview.frustum = _this._frustums[index] = new cesium_imports_1.PerspectiveFrustum();
-                            subview.frustum.near = 0.01;
-                            subview.frustum.far = 10000000;
-                        }
-                        subview.frustum.fov = serializedSubview.frustum.fov;
-                        subview.frustum.aspectRatio = serializedSubview.frustum.aspectRatio || subview.viewport.width / subview.viewport.height;
-                        subview.frustum.xOffset = serializedSubview.frustum.xOffset || 0;
-                        subview.frustum.yOffset = serializedSubview.frustum.yOffset || 0;
-                        subview.projectionMatrix = serializedSubview.projectionMatrix || subview.frustum.infiniteProjectionMatrix;
+                        subview.frustum = _this._frustums[index] = _this._frustums[index] || new cesium_imports_1.PerspectiveFrustum();
+                        utils_1.decomposePerspectiveProjectionMatrix(serializedSubview.projectionMatrix, subview.frustum);
+                        subview['projectionMatrix'] = serializedSubview.projectionMatrix;
                     });
                     return subviews;
                 };
@@ -13307,6 +12312,36 @@ $__System.register('a', ['d', '10', '11', 'b', '12', 'c', '17', '13'], function 
                  */
                 ViewService.prototype.getViewport = function () {
                     return this.contextService.serializedFrameState.view.viewport;
+                };
+                // /**
+                //  * Request to present the view in an HMD.
+                //  */
+                // public requestPresent() {
+                //     if (this.deviceService.vrDisplay) {
+                //         const layers:VRLayer[] = [];
+                //         layers[0] = {source:this.element.querySelector('canvas')};
+                //         return this.deviceService.vrDisplay.requestPresent(layers);
+                //     } else {
+                //         return this.requestFullscreen();
+                //     }
+                // }
+                // /**
+                //  * Exit preseting in an HMD
+                //  */
+                // public exitPresent() {
+                //     if (this.deviceService.vrDisplay) {
+                //         return this.deviceService.vrDisplay.exitPresent();
+                //     }
+                //     return Promise.reject(new Error("Not presenting"));
+                // }
+                /**
+                 * Request to present the view in fullscreen
+                 */
+                ViewService.prototype.requestFullscreen = function () {
+                    return this.containingElementPromise.then(function (container) {
+                        if (container.requestFullscreen) return container.requestFullscreen();
+                        if (container.webkitRequestFullscreen) return container.webkitRequestFullscreen();
+                    });
                 };
                 /**
                  * Handle UI Events. Meant to be overwritten by apps.
@@ -13393,14 +12428,17 @@ $__System.register('a', ['d', '10', '11', 'b', '12', 'c', '17', '13'], function 
                         }
                         return touchList;
                     };
-                    var forwardEvents = function (e) {
-                        if (e.type !== 'touchstart' && e.type !== 'touchmove' && e.type !== 'touchend') e.preventDefault();
+                    var raiseEvent = function (uiEvent) {
+                        _this.uiEvent.raiseEvent(uiEvent);
+                    };
+                    var forwardEvent = function (e) {
+                        e.preventDefault();
                         if (_this._currentRealitySession) {
                             var boundingRect = _this.element.getBoundingClientRect();
                             var touches = cloneTouches(e.touches, boundingRect);
                             var changedTouches = cloneTouches(e.changedTouches, boundingRect);
                             var targetTouches = cloneTouches(e.targetTouches, boundingRect);
-                            _this._currentRealitySession.send('ar.view.uievent', {
+                            _this.sessionService.manager.send('ar.view.uievent', {
                                 type: e.type,
                                 bubbles: e.bubbles,
                                 cancelable: e.cancelable,
@@ -13432,7 +12470,8 @@ $__System.register('a', ['d', '10', '11', 'b', '12', 'c', '17', '13'], function 
                         }
                     };
                     ['wheel', 'click', 'dblclick', 'contextmenu', 'mouseover', 'mouseout', 'mousemove', 'mousedown', 'mouseup', 'touchstart', 'touchend', 'touchmove', 'touchcancel'].forEach(function (type) {
-                        _this.element.addEventListener(type, forwardEvents, false);
+                        _this.element.addEventListener(type, raiseEvent, false);
+                        _this.element.addEventListener(type, forwardEvent, false);
                     });
                 };
                 ViewService.prototype._setupEventSynthesizing = function () {
@@ -13566,7 +12605,7 @@ $__System.register('a', ['d', '10', '11', 'b', '12', 'c', '17', '13'], function 
         }
     };
 });
-$__System.register('1a', ['d', 'b', '13', 'a'], function (exports_1, context_1) {
+$__System.register('18', ['d', 'b', '12', 'a'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -13606,6 +12645,7 @@ $__System.register('1a', ['d', 'b', '13', 'a'], function (exports_1, context_1) 
                     this.viewService = viewService;
                     this.type = 'hosted';
                     this.iframeElement = document.createElement('iframe');
+                    this.iframeElement.setAttribute('allowvr', '');
                     this.iframeElement.style.border = '0';
                     this.iframeElement.width = '100%';
                     this.iframeElement.height = '100%';
@@ -13674,7 +12714,7 @@ $__System.register('1a', ['d', 'b', '13', 'a'], function (exports_1, context_1) 
 // }
 (function() {
 var define = $__System.amdDefine;
-define("1b", ["1c", "1d", "1e", "1f"], function(defined, defineProperties, DeveloperError, Event) {
+define("19", ["1a", "1b", "1c", "1d"], function(defined, defineProperties, DeveloperError, Event) {
   'use strict';
   function CallbackProperty(callback, isConstant) {
     this._callback = undefined;
@@ -13716,7 +12756,330 @@ define("1b", ["1c", "1d", "1e", "1f"], function(defined, defineProperties, Devel
 })();
 (function() {
 var define = $__System.amdDefine;
-define("20", ["21"], function(freezeObject) {
+define("1e", ["1f", "1a", "1b", "20", "1c", "21", "22", "23", "24", "25"], function(Cartesian2, defined, defineProperties, destroyObject, DeveloperError, KeyboardEventModifier, CesiumMath, ScreenSpaceEventHandler, ScreenSpaceEventType, CameraEventType) {
+  'use strict';
+  function getKey(type, modifier) {
+    var key = type;
+    if (defined(modifier)) {
+      key += '+' + modifier;
+    }
+    return key;
+  }
+  function clonePinchMovement(pinchMovement, result) {
+    Cartesian2.clone(pinchMovement.distance.startPosition, result.distance.startPosition);
+    Cartesian2.clone(pinchMovement.distance.endPosition, result.distance.endPosition);
+    Cartesian2.clone(pinchMovement.angleAndHeight.startPosition, result.angleAndHeight.startPosition);
+    Cartesian2.clone(pinchMovement.angleAndHeight.endPosition, result.angleAndHeight.endPosition);
+  }
+  function listenToPinch(aggregator, modifier, canvas) {
+    var key = getKey(CameraEventType.PINCH, modifier);
+    var update = aggregator._update;
+    var isDown = aggregator._isDown;
+    var eventStartPosition = aggregator._eventStartPosition;
+    var pressTime = aggregator._pressTime;
+    var releaseTime = aggregator._releaseTime;
+    update[key] = true;
+    isDown[key] = false;
+    eventStartPosition[key] = new Cartesian2();
+    var movement = aggregator._movement[key];
+    if (!defined(movement)) {
+      movement = aggregator._movement[key] = {};
+    }
+    movement.distance = {
+      startPosition: new Cartesian2(),
+      endPosition: new Cartesian2()
+    };
+    movement.angleAndHeight = {
+      startPosition: new Cartesian2(),
+      endPosition: new Cartesian2()
+    };
+    movement.prevAngle = 0.0;
+    aggregator._eventHandler.setInputAction(function(event) {
+      aggregator._buttonsDown++;
+      isDown[key] = true;
+      pressTime[key] = new Date();
+    }, ScreenSpaceEventType.PINCH_START, modifier);
+    aggregator._eventHandler.setInputAction(function() {
+      aggregator._buttonsDown = Math.max(aggregator._buttonsDown - 1, 0);
+      isDown[key] = false;
+      releaseTime[key] = new Date();
+    }, ScreenSpaceEventType.PINCH_END, modifier);
+    aggregator._eventHandler.setInputAction(function(mouseMovement) {
+      if (isDown[key]) {
+        if (!update[key]) {
+          Cartesian2.clone(mouseMovement.distance.endPosition, movement.distance.endPosition);
+          Cartesian2.clone(mouseMovement.angleAndHeight.endPosition, movement.angleAndHeight.endPosition);
+        } else {
+          clonePinchMovement(mouseMovement, movement);
+          update[key] = false;
+          movement.prevAngle = movement.angleAndHeight.startPosition.x;
+        }
+        var angle = movement.angleAndHeight.endPosition.x;
+        var prevAngle = movement.prevAngle;
+        var TwoPI = Math.PI * 2;
+        while (angle >= (prevAngle + Math.PI)) {
+          angle -= TwoPI;
+        }
+        while (angle < (prevAngle - Math.PI)) {
+          angle += TwoPI;
+        }
+        movement.angleAndHeight.endPosition.x = -angle * canvas.clientWidth / 12;
+        movement.angleAndHeight.startPosition.x = -prevAngle * canvas.clientWidth / 12;
+      }
+    }, ScreenSpaceEventType.PINCH_MOVE, modifier);
+  }
+  function listenToWheel(aggregator, modifier) {
+    var key = getKey(CameraEventType.WHEEL, modifier);
+    var update = aggregator._update;
+    update[key] = true;
+    var movement = aggregator._movement[key];
+    if (!defined(movement)) {
+      movement = aggregator._movement[key] = {};
+    }
+    movement.startPosition = new Cartesian2();
+    movement.endPosition = new Cartesian2();
+    aggregator._eventHandler.setInputAction(function(delta) {
+      var arcLength = 15.0 * CesiumMath.toRadians(delta);
+      if (!update[key]) {
+        movement.endPosition.y = movement.endPosition.y + arcLength;
+      } else {
+        Cartesian2.clone(Cartesian2.ZERO, movement.startPosition);
+        movement.endPosition.x = 0.0;
+        movement.endPosition.y = arcLength;
+        update[key] = false;
+      }
+    }, ScreenSpaceEventType.WHEEL, modifier);
+  }
+  function listenMouseButtonDownUp(aggregator, modifier, type) {
+    var key = getKey(type, modifier);
+    var isDown = aggregator._isDown;
+    var eventStartPosition = aggregator._eventStartPosition;
+    var pressTime = aggregator._pressTime;
+    var releaseTime = aggregator._releaseTime;
+    isDown[key] = false;
+    eventStartPosition[key] = new Cartesian2();
+    var lastMovement = aggregator._lastMovement[key];
+    if (!defined(lastMovement)) {
+      lastMovement = aggregator._lastMovement[key] = {
+        startPosition: new Cartesian2(),
+        endPosition: new Cartesian2(),
+        valid: false
+      };
+    }
+    var down;
+    var up;
+    if (type === CameraEventType.LEFT_DRAG) {
+      down = ScreenSpaceEventType.LEFT_DOWN;
+      up = ScreenSpaceEventType.LEFT_UP;
+    } else if (type === CameraEventType.RIGHT_DRAG) {
+      down = ScreenSpaceEventType.RIGHT_DOWN;
+      up = ScreenSpaceEventType.RIGHT_UP;
+    } else if (type === CameraEventType.MIDDLE_DRAG) {
+      down = ScreenSpaceEventType.MIDDLE_DOWN;
+      up = ScreenSpaceEventType.MIDDLE_UP;
+    }
+    aggregator._eventHandler.setInputAction(function(event) {
+      aggregator._buttonsDown++;
+      lastMovement.valid = false;
+      isDown[key] = true;
+      pressTime[key] = new Date();
+      Cartesian2.clone(event.position, eventStartPosition[key]);
+    }, down, modifier);
+    aggregator._eventHandler.setInputAction(function() {
+      aggregator._buttonsDown = Math.max(aggregator._buttonsDown - 1, 0);
+      isDown[key] = false;
+      releaseTime[key] = new Date();
+    }, up, modifier);
+  }
+  function cloneMouseMovement(mouseMovement, result) {
+    Cartesian2.clone(mouseMovement.startPosition, result.startPosition);
+    Cartesian2.clone(mouseMovement.endPosition, result.endPosition);
+  }
+  function listenMouseMove(aggregator, modifier) {
+    var update = aggregator._update;
+    var movement = aggregator._movement;
+    var lastMovement = aggregator._lastMovement;
+    var isDown = aggregator._isDown;
+    for (var typeName in CameraEventType) {
+      if (CameraEventType.hasOwnProperty(typeName)) {
+        var type = CameraEventType[typeName];
+        if (defined(type)) {
+          var key = getKey(type, modifier);
+          update[key] = true;
+          if (!defined(aggregator._lastMovement[key])) {
+            aggregator._lastMovement[key] = {
+              startPosition: new Cartesian2(),
+              endPosition: new Cartesian2(),
+              valid: false
+            };
+          }
+          if (!defined(aggregator._movement[key])) {
+            aggregator._movement[key] = {
+              startPosition: new Cartesian2(),
+              endPosition: new Cartesian2()
+            };
+          }
+        }
+      }
+    }
+    aggregator._eventHandler.setInputAction(function(mouseMovement) {
+      for (var typeName in CameraEventType) {
+        if (CameraEventType.hasOwnProperty(typeName)) {
+          var type = CameraEventType[typeName];
+          if (defined(type)) {
+            var key = getKey(type, modifier);
+            if (isDown[key]) {
+              if (!update[key]) {
+                Cartesian2.clone(mouseMovement.endPosition, movement[key].endPosition);
+              } else {
+                cloneMouseMovement(movement[key], lastMovement[key]);
+                lastMovement[key].valid = true;
+                cloneMouseMovement(mouseMovement, movement[key]);
+                update[key] = false;
+              }
+            }
+          }
+        }
+      }
+      Cartesian2.clone(mouseMovement.endPosition, aggregator._currentMousePosition);
+    }, ScreenSpaceEventType.MOUSE_MOVE, modifier);
+  }
+  function CameraEventAggregator(canvas) {
+    if (!defined(canvas)) {
+      throw new DeveloperError('canvas is required.');
+    }
+    this._eventHandler = new ScreenSpaceEventHandler(canvas, true);
+    this._update = {};
+    this._movement = {};
+    this._lastMovement = {};
+    this._isDown = {};
+    this._eventStartPosition = {};
+    this._pressTime = {};
+    this._releaseTime = {};
+    this._buttonsDown = 0;
+    this._currentMousePosition = new Cartesian2();
+    listenToWheel(this, undefined);
+    listenToPinch(this, undefined, canvas);
+    listenMouseButtonDownUp(this, undefined, CameraEventType.LEFT_DRAG);
+    listenMouseButtonDownUp(this, undefined, CameraEventType.RIGHT_DRAG);
+    listenMouseButtonDownUp(this, undefined, CameraEventType.MIDDLE_DRAG);
+    listenMouseMove(this, undefined);
+    for (var modifierName in KeyboardEventModifier) {
+      if (KeyboardEventModifier.hasOwnProperty(modifierName)) {
+        var modifier = KeyboardEventModifier[modifierName];
+        if (defined(modifier)) {
+          listenToWheel(this, modifier);
+          listenToPinch(this, modifier, canvas);
+          listenMouseButtonDownUp(this, modifier, CameraEventType.LEFT_DRAG);
+          listenMouseButtonDownUp(this, modifier, CameraEventType.RIGHT_DRAG);
+          listenMouseButtonDownUp(this, modifier, CameraEventType.MIDDLE_DRAG);
+          listenMouseMove(this, modifier);
+        }
+      }
+    }
+  }
+  defineProperties(CameraEventAggregator.prototype, {
+    currentMousePosition: {get: function() {
+        return this._currentMousePosition;
+      }},
+    anyButtonDown: {get: function() {
+        var wheelMoved = !this._update[getKey(CameraEventType.WHEEL)] || !this._update[getKey(CameraEventType.WHEEL, KeyboardEventModifier.SHIFT)] || !this._update[getKey(CameraEventType.WHEEL, KeyboardEventModifier.CTRL)] || !this._update[getKey(CameraEventType.WHEEL, KeyboardEventModifier.ALT)];
+        return this._buttonsDown > 0 || wheelMoved;
+      }}
+  });
+  CameraEventAggregator.prototype.isMoving = function(type, modifier) {
+    if (!defined(type)) {
+      throw new DeveloperError('type is required.');
+    }
+    var key = getKey(type, modifier);
+    return !this._update[key];
+  };
+  CameraEventAggregator.prototype.getMovement = function(type, modifier) {
+    if (!defined(type)) {
+      throw new DeveloperError('type is required.');
+    }
+    var key = getKey(type, modifier);
+    var movement = this._movement[key];
+    return movement;
+  };
+  CameraEventAggregator.prototype.getLastMovement = function(type, modifier) {
+    if (!defined(type)) {
+      throw new DeveloperError('type is required.');
+    }
+    var key = getKey(type, modifier);
+    var lastMovement = this._lastMovement[key];
+    if (lastMovement.valid) {
+      return lastMovement;
+    }
+    return undefined;
+  };
+  CameraEventAggregator.prototype.isButtonDown = function(type, modifier) {
+    if (!defined(type)) {
+      throw new DeveloperError('type is required.');
+    }
+    var key = getKey(type, modifier);
+    return this._isDown[key];
+  };
+  CameraEventAggregator.prototype.getStartMousePosition = function(type, modifier) {
+    if (!defined(type)) {
+      throw new DeveloperError('type is required.');
+    }
+    if (type === CameraEventType.WHEEL || type === CameraEventType.PINCH) {
+      return this._currentMousePosition;
+    }
+    var key = getKey(type, modifier);
+    return this._eventStartPosition[key];
+  };
+  CameraEventAggregator.prototype.getButtonPressTime = function(type, modifier) {
+    if (!defined(type)) {
+      throw new DeveloperError('type is required.');
+    }
+    var key = getKey(type, modifier);
+    return this._pressTime[key];
+  };
+  CameraEventAggregator.prototype.getButtonReleaseTime = function(type, modifier) {
+    if (!defined(type)) {
+      throw new DeveloperError('type is required.');
+    }
+    var key = getKey(type, modifier);
+    return this._releaseTime[key];
+  };
+  CameraEventAggregator.prototype.reset = function() {
+    for (var name in this._update) {
+      if (this._update.hasOwnProperty(name)) {
+        this._update[name] = true;
+      }
+    }
+  };
+  CameraEventAggregator.prototype.isDestroyed = function() {
+    return false;
+  };
+  CameraEventAggregator.prototype.destroy = function() {
+    this._eventHandler = this._eventHandler && this._eventHandler.destroy();
+    return destroyObject(this);
+  };
+  return CameraEventAggregator;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("25", ["26"], function(freezeObject) {
+  'use strict';
+  var CameraEventType = {
+    LEFT_DRAG: 0,
+    RIGHT_DRAG: 1,
+    MIDDLE_DRAG: 2,
+    WHEEL: 3,
+    PINCH: 4
+  };
+  return freezeObject(CameraEventType);
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("27", ["26"], function(freezeObject) {
   'use strict';
   var ClockRange = {
     UNBOUNDED: 0,
@@ -13729,7 +13092,7 @@ define("20", ["21"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("22", ["1c"], function(defined) {
+define("28", ["1a"], function(defined) {
   'use strict';
   var getTimestamp;
   if (typeof performance !== 'undefined' && defined(performance.now)) {
@@ -13747,7 +13110,7 @@ define("22", ["1c"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("23", ["20", "24", "25", "1c", "1e", "1f", "22", "26"], function(ClockRange, ClockStep, defaultValue, defined, DeveloperError, Event, getTimestamp, JulianDate) {
+define("29", ["27", "2a", "2b", "1a", "1c", "1d", "28", "2c"], function(ClockRange, ClockStep, defaultValue, defined, DeveloperError, Event, getTimestamp, JulianDate) {
   'use strict';
   function Clock(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
@@ -13834,7 +13197,7 @@ define("23", ["20", "24", "25", "1c", "1e", "1f", "22", "26"], function(ClockRan
 })();
 (function() {
 var define = $__System.amdDefine;
-define("24", ["21"], function(freezeObject) {
+define("2a", ["26"], function(freezeObject) {
   'use strict';
   var ClockStep = {
     TICK_DEPENDENT: 0,
@@ -13847,7 +13210,7 @@ define("24", ["21"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("27", ["28", "1c", "1d", "1e", "29", "2a", "2b"], function(createGuid, defined, defineProperties, DeveloperError, CesiumMath, Entity, EntityCollection) {
+define("2d", ["2e", "1a", "1b", "1c", "22", "2f", "30"], function(createGuid, defined, defineProperties, DeveloperError, CesiumMath, Entity, EntityCollection) {
   'use strict';
   var entityOptionsScratch = {id: undefined};
   var entityIdScratch = new Array(2);
@@ -14168,70 +13531,7 @@ define("27", ["28", "1c", "1d", "1e", "29", "2a", "2b"], function(createGuid, de
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2c", ["1c", "1d", "1e"], function(defined, defineProperties, DeveloperError) {
-  'use strict';
-  function AssociativeArray() {
-    this._array = [];
-    this._hash = {};
-  }
-  defineProperties(AssociativeArray.prototype, {
-    length: {get: function() {
-        return this._array.length;
-      }},
-    values: {get: function() {
-        return this._array;
-      }}
-  });
-  AssociativeArray.prototype.contains = function(key) {
-    if (typeof key !== 'string' && typeof key !== 'number') {
-      throw new DeveloperError('key is required to be a string or number.');
-    }
-    return defined(this._hash[key]);
-  };
-  AssociativeArray.prototype.set = function(key, value) {
-    if (typeof key !== 'string' && typeof key !== 'number') {
-      throw new DeveloperError('key is required to be a string or number.');
-    }
-    var oldValue = this._hash[key];
-    if (value !== oldValue) {
-      this.remove(key);
-      this._hash[key] = value;
-      this._array.push(value);
-    }
-  };
-  AssociativeArray.prototype.get = function(key) {
-    if (typeof key !== 'string' && typeof key !== 'number') {
-      throw new DeveloperError('key is required to be a string or number.');
-    }
-    return this._hash[key];
-  };
-  AssociativeArray.prototype.remove = function(key) {
-    if (defined(key) && typeof key !== 'string' && typeof key !== 'number') {
-      throw new DeveloperError('key is required to be a string or number.');
-    }
-    var value = this._hash[key];
-    var hasValue = defined(value);
-    if (hasValue) {
-      var array = this._array;
-      array.splice(array.indexOf(value), 1);
-      delete this._hash[key];
-    }
-    return hasValue;
-  };
-  AssociativeArray.prototype.removeAll = function() {
-    var array = this._array;
-    if (array.length > 0) {
-      this._hash = {};
-      array.length = 0;
-    }
-  };
-  return AssociativeArray;
-});
-
-})();
-(function() {
-var define = $__System.amdDefine;
-define("28", [], function() {
+define("2e", [], function() {
   'use strict';
   function createGuid() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -14246,7 +13546,7 @@ define("28", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2d", ["2e", "25", "1c", "1d", "1e", "1f", "2f", "30"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, Event, ReferenceFrame, PositionProperty) {
+define("31", ["32", "2b", "1a", "1b", "1c", "1d", "33", "34"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, Event, ReferenceFrame, PositionProperty) {
   'use strict';
   function ConstantPositionProperty(value, referenceFrame) {
     this._definitionChanged = new Event();
@@ -14299,7 +13599,7 @@ define("2d", ["2e", "25", "1c", "1d", "1e", "1f", "2f", "30"], function(Cartesia
 })();
 (function() {
 var define = $__System.amdDefine;
-define("31", ["25", "1c", "1d", "1e", "1f"], function(defaultValue, defined, defineProperties, DeveloperError, Event) {
+define("35", ["2b", "1a", "1b", "1c", "1d"], function(defaultValue, defined, defineProperties, DeveloperError, Event) {
   'use strict';
   function ConstantProperty(value) {
     this._value = undefined;
@@ -14341,7 +13641,7 @@ define("31", ["25", "1c", "1d", "1e", "1f"], function(defaultValue, defined, def
 })();
 (function() {
 var define = $__System.amdDefine;
-define("32", ["25", "1c", "31"], function(defaultValue, defined, ConstantProperty) {
+define("36", ["2b", "1a", "35"], function(defaultValue, defined, ConstantProperty) {
   'use strict';
   function createProperty(name, privateName, subscriptionName, configurable, createPropertyCallback) {
     return {
@@ -14384,7 +13684,7 @@ define("32", ["25", "1c", "31"], function(defaultValue, defined, ConstantPropert
 })();
 (function() {
 var define = $__System.amdDefine;
-define("33", ["32"], function(createPropertyDescriptor) {
+define("37", ["36"], function(createPropertyDescriptor) {
   'use strict';
   function createRawProperty(value) {
     return value;
@@ -14398,7 +13698,7 @@ define("33", ["32"], function(createPropertyDescriptor) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2a", ["2e", "28", "25", "1c", "1d", "1e", "1f", "34", "35", "36", "37", "@empty", "@empty", "2d", "@empty", "32", "33", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "38", "@empty", "@empty"], function(Cartesian3, createGuid, defaultValue, defined, defineProperties, DeveloperError, Event, Matrix3, Matrix4, Quaternion, Transforms, BillboardGraphics, BoxGraphics, ConstantPositionProperty, CorridorGraphics, createPropertyDescriptor, createRawPropertyDescriptor, CylinderGraphics, EllipseGraphics, EllipsoidGraphics, LabelGraphics, ModelGraphics, PathGraphics, PointGraphics, PolygonGraphics, PolylineGraphics, PolylineVolumeGraphics, Property, RectangleGraphics, WallGraphics) {
+define("2f", ["32", "2e", "2b", "1a", "1b", "1c", "1d", "38", "39", "3a", "3b", "@empty", "@empty", "31", "@empty", "36", "37", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "3c", "@empty", "@empty"], function(Cartesian3, createGuid, defaultValue, defined, defineProperties, DeveloperError, Event, Matrix3, Matrix4, Quaternion, Transforms, BillboardGraphics, BoxGraphics, ConstantPositionProperty, CorridorGraphics, createPropertyDescriptor, createRawPropertyDescriptor, CylinderGraphics, EllipseGraphics, EllipsoidGraphics, LabelGraphics, ModelGraphics, PathGraphics, PointGraphics, PolygonGraphics, PolylineGraphics, PolylineVolumeGraphics, Property, RectangleGraphics, WallGraphics) {
   'use strict';
   function createConstantPositionProperty(value) {
     return new ConstantPositionProperty(value);
@@ -14650,7 +13950,7 @@ define("2a", ["2e", "28", "25", "1c", "1d", "1e", "1f", "34", "35", "36", "37", 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2b", ["2c", "28", "1c", "1d", "1e", "1f", "39", "26", "3a", "3b", "2a"], function(AssociativeArray, createGuid, defined, defineProperties, DeveloperError, Event, Iso8601, JulianDate, RuntimeError, TimeInterval, Entity) {
+define("30", ["3d", "2e", "1a", "1b", "1c", "1d", "3e", "2c", "3f", "40", "2f"], function(AssociativeArray, createGuid, defined, defineProperties, DeveloperError, Event, Iso8601, JulianDate, RuntimeError, TimeInterval, Entity) {
   'use strict';
   var entityOptionsScratch = {id: undefined};
   function fireChangedEvent(collection) {
@@ -14878,7 +14178,7 @@ define("2b", ["2c", "28", "1c", "1d", "1e", "1f", "39", "26", "3a", "3b", "2a"],
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3c", ["2e", "3d", "25", "1c", "1d", "1e", "3e"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, Ellipsoid) {
+define("41", ["32", "42", "2b", "1a", "1b", "1c", "43"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, Ellipsoid) {
   'use strict';
   function GeographicProjection(ellipsoid) {
     this._ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
@@ -14923,7 +14223,7 @@ define("3c", ["2e", "3d", "25", "1c", "1d", "1e", "3e"], function(Cartesian3, Ca
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3f", ["25", "1c", "1e", "29"], function(defaultValue, defined, DeveloperError, CesiumMath) {
+define("44", ["2b", "1a", "1c", "22"], function(defaultValue, defined, DeveloperError, CesiumMath) {
   'use strict';
   var factorial = CesiumMath.factorial;
   function calculateCoefficientTerm(x, zIndices, xTable, derivOrder, termOrder, reservedIndices) {
@@ -15123,7 +14423,7 @@ define("3f", ["25", "1c", "1e", "29"], function(defaultValue, defined, Developer
 })();
 (function() {
 var define = $__System.amdDefine;
-define("40", ["1c", "1d", "1e", "34", "36", "2f", "37"], function(defined, defineProperties, DeveloperError, Matrix3, Quaternion, ReferenceFrame, Transforms) {
+define("45", ["1a", "1b", "1c", "38", "3a", "33", "3b"], function(defined, defineProperties, DeveloperError, Matrix3, Quaternion, ReferenceFrame, Transforms) {
   "use strict";
   var OrientationProperty = function() {
     DeveloperError.throwInstantiationError();
@@ -15251,7 +14551,7 @@ define("40", ["1c", "1d", "1e", "34", "36", "2f", "37"], function(defined, defin
 })();
 (function() {
 var define = $__System.amdDefine;
-define("41", ["1c", "1d", "1e", "42"], function(defined, defineProperties, DeveloperError, PerspectiveOffCenterFrustum) {
+define("46", ["1a", "1b", "1c", "47"], function(defined, defineProperties, DeveloperError, PerspectiveOffCenterFrustum) {
   'use strict';
   function PerspectiveFrustum() {
     this._offCenterFrustum = new PerspectiveOffCenterFrustum();
@@ -15360,7 +14660,7 @@ define("41", ["1c", "1d", "1e", "42"], function(defined, defineProperties, Devel
 })();
 (function() {
 var define = $__System.amdDefine;
-define("43", ["21"], function(freezeObject) {
+define("48", ["26"], function(freezeObject) {
   'use strict';
   var Intersect = {
     OUTSIDE: -1,
@@ -15373,7 +14673,7 @@ define("43", ["21"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("44", ["2e", "45", "25", "1c", "1e", "43", "46"], function(Cartesian3, Cartesian4, defaultValue, defined, DeveloperError, Intersect, Plane) {
+define("49", ["32", "4a", "2b", "1a", "1c", "48", "4b"], function(Cartesian3, Cartesian4, defaultValue, defined, DeveloperError, Intersect, Plane) {
   'use strict';
   function CullingVolume(planes) {
     this.planes = defaultValue(planes, []);
@@ -15477,7 +14777,7 @@ define("44", ["2e", "45", "25", "1c", "1e", "43", "46"], function(Cartesian3, Ca
 })();
 (function() {
 var define = $__System.amdDefine;
-define("42", ["47", "2e", "45", "25", "1c", "1d", "1e", "35", "44"], function(Cartesian2, Cartesian3, Cartesian4, defaultValue, defined, defineProperties, DeveloperError, Matrix4, CullingVolume) {
+define("47", ["1f", "32", "4a", "2b", "1a", "1b", "1c", "39", "49"], function(Cartesian2, Cartesian3, Cartesian4, defaultValue, defined, defineProperties, DeveloperError, Matrix4, CullingVolume) {
   'use strict';
   function PerspectiveOffCenterFrustum() {
     this.left = undefined;
@@ -15683,7 +14983,7 @@ define("42", ["47", "2e", "45", "25", "1c", "1d", "1e", "35", "44"], function(Ca
 })();
 (function() {
 var define = $__System.amdDefine;
-define("48", ["1c", "1d", "1e", "1f", "38"], function(defined, defineProperties, DeveloperError, Event, Property) {
+define("4c", ["1a", "1b", "1c", "1d", "3c"], function(defined, defineProperties, DeveloperError, Event, Property) {
   "use strict";
   function resolve(that) {
     var targetEntity = that._targetEntity;
@@ -15754,7 +15054,7 @@ define("48", ["1c", "1d", "1e", "1f", "38"], function(defined, defineProperties,
 })();
 (function() {
 var define = $__System.amdDefine;
-define("49", ["1c", "1d", "1e", "1f", "3a", "38"], function(defined, defineProperties, DeveloperError, Event, RuntimeError, Property) {
+define("4d", ["1a", "1b", "1c", "1d", "3f", "3c"], function(defined, defineProperties, DeveloperError, Event, RuntimeError, Property) {
   'use strict';
   function resolveEntity(that) {
     var entityIsResolved = true;
@@ -15928,7 +15228,7 @@ define("49", ["1c", "1d", "1e", "1f", "3a", "38"], function(defined, definePrope
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2f", ["21"], function(freezeObject) {
+define("33", ["26"], function(freezeObject) {
   'use strict';
   var ReferenceFrame = {
     FIXED: 0,
@@ -15940,7 +15240,7 @@ define("2f", ["21"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("30", ["2e", "1c", "1d", "1e", "34", "35", "36", "2f", "37"], function(Cartesian3, defined, defineProperties, DeveloperError, Matrix3, Matrix4, Quaternion, ReferenceFrame, Transforms) {
+define("34", ["32", "1a", "1b", "1c", "38", "39", "3a", "33", "3b"], function(Cartesian3, defined, defineProperties, DeveloperError, Matrix3, Matrix4, Quaternion, ReferenceFrame, Transforms) {
   'use strict';
   function PositionProperty() {
     DeveloperError.throwInstantiationError();
@@ -16093,7 +15393,7 @@ define("30", ["2e", "1c", "1d", "1e", "34", "35", "36", "2f", "37"], function(Ca
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3b", ["25", "1c", "1d", "1e", "21", "26"], function(defaultValue, defined, defineProperties, DeveloperError, freezeObject, JulianDate) {
+define("40", ["2b", "1a", "1b", "1c", "26", "2c"], function(defaultValue, defined, defineProperties, DeveloperError, freezeObject, JulianDate) {
   'use strict';
   function TimeInterval(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
@@ -16246,7 +15546,7 @@ define("3b", ["25", "1c", "1d", "1e", "21", "26"], function(defaultValue, define
 })();
 (function() {
 var define = $__System.amdDefine;
-define("39", ["21", "26", "3b"], function(freezeObject, JulianDate, TimeInterval) {
+define("3e", ["26", "2c", "40"], function(freezeObject, JulianDate, TimeInterval) {
   'use strict';
   var MINIMUM_VALUE = freezeObject(JulianDate.fromIso8601('0000-01-01T00:00:00Z'));
   var MAXIMUM_VALUE = freezeObject(JulianDate.fromIso8601('9999-12-31T24:00:00Z'));
@@ -16265,7 +15565,7 @@ define("39", ["21", "26", "3b"], function(freezeObject, JulianDate, TimeInterval
 })();
 (function() {
 var define = $__System.amdDefine;
-define("38", ["25", "1c", "1d", "1e", "39"], function(defaultValue, defined, defineProperties, DeveloperError, Iso8601) {
+define("3c", ["2b", "1a", "1b", "1c", "3e"], function(defaultValue, defined, defineProperties, DeveloperError, Iso8601) {
   'use strict';
   function Property() {
     DeveloperError.throwInstantiationError();
@@ -16319,7 +15619,7 @@ define("38", ["25", "1c", "1d", "1e", "39"], function(defaultValue, defined, def
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4a", ["2e", "25", "1c", "1d", "1e", "1f", "2f", "30", "38", "4b"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, Event, ReferenceFrame, PositionProperty, Property, SampledProperty) {
+define("4e", ["32", "2b", "1a", "1b", "1c", "1d", "33", "34", "3c", "4f"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, Event, ReferenceFrame, PositionProperty, Property, SampledProperty) {
   'use strict';
   function SampledPositionProperty(referenceFrame, numberOfDerivatives) {
     numberOfDerivatives = defaultValue(numberOfDerivatives, 0);
@@ -16431,7 +15731,7 @@ define("4a", ["2e", "25", "1c", "1d", "1e", "1f", "2f", "30", "38", "4b"], funct
 })();
 (function() {
 var define = $__System.amdDefine;
-define("1f", ["1c", "1d", "1e"], function(defined, defineProperties, DeveloperError) {
+define("1d", ["1a", "1b", "1c"], function(defined, defineProperties, DeveloperError) {
   'use strict';
   function Event() {
     this._listeners = [];
@@ -16507,7 +15807,7 @@ define("1f", ["1c", "1d", "1e"], function(defined, defineProperties, DeveloperEr
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4c", ["21"], function(freezeObject) {
+define("50", ["26"], function(freezeObject) {
   'use strict';
   var ExtrapolationType = {
     NONE: 0,
@@ -16520,7 +15820,7 @@ define("4c", ["21"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4d", ["1c", "1e"], function(defined, DeveloperError) {
+define("51", ["1a", "1c"], function(defined, DeveloperError) {
   'use strict';
   var LinearApproximation = {type: 'Linear'};
   LinearApproximation.getRequiredDataPoints = function(degree) {
@@ -16556,7 +15856,7 @@ define("4d", ["1c", "1e"], function(defined, DeveloperError) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4b", ["4e", "25", "1c", "1d", "1e", "1f", "4c", "26", "4d"], function(binarySearch, defaultValue, defined, defineProperties, DeveloperError, Event, ExtrapolationType, JulianDate, LinearApproximation) {
+define("4f", ["52", "2b", "1a", "1b", "1c", "1d", "50", "2c", "51"], function(binarySearch, defaultValue, defined, defineProperties, DeveloperError, Event, ExtrapolationType, JulianDate, LinearApproximation) {
   'use strict';
   var PackableNumber = {
     packedLength: 1,
@@ -17005,7 +16305,628 @@ define("4b", ["4e", "25", "1c", "1d", "1e", "1f", "4c", "26", "4d"], function(bi
 })();
 (function() {
 var define = $__System.amdDefine;
-define("47", ["25", "1c", "1e", "21", "29"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
+define("3d", ["1a", "1b", "1c"], function(defined, defineProperties, DeveloperError) {
+  'use strict';
+  function AssociativeArray() {
+    this._array = [];
+    this._hash = {};
+  }
+  defineProperties(AssociativeArray.prototype, {
+    length: {get: function() {
+        return this._array.length;
+      }},
+    values: {get: function() {
+        return this._array;
+      }}
+  });
+  AssociativeArray.prototype.contains = function(key) {
+    if (typeof key !== 'string' && typeof key !== 'number') {
+      throw new DeveloperError('key is required to be a string or number.');
+    }
+    return defined(this._hash[key]);
+  };
+  AssociativeArray.prototype.set = function(key, value) {
+    if (typeof key !== 'string' && typeof key !== 'number') {
+      throw new DeveloperError('key is required to be a string or number.');
+    }
+    var oldValue = this._hash[key];
+    if (value !== oldValue) {
+      this.remove(key);
+      this._hash[key] = value;
+      this._array.push(value);
+    }
+  };
+  AssociativeArray.prototype.get = function(key) {
+    if (typeof key !== 'string' && typeof key !== 'number') {
+      throw new DeveloperError('key is required to be a string or number.');
+    }
+    return this._hash[key];
+  };
+  AssociativeArray.prototype.remove = function(key) {
+    if (defined(key) && typeof key !== 'string' && typeof key !== 'number') {
+      throw new DeveloperError('key is required to be a string or number.');
+    }
+    var value = this._hash[key];
+    var hasValue = defined(value);
+    if (hasValue) {
+      var array = this._array;
+      array.splice(array.indexOf(value), 1);
+      delete this._hash[key];
+    }
+    return hasValue;
+  };
+  AssociativeArray.prototype.removeAll = function() {
+    var array = this._array;
+    if (array.length > 0) {
+      this._hash = {};
+      array.length = 0;
+    }
+  };
+  return AssociativeArray;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("20", ["2b", "1c"], function(defaultValue, DeveloperError) {
+  'use strict';
+  function returnTrue() {
+    return true;
+  }
+  function destroyObject(object, message) {
+    message = defaultValue(message, 'This object was destroyed, i.e., destroy() was called.');
+    function throwOnDestroyed() {
+      throw new DeveloperError(message);
+    }
+    for (var key in object) {
+      if (typeof object[key] === 'function') {
+        object[key] = throwOnDestroyed;
+      }
+    }
+    object.isDestroyed = returnTrue;
+    return undefined;
+  }
+  return destroyObject;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("21", ["26"], function(freezeObject) {
+  'use strict';
+  var KeyboardEventModifier = {
+    SHIFT: 0,
+    CTRL: 1,
+    ALT: 2
+  };
+  return freezeObject(KeyboardEventModifier);
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("23", ["3d", "1f", "2b", "1a", "20", "1c", "53", "21", "24"], function(AssociativeArray, Cartesian2, defaultValue, defined, destroyObject, DeveloperError, FeatureDetection, KeyboardEventModifier, ScreenSpaceEventType) {
+  'use strict';
+  function getPosition(screenSpaceEventHandler, event, result) {
+    var element = screenSpaceEventHandler._element;
+    if (element === document) {
+      result.x = event.clientX;
+      result.y = event.clientY;
+      return result;
+    }
+    var rect = element.getBoundingClientRect();
+    result.x = event.clientX - rect.left;
+    result.y = event.clientY - rect.top;
+    return result;
+  }
+  function getInputEventKey(type, modifier) {
+    var key = type;
+    if (defined(modifier)) {
+      key += '+' + modifier;
+    }
+    return key;
+  }
+  function getModifier(event) {
+    if (event.shiftKey) {
+      return KeyboardEventModifier.SHIFT;
+    } else if (event.ctrlKey) {
+      return KeyboardEventModifier.CTRL;
+    } else if (event.altKey) {
+      return KeyboardEventModifier.ALT;
+    }
+    return undefined;
+  }
+  var MouseButton = {
+    LEFT: 0,
+    MIDDLE: 1,
+    RIGHT: 2
+  };
+  function registerListener(screenSpaceEventHandler, domType, element, callback) {
+    function listener(e) {
+      callback(screenSpaceEventHandler, e);
+    }
+    element.addEventListener(domType, listener, false);
+    screenSpaceEventHandler._removalFunctions.push(function() {
+      element.removeEventListener(domType, listener, false);
+    });
+  }
+  function registerListeners(screenSpaceEventHandler) {
+    var element = screenSpaceEventHandler._element;
+    var alternateElement = !defined(element.disableRootEvents) ? document : element;
+    if (FeatureDetection.supportsPointerEvents()) {
+      registerListener(screenSpaceEventHandler, 'pointerdown', element, handlePointerDown);
+      registerListener(screenSpaceEventHandler, 'pointerup', element, handlePointerUp);
+      registerListener(screenSpaceEventHandler, 'pointermove', element, handlePointerMove);
+    } else {
+      registerListener(screenSpaceEventHandler, 'mousedown', element, handleMouseDown);
+      registerListener(screenSpaceEventHandler, 'mouseup', alternateElement, handleMouseUp);
+      registerListener(screenSpaceEventHandler, 'mousemove', alternateElement, handleMouseMove);
+      registerListener(screenSpaceEventHandler, 'touchstart', element, handleTouchStart);
+      registerListener(screenSpaceEventHandler, 'touchend', alternateElement, handleTouchEnd);
+      registerListener(screenSpaceEventHandler, 'touchmove', alternateElement, handleTouchMove);
+    }
+    registerListener(screenSpaceEventHandler, 'dblclick', element, handleDblClick);
+    var wheelEvent;
+    if ('onwheel' in element) {
+      wheelEvent = 'wheel';
+    } else if (document.onmousewheel !== undefined) {
+      wheelEvent = 'mousewheel';
+    } else {
+      wheelEvent = 'DOMMouseScroll';
+    }
+    registerListener(screenSpaceEventHandler, wheelEvent, element, handleWheel);
+  }
+  function unregisterListeners(screenSpaceEventHandler) {
+    var removalFunctions = screenSpaceEventHandler._removalFunctions;
+    for (var i = 0; i < removalFunctions.length; ++i) {
+      removalFunctions[i]();
+    }
+  }
+  var mouseDownEvent = {position: new Cartesian2()};
+  function handleMouseDown(screenSpaceEventHandler, event) {
+    if (screenSpaceEventHandler._seenAnyTouchEvents) {
+      return;
+    }
+    var button = event.button;
+    screenSpaceEventHandler._buttonDown = button;
+    var screenSpaceEventType;
+    if (button === MouseButton.LEFT) {
+      screenSpaceEventType = ScreenSpaceEventType.LEFT_DOWN;
+    } else if (button === MouseButton.MIDDLE) {
+      screenSpaceEventType = ScreenSpaceEventType.MIDDLE_DOWN;
+    } else if (button === MouseButton.RIGHT) {
+      screenSpaceEventType = ScreenSpaceEventType.RIGHT_DOWN;
+    } else {
+      return;
+    }
+    var position = getPosition(screenSpaceEventHandler, event, screenSpaceEventHandler._primaryPosition);
+    Cartesian2.clone(position, screenSpaceEventHandler._primaryStartPosition);
+    Cartesian2.clone(position, screenSpaceEventHandler._primaryPreviousPosition);
+    var modifier = getModifier(event);
+    var action = screenSpaceEventHandler.getInputAction(screenSpaceEventType, modifier);
+    if (defined(action)) {
+      Cartesian2.clone(position, mouseDownEvent.position);
+      action(mouseDownEvent);
+      event.preventDefault();
+    }
+  }
+  var mouseUpEvent = {position: new Cartesian2()};
+  var mouseClickEvent = {position: new Cartesian2()};
+  function handleMouseUp(screenSpaceEventHandler, event) {
+    if (screenSpaceEventHandler._seenAnyTouchEvents) {
+      return;
+    }
+    var button = event.button;
+    screenSpaceEventHandler._buttonDown = undefined;
+    var screenSpaceEventType;
+    var clickScreenSpaceEventType;
+    if (button === MouseButton.LEFT) {
+      screenSpaceEventType = ScreenSpaceEventType.LEFT_UP;
+      clickScreenSpaceEventType = ScreenSpaceEventType.LEFT_CLICK;
+    } else if (button === MouseButton.MIDDLE) {
+      screenSpaceEventType = ScreenSpaceEventType.MIDDLE_UP;
+      clickScreenSpaceEventType = ScreenSpaceEventType.MIDDLE_CLICK;
+    } else if (button === MouseButton.RIGHT) {
+      screenSpaceEventType = ScreenSpaceEventType.RIGHT_UP;
+      clickScreenSpaceEventType = ScreenSpaceEventType.RIGHT_CLICK;
+    } else {
+      return;
+    }
+    var modifier = getModifier(event);
+    var action = screenSpaceEventHandler.getInputAction(screenSpaceEventType, modifier);
+    var clickAction = screenSpaceEventHandler.getInputAction(clickScreenSpaceEventType, modifier);
+    if (defined(action) || defined(clickAction)) {
+      var position = getPosition(screenSpaceEventHandler, event, screenSpaceEventHandler._primaryPosition);
+      if (defined(action)) {
+        Cartesian2.clone(position, mouseUpEvent.position);
+        action(mouseUpEvent);
+      }
+      if (defined(clickAction)) {
+        var startPosition = screenSpaceEventHandler._primaryStartPosition;
+        var xDiff = startPosition.x - position.x;
+        var yDiff = startPosition.y - position.y;
+        var totalPixels = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+        if (totalPixels < screenSpaceEventHandler._clickPixelTolerance) {
+          Cartesian2.clone(position, mouseClickEvent.position);
+          clickAction(mouseClickEvent);
+        }
+      }
+    }
+  }
+  var mouseMoveEvent = {
+    startPosition: new Cartesian2(),
+    endPosition: new Cartesian2()
+  };
+  function handleMouseMove(screenSpaceEventHandler, event) {
+    if (screenSpaceEventHandler._seenAnyTouchEvents) {
+      return;
+    }
+    var modifier = getModifier(event);
+    var position = getPosition(screenSpaceEventHandler, event, screenSpaceEventHandler._primaryPosition);
+    var previousPosition = screenSpaceEventHandler._primaryPreviousPosition;
+    var action = screenSpaceEventHandler.getInputAction(ScreenSpaceEventType.MOUSE_MOVE, modifier);
+    if (defined(action)) {
+      Cartesian2.clone(previousPosition, mouseMoveEvent.startPosition);
+      Cartesian2.clone(position, mouseMoveEvent.endPosition);
+      action(mouseMoveEvent);
+    }
+    Cartesian2.clone(position, previousPosition);
+    if (defined(screenSpaceEventHandler._buttonDown)) {
+      event.preventDefault();
+    }
+  }
+  var mouseDblClickEvent = {position: new Cartesian2()};
+  function handleDblClick(screenSpaceEventHandler, event) {
+    var button = event.button;
+    var screenSpaceEventType;
+    if (button === MouseButton.LEFT) {
+      screenSpaceEventType = ScreenSpaceEventType.LEFT_DOUBLE_CLICK;
+    } else if (button === MouseButton.MIDDLE) {
+      screenSpaceEventType = ScreenSpaceEventType.MIDDLE_DOUBLE_CLICK;
+    } else if (button === MouseButton.RIGHT) {
+      screenSpaceEventType = ScreenSpaceEventType.RIGHT_DOUBLE_CLICK;
+    } else {
+      return;
+    }
+    var modifier = getModifier(event);
+    var action = screenSpaceEventHandler.getInputAction(screenSpaceEventType, modifier);
+    if (defined(action)) {
+      getPosition(screenSpaceEventHandler, event, mouseDblClickEvent.position);
+      action(mouseDblClickEvent);
+    }
+  }
+  function handleWheel(screenSpaceEventHandler, event) {
+    var delta;
+    if (defined(event.deltaY)) {
+      var deltaMode = event.deltaMode;
+      if (deltaMode === event.DOM_DELTA_PIXEL) {
+        delta = -event.deltaY;
+      } else if (deltaMode === event.DOM_DELTA_LINE) {
+        delta = -event.deltaY * 40;
+      } else {
+        delta = -event.deltaY * 120;
+      }
+    } else if (event.detail > 0) {
+      delta = event.detail * -120;
+    } else {
+      delta = event.wheelDelta;
+    }
+    if (!defined(delta)) {
+      return;
+    }
+    var modifier = getModifier(event);
+    var action = screenSpaceEventHandler.getInputAction(ScreenSpaceEventType.WHEEL, modifier);
+    if (defined(action)) {
+      action(delta);
+      event.preventDefault();
+    }
+  }
+  function handleTouchStart(screenSpaceEventHandler, event) {
+    screenSpaceEventHandler._seenAnyTouchEvents = true;
+    var changedTouches = event.changedTouches;
+    var i;
+    var length = changedTouches.length;
+    var touch;
+    var identifier;
+    var positions = screenSpaceEventHandler._positions;
+    for (i = 0; i < length; ++i) {
+      touch = changedTouches[i];
+      identifier = touch.identifier;
+      positions.set(identifier, getPosition(screenSpaceEventHandler, touch, new Cartesian2()));
+    }
+    fireTouchEvents(screenSpaceEventHandler, event);
+    var previousPositions = screenSpaceEventHandler._previousPositions;
+    for (i = 0; i < length; ++i) {
+      touch = changedTouches[i];
+      identifier = touch.identifier;
+      previousPositions.set(identifier, Cartesian2.clone(positions.get(identifier)));
+    }
+  }
+  function handleTouchEnd(screenSpaceEventHandler, event) {
+    screenSpaceEventHandler._seenAnyTouchEvents = true;
+    var changedTouches = event.changedTouches;
+    var i;
+    var length = changedTouches.length;
+    var touch;
+    var identifier;
+    var positions = screenSpaceEventHandler._positions;
+    for (i = 0; i < length; ++i) {
+      touch = changedTouches[i];
+      identifier = touch.identifier;
+      positions.remove(identifier);
+    }
+    fireTouchEvents(screenSpaceEventHandler, event);
+    var previousPositions = screenSpaceEventHandler._previousPositions;
+    for (i = 0; i < length; ++i) {
+      touch = changedTouches[i];
+      identifier = touch.identifier;
+      previousPositions.remove(identifier);
+    }
+  }
+  var touchStartEvent = {position: new Cartesian2()};
+  var touch2StartEvent = {
+    position1: new Cartesian2(),
+    position2: new Cartesian2()
+  };
+  var touchEndEvent = {position: new Cartesian2()};
+  var touchClickEvent = {position: new Cartesian2()};
+  function fireTouchEvents(screenSpaceEventHandler, event) {
+    var modifier = getModifier(event);
+    var positions = screenSpaceEventHandler._positions;
+    var previousPositions = screenSpaceEventHandler._previousPositions;
+    var numberOfTouches = positions.length;
+    var action;
+    var clickAction;
+    if (numberOfTouches !== 1 && screenSpaceEventHandler._buttonDown === MouseButton.LEFT) {
+      screenSpaceEventHandler._buttonDown = undefined;
+      action = screenSpaceEventHandler.getInputAction(ScreenSpaceEventType.LEFT_UP, modifier);
+      if (defined(action)) {
+        Cartesian2.clone(screenSpaceEventHandler._primaryPosition, touchEndEvent.position);
+        action(touchEndEvent);
+      }
+      if (numberOfTouches === 0) {
+        clickAction = screenSpaceEventHandler.getInputAction(ScreenSpaceEventType.LEFT_CLICK, modifier);
+        if (defined(clickAction)) {
+          var startPosition = screenSpaceEventHandler._primaryStartPosition;
+          var endPosition = previousPositions.values[0];
+          var xDiff = startPosition.x - endPosition.x;
+          var yDiff = startPosition.y - endPosition.y;
+          var totalPixels = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+          if (totalPixels < screenSpaceEventHandler._clickPixelTolerance) {
+            Cartesian2.clone(screenSpaceEventHandler._primaryPosition, touchClickEvent.position);
+            clickAction(touchClickEvent);
+          }
+        }
+      }
+    }
+    if (numberOfTouches !== 2 && screenSpaceEventHandler._isPinching) {
+      screenSpaceEventHandler._isPinching = false;
+      action = screenSpaceEventHandler.getInputAction(ScreenSpaceEventType.PINCH_END, modifier);
+      if (defined(action)) {
+        action();
+      }
+    }
+    if (numberOfTouches === 1) {
+      var position = positions.values[0];
+      Cartesian2.clone(position, screenSpaceEventHandler._primaryPosition);
+      Cartesian2.clone(position, screenSpaceEventHandler._primaryStartPosition);
+      Cartesian2.clone(position, screenSpaceEventHandler._primaryPreviousPosition);
+      screenSpaceEventHandler._buttonDown = MouseButton.LEFT;
+      action = screenSpaceEventHandler.getInputAction(ScreenSpaceEventType.LEFT_DOWN, modifier);
+      if (defined(action)) {
+        Cartesian2.clone(position, touchStartEvent.position);
+        action(touchStartEvent);
+      }
+      event.preventDefault();
+    }
+    if (numberOfTouches === 2) {
+      screenSpaceEventHandler._isPinching = true;
+      action = screenSpaceEventHandler.getInputAction(ScreenSpaceEventType.PINCH_START, modifier);
+      if (defined(action)) {
+        Cartesian2.clone(positions.values[0], touch2StartEvent.position1);
+        Cartesian2.clone(positions.values[1], touch2StartEvent.position2);
+        action(touch2StartEvent);
+      }
+    }
+  }
+  function handleTouchMove(screenSpaceEventHandler, event) {
+    screenSpaceEventHandler._seenAnyTouchEvents = true;
+    var changedTouches = event.changedTouches;
+    var i;
+    var length = changedTouches.length;
+    var touch;
+    var identifier;
+    var positions = screenSpaceEventHandler._positions;
+    for (i = 0; i < length; ++i) {
+      touch = changedTouches[i];
+      identifier = touch.identifier;
+      var position = positions.get(identifier);
+      if (defined(position)) {
+        getPosition(screenSpaceEventHandler, touch, position);
+      }
+    }
+    fireTouchMoveEvents(screenSpaceEventHandler, event);
+    var previousPositions = screenSpaceEventHandler._previousPositions;
+    for (i = 0; i < length; ++i) {
+      touch = changedTouches[i];
+      identifier = touch.identifier;
+      Cartesian2.clone(positions.get(identifier), previousPositions.get(identifier));
+    }
+  }
+  var touchMoveEvent = {
+    startPosition: new Cartesian2(),
+    endPosition: new Cartesian2()
+  };
+  var touchPinchMovementEvent = {
+    distance: {
+      startPosition: new Cartesian2(),
+      endPosition: new Cartesian2()
+    },
+    angleAndHeight: {
+      startPosition: new Cartesian2(),
+      endPosition: new Cartesian2()
+    }
+  };
+  function fireTouchMoveEvents(screenSpaceEventHandler, event) {
+    var modifier = getModifier(event);
+    var positions = screenSpaceEventHandler._positions;
+    var previousPositions = screenSpaceEventHandler._previousPositions;
+    var numberOfTouches = positions.length;
+    var action;
+    if (numberOfTouches === 1 && screenSpaceEventHandler._buttonDown === MouseButton.LEFT) {
+      var position = positions.values[0];
+      Cartesian2.clone(position, screenSpaceEventHandler._primaryPosition);
+      var previousPosition = screenSpaceEventHandler._primaryPreviousPosition;
+      action = screenSpaceEventHandler.getInputAction(ScreenSpaceEventType.MOUSE_MOVE, modifier);
+      if (defined(action)) {
+        Cartesian2.clone(previousPosition, touchMoveEvent.startPosition);
+        Cartesian2.clone(position, touchMoveEvent.endPosition);
+        action(touchMoveEvent);
+      }
+      Cartesian2.clone(position, previousPosition);
+      event.preventDefault();
+    } else if (numberOfTouches === 2 && screenSpaceEventHandler._isPinching) {
+      action = screenSpaceEventHandler.getInputAction(ScreenSpaceEventType.PINCH_MOVE, modifier);
+      if (defined(action)) {
+        var position1 = positions.values[0];
+        var position2 = positions.values[1];
+        var previousPosition1 = previousPositions.values[0];
+        var previousPosition2 = previousPositions.values[1];
+        var dX = position2.x - position1.x;
+        var dY = position2.y - position1.y;
+        var dist = Math.sqrt(dX * dX + dY * dY) * 0.25;
+        var prevDX = previousPosition2.x - previousPosition1.x;
+        var prevDY = previousPosition2.y - previousPosition1.y;
+        var prevDist = Math.sqrt(prevDX * prevDX + prevDY * prevDY) * 0.25;
+        var cY = (position2.y + position1.y) * 0.125;
+        var prevCY = (previousPosition2.y + previousPosition1.y) * 0.125;
+        var angle = Math.atan2(dY, dX);
+        var prevAngle = Math.atan2(prevDY, prevDX);
+        Cartesian2.fromElements(0.0, prevDist, touchPinchMovementEvent.distance.startPosition);
+        Cartesian2.fromElements(0.0, dist, touchPinchMovementEvent.distance.endPosition);
+        Cartesian2.fromElements(prevAngle, prevCY, touchPinchMovementEvent.angleAndHeight.startPosition);
+        Cartesian2.fromElements(angle, cY, touchPinchMovementEvent.angleAndHeight.endPosition);
+        action(touchPinchMovementEvent);
+      }
+    }
+  }
+  function handlePointerDown(screenSpaceEventHandler, event) {
+    event.target.setPointerCapture(event.pointerId);
+    if (event.pointerType === 'touch') {
+      var positions = screenSpaceEventHandler._positions;
+      var identifier = event.pointerId;
+      positions.set(identifier, getPosition(screenSpaceEventHandler, event, new Cartesian2()));
+      fireTouchEvents(screenSpaceEventHandler, event);
+      var previousPositions = screenSpaceEventHandler._previousPositions;
+      previousPositions.set(identifier, Cartesian2.clone(positions.get(identifier)));
+    } else {
+      handleMouseDown(screenSpaceEventHandler, event);
+    }
+  }
+  function handlePointerUp(screenSpaceEventHandler, event) {
+    if (event.pointerType === 'touch') {
+      var positions = screenSpaceEventHandler._positions;
+      var identifier = event.pointerId;
+      positions.remove(identifier);
+      fireTouchEvents(screenSpaceEventHandler, event);
+      var previousPositions = screenSpaceEventHandler._previousPositions;
+      previousPositions.remove(identifier);
+    } else {
+      handleMouseUp(screenSpaceEventHandler, event);
+    }
+  }
+  function handlePointerMove(screenSpaceEventHandler, event) {
+    if (event.pointerType === 'touch') {
+      var positions = screenSpaceEventHandler._positions;
+      var identifier = event.pointerId;
+      getPosition(screenSpaceEventHandler, event, positions.get(identifier));
+      fireTouchMoveEvents(screenSpaceEventHandler, event);
+      var previousPositions = screenSpaceEventHandler._previousPositions;
+      Cartesian2.clone(positions.get(identifier), previousPositions.get(identifier));
+    } else {
+      handleMouseMove(screenSpaceEventHandler, event);
+    }
+  }
+  function ScreenSpaceEventHandler(element) {
+    this._inputEvents = {};
+    this._buttonDown = undefined;
+    this._isPinching = false;
+    this._seenAnyTouchEvents = false;
+    this._primaryStartPosition = new Cartesian2();
+    this._primaryPosition = new Cartesian2();
+    this._primaryPreviousPosition = new Cartesian2();
+    this._positions = new AssociativeArray();
+    this._previousPositions = new AssociativeArray();
+    this._removalFunctions = [];
+    this._clickPixelTolerance = 5;
+    this._element = defaultValue(element, document);
+    registerListeners(this);
+  }
+  ScreenSpaceEventHandler.prototype.setInputAction = function(action, type, modifier) {
+    if (!defined(action)) {
+      throw new DeveloperError('action is required.');
+    }
+    if (!defined(type)) {
+      throw new DeveloperError('type is required.');
+    }
+    var key = getInputEventKey(type, modifier);
+    this._inputEvents[key] = action;
+  };
+  ScreenSpaceEventHandler.prototype.getInputAction = function(type, modifier) {
+    if (!defined(type)) {
+      throw new DeveloperError('type is required.');
+    }
+    var key = getInputEventKey(type, modifier);
+    return this._inputEvents[key];
+  };
+  ScreenSpaceEventHandler.prototype.removeInputAction = function(type, modifier) {
+    if (!defined(type)) {
+      throw new DeveloperError('type is required.');
+    }
+    var key = getInputEventKey(type, modifier);
+    delete this._inputEvents[key];
+  };
+  ScreenSpaceEventHandler.prototype.isDestroyed = function() {
+    return false;
+  };
+  ScreenSpaceEventHandler.prototype.destroy = function() {
+    unregisterListeners(this);
+    return destroyObject(this);
+  };
+  return ScreenSpaceEventHandler;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("24", ["26"], function(freezeObject) {
+  'use strict';
+  var ScreenSpaceEventType = {
+    LEFT_DOWN: 0,
+    LEFT_UP: 1,
+    LEFT_CLICK: 2,
+    LEFT_DOUBLE_CLICK: 3,
+    RIGHT_DOWN: 5,
+    RIGHT_UP: 6,
+    RIGHT_CLICK: 7,
+    RIGHT_DOUBLE_CLICK: 8,
+    MIDDLE_DOWN: 10,
+    MIDDLE_UP: 11,
+    MIDDLE_CLICK: 12,
+    MIDDLE_DOUBLE_CLICK: 13,
+    MOUSE_MOVE: 15,
+    WHEEL: 16,
+    PINCH_START: 17,
+    PINCH_END: 18,
+    PINCH_MOVE: 19
+  };
+  return freezeObject(ScreenSpaceEventType);
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("1f", ["2b", "1a", "1c", "26", "22"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
   'use strict';
   function Cartesian2(x, y) {
     this.x = defaultValue(x, 0.0);
@@ -17343,7 +17264,7 @@ define("47", ["25", "1c", "1e", "21", "29"], function(defaultValue, defined, Dev
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4f", ["50", "4e", "25", "1c", "51", "21", "26", "52", "53", "3a", "54", "55"], function(when, binarySearch, defaultValue, defined, EarthOrientationParametersSample, freezeObject, JulianDate, LeapSecond, loadJson, RuntimeError, TimeConstants, TimeStandard) {
+define("54", ["55", "52", "2b", "1a", "56", "26", "2c", "57", "58", "3f", "59", "5a"], function(when, binarySearch, defaultValue, defined, EarthOrientationParametersSample, freezeObject, JulianDate, LeapSecond, loadJson, RuntimeError, TimeConstants, TimeStandard) {
   'use strict';
   function EarthOrientationParameters(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
@@ -17569,7 +17490,7 @@ define("4f", ["50", "4e", "25", "1c", "51", "21", "26", "52", "53", "3a", "54", 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("51", [], function() {
+define("56", [], function() {
   'use strict';
   function EarthOrientationParametersSample(xPoleWander, yPoleWander, xPoleOffset, yPoleOffset, ut1MinusUtc) {
     this.xPoleWander = xPoleWander;
@@ -17584,7 +17505,7 @@ define("51", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("56", ["57", "25", "1c", "1e"], function(Uri, defaultValue, defined, DeveloperError) {
+define("5b", ["5c", "2b", "1a", "1c"], function(Uri, defaultValue, defined, DeveloperError) {
   'use strict';
   function getAbsoluteUri(relative, base) {
     if (!defined(relative)) {
@@ -17601,7 +17522,7 @@ define("56", ["57", "25", "1c", "1e"], function(Uri, defaultValue, defined, Deve
 })();
 (function() {
 var define = $__System.amdDefine;
-define("57", [], function() {
+define("5c", [], function() {
   function URI(uri) {
     if (uri instanceof URI) {
       this.scheme = uri.scheme;
@@ -17749,7 +17670,7 @@ define("57", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("58", ["57", "25", "1c", "1e"], function(Uri, defaultValue, defined, DeveloperError) {
+define("5d", ["5c", "2b", "1a", "1c"], function(Uri, defaultValue, defined, DeveloperError) {
   'use strict';
   function joinUrls(first, second, appendSlash) {
     if (!defined(first)) {
@@ -17819,7 +17740,7 @@ define("58", ["57", "25", "1c", "1e"], function(Uri, defaultValue, defined, Deve
 })();
 (function() {
 var define = $__System.amdDefine;
-define("59", ["57", "1c", "1e", "56", "58", "require"], function(Uri, defined, DeveloperError, getAbsoluteUri, joinUrls, _dereq_) {
+define("5e", ["5c", "1a", "1c", "5b", "5d", "require"], function(Uri, defined, DeveloperError, getAbsoluteUri, joinUrls, _dereq_) {
   'use strict';
   var cesiumScriptRegex = /((?:.*\/)|^)cesium[\w-]*\.js(?:\W|$)/i;
   function getBaseUrlFromCesiumScript() {
@@ -17885,7 +17806,7 @@ define("59", ["57", "1c", "1e", "56", "58", "require"], function(Uri, defined, D
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5a", ["25"], function(defaultValue) {
+define("5f", ["2b"], function(defaultValue) {
   'use strict';
   function clone(object, deep) {
     if (object === null || typeof object !== 'object') {
@@ -17912,7 +17833,7 @@ define("5a", ["25"], function(defaultValue) {
 var define = $__System.amdDefine;
 (function(define) {
   'use strict';
-  define("50", [], function() {
+  define("55", [], function() {
     var reduceArray,
         slice,
         undef;
@@ -18255,7 +18176,7 @@ var define = $__System.amdDefine;
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5b", [], function() {
+define("60", [], function() {
   'use strict';
   function parseResponseHeaders(headerString) {
     var headers = {};
@@ -18280,7 +18201,7 @@ define("5b", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5c", ["1c", "5b"], function(defined, parseResponseHeaders) {
+define("61", ["1a", "60"], function(defined, parseResponseHeaders) {
   'use strict';
   function RequestErrorEvent(statusCode, response, responseHeaders) {
     this.statusCode = statusCode;
@@ -18303,7 +18224,7 @@ define("5c", ["1c", "5b"], function(defined, parseResponseHeaders) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5d", ["50", "25", "1c", "1e", "5c", "3a"], function(when, defaultValue, defined, DeveloperError, RequestErrorEvent, RuntimeError) {
+define("62", ["55", "2b", "1a", "1c", "61", "3f"], function(when, defaultValue, defined, DeveloperError, RequestErrorEvent, RuntimeError) {
   'use strict';
   function loadWithXhr(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
@@ -18411,7 +18332,7 @@ define("5d", ["50", "25", "1c", "1e", "5c", "3a"], function(when, defaultValue, 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5e", ["5d"], function(loadWithXhr) {
+define("63", ["62"], function(loadWithXhr) {
   'use strict';
   function loadText(url, headers) {
     return loadWithXhr({
@@ -18425,7 +18346,7 @@ define("5e", ["5d"], function(loadWithXhr) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("53", ["5a", "1c", "1e", "5e"], function(clone, defined, DeveloperError, loadText) {
+define("58", ["5f", "1a", "1c", "63"], function(clone, defined, DeveloperError, loadText) {
   'use strict';
   var defaultHeaders = {Accept: 'application/json,*/*;q=0.01'};
   function loadJson(url, headers) {
@@ -18448,7 +18369,7 @@ define("53", ["5a", "1c", "1e", "5e"], function(clone, defined, DeveloperError, 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5f", ["50", "59", "25", "1c", "60", "26", "53", "55"], function(when, buildModuleUrl, defaultValue, defined, Iau2006XysSample, JulianDate, loadJson, TimeStandard) {
+define("64", ["55", "5e", "2b", "1a", "65", "2c", "58", "5a"], function(when, buildModuleUrl, defaultValue, defined, Iau2006XysSample, JulianDate, loadJson, TimeStandard) {
   'use strict';
   function Iau2006XysData(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
@@ -18603,7 +18524,7 @@ define("5f", ["50", "59", "25", "1c", "60", "26", "53", "55"], function(when, bu
 })();
 (function() {
 var define = $__System.amdDefine;
-define("60", [], function() {
+define("65", [], function() {
   'use strict';
   function Iau2006XysSample(x, y, s) {
     this.x = x;
@@ -18616,7 +18537,7 @@ define("60", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("61", ["1c", "1d"], function(defined, defineProperties) {
+define("66", ["1a", "1b"], function(defined, defineProperties) {
   'use strict';
   var _supportsFullscreen;
   var _names = {
@@ -18754,7 +18675,7 @@ define("61", ["1c", "1d"], function(defined, defineProperties) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("62", ["25", "1c", "61"], function(defaultValue, defined, Fullscreen) {
+define("53", ["2b", "1a", "66"], function(defaultValue, defined, Fullscreen) {
   'use strict';
   var theNavigator;
   if (typeof navigator !== 'undefined') {
@@ -18925,7 +18846,7 @@ define("62", ["25", "1c", "61"], function(defaultValue, defined, Fullscreen) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("36", ["2e", "25", "1c", "1e", "62", "21", "29", "34"], function(Cartesian3, defaultValue, defined, DeveloperError, FeatureDetection, freezeObject, CesiumMath, Matrix3) {
+define("3a", ["32", "2b", "1a", "1c", "53", "26", "22", "38"], function(Cartesian3, defaultValue, defined, DeveloperError, FeatureDetection, freezeObject, CesiumMath, Matrix3) {
   'use strict';
   function Quaternion(x, y, z, w) {
     this.x = defaultValue(x, 0.0);
@@ -19501,7 +19422,7 @@ define("36", ["2e", "25", "1c", "1e", "62", "21", "29", "34"], function(Cartesia
 })();
 (function() {
 var define = $__System.amdDefine;
-define("37", ["50", "47", "2e", "45", "3d", "25", "1c", "1e", "4f", "51", "3e", "5f", "60", "26", "29", "34", "35", "36", "54"], function(when, Cartesian2, Cartesian3, Cartesian4, Cartographic, defaultValue, defined, DeveloperError, EarthOrientationParameters, EarthOrientationParametersSample, Ellipsoid, Iau2006XysData, Iau2006XysSample, JulianDate, CesiumMath, Matrix3, Matrix4, Quaternion, TimeConstants) {
+define("3b", ["55", "1f", "32", "4a", "42", "2b", "1a", "1c", "54", "56", "43", "64", "65", "2c", "22", "38", "39", "3a", "59"], function(when, Cartesian2, Cartesian3, Cartesian4, Cartographic, defaultValue, defined, DeveloperError, EarthOrientationParameters, EarthOrientationParametersSample, Ellipsoid, Iau2006XysData, Iau2006XysSample, JulianDate, CesiumMath, Matrix3, Matrix4, Quaternion, TimeConstants) {
   'use strict';
   var Transforms = {};
   var eastNorthUpToFixedFrameNormal = new Cartesian3();
@@ -19954,7 +19875,7 @@ define("37", ["50", "47", "2e", "45", "3d", "25", "1c", "1e", "4f", "51", "3e", 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("63", [], function() {
+define("67", [], function() {
   function sprintf() {
     var regex = /%%|%(\d+\$)?([-+\'#0 ]*)(\*\d+\$|\*|\d+)?(\.(\*\d+\$|\*|\d+))?([scboxXuideEfFgG])/g;
     var a = arguments,
@@ -20103,7 +20024,7 @@ define("63", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4e", ["1c", "1e"], function(defined, DeveloperError) {
+define("52", ["1a", "1c"], function(defined, DeveloperError) {
   'use strict';
   function binarySearch(array, itemToFind, comparator) {
     if (!defined(array)) {
@@ -20140,7 +20061,7 @@ define("4e", ["1c", "1e"], function(defined, DeveloperError) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("64", [], function() {
+define("68", [], function() {
   'use strict';
   function GregorianDate(year, month, day, hour, minute, second, millisecond, isLeapSecond) {
     this.year = year;
@@ -20158,7 +20079,7 @@ define("64", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("65", ["1e"], function(DeveloperError) {
+define("69", ["1c"], function(DeveloperError) {
   'use strict';
   function isLeapYear(year) {
     if (year === null || isNaN(year)) {
@@ -20172,7 +20093,7 @@ define("65", ["1e"], function(DeveloperError) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("52", [], function() {
+define("57", [], function() {
   'use strict';
   function LeapSecond(date, offset) {
     this.julianDate = date;
@@ -20184,7 +20105,7 @@ define("52", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("26", ["63", "4e", "25", "1c", "1e", "64", "65", "52", "54", "55"], function(sprintf, binarySearch, defaultValue, defined, DeveloperError, GregorianDate, isLeapYear, LeapSecond, TimeConstants, TimeStandard) {
+define("2c", ["67", "52", "2b", "1a", "1c", "68", "69", "57", "59", "5a"], function(sprintf, binarySearch, defaultValue, defined, DeveloperError, GregorianDate, isLeapYear, LeapSecond, TimeConstants, TimeStandard) {
   'use strict';
   var gregorianDateScratch = new GregorianDate();
   var daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -20720,7 +20641,7 @@ define("26", ["63", "4e", "25", "1c", "1e", "64", "65", "52", "54", "55"], funct
 })();
 (function() {
 var define = $__System.amdDefine;
-define("54", ["21"], function(freezeObject) {
+define("59", ["26"], function(freezeObject) {
   'use strict';
   var TimeConstants = {
     SECONDS_PER_MILLISECOND: 0.001,
@@ -20740,7 +20661,7 @@ define("54", ["21"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("55", ["21"], function(freezeObject) {
+define("5a", ["26"], function(freezeObject) {
   'use strict';
   var TimeStandard = {
     UTC: 0,
@@ -20752,7 +20673,7 @@ define("55", ["21"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("66", ["2e", "1c", "1e", "26", "29", "34", "54", "55"], function(Cartesian3, defined, DeveloperError, JulianDate, CesiumMath, Matrix3, TimeConstants, TimeStandard) {
+define("6a", ["32", "1a", "1c", "2c", "22", "38", "59", "5a"], function(Cartesian3, defined, DeveloperError, JulianDate, CesiumMath, Matrix3, TimeConstants, TimeStandard) {
   'use strict';
   var Simon1994PlanetaryPositions = {};
   function computeTdbMinusTtSpice(daysSinceJ2000InTerrestrialTime) {
@@ -21043,7 +20964,7 @@ define("66", ["2e", "1c", "1e", "26", "29", "34", "54", "55"], function(Cartesia
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3e", ["2e", "3d", "25", "1c", "1d", "1e", "21", "29", "67"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
+define("43", ["32", "42", "2b", "1a", "1b", "1c", "26", "22", "6b"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
   'use strict';
   function initialize(ellipsoid, x, y, z) {
     x = defaultValue(x, 0.0);
@@ -21281,7 +21202,7 @@ define("3e", ["2e", "3d", "25", "1c", "1d", "1e", "21", "29", "67"], function(Ca
 })();
 (function() {
 var define = $__System.amdDefine;
-define("68", ["2e", "3d", "25", "1c", "1d", "1e", "3e", "29"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, Ellipsoid, CesiumMath) {
+define("6c", ["32", "42", "2b", "1a", "1b", "1c", "43", "22"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, Ellipsoid, CesiumMath) {
   'use strict';
   function setConstants(ellipsoidGeodesic) {
     var uSquared = ellipsoidGeodesic._uSquared;
@@ -21509,7 +21430,7 @@ define("68", ["2e", "3d", "25", "1c", "1d", "1e", "3e", "29"], function(Cartesia
 })();
 (function() {
 var define = $__System.amdDefine;
-define("67", ["2e", "1c", "1e", "29"], function(Cartesian3, defined, DeveloperError, CesiumMath) {
+define("6b", ["32", "1a", "1c", "22"], function(Cartesian3, defined, DeveloperError, CesiumMath) {
   'use strict';
   var scaleToGeodeticSurfaceIntersection = new Cartesian3();
   var scaleToGeodeticSurfaceGradient = new Cartesian3();
@@ -21591,7 +21512,7 @@ define("67", ["2e", "1c", "1e", "29"], function(Cartesian3, defined, DeveloperEr
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3d", ["2e", "25", "1c", "1e", "21", "29", "67"], function(Cartesian3, defaultValue, defined, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
+define("42", ["32", "2b", "1a", "1c", "26", "22", "6b"], function(Cartesian3, defaultValue, defined, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
   'use strict';
   function Cartographic(longitude, latitude, height) {
     this.longitude = defaultValue(longitude, 0.0);
@@ -21693,7 +21614,7 @@ define("3d", ["2e", "25", "1c", "1e", "21", "29", "67"], function(Cartesian3, de
 })();
 (function() {
 var define = $__System.amdDefine;
-define("69", ["1e", "6a"], function(DeveloperError, QuadraticRealPolynomial) {
+define("6d", ["1c", "6e"], function(DeveloperError, QuadraticRealPolynomial) {
   'use strict';
   var CubicRealPolynomial = {};
   CubicRealPolynomial.computeDiscriminant = function(a, b, c, d) {
@@ -21860,7 +21781,7 @@ define("69", ["1e", "6a"], function(DeveloperError, QuadraticRealPolynomial) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("6a", ["1e", "29"], function(DeveloperError, CesiumMath) {
+define("6e", ["1c", "22"], function(DeveloperError, CesiumMath) {
   'use strict';
   var QuadraticRealPolynomial = {};
   QuadraticRealPolynomial.computeDiscriminant = function(a, b, c) {
@@ -21941,7 +21862,7 @@ define("6a", ["1e", "29"], function(DeveloperError, CesiumMath) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("6b", ["69", "1e", "29", "6a"], function(CubicRealPolynomial, DeveloperError, CesiumMath, QuadraticRealPolynomial) {
+define("6f", ["6d", "1c", "22", "6e"], function(CubicRealPolynomial, DeveloperError, CesiumMath, QuadraticRealPolynomial) {
   'use strict';
   var QuarticRealPolynomial = {};
   QuarticRealPolynomial.computeDiscriminant = function(a, b, c, d, e) {
@@ -22187,7 +22108,7 @@ define("6b", ["69", "1e", "29", "6a"], function(CubicRealPolynomial, DeveloperEr
 })();
 (function() {
 var define = $__System.amdDefine;
-define("6c", ["2e", "25", "1c", "1e"], function(Cartesian3, defaultValue, defined, DeveloperError) {
+define("70", ["32", "2b", "1a", "1c"], function(Cartesian3, defaultValue, defined, DeveloperError) {
   'use strict';
   function Ray(origin, direction) {
     direction = Cartesian3.clone(defaultValue(direction, Cartesian3.ZERO));
@@ -22216,7 +22137,7 @@ define("6c", ["2e", "25", "1c", "1e"], function(Cartesian3, defaultValue, define
 })();
 (function() {
 var define = $__System.amdDefine;
-define("6d", ["2e", "3d", "25", "1c", "1e", "29", "34", "6a", "6b", "6c"], function(Cartesian3, Cartographic, defaultValue, defined, DeveloperError, CesiumMath, Matrix3, QuadraticRealPolynomial, QuarticRealPolynomial, Ray) {
+define("71", ["32", "42", "2b", "1a", "1c", "22", "38", "6e", "6f", "70"], function(Cartesian3, Cartographic, defaultValue, defined, DeveloperError, CesiumMath, Matrix3, QuadraticRealPolynomial, QuarticRealPolynomial, Ray) {
   'use strict';
   var IntersectionTests = {};
   IntersectionTests.rayPlane = function(ray, plane, result) {
@@ -22767,7 +22688,7 @@ define("6d", ["2e", "3d", "25", "1c", "1e", "29", "34", "6a", "6b", "6c"], funct
 })();
 (function() {
 var define = $__System.amdDefine;
-define("6e", ["1c"], function(defined) {
+define("72", ["1a"], function(defined) {
   'use strict';
   var isArray = Array.isArray;
   if (!defined(isArray)) {
@@ -22781,7 +22702,7 @@ define("6e", ["1c"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("45", ["25", "1c", "1e", "21", "29"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
+define("4a", ["2b", "1a", "1c", "26", "22"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
   'use strict';
   function Cartesian4(x, y, z, w) {
     this.x = defaultValue(x, 0.0);
@@ -23167,7 +23088,7 @@ define("45", ["25", "1c", "1e", "21", "29"], function(defaultValue, defined, Dev
 })();
 (function() {
 var define = $__System.amdDefine;
-define("1d", ["1c"], function(defined) {
+define("1b", ["1a"], function(defined) {
   'use strict';
   var definePropertyWorks = (function() {
     try {
@@ -23188,7 +23109,7 @@ define("1d", ["1c"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("34", ["2e", "25", "1c", "1d", "1e", "21", "29"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath) {
+define("38", ["32", "2b", "1a", "1b", "1c", "26", "22"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath) {
   'use strict';
   function Matrix3(column0Row0, column1Row0, column2Row0, column0Row1, column1Row1, column2Row1, column0Row2, column1Row2, column2Row2) {
     this[0] = defaultValue(column0Row0, 0.0);
@@ -23943,7 +23864,7 @@ define("34", ["2e", "25", "1c", "1d", "1e", "21", "29"], function(Cartesian3, de
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3a", ["1c"], function(defined) {
+define("3f", ["1a"], function(defined) {
   'use strict';
   function RuntimeError(message) {
     this.name = 'RuntimeError';
@@ -23973,7 +23894,7 @@ define("3a", ["1c"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("35", ["2e", "45", "25", "1c", "1d", "1e", "21", "29", "34", "3a"], function(Cartesian3, Cartesian4, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath, Matrix3, RuntimeError) {
+define("39", ["32", "4a", "2b", "1a", "1b", "1c", "26", "22", "38", "3f"], function(Cartesian3, Cartesian4, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath, Matrix3, RuntimeError) {
   'use strict';
   function Matrix4(column0Row0, column1Row0, column2Row0, column3Row0, column0Row1, column1Row1, column2Row1, column3Row1, column0Row2, column1Row2, column2Row2, column3Row2, column0Row3, column1Row3, column2Row3, column3Row3) {
     this[0] = defaultValue(column0Row0, 0.0);
@@ -25455,7 +25376,7 @@ define("35", ["2e", "45", "25", "1c", "1d", "1e", "21", "29", "34", "3a"], funct
 })();
 (function() {
 var define = $__System.amdDefine;
-define("6f", [], function() {
+define("73", [], function() {
   var MersenneTwister = function(seed) {
     if (seed == undefined) {
       seed = new Date().getTime();
@@ -25512,7 +25433,7 @@ define("6f", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("25", ["21"], function(freezeObject) {
+define("2b", ["26"], function(freezeObject) {
   'use strict';
   function defaultValue(a, b) {
     if (a !== undefined) {
@@ -25527,7 +25448,7 @@ define("25", ["21"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("29", ["6f", "25", "1c", "1e"], function(MersenneTwister, defaultValue, defined, DeveloperError) {
+define("22", ["73", "2b", "1a", "1c"], function(MersenneTwister, defaultValue, defined, DeveloperError) {
   'use strict';
   var CesiumMath = {};
   CesiumMath.EPSILON1 = 0.1;
@@ -25771,7 +25692,7 @@ define("29", ["6f", "25", "1c", "1e"], function(MersenneTwister, defaultValue, d
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2e", ["25", "1c", "1e", "21", "29"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
+define("32", ["2b", "1a", "1c", "26", "22"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
   'use strict';
   function Cartesian3(x, y, z) {
     this.x = defaultValue(x, 0.0);
@@ -26286,7 +26207,7 @@ define("2e", ["25", "1c", "1e", "21", "29"], function(defaultValue, defined, Dev
 })();
 (function() {
 var define = $__System.amdDefine;
-define("1e", ["1c"], function(defined) {
+define("1c", ["1a"], function(defined) {
   'use strict';
   function DeveloperError(message) {
     this.name = 'DeveloperError';
@@ -26319,7 +26240,7 @@ define("1e", ["1c"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("1c", [], function() {
+define("1a", [], function() {
   'use strict';
   function defined(value) {
     return value !== undefined && value !== null;
@@ -26330,7 +26251,7 @@ define("1c", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("21", ["1c"], function(defined) {
+define("26", ["1a"], function(defined) {
   'use strict';
   var freezeObject = Object.freeze;
   if (!defined(freezeObject)) {
@@ -26344,7 +26265,7 @@ define("21", ["1c"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("46", ["2e", "1c", "1e", "21"], function(Cartesian3, defined, DeveloperError, freezeObject) {
+define("4b", ["32", "1a", "1c", "26"], function(Cartesian3, defined, DeveloperError, freezeObject) {
   'use strict';
   function Plane(normal, distance) {
     if (!defined(normal)) {
@@ -26404,7 +26325,7 @@ define("46", ["2e", "1c", "1e", "21"], function(Cartesian3, defined, DeveloperEr
 })();
 (function() {
 var define = $__System.amdDefine;
-define("70", ["2e", "3d", "25", "1c", "1e", "3e", "68", "6d", "6e", "29", "35", "46"], function(Cartesian3, Cartographic, defaultValue, defined, DeveloperError, Ellipsoid, EllipsoidGeodesic, IntersectionTests, isArray, CesiumMath, Matrix4, Plane) {
+define("74", ["32", "42", "2b", "1a", "1c", "43", "6c", "71", "72", "22", "39", "4b"], function(Cartesian3, Cartographic, defaultValue, defined, DeveloperError, Ellipsoid, EllipsoidGeodesic, IntersectionTests, isArray, CesiumMath, Matrix4, Plane) {
   'use strict';
   var PolylinePipeline = {};
   PolylinePipeline.numberOfPoints = function(p0, p1, minDistance) {
@@ -26585,7 +26506,7 @@ define("70", ["2e", "3d", "25", "1c", "1e", "3e", "68", "6d", "6e", "29", "35", 
 })();
 // Add functionality for keeping a moving window of samples per SampledProperty,
 // so that the data doesn't accumulate indefinitely
-$__System.register("71", ["10"], function (exports_1, context_1) {
+$__System.register("75", ["f"], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -26649,7 +26570,7 @@ $__System.register("71", ["10"], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('10', ['4e', '1b', '47', '2e', '45', '3d', '23', '24', '27', '2d', '31', '28', '25', '1c', '1e', '3e', '2a', '2b', '1f', '4c', '3c', '3f', '26', '29', '34', '35', '40', '41', '42', '30', '38', '36', '48', '2f', '49', '4a', '4b', '37', '66', '70', '71'], function (exports_1, context_1) {
+$__System.register('f', ['52', '19', '1e', '25', '1f', '32', '4a', '42', '29', '2a', '2d', '31', '35', '2e', '2b', '1a', '1c', '43', '2f', '30', '1d', '50', '41', '44', '2c', '22', '38', '39', '45', '46', '47', '34', '3c', '3a', '4c', '33', '4d', '4e', '4f', '23', '24', '3b', '6a', '74', '75'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -26661,6 +26582,14 @@ $__System.register('10', ['4e', '1b', '47', '2e', '45', '3d', '23', '24', '27', 
         }, function (CallbackProperty_1_1) {
             exports_1({
                 "CallbackProperty": CallbackProperty_1_1["default"]
+            });
+        }, function (CameraEventAggregator_1_1) {
+            exports_1({
+                "CameraEventAggregator": CameraEventAggregator_1_1["default"]
+            });
+        }, function (CameraEventType_1_1) {
+            exports_1({
+                "CameraEventType": CameraEventType_1_1["default"]
             });
         }, function (Cartesian2_1_1) {
             exports_1({
@@ -26802,6 +26731,14 @@ $__System.register('10', ['4e', '1b', '47', '2e', '45', '3d', '23', '24', '27', 
             exports_1({
                 "SampledProperty": SampledProperty_1_1["default"]
             });
+        }, function (ScreenSpaceEventHandler_1_1) {
+            exports_1({
+                "ScreenSpaceEventHandler": ScreenSpaceEventHandler_1_1["default"]
+            });
+        }, function (ScreenSpaceEventType_1_1) {
+            exports_1({
+                "ScreenSpaceEventType": ScreenSpaceEventType_1_1["default"]
+            });
         }, function (Transforms_1_1) {
             exports_1({
                 "Transforms": Transforms_1_1["default"]
@@ -26818,12 +26755,12 @@ $__System.register('10', ['4e', '1b', '47', '2e', '45', '3d', '23', '24', '27', 
         execute: function () {}
     };
 });
-$__System.register('c', ['1f', '10'], function (exports_1, context_1) {
+$__System.register('c', ['1d', 'f'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
     var Event_1, cesium_imports_1;
-    var Event, CommandQueue, getEntityPosition, getEntityOrientation, urlParser, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, detectIOS, eventTypes, ZoomState, elementToCallbacksMap;
+    var Event, CommandQueue, getEntityPosition, getEntityOrientation, urlParser, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, eventTypes, lastTime, requestAnimationFrame;
     /**
      * Get array of ancestor reference frames of a Cesium Entity.
      * @param frame A Cesium Entity to get ancestor reference frames.
@@ -27026,7 +26963,7 @@ $__System.register('c', ['1f', '10'], function (exports_1, context_1) {
     }
     exports_1("convertEntityReferenceFrame", convertEntityReferenceFrame);
     function openInArgonApp() {
-        if (detectIOS) {
+        if (isIOS) {
             // var now = Date.now();
             // setTimeout(function () {
             //     if (Date.now() - now > 1000) return;
@@ -27046,108 +26983,6 @@ $__System.register('c', ['1f', '10'], function (exports_1, context_1) {
         });
     }
     exports_1("blockAllUIEventBubbling", blockAllUIEventBubbling);
-    function addZoomHandler(el, callback) {
-        var eventListeners;
-        if (typeof PointerEvent !== 'undefined') {
-            var evCache_1 = new Array();
-            var startDistSquared_1 = -1;
-            var zoom_1 = 1;
-            var remove_event_1 = function (ev) {
-                // Remove this event from the target's cache
-                for (var i = 0; i < evCache_1.length; i++) {
-                    if (evCache_1[i].pointerId == ev.pointerId) {
-                        evCache_1.splice(i, 1);
-                        break;
-                    }
-                }
-            };
-            var pointerdown_handler = function (ev) {
-                // The pointerdown event signals the start of a touch interaction.
-                // This event is cached to support 2-finger gestures
-                evCache_1.push(ev);
-            };
-            var pointermove_handler = function (ev) {
-                // This function implements a 2-pointer pinch/zoom gesture. 
-                // Find this event in the cache and update its record with this event
-                for (var i = 0; i < evCache_1.length; i++) {
-                    if (ev.pointerId == evCache_1[i].pointerId) {
-                        evCache_1[i] = ev;
-                        break;
-                    }
-                }
-                // If two pointers are down, check for pinch gestures
-                if (evCache_1.length == 2) {
-                    // Calculate the distance between the two pointers
-                    var curDiffX = Math.abs(evCache_1[0].clientX - evCache_1[1].clientX);
-                    var curDiffY = Math.abs(evCache_1[0].clientY - evCache_1[1].clientY);
-                    var currDistSquared = curDiffX * curDiffX + curDiffY * curDiffY;
-                    if (startDistSquared_1 == -1) {
-                        // start pinch
-                        startDistSquared_1 = currDistSquared;
-                        zoom_1 = 1;
-                        callback({ zoom: zoom_1, state: ZoomState.START });
-                    } else {
-                        // change pinch
-                        zoom_1 = currDistSquared / startDistSquared_1;
-                        callback({ zoom: zoom_1, state: ZoomState.CHANGE });
-                    }
-                } else {
-                    // end pinch                            
-                    callback({ zoom: zoom_1, state: ZoomState.END });
-                    startDistSquared_1 = -1;
-                }
-            };
-            var pointerup_handler = function (ev) {
-                // Remove this pointer from the cache
-                remove_event_1(ev);
-                // If the number of pointers down is less than two then reset diff tracker
-                if (evCache_1.length < 2) startDistSquared_1 = -1;
-            };
-            eventListeners = {
-                pointerdown: pointerdown_handler,
-                pointermove: pointermove_handler,
-                // Use same handler for pointer{up,cancel,out,leave} events since
-                // the semantics for these events - in this app - are the same.
-                pointerup: pointerup_handler,
-                pointercancel: pointerup_handler,
-                pointerout: pointerup_handler,
-                pointerleave: pointerup_handler
-            };
-        } else {
-            eventListeners = {
-                gesturestart: function (ev) {
-                    ;
-                    callback({ zoom: ev.scale, state: ZoomState.START });
-                },
-                gesturechange: function (ev) {
-                    callback({ zoom: ev.scale, state: ZoomState.CHANGE });
-                },
-                gestureend: function (ev) {
-                    callback({ zoom: ev.scale, state: ZoomState.END });
-                }
-            };
-        }
-        for (var event in eventListeners) {
-            el.addEventListener(event, eventListeners[event]);
-        }
-        var callbackToListeners = new Map();
-        callbackToListeners.set(callback, eventListeners);
-        elementToCallbacksMap.set(el, callbackToListeners);
-        return function () {
-            removeZoomHandler(el, callback);
-        };
-    }
-    exports_1("addZoomHandler", addZoomHandler);
-    function removeZoomHandler(el, callback) {
-        var callbackToListeners = elementToCallbacksMap.get(el);
-        var eventListeners = callbackToListeners.get(callback);
-        for (var event in eventListeners) {
-            el.removeEventListener(event, eventListeners[event]);
-        }
-        callbackToListeners.delete(callback);
-        if (callbackToListeners.size === 0) elementToCallbacksMap.delete(el);
-    }
-    exports_1("removeZoomHandler", removeZoomHandler);
     return {
         setters: [function (Event_1_1) {
             Event_1 = Event_1_1;
@@ -27436,24 +27271,26 @@ $__System.register('c', ['1f', '10'], function (exports_1, context_1) {
             scratchPerspectiveOffCenterFrustum = new cesium_imports_1.PerspectiveOffCenterFrustum();
             scratchCartesian = new cesium_imports_1.Cartesian3();
             scratchOrientation = new cesium_imports_1.Quaternion();
-            exports_1("detectIOS", detectIOS = typeof navigator !== 'undefined' && typeof window !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent) && !window['MSStream']);
+            exports_1("isIOS", isIOS = typeof navigator !== 'undefined' && typeof window !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent) && !window['MSStream']);
             eventTypes = Object.keys(typeof window !== undefined ? window : {}).filter(function (k) {
                 return k.substring(0, 2) == 'on' && (document[k] == null || typeof document[k] == 'function');
             }).map(function (e) {
                 return e.substring(2);
             });
-            (function (ZoomState) {
-                ZoomState[ZoomState["START"] = 0] = "START";
-                ZoomState[ZoomState["CHANGE"] = 1] = "CHANGE";
-                ZoomState[ZoomState["END"] = 2] = "END";
-            })(ZoomState || (ZoomState = {}));
-            exports_1("ZoomState", ZoomState);
-            ;
-            elementToCallbacksMap = new Map();
+            lastTime = 0;
+            exports_1("requestAnimationFrame", requestAnimationFrame = window && window.requestAnimationFrame ? window.requestAnimationFrame.bind(window) : function (callback) {
+                var currTime = performance.now();
+                var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+                var id = setTimeout(function () {
+                    callback(currTime + timeToCall);
+                }, timeToCall);
+                lastTime = currTime + timeToCall;
+                return id;
+            });
         }
     };
 });
-$__System.register('1', ['2', '3', 'd', '10', '8', 'b', '11', '12', 'f', '17', '13', '14', '9', 'a', '16', '15', '18', '1a', 'c'], function (exports_1, context_1) {
+$__System.register('1', ['2', '3', 'd', 'f', '8', 'b', '10', '13', '11', '15', '12', '9', 'a', '14', 'e', '16', '18', 'c'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -27464,7 +27301,7 @@ $__System.register('1', ['2', '3', 'd', '10', '8', 'b', '11', '12', 'f', '17', '
         }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
-    var DI, Cesium, URI, session_1, common_1, context_2, device_1, focus_1, reality_1, timer_1, ui_1, view_1, vuforia_1, empty_1, live_video_1, hosted_1;
+    var DI, Cesium, URI, session_1, common_1, context_2, device_1, focus_1, reality_1, ui_1, view_1, vuforia_1, empty_1, live_video_1, hosted_1;
     var ArgonSystem, RealityView;
     /**
      * Create an ArgonSystem instance.
@@ -27584,9 +27421,6 @@ $__System.register('1', ['2', '3', 'd', '10', '8', 'b', '11', '12', 'f', '17', '
         }, function (reality_1_1) {
             reality_1 = reality_1_1;
             exportStar_1(reality_1_1);
-        }, function (timer_1_1) {
-            timer_1 = timer_1_1;
-            exportStar_1(timer_1_1);
         }, function (ui_1_1) {
             ui_1 = ui_1_1;
             exportStar_1(ui_1_1);
@@ -27606,6 +27440,10 @@ $__System.register('1', ['2', '3', 'd', '10', '8', 'b', '11', '12', 'f', '17', '
             exportStar_1(utils_1_1);
         }],
         execute: function () {
+            (window || global)['WebVRConfig'] = {
+                DEFER_INITIALIZATION: typeof navigator == 'undefined',
+                MOUSE_KEYBOARD_CONTROLS_DISABLED: true
+            };
             exports_1("DI", DI);
             exports_1("Cesium", Cesium);
             exports_1("URI", URI);
@@ -27621,6 +27459,7 @@ $__System.register('1', ['2', '3', 'd', '10', '8', 'b', '11', '12', 'f', '17', '
              */
             ArgonSystem = function () {
                 function ArgonSystem(config, container) {
+                    var _this = this;
                     if (container === void 0) {
                         container = new DI.Container();
                     }
@@ -27629,8 +27468,19 @@ $__System.register('1', ['2', '3', 'd', '10', '8', 'b', '11', '12', 'f', '17', '
                     container.registerInstance('config', config);
                     container.registerInstance(ArgonSystem, this);
                     if (!container.hasResolver('containerElement')) container.registerInstance('containerElement', null);
-                    if (config.role === common_1.Role.REALITY_MANAGER) {
+                    if (common_1.Role.isRealityManager(config.role)) {
                         container.registerSingleton(session_1.ConnectService, session_1.LoopbackConnectService);
+                        this.reality.registerLoader(container.get(empty_1.EmptyRealityLoader));
+                        this.reality.registerLoader(container.get(live_video_1.LiveVideoRealityLoader));
+                        if (typeof document !== 'undefined') {
+                            this.reality.registerLoader(container.get(hosted_1.HostedRealityLoader));
+                            container.get(ui_1.DefaultUIService);
+                        }
+                        if (live_video_1.LiveVideoRealityLoader.isAvailable()) {
+                            this.reality.setDefault(RealityView.LIVE_VIDEO);
+                        } else {
+                            this.reality.setDefault(RealityView.EMPTY);
+                        }
                     } else if (session_1.WKWebViewConnectService.isAvailable()) {
                         container.registerSingleton(session_1.ConnectService, session_1.WKWebViewConnectService);
                     } else if (session_1.DOMConnectService.isAvailable()) {
@@ -27638,19 +27488,21 @@ $__System.register('1', ['2', '3', 'd', '10', '8', 'b', '11', '12', 'f', '17', '
                     } else if (session_1.DebugConnectService.isAvailable()) {
                         container.registerSingleton(session_1.ConnectService, session_1.DebugConnectService);
                     }
-                    if (config.role === common_1.Role.REALITY_MANAGER) {
-                        this.reality.registerLoader(container.get(empty_1.EmptyRealityLoader));
-                        this.reality.registerLoader(container.get(live_video_1.LiveVideoRealityLoader));
-                        if (typeof document !== 'undefined') {
-                            this.reality.registerLoader(container.get(hosted_1.HostedRealityLoader));
-                            container.get(ui_1.DefaultUIService);
-                        }
-                        this.reality.setDefault(common_1.RealityViewer.EMPTY);
-                    }
                     // ensure the entire object graph is instantiated before connecting to the manager. 
                     for (var _i = 0, _a = Object.keys(ArgonSystem.prototype); _i < _a.length; _i++) {
                         var key = _a[_i];
                         this[key];
+                    }
+                    // route view state to the context
+                    if (!common_1.Role.isRealityAugmenter(config.role)) {
+                        var frameIndex_1 = 0;
+                        this.reality.viewStateEvent.addEventListener(function (view) {
+                            _this.context._update({
+                                index: frameIndex_1++,
+                                reality: _this.reality.getCurrent(),
+                                view: view
+                            });
+                        });
                     }
                     this.session.connect();
                 }
@@ -27685,13 +27537,6 @@ $__System.register('1', ['2', '3', 'd', '10', '8', 'b', '11', '12', 'f', '17', '
                 Object.defineProperty(ArgonSystem.prototype, "session", {
                     get: function () {
                         return this.container.get(session_1.SessionService);
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(ArgonSystem.prototype, "timer", {
-                    get: function () {
-                        return this.container.get(timer_1.TimerService);
                     },
                     enumerable: true,
                     configurable: true

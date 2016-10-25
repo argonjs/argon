@@ -439,17 +439,17 @@ export class SessionService {
     /**
      * @private
      */
-    private get isManager() { console.warn("Deprecated. Use isRealityManager()"); return this.isManager }
+    private get isManager() { console.warn("Deprecated. Use isRealityManager"); return this.isManager }
 
     /**
      * @private
      */
-    private get isApplication() { console.warn("Deprecated. Use isRealityAugmenter()"); return this.isRealityAugmenter }
+    private get isApplication() { console.warn("Deprecated. Use isRealityAugmenter"); return this.isRealityAugmenter }
 
     /**
      * @private
      */
-    private get isRealityView() { console.warn("Deprecated. Use isRealityViewer()"); return this.isRealityViewer }
+    private get isRealityView() { console.warn("Deprecated. Use isRealityViewer"); return this.isRealityViewer }
 
     /**
      * Throws an error if this system is not a [[REALITY_MANAGER]]

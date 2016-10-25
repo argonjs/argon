@@ -1,4 +1,4 @@
-System.register(['googlevr/webvr-polyfill', 'aurelia-polyfills', 'aurelia-dependency-injection', './cesium/cesium-imports', 'urijs', './session', './common', './context', './device', './focus', './reality', './ui', './view', './vuforia', './reality-loader/empty', './reality-loader/live_video', './reality-loader/hosted', './timer', './utils'], function(exports_1, context_1) {
+System.register(['googlevr/webvr-polyfill', 'aurelia-polyfills', 'aurelia-dependency-injection', './cesium/cesium-imports', 'urijs', './session', './common', './context', './device', './focus', './reality', './ui', './view', './vuforia', './reality-loader/empty', './reality-loader/live_video', './reality-loader/hosted', './utils'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __extends = (this && this.__extends) || function (d, b) {
@@ -150,13 +150,14 @@ System.register(['googlevr/webvr-polyfill', 'aurelia-polyfills', 'aurelia-depend
             function (hosted_1_1) {
                 hosted_1 = hosted_1_1;
             },
-            function (timer_1_1) {
-                exportStar_1(timer_1_1);
-            },
             function (utils_1_1) {
                 exportStar_1(utils_1_1);
             }],
         execute: function() {
+            (window || global)['WebVRConfig'] = {
+                DEFER_INITIALIZATION: typeof navigator == 'undefined',
+                MOUSE_KEYBOARD_CONTROLS_DISABLED: true
+            };
             exports_1("DI", DI);
             exports_1("Cesium", Cesium);
             exports_1("URI", URI);
@@ -172,6 +173,7 @@ System.register(['googlevr/webvr-polyfill', 'aurelia-polyfills', 'aurelia-depend
              */
             ArgonSystem = (function () {
                 function ArgonSystem(config, container) {
+                    var _this = this;
                     if (container === void 0) { container = new DI.Container; }
                     this.container = container;
                     if (!ArgonSystem.instance)
@@ -180,8 +182,20 @@ System.register(['googlevr/webvr-polyfill', 'aurelia-polyfills', 'aurelia-depend
                     container.registerInstance(ArgonSystem, this);
                     if (!container.hasResolver('containerElement'))
                         container.registerInstance('containerElement', null);
-                    if (config.role === common_1.Role.REALITY_MANAGER) {
+                    if (common_1.Role.isRealityManager(config.role)) {
                         container.registerSingleton(session_1.ConnectService, session_1.LoopbackConnectService);
+                        this.reality.registerLoader(container.get(empty_1.EmptyRealityLoader));
+                        this.reality.registerLoader(container.get(live_video_1.LiveVideoRealityLoader));
+                        if (typeof document !== 'undefined') {
+                            this.reality.registerLoader(container.get(hosted_1.HostedRealityLoader));
+                            container.get(ui_1.DefaultUIService);
+                        }
+                        if (live_video_1.LiveVideoRealityLoader.isAvailable()) {
+                            this.reality.setDefault(RealityView.LIVE_VIDEO);
+                        }
+                        else {
+                            this.reality.setDefault(RealityView.EMPTY);
+                        }
                     }
                     else if (session_1.WKWebViewConnectService.isAvailable()) {
                         container.registerSingleton(session_1.ConnectService, session_1.WKWebViewConnectService);
@@ -192,19 +206,21 @@ System.register(['googlevr/webvr-polyfill', 'aurelia-polyfills', 'aurelia-depend
                     else if (session_1.DebugConnectService.isAvailable()) {
                         container.registerSingleton(session_1.ConnectService, session_1.DebugConnectService);
                     }
-                    if (config.role === common_1.Role.REALITY_MANAGER) {
-                        this.reality.registerLoader(container.get(empty_1.EmptyRealityLoader));
-                        this.reality.registerLoader(container.get(live_video_1.LiveVideoRealityLoader));
-                        if (typeof document !== 'undefined') {
-                            this.reality.registerLoader(container.get(hosted_1.HostedRealityLoader));
-                            container.get(ui_1.DefaultUIService);
-                        }
-                        this.reality.setDefault(common_1.RealityViewer.EMPTY);
-                    }
                     // ensure the entire object graph is instantiated before connecting to the manager. 
                     for (var _i = 0, _a = Object.keys(ArgonSystem.prototype); _i < _a.length; _i++) {
                         var key = _a[_i];
                         this[key];
+                    }
+                    // route view state to the context
+                    if (!common_1.Role.isRealityAugmenter(config.role)) {
+                        var frameIndex_1 = 0;
+                        this.reality.viewStateEvent.addEventListener(function (view) {
+                            _this.context._update({
+                                index: frameIndex_1++,
+                                reality: _this.reality.getCurrent(),
+                                view: view
+                            });
+                        });
                     }
                     this.session.connect();
                 }
