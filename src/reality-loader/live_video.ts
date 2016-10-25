@@ -35,7 +35,7 @@ export class LiveVideoRealityLoader extends RealityLoader {
             this.settingsIframe = document.createElement('iframe');
             this.settingsIframe.width = '0';
             this.settingsIframe.height = '0';
-            this.settingsIframe.src = 'http://argonjs.io/tools.argonjs.io/';
+            this.settingsIframe.src = 'https://argonjs.io/tools.argonjs.io/';
 
             viewService.containingElementPromise.then((container) => {
                 container.insertBefore(this.settingsIframe, container.firstChild);
