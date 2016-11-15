@@ -1,7 +1,7 @@
 
 import { inject } from 'aurelia-dependency-injection'
 import { JulianDate } from '../cesium/cesium-imports'
-import { Role, SerializedPartialFrameState, RealityView } from '../common'
+import { Role, ViewState, RealityViewer } from '../common'
 import { SessionService, SessionPort } from '../session'
 import { DeviceService } from '../device'
 import { TimerService } from '../timer'
@@ -20,7 +20,7 @@ export class EmptyRealityLoader extends RealityLoader {
         super();
     }
 
-    public load(reality: RealityView, callback: (realitySession: SessionPort) => void): void {
+    public load(reality: RealityViewer, callback: (realitySession: SessionPort) => void): void {
         const realitySession = this.sessionService.addManagedSessionPort(reality.uri);
         const remoteRealitySession = this.sessionService.createSessionPort();
         let doUpdate = true;
@@ -28,15 +28,25 @@ export class EmptyRealityLoader extends RealityLoader {
         remoteRealitySession.connectEvent.addEventListener(() => {
             let update = (time: JulianDate, index: number) => {
                 if (doUpdate) {
-                    this.deviceService.update();
-                    const frameState: SerializedPartialFrameState = {
-                        time,
-                        index,
-                        eye: {
-                            pose: getSerializedEntityPose(this.deviceService.displayEntity, time)
-                        }
+                    this.deviceService.update({orientation:true});
+                    const deviceState = this.deviceService.state;                    
+                    const time = <JulianDate>deviceState.time;
+                    const pose = getSerializedEntityPose(this.deviceService.displayEntity, time);
+                    const viewport = deviceState.viewport;
+                    const subviews = deviceState.subviews;
+                    const geolocationAccuracy = deviceState.geolocationAccuracy;
+                    const geolocationAltitudeAccuracy = deviceState.geolocationAltitudeAccuracy;
+                    if (pose) {
+                        const viewState: ViewState = {
+                            time,
+                            pose,
+                            viewport,
+                            subviews,
+                            geolocationAccuracy,
+                            geolocationAltitudeAccuracy
+                        };
+                        remoteRealitySession.send('ar.reality.viewState', viewState);
                     }
-                    remoteRealitySession.send('ar.reality.frameState', frameState);
                     this.timer.requestFrame(update);
                 }
             }
@@ -50,6 +60,6 @@ export class EmptyRealityLoader extends RealityLoader {
         // Only connect after the caller is able to attach connectEvent handlers
         const messageChannel = this.sessionService.createSynchronousMessageChannel();
         realitySession.open(messageChannel.port1, this.sessionService.configuration);
-        remoteRealitySession.open(messageChannel.port2, { role: Role.REALITY_VIEW });
+        remoteRealitySession.open(messageChannel.port2, { role: Role.REALITY_VIEWER });
     }
 }

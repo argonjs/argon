@@ -1,4 +1,4 @@
-import { RealityView } from '../common';
+import { RealityViewer } from '../common';
 import { SessionService, SessionPort } from '../session';
 import { DeviceService } from '../device';
 import { TimerService } from '../timer';
@@ -9,5 +9,5 @@ export declare class EmptyRealityLoader extends RealityLoader {
     private timer;
     type: string;
     constructor(sessionService: SessionService, deviceService: DeviceService, timer: TimerService);
-    load(reality: RealityView, callback: (realitySession: SessionPort) => void): void;
+    load(reality: RealityViewer, callback: (realitySession: SessionPort) => void): void;
 }

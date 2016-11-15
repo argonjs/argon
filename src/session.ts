@@ -419,23 +419,21 @@ export class SessionService {
      * Returns true if this system represents a [[REALITY_MANAGER]]
      */
     get isRealityManager() {
-        return this.configuration.role === Role.REALITY_MANAGER || 
-            this.configuration.role === Role.MANAGER; // TODO: phase out of using Role.MANAGER enum
+        return Role.isRealityManager(this.configuration.role);
     }
     /**
-     * Returns true if this system represents a [[REALITY_AUGMENTOR]], meaning, 
+     * Returns true if this system represents a [[REALITY_AUGMENTER]], meaning, 
      * it is running within a [[REALITY_MANAGER]]
      */
     get isRealityAugmenter() {
-        return this.configuration.role === Role.REALITY_AUGMENTOR ||
-            this.configuration.role === Role.APPLICATION; // TODO: phase out use of Role.APPLICATION
+        return Role.isRealityAugmenter(this.configuration.role);
     }
 
     /**
-     * Returns true if this system is a [[REALITY_VIEW]]
+     * Returns true if this system is a [[REALITY_VIEWER]]
      */
-    get isRealityView() {
-        return this.configuration.role === Role.REALITY_VIEW;
+    get isRealityViewer() {
+        return Role.isRealityViewer(this.configuration.role);
     }
 
     /**
@@ -449,6 +447,11 @@ export class SessionService {
     private get isApplication() { console.warn("Deprecated. Use isRealityAugmenter()"); return this.isRealityAugmenter }
 
     /**
+     * @private
+     */
+    private get isRealityView() { console.warn("Deprecated. Use isRealityViewer()"); return this.isRealityViewer }
+
+    /**
      * Throws an error if this system is not a [[REALITY_MANAGER]]
      */
     public ensureIsRealityManager() {
@@ -457,19 +460,27 @@ export class SessionService {
     }
 
     /**
-     * Throws an error if this session is not a [[REALITY_VIEW]]
+     * Throws an error if this session is not a [[REALITY_VIEWER]]
      */
-    public ensureIsRealityView() {
-        if (!this.isRealityView)
-            throw new Error('An reality-view only API was accessed from a non reality-view.')
+    public ensureIsRealityViewer() {
+        if (!this.isRealityViewer)
+            throw new Error('An reality-viewer only API was accessed from a non reality-viewer.')
     }
 
     /**
-     * Throws an error if this session is a [[REALITY_VIEW]]
+     * Throws an error if this session is a [[REALITY_VIEWER]]
      */
-    public ensureNotRealityView() {
-        if (this.isRealityView)
-            throw new Error('An non-permitted API was accessed from a reality-view.')
+    public ensureNotRealityViewer() {
+        if (this.isRealityViewer)
+            throw new Error('An non-permitted API was accessed from a reality-viewer.')
+    }
+
+    /**
+     * Throws an error if this session is a [[REALITY_AUGMENTER]]
+     */
+    public ensureNotRealityAugmenter() {
+        if (this.isRealityAugmenter)
+            throw new Error('An non-permitted API was accessed from a reality-viewer.')
     }
 }
 

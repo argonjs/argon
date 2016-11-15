@@ -43,6 +43,48 @@ System.register(['aurelia-dependency-injection', '../session', '../reality', '..
                     this.iframeElement.height = '100%';
                     viewService.containingElementPromise.then(function (container) {
                         container.insertBefore(_this.iframeElement, container.firstChild);
+                        var forwardEvents = function (e) {
+                            if (_this.currentRealitySession) {
+                                var boundingRect = _this.iframeElement.getBoundingClientRect();
+                                _this.currentRealitySession.send('ar.view.uievent', {
+                                    type: e.type,
+                                    bubbles: e.bubbles,
+                                    cancelable: e.cancelable,
+                                    detail: e.detail,
+                                    altKey: e.altKey,
+                                    ctrlKey: e.ctrlKey,
+                                    metaKey: e.metaKey,
+                                    button: e.button,
+                                    buttons: e.buttons,
+                                    clientX: e.clientX + boundingRect.left,
+                                    clientY: e.clientY + boundingRect.top,
+                                    screenX: e.screenX,
+                                    screenY: e.screenY,
+                                    movementX: e.movementX,
+                                    movementY: e.movementY,
+                                    deltaX: e.deltaX,
+                                    deltaY: e.deltaY,
+                                    deltaZ: e.deltaZ,
+                                    deltaMode: e.deltaMode,
+                                    wheelDelta: e.wheelDelta,
+                                    wheelDeltaX: e.wheelDeltaX,
+                                    wheelDeltaY: e.wheelDeltaY
+                                });
+                            }
+                        };
+                        ['click',
+                            'dblclick',
+                            'mousedown',
+                            'mouseenter',
+                            'mouseleave',
+                            'mousemove',
+                            'mouseout',
+                            'mouseover',
+                            'mouseup',
+                            'wheel'
+                        ].forEach(function (type) {
+                            container.addEventListener(type, forwardEvents, false);
+                        });
                     });
                 }
                 HostedRealityLoader.prototype.load = function (reality, callback) {
@@ -66,12 +108,18 @@ System.register(['aurelia-dependency-injection', '../session', '../reality', '..
                             window.removeEventListener('message', handleConnectMessage);
                             var realitySession = _this.sessionService.addManagedSessionPort(reality.uri);
                             callback(realitySession);
+                            realitySession.connectEvent.addEventListener(function () {
+                                _this.currentRealitySession = realitySession;
+                                realitySession.closeEvent.addEventListener(function () {
+                                    _this.currentRealitySession = undefined;
+                                });
+                                realitySession.send('ar.focus.state', { state: true });
+                            });
                             realitySession.open(messagePort, _this.sessionService.configuration);
                         };
                         window.addEventListener('message', handleConnectMessage);
                         _this.iframeElement.src = '';
                         _this.iframeElement.src = reality.uri;
-                        _this.iframeElement.style.pointerEvents = 'auto';
                     });
                 };
                 HostedRealityLoader = __decorate([

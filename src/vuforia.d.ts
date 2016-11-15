@@ -1,4 +1,4 @@
-import { SerializedPartialFrameState } from './common';
+import { ViewState } from './common';
 import { FocusService } from './focus';
 import { SessionService, SessionPort } from './session';
 import { Event } from './utils';
@@ -53,7 +53,7 @@ export interface VuforiaServiceDelegateInitOptions {
 export declare abstract class VuforiaServiceDelegateBase {
     videoEnabled: boolean;
     trackingEnabled: boolean;
-    stateUpdateEvent: Event<SerializedPartialFrameState>;
+    stateUpdateEvent: Event<ViewState>;
     abstract isAvailable(): boolean;
     abstract setHint(hint: VuforiaHint, value: number): boolean;
     abstract decryptLicenseKey(encryptedLicenseData: string, session: SessionPort): Promise<string>;

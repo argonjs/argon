@@ -1,6 +1,6 @@
 
 import { inject } from 'aurelia-dependency-injection'
-import { RealityView } from '../common'
+import { RealityViewer } from '../common'
 import { SessionService, SessionPort } from '../session'
 import { RealityLoader } from '../reality'
 import { ViewService } from '../view'
@@ -12,6 +12,8 @@ export class HostedRealityLoader extends RealityLoader {
 
     public iframeElement: HTMLIFrameElement;
 
+    private currentRealitySession?:SessionPort;
+
     constructor(
         private sessionService: SessionService,
         private viewService: ViewService) {
@@ -22,10 +24,53 @@ export class HostedRealityLoader extends RealityLoader {
         this.iframeElement.height = '100%';
         viewService.containingElementPromise.then((container) => {
             container.insertBefore(this.iframeElement, container.firstChild);
-        })
+           
+            const forwardEvents = (e:MouseEvent&WheelEvent)=>{
+                if (this.currentRealitySession) {
+                    const boundingRect = this.iframeElement.getBoundingClientRect();
+                    this.currentRealitySession.send('ar.view.uievent', {
+                        type: e.type,
+                        bubbles: e.bubbles,
+                        cancelable: e.cancelable,
+                        detail: e.detail,
+                        altKey: e.altKey,
+                        ctrlKey: e.ctrlKey,
+                        metaKey: e.metaKey,
+                        button: e.button,
+                        buttons: e.buttons,
+                        clientX: e.clientX + boundingRect.left,
+                        clientY: e.clientY + boundingRect.top,
+                        screenX: e.screenX,
+                        screenY: e.screenY,
+                        movementX: e.movementX,
+                        movementY: e.movementY,
+                        deltaX: e.deltaX,
+                        deltaY: e.deltaY,
+                        deltaZ: e.deltaZ,
+                        deltaMode: e.deltaMode,
+                        wheelDelta: e.wheelDelta,
+                        wheelDeltaX: e.wheelDeltaX,
+                        wheelDeltaY: e.wheelDeltaY
+                    });
+                }
+            };
+            ['click'
+            ,'dblclick'
+            ,'mousedown'
+            ,'mouseenter'
+            ,'mouseleave'
+            ,'mousemove'
+            ,'mouseout'
+            ,'mouseover'
+            ,'mouseup'
+            ,'wheel'
+            ].forEach((type)=>{
+                container.addEventListener(type, forwardEvents, false);
+            });
+        });
     }
 
-    public load(reality: RealityView, callback: (realitySession: SessionPort) => void): void {
+    public load(reality: RealityViewer, callback: (realitySession: SessionPort) => void): void {
         this.viewService.containingElementPromise.then((container) => {
             let handleConnectMessage = (ev) => {
                 if (ev.data.type !== 'ARGON_SESSION') return;
@@ -49,12 +94,20 @@ export class HostedRealityLoader extends RealityLoader {
 
                 const realitySession = this.sessionService.addManagedSessionPort(reality.uri);
                 callback(realitySession);
+
+                realitySession.connectEvent.addEventListener(()=>{
+                    this.currentRealitySession = realitySession;
+                    realitySession.closeEvent.addEventListener(()=>{
+                        this.currentRealitySession = undefined;
+                    })
+                    realitySession.send('ar.focus.state', {state:true})
+                });
+
                 realitySession.open(messagePort, this.sessionService.configuration);
             };
             window.addEventListener('message', handleConnectMessage);
             this.iframeElement.src = '';
             this.iframeElement.src = reality.uri;
-            this.iframeElement.style.pointerEvents = 'auto';
         });
     }
 }

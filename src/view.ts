@@ -1,11 +1,11 @@
 import { inject } from 'aurelia-dependency-injection'
 import { Entity, Matrix4, PerspectiveFrustum } from './cesium/cesium-imports'
-import { Viewport, SubviewType, SerializedFrameState, SerializedViewParameters } from './common'
+import { Viewport, SubviewType, FrameState, ViewState } from './common'
 import { SessionService, SessionPort } from './session'
 import { EntityPose, ContextService } from './context'
 import { Event } from './utils'
 import { FocusService } from './focus'
-import { RealityService, RealityZoomState } from './reality'
+import { DeviceService, ZoomState } from './device'
 
 // setup our DOM environment
 if (typeof document !== 'undefined' && document.createElement) {
@@ -52,12 +52,15 @@ if (typeof document !== 'undefined' && document.createElement) {
             margin: 0;
             border: 0;
             padding: 0;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
         }
     `, 0);
     sheet.insertRule(`
         .argon-view > * {
             position: absolute;
-            pointer-events: none;
+            -webkit-tap-highlight-color: initial;
         }
     `, 1);
 }
@@ -115,7 +118,7 @@ export class ViewService {
      */
     public desiredViewportMap = new WeakMap<SessionPort, Viewport>();
 
-    private _current: SerializedViewParameters;
+    private _current: ViewState;
     private _currentViewportJSON: string;
 
     private _subviews: Subview[] = [];
@@ -161,8 +164,32 @@ export class ViewService {
                             argonContainer.classList.add('argon-no-focus');
                         })
                     })
+
+                    // prevent pinch-zoom of the page in ios 10.
+                    argonContainer.addEventListener('touchmove', function (event) {
+                        event.preventDefault();
+                    }, true);
+                    argonContainer.addEventListener('gesturestart', function (event) {
+                        event.preventDefault();
+                    }, true);
                 }
-            })
+            });
+
+
+            if (this.sessionService.isRealityViewer) {
+                this.sessionService.manager.on['ar.view.uievent'] = (uievent:MouseEvent&WheelEvent)=>{
+                    (<any>uievent).view = window;
+                    let e:MouseEvent|WheelEvent;
+                    switch (uievent.type) {
+                        case 'wheel':
+                            e = new WheelEvent(uievent.type, uievent);
+                        default: 
+                            e = new MouseEvent(uievent.type, uievent);
+                    }
+                    const target = document.elementFromPoint(e.clientX, e.clientY) || window;
+                    target.dispatchEvent(e);
+                };
+            }
         }
 
         if (this.sessionService.isRealityManager) {
@@ -174,7 +201,7 @@ export class ViewService {
         }
 
         this.contextService.renderEvent.addEventListener(() => {
-            const state = <SerializedFrameState>this.contextService.serializedFrameState;
+            const state = <FrameState>this.contextService.serializedFrameState;
             const subviewEntities = this._subviewEntities;
             subviewEntities.length = 0;
             state.view.subviews.forEach((subview, index) => {
@@ -198,7 +225,12 @@ export class ViewService {
             subview.index = index;
             subview.type = serializedSubview.type;
             subview.pose = this.contextService.getEntityPose(subviewEntity, referenceFrame);
-            subview.viewport = serializedSubview.viewport || this._current.viewport;
+            subview.viewport = serializedSubview.viewport || {
+                x: 0, 
+                y: 0, 
+                width: this._current.viewport.width,
+                height: this._current.viewport.height
+            }
 
             subview.frustum = this._frustums[index];
             if (!subview.frustum) {
@@ -281,16 +313,16 @@ export class ViewService {
 }
 
 
-@inject(ViewService, RealityService, ContextService, SessionService)
+@inject(ViewService, DeviceService, ContextService, SessionService)
 export class PinchZoomService {
     constructor(
         private viewService: ViewService,
-        private realityService: RealityService,
+        private deviceService: DeviceService,
         private contextService: ContextService,
         private sessionService: SessionService) {
-        if (this.sessionService.isRealityManager) {
+        if (this.sessionService.isRealityManager && 
+            !this.sessionService.configuration['app.disablePinchZoom']) {
             this.viewService.containingElementPromise.then((el) => {
-                el.style.pointerEvents = 'auto';
                 let fov: number = -1;
 
                 if (typeof PointerEvent !== 'undefined') {
@@ -341,15 +373,15 @@ export class PinchZoomService {
                                 startDistSquared = currDistSquared;
                                 fov = state.view.subviews[0].frustum.fov;
                                 zoom = 1;
-                                this.realityService.zoom({ zoom, fov, state: RealityZoomState.START });
+                                this.deviceService.zoom({ zoom, fov, state: ZoomState.START });
                             } else {
                                 // change pinch
                                 zoom = currDistSquared / startDistSquared;
-                                this.realityService.zoom({ zoom, fov, state: RealityZoomState.CHANGE });
+                                this.deviceService.zoom({ zoom, fov, state: ZoomState.CHANGE });
                             }
                         } else {
                             // end pinch                            
-                            this.realityService.zoom({ zoom, fov, state: RealityZoomState.END });
+                            this.deviceService.zoom({ zoom, fov, state: ZoomState.END });
                             startDistSquared = -1;
                         }
                     }
@@ -377,14 +409,15 @@ export class PinchZoomService {
                         const state = this.contextService.serializedFrameState;
                         if (state && state.view.subviews[0]) {
                             fov = state.view.subviews[0].frustum.fov;
-                            this.realityService.zoom({ zoom: ev.scale, fov, state: RealityZoomState.START });
+                            this.deviceService.zoom({ zoom: ev.scale, fov, state: ZoomState.START });
                         }
+                        ev.preventDefault();
                     })
                     el.addEventListener('gesturechange', (ev: any) => {
-                        this.realityService.zoom({ zoom: ev.scale, fov, state: RealityZoomState.CHANGE });
+                        this.deviceService.zoom({ zoom: ev.scale, fov, state: ZoomState.CHANGE });
                     })
                     el.addEventListener('gestureend', (ev: any) => {
-                        this.realityService.zoom({ zoom: ev.scale, fov, state: RealityZoomState.END });
+                        this.deviceService.zoom({ zoom: ev.scale, fov, state: ZoomState.END });
                     })
                 }
             })

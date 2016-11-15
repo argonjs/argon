@@ -424,30 +424,28 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                      * Returns true if this system represents a [[REALITY_MANAGER]]
                      */
                     get: function () {
-                        return this.configuration.role === common_1.Role.REALITY_MANAGER ||
-                            this.configuration.role === common_1.Role.MANAGER; // TODO: phase out of using Role.MANAGER enum
+                        return common_1.Role.isRealityManager(this.configuration.role);
                     },
                     enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(SessionService.prototype, "isRealityAugmenter", {
                     /**
-                     * Returns true if this system represents a [[REALITY_AUGMENTOR]], meaning,
+                     * Returns true if this system represents a [[REALITY_AUGMENTER]], meaning,
                      * it is running within a [[REALITY_MANAGER]]
                      */
                     get: function () {
-                        return this.configuration.role === common_1.Role.REALITY_AUGMENTOR ||
-                            this.configuration.role === common_1.Role.APPLICATION; // TODO: phase out use of Role.APPLICATION
+                        return common_1.Role.isRealityAugmenter(this.configuration.role);
                     },
                     enumerable: true,
                     configurable: true
                 });
-                Object.defineProperty(SessionService.prototype, "isRealityView", {
+                Object.defineProperty(SessionService.prototype, "isRealityViewer", {
                     /**
-                     * Returns true if this system is a [[REALITY_VIEW]]
+                     * Returns true if this system is a [[REALITY_VIEWER]]
                      */
                     get: function () {
-                        return this.configuration.role === common_1.Role.REALITY_VIEW;
+                        return common_1.Role.isRealityViewer(this.configuration.role);
                     },
                     enumerable: true,
                     configurable: true
@@ -468,6 +466,14 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                     enumerable: true,
                     configurable: true
                 });
+                Object.defineProperty(SessionService.prototype, "isRealityView", {
+                    /**
+                     * @private
+                     */
+                    get: function () { console.warn("Deprecated. Use isRealityViewer()"); return this.isRealityViewer; },
+                    enumerable: true,
+                    configurable: true
+                });
                 /**
                  * Throws an error if this system is not a [[REALITY_MANAGER]]
                  */
@@ -476,18 +482,25 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                         throw new Error('An reality-manager only API was accessed from a non reality-manager.');
                 };
                 /**
-                 * Throws an error if this session is not a [[REALITY_VIEW]]
+                 * Throws an error if this session is not a [[REALITY_VIEWER]]
                  */
-                SessionService.prototype.ensureIsRealityView = function () {
-                    if (!this.isRealityView)
-                        throw new Error('An reality-view only API was accessed from a non reality-view.');
+                SessionService.prototype.ensureIsRealityViewer = function () {
+                    if (!this.isRealityViewer)
+                        throw new Error('An reality-viewer only API was accessed from a non reality-viewer.');
                 };
                 /**
-                 * Throws an error if this session is a [[REALITY_VIEW]]
+                 * Throws an error if this session is a [[REALITY_VIEWER]]
                  */
-                SessionService.prototype.ensureNotRealityView = function () {
-                    if (this.isRealityView)
-                        throw new Error('An non-permitted API was accessed from a reality-view.');
+                SessionService.prototype.ensureNotRealityViewer = function () {
+                    if (this.isRealityViewer)
+                        throw new Error('An non-permitted API was accessed from a reality-viewer.');
+                };
+                /**
+                 * Throws an error if this session is a [[REALITY_AUGMENTER]]
+                 */
+                SessionService.prototype.ensureNotRealityAugmenter = function () {
+                    if (this.isRealityAugmenter)
+                        throw new Error('An non-permitted API was accessed from a reality-viewer.');
                 };
                 SessionService = __decorate([
                     aurelia_dependency_injection_1.inject('config', ConnectService, SessionPortFactory, utils_1.MessageChannelFactory)

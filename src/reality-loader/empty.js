@@ -56,15 +56,25 @@ System.register(['aurelia-dependency-injection', '../common', '../session', '../
                     remoteRealitySession.connectEvent.addEventListener(function () {
                         var update = function (time, index) {
                             if (doUpdate) {
-                                _this.deviceService.update();
-                                var frameState = {
-                                    time: time,
-                                    index: index,
-                                    eye: {
-                                        pose: utils_1.getSerializedEntityPose(_this.deviceService.displayEntity, time)
-                                    }
-                                };
-                                remoteRealitySession.send('ar.reality.frameState', frameState);
+                                _this.deviceService.update({ orientation: true });
+                                var deviceState = _this.deviceService.state;
+                                var time_1 = deviceState.time;
+                                var pose = utils_1.getSerializedEntityPose(_this.deviceService.displayEntity, time_1);
+                                var viewport = deviceState.viewport;
+                                var subviews = deviceState.subviews;
+                                var geolocationAccuracy = deviceState.geolocationAccuracy;
+                                var geolocationAltitudeAccuracy = deviceState.geolocationAltitudeAccuracy;
+                                if (pose) {
+                                    var viewState = {
+                                        time: time_1,
+                                        pose: pose,
+                                        viewport: viewport,
+                                        subviews: subviews,
+                                        geolocationAccuracy: geolocationAccuracy,
+                                        geolocationAltitudeAccuracy: geolocationAltitudeAccuracy
+                                    };
+                                    remoteRealitySession.send('ar.reality.viewState', viewState);
+                                }
                                 _this.timer.requestFrame(update);
                             }
                         };
@@ -77,7 +87,7 @@ System.register(['aurelia-dependency-injection', '../common', '../session', '../
                     // Only connect after the caller is able to attach connectEvent handlers
                     var messageChannel = this.sessionService.createSynchronousMessageChannel();
                     realitySession.open(messageChannel.port1, this.sessionService.configuration);
-                    remoteRealitySession.open(messageChannel.port2, { role: common_1.Role.REALITY_VIEW });
+                    remoteRealitySession.open(messageChannel.port2, { role: common_1.Role.REALITY_VIEWER });
                 };
                 EmptyRealityLoader = __decorate([
                     aurelia_dependency_injection_1.inject(session_1.SessionService, device_1.DeviceService, timer_1.TimerService)

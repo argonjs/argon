@@ -1,5 +1,5 @@
 import { inject } from 'aurelia-dependency-injection'
-import { Role, RealityView } from '../common'
+import { Role, RealityViewer } from '../common'
 import { SessionService, SessionPort } from '../session'
 import { DeviceService } from '../device'
 import { TimerService } from '../timer'
@@ -57,15 +57,15 @@ export class LiveVideoRealityLoader extends RealityLoader {
         }
     }
 
-    public load(reality: RealityView, callback: (realitySession: SessionPort) => void): void {
+    public load(reality: RealityViewer, callback: (realitySession: SessionPort) => void): void {
         const realitySession = this.sessionService.addManagedSessionPort(reality.uri);
         const remoteRealitySession = this.sessionService.createSessionPort();
 
         remoteRealitySession.on['ar.context.update'] = () => { };
 
         remoteRealitySession.connectEvent.addEventListener(() => {
-            const remove = this.vuforiaDelegate.stateUpdateEvent.addEventListener((frameState) => {
-                remoteRealitySession.send('ar.reality.frameState', frameState);
+            const remove = this.vuforiaDelegate.stateUpdateEvent.addEventListener((viewState) => {
+                remoteRealitySession.send('ar.reality.viewState', viewState);
             });
 
             this.vuforiaDelegate.videoEnabled = true;
@@ -130,7 +130,7 @@ export class LiveVideoRealityLoader extends RealityLoader {
         // Only connect after the caller is able to attach connectEvent handlers
         const messageChannel = this.sessionService.createSynchronousMessageChannel();
         realitySession.open(messageChannel.port1, this.sessionService.configuration);
-        remoteRealitySession.open(messageChannel.port2, { role: Role.REALITY_VIEW });
+        remoteRealitySession.open(messageChannel.port2, { role: Role.REALITY_VIEWER });
     }
 
     public static isAvailable(): bool {

@@ -1,7 +1,7 @@
 System.register([], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var Role, SubviewType, RealityView;
+    var Role, SubviewType, RealityViewer;
     return {
         setters:[],
         execute: function() {
@@ -14,22 +14,21 @@ System.register([], function(exports_1, context_1) {
                  * generally by overlaying computer generated graphics. A reality augmentor may also,
                  * if appropriate, be elevated to the role of a [[REALITY_MANAGER]].
                  */
-                Role[Role["REALITY_AUGMENTOR"] = "RealityAugmentor"] = "REALITY_AUGMENTOR";
+                Role[Role["REALITY_AUGMENTER"] = "RealityAugmenter"] = "REALITY_AUGMENTER";
                 /**
                  * A system with this role is responsible for (at minimum) describing (and providing,
                  * if necessary) a visual representation of the world and the 3D eye pose of the viewer.
                  */
-                Role[Role["REALITY_VIEW"] = "RealityView"] = "REALITY_VIEW";
+                Role[Role["REALITY_VIEWER"] = "RealityViewer"] = "REALITY_VIEWER";
                 /**
                  * A system with this role is responsible for mediating access to sensors/trackers
                  * and pose data for known entities in the world, selecting/configuring/loading
-                 * [[REALITY_VIEW]]s, and providing the mechanism by which any given [[REALITY_AUGMENTOR]]
-                 * can augment any given [[REALITY_VIEW]]. The reality manager may also, when appropriate,
-                 * take on the role of [[REALITY_AUGMENTOR]].
+                 * [[REALITY_VIEWER]]s, and providing the mechanism by which any given [[REALITY_AUGMENTER]]
+                 * can augment any given [[REALITY_VIEWER]].
                  */
                 Role[Role["REALITY_MANAGER"] = "RealityManager"] = "REALITY_MANAGER";
                 /**
-                 * Deprecated. Use [[REALITY_AUGMENTOR]].
+                 * Deprecated. Use [[REALITY_AUGMENTER]].
                  * @private
                  */
                 Role[Role["APPLICATION"] = "Application"] = "APPLICATION";
@@ -38,7 +37,27 @@ System.register([], function(exports_1, context_1) {
                  * @private
                  */
                 Role[Role["MANAGER"] = "Manager"] = "MANAGER";
+                /**
+                 * Deprecated. Use [[REALITY_VIEWER]]
+                 * @private
+                 */
+                Role[Role["REALITY_VIEW"] = "RealityView"] = "REALITY_VIEW";
             })(Role || (Role = {}));
+            exports_1("Role", Role);
+            (function (Role) {
+                function isRealityViewer(r) {
+                    return r === Role.REALITY_VIEWER || r === Role.REALITY_VIEW;
+                }
+                Role.isRealityViewer = isRealityViewer;
+                function isRealityAugmenter(r) {
+                    return r === Role.REALITY_AUGMENTER || r === Role.APPLICATION;
+                }
+                Role.isRealityAugmenter = isRealityAugmenter;
+                function isRealityManager(r) {
+                    return r === Role.REALITY_MANAGER || r === Role.MANAGER;
+                }
+                Role.isRealityManager = isRealityManager;
+            })(Role = Role || (Role = {}));
             exports_1("Role", Role);
             /**
              * Identifies a subview in a [[SerializedSubview]]
@@ -65,10 +84,12 @@ System.register([], function(exports_1, context_1) {
             /**
             * Represents a view of Reality
             */
-            RealityView = (function () {
-                function RealityView() {
+            RealityViewer = (function () {
+                function RealityViewer() {
                 }
-                RealityView.getType = function (reality) {
+                RealityViewer.getType = function (reality) {
+                    if (reality === undefined)
+                        return undefined;
                     var uri = reality.uri;
                     var parts = uri.split(':');
                     if (parts[0] === 'reality') {
@@ -76,14 +97,14 @@ System.register([], function(exports_1, context_1) {
                     }
                     return 'hosted';
                 };
-                RealityView.EMPTY = {
+                RealityViewer.EMPTY = {
                     uri: 'reality:empty',
-                    title: 'Reality',
+                    title: 'Empty Reality',
                     providedReferenceFrames: ['FIXED']
                 };
-                return RealityView;
+                return RealityViewer;
             }());
-            exports_1("RealityView", RealityView);
+            exports_1("RealityViewer", RealityViewer);
         }
     }
 });

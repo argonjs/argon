@@ -2691,7 +2691,176 @@ var define = $__System.amdDefine;
 }));
 
 })();
-$__System.register('8', ['f', '9', 'a', 'b', 'c', 'd', 'e'], function (exports_1, context_1) {
+$__System.register('8', ['c', '9', 'a', 'b'], function (exports_1, context_1) {
+    "use strict";
+
+    var __moduleName = context_1 && context_1.id;
+    var __decorate = this && this.__decorate || function (decorators, target, key, desc) {
+        var c = arguments.length,
+            r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+            d;
+        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+        return c > 3 && r && Object.defineProperty(target, key, r), r;
+    };
+    var aurelia_dependency_injection_1, view_1, session_1, utils;
+    var openIcon, eyeIcon, vrIcon, argonAppIcon, DefaultUIService;
+    return {
+        setters: [function (aurelia_dependency_injection_1_1) {
+            aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
+        }, function (view_1_1) {
+            view_1 = view_1_1;
+        }, function (session_1_1) {
+            session_1 = session_1_1;
+        }, function (utils_1) {
+            utils = utils_1;
+        }],
+        execute: function () {
+            openIcon = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='768' height='768'%3E%3Cpath fill='white' d='M448.5 96H672v223.5h-64.5v-114L294 519l-45-45 313.5-313.5h-114V96zm159 511.5V384H672v223.5c0 34.5-30 64.5-64.5 64.5h-447c-36 0-64.5-30-64.5-64.5v-447C96 126 124.5 96 160.5 96H384v64.5H160.5v447h447z'/%3E%3C/svg%3E\")";
+            eyeIcon = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512'%3E%3Cpath fill='white' d='M256 96C144.34 96 47.56 161.02 0 256c47.56 94.98 144.34 160 256 160 111.656 0 208.438-65.02 256-160-47.558-94.98-144.344-160-256-160zm126.225 84.852c30.08 19.187 55.57 44.887 74.717 75.148-19.146 30.26-44.637 55.96-74.718 75.148C344.427 355.258 300.78 368 256 368s-88.43-12.743-126.226-36.852c-30.08-19.186-55.57-44.886-74.716-75.148 19.146-30.262 44.637-55.962 74.717-75.148 1.96-1.25 3.938-2.46 5.93-3.65C130.725 190.866 128 205.612 128 221c0 70.69 57.308 128 128 128s128-57.31 128-128c0-15.387-2.726-30.134-7.704-43.8 1.99 1.19 3.97 2.402 5.93 3.652zM256 208c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48z'/%3E%3C/svg%3E\")";
+            vrIcon = "url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E)";
+            argonAppIcon = "url(data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/4QBYRXhpZgAATU0AKgAAAAgABAExAAIAAAARAAAAPlEQAAEAAAABAQAAAFERAAQAAAABAAAAAFESAAQAAAABAAAAAAAAAABBZG9iZSBJbWFnZVJlYWR5AAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/2wBDAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAARCACQAJADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9ObW1tTbW5NrbDMEJwtvCo5jU8KqBVHoFAAHAAFT/AGS1/wCfW3/78x//ABNFp/x6Wv8A17w/+i1qxX/ILOVXnl71T4n1l3/4C+4/1nUNF7vRfZ8vQr/ZLX/n1t/+/Mf/AMTR9ktf+fW3/wC/Mf8A8TViip5qv81T75f10X3D5P7v/kv/AACv9ktf+fW3/wC/Mf8A8TR9ktf+fW3/AO/Mf/xNWKKOar/NU++X9dF9wcn93/yX/gFf7Ja/8+tv/wB+Y/8A4mj7Ja/8+tv/AN+Y/wD4mrFFHNV/mqffL+ui+4OT+7/5L/wCv9ktf+fW3/78x/8AxNH2S1/59bf/AL8x/wDxNWKKOar/ADVPvl/XRfcHJ/d/8l/4BX+yWv8Az62//fmP/wCJo+yWv/Prb/8AfmP/AOJqxRRzVf5qn3y/rovuDk/u/wDkv/AK/wBktf8An1t/+/Mf/wATR9ktf+fW3/78x/8AxNWKKOar/NU++X9dF9wcn93/AMl/4BX+yWv/AD62/wD35j/+Jo+yWv8Az62//fmP/wCJqxRRzVf5qn3y/rovuDk/u/8Akv8AwCv9ktf+fW3/AO/Mf/xNQXVrai2uCLW2OIJjhreFhxGx5VkKsPUMCCOCCKv1Xu/+PS6/695v/RbVVOVT2kNZ/HHrLuv8kJw0fu9H9ny9BLP/AI87T/r2g/8ARS1ZqtZ/8edp/wBe0H/opas1pP45f4pfmzVT0Wj2X5L/AIP9PQoooqR8/k/6/p/09CiiigOfyf8AX9P+noUUUUBz+T/r+n/T0KKKKA5/J/1/T/p6FFFFAc/k/wCv6f8AT0KKKKA5/J/1/T/p6FFFFAc/k/6/p/09Cq15/wAed3/17T/+imqzVa8/487v/r2n/wDRTVdP+JT/AMcf/SkJz0ej2f5f8P8A09Cz/wCPO0/69oP/AEUtWarWf/Hnaf8AXtB/6KWrNKfxy/xS/NmS2XovyCiiipGFfpT8AP2E/C3xX+E3hT4ieLPF/jLQdT8VRX+o2+l6Kuix2cGkLqV3a6RN/wATHSr25eW/sLeDUHczCPbdIqRqFy35v2WmX2t3+naHpkck2pa5qOn6Jp0USl5JL/V7yHTrRUUZLN59zGcAdAT2r+ofwn4dsfCHhfw54U0xdmneGtC0nQbEYx/oukWMFhAWHPztHArOSSWcliSSSf8ARL9nx4C8H+L3E3H+eeIPDuF4l4Y4YyXLctwuX4+WKpYWWf57jZYmji4SwtbD1KtXA5fk+NpSp+1dOnHMqc6lNylQlH8B8e+O834RyvIcHw/mFTLs0zTHYnEVMRRjSnVjgMvoRhUpONanVhGOIxOOoTjLlUm8JNRklzp/n7/w7R+F/wD0Ub4kf99eFv8A5n6/N/8Aac+FFj+z98ZIvhnBqN/qGk614T0nxX4R1fV3tDe6tFNc3+ma3p90bO3tLWK907U9PZ7aNIE8+xvLb70wJf8ApCr8h/8Agrd8Pjf+AfhZ8VLSGJZ/B/i278JavcorLd/2T41tI5dObzFGfJtPEOhWEceXBil1IvGMu5H9ifSo+iB4N5Z4KcU594fcB5bwxxHw7PLs4p5hldTMqmIll9HGUsLmlGpTxWNxFGph6eBxVXHVoOClJYJKFSlO1SP5D4X+LvGOK4zyzAcQZ5XzPLsxjiMG8PiYYWEFiZ0ZVMLOEqNCnONWdejDDwfM1+/1jJaP8x6K4Xwp4r/tPy9M1SQDU1G22uWwqamqjhHPCpqCgHjhbsDcuJQwPdV/hvmOXYrK8VPCYunyVIaxkrunWpttRrUZNLnpzs7OylGSlCcYVIThH+1cPiKWKpRrUZc0Xo09JQkt4TWtpK+q1TTUotxcZMooorhNwooooAKKKKACq15/x53f/XtP/wCimqzVa8/487v/AK9p/wD0U1XT/iU/8cf/AEpCez9H+QWf/Hnaf9e0H/opas1nWf8Ax52n/XtB/wCilqzSn8cv8UvzY42stXsunl6liiq9FSPTu/u/4J9X/sWeCf8AhNv2jfA4mglm0/wdHqfju/aMHbDJoduttojTNghVPiDUtMkUNjeYCFII4/oJr8r/APgmb4JEel/E74lXEDeZqOp6Z4I0i4OQrWejW/8AbGsbB0fzL/VrGF3HAewMf3lYD9TmZUVndlREUszMQqqqjLMzHACqASSSAAMmv+hT9nrwH/qd9HXKM4xFFUsfx9neb8WV3ONq0cFGpDJMqpSl/wA+ZYPKFmFCN3GKzGc9JVJpfwN9IHPP7W8QsTgqc3PD5BgMFlULP3XXnGWYYuVk3apGvjXhqnW+Gin8KOZ8MeMdA8Yf8JD/AGBei9/4RbxRq3g7Wtox9l1/RPs/9pWR5OWtzdQgk7SS3TGCfH/2s/hw/wAWP2cvi74JtoY5tUvvB2o6loIkjDlfEPh0J4h0IxEqzRSvqel20KyphlErc7SwPyN/wTW+LH/CyJ/2qvMlXffftAeIPiRYwMVEn9j/ABBEsVlKqDpF/wAUw0fykojDHG4Fv1AIBBBAIIwQRkEHqCD1Br+jOD88y3xr8Jfr+JWHqZXxtlPEuS4tYW1Si8LPGZtw9ieRTlNc3s6E21KTtUuuh+dZxgcTwXxZ9XpuaxWS4vLMbSc/iVVUcJmNO7SWilUitFsfxZW8wuIILhN6CaOKePqkib1WRDkYKSISDkEFWHHIr2Pwr4tGohNN1WVE1JFxb3TkImpIi/dkY4VL9FXLZIW6UFlxKGDH7QPw9f4UfHT4t/D3yDb2nh7x1rT6NGQFB8N69KviTw2yKOFjXRNYsoFVflUwsikha8V1MkadfsCVZbO6ZWBIZWWF2VlI5DKwDKw5BAI5Ff8APXxlwjKljs34bzin7DM8izPMMrrVIxvVwmYZdiquCxUUnZyp+3w8oVqMuVTjFfw6sKdSn/fWTZqpU8HmGElz4TH0MNiYRv7tbDYmnCtSldXSl7OopQmtYtu6cXKMvteH4cfEm4hiuLb4bfEK5t540mguLfwT4lnt54ZVDxTQTRaY0c0MqMrxSxsySIyujFSDVXUvA3jrRbOXUtb8C+NdF023MYuNS1jwpr2mafbmaVIYRPe3thBbQmaaSOGLzJV8yaSOJMu6qf6RfhFJJL8J/hhLK7SSy/DzwVJJI5LPJI/hvTGd2Y8lmYlmJ5JJNZ3xv+GNv8ZvhJ8QPhdc6g+kf8Jp4bvdItNZiRpZdF1Rgtxo+tRRLJEZpdH1WCy1KKHzEWWS1WN2CsTX951v2YWS1+Equb5P4nZ3is9rcOzzLK8tr8P5dSweJzaplv1rBYGtiP7SjOnhq2MdOhUr2UoUpupZONj8Qp/SXxEM2hhMZwzhKOBjmMcNisVDMcROtSwkcSqVfEQpfVbTqQoqdSNO9pSXLfVW/nk8B/Cb4m/FFrz/AIV54G1/xZDp0ogv77T4IINLs7ll3i1n1bUbiy00Xez5jaJdPcopDPCqspOT4x8C+NPh5q40Dx34X1fwprL263kNhrECRPdWTSyQLfWU0Ms9re2bTwzQC5tZ5ovOhliZhIjKP6VfAHgbw78NfB3h/wAD+FbKOx0Tw7p0FhaoiIsty8a5utQvXRV+0ajqV0Zr7UbtwZbq9uJp5CXkJr8Qf+Cqer3mjftDfC66tGyD8IZkuLWRmFvdw/8ACaaqTFKBna4I3QzqN8L4IypZT+Z+Nf0Csl8IPAyPHFTjHN828QMHXyShmmCjSwNLhWeJzSvCjisHgIvDLM4xwk6jpYfMMRjHHF+yVapgcJGs6dD6Tgzx1xPF3GzyOGTYXCZBVp46phcTKdeebKnhaUqlOtiLVvqn75R5qmHp0b0VL2ccRXlT9pV+PaKyNM1O01e0S9snLRk7JYnwJrWcDLW9wo+669VYfJKmJIyVJAv1/mhVpVaFWpRrU5UqtKThUpzXLOE47xkujX47rQ/o2EoTjGcJ80JJSjKNmmmrppqRYqtef8ed3/17T/8AopqWq15/x53f/XtP/wCimpU/4lP/ABx/9KQ3az1ez6eXqFn/AMedp/17Qf8Aopas1Ws/+PO0/wCvaD/0UtWaU/jl/il+bEtl6L8gprusaPI5wkas7n0VQWY/gATTq7X4aeD3+IXxH8BeBFEmzxZ4u0PR7to1LNHpct5HPrM3AYqsOjwX0rNg7QhbtXo5LlWNz7OMqyPLaLxGYZxmWCyvA0FdOtjMfiaWFw1JNKTTnWqwjdRbV9nsY4nE0cFhsRjMTP2eGwlCtisRU/590MPTlWrT/wC3KcJS+R++/wCyX4GPw+/Z7+GeizQGDUdQ0GPxTrCsCJP7U8WSyeILlJVIBWS2XUIrMoQGjW2VGyyknof2kPGh+HnwC+MfjRJDFcaB8OfFl3YyAgFNTk0e6tdKIzwT/aNxa8dW+6OSK9oiijgijhhRY4oUSKKNFCpHHGoRERRwqqoCqBwAABXmvxi+E3hf44fDzXfhj40m1uHwx4kOnDVl8P6pJo2o3EOmanZ6tDbC+ijldLaa6sYFu4guLi33wMdjtX/VDQ4RxXC/hRT4F4P9isdkPAK4W4bnWqPCUHjsvyD+y8rr16yhVlRjPE06NavW5Ks43nUaqT3/AMwJ5vSzTiyWe5z7T6vj+IP7VzNU4+1qKhiMw+tYuFKDlBTlGlOcKcHKEXaMbxW34X/8EnfFH/COfH3xL4LlkJh8afCyXyQWPzan4K1ewu4WI6OX0/WtWZj97MYI431/Q7XxJ8I/2AfgL8EviHoPxP8AA0vxBh8T+HY9VhsTqvjO61TTZrfWdMudKv7e9sJrVY7mGS2uWdFLKY7mK3nUh4Vr7br89+jH4dcZeFfhjDgvjWWWzx2X59muIy15VjZY7DLKswWFxcYyqTw2FlCssxq5k5U/ZySjKE1N87hD3/EviHJ+KeJXnOS/WvY4jAYWnivrdCOHqfW8O6tFtQjWrJw+rQwyUuZXkpLl0u/5/v8Agq78PD4f+NXgT4k2tqsVj8RfBU2h6hcKwzP4k8C3o2mRAAVebw9r2nxI7E+ZHpbKpxDhfyq1P/kG6h/143f/AKTyV/R7/wAFQfh9/wAJd+zNd+K7a2hk1L4V+K9C8Yi4Yf6RDoV1LJ4a8SJAe6fYNaS+uI+Ny6aj5zGAf5wtU/5Buo/9eN3/AOk8lf5h/TI4O/1S8duJMRSpOngeLsLl/FuD91pOpmFKWDzR83wylPOsvzGu0rOMa8FJN+/P+lfCDN/7V4JyqMpc1bKq1bKK2t3bDTjWwul21GOBxOFpq+7pytoj+xD4Pf8AJJPhb/2TnwR/6jOmV6NXnPwe/wCSSfC3/snPgj/1GdMr0av9qOG/+SdyD/sS5X/6g0D+Ncx/5GGO/wCwzE/+npn5d/tIf8FMfDPwe8f6x8Nfh/4Db4k614Vuzp3i7W7vxCvh7w3pWtRBWu/D9hLDpmr3usanp29YtWljgtbHTr0PYGe5u4bmK2/KT9rf9pO0/ak8aeCfHMPhC+8E3nh3wTP4U1XSLvVbXWrea7bXrvVo73TNRtreyeW0eG52Ol5Y2dxFKNgSVB5rfMmrXE93rfiK7uZXnubvxN4mu7maQlpJrm61/Ubi4mdjks8s0jyOSSSzEmqNf4b+LH0lPE/xTXEOR53m9CnwdmWaQxOD4YoZXlVOjltLL8Z7fLo08xjglm1avSUIrEVa+PqRxE5VG6cIeyp0v7Y4X8O+GeF3gMbgcHOWb4bCypVczqYrFSqYmdeh7PEynh3WeEhCpeTpwp0IuklFKcpc8p6ekatd6LeC7tCG3AJc2zkiC8gBz5UuPuuvWCcDfC+CMoWU+36bqVpq1ol7ZOWjY7JI3wJraYDLW9wg+7IvVWHySpiSMlScfPtaek6td6NeLd2hDbgEubZyRDeQA58qXH3XXkwTgb4X5GULKf5Q4k4bpZxSeIw6jSzGlG0Jv3YYmEdqNZ7KVtKVV/B8E702nD9Ry3MpYOSp1G5Yab1WrdJtq84K+388OvxR974vfarXn/Hnd/8AXtP/AOimqLTdStNWtEvbJy0THZJG+BNbTAZe3uFH3ZF6hh8kqYkjJU8S3n/Hnd/9e0//AKKavx90qtDE+xrU5UqtKqoVKc1yzhOMleMl0a/HdaH2CnGdNThJShKPNGUXdNNXTTQlmR9jteR/x7Qf+ilqzuHqPzrPszm0tT/07Qf+ilqzROC55av4pfn/AMP/AFvUdl6L8ifcPUfnX3n/AME7fBY8RfHPUvFs6SG0+HnhC9uoJFTdD/bfiqU6JZo7kbVcaRHr7oAd+dpA27iPgWv23/4JweCf7C+C+teM54pI7z4g+L9QuYXcYV9E8MD/AIR/TjHxlka/g1q4DZKn7R8oGCW/rv6C/AP+vH0keCJVqXtsBwd9d45x9483s3kFODyirbZcvEWKyf3n8N7r31G/5R4255/YfhznrhPkxGbqhkWG1tzPMZv63Du+bLKOP/Dbc/QmvnX4zftW/Av4Aa5ovhv4qeMJfD2s+INJuNb0uzg8P+ItaM2mW14LCS5kl0XS7+G3Bui0UcdxJHLKY5WjRljZh9FV/NL/AMFJvFknif8Aa08V6eLr7TZeBvCfgzwlaIG3R2txLp83inVIUHRXNz4jjE46+ZFg/dFf7YfSZ8X838FvDinxRw/h8pxWeY/iHLMiy6hnVHE4nAOWJoY7HYqdTD4PG5fiKjhgcuxPs+TFU4xqyhKfNH3X/F/htwlhOMuIZ5ZmFTFUsFh8uxOOxE8HUp0q9qdShh6UYVK1DEU1eviaTknSbcFJRadmv1tl/wCClH7HcEUk0vxPvVjhjeWRv+EE8ettSNSzHavhsscKCcKCT2BNfb2lapYa3pem61pVwl5pmr2Fnqmm3cYdY7qwv7eO7s7lFkVHCT28scqh0VwGAZVOQP4w5EWVHjcZSRGRh6q4KsPxBNf1T/sT+MZvHX7KvwQ1y6kSS9g8E2Xhu+KNuIu/B09z4Tl8zkkSv/YolcNzmTPIIJ/IPoq/Sc4x8auKeJeGeM8Dwxg6+XZBTzzKnw9gMywM6tOhmGHwGYxxKzDOc29qoSzDAOl7JUXDmnzud1y/WeJ/htlHB2V5dmWT1syrQr4+WBxax9fDV1GVTDzr4d0lQweFcW/q+IU3JzT9xJJpuXuXxF8G2HxE8A+NPAeqRwyWHjHwtrvhq5FxGJIkTWdMubATMpVvmt3nWeNgC6SRo6YdVI/jf1rT9Q0i213RtWRotW0T+2dD1aNxho9V0aS70vUkPTOy+tJ1Bx8wAYda/tSr+WX/AIKC/D0/Dj9pr4wWkNuYNK8ZwW/xK0fCLHFJH4s06X+2/JVeAF8V6dr7SY6tIJCAZMD439oRwd9a4c4E48oUr1MozXG8M5hUhFOTwuc4f+0MvnVfK5RpYbFZVi6UHzxiquYqLUpThy+14AZv7PMs6yKpL3cVh8NmeHTeiq4OssNiIwXWdWli6U3a75MLfZNn9Knwe/5JJ8Lf+yc+CP8A1GdMr0avOfg9/wAkk+Fv/ZOfBH/qM6ZXo1f37w3/AMk7kH/Ylyv/ANQaB+C5j/yMMd/2GYn/ANPTP4v73/kJ6z/2Hte/9PN9VerF7/yE9Z/7D2vf+nm+qvX/ADb4j/eK/wD1+q/+lyP9EofBH/DH8kFFFFYlGnpOrXmjXYu7Rg2QEubZyRBeQg5MUuPuuvWCcDfC+CMqWU+yxanZ6tpE97ZOWja3nSSJ8Ce2nELFre4UfdkXnaw+SVcSRkg4Hg9W7TVrvRjcXVqwIa2lS5t3J8m7gEbZjlAyQ6/egmUb4nwRlSVr5jiDhylm6jiKCjSzGly8k9o4iEWrUaz/AJklalVesPgl+7acPUy7Mp4NulUvPDTbvHVulJ7zguz+3D7Wso+9pL3Sz/487T/r2g/9FLVmq1n/AMedp/17Qf8Aopas1+QT+OX+KX5s+zWy9F+QV7bZ/tpftQfCvwroXhnwJ4k8H2fgnw3p1rpGm2E/gHTb280q2t12Iby8a7je9W4fdLNqEkayyXUsrXXzSbz4lSEAhlZVZWVkdHUMjoww6OjZV0cEhlIwRX3PAHiVxp4ZZrXzfgviLOOHcVjsMsBmNTJ8wxGW1sbgPbU67wtSvhpwqcirUqdaGriqtOEpRnFOEvEz7h3KOJcJDB5xgMJj6VGr9Yw8cZhqWJp0cQoSpqrGnWjKHNyTnBuylyTkoyi2mvZP+HlP7YH/AEOfgj/w3Ol//J1fG/jHxbr3j7xd4m8deKrqK+8T+L9YuNe1+8t7ZbO2uNSuljjka2so2eOzt0ihhigto2ZYo41UMetXfE3hk6WXv7BWbTHb97Fks+mu5wFP8T2TscQynJh4il4CuePr93znxX438R8swceJONuJOKMuw9d4nDYTO84xuYU8HjPZulUl7DE16sKOKhTqSpykld053hOVKpGU/gsLwvk/DuJrf2fkuW5ZiKlNUqlXA4KhhpV6POpxXtKVOEqlJzipJN2542klODSK+oPhL+2V+0L8DvBtv4A+G/ifw9p/hW01HVNUtbLWfCVjrt1Bd6zdvf6iI764uYZfs8t5LNPFAVIgMrqjFcAfL9FcvDXFfE3B2YSzbhTPs24czOeGqYOePybHYjL8XPCVp0qlXDSr4apTqSoVKlGjOdJtwlOlTk1zQi1eYZZl2bYdYXNMDhMwwyqRrLD4zD08TRVWClGFRU6sZRVSMZzjGaXMlOSTtJ3+6/8Ah5T+2B/0Ofgj/wANzpf/AMnV84/Gz46fEj9ojVtJ134sXuhatq+iaNeeH7C90Pw/a+HZTo99ci8ms7w2s05vBDc+ZNZPIR9ja6vfLB+1SV5FRX0XEHix4m8WZZWyXibj3izP8or1KNWtlubZ5j8dgqtTD1Y1qFSeHxFedOU6VWEalOTjeMldM4cBwxw5lWJhjcsyPKsBi6anGGJwmAw2HrxjUi4TjGrSpxmlOLcZK9pJtPQ+2NF/4KI/tY+HtG0nQNK8X+DIdL0PTLDR9Nil+H2mTyxWGmWsVlZxyzG9UzSJbwRq8pVTIwLlRnFaf/Dyn9sD/oc/BH/hudL/APk6vhSivWpeO/jRQpUqFHxT48pUaNOFKlShxNmsYU6dOKhThCKxNoxhFKMUtEkkjklwTwfOUpz4YyGU5ycpSllWDblKTvKTbo3bbbbfVj5HaWaed8GW5ubm7mIG1Wnu55LmdlUcIrTSuVQcIpCDhRTKKK/KG222222223dtt6ttvdt7s+nCiiikAVXu/wDj1uf+veb/ANFtViq93/x63P8A17zf+i2qofHH/FH80B9DWZH2O15H/HtB/wCilqzuHqPzqhaf8ett/wBe8P8A6LWrFfzvP45f4pfmz9Hi7xi+6X5E+4eo/OjcPUfnUFFSMnJUghtjKysjK4DI6MMMjqeHRwcMp4IryfxL4a/ssvqGnqX0tmHmxAl3012PCsSSWsnbiGU5MJIhlONjH1Gl4wQyq6spR0dQySIwwyOjZVkYcMpBBFevk+cYnJ8T7aj79Gdo4nDSbUK8E+9nyVYXbpVUm4NtNTpyqU58eNwVLG0uSfuzjd06qV5Ql+sZWSnG+q1TUlGS+fqK6/xL4aOmFtQ09WfS3b97Fyz6bI7cIerNZMTiKU8wnEUpxsauQr9lwGPw2ZYani8LPnpT0aek6c0k5UqsbvkqQurq7TTjODlCUZS+JxGHq4arKlWjyyjr3jKL2lF9Yvo+jTTSkmkUUUV2GIUUUUAFFFFABRRRQAVXu/8Aj1uf+veb/wBFtViq93/x63P/AF7zf+i2qofHH/FH80B9AWn/AB623/XvD/6LWrFULW6tRbW4N1bHEEIytxCwOI1HDK5Vh6MpII5BIqf7Xa/8/Nv/AN/o/wD4qv56nCfPL3J/E/svv6ea+8/RYSXLHVfDHquy/wA0WKKr/a7X/n5t/wDv9H/8VR9rtf8An5t/+/0f/wAVU8k/5J/+Av8Ay8195XNH+Zfev66r7yxRVf7Xa/8APzb/APf6P/4qj7Xa/wDPzb/9/o//AIqjkn/JP/wF/wCXmvvDmj/MvvX9dV95ZzwQQrKysjo4DI6MMMjqeGRgSGU8EV5Z4l8N/wBmFr/T1ZtLZv3sPLPprtjCsTy9m7HEUpyYSRFKcFGr0r7Xa/8APzb/APf6P/4qj7XaEMrXFq6spV0eWJkdGGGR1LEMrDhlIIIr1smzXGZPiVWoxnOjPljicO1JQr00+9nyVYXbpVUm4NtNSpznCfFjcJQxtLkm4xmrunUVnKEnb/wKL0Uo3SkrbSUZR8HorpvEmjW2ms19YTwvpzsPMhE0bSWEjE/Kfmy1mx4ikPMJxHIcbWrkftdr/wA/Nv8A9/o//iq/ZcDjKOY4anisK5Tp1FqnG06c1bmpVY68tSF1dXaacZQcoSjKXxdehUw1WVGqkpR1TTvGcX8M4P7UZdHve8WlJNKxRVf7Xa/8/Nv/AN/o/wD4qj7Xa/8APzb/APf6P/4quzll/LL7n/XVfeY3/r+vVfeWKKr/AGu1/wCfm3/7/R//ABVH2u1/5+bf/v8AR/8AxVHLL+WX3P8ArqvvC/8AX9eq+8sUVX+12v8Az82//f6P/wCKo+12v/Pzb/8Af6P/AOKo5Zfyy+5/11X3hf8Ar+vVfeWKr3f/AB63P/XvN/6Laj7Xa/8APzb/APf6P/4qoLq6tWtrhRc22WglAzPCoyY2AyzOFUepJAHUkCnCMuaPuv4o9H3X+aFdd1/X/Do//9k=)";
+            /**
+             * Provides a default UI
+             */
+            DefaultUIService = function () {
+                function DefaultUIService(view, session) {
+                    this.menuItems = [];
+                    this.menuOpen = true;
+                    var config = session.configuration.defaultUI || {};
+                    if (document && !config.disable) {
+                        var style = document.createElement("style");
+                        style.type = 'text/css';
+                        document.head.insertBefore(style, document.head.firstChild);
+                        var sheet = style.sheet;
+                        sheet.insertRule("\n                .argon-button {\n                    background-image: " + argonAppIcon + ";\n                    width: 144px;\n                    height: 144px;\n                }\n            ", 0);
+                        this.element = document.createElement('div');
+                        this.element.id = 'argon-ui';
+                        this.element.style.bottom = '0';
+                        this.element.style.right = '0';
+                        this.element.style['userSelect'] = 'none';
+                        this.element.style.webkitUserSelect = 'none';
+                        this.element.style.zIndex = '10';
+                        view.element.appendChild(this.element);
+                        this.background = document.createElement('div');
+                        this.background.style.position = 'absolute';
+                        this.background.style.bottom = '-150px';
+                        this.background.style.right = '-150px';
+                        this.background.style.width = '300px';
+                        this.background.style.height = '300px';
+                        this.background.style.opacity = '0';
+                        this.background.style.transform = 'scale(0.1)';
+                        this.background.style.transition = 'transform 0.3s, opacity 0.3s';
+                        this.background.style.borderRadius = '150px';
+                        this.background.style.backgroundColor = '#eeb211';
+                        this.background.style.zIndex = '-1';
+                        this.element.appendChild(this.background);
+                        var menuButton = document.createElement('div');
+                        this.element.appendChild(menuButton);
+                        menuButton.className = 'argon-button';
+                        menuButton.style.position = 'absolute';
+                        menuButton.style.bottom = '0';
+                        menuButton.style.right = '0';
+                        menuButton.style.transform = 'scale(0.36)';
+                        menuButton.style.transformOrigin = '110% 110%';
+                        menuButton.style.borderRadius = '72px';
+                        menuButton.style.cursor = 'pointer';
+                        menuButton.style.pointerEvents = 'auto';
+                        menuButton.style.zIndex = '1';
+                        this.addMenuItem();
+                        if (utils.detectIOS) {
+                            this.addMenuItem(openIcon, 'Open in Argon', function () {
+                                utils.openInArgonApp();
+                            });
+                        }
+                        this.addMenuItem(vrIcon, 'Toggle VR', function () {});
+                        this.addMenuItem(eyeIcon, 'Select Reality Viewer...', function () {});
+                        this.addMenuItem();
+                        this.onSelect(menuButton, this.toggleMenu.bind(this));
+                        this.toggleMenu();
+                    }
+                }
+                DefaultUIService.prototype.addMenuItem = function (icon, hint, onSelect) {
+                    if (!icon || !hint) return this.menuItems.push(null);
+                    if (this.element) {
+                        var menuItem_1 = document.createElement('div');
+                        menuItem_1.style.position = 'absolute';
+                        menuItem_1.style.bottom = '-20px';
+                        menuItem_1.style.right = '-20px';
+                        menuItem_1.style.textAlign = 'left';
+                        menuItem_1.style.width = '40px';
+                        menuItem_1.style.height = '40px';
+                        menuItem_1.style.fontFamily = 'Arial Black';
+                        menuItem_1.style.color = 'black';
+                        menuItem_1.style.cursor = 'default';
+                        menuItem_1.style.textShadow = '-1px -1px 0px #545454, 1px -1px 0px #545454, -1px 1px 0px #545454, 1px 1px 0px #545454';
+                        menuItem_1.style.transition = 'transform 0.3s ease 0.1s, opacity 0.3s ease 0.1s';
+                        menuItem_1.style.opacity = '0';
+                        menuItem_1.style.pointerEvents = 'none';
+                        menuItem_1.style.transformOrigin = '50% 50%';
+                        menuItem_1.style.backgroundImage = icon;
+                        menuItem_1.style.backgroundSize = '100% 100%';
+                        menuItem_1.style.backgroundRepeat = 'no-repeat';
+                        this.element.appendChild(menuItem_1);
+                        this.menuItems.push(menuItem_1);
+                        menuItem_1.title = hint;
+                        if (onSelect) this.onSelect(menuItem_1, onSelect);
+                        menuItem_1.addEventListener('mouseenter', function () {
+                            menuItem_1.style.color = '#eeb211';
+                        });
+                        menuItem_1.addEventListener('mouseleave', function () {
+                            menuItem_1.style.color = 'white';
+                        });
+                    }
+                };
+                DefaultUIService.prototype.onSelect = function (element, cb) {
+                    element.addEventListener('touchend', function (ev) {
+                        ev.preventDefault();
+                        ev.stopPropagation();
+                        cb();
+                    });
+                    element.addEventListener('click', function (ev) {
+                        ev.stopPropagation();
+                        cb();
+                    });
+                };
+                DefaultUIService.prototype.toggleMenu = function () {
+                    if (this.element) {
+                        if (this.menuOpen) {
+                            this.menuItems.forEach(function (e, i) {
+                                if (!e) return;
+                                e.style.transform = 'scale(0.2)';
+                                e.style.opacity = '0';
+                                e.style.pointerEvents = 'none';
+                            });
+                            this.background.style.opacity = '0';
+                            this.background.style.transform = 'scale(0.1)';
+                            this.menuOpen = false;
+                        } else {
+                            var length_1 = this.menuItems.length;
+                            this.menuItems.forEach(function (e, i) {
+                                if (!e) return;
+                                var angle = i / (length_1 - 1) * (Math.PI / 2 + Math.PI / 8) - Math.PI / 16;
+                                var d = 100;
+                                var x = d * Math.cos(angle);
+                                var y = d * Math.sin(angle);
+                                e.style.transform = "scale(1) translateX(" + -x + "px) translateY(" + -y + "px)";
+                                e.style.opacity = '1';
+                                e.style.pointerEvents = 'auto';
+                            });
+                            this.background.style.opacity = '0.7';
+                            this.background.style.transform = 'scale(1)';
+                            this.menuOpen = true;
+                        }
+                    }
+                };
+                DefaultUIService = __decorate([aurelia_dependency_injection_1.inject(view_1.ViewService, session_1.SessionService)], DefaultUIService);
+                return DefaultUIService;
+            }();
+            exports_1("DefaultUIService", DefaultUIService);
+        }
+    };
+});
+$__System.register('d', ['c', 'e', 'a', 'f', '10', '11', 'b'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -2746,15 +2915,25 @@ $__System.register('8', ['f', '9', 'a', 'b', 'c', 'd', 'e'], function (exports_1
                     remoteRealitySession.connectEvent.addEventListener(function () {
                         var update = function (time, index) {
                             if (doUpdate) {
-                                _this.deviceService.update();
-                                var frameState = {
-                                    time: time,
-                                    index: index,
-                                    eye: {
-                                        pose: utils_1.getSerializedEntityPose(_this.deviceService.displayEntity, time)
-                                    }
-                                };
-                                remoteRealitySession.send('ar.reality.frameState', frameState);
+                                _this.deviceService.update({ orientation: true });
+                                var deviceState = _this.deviceService.state;
+                                var time_1 = deviceState.time;
+                                var pose = utils_1.getSerializedEntityPose(_this.deviceService.displayEntity, time_1);
+                                var viewport = deviceState.viewport;
+                                var subviews = deviceState.subviews;
+                                var geolocationAccuracy = deviceState.geolocationAccuracy;
+                                var geolocationAltitudeAccuracy = deviceState.geolocationAltitudeAccuracy;
+                                if (pose) {
+                                    var viewState = {
+                                        time: time_1,
+                                        pose: pose,
+                                        viewport: viewport,
+                                        subviews: subviews,
+                                        geolocationAccuracy: geolocationAccuracy,
+                                        geolocationAltitudeAccuracy: geolocationAltitudeAccuracy
+                                    };
+                                    remoteRealitySession.send('ar.reality.viewState', viewState);
+                                }
                                 _this.timer.requestFrame(update);
                             }
                         };
@@ -2767,7 +2946,7 @@ $__System.register('8', ['f', '9', 'a', 'b', 'c', 'd', 'e'], function (exports_1
                     // Only connect after the caller is able to attach connectEvent handlers
                     var messageChannel = this.sessionService.createSynchronousMessageChannel();
                     realitySession.open(messageChannel.port1, this.sessionService.configuration);
-                    remoteRealitySession.open(messageChannel.port2, { role: common_1.Role.REALITY_VIEW });
+                    remoteRealitySession.open(messageChannel.port2, { role: common_1.Role.REALITY_VIEWER });
                 };
                 EmptyRealityLoader = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, device_1.DeviceService, timer_1.TimerService)], EmptyRealityLoader);
                 return EmptyRealityLoader;
@@ -2776,7 +2955,1158 @@ $__System.register('8', ['f', '9', 'a', 'b', 'c', 'd', 'e'], function (exports_1
         }
     };
 });
-$__System.registerDynamic("10", [], true, function ($__require, exports, module) {
+$__System.register('10', ['12'], function (exports_1, context_1) {
+    "use strict";
+
+    var __moduleName = context_1 && context_1.id;
+    var cesium_imports_1;
+    var TimerService, lastTime;
+    function requestAnimationFramePoly(callback) {
+        var currTime = Date.now();
+        var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+        var id = setTimeout(function () {
+            callback(currTime + timeToCall);
+        }, timeToCall);
+        lastTime = currTime + timeToCall;
+        return id;
+    }
+    return {
+        setters: [function (cesium_imports_1_1) {
+            cesium_imports_1 = cesium_imports_1_1;
+        }],
+        execute: function () {
+            /**
+             * Provides timer service
+             */
+            TimerService = function () {
+                function TimerService() {
+                    this.frameNumbers = new WeakMap();
+                }
+                /**
+                 * Request that the callback function be called for the next frame.
+                 *
+                 * @param callback function
+                 */
+                TimerService.prototype.requestFrame = function (callback) {
+                    var _this = this;
+                    if (typeof requestAnimationFrame !== 'undefined' && typeof performance !== 'undefined') {
+                        this.navigationStartDate = this.navigationStartDate || cesium_imports_1.JulianDate.fromDate(new Date(performance.timing.navigationStart));
+                        requestAnimationFrame(function (time) {
+                            var frameTime = cesium_imports_1.JulianDate.addSeconds(_this.navigationStartDate, time / 1000, new cesium_imports_1.JulianDate(0, 0));
+                            callback(frameTime, _this.getNextFrameNumber(callback));
+                        });
+                    } else {
+                        requestAnimationFramePoly(function (time) {
+                            var frameTime = cesium_imports_1.JulianDate.fromDate(new Date(time));
+                            callback(frameTime, _this.getNextFrameNumber(callback));
+                        });
+                    }
+                };
+                TimerService.prototype.getNextFrameNumber = function (callback) {
+                    var frameNumber = this.frameNumbers.get(callback) || 0;
+                    this.frameNumbers.set(callback, frameNumber + 1);
+                    return frameNumber;
+                };
+                return TimerService;
+            }();
+            exports_1("TimerService", TimerService);
+            lastTime = 0;
+        }
+    };
+});
+$__System.register('13', ['c', '14', 'a', 'b'], function (exports_1, context_1) {
+    "use strict";
+
+    var __moduleName = context_1 && context_1.id;
+    var __extends = this && this.__extends || function (d, b) {
+        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+        function __() {
+            this.constructor = d;
+        }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+    var __decorate = this && this.__decorate || function (decorators, target, key, desc) {
+        var c = arguments.length,
+            r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+            d;
+        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+        return c > 3 && r && Object.defineProperty(target, key, r), r;
+    };
+    var aurelia_dependency_injection_1, focus_1, session_1, utils_1;
+    var VuforiaInitResult, VuforiaHint, VuforiaServiceDelegateBase, VuforiaServiceDelegate, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, VuforiaDataSet;
+    return {
+        setters: [function (aurelia_dependency_injection_1_1) {
+            aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
+        }, function (focus_1_1) {
+            focus_1 = focus_1_1;
+        }, function (session_1_1) {
+            session_1 = session_1_1;
+        }, function (utils_1_1) {
+            utils_1 = utils_1_1;
+        }],
+        execute: function () {
+            /**
+             * The set of possible error codes that can be returned from vuforia's
+             * initialization function.
+             */
+            (function (VuforiaInitResult) {
+                VuforiaInitResult[VuforiaInitResult["SUCCESS"] = 100] = "SUCCESS";
+                /** Error during initialization. */
+                VuforiaInitResult[VuforiaInitResult["INIT_ERROR"] = -1] = "INIT_ERROR";
+                /** The device is not supported. */
+                VuforiaInitResult[VuforiaInitResult["INIT_DEVICE_NOT_SUPPORTED"] = -2] = "INIT_DEVICE_NOT_SUPPORTED";
+                /** Cannot access the camera. */
+                VuforiaInitResult[VuforiaInitResult["INIT_NO_CAMERA_ACCESS"] = -3] = "INIT_NO_CAMERA_ACCESS";
+                /** License key is missing. */
+                VuforiaInitResult[VuforiaInitResult["INIT_LICENSE_ERROR_MISSING_KEY"] = -4] = "INIT_LICENSE_ERROR_MISSING_KEY";
+                /** Invalid license key passed to SDK. */
+                VuforiaInitResult[VuforiaInitResult["INIT_LICENSE_ERROR_INVALID_KEY"] = -5] = "INIT_LICENSE_ERROR_INVALID_KEY";
+                /** Unable to verify license key due to network (Permanent error). */
+                VuforiaInitResult[VuforiaInitResult["INIT_LICENSE_ERROR_NO_NETWORK_PERMANENT"] = -6] = "INIT_LICENSE_ERROR_NO_NETWORK_PERMANENT";
+                /** Unable to verify license key due to network (Transient error). */
+                VuforiaInitResult[VuforiaInitResult["INIT_LICENSE_ERROR_NO_NETWORK_TRANSIENT"] = -7] = "INIT_LICENSE_ERROR_NO_NETWORK_TRANSIENT";
+                /** Provided key is no longer valid. */
+                VuforiaInitResult[VuforiaInitResult["INIT_LICENSE_ERROR_CANCELED_KEY"] = -8] = "INIT_LICENSE_ERROR_CANCELED_KEY";
+                /** Provided key is not valid for this product. */
+                VuforiaInitResult[VuforiaInitResult["INIT_LICENSE_ERROR_PRODUCT_TYPE_MISMATCH"] = -9] = "INIT_LICENSE_ERROR_PRODUCT_TYPE_MISMATCH";
+                /** Dependent external device not detected/plugged in. */
+                VuforiaInitResult[VuforiaInitResult["INIT_EXTERNAL_DEVICE_NOT_DETECTED"] = -10] = "INIT_EXTERNAL_DEVICE_NOT_DETECTED";
+            })(VuforiaInitResult || (VuforiaInitResult = {}));
+            exports_1("VuforiaInitResult", VuforiaInitResult);
+            (function (VuforiaHint) {
+                VuforiaHint[VuforiaHint["MaxSimultaneousImageTargets"] = 0] = "MaxSimultaneousImageTargets";
+                VuforiaHint[VuforiaHint["MaxSimultaneousObjectTargets"] = 1] = "MaxSimultaneousObjectTargets";
+                VuforiaHint[VuforiaHint["DelayedLoadingObjectDatasets"] = 2] = "DelayedLoadingObjectDatasets";
+            })(VuforiaHint || (VuforiaHint = {}));
+            exports_1("VuforiaHint", VuforiaHint);
+            /**
+             * An abstract class representing the Vuforia API.
+             */
+            VuforiaServiceDelegateBase = function () {
+                function VuforiaServiceDelegateBase() {
+                    this.stateUpdateEvent = new utils_1.Event();
+                }
+                return VuforiaServiceDelegateBase;
+            }();
+            exports_1("VuforiaServiceDelegateBase", VuforiaServiceDelegateBase);
+            /**
+             * An no-op implementation of VuforiaServiceDelegate.
+             */
+            VuforiaServiceDelegate = function (_super) {
+                __extends(VuforiaServiceDelegate, _super);
+                function VuforiaServiceDelegate() {
+                    _super.apply(this, arguments);
+                }
+                VuforiaServiceDelegate.prototype.isAvailable = function () {
+                    return false;
+                };
+                VuforiaServiceDelegate.prototype.setHint = function (hint, value) {
+                    return true;
+                };
+                VuforiaServiceDelegate.prototype.decryptLicenseKey = function (encryptedLicenseData, session) {
+                    return Promise.resolve(undefined);
+                };
+                VuforiaServiceDelegate.prototype.init = function (options) {
+                    return Promise.resolve(VuforiaInitResult.SUCCESS);
+                };
+                VuforiaServiceDelegate.prototype.deinit = function () {};
+                VuforiaServiceDelegate.prototype.cameraDeviceInitAndStart = function () {
+                    return true;
+                };
+                VuforiaServiceDelegate.prototype.cameraDeviceSetFlashTorchMode = function (on) {
+                    return true;
+                };
+                VuforiaServiceDelegate.prototype.objectTrackerInit = function () {
+                    return true;
+                };
+                VuforiaServiceDelegate.prototype.objectTrackerCreateDataSet = function (url) {
+                    return '';
+                };
+                VuforiaServiceDelegate.prototype.objectTrackerDestroyDataSet = function (id) {
+                    return true;
+                };
+                VuforiaServiceDelegate.prototype.objectTrackerActivateDataSet = function (id) {
+                    return true;
+                };
+                VuforiaServiceDelegate.prototype.objectTrackerDeactivateDataSet = function (id) {
+                    return true;
+                };
+                VuforiaServiceDelegate.prototype.dataSetFetch = function (id) {
+                    return Promise.resolve(undefined);
+                };
+                VuforiaServiceDelegate.prototype.dataSetLoad = function (id) {
+                    return Promise.resolve();
+                };
+                return VuforiaServiceDelegate;
+            }(VuforiaServiceDelegateBase);
+            exports_1("VuforiaServiceDelegate", VuforiaServiceDelegate);
+            /**
+             * Mediates requests to the Vuforia API. Handles the following requests:
+             * // TODO
+             */
+            VuforiaService = function () {
+                function VuforiaService(sessionService, focusService, delegate) {
+                    var _this = this;
+                    this.sessionService = sessionService;
+                    this.focusService = focusService;
+                    this.delegate = delegate;
+                    this._sessionSwitcherCommandQueue = new utils_1.CommandQueue();
+                    this._sessionCommandQueue = new WeakMap();
+                    this._sessionInitOptions = new WeakMap();
+                    this._sessionInitPromise = new WeakMap();
+                    this._sessionIsInitialized = new WeakMap();
+                    this._sessionCreatedDataSets = new WeakMap();
+                    this._sessionActivatedDataSets = new WeakMap();
+                    if (sessionService.isRealityManager) {
+                        this._sessionSwitcherCommandQueue.errorEvent.addEventListener(function (err) {
+                            _this.sessionService.errorEvent.raiseEvent(err);
+                        });
+                        sessionService.connectEvent.addEventListener(function (session) {
+                            var commandQueue = new utils_1.CommandQueue();
+                            commandQueue.errorEvent.addEventListener(function (err) {
+                                _this.sessionService.errorEvent.raiseEvent(err);
+                                session.sendError(err);
+                            });
+                            _this._sessionCommandQueue.set(session, commandQueue);
+                            var createdDataSets = new Set();
+                            _this._sessionCreatedDataSets.set(session, createdDataSets);
+                            var activatedDataSets = new Set();
+                            _this._sessionActivatedDataSets.set(session, activatedDataSets);
+                            session.on['ar.vuforia.isAvailable'] = function () {
+                                return Promise.resolve({ available: delegate.isAvailable() });
+                            };
+                            session.on['ar.vuforia.init'] = function (options) {
+                                if (!delegate.isAvailable()) throw new Error("Vuforia is not supported");
+                                if (_this._sessionIsInitialized.get(session)) throw new Error("Vuforia has already been initialized");
+                                if (!options.key && !options.encryptedLicenseData) throw new Error("Expected `encryptedLicenseData` field. You can encrypt your Vuforia license key at http://docs.argonjs.io/start/vuforia-pgp-encryptor");
+                                var keyPromise = options.key ? Promise.resolve(options.key) : delegate.decryptLicenseKey(options.encryptedLicenseData, session);
+                                return keyPromise.then(function (key) {
+                                    _this._sessionInitOptions.set(session, {
+                                        key: key
+                                    });
+                                    var result = commandQueue.push(function () {
+                                        return _this._init(session).then(function () {
+                                            _this._sessionIsInitialized.set(session, true);
+                                        });
+                                    }, _this._controllingSession === session);
+                                    if (_this.focusService.getSession() === session) {
+                                        _this._setControllingSession(session);
+                                    }
+                                    _this._sessionInitPromise.set(session, result);
+                                    return result;
+                                });
+                            };
+                            session.on['ar.vuforia.objectTrackerCreateDataSet'] = function (_a) {
+                                var url = _a.url;
+                                return commandQueue.push(function () {
+                                    var id = delegate.objectTrackerCreateDataSet(url);
+                                    if (id) {
+                                        createdDataSets.add(id);
+                                        return Promise.resolve({ id: id });
+                                    }
+                                    throw new Error('Unable to create DataSet');
+                                }, _this._controllingSession === session);
+                            };
+                            session.on['ar.vuforia.objectTrackerActivateDataSet'] = function (_a) {
+                                var id = _a.id;
+                                return commandQueue.push(function () {
+                                    if (delegate.objectTrackerActivateDataSet(id)) {
+                                        activatedDataSets.add(id);
+                                        session.send('ar.vuforia.objectTrackerActivateDataSetEvent', { id: id });
+                                        return;
+                                    }
+                                    throw new Error("Unable to activate DataSet (" + id + ")");
+                                }, _this._controllingSession === session);
+                            };
+                            session.on['ar.vuforia.objectTrackerDeactivateDataSet'] = function (_a) {
+                                var id = _a.id;
+                                return commandQueue.push(function () {
+                                    if (delegate.objectTrackerDeactivateDataSet(id)) {
+                                        activatedDataSets.delete(id);
+                                        session.send('ar.vuforia.objectTrackerDeactivateDataSetEvent', { id: id });
+                                        return;
+                                    }
+                                    throw new Error("Unable to deactivate DataSet (" + id + ")");
+                                }, _this._controllingSession === session);
+                            };
+                            session.on['ar.vuforia.dataSetFetch'] = function (_a) {
+                                var id = _a.id;
+                                return commandQueue.push(function () {
+                                    return delegate.dataSetFetch(id);
+                                }, _this._controllingSession === session);
+                            };
+                            session.on['ar.vuforia.dataSetLoad'] = function (_a) {
+                                var id = _a.id;
+                                return commandQueue.push(function () {
+                                    return delegate.dataSetLoad(id);
+                                }, _this._controllingSession === session);
+                            };
+                            session.closeEvent.addEventListener(function () {
+                                if (_this._controllingSession === session) {
+                                    commandQueue.clear();
+                                    commandQueue.push(function () {
+                                        _this._cleanupSession(session);
+                                        setTimeout(function () {
+                                            _this._ensureActiveSession();
+                                        }, 2000);
+                                    }, true);
+                                } else {
+                                    _this._cleanupSession(session);
+                                }
+                            });
+                        });
+                        focusService.sessionFocusEvent.addEventListener(function (_a) {
+                            var current = _a.current;
+                            if (current && _this._sessionInitOptions.get(current)) {
+                                _this._setControllingSession(current);
+                            }
+                        });
+                    }
+                }
+                ;
+                VuforiaService.prototype.isAvailable = function () {
+                    return this.sessionService.manager.request('ar.vuforia.isAvailable').then(function (message) {
+                        return message.available;
+                    });
+                };
+                /**
+                 * Initialize vuforia with an unecrypted key. Manager-only, unless the "force" (flag) is used.
+                 * It's a bad idea to publish your private vuforia key on the internet.
+                 */
+                VuforiaService.prototype.initWithUnencryptedKey = function (options, force) {
+                    var _this = this;
+                    if (!force) this.sessionService.ensureIsRealityManager();
+                    return this.sessionService.manager.request('ar.vuforia.init', options).then(function () {
+                        return new VuforiaAPI(_this.sessionService.manager);
+                    });
+                };
+                /**
+                 * Initialize vuforia using an encrypted license key.
+                 * You can encrypt your license key at http://docs.argonjs.io/start/vuforia-pgp-encryptor
+                 */
+                VuforiaService.prototype.init = function (options) {
+                    var _this = this;
+                    if (!options.encryptedLicenseData || typeof options.encryptedLicenseData !== 'string') throw new Error('options.encryptedLicenseData is required.');
+                    return this.sessionService.manager.request('ar.vuforia.init', options).then(function () {
+                        return new VuforiaAPI(_this.sessionService.manager);
+                    });
+                };
+                VuforiaService.prototype._ensureActiveSession = function () {
+                    console.log("VuforiaService: Ensuring an active session is in control.");
+                    if (this._controllingSession && this._controllingSession.isConnected) return;
+                    this._selectControllingSession();
+                };
+                VuforiaService.prototype._selectControllingSession = function () {
+                    var focusSession = this.focusService.getSession();
+                    if (focusSession && this._sessionInitOptions.get(focusSession)) {
+                        this._setControllingSession(focusSession);
+                        return;
+                    }
+                    for (var _i = 0, _a = this.sessionService.managedSessions; _i < _a.length; _i++) {
+                        var session = _a[_i];
+                        if (this._sessionInitOptions.get(session)) {
+                            this._setControllingSession(session);
+                            return;
+                        }
+                    }
+                    if (this._sessionInitOptions.get(this.sessionService.manager)) this._setControllingSession(this.sessionService.manager);
+                };
+                VuforiaService.prototype._setControllingSession = function (session) {
+                    var _this = this;
+                    if (this._controllingSession === session) return;
+                    console.log("VuforiaService: Setting controlling session to " + session.uri);
+                    this._sessionSwitcherCommandQueue.clear();
+                    this._sessionSwitcherCommandQueue.push(function () {
+                        return _this._pauseSession().then(function () {
+                            return _this._resumeSession(session);
+                        });
+                    }, true);
+                };
+                VuforiaService.prototype._resumeSession = function (session) {
+                    if (this._controllingSession) throw new Error('Attempted to resume a session while a session is still in control');
+                    if (session) console.log("VuforiaService: Resuming session " + session.uri);
+                    var initOptions = this._sessionInitOptions.get(session);
+                    if (!initOptions) {
+                        throw new Error('Attempted to resume a session without initialization options');
+                    }
+                    this._controllingSession = session;
+                    var commandQueue = this._sessionCommandQueue.get(session);
+                    if (this._sessionIsInitialized.get(session)) {
+                        return this._init(session).then(function () {
+                            commandQueue.execute();
+                        }).catch(function (err) {
+                            session.sendError(err);
+                        });
+                    } else {
+                        commandQueue.execute();
+                        return this._sessionInitPromise.get(session);
+                    }
+                };
+                VuforiaService.prototype._pauseSession = function () {
+                    var _this = this;
+                    var session = this._controllingSession;
+                    if (!session) return Promise.resolve(undefined);
+                    console.log("VuforiaService: Pausing session " + session.uri);
+                    var commandQueue = this._sessionCommandQueue.get(session);
+                    return commandQueue.push(function () {
+                        commandQueue.pause();
+                        _this._controllingSession = undefined;
+                        return _this._deinit(session);
+                    }, true);
+                };
+                VuforiaService.prototype._cleanupSession = function (session) {
+                    var _this = this;
+                    if (!this._sessionInitOptions.has(session)) return;
+                    // delete session init options
+                    this._sessionInitOptions.delete(session);
+                    var createdDataSets = this._sessionCreatedDataSets.get(session);
+                    // Deactivate session datasets / trackables
+                    console.log('VuforiaService: Deactivating datasets for session ' + session.uri);
+                    this._sessionActivatedDataSets.get(session).forEach(function (id) {
+                        _this.delegate.objectTrackerDeactivateDataSet(id);
+                    });
+                    this._sessionActivatedDataSets.delete(session);
+                    // destroy session objects                   
+                    console.log('VuforiaService: Destroying objects for session ' + session.uri);
+                    createdDataSets.forEach(function (id) {
+                        _this.delegate.objectTrackerDestroyDataSet(id);
+                    });
+                    this._sessionCreatedDataSets.delete(session);
+                };
+                VuforiaService.prototype._init = function (session) {
+                    var _this = this;
+                    console.log("Attempting to initialize vuforia for " + session.uri);
+                    var options = this._sessionInitOptions.get(session);
+                    return this.delegate.init(options).then(function (initResult) {
+                        if (initResult !== VuforiaInitResult.SUCCESS) {
+                            throw new Error("Vuforia init failed: " + VuforiaInitResult[initResult]);
+                        }
+                        // must initialize trackers before initializing the camera device
+                        if (!_this.delegate.objectTrackerInit()) {
+                            throw new Error("Vuforia init failed: Unable to initialize ObjectTracker");
+                        }
+                        // restore active datasets & trackables
+                        var success = true;
+                        _this._sessionActivatedDataSets.get(session).forEach(function (id) {
+                            success = success && _this.delegate.objectTrackerActivateDataSet(id);
+                            if (success) {
+                                session.send('ar.vuforia.objectTrackerActivateDataSetEvent', { id: id });
+                            }
+                        });
+                        if (!success) {
+                            throw new Error("Vuforia init failed: Unable to restore active datasets");
+                        }
+                        // todo: also activate datasets / trackables created by other sessions
+                        // (if this fails, then vuforia has probably started forbidding datasets created 
+                        // by one developer account to work while using a license key from a different
+                        // developer account, so no need to return a rejected promise in that case)
+                        if (!_this.delegate.cameraDeviceInitAndStart()) {
+                            throw new Error("Vuforia init failed: Unable to complete initialization");
+                        }
+                        console.log("Vuforia init success");
+                    }).catch(function (err) {
+                        console.log("Vuforia init fail: " + err.message);
+                        _this._sessionInitOptions.delete(session);
+                        _this._sessionIsInitialized.set(session, false);
+                        _this._deinit(session);
+                        _this._ensureActiveSession();
+                        throw err;
+                    });
+                };
+                VuforiaService.prototype._deinit = function (session) {
+                    // Deactivate any activated datasets, stop trackers, and deinit. 
+                    // Don't actually destroy created resources so we can use them to restore state. 
+                    var _this = this;
+                    var activatedDataSets = this._sessionActivatedDataSets.get(session);
+                    if (activatedDataSets) {
+                        activatedDataSets.forEach(function (id) {
+                            _this.delegate.objectTrackerDeactivateDataSet(id);
+                            session.send('ar.vuforia.objectTrackerDeactivateDataSetEvent', { id: id });
+                        });
+                    }
+                    // right now the delegate.deinit() call deinitiailizes trackers and camera device for us. 
+                    // May want to move here instead?
+                    // const errors:Array<string> = [];
+                    // if (!this.delegate.objectTrackerDeinit()) {
+                    //     errors.push("Unable to deinitialize ObjectTracker");
+                    // } 
+                    // if (!this.delegate.cameraDeviceDeinit()) {
+                    //     errors.push("Unable to deinitialize CameraDevice");
+                    // }
+                    this.delegate.deinit();
+                    // if (errors.length > 0) {
+                    //     throw new Error(errors.join('\n'));
+                    // }
+                };
+                VuforiaService = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, focus_1.FocusService, VuforiaServiceDelegate)], VuforiaService);
+                return VuforiaService;
+            }();
+            exports_1("VuforiaService", VuforiaService);
+            VuforiaAPI = function () {
+                function VuforiaAPI(manager) {
+                    this.objectTracker = new VuforiaObjectTracker(manager);
+                }
+                return VuforiaAPI;
+            }();
+            exports_1("VuforiaAPI", VuforiaAPI);
+            VuforiaTracker = function () {
+                function VuforiaTracker() {}
+                return VuforiaTracker;
+            }();
+            exports_1("VuforiaTracker", VuforiaTracker);
+            /**
+             * Vuforia Object Tracker
+             */
+            VuforiaObjectTracker = function (_super) {
+                __extends(VuforiaObjectTracker, _super);
+                function VuforiaObjectTracker(manager) {
+                    var _this = this;
+                    _super.call(this);
+                    this.manager = manager;
+                    this._dataSetMap = new Map();
+                    this.dataSetActivateEvent = new utils_1.Event();
+                    this.dataSetDeactivateEvent = new utils_1.Event();
+                    manager.on['ar.vuforia.objectTrackerActivateDataSetEvent'] = function (_a) {
+                        var id = _a.id;
+                        var dataSet = _this._dataSetMap.get(id);
+                        dataSet._onActivate();
+                        _this.dataSetActivateEvent.raiseEvent(dataSet);
+                    };
+                    manager.on['ar.vuforia.objectTrackerDeactivateDataSetEvent'] = function (_a) {
+                        var id = _a.id;
+                        var dataSet = _this._dataSetMap.get(id);
+                        dataSet._onDeactivate();
+                        _this.dataSetDeactivateEvent.raiseEvent(dataSet);
+                    };
+                }
+                VuforiaObjectTracker.prototype.createDataSet = function (url) {
+                    var _this = this;
+                    if (url && window.document) {
+                        url = utils_1.resolveURL(url);
+                    }
+                    return this.manager.request('ar.vuforia.objectTrackerCreateDataSet', { url: url }).then(function (message) {
+                        var dataSet = new VuforiaDataSet(message.id, _this.manager);
+                        _this._dataSetMap.set(message.id, dataSet);
+                        return dataSet;
+                    });
+                };
+                VuforiaObjectTracker.prototype.activateDataSet = function (dataSet) {
+                    return this.manager.request('ar.vuforia.objectTrackerActivateDataSet', { id: dataSet.id });
+                };
+                VuforiaObjectTracker.prototype.deactivateDataSet = function (dataSet) {
+                    return this.manager.request('ar.vuforia.objectTrackerDeactivateDataSet', { id: dataSet.id });
+                };
+                return VuforiaObjectTracker;
+            }(VuforiaTracker);
+            exports_1("VuforiaObjectTracker", VuforiaObjectTracker);
+            /**
+             * A vuforia data set. TODO
+             */
+            VuforiaDataSet = function () {
+                function VuforiaDataSet(id, manager) {
+                    this.id = id;
+                    this.manager = manager;
+                    this._isActive = false;
+                }
+                VuforiaDataSet.prototype._onActivate = function () {
+                    this._isActive = true;
+                };
+                VuforiaDataSet.prototype._onDeactivate = function () {
+                    this._isActive = false;
+                };
+                VuforiaDataSet.prototype.fetch = function () {
+                    return this.manager.request('ar.vuforia.dataSetFetch', { id: this.id }).then(function () {});
+                };
+                VuforiaDataSet.prototype.load = function () {
+                    var _this = this;
+                    return this.manager.request('ar.vuforia.dataSetLoad', { id: this.id }).then(function (trackables) {
+                        _this._trackables = trackables;
+                        return trackables;
+                    });
+                };
+                VuforiaDataSet.prototype.isActive = function () {
+                    return this._isActive;
+                };
+                VuforiaDataSet.prototype.getTrackables = function () {
+                    return this._trackables;
+                };
+                return VuforiaDataSet;
+            }();
+            exports_1("VuforiaDataSet", VuforiaDataSet);
+        }
+    };
+});
+$__System.register('15', ['c', 'e', 'a', 'f', '10', '11', '13', '9', 'b'], function (exports_1, context_1) {
+    "use strict";
+
+    var __moduleName = context_1 && context_1.id;
+    var __extends = this && this.__extends || function (d, b) {
+        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+        function __() {
+            this.constructor = d;
+        }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+    var __decorate = this && this.__decorate || function (decorators, target, key, desc) {
+        var c = arguments.length,
+            r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+            d;
+        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+        return c > 3 && r && Object.defineProperty(target, key, r), r;
+    };
+    var aurelia_dependency_injection_1, common_1, session_1, device_1, timer_1, reality_1, vuforia_1, view_1, utils_1;
+    var LiveVideoRealityLoader;
+    return {
+        setters: [function (aurelia_dependency_injection_1_1) {
+            aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
+        }, function (common_1_1) {
+            common_1 = common_1_1;
+        }, function (session_1_1) {
+            session_1 = session_1_1;
+        }, function (device_1_1) {
+            device_1 = device_1_1;
+        }, function (timer_1_1) {
+            timer_1 = timer_1_1;
+        }, function (reality_1_1) {
+            reality_1 = reality_1_1;
+        }, function (vuforia_1_1) {
+            vuforia_1 = vuforia_1_1;
+        }, function (view_1_1) {
+            view_1 = view_1_1;
+        }, function (utils_1_1) {
+            utils_1 = utils_1_1;
+        }],
+        execute: function () {
+            LiveVideoRealityLoader = function (_super) {
+                __extends(LiveVideoRealityLoader, _super);
+                function LiveVideoRealityLoader(sessionService, vuforiaDelegate, viewService, deviceService, timer) {
+                    var _this = this;
+                    _super.call(this);
+                    this.sessionService = sessionService;
+                    this.vuforiaDelegate = vuforiaDelegate;
+                    this.viewService = viewService;
+                    this.deviceService = deviceService;
+                    this.timer = timer;
+                    this.type = 'live-video';
+                    this.lastFrameTime = 0;
+                    if (typeof document !== 'undefined') {
+                        this.settingsIframe = document.createElement('iframe');
+                        this.settingsIframe.width = '0';
+                        this.settingsIframe.height = '0';
+                        this.settingsIframe.src = 'https://argonjs.io/tools.argonjs.io/';
+                        viewService.containingElementPromise.then(function (container) {
+                            container.insertBefore(_this.settingsIframe, container.firstChild);
+                        });
+                        this.videoFov = Math.PI / 2;
+                        this.videoElement = document.createElement('video');
+                        this.videoElement.style = 'width:100%; height:100%;';
+                        this.videoElement.controls = false;
+                        this.videoElement.autoplay = true;
+                        viewService.containingElementPromise.then(function (container) {
+                            container.insertBefore(_this.videoElement, container.firstChild);
+                        });
+                        this.canvas = document.createElement('canvas');
+                        this.context = this.canvas.getContext('2d');
+                    }
+                }
+                LiveVideoRealityLoader.prototype.load = function (reality, callback) {
+                    var _this = this;
+                    var realitySession = this.sessionService.addManagedSessionPort(reality.uri);
+                    var remoteRealitySession = this.sessionService.createSessionPort();
+                    remoteRealitySession.on['ar.context.update'] = function () {};
+                    remoteRealitySession.connectEvent.addEventListener(function () {
+                        var remove = _this.vuforiaDelegate.stateUpdateEvent.addEventListener(function (viewState) {
+                            remoteRealitySession.send('ar.reality.viewState', viewState);
+                        });
+                        _this.vuforiaDelegate.videoEnabled = true;
+                        _this.vuforiaDelegate.trackingEnabled = true;
+                        remoteRealitySession.closeEvent.addEventListener(function () {
+                            remove();
+                            _this.vuforiaDelegate.videoEnabled = false;
+                            _this.vuforiaDelegate.trackingEnabled = false;
+                        });
+                    });
+                    if (typeof document !== 'undefined' && typeof navigator !== 'undefined') {
+                        window.addEventListener('message', function (event) {
+                            var origin = event.origin || event.originalEvent.origin;
+                            if (origin === 'http://argonjs.io') {
+                                _this.videoFov = event.data;
+                            }
+                        });
+                        var mediaDevices = navigator.mediaDevices;
+                        var getUserMedia = (mediaDevices.getUserMedia || mediaDevices.mozGetUserMedia || mediaDevices.msGetUserMedia || mediaDevices.webkitGetUserMedia).bind(mediaDevices);
+                        var videoPromise = getUserMedia({ audio: false, video: true });
+                        videoPromise.then(function (videoStream) {
+                            _this.videoElement.src = window.URL.createObjectURL(videoStream);
+                        });
+                        videoPromise.catch(function (error) {
+                            remoteRealitySession.errorEvent.raiseEvent(error);
+                        });
+                        var firstFrame_1 = true;
+                        var update_1 = function (time, index) {
+                            if (firstFrame_1 || _this.videoElement.currentTime != _this.lastFrameTime) {
+                                firstFrame_1 = false;
+                                _this.lastFrameTime = _this.videoElement.currentTime;
+                                _this.deviceService.update();
+                                var frameState = {
+                                    time: time,
+                                    index: index,
+                                    eye: {
+                                        pose: utils_1.getSerializedEntityPose(_this.deviceService.displayEntity, time),
+                                        fov: _this.videoFov
+                                    }
+                                };
+                                remoteRealitySession.send('ar.reality.frameState', frameState);
+                            }
+                            _this.timer.requestFrame(update_1);
+                        };
+                        this.timer.requestFrame(update_1);
+                    }
+                    callback(realitySession);
+                    // Only connect after the caller is able to attach connectEvent handlers
+                    var messageChannel = this.sessionService.createSynchronousMessageChannel();
+                    realitySession.open(messageChannel.port1, this.sessionService.configuration);
+                    remoteRealitySession.open(messageChannel.port2, { role: common_1.Role.REALITY_VIEWER });
+                };
+                LiveVideoRealityLoader.isAvailable = function () {
+                    if (typeof navigator !== 'undefined') {
+                        var mediaDevices = navigator.mediaDevices;
+                        return !!(mediaDevices.getUserMedia || mediaDevices.mozGetUserMedia || mediaDevices.msGetUserMedia || mediaDevices.webkitGetUserMedia);
+                    } else {
+                        return false;
+                    }
+                };
+                LiveVideoRealityLoader.prototype.getVideoFrame = function (x, y, width, height) {
+                    this.canvas.width = this.videoElement.videoWidth;
+                    this.canvas.height = this.videoElement.videoHeight;
+                    this.context.drawImage(this.videoElement, 0, 0, this.canvas.width, this.canvas.height);
+                    return this.context.getImageData(x, y, width, height);
+                };
+                LiveVideoRealityLoader = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, vuforia_1.VuforiaServiceDelegate, view_1.ViewService, device_1.DeviceService, timer_1.TimerService)], LiveVideoRealityLoader);
+                return LiveVideoRealityLoader;
+            }(reality_1.RealityLoader);
+            exports_1("LiveVideoRealityLoader", LiveVideoRealityLoader);
+        }
+    };
+});
+$__System.register('16', ['c', '12', 'e', 'a', '11', 'b'], function (exports_1, context_1) {
+    "use strict";
+
+    var __moduleName = context_1 && context_1.id;
+    var __decorate = this && this.__decorate || function (decorators, target, key, desc) {
+        var c = arguments.length,
+            r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+            d;
+        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+        return c > 3 && r && Object.defineProperty(target, key, r), r;
+    };
+    var aurelia_dependency_injection_1, cesium_imports_1, common_1, session_1, reality_1, utils_1;
+    var PoseStatus, scratchCartesian3, scratchQuaternion, scratchOriginCartesian3, ContextService;
+    function _stringFromReferenceFrame(referenceFrame) {
+        var rf = referenceFrame;
+        return cesium_imports_1.defined(rf.id) ? rf.id : '' + rf;
+    }
+    return {
+        setters: [function (aurelia_dependency_injection_1_1) {
+            aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
+        }, function (cesium_imports_1_1) {
+            cesium_imports_1 = cesium_imports_1_1;
+        }, function (common_1_1) {
+            common_1 = common_1_1;
+        }, function (session_1_1) {
+            session_1 = session_1_1;
+        }, function (reality_1_1) {
+            reality_1 = reality_1_1;
+        }, function (utils_1_1) {
+            utils_1 = utils_1_1;
+        }],
+        execute: function () {
+            /**
+            * A bitmask that provides metadata about the pose of an EntityPose.
+            *   KNOWN - the pose of the entity state is defined.
+            *   KNOWN & FOUND - the pose was undefined when the entity state was last queried, and is now defined.
+            *   LOST - the pose was defined when the entity state was last queried, and is now undefined
+            */
+            (function (PoseStatus) {
+                PoseStatus[PoseStatus["KNOWN"] = 1] = "KNOWN";
+                PoseStatus[PoseStatus["FOUND"] = 2] = "FOUND";
+                PoseStatus[PoseStatus["LOST"] = 4] = "LOST";
+            })(PoseStatus || (PoseStatus = {}));
+            exports_1("PoseStatus", PoseStatus);
+            scratchCartesian3 = new cesium_imports_1.Cartesian3(0, 0);
+            scratchQuaternion = new cesium_imports_1.Quaternion(0, 0);
+            scratchOriginCartesian3 = new cesium_imports_1.Cartesian3(0, 0);
+            /**
+             * Provides a means of querying the current state of reality.
+             *
+             * This class adds the following message handlers to any sessions
+             * managed by the session service:
+             *
+             *  * `ar.context.subscribe` - Subscribes the session to updates from an
+             *    entity with the provided id.
+             *    * Parameters:
+             *      * id: string - The id of an entity the session wishes to recieve
+             *        updates on.
+             *
+             * This service sends the following messages to managed sessions
+             *
+             *  * `ar.context.update` - Indicates to this context that the session wants
+             *    to be focused on.
+             */
+            ContextService = function () {
+                function ContextService(sessionService, realityService) {
+                    var _this = this;
+                    this.sessionService = sessionService;
+                    this.realityService = realityService;
+                    /**
+                     * An event that is raised when all remotely managed entities are are up-to-date for
+                     * the current frame. It is suggested that all modifications to locally managed entities
+                     * should occur within this event.
+                     */
+                    this.updateEvent = new utils_1.Event();
+                    /**
+                     * An event that is raised when it is an approriate time to render graphics.
+                     * This event fires after the update event.
+                     */
+                    this.renderEvent = new utils_1.Event();
+                    /**
+                     * The set of subscribed entities.
+                     */
+                    this.subscribedEntities = new cesium_imports_1.EntityCollection();
+                    /**
+                     * The set of entities that this session is aware of.
+                     */
+                    this.entities = new cesium_imports_1.CompositeEntityCollection();
+                    /**
+                     * An event that fires when the local origin changes.
+                     */
+                    this.localOriginChangeEvent = new utils_1.Event();
+                    /**
+                     * An entity representing the location and orientation of the user.
+                     */
+                    this.user = new cesium_imports_1.Entity({
+                        id: 'ar.user',
+                        name: 'user',
+                        position: new cesium_imports_1.ConstantPositionProperty(undefined, cesium_imports_1.ReferenceFrame.FIXED),
+                        orientation: new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY)
+                    });
+                    /**
+                     * An entity positioned near the user, aligned with the local East-North-Up
+                     * coordinate system.
+                     */
+                    this.localOriginEastNorthUp = new cesium_imports_1.Entity({
+                        id: 'ar.localENU',
+                        name: 'localOriginENU',
+                        position: new cesium_imports_1.ConstantPositionProperty(undefined, cesium_imports_1.ReferenceFrame.FIXED),
+                        orientation: new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY)
+                    });
+                    /**
+                     * An entity positioned near the user, aligned with the East-Up-South
+                     * coordinate system. This useful for converting to the Y-Up convention
+                     * used in some libraries, such as three.js.
+                     */
+                    this.localOriginEastUpSouth = new cesium_imports_1.Entity({
+                        id: 'ar.localEUS',
+                        name: 'localOriginEUS',
+                        position: new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, this.localOriginEastNorthUp),
+                        orientation: new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_X, Math.PI / 2))
+                    });
+                    /**
+                     * This value caps the deltaTime for each frame
+                     */
+                    this.maxDeltaTime = 1 / 3 * 1000;
+                    this._frame = {
+                        time: new cesium_imports_1.JulianDate(0, 0),
+                        systemTime: 0,
+                        deltaTime: 0
+                    };
+                    // The default origin to use when calling `getEntityPose`.
+                    this._defaultReferenceFrame = this.localOriginEastNorthUp;
+                    this._entityPoseCache = {};
+                    this._entityPoseMap = new Map();
+                    this._subscribedEntities = new WeakMap();
+                    this._updatingEntities = new Set();
+                    this._knownEntities = new Set();
+                    this._frameIndex = 0;
+                    this.entities.addCollection(this.subscribedEntities);
+                    this.subscribedEntities.add(this.user);
+                    if (this.sessionService.isRealityManager || this.sessionService.isRealityViewer) {
+                        this.realityService.viewStateEvent.addEventListener(function (viewState) {
+                            _this._update({
+                                time: viewState.time,
+                                index: _this._frameIndex++,
+                                reality: _this.realityService.getCurrent(),
+                                entities: {},
+                                view: viewState
+                            });
+                        });
+                        this.realityService.frameEvent.addEventListener(function (state) {
+                            _this._update(state);
+                        });
+                        this.sessionService.connectEvent.addEventListener(function (session) {
+                            _this._subscribedEntities.set(session, new Set());
+                            session.on['ar.context.subscribe'] = function (_a) {
+                                var id = _a.id;
+                                var subscriptions = _this._subscribedEntities.get(session);
+                                if (subscriptions) subscriptions.add(id);
+                            };
+                        });
+                    } else {
+                        this.sessionService.manager.on['ar.context.update'] = function (state) {
+                            _this._update(state);
+                        };
+                    }
+                }
+                Object.defineProperty(ContextService.prototype, "frame", {
+                    /**
+                     * The current frame
+                     */
+                    get: function () {
+                        if (!cesium_imports_1.defined(this.serializedFrameState)) throw new Error('A frame state has not yet been received');
+                        return this._frame;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(ContextService.prototype, "serializedFrameState", {
+                    /**
+                     * The serialized frame state for this frame
+                     */
+                    get: function () {
+                        return this._serializedState;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                /**
+                 * Get the current time
+                 */
+                ContextService.prototype.getTime = function () {
+                    return this.frame.time;
+                };
+                /**
+                 * Set the default reference frame for `getCurrentEntityState`.
+                 */
+                ContextService.prototype.setDefaultReferenceFrame = function (origin) {
+                    this._defaultReferenceFrame = origin;
+                };
+                /**
+                 * Get the default reference frame to use when calling `getEntityPose`.
+                 * By default, this is the `localOriginEastNorthUp` reference frame.
+                 */
+                ContextService.prototype.getDefaultReferenceFrame = function () {
+                    return this._defaultReferenceFrame;
+                };
+                /**
+                 * Adds an entity to this session's set of tracked entities.
+                 *
+                 * @param id - The unique identifier of an entity.
+                 * @returns The entity that was subscribed to.
+                 */
+                ContextService.prototype.subscribeToEntityById = function (id) {
+                    this.sessionService.manager.send('ar.context.subscribe', { id: id });
+                    return this.subscribedEntities.getOrCreateEntity(id);
+                };
+                /**
+                 * Gets the current pose of an entity, relative to a given reference frame.
+                 *
+                 * @param entity - The entity whose state is to be queried.
+                 * @param referenceFrame - The intended reference frame. Defaults to `this.defaultReferenceFrame`.
+                 * @returns If the position and orientation exist for the given entity, an
+                 * object with the fields `position` and `orientation`, both of type
+                 * `Cartesian3`. Otherwise undefined.
+                 */
+                ContextService.prototype.getEntityPose = function (entity, referenceFrame) {
+                    if (referenceFrame === void 0) {
+                        referenceFrame = this._defaultReferenceFrame;
+                    }
+                    var time = this.getTime();
+                    var key = entity.id + '@' + _stringFromReferenceFrame(referenceFrame);
+                    var entityPose = this._entityPoseMap.get(key);
+                    if (!cesium_imports_1.defined(entityPose)) {
+                        entityPose = {
+                            position: new cesium_imports_1.Cartesian3(),
+                            orientation: new cesium_imports_1.Quaternion(),
+                            time: cesium_imports_1.JulianDate.clone(time),
+                            poseStatus: 0
+                        };
+                        this._entityPoseMap.set(key, entityPose);
+                    } else {
+                        cesium_imports_1.JulianDate.clone(time, entityPose.time);
+                    }
+                    var position = utils_1.getEntityPositionInReferenceFrame(entity, time, referenceFrame, entityPose.position);
+                    var orientation = utils_1.getEntityOrientationInReferenceFrame(entity, time, referenceFrame, entityPose.orientation);
+                    var hasPose = position && orientation;
+                    var poseStatus = 0;
+                    var previousStatus = entityPose.poseStatus;
+                    if (hasPose) {
+                        poseStatus |= PoseStatus.KNOWN;
+                    }
+                    if (hasPose && !(previousStatus & PoseStatus.KNOWN)) {
+                        poseStatus |= PoseStatus.FOUND;
+                    } else if (!hasPose && previousStatus & PoseStatus.KNOWN) {
+                        poseStatus |= PoseStatus.LOST;
+                    }
+                    entityPose.poseStatus = poseStatus;
+                    return entityPose;
+                };
+                /**
+                 * deprecated
+                 */
+                ContextService.prototype.getCurrentEntityState = function (entity, referenceFrame) {
+                    console.warn('getCurrentEntityState is deprecated. Use getEntityPose instead.');
+                    return this.getEntityPose(entity, referenceFrame);
+                };
+                // TODO: This function is called a lot. Potential for optimization. 
+                ContextService.prototype._update = function (serializedState) {
+                    var _this = this;
+                    // if this session is the manager, we need to update our child sessions a.s.a.p
+                    if (this.sessionService.isRealityManager) {
+                        delete serializedState.entities[this.user.id]; // children don't need this
+                        this._entityPoseCache = {};
+                        for (var _i = 0, _a = this.sessionService.managedSessions; _i < _a.length; _i++) {
+                            var session = _a[_i];
+                            if (common_1.Role.isRealityAugmenter(session.info.role)) this._sendUpdateForSession(serializedState, session);
+                        }
+                    }
+                    // our user entity is defined by the current view pose (the current reality must provide this)
+                    serializedState.entities[this.user.id] = serializedState.view.pose;
+                    // update the entities the manager knows about
+                    this._knownEntities.clear();
+                    for (var id in serializedState.entities) {
+                        this.updateEntityFromFrameState(id, serializedState);
+                        this._updatingEntities.add(id);
+                        this._knownEntities.add(id);
+                    }
+                    // if the mangager didn't send us an update for a particular entity,
+                    // assume the manager no longer knows about it
+                    this._updatingEntities.forEach(function (id) {
+                        if (!_this._knownEntities.has(id)) {
+                            var entity = _this.subscribedEntities.getById(id);
+                            entity.position = undefined;
+                            entity.orientation = undefined;
+                            // WORKAROUND until https://github.com/AnalyticalGraphicsInc/cesium/issues/4225 is fixed
+                            entity = _this.entities.getById(id);
+                            entity.position = undefined;
+                            entity.orientation = undefined;
+                            _this._updatingEntities.delete(id);
+                        }
+                    });
+                    // update our local origin
+                    this._updateLocalOrigin(serializedState);
+                    // update our frame object
+                    var frame = this._frame;
+                    var now = typeof performance !== 'undefined' ? performance.now() : Date.now();
+                    frame.deltaTime = Math.min(now - frame.systemTime, this.maxDeltaTime);
+                    frame.systemTime = now;
+                    cesium_imports_1.JulianDate.clone(serializedState.time, frame.time);
+                    this._serializedState = serializedState;
+                    // raise an event for the user update and render the scene
+                    this.updateEvent.raiseEvent(frame);
+                    this.renderEvent.raiseEvent(frame);
+                };
+                ContextService.prototype.updateEntityFromFrameState = function (id, state) {
+                    var entityPose = state.entities[id];
+                    if (!entityPose) {
+                        this.subscribedEntities.getOrCreateEntity(id);
+                        return;
+                    }
+                    var referenceFrame;
+                    if (cesium_imports_1.defined(entityPose.r)) {
+                        if (typeof entityPose.r === 'number') {
+                            referenceFrame = entityPose.r;
+                        } else {
+                            referenceFrame = this.entities.getById(entityPose.r);
+                        }
+                    } else {
+                        referenceFrame = cesium_imports_1.ReferenceFrame.FIXED;
+                    }
+                    if (!cesium_imports_1.defined(referenceFrame)) {
+                        this.updateEntityFromFrameState(entityPose.r, state);
+                        referenceFrame = this.entities.getById(entityPose.r);
+                    }
+                    var positionValue = entityPose.p === 0 ? cesium_imports_1.Cartesian3.ZERO : entityPose.p;
+                    var orientationValue = entityPose.o === 0 ? cesium_imports_1.Quaternion.IDENTITY : entityPose.o;
+                    var entity = this.subscribedEntities.getOrCreateEntity(id);
+                    var entityPosition = entity.position;
+                    var entityOrientation = entity.orientation;
+                    if (!entityPosition || entityPosition.referenceFrame !== referenceFrame) {
+                        entityPosition = new cesium_imports_1.ConstantPositionProperty(positionValue, referenceFrame);
+                        entity.position = entityPosition;
+                    } else if (entityPosition instanceof cesium_imports_1.ConstantPositionProperty) {
+                        entityPosition.setValue(positionValue, referenceFrame);
+                    } else if (entityPosition instanceof cesium_imports_1.SampledPositionProperty) {
+                        entityPosition.addSample(cesium_imports_1.JulianDate.clone(state.time), positionValue);
+                    }
+                    if (!entityOrientation) {
+                        entityOrientation = new cesium_imports_1.ConstantProperty(orientationValue);
+                        entity.orientation = entityOrientation;
+                    } else if (entityOrientation instanceof cesium_imports_1.ConstantProperty) {
+                        entityOrientation.setValue(orientationValue);
+                    } else if (entityOrientation instanceof cesium_imports_1.SampledProperty) {
+                        entityOrientation.addSample(cesium_imports_1.JulianDate.clone(state.time), orientationValue);
+                    }
+                    return entity;
+                };
+                ContextService.prototype.publishEntityState = function (entity, referenceFrame) {};
+                ContextService.prototype._updateLocalOrigin = function (state) {
+                    var userRootFrame = utils_1.getRootReferenceFrame(this.user);
+                    var userPosition = this.user.position && this.user.position.getValueInReferenceFrame(state.time, userRootFrame, scratchCartesian3);
+                    var localENUFrame = this.localOriginEastNorthUp.position && this.localOriginEastNorthUp.position.referenceFrame;
+                    var localENUPosition = this.localOriginEastNorthUp.position && localENUFrame && this.localOriginEastNorthUp.position.getValueInReferenceFrame(state.time, localENUFrame, scratchOriginCartesian3);
+                    if (userPosition && (!localENUPosition || localENUFrame !== userRootFrame || cesium_imports_1.Cartesian3.magnitudeSquared(cesium_imports_1.Cartesian3.subtract(userPosition, localENUPosition, scratchOriginCartesian3)) > 25000000)) {
+                        var localENUPositionProperty = this.localOriginEastNorthUp.position;
+                        var localENUOrientationProperty = this.localOriginEastNorthUp.orientation;
+                        localENUPositionProperty.setValue(userPosition, userRootFrame);
+                        if (userRootFrame === cesium_imports_1.ReferenceFrame.FIXED) {
+                            var enuOrientation = cesium_imports_1.Transforms.headingPitchRollQuaternion(userPosition, 0, 0, 0, undefined, scratchQuaternion);
+                            localENUOrientationProperty.setValue(enuOrientation);
+                        } else {
+                            localENUOrientationProperty.setValue(cesium_imports_1.Quaternion.IDENTITY);
+                        }
+                        this.localOriginChangeEvent.raiseEvent(undefined);
+                    }
+                };
+                ContextService.prototype._sendUpdateForSession = function (parentState, session) {
+                    var _this = this;
+                    var sessionPoseMap = {};
+                    for (var id in parentState.entities) {
+                        sessionPoseMap[id] = parentState.entities[id];
+                    }
+                    var subscriptions = this._subscribedEntities.get(session);
+                    subscriptions.forEach(function (id) {
+                        _this._addEntityAndAncestorsToPoseMap(sessionPoseMap, id, parentState.time);
+                    });
+                    var sessionState = {
+                        reality: parentState.reality,
+                        index: parentState.index,
+                        time: parentState.time,
+                        view: parentState.view,
+                        entities: sessionPoseMap,
+                        sendTime: cesium_imports_1.JulianDate.now()
+                    };
+                    session.send('ar.context.update', sessionState);
+                };
+                ContextService.prototype._addEntityAndAncestorsToPoseMap = function (poseMap, id, time) {
+                    if (!cesium_imports_1.defined(this._entityPoseCache[id])) {
+                        var entity = this.subscribedEntities.getById(id);
+                        if (!entity) return;
+                        this._entityPoseCache[id] = utils_1.getSerializedEntityPose(entity, time);
+                        if (entity.position && entity.position.referenceFrame instanceof cesium_imports_1.Entity) {
+                            var refId = _stringFromReferenceFrame(entity.position.referenceFrame);
+                            this._addEntityAndAncestorsToPoseMap(poseMap, refId, time);
+                        }
+                    }
+                    poseMap[id] = this._entityPoseCache[id];
+                };
+                ContextService = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, reality_1.RealityService)], ContextService);
+                return ContextService;
+            }();
+            exports_1("ContextService", ContextService);
+        }
+    };
+});
+$__System.registerDynamic("17", [], true, function ($__require, exports, module) {
     var define,
         global = this || self,
         GLOBAL = global;
@@ -3722,1369 +5052,7 @@ $__System.registerDynamic("10", [], true, function ($__require, exports, module)
     }());
     return module.exports;
 });
-$__System.register('b', ['f', '11', '12', '10'], function (exports_1, context_1) {
-    "use strict";
-
-    var __moduleName = context_1 && context_1.id;
-    var __decorate = this && this.__decorate || function (decorators, target, key, desc) {
-        var c = arguments.length,
-            r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
-            d;
-        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-        return c > 3 && r && Object.defineProperty(target, key, r), r;
-    };
-    var aurelia_dependency_injection_1, cesium_imports_1, context_2, mobile_detect_1;
-    var DeviceService;
-    return {
-        setters: [function (aurelia_dependency_injection_1_1) {
-            aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
-        }, function (cesium_imports_1_1) {
-            cesium_imports_1 = cesium_imports_1_1;
-        }, function (context_2_1) {
-            context_2 = context_2_1;
-        }, function (mobile_detect_1_1) {
-            mobile_detect_1 = mobile_detect_1_1;
-        }],
-        execute: function () {
-            /**
-            * Provides pose state for the device.
-            */
-            DeviceService = function () {
-                /**
-                * Initialize the DeviceService
-                */
-                function DeviceService(context) {
-                    this.locationUpdatesEnabled = true;
-                    this.orientationUpdatesEnabled = true;
-                    /**
-                     * An ENU coordinate frame centered at the gps location reported by this device
-                     */
-                    this.geolocationEntity = new cesium_imports_1.Entity({ id: 'ar.device.geolocation', name: 'Device Geolocation' });
-                    /**
-                     * A frame which represents the orientation of this device relative to it's ENU coordinate frame (geolocationEntity)
-                     */
-                    this.orientationEntity = new cesium_imports_1.Entity({ id: 'ar.device.orientation', name: 'Device Orientation' });
-                    /**
-                     * A frame which represents the pose of this device
-                     */
-                    this.entity = new cesium_imports_1.Entity({ id: 'ar.device', name: 'Device' });
-                    /**
-                     * A frame which describes the pose of the display relative to this device
-                     */
-                    this.displayEntity = new cesium_imports_1.Entity({
-                        id: 'ar.device.display',
-                        name: 'Device Display',
-                        position: new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, this.entity),
-                        orientation: new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY)
-                    });
-                    this._scratchCartesian = new cesium_imports_1.Cartesian3();
-                    this._scratchQuaternion1 = new cesium_imports_1.Quaternion();
-                    this._scratchQuaternion2 = new cesium_imports_1.Quaternion();
-                    this._x90Rot = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_X, cesium_imports_1.CesiumMath.PI_OVER_TWO);
-                    this._headingDrift = 0;
-                    context.wellKnownReferenceFrames.add(this.geolocationEntity);
-                    context.wellKnownReferenceFrames.add(this.orientationEntity);
-                    context.wellKnownReferenceFrames.add(this.entity);
-                    context.wellKnownReferenceFrames.add(this.displayEntity);
-                    if (typeof navigator !== 'undefined') {
-                        this._mobileDetect = new mobile_detect_1.default(navigator.userAgent);
-                    }
-                }
-                DeviceService.prototype.onIdle = function () {
-                    if (typeof navigator === 'undefined') return;
-                    if (cesium_imports_1.defined(this._geolocationWatchId)) {
-                        navigator.geolocation.clearWatch(this._geolocationWatchId);
-                        this._geolocationWatchId = undefined;
-                    }
-                    if (cesium_imports_1.defined(this._deviceorientationListener)) {
-                        window.removeEventListener('deviceorientation', this._deviceorientationListener);
-                        this._deviceorientationListener = undefined;
-                        this._alphaOffset = undefined;
-                    }
-                };
-                DeviceService.prototype.onUpdate = function () {
-                    var _this = this;
-                    if (typeof navigator !== 'undefined') {
-                        var interfaceOrientationProperty = this.displayEntity.orientation;
-                        var interfaceOrientation = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_Z, (-window.orientation || 0) * cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE, this._scratchQuaternion1);
-                        if (this._mobileDetect && !this._mobileDetect.mobile()) {
-                            // for laptops, rotate device orientation by 90° around +X so that it 
-                            // corresponds to an upright display rather than the integrated keyboard
-                            interfaceOrientation = cesium_imports_1.Quaternion.multiply(this._x90Rot, interfaceOrientation, interfaceOrientation);
-                        }
-                        interfaceOrientationProperty.setValue(interfaceOrientation);
-                        if (!cesium_imports_1.defined(this._geolocationWatchId) && this.locationUpdatesEnabled) {
-                            this._geolocationWatchId = navigator.geolocation.watchPosition(function (pos) {
-                                if (_this.geolocationEntity.position instanceof cesium_imports_1.SampledPositionProperty === false) {
-                                    var sampledPostionProperty = new cesium_imports_1.SampledPositionProperty(cesium_imports_1.ReferenceFrame.FIXED);
-                                    sampledPostionProperty.forwardExtrapolationType = cesium_imports_1.ExtrapolationType.HOLD;
-                                    sampledPostionProperty.backwardExtrapolationType = cesium_imports_1.ExtrapolationType.HOLD;
-                                    sampledPostionProperty.maxNumSamples = 10;
-                                    _this.geolocationEntity.position = sampledPostionProperty;
-                                }
-                                var positionTime = cesium_imports_1.JulianDate.fromDate(new Date(pos.timestamp));
-                                var positionECEF = cesium_imports_1.Cartesian3.fromDegrees(pos.coords.longitude, pos.coords.latitude, pos.coords.altitude || 0, undefined, _this._scratchCartesian);
-                                _this.geolocationEntity.position.addSample(positionTime, positionECEF);
-                                if (_this.geolocationEntity.orientation instanceof cesium_imports_1.ConstantProperty === false) {
-                                    _this.geolocationEntity.orientation = new cesium_imports_1.ConstantProperty();
-                                }
-                                var enuOrientation = cesium_imports_1.Transforms.headingPitchRollQuaternion(positionECEF, 0, 0, 0, undefined, _this._scratchQuaternion1);
-                                _this.geolocationEntity.orientation.setValue(enuOrientation);
-                            }, function (error) {
-                                console.error(error);
-                            }, {
-                                enableHighAccuracy: true
-                            });
-                        } else if (cesium_imports_1.defined(this._geolocationWatchId) && !this.locationUpdatesEnabled) {
-                            navigator.geolocation.clearWatch(this._geolocationWatchId);
-                            this._geolocationWatchId = undefined;
-                        }
-                        if (!cesium_imports_1.defined(this._deviceorientationListener) && this.orientationUpdatesEnabled) {
-                            this._deviceorientationListener = function (e) {
-                                var alphaDegrees = e.alpha;
-                                if (!cesium_imports_1.defined(alphaDegrees)) {
-                                    return;
-                                }
-                                if (e.absolute) {
-                                    _this._alphaOffset = 0;
-                                }
-                                var webkitCompassHeading = e['webkitCompassHeading'];
-                                var webkitCompassAccuracy = +e['webkitCompassAccuracy'];
-                                // when the phone is almost updside down, webkit flips the compass heading 
-                                // (not documented anywhere, annoyingly)
-                                // if (e.beta >= 130 || e.beta <= -130) webkitCompassHeading = undefined;
-                                if ((!cesium_imports_1.defined(_this._alphaOffset) || Math.abs(_this._headingDrift) > 5) && cesium_imports_1.defined(webkitCompassHeading) && webkitCompassAccuracy >= 0 && webkitCompassAccuracy < 50 && webkitCompassHeading >= 0) {
-                                    if (!cesium_imports_1.defined(_this._alphaOffset)) {
-                                        _this._alphaOffset = -webkitCompassHeading;
-                                    } else {
-                                        _this._alphaOffset -= _this._headingDrift;
-                                    }
-                                }
-                                var alphaOffset = _this._alphaOffset || -webkitCompassHeading || 0;
-                                // TODO: deal with various browser quirks :\
-                                // https://mobiforge.com/design-development/html5-mobile-web-device-orientation-events
-                                var alpha = cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE * (e.alpha + alphaOffset);
-                                var beta = cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE * e.beta;
-                                var gamma = cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE * e.gamma;
-                                var alphaQuat = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_Z, alpha, _this._scratchQuaternion1);
-                                var betaQuat = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_X, beta, _this._scratchQuaternion2);
-                                var alphaBetaQuat = cesium_imports_1.Quaternion.multiply(alphaQuat, betaQuat, _this._scratchQuaternion1);
-                                var gammaQuat = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_Y, gamma, _this._scratchQuaternion2);
-                                var alphaBetaGammaQuat = cesium_imports_1.Quaternion.multiply(alphaBetaQuat, gammaQuat, alphaBetaQuat);
-                                // update orientationEntity
-                                if (_this.orientationEntity.position instanceof cesium_imports_1.ConstantPositionProperty == false) {
-                                    _this.orientationEntity.position = new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, _this.geolocationEntity);
-                                }
-                                if (_this.orientationEntity.orientation instanceof cesium_imports_1.ConstantProperty == false) {
-                                    _this.orientationEntity.orientation = new cesium_imports_1.ConstantProperty();
-                                }
-                                _this.orientationEntity.orientation.setValue(alphaBetaGammaQuat);
-                                // make sure the device entity has a defined pose relative to the device orientation entity
-                                if (_this.entity.position instanceof cesium_imports_1.ConstantPositionProperty == false) {
-                                    _this.entity.position = new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, _this.orientationEntity);
-                                }
-                                if (_this.entity.orientation instanceof cesium_imports_1.ConstantProperty == false) {
-                                    _this.entity.orientation = new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY);
-                                }
-                                // TODO: fix heading drift calculation (heading should match webkitCompassHeading)
-                                // if (defined(webkitCompassHeading)) {
-                                //     const q = alphaBetaGammaQuat//utils.getEntityOrientationInReferenceFrame(this.interfaceEntity, JulianDate.now(), this.locationEntity, this._scratchQuaternion1);
-                                //     var heading = -Math.atan2(2*(q.w*q.z + q.x*q.y), 1 - 2*(q.y*q.y + q.z*q.z));
-                                //     if (heading < 0) heading += 2*Math.PI;
-                                //     const {swing,twist} = swingTwistDecomposition(alphaBetaGammaQuat, Cartesian3.UNIT_Z);
-                                //     const twistAngle = 2 * Math.acos(twist.w);
-                                //     console.log(twist.w + ' ' + twistAngle * CesiumMath.DEGREES_PER_RADIAN + '\n' + webkitCompassHeading);
-                                //     // this._headingDrift = webkitCompassHeading - heading * CesiumMath.DEGREES_PER_RADIAN;
-                                // }
-                            };
-                            window.addEventListener('deviceorientation', this._deviceorientationListener);
-                        } else if (cesium_imports_1.defined(this._deviceorientationListener) && !this.orientationUpdatesEnabled) {
-                            window.removeEventListener('deviceorientation', this._deviceorientationListener);
-                            this._deviceorientationListener = undefined;
-                        }
-                    }
-                };
-                /**
-                * Update the pose with latest sensor data
-                */
-                DeviceService.prototype.update = function () {
-                    var _this = this;
-                    if (cesium_imports_1.defined(this._idleTimeoutId)) clearTimeout(this._idleTimeoutId);
-                    this._idleTimeoutId = setTimeout(function () {
-                        _this.onIdle();
-                    }, 2000);
-                    this.onUpdate();
-                };
-                DeviceService = __decorate([aurelia_dependency_injection_1.inject(context_2.ContextService)], DeviceService);
-                return DeviceService;
-            }();
-            exports_1("DeviceService", DeviceService);
-        }
-    };
-});
-$__System.register('c', ['11'], function (exports_1, context_1) {
-    "use strict";
-
-    var __moduleName = context_1 && context_1.id;
-    var cesium_imports_1;
-    var TimerService, lastTime;
-    function requestAnimationFramePoly(callback) {
-        var currTime = Date.now();
-        var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-        var id = setTimeout(function () {
-            callback(currTime + timeToCall);
-        }, timeToCall);
-        lastTime = currTime + timeToCall;
-        return id;
-    }
-    return {
-        setters: [function (cesium_imports_1_1) {
-            cesium_imports_1 = cesium_imports_1_1;
-        }],
-        execute: function () {
-            /**
-             * Provides timer service
-             */
-            TimerService = function () {
-                function TimerService() {
-                    this.frameNumbers = new WeakMap();
-                }
-                /**
-                 * Request that the callback function be called for the next frame.
-                 *
-                 * @param callback function
-                 */
-                TimerService.prototype.requestFrame = function (callback) {
-                    var _this = this;
-                    if (typeof requestAnimationFrame !== 'undefined' && typeof performance !== 'undefined') {
-                        this.navigationStartDate = this.navigationStartDate || cesium_imports_1.JulianDate.fromDate(new Date(performance.timing.navigationStart));
-                        requestAnimationFrame(function (time) {
-                            var frameTime = cesium_imports_1.JulianDate.addSeconds(_this.navigationStartDate, time / 1000, new cesium_imports_1.JulianDate(0, 0));
-                            callback(frameTime, _this.getNextFrameNumber(callback));
-                        });
-                    } else {
-                        requestAnimationFramePoly(function (time) {
-                            var frameTime = cesium_imports_1.JulianDate.fromDate(new Date(time));
-                            callback(frameTime, _this.getNextFrameNumber(callback));
-                        });
-                    }
-                };
-                TimerService.prototype.getNextFrameNumber = function (callback) {
-                    var frameNumber = this.frameNumbers.get(callback) || 0;
-                    this.frameNumbers.set(callback, frameNumber + 1);
-                    return frameNumber;
-                };
-                return TimerService;
-            }();
-            exports_1("TimerService", TimerService);
-            lastTime = 0;
-        }
-    };
-});
-$__System.register('13', ['f', '14', 'a', 'e'], function (exports_1, context_1) {
-    "use strict";
-
-    var __moduleName = context_1 && context_1.id;
-    var __extends = this && this.__extends || function (d, b) {
-        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-        function __() {
-            this.constructor = d;
-        }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-    var __decorate = this && this.__decorate || function (decorators, target, key, desc) {
-        var c = arguments.length,
-            r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
-            d;
-        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-        return c > 3 && r && Object.defineProperty(target, key, r), r;
-    };
-    var aurelia_dependency_injection_1, focus_1, session_1, utils_1;
-    var VuforiaInitResult, VuforiaHint, VuforiaServiceDelegateBase, VuforiaServiceDelegate, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, VuforiaDataSet;
-    return {
-        setters: [function (aurelia_dependency_injection_1_1) {
-            aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
-        }, function (focus_1_1) {
-            focus_1 = focus_1_1;
-        }, function (session_1_1) {
-            session_1 = session_1_1;
-        }, function (utils_1_1) {
-            utils_1 = utils_1_1;
-        }],
-        execute: function () {
-            /**
-             * The set of possible error codes that can be returned from vuforia's
-             * initialization function.
-             */
-            (function (VuforiaInitResult) {
-                VuforiaInitResult[VuforiaInitResult["SUCCESS"] = 100] = "SUCCESS";
-                /** Error during initialization. */
-                VuforiaInitResult[VuforiaInitResult["INIT_ERROR"] = -1] = "INIT_ERROR";
-                /** The device is not supported. */
-                VuforiaInitResult[VuforiaInitResult["INIT_DEVICE_NOT_SUPPORTED"] = -2] = "INIT_DEVICE_NOT_SUPPORTED";
-                /** Cannot access the camera. */
-                VuforiaInitResult[VuforiaInitResult["INIT_NO_CAMERA_ACCESS"] = -3] = "INIT_NO_CAMERA_ACCESS";
-                /** License key is missing. */
-                VuforiaInitResult[VuforiaInitResult["INIT_LICENSE_ERROR_MISSING_KEY"] = -4] = "INIT_LICENSE_ERROR_MISSING_KEY";
-                /** Invalid license key passed to SDK. */
-                VuforiaInitResult[VuforiaInitResult["INIT_LICENSE_ERROR_INVALID_KEY"] = -5] = "INIT_LICENSE_ERROR_INVALID_KEY";
-                /** Unable to verify license key due to network (Permanent error). */
-                VuforiaInitResult[VuforiaInitResult["INIT_LICENSE_ERROR_NO_NETWORK_PERMANENT"] = -6] = "INIT_LICENSE_ERROR_NO_NETWORK_PERMANENT";
-                /** Unable to verify license key due to network (Transient error). */
-                VuforiaInitResult[VuforiaInitResult["INIT_LICENSE_ERROR_NO_NETWORK_TRANSIENT"] = -7] = "INIT_LICENSE_ERROR_NO_NETWORK_TRANSIENT";
-                /** Provided key is no longer valid. */
-                VuforiaInitResult[VuforiaInitResult["INIT_LICENSE_ERROR_CANCELED_KEY"] = -8] = "INIT_LICENSE_ERROR_CANCELED_KEY";
-                /** Provided key is not valid for this product. */
-                VuforiaInitResult[VuforiaInitResult["INIT_LICENSE_ERROR_PRODUCT_TYPE_MISMATCH"] = -9] = "INIT_LICENSE_ERROR_PRODUCT_TYPE_MISMATCH";
-                /** Dependent external device not detected/plugged in. */
-                VuforiaInitResult[VuforiaInitResult["INIT_EXTERNAL_DEVICE_NOT_DETECTED"] = -10] = "INIT_EXTERNAL_DEVICE_NOT_DETECTED";
-            })(VuforiaInitResult || (VuforiaInitResult = {}));
-            exports_1("VuforiaInitResult", VuforiaInitResult);
-            (function (VuforiaHint) {
-                VuforiaHint[VuforiaHint["MaxSimultaneousImageTargets"] = 0] = "MaxSimultaneousImageTargets";
-                VuforiaHint[VuforiaHint["MaxSimultaneousObjectTargets"] = 1] = "MaxSimultaneousObjectTargets";
-                VuforiaHint[VuforiaHint["DelayedLoadingObjectDatasets"] = 2] = "DelayedLoadingObjectDatasets";
-            })(VuforiaHint || (VuforiaHint = {}));
-            exports_1("VuforiaHint", VuforiaHint);
-            /**
-             * An abstract class representing the Vuforia API.
-             */
-            VuforiaServiceDelegateBase = function () {
-                function VuforiaServiceDelegateBase() {
-                    this.stateUpdateEvent = new utils_1.Event();
-                }
-                return VuforiaServiceDelegateBase;
-            }();
-            exports_1("VuforiaServiceDelegateBase", VuforiaServiceDelegateBase);
-            /**
-             * An no-op implementation of VuforiaServiceDelegate.
-             */
-            VuforiaServiceDelegate = function (_super) {
-                __extends(VuforiaServiceDelegate, _super);
-                function VuforiaServiceDelegate() {
-                    _super.apply(this, arguments);
-                }
-                VuforiaServiceDelegate.prototype.isAvailable = function () {
-                    return false;
-                };
-                VuforiaServiceDelegate.prototype.setHint = function (hint, value) {
-                    return true;
-                };
-                VuforiaServiceDelegate.prototype.decryptLicenseKey = function (encryptedLicenseData, session) {
-                    return Promise.resolve(undefined);
-                };
-                VuforiaServiceDelegate.prototype.init = function (options) {
-                    return Promise.resolve(VuforiaInitResult.SUCCESS);
-                };
-                VuforiaServiceDelegate.prototype.deinit = function () {};
-                VuforiaServiceDelegate.prototype.cameraDeviceInitAndStart = function () {
-                    return true;
-                };
-                VuforiaServiceDelegate.prototype.cameraDeviceSetFlashTorchMode = function (on) {
-                    return true;
-                };
-                VuforiaServiceDelegate.prototype.objectTrackerInit = function () {
-                    return true;
-                };
-                VuforiaServiceDelegate.prototype.objectTrackerCreateDataSet = function (url) {
-                    return '';
-                };
-                VuforiaServiceDelegate.prototype.objectTrackerDestroyDataSet = function (id) {
-                    return true;
-                };
-                VuforiaServiceDelegate.prototype.objectTrackerActivateDataSet = function (id) {
-                    return true;
-                };
-                VuforiaServiceDelegate.prototype.objectTrackerDeactivateDataSet = function (id) {
-                    return true;
-                };
-                VuforiaServiceDelegate.prototype.dataSetFetch = function (id) {
-                    return Promise.resolve(undefined);
-                };
-                VuforiaServiceDelegate.prototype.dataSetLoad = function (id) {
-                    return Promise.resolve();
-                };
-                return VuforiaServiceDelegate;
-            }(VuforiaServiceDelegateBase);
-            exports_1("VuforiaServiceDelegate", VuforiaServiceDelegate);
-            /**
-             * Mediates requests to the Vuforia API. Handles the following requests:
-             * // TODO
-             */
-            VuforiaService = function () {
-                function VuforiaService(sessionService, focusService, delegate) {
-                    var _this = this;
-                    this.sessionService = sessionService;
-                    this.focusService = focusService;
-                    this.delegate = delegate;
-                    this._sessionSwitcherCommandQueue = new utils_1.CommandQueue();
-                    this._sessionCommandQueue = new WeakMap();
-                    this._sessionInitOptions = new WeakMap();
-                    this._sessionInitPromise = new WeakMap();
-                    this._sessionIsInitialized = new WeakMap();
-                    this._sessionCreatedDataSets = new WeakMap();
-                    this._sessionActivatedDataSets = new WeakMap();
-                    if (sessionService.isRealityManager) {
-                        this._sessionSwitcherCommandQueue.errorEvent.addEventListener(function (err) {
-                            _this.sessionService.errorEvent.raiseEvent(err);
-                        });
-                        sessionService.connectEvent.addEventListener(function (session) {
-                            var commandQueue = new utils_1.CommandQueue();
-                            commandQueue.errorEvent.addEventListener(function (err) {
-                                _this.sessionService.errorEvent.raiseEvent(err);
-                                session.sendError(err);
-                            });
-                            _this._sessionCommandQueue.set(session, commandQueue);
-                            var createdDataSets = new Set();
-                            _this._sessionCreatedDataSets.set(session, createdDataSets);
-                            var activatedDataSets = new Set();
-                            _this._sessionActivatedDataSets.set(session, activatedDataSets);
-                            session.on['ar.vuforia.isAvailable'] = function () {
-                                return Promise.resolve({ available: delegate.isAvailable() });
-                            };
-                            session.on['ar.vuforia.init'] = function (options) {
-                                if (!delegate.isAvailable()) throw new Error("Vuforia is not supported");
-                                if (_this._sessionIsInitialized.get(session)) throw new Error("Vuforia has already been initialized");
-                                if (!options.key && !options.encryptedLicenseData) throw new Error("Expected `encryptedLicenseData` field. You can encrypt your Vuforia license key at http://docs.argonjs.io/start/vuforia-pgp-encryptor");
-                                var keyPromise = options.key ? Promise.resolve(options.key) : delegate.decryptLicenseKey(options.encryptedLicenseData, session);
-                                return keyPromise.then(function (key) {
-                                    _this._sessionInitOptions.set(session, {
-                                        key: key
-                                    });
-                                    var result = commandQueue.push(function () {
-                                        return _this._init(session).then(function () {
-                                            _this._sessionIsInitialized.set(session, true);
-                                        });
-                                    }, _this._controllingSession === session);
-                                    if (_this.focusService.getSession() === session) {
-                                        _this._setControllingSession(session);
-                                    }
-                                    _this._sessionInitPromise.set(session, result);
-                                    return result;
-                                });
-                            };
-                            session.on['ar.vuforia.objectTrackerCreateDataSet'] = function (_a) {
-                                var url = _a.url;
-                                return commandQueue.push(function () {
-                                    var id = delegate.objectTrackerCreateDataSet(url);
-                                    if (id) {
-                                        createdDataSets.add(id);
-                                        return Promise.resolve({ id: id });
-                                    }
-                                    throw new Error('Unable to create DataSet');
-                                }, _this._controllingSession === session);
-                            };
-                            session.on['ar.vuforia.objectTrackerActivateDataSet'] = function (_a) {
-                                var id = _a.id;
-                                return commandQueue.push(function () {
-                                    if (delegate.objectTrackerActivateDataSet(id)) {
-                                        activatedDataSets.add(id);
-                                        session.send('ar.vuforia.objectTrackerActivateDataSetEvent', { id: id });
-                                        return;
-                                    }
-                                    throw new Error("Unable to activate DataSet (" + id + ")");
-                                }, _this._controllingSession === session);
-                            };
-                            session.on['ar.vuforia.objectTrackerDeactivateDataSet'] = function (_a) {
-                                var id = _a.id;
-                                return commandQueue.push(function () {
-                                    if (delegate.objectTrackerDeactivateDataSet(id)) {
-                                        activatedDataSets.delete(id);
-                                        session.send('ar.vuforia.objectTrackerDeactivateDataSetEvent', { id: id });
-                                        return;
-                                    }
-                                    throw new Error("Unable to deactivate DataSet (" + id + ")");
-                                }, _this._controllingSession === session);
-                            };
-                            session.on['ar.vuforia.dataSetFetch'] = function (_a) {
-                                var id = _a.id;
-                                return commandQueue.push(function () {
-                                    return delegate.dataSetFetch(id);
-                                }, _this._controllingSession === session);
-                            };
-                            session.on['ar.vuforia.dataSetLoad'] = function (_a) {
-                                var id = _a.id;
-                                return commandQueue.push(function () {
-                                    return delegate.dataSetLoad(id);
-                                }, _this._controllingSession === session);
-                            };
-                            session.closeEvent.addEventListener(function () {
-                                if (_this._controllingSession === session) {
-                                    commandQueue.clear();
-                                    commandQueue.push(function () {
-                                        _this._cleanupSession(session);
-                                        setTimeout(function () {
-                                            _this._ensureActiveSession();
-                                        }, 2000);
-                                    }, true);
-                                } else {
-                                    _this._cleanupSession(session);
-                                }
-                            });
-                        });
-                        focusService.sessionFocusEvent.addEventListener(function (_a) {
-                            var current = _a.current;
-                            if (current && _this._sessionInitOptions.get(current)) {
-                                _this._setControllingSession(current);
-                            }
-                        });
-                    }
-                }
-                ;
-                VuforiaService.prototype.isAvailable = function () {
-                    return this.sessionService.manager.request('ar.vuforia.isAvailable').then(function (message) {
-                        return message.available;
-                    });
-                };
-                /**
-                 * Initialize vuforia with an unecrypted key. Manager-only, unless the "force" (flag) is used.
-                 * It's a bad idea to publish your private vuforia key on the internet.
-                 */
-                VuforiaService.prototype.initWithUnencryptedKey = function (options, force) {
-                    var _this = this;
-                    if (!force) this.sessionService.ensureIsRealityManager();
-                    return this.sessionService.manager.request('ar.vuforia.init', options).then(function () {
-                        return new VuforiaAPI(_this.sessionService.manager);
-                    });
-                };
-                /**
-                 * Initialize vuforia using an encrypted license key.
-                 * You can encrypt your license key at http://docs.argonjs.io/start/vuforia-pgp-encryptor
-                 */
-                VuforiaService.prototype.init = function (options) {
-                    var _this = this;
-                    if (!options.encryptedLicenseData || typeof options.encryptedLicenseData !== 'string') throw new Error('options.encryptedLicenseData is required.');
-                    return this.sessionService.manager.request('ar.vuforia.init', options).then(function () {
-                        return new VuforiaAPI(_this.sessionService.manager);
-                    });
-                };
-                VuforiaService.prototype._ensureActiveSession = function () {
-                    console.log("VuforiaService: Ensuring an active session is in control.");
-                    if (this._controllingSession && this._controllingSession.isConnected) return;
-                    this._selectControllingSession();
-                };
-                VuforiaService.prototype._selectControllingSession = function () {
-                    var focusSession = this.focusService.getSession();
-                    if (focusSession && this._sessionInitOptions.get(focusSession)) {
-                        this._setControllingSession(focusSession);
-                        return;
-                    }
-                    for (var _i = 0, _a = this.sessionService.managedSessions; _i < _a.length; _i++) {
-                        var session = _a[_i];
-                        if (this._sessionInitOptions.get(session)) {
-                            this._setControllingSession(session);
-                            return;
-                        }
-                    }
-                    if (this._sessionInitOptions.get(this.sessionService.manager)) this._setControllingSession(this.sessionService.manager);
-                };
-                VuforiaService.prototype._setControllingSession = function (session) {
-                    var _this = this;
-                    if (this._controllingSession === session) return;
-                    console.log("VuforiaService: Setting controlling session to " + session.uri);
-                    this._sessionSwitcherCommandQueue.clear();
-                    this._sessionSwitcherCommandQueue.push(function () {
-                        return _this._pauseSession().then(function () {
-                            return _this._resumeSession(session);
-                        });
-                    }, true);
-                };
-                VuforiaService.prototype._resumeSession = function (session) {
-                    if (this._controllingSession) throw new Error('Attempted to resume a session while a session is still in control');
-                    if (session) console.log("VuforiaService: Resuming session " + session.uri);
-                    var initOptions = this._sessionInitOptions.get(session);
-                    if (!initOptions) {
-                        throw new Error('Attempted to resume a session without initialization options');
-                    }
-                    this._controllingSession = session;
-                    var commandQueue = this._sessionCommandQueue.get(session);
-                    if (this._sessionIsInitialized.get(session)) {
-                        return this._init(session).then(function () {
-                            commandQueue.execute();
-                        }).catch(function (err) {
-                            session.sendError(err);
-                        });
-                    } else {
-                        commandQueue.execute();
-                        return this._sessionInitPromise.get(session);
-                    }
-                };
-                VuforiaService.prototype._pauseSession = function () {
-                    var _this = this;
-                    var session = this._controllingSession;
-                    if (!session) return Promise.resolve(undefined);
-                    console.log("VuforiaService: Pausing session " + session.uri);
-                    var commandQueue = this._sessionCommandQueue.get(session);
-                    return commandQueue.push(function () {
-                        commandQueue.pause();
-                        _this._controllingSession = undefined;
-                        return _this._deinit(session);
-                    }, true);
-                };
-                VuforiaService.prototype._cleanupSession = function (session) {
-                    var _this = this;
-                    if (!this._sessionInitOptions.has(session)) return;
-                    // delete session init options
-                    this._sessionInitOptions.delete(session);
-                    var createdDataSets = this._sessionCreatedDataSets.get(session);
-                    // Deactivate session datasets / trackables
-                    console.log('VuforiaService: Deactivating datasets for session ' + session.uri);
-                    this._sessionActivatedDataSets.get(session).forEach(function (id) {
-                        _this.delegate.objectTrackerDeactivateDataSet(id);
-                    });
-                    this._sessionActivatedDataSets.delete(session);
-                    // destroy session objects                   
-                    console.log('VuforiaService: Destroying objects for session ' + session.uri);
-                    createdDataSets.forEach(function (id) {
-                        _this.delegate.objectTrackerDestroyDataSet(id);
-                    });
-                    this._sessionCreatedDataSets.delete(session);
-                };
-                VuforiaService.prototype._init = function (session) {
-                    var _this = this;
-                    console.log("Attempting to initialize vuforia for " + session.uri);
-                    var options = this._sessionInitOptions.get(session);
-                    return this.delegate.init(options).then(function (initResult) {
-                        if (initResult !== VuforiaInitResult.SUCCESS) {
-                            throw new Error("Vuforia init failed: " + VuforiaInitResult[initResult]);
-                        }
-                        // must initialize trackers before initializing the camera device
-                        if (!_this.delegate.objectTrackerInit()) {
-                            throw new Error("Vuforia init failed: Unable to initialize ObjectTracker");
-                        }
-                        // restore active datasets & trackables
-                        var success = true;
-                        _this._sessionActivatedDataSets.get(session).forEach(function (id) {
-                            success = success && _this.delegate.objectTrackerActivateDataSet(id);
-                            if (success) {
-                                session.send('ar.vuforia.objectTrackerActivateDataSetEvent', { id: id });
-                            }
-                        });
-                        if (!success) {
-                            throw new Error("Vuforia init failed: Unable to restore active datasets");
-                        }
-                        // todo: also activate datasets / trackables created by other sessions
-                        // (if this fails, then vuforia has probably started forbidding datasets created 
-                        // by one developer account to work while using a license key from a different
-                        // developer account, so no need to return a rejected promise in that case)
-                        if (!_this.delegate.cameraDeviceInitAndStart()) {
-                            throw new Error("Vuforia init failed: Unable to complete initialization");
-                        }
-                        console.log("Vuforia init success");
-                    }).catch(function (err) {
-                        console.log("Vuforia init fail: " + err.message);
-                        _this._sessionInitOptions.delete(session);
-                        _this._sessionIsInitialized.set(session, false);
-                        _this._deinit(session);
-                        _this._ensureActiveSession();
-                        throw err;
-                    });
-                };
-                VuforiaService.prototype._deinit = function (session) {
-                    // Deactivate any activated datasets, stop trackers, and deinit. 
-                    // Don't actually destroy created resources so we can use them to restore state. 
-                    var _this = this;
-                    var activatedDataSets = this._sessionActivatedDataSets.get(session);
-                    if (activatedDataSets) {
-                        activatedDataSets.forEach(function (id) {
-                            _this.delegate.objectTrackerDeactivateDataSet(id);
-                            session.send('ar.vuforia.objectTrackerDeactivateDataSetEvent', { id: id });
-                        });
-                    }
-                    // right now the delegate.deinit() call deinitiailizes trackers and camera device for us. 
-                    // May want to move here instead?
-                    // const errors:Array<string> = [];
-                    // if (!this.delegate.objectTrackerDeinit()) {
-                    //     errors.push("Unable to deinitialize ObjectTracker");
-                    // } 
-                    // if (!this.delegate.cameraDeviceDeinit()) {
-                    //     errors.push("Unable to deinitialize CameraDevice");
-                    // }
-                    this.delegate.deinit();
-                    // if (errors.length > 0) {
-                    //     throw new Error(errors.join('\n'));
-                    // }
-                };
-                VuforiaService = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, focus_1.FocusService, VuforiaServiceDelegate)], VuforiaService);
-                return VuforiaService;
-            }();
-            exports_1("VuforiaService", VuforiaService);
-            VuforiaAPI = function () {
-                function VuforiaAPI(manager) {
-                    this.objectTracker = new VuforiaObjectTracker(manager);
-                }
-                return VuforiaAPI;
-            }();
-            exports_1("VuforiaAPI", VuforiaAPI);
-            VuforiaTracker = function () {
-                function VuforiaTracker() {}
-                return VuforiaTracker;
-            }();
-            exports_1("VuforiaTracker", VuforiaTracker);
-            /**
-             * Vuforia Object Tracker
-             */
-            VuforiaObjectTracker = function (_super) {
-                __extends(VuforiaObjectTracker, _super);
-                function VuforiaObjectTracker(manager) {
-                    var _this = this;
-                    _super.call(this);
-                    this.manager = manager;
-                    this._dataSetMap = new Map();
-                    this.dataSetActivateEvent = new utils_1.Event();
-                    this.dataSetDeactivateEvent = new utils_1.Event();
-                    manager.on['ar.vuforia.objectTrackerActivateDataSetEvent'] = function (_a) {
-                        var id = _a.id;
-                        var dataSet = _this._dataSetMap.get(id);
-                        dataSet._onActivate();
-                        _this.dataSetActivateEvent.raiseEvent(dataSet);
-                    };
-                    manager.on['ar.vuforia.objectTrackerDeactivateDataSetEvent'] = function (_a) {
-                        var id = _a.id;
-                        var dataSet = _this._dataSetMap.get(id);
-                        dataSet._onDeactivate();
-                        _this.dataSetDeactivateEvent.raiseEvent(dataSet);
-                    };
-                }
-                VuforiaObjectTracker.prototype.createDataSet = function (url) {
-                    var _this = this;
-                    if (url && window.document) {
-                        url = utils_1.resolveURL(url);
-                    }
-                    return this.manager.request('ar.vuforia.objectTrackerCreateDataSet', { url: url }).then(function (message) {
-                        var dataSet = new VuforiaDataSet(message.id, _this.manager);
-                        _this._dataSetMap.set(message.id, dataSet);
-                        return dataSet;
-                    });
-                };
-                VuforiaObjectTracker.prototype.activateDataSet = function (dataSet) {
-                    return this.manager.request('ar.vuforia.objectTrackerActivateDataSet', { id: dataSet.id });
-                };
-                VuforiaObjectTracker.prototype.deactivateDataSet = function (dataSet) {
-                    return this.manager.request('ar.vuforia.objectTrackerDeactivateDataSet', { id: dataSet.id });
-                };
-                return VuforiaObjectTracker;
-            }(VuforiaTracker);
-            exports_1("VuforiaObjectTracker", VuforiaObjectTracker);
-            /**
-             * A vuforia data set. TODO
-             */
-            VuforiaDataSet = function () {
-                function VuforiaDataSet(id, manager) {
-                    this.id = id;
-                    this.manager = manager;
-                    this._isActive = false;
-                }
-                VuforiaDataSet.prototype._onActivate = function () {
-                    this._isActive = true;
-                };
-                VuforiaDataSet.prototype._onDeactivate = function () {
-                    this._isActive = false;
-                };
-                VuforiaDataSet.prototype.fetch = function () {
-                    return this.manager.request('ar.vuforia.dataSetFetch', { id: this.id }).then(function () {});
-                };
-                VuforiaDataSet.prototype.load = function () {
-                    var _this = this;
-                    return this.manager.request('ar.vuforia.dataSetLoad', { id: this.id }).then(function (trackables) {
-                        _this._trackables = trackables;
-                        return trackables;
-                    });
-                };
-                VuforiaDataSet.prototype.isActive = function () {
-                    return this._isActive;
-                };
-                VuforiaDataSet.prototype.getTrackables = function () {
-                    return this._trackables;
-                };
-                return VuforiaDataSet;
-            }();
-            exports_1("VuforiaDataSet", VuforiaDataSet);
-        }
-    };
-});
-$__System.register('15', ['f', '9', 'a', 'b', 'c', 'd', '13', '16', 'e'], function (exports_1, context_1) {
-    "use strict";
-
-    var __moduleName = context_1 && context_1.id;
-    var __extends = this && this.__extends || function (d, b) {
-        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-        function __() {
-            this.constructor = d;
-        }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-    var __decorate = this && this.__decorate || function (decorators, target, key, desc) {
-        var c = arguments.length,
-            r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
-            d;
-        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-        return c > 3 && r && Object.defineProperty(target, key, r), r;
-    };
-    var aurelia_dependency_injection_1, common_1, session_1, device_1, timer_1, reality_1, vuforia_1, view_1, utils_1;
-    var LiveVideoRealityLoader;
-    return {
-        setters: [function (aurelia_dependency_injection_1_1) {
-            aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
-        }, function (common_1_1) {
-            common_1 = common_1_1;
-        }, function (session_1_1) {
-            session_1 = session_1_1;
-        }, function (device_1_1) {
-            device_1 = device_1_1;
-        }, function (timer_1_1) {
-            timer_1 = timer_1_1;
-        }, function (reality_1_1) {
-            reality_1 = reality_1_1;
-        }, function (vuforia_1_1) {
-            vuforia_1 = vuforia_1_1;
-        }, function (view_1_1) {
-            view_1 = view_1_1;
-        }, function (utils_1_1) {
-            utils_1 = utils_1_1;
-        }],
-        execute: function () {
-            LiveVideoRealityLoader = function (_super) {
-                __extends(LiveVideoRealityLoader, _super);
-                function LiveVideoRealityLoader(sessionService, vuforiaDelegate, viewService, deviceService, timer) {
-                    var _this = this;
-                    _super.call(this);
-                    this.sessionService = sessionService;
-                    this.vuforiaDelegate = vuforiaDelegate;
-                    this.viewService = viewService;
-                    this.deviceService = deviceService;
-                    this.timer = timer;
-                    this.type = 'live-video';
-                    this.lastFrameTime = 0;
-                    if (typeof document !== 'undefined') {
-                        if (document.cookie.length > 0) {
-                            var regex = /argon_fov=([0-9]+)/;
-                            var match = regex.exec(document.cookie);
-                            if (match) {
-                                //match[1] will be the first capture, which is the value of the field of view as a string
-                                this.videoFov = Number(match[1]) * Math.PI / 180;
-                            }
-                        }
-                        window.addEventListener('beforeunload', function (event) {
-                            document.cookie = "argon_fov=" + _this.fovSlider.value.toString();
-                        });
-                        this.fovSlider = document.createElement('input');
-                        this.fovSlider.type = 'range';
-                        this.fovSlider.min = '0';
-                        this.fovSlider.max = '179';
-                        if (this.videoFov) {
-                            this.fovSlider.value = (this.videoFov * 180 / Math.PI).toString();
-                        } else {
-                            this.fovSlider.value = '90';
-                        }
-                        this.fovSlider.step = '1';
-                        this.fovSlider.style = 'pointer-events: auto; position:absolute;';
-                        this.fovSlider.addEventListener('change', function (event) {
-                            _this.videoFov = event.target.value * Math.PI / 180;
-                        });
-                        this.videoFov = this.fovSlider.value * Math.PI / 180;
-                        viewService.containingElementPromise.then(function (container) {
-                            container.insertBefore(_this.fovSlider, container.firstChild);
-                        });
-                        this.videoElement = document.createElement('video');
-                        this.videoElement.style = 'width:100%; height:100%;';
-                        this.videoElement.controls = false;
-                        this.videoElement.autoplay = true;
-                        viewService.containingElementPromise.then(function (container) {
-                            container.insertBefore(_this.videoElement, container.firstChild);
-                        });
-                        this.canvas = document.createElement('canvas');
-                        this.context = this.canvas.getContext('2d');
-                    }
-                }
-                LiveVideoRealityLoader.prototype.load = function (reality, callback) {
-                    var _this = this;
-                    var realitySession = this.sessionService.addManagedSessionPort(reality.uri);
-                    var remoteRealitySession = this.sessionService.createSessionPort();
-                    remoteRealitySession.on['ar.context.update'] = function () {};
-                    remoteRealitySession.connectEvent.addEventListener(function () {
-                        var remove = _this.vuforiaDelegate.stateUpdateEvent.addEventListener(function (frameState) {
-                            remoteRealitySession.send('ar.reality.frameState', frameState);
-                        });
-                        _this.vuforiaDelegate.videoEnabled = true;
-                        _this.vuforiaDelegate.trackingEnabled = true;
-                        remoteRealitySession.closeEvent.addEventListener(function () {
-                            remove();
-                            _this.vuforiaDelegate.videoEnabled = false;
-                            _this.vuforiaDelegate.trackingEnabled = false;
-                        });
-                    });
-                    if (typeof document !== 'undefined' && typeof navigator !== 'undefined') {
-                        var mediaDevices = navigator.mediaDevices;
-                        var getUserMedia = (mediaDevices.getUserMedia || mediaDevices.mozGetUserMedia || mediaDevices.msGetUserMedia || mediaDevices.webkitGetUserMedia).bind(mediaDevices);
-                        var videoPromise = getUserMedia({ audio: false, video: true });
-                        videoPromise.then(function (videoStream) {
-                            _this.videoElement.src = window.URL.createObjectURL(videoStream);
-                        });
-                        videoPromise.catch(function (error) {
-                            remoteRealitySession.errorEvent.raiseEvent(error);
-                        });
-                        var firstFrame_1 = true;
-                        var update_1 = function (time, index) {
-                            if (firstFrame_1 || _this.videoElement.currentTime != _this.lastFrameTime) {
-                                firstFrame_1 = false;
-                                _this.lastFrameTime = _this.videoElement.currentTime;
-                                _this.deviceService.update();
-                                var frameState = {
-                                    time: time,
-                                    index: index,
-                                    eye: {
-                                        pose: utils_1.getSerializedEntityPose(_this.deviceService.displayEntity, time),
-                                        fov: _this.videoFov
-                                    }
-                                };
-                                remoteRealitySession.send('ar.reality.frameState', frameState);
-                            }
-                            _this.timer.requestFrame(update_1);
-                        };
-                        this.timer.requestFrame(update_1);
-                    }
-                    callback(realitySession);
-                    // Only connect after the caller is able to attach connectEvent handlers
-                    var messageChannel = this.sessionService.createSynchronousMessageChannel();
-                    realitySession.open(messageChannel.port1, this.sessionService.configuration);
-                    remoteRealitySession.open(messageChannel.port2, { role: common_1.Role.REALITY_VIEW });
-                };
-                LiveVideoRealityLoader.isAvailable = function () {
-                    if (typeof navigator !== 'undefined') {
-                        var mediaDevices = navigator.mediaDevices;
-                        return !!(mediaDevices.getUserMedia || mediaDevices.mozGetUserMedia || mediaDevices.msGetUserMedia || mediaDevices.webkitGetUserMedia);
-                    } else {
-                        return false;
-                    }
-                };
-                LiveVideoRealityLoader.prototype.getVideoFrame = function (x, y, width, height) {
-                    this.canvas.width = this.videoElement.videoWidth;
-                    this.canvas.height = this.videoElement.videoHeight;
-                    this.context.drawImage(this.videoElement, 0, 0, this.canvas.width, this.canvas.height);
-                    return this.context.getImageData(x, y, width, height);
-                };
-                LiveVideoRealityLoader = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, vuforia_1.VuforiaServiceDelegate, view_1.ViewService, device_1.DeviceService, timer_1.TimerService)], LiveVideoRealityLoader);
-                return LiveVideoRealityLoader;
-            }(reality_1.RealityLoader);
-            exports_1("LiveVideoRealityLoader", LiveVideoRealityLoader);
-        }
-    };
-});
-$__System.register('12', ['f', '11', 'a', 'd', 'e'], function (exports_1, context_1) {
-    "use strict";
-
-    var __moduleName = context_1 && context_1.id;
-    var __decorate = this && this.__decorate || function (decorators, target, key, desc) {
-        var c = arguments.length,
-            r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
-            d;
-        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-        return c > 3 && r && Object.defineProperty(target, key, r), r;
-    };
-    var aurelia_dependency_injection_1, cesium_imports_1, session_1, reality_1, utils_1;
-    var PoseStatus, scratchCartesian3, scratchQuaternion, scratchOriginCartesian3, ContextService;
-    function _stringFromReferenceFrame(referenceFrame) {
-        var rf = referenceFrame;
-        return cesium_imports_1.defined(rf.id) ? rf.id : '' + rf;
-    }
-    return {
-        setters: [function (aurelia_dependency_injection_1_1) {
-            aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
-        }, function (cesium_imports_1_1) {
-            cesium_imports_1 = cesium_imports_1_1;
-        }, function (session_1_1) {
-            session_1 = session_1_1;
-        }, function (reality_1_1) {
-            reality_1 = reality_1_1;
-        }, function (utils_1_1) {
-            utils_1 = utils_1_1;
-        }],
-        execute: function () {
-            /**
-            * A bitmask that provides metadata about the pose of an EntityPose.
-            *   KNOWN - the pose of the entity state is defined.
-            *   KNOWN & FOUND - the pose was undefined when the entity state was last queried, and is now defined.
-            *   LOST - the pose was defined when the entity state was last queried, and is now undefined
-            */
-            (function (PoseStatus) {
-                PoseStatus[PoseStatus["KNOWN"] = 1] = "KNOWN";
-                PoseStatus[PoseStatus["FOUND"] = 2] = "FOUND";
-                PoseStatus[PoseStatus["LOST"] = 4] = "LOST";
-            })(PoseStatus || (PoseStatus = {}));
-            exports_1("PoseStatus", PoseStatus);
-            scratchCartesian3 = new cesium_imports_1.Cartesian3(0, 0);
-            scratchQuaternion = new cesium_imports_1.Quaternion(0, 0);
-            scratchOriginCartesian3 = new cesium_imports_1.Cartesian3(0, 0);
-            /**
-             * Provides a means of querying the current state of reality.
-             *
-             * This class adds the following message handlers to any sessions
-             * managed by the session service:
-             *
-             *  * `ar.context.subscribe` - Subscribes the session to updates from an
-             *    entity with the provided id.
-             *    * Parameters:
-             *      * id: string - The id of an entity the session wishes to recieve
-             *        updates on.
-             *
-             * This service sends the following messages to managed sessions
-             *
-             *  * `ar.context.update` - Indicates to this context that the session wants
-             *    to be focused on.
-             */
-            ContextService = function () {
-                function ContextService(sessionService, realityService) {
-                    var _this = this;
-                    this.sessionService = sessionService;
-                    this.realityService = realityService;
-                    /**
-                     * An event that is raised when all remotely managed entities are are up-to-date for
-                     * the current frame. It is suggested that all modifications to locally managed entities
-                     * should occur within this event.
-                     */
-                    this.updateEvent = new utils_1.Event();
-                    /**
-                     * An event that is raised when it is an approriate time to render graphics.
-                     * This event fires after the update event.
-                     */
-                    this.renderEvent = new utils_1.Event();
-                    /**
-                     * The set of entities representing well-known reference frames.
-                     * These are assumed to be readily available to applications.
-                     */
-                    this.wellKnownReferenceFrames = new cesium_imports_1.EntityCollection();
-                    /**
-                     * The set of subscribed entities.
-                     */
-                    this.subscribedEntities = new cesium_imports_1.EntityCollection();
-                    /**
-                     * The set of entities that this session is aware of.
-                     */
-                    this.entities = new cesium_imports_1.CompositeEntityCollection();
-                    /**
-                     * An event that fires when the local origin changes.
-                     */
-                    this.localOriginChangeEvent = new utils_1.Event();
-                    /**
-                     * An entity representing the location and orientation of the user.
-                     */
-                    this.user = new cesium_imports_1.Entity({
-                        id: 'ar.user',
-                        name: 'user',
-                        position: new cesium_imports_1.ConstantPositionProperty(undefined, cesium_imports_1.ReferenceFrame.FIXED),
-                        orientation: new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY)
-                    });
-                    /**
-                     * An entity positioned near the user, aligned with the local East-North-Up
-                     * coordinate system.
-                     */
-                    this.localOriginEastNorthUp = new cesium_imports_1.Entity({
-                        id: 'ar.localENU',
-                        name: 'localOriginENU',
-                        position: new cesium_imports_1.ConstantPositionProperty(undefined, cesium_imports_1.ReferenceFrame.FIXED),
-                        orientation: new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY)
-                    });
-                    /**
-                     * An entity positioned near the user, aligned with the East-Up-South
-                     * coordinate system. This useful for converting to the Y-Up convention
-                     * used in some libraries, such as three.js.
-                     */
-                    this.localOriginEastUpSouth = new cesium_imports_1.Entity({
-                        id: 'ar.localEUS',
-                        name: 'localOriginEUS',
-                        position: new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, this.localOriginEastNorthUp),
-                        orientation: new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_X, Math.PI / 2))
-                    });
-                    /**
-                     * This value caps the deltaTime for each frame
-                     */
-                    this.maxDeltaTime = 1 / 3 * 1000;
-                    this._frame = {
-                        time: new cesium_imports_1.JulianDate(0, 0),
-                        systemTime: 0,
-                        deltaTime: 0
-                    };
-                    // The default origin to use when calling `getEntityPose`.
-                    this._defaultReferenceFrame = this.localOriginEastNorthUp;
-                    this._entityPoseCache = {};
-                    this._entityPoseMap = new Map();
-                    this._subscribedEntities = new WeakMap();
-                    this._updatingEntities = new Set();
-                    this._knownEntities = new Set();
-                    this.entities.addCollection(this.wellKnownReferenceFrames);
-                    this.entities.addCollection(this.subscribedEntities);
-                    this.subscribedEntities.add(this.user);
-                    if (this.sessionService.isRealityManager) {
-                        this.realityService.frameEvent.addEventListener(function (state) {
-                            _this._update(state);
-                        });
-                        this.sessionService.connectEvent.addEventListener(function (session) {
-                            _this._subscribedEntities.set(session, new Set());
-                            session.on['ar.context.subscribe'] = function (_a) {
-                                var id = _a.id;
-                                var subscriptions = _this._subscribedEntities.get(session);
-                                if (subscriptions) subscriptions.add(id);
-                            };
-                        });
-                    } else {
-                        this.sessionService.manager.on['ar.context.update'] = function (state) {
-                            _this._update(state);
-                        };
-                    }
-                }
-                Object.defineProperty(ContextService.prototype, "frame", {
-                    /**
-                     * The current frame
-                     */
-                    get: function () {
-                        if (!cesium_imports_1.defined(this.serializedFrameState)) throw new Error('A frame state has not yet been received');
-                        return this._frame;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(ContextService.prototype, "serializedFrameState", {
-                    /**
-                     * The serialized frame state for this frame
-                     */
-                    get: function () {
-                        return this._serializedState;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                /**
-                 * Get the current time
-                 */
-                ContextService.prototype.getTime = function () {
-                    return this.frame.time;
-                };
-                /**
-                 * Set the default reference frame for `getCurrentEntityState`.
-                 */
-                ContextService.prototype.setDefaultReferenceFrame = function (origin) {
-                    this._defaultReferenceFrame = origin;
-                };
-                /**
-                 * Get the default reference frame to use when calling `getEntityPose`.
-                 * By default, this is the `localOriginEastNorthUp` reference frame.
-                 */
-                ContextService.prototype.getDefaultReferenceFrame = function () {
-                    return this._defaultReferenceFrame;
-                };
-                /**
-                 * Adds an entity to this session's set of tracked entities.
-                 *
-                 * @param id - The unique identifier of an entity.
-                 * @returns The entity that was subscribed to.
-                 */
-                ContextService.prototype.subscribeToEntityById = function (id) {
-                    this.sessionService.manager.send('ar.context.subscribe', { id: id });
-                    return this.subscribedEntities.getOrCreateEntity(id);
-                };
-                /**
-                 * Gets the current pose of an entity, relative to a given reference frame.
-                 *
-                 * @param entity - The entity whose state is to be queried.
-                 * @param referenceFrame - The intended reference frame. Defaults to `this.defaultReferenceFrame`.
-                 * @returns If the position and orientation exist for the given entity, an
-                 * object with the fields `position` and `orientation`, both of type
-                 * `Cartesian3`. Otherwise undefined.
-                 */
-                ContextService.prototype.getEntityPose = function (entity, referenceFrame) {
-                    if (referenceFrame === void 0) {
-                        referenceFrame = this._defaultReferenceFrame;
-                    }
-                    var time = this.getTime();
-                    var key = entity.id + '@' + _stringFromReferenceFrame(referenceFrame);
-                    var entityPose = this._entityPoseMap.get(key);
-                    if (!cesium_imports_1.defined(entityPose)) {
-                        entityPose = {
-                            position: new cesium_imports_1.Cartesian3(),
-                            orientation: new cesium_imports_1.Quaternion(),
-                            time: cesium_imports_1.JulianDate.clone(time),
-                            poseStatus: 0
-                        };
-                        this._entityPoseMap.set(key, entityPose);
-                    } else {
-                        cesium_imports_1.JulianDate.clone(time, entityPose.time);
-                    }
-                    var position = utils_1.getEntityPositionInReferenceFrame(entity, time, referenceFrame, entityPose.position);
-                    var orientation = utils_1.getEntityOrientationInReferenceFrame(entity, time, referenceFrame, entityPose.orientation);
-                    var hasPose = position && orientation;
-                    var poseStatus = 0;
-                    var previousStatus = entityPose.poseStatus;
-                    if (hasPose) {
-                        poseStatus |= PoseStatus.KNOWN;
-                    }
-                    if (hasPose && !(previousStatus & PoseStatus.KNOWN)) {
-                        poseStatus |= PoseStatus.FOUND;
-                    } else if (!hasPose && previousStatus & PoseStatus.KNOWN) {
-                        poseStatus |= PoseStatus.LOST;
-                    }
-                    entityPose.poseStatus = poseStatus;
-                    return entityPose;
-                };
-                /**
-                 * deprecated
-                 */
-                ContextService.prototype.getCurrentEntityState = function (entity, referenceFrame) {
-                    console.warn('getCurrentEntityState is deprecated. Use getEntityPose instead.');
-                    return this.getEntityPose(entity, referenceFrame);
-                };
-                // TODO: This function is called a lot. Potential for optimization. 
-                ContextService.prototype._update = function (serializedState) {
-                    var _this = this;
-                    // if this session is the manager, we need to update our child sessions a.s.a.p
-                    if (this.sessionService.isRealityManager) {
-                        delete serializedState.entities[this.user.id]; // children don't need this
-                        this._entityPoseCache = {};
-                        for (var _i = 0, _a = this.sessionService.managedSessions; _i < _a.length; _i++) {
-                            var session = _a[_i];
-                            this._sendUpdateForSession(serializedState, session);
-                        }
-                    }
-                    // our user entity is defined by the current view pose (the current reality must provide this)
-                    serializedState.entities[this.user.id] = serializedState.view.pose;
-                    // update the entities the manager knows about
-                    this._knownEntities.clear();
-                    for (var id in serializedState.entities) {
-                        this.updateEntityFromFrameState(id, serializedState);
-                        this._updatingEntities.add(id);
-                        this._knownEntities.add(id);
-                    }
-                    // if the mangager didn't send us an update for a particular entity,
-                    // assume the manager no longer knows about it
-                    this._updatingEntities.forEach(function (id) {
-                        if (!_this._knownEntities.has(id)) {
-                            var entity = _this.subscribedEntities.getById(id);
-                            entity.position = undefined;
-                            entity.orientation = undefined;
-                            // WORKAROUND until https://github.com/AnalyticalGraphicsInc/cesium/issues/4225 is fixed
-                            entity = _this.entities.getById(id);
-                            entity.position = undefined;
-                            entity.orientation = undefined;
-                            _this._updatingEntities.delete(id);
-                        }
-                    });
-                    // update our local origin
-                    this._updateLocalOrigin(serializedState);
-                    // update our frame object
-                    var frame = this._frame;
-                    var now = typeof performance !== 'undefined' ? performance.now() : Date.now();
-                    frame.deltaTime = Math.max(now - frame.systemTime, this.maxDeltaTime);
-                    frame.systemTime = now;
-                    cesium_imports_1.JulianDate.clone(serializedState.time, frame.time);
-                    this._serializedState = serializedState;
-                    // raise an event for the user update and render the scene
-                    this.updateEvent.raiseEvent(frame);
-                    this.renderEvent.raiseEvent(frame);
-                };
-                ContextService.prototype.updateEntityFromFrameState = function (id, state) {
-                    var entityPose = state.entities[id];
-                    if (!entityPose) {
-                        if (!this.wellKnownReferenceFrames.getById(id)) {
-                            this.subscribedEntities.getOrCreateEntity(id);
-                        }
-                        return;
-                    }
-                    var referenceFrame;
-                    if (cesium_imports_1.defined(entityPose.r)) {
-                        if (typeof entityPose.r === 'number') {
-                            referenceFrame = entityPose.r;
-                        } else {
-                            referenceFrame = this.entities.getById(entityPose.r);
-                        }
-                    } else {
-                        referenceFrame = cesium_imports_1.ReferenceFrame.FIXED;
-                    }
-                    if (!cesium_imports_1.defined(referenceFrame)) {
-                        this.updateEntityFromFrameState(entityPose.r, state);
-                        referenceFrame = this.entities.getById(entityPose.r);
-                    }
-                    var positionValue = entityPose.p === 0 ? cesium_imports_1.Cartesian3.ZERO : entityPose.p;
-                    var orientationValue = entityPose.o === 0 ? cesium_imports_1.Quaternion.IDENTITY : entityPose.o;
-                    var entity = this.subscribedEntities.getOrCreateEntity(id);
-                    var entityPosition = entity.position;
-                    var entityOrientation = entity.orientation;
-                    if (!entityPosition || entityPosition.referenceFrame !== referenceFrame) {
-                        entityPosition = new cesium_imports_1.ConstantPositionProperty(positionValue, referenceFrame);
-                        entity.position = entityPosition;
-                    } else if (entityPosition instanceof cesium_imports_1.ConstantPositionProperty) {
-                        entityPosition.setValue(positionValue, referenceFrame);
-                    } else if (entityPosition instanceof cesium_imports_1.SampledPositionProperty) {
-                        entityPosition.addSample(cesium_imports_1.JulianDate.clone(state.time), positionValue);
-                    }
-                    if (!entityOrientation) {
-                        entityOrientation = new cesium_imports_1.ConstantProperty(orientationValue);
-                        entity.orientation = entityOrientation;
-                    } else if (entityOrientation instanceof cesium_imports_1.ConstantProperty) {
-                        entityOrientation.setValue(orientationValue);
-                    } else if (entityOrientation instanceof cesium_imports_1.SampledProperty) {
-                        entityOrientation.addSample(cesium_imports_1.JulianDate.clone(state.time), orientationValue);
-                    }
-                    return entity;
-                };
-                ContextService.prototype.publishEntityState = function (entity, referenceFrame) {};
-                ContextService.prototype._updateLocalOrigin = function (state) {
-                    var userRootFrame = utils_1.getRootReferenceFrame(this.user);
-                    var userPosition = this.user.position && this.user.position.getValueInReferenceFrame(state.time, userRootFrame, scratchCartesian3);
-                    var localENUFrame = this.localOriginEastNorthUp.position && this.localOriginEastNorthUp.position.referenceFrame;
-                    var localENUPosition = this.localOriginEastNorthUp.position && localENUFrame && this.localOriginEastNorthUp.position.getValueInReferenceFrame(state.time, localENUFrame, scratchOriginCartesian3);
-                    if (userPosition && (!localENUPosition || localENUFrame !== userRootFrame || cesium_imports_1.Cartesian3.magnitudeSquared(cesium_imports_1.Cartesian3.subtract(userPosition, localENUPosition, scratchOriginCartesian3)) > 25000000)) {
-                        var localENUPositionProperty = this.localOriginEastNorthUp.position;
-                        var localENUOrientationProperty = this.localOriginEastNorthUp.orientation;
-                        localENUPositionProperty.setValue(userPosition, userRootFrame);
-                        if (userRootFrame === cesium_imports_1.ReferenceFrame.FIXED) {
-                            var enuOrientation = cesium_imports_1.Transforms.headingPitchRollQuaternion(userPosition, 0, 0, 0, undefined, scratchQuaternion);
-                            localENUOrientationProperty.setValue(enuOrientation);
-                        } else {
-                            localENUOrientationProperty.setValue(cesium_imports_1.Quaternion.IDENTITY);
-                        }
-                        this.localOriginChangeEvent.raiseEvent(undefined);
-                    }
-                };
-                ContextService.prototype._sendUpdateForSession = function (parentState, session) {
-                    var _this = this;
-                    var sessionPoseMap = {};
-                    for (var id in parentState.entities) {
-                        sessionPoseMap[id] = parentState.entities[id];
-                    }
-                    var subscriptions = this._subscribedEntities.get(session);
-                    subscriptions.forEach(function (id) {
-                        _this._addEntityAndAncestorsToPoseMap(sessionPoseMap, id, parentState.time);
-                    });
-                    var sessionState = {
-                        reality: parentState.reality,
-                        index: parentState.index,
-                        time: parentState.time,
-                        view: parentState.view,
-                        entities: sessionPoseMap,
-                        sendTime: cesium_imports_1.JulianDate.now()
-                    };
-                    session.send('ar.context.update', sessionState);
-                };
-                ContextService.prototype._addEntityAndAncestorsToPoseMap = function (poseMap, id, time) {
-                    if (!cesium_imports_1.defined(this._entityPoseCache[id])) {
-                        var entity = this.subscribedEntities.getById(id);
-                        if (!entity) return;
-                        this._entityPoseCache[id] = utils_1.getSerializedEntityPose(entity, time);
-                        if (entity.position && entity.position.referenceFrame instanceof cesium_imports_1.Entity) {
-                            var refId = _stringFromReferenceFrame(entity.position.referenceFrame);
-                            this._addEntityAndAncestorsToPoseMap(poseMap, refId, time);
-                        }
-                    }
-                    poseMap[id] = this._entityPoseCache[id];
-                };
-                ContextService = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, reality_1.RealityService)], ContextService);
-                return ContextService;
-            }();
-            exports_1("ContextService", ContextService);
-        }
-    };
-});
-$__System.register('14', ['f', 'a', 'e'], function (exports_1, context_1) {
+$__System.register('14', ['c', 'a', 'b'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -5211,7 +5179,7 @@ $__System.register('14', ['f', 'a', 'e'], function (exports_1, context_1) {
 });
 (function() {
 var define = $__System.amdDefine;
-define("17", ["exports", "3"], function(exports, _aureliaPal) {
+define("18", ["exports", "3"], function(exports, _aureliaPal) {
   'use strict';
   exports.__esModule = true;
   var _extends = Object.assign || function(target) {
@@ -5507,7 +5475,7 @@ define("3", ["exports"], function(exports) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("f", ["exports", "17", "3"], function(exports, _aureliaMetadata, _aureliaPal) {
+define("c", ["exports", "18", "3"], function(exports, _aureliaMetadata, _aureliaPal) {
   'use strict';
   exports.__esModule = true;
   var _classInvokers;
@@ -5999,100 +5967,120 @@ define("f", ["exports", "17", "3"], function(exports, _aureliaMetadata, _aurelia
 });
 
 })();
-$__System.register("9", [], function (exports_1, context_1) {
-  "use strict";
+$__System.register("e", [], function (exports_1, context_1) {
+    "use strict";
 
-  var __moduleName = context_1 && context_1.id;
-  var Role, SubviewType, RealityView;
-  return {
-    setters: [],
-    execute: function () {
-      /**
-       * Describes the role of an [[ArgonSystem]]
-       */
-      (function (Role) {
-        /**
-         * A system with this role is responsible for augmenting an arbitrary view of reality,
-         * generally by overlaying computer generated graphics. A reality augmentor may also,
-         * if appropriate, be elevated to the role of a [[REALITY_MANAGER]].
-         */
-        Role[Role["REALITY_AUGMENTOR"] = "RealityAugmentor"] = "REALITY_AUGMENTOR";
-        /**
-         * A system with this role is responsible for (at minimum) describing (and providing,
-         * if necessary) a visual representation of the world and the 3D eye pose of the viewer.
-         */
-        Role[Role["REALITY_VIEW"] = "RealityView"] = "REALITY_VIEW";
-        /**
-         * A system with this role is responsible for mediating access to sensors/trackers
-         * and pose data for known entities in the world, selecting/configuring/loading
-         * [[REALITY_VIEW]]s, and providing the mechanism by which any given [[REALITY_AUGMENTOR]]
-         * can augment any given [[REALITY_VIEW]]. The reality manager may also, when appropriate,
-         * take on the role of [[REALITY_AUGMENTOR]].
-         */
-        Role[Role["REALITY_MANAGER"] = "RealityManager"] = "REALITY_MANAGER";
-        /**
-         * Deprecated. Use [[REALITY_AUGMENTOR]].
-         * @private
-         */
-        Role[Role["APPLICATION"] = "Application"] = "APPLICATION";
-        /**
-         * Deprecated. Use [[REALITY_MANAGER]].
-         * @private
-         */
-        Role[Role["MANAGER"] = "Manager"] = "MANAGER";
-      })(Role || (Role = {}));
-      exports_1("Role", Role);
-      /**
-       * Identifies a subview in a [[SerializedSubview]]
-       */
-      (function (SubviewType) {
-        /*
-         * Identities a subview for a handheld display.
-         */
-        SubviewType[SubviewType["SINGULAR"] = "Singular"] = "SINGULAR";
-        /*
-         * Identifies a subview for the left eye (when the user is wearing an HMD or Viewer)
-         */
-        SubviewType[SubviewType["LEFTEYE"] = "LeftEye"] = "LEFTEYE";
-        /*
-         * Identifies a subview for the right eye (when the user is wearing an HMD or Viewer)
-         */
-        SubviewType[SubviewType["RIGHTEYE"] = "RightEye"] = "RIGHTEYE";
-        /*
-         * Identifies a subview for a custom view configuration
-         */
-        SubviewType[SubviewType["OTHER"] = "Other"] = "OTHER";
-      })(SubviewType || (SubviewType = {}));
-      exports_1("SubviewType", SubviewType);
-      /**
-      * Represents a view of Reality
-      */
-      RealityView = function () {
-        function RealityView() {}
-        RealityView.getType = function (reality) {
-          var uri = reality.uri;
-          var parts = uri.split(':');
-          if (parts[0] === 'reality') {
-            return parts[1];
-          }
-          return 'hosted';
-        };
-        RealityView.EMPTY = {
-          uri: 'reality:empty',
-          title: 'Reality',
-          providedReferenceFrames: ['FIXED']
-        };
-        RealityView.LIVE_VIDEO = {
-          uri: 'reality:live-video',
-          title: 'Live Video Reality'
-        };
-        return RealityView;
-      }();
-      exports_1("RealityView", RealityView);
-    }
-  };
+    var __moduleName = context_1 && context_1.id;
+    var Role, SubviewType, RealityViewer;
+    return {
+        setters: [],
+        execute: function () {
+            /**
+             * Describes the role of an [[ArgonSystem]]
+             */
+            (function (Role) {
+                /**
+                 * A system with this role is responsible for augmenting an arbitrary view of reality,
+                 * generally by overlaying computer generated graphics. A reality augmentor may also,
+                 * if appropriate, be elevated to the role of a [[REALITY_MANAGER]].
+                 */
+                Role[Role["REALITY_AUGMENTER"] = "RealityAugmenter"] = "REALITY_AUGMENTER";
+                /**
+                 * A system with this role is responsible for (at minimum) describing (and providing,
+                 * if necessary) a visual representation of the world and the 3D eye pose of the viewer.
+                 */
+                Role[Role["REALITY_VIEWER"] = "RealityViewer"] = "REALITY_VIEWER";
+                /**
+                 * A system with this role is responsible for mediating access to sensors/trackers
+                 * and pose data for known entities in the world, selecting/configuring/loading
+                 * [[REALITY_VIEWER]]s, and providing the mechanism by which any given [[REALITY_AUGMENTER]]
+                 * can augment any given [[REALITY_VIEWER]].
+                 */
+                Role[Role["REALITY_MANAGER"] = "RealityManager"] = "REALITY_MANAGER";
+                /**
+                 * Deprecated. Use [[REALITY_AUGMENTER]].
+                 * @private
+                 */
+                Role[Role["APPLICATION"] = "Application"] = "APPLICATION";
+                /**
+                 * Deprecated. Use [[REALITY_MANAGER]].
+                 * @private
+                 */
+                Role[Role["MANAGER"] = "Manager"] = "MANAGER";
+                /**
+                 * Deprecated. Use [[REALITY_VIEWER]]
+                 * @private
+                 */
+                Role[Role["REALITY_VIEW"] = "RealityView"] = "REALITY_VIEW";
+            })(Role || (Role = {}));
+            exports_1("Role", Role);
+            (function (Role) {
+                function isRealityViewer(r) {
+                    return r === Role.REALITY_VIEWER || r === Role.REALITY_VIEW;
+                }
+                Role.isRealityViewer = isRealityViewer;
+                function isRealityAugmenter(r) {
+                    return r === Role.REALITY_AUGMENTER || r === Role.APPLICATION;
+                }
+                Role.isRealityAugmenter = isRealityAugmenter;
+                function isRealityManager(r) {
+                    return r === Role.REALITY_MANAGER || r === Role.MANAGER;
+                }
+                Role.isRealityManager = isRealityManager;
+            })(Role = Role || (Role = {}));
+            exports_1("Role", Role);
+            /**
+             * Identifies a subview in a [[SerializedSubview]]
+             */
+            (function (SubviewType) {
+                /*
+                 * Identities a subview for a handheld display.
+                 */
+                SubviewType[SubviewType["SINGULAR"] = "Singular"] = "SINGULAR";
+                /*
+                 * Identifies a subview for the left eye (when the user is wearing an HMD or Viewer)
+                 */
+                SubviewType[SubviewType["LEFTEYE"] = "LeftEye"] = "LEFTEYE";
+                /*
+                 * Identifies a subview for the right eye (when the user is wearing an HMD or Viewer)
+                 */
+                SubviewType[SubviewType["RIGHTEYE"] = "RightEye"] = "RIGHTEYE";
+                /*
+                 * Identifies a subview for a custom view configuration
+                 */
+                SubviewType[SubviewType["OTHER"] = "Other"] = "OTHER";
+            })(SubviewType || (SubviewType = {}));
+            exports_1("SubviewType", SubviewType);
+            /**
+            * Represents a view of Reality
+            */
+            RealityViewer = function () {
+                function RealityViewer() {}
+                RealityViewer.getType = function (reality) {
+                    if (reality === undefined) return undefined;
+                    var uri = reality.uri;
+                    var parts = uri.split(':');
+                    if (parts[0] === 'reality') {
+                        return parts[1];
+                    }
+                    return 'hosted';
+                };
+                RealityViewer.EMPTY = {
+                    uri: 'reality:empty',
+                    title: 'Empty Reality',
+                    providedReferenceFrames: ['FIXED']
+                };
+                RealityViewer.LIVE_VIDEO = {
+                    uri: 'reality:live-video',
+                    title: 'Live Video Reality'
+                };
+                return RealityViewer;
+            }();
+            exports_1("RealityViewer", RealityViewer);
+        }
+    };
 });
-$__System.register('a', ['11', 'f', '9', 'e'], function (exports_1, context_1) {
+$__System.register('a', ['12', 'c', 'e', 'b'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -6486,28 +6474,28 @@ $__System.register('a', ['11', 'f', '9', 'e'], function (exports_1, context_1) {
                      * Returns true if this system represents a [[REALITY_MANAGER]]
                      */
                     get: function () {
-                        return this.configuration.role === common_1.Role.REALITY_MANAGER || this.configuration.role === common_1.Role.MANAGER; // TODO: phase out of using Role.MANAGER enum
+                        return common_1.Role.isRealityManager(this.configuration.role);
                     },
                     enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(SessionService.prototype, "isRealityAugmenter", {
                     /**
-                     * Returns true if this system represents a [[REALITY_AUGMENTOR]], meaning,
+                     * Returns true if this system represents a [[REALITY_AUGMENTER]], meaning,
                      * it is running within a [[REALITY_MANAGER]]
                      */
                     get: function () {
-                        return this.configuration.role === common_1.Role.REALITY_AUGMENTOR || this.configuration.role === common_1.Role.APPLICATION; // TODO: phase out use of Role.APPLICATION
+                        return common_1.Role.isRealityAugmenter(this.configuration.role);
                     },
                     enumerable: true,
                     configurable: true
                 });
-                Object.defineProperty(SessionService.prototype, "isRealityView", {
+                Object.defineProperty(SessionService.prototype, "isRealityViewer", {
                     /**
-                     * Returns true if this system is a [[REALITY_VIEW]]
+                     * Returns true if this system is a [[REALITY_VIEWER]]
                      */
                     get: function () {
-                        return this.configuration.role === common_1.Role.REALITY_VIEW;
+                        return common_1.Role.isRealityViewer(this.configuration.role);
                     },
                     enumerable: true,
                     configurable: true
@@ -6532,6 +6520,16 @@ $__System.register('a', ['11', 'f', '9', 'e'], function (exports_1, context_1) {
                     enumerable: true,
                     configurable: true
                 });
+                Object.defineProperty(SessionService.prototype, "isRealityView", {
+                    /**
+                     * @private
+                     */
+                    get: function () {
+                        console.warn("Deprecated. Use isRealityViewer()");return this.isRealityViewer;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 /**
                  * Throws an error if this system is not a [[REALITY_MANAGER]]
                  */
@@ -6539,16 +6537,22 @@ $__System.register('a', ['11', 'f', '9', 'e'], function (exports_1, context_1) {
                     if (!this.isRealityManager) throw new Error('An reality-manager only API was accessed from a non reality-manager.');
                 };
                 /**
-                 * Throws an error if this session is not a [[REALITY_VIEW]]
+                 * Throws an error if this session is not a [[REALITY_VIEWER]]
                  */
-                SessionService.prototype.ensureIsRealityView = function () {
-                    if (!this.isRealityView) throw new Error('An reality-view only API was accessed from a non reality-view.');
+                SessionService.prototype.ensureIsRealityViewer = function () {
+                    if (!this.isRealityViewer) throw new Error('An reality-viewer only API was accessed from a non reality-viewer.');
                 };
                 /**
-                 * Throws an error if this session is a [[REALITY_VIEW]]
+                 * Throws an error if this session is a [[REALITY_VIEWER]]
                  */
-                SessionService.prototype.ensureNotRealityView = function () {
-                    if (this.isRealityView) throw new Error('An non-permitted API was accessed from a reality-view.');
+                SessionService.prototype.ensureNotRealityViewer = function () {
+                    if (this.isRealityViewer) throw new Error('An non-permitted API was accessed from a reality-viewer.');
+                };
+                /**
+                 * Throws an error if this session is a [[REALITY_AUGMENTER]]
+                 */
+                SessionService.prototype.ensureNotRealityAugmenter = function () {
+                    if (this.isRealityAugmenter) throw new Error('An non-permitted API was accessed from a reality-viewer.');
                 };
                 SessionService = __decorate([aurelia_dependency_injection_1.inject('config', ConnectService, SessionPortFactory, utils_1.MessageChannelFactory)], SessionService);
                 return SessionService;
@@ -6664,7 +6668,7 @@ $__System.register('a', ['11', 'f', '9', 'e'], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('d', ['f', '11', '9', '14', 'a', 'e'], function (exports_1, context_1) {
+$__System.register('11', ['c', '12', 'e', '14', 'a', 'b', '1'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -6675,8 +6679,8 @@ $__System.register('d', ['f', '11', '9', '14', 'a', 'e'], function (exports_1, c
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
-    var aurelia_dependency_injection_1, cesium_imports_1, common_1, focus_1, session_1, utils_1;
-    var RealityLoader, RealityZoomState, RealityService;
+    var aurelia_dependency_injection_1, cesium_imports_1, common_1, focus_1, session_1, utils_1, argon_1;
+    var RealityLoader, RealityService;
     return {
         setters: [function (aurelia_dependency_injection_1_1) {
             aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
@@ -6690,6 +6694,8 @@ $__System.register('d', ['f', '11', '9', '14', 'a', 'e'], function (exports_1, c
             session_1 = session_1_1;
         }, function (utils_1_1) {
             utils_1 = utils_1_1;
+        }, function (argon_1_1) {
+            argon_1 = argon_1_1;
         }],
         execute: function () {
             /**
@@ -6700,13 +6706,6 @@ $__System.register('d', ['f', '11', '9', '14', 'a', 'e'], function (exports_1, c
                 return RealityLoader;
             }();
             exports_1("RealityLoader", RealityLoader);
-            (function (RealityZoomState) {
-                RealityZoomState[RealityZoomState["OTHER"] = 0] = "OTHER";
-                RealityZoomState[RealityZoomState["START"] = 1] = "START";
-                RealityZoomState[RealityZoomState["CHANGE"] = 2] = "CHANGE";
-                RealityZoomState[RealityZoomState["END"] = 3] = "END";
-            })(RealityZoomState || (RealityZoomState = {}));
-            exports_1("RealityZoomState", RealityZoomState);
             /**
             * A service which manages the reality view.
             * For an app developer, the RealityService instance can be used to
@@ -6730,10 +6729,13 @@ $__System.register('d', ['f', '11', '9', '14', 'a', 'e'], function (exports_1, c
                      */
                     this._changeEvent = new utils_1.Event();
                     /**
-                     * Manager-only. An event that is raised when the current reality emits the next frame state.
-                     * This event contains pose updates for the entities that are managed by
-                     * the current reality.
+                     * Manager/Viewer-only. An event that is raised when the current reality emits the next view state.
                      */
+                    this._viewStateEvent = new utils_1.Event();
+                    /**
+                     * Deprecated. Use viewStateEvent.
+                     */
+                    // Remove after v1.2
                     this._frameEvent = new utils_1.Event();
                     /**
                      * Manager-only. A map from a managed session to the desired reality
@@ -6749,7 +6751,6 @@ $__System.register('d', ['f', '11', '9', '14', 'a', 'e'], function (exports_1, c
                     this.sessionDesiredRealityChangeEvent = new utils_1.Event();
                     // RealitySetupHandlers
                     this._loaders = [];
-                    this._defaultFov = Math.PI / 2;
                     this._scratchFrustum = new cesium_imports_1.PerspectiveFrustum();
                     this._scratchArray = new Array();
                     this._loadID = -1;
@@ -6761,7 +6762,7 @@ $__System.register('d', ['f', '11', '9', '14', 'a', 'e'], function (exports_1, c
                         });
                     }
                     sessionService.connectEvent.addEventListener(function (session) {
-                        if (session.info.role !== common_1.Role.REALITY_VIEW) {
+                        if (!common_1.Role.isRealityViewer(session.info.role)) {
                             session.on['ar.reality.desired'] = function (message) {
                                 var reality = message.reality;
                                 var previous = _this.desiredRealityMap.get(session);
@@ -6814,9 +6815,6 @@ $__System.register('d', ['f', '11', '9', '14', 'a', 'e'], function (exports_1, c
                         });
                         realityControlSession.open(messageChannel.port2, _this.sessionService.configuration);
                     };
-                    sessionService.manager.on['ar.reality.zoom'] = function (data) {
-                        _this.zoom(data);
-                    };
                 }
                 Object.defineProperty(RealityService.prototype, "changeEvent", {
                     get: function () {
@@ -6826,10 +6824,25 @@ $__System.register('d', ['f', '11', '9', '14', 'a', 'e'], function (exports_1, c
                     enumerable: true,
                     configurable: true
                 });
+                Object.defineProperty(RealityService.prototype, "viewStateEvent", {
+                    get: function () {
+                        this.sessionService.ensureNotRealityAugmenter();
+                        return this._viewStateEvent;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 Object.defineProperty(RealityService.prototype, "frameEvent", {
                     get: function () {
-                        this.sessionService.ensureIsRealityManager();
+                        this.sessionService.ensureNotRealityAugmenter();
                         return this._frameEvent;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(RealityService.prototype, "session", {
+                    get: function () {
+                        return this._session;
                     },
                     enumerable: true,
                     configurable: true
@@ -6852,7 +6865,7 @@ $__System.register('d', ['f', '11', '9', '14', 'a', 'e'], function (exports_1, c
                  * @deprecated. Use app.context.getCurrentReality()
                  */
                 RealityService.prototype.getCurrent = function () {
-                    this.sessionService.ensureIsRealityManager();
+                    this.sessionService.ensureNotRealityAugmenter();
                     return this._current;
                 };
                 /**
@@ -6865,19 +6878,31 @@ $__System.register('d', ['f', '11', '9', '14', 'a', 'e'], function (exports_1, c
                     return !!this._getLoader(reality);
                 };
                 /**
-                 * Reality-only. Publish the next frame state.
+                 * Deprecated. Use pubishViewState.
+                 * @deprecated
                  */
                 RealityService.prototype.publishFrame = function (state) {
-                    this.sessionService.ensureIsRealityView();
+                    console.warn('publishFrame is deprecated. Use publishViewState()');
+                    this.sessionService.ensureIsRealityViewer();
                     if (this.sessionService.manager.isConnected) {
                         this.sessionService.manager.send('ar.reality.frameState', state);
+                    }
+                };
+                /**
+                 * RealityViewer-only. Publish the next view state.
+                 */
+                RealityService.prototype.publishViewState = function (view) {
+                    this.sessionService.ensureIsRealityViewer();
+                    if (this.sessionService.manager.isConnected) {
+                        this.sessionService.manager.send('ar.reality.viewState', view);
+                        this.viewStateEvent.raiseEvent(view);
                     }
                 };
                 /**
                  * Set the desired reality.
                  */
                 RealityService.prototype.setDesired = function (reality) {
-                    this.sessionService.ensureNotRealityView();
+                    this.sessionService.ensureNotRealityViewer();
                     this._desired = reality;
                     if (this.sessionService.isRealityManager) {
                         this._setNextReality(reality, true);
@@ -6899,50 +6924,6 @@ $__System.register('d', ['f', '11', '9', '14', 'a', 'e'], function (exports_1, c
                  * Set the optional reference frames for this app
                  */
                 RealityService.prototype.setRequiredReferenceFrames = function (referenceFrames) {};
-                /**
-                 * Set a desired fov in radians.
-                 */
-                RealityService.prototype.setDesiredFov = function (fov) {
-                    this._desiredFov = fov;
-                    this.zoom({ fov: fov || this._defaultFov, zoom: 1, state: RealityZoomState.OTHER });
-                };
-                /**
-                 * Get the desired fov in radians
-                 */
-                RealityService.prototype.getDesiredFov = function () {
-                    return this._desiredFov;
-                };
-                /**
-                 * Set the default fov in radians, and adjust the desired fov to match the
-                 * previous desired / default ratio.
-                 */
-                RealityService.prototype.setDefaultFov = function (fov) {
-                    if (cesium_imports_1.defined(this._desiredFov)) {
-                        var ratio = this._desiredFov / this._defaultFov;
-                        this.setDesiredFov(fov * ratio);
-                    }
-                    this._defaultFov = fov;
-                };
-                /**
-                 * Get the default fov in radians
-                 */
-                RealityService.prototype.getDefaultFov = function () {
-                    return this._defaultFov;
-                };
-                /**
-                 * Returns a maximum viewport
-                 */
-                RealityService.prototype.getMaximumViewport = function () {
-                    if (typeof document !== 'undefined' && document.documentElement) {
-                        return {
-                            x: 0,
-                            y: 0,
-                            width: document.documentElement.clientWidth,
-                            height: document.documentElement.clientHeight
-                        };
-                    }
-                    throw new Error("Not implemeneted for the current platform");
-                };
                 /**
                 * Manager-only. Selects the best reality based on the realites
                 * requested by all managed sessions. Can be overriden for customized selection.
@@ -6973,15 +6954,20 @@ $__System.register('d', ['f', '11', '9', '14', 'a', 'e'], function (exports_1, c
                     }
                     return selectedReality;
                 };
-                RealityService.prototype.onGenerateViewFromEyeParameters = function (eye) {
-                    var fov = eye.fov || this._desiredFov || this._defaultFov;
-                    var viewport = eye.viewport || this.getMaximumViewport();
+                /**
+                 * Deprecated. Remove after v1.2
+                 * @private
+                 */
+                RealityService.prototype.onGenerateViewFromEyeParameters = function (eye, t) {
+                    var fov = eye.fov || argon_1.ArgonSystem.instance.device.state.defaultFov;
+                    var viewport = eye.viewport || argon_1.ArgonSystem.instance.device.state.viewport;
                     var aspectRatio = eye.aspect || viewport.width / viewport.height;
                     this._scratchFrustum.fov = fov;
                     this._scratchFrustum.aspectRatio = aspectRatio;
                     this._scratchFrustum.near = 0.01;
                     this._scratchFrustum.far = 10000000;
-                    return {
+                    return eye.pose ? {
+                        time: t,
                         viewport: viewport,
                         pose: eye.pose,
                         subviews: [{
@@ -6992,27 +6978,10 @@ $__System.register('d', ['f', '11', '9', '14', 'a', 'e'], function (exports_1, c
                             },
                             // TODO: remove this later  
                             projectionMatrix: cesium_imports_1.Matrix4.toArray(this._scratchFrustum.projectionMatrix, this._scratchArray)
-                        }]
-                    };
-                };
-                RealityService.prototype.zoom = function (data) {
-                    data.naturalFov = data.naturalFov || this._defaultFov;
-                    if (this._realitySession && this._realitySession.info['reality.handlesZoom']) {
-                        this._realitySession.send('ar.reality.zoom', data);
-                    } else {
-                        var fov = this._desiredFov = this.onZoom(data);
-                        if (this.sessionService.isRealityView) {
-                            this.sessionService.manager.send('ar.reality.desiredFov', { fov: fov });
-                        }
-                    }
-                };
-                RealityService.prototype.onZoom = function (data) {
-                    var newFov = 2 * Math.atan(Math.tan(data.fov * 0.5) / data.zoom);
-                    newFov = Math.max(10 * cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE, Math.min(newFov, 160 * cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE));
-                    if (data.state === RealityZoomState.END && Math.abs(newFov - data.naturalFov) < 0.05 /* +-6deg */) {
-                            newFov = data.naturalFov;
-                        }
-                    return newFov;
+                        }],
+                        geolocationAccuracy: undefined,
+                        geolocationAltitudeAccuracy: undefined
+                    } : undefined;
                 };
                 RealityService.prototype._setNextReality = function (reality, force) {
                     var _this = this;
@@ -7020,7 +6989,7 @@ $__System.register('d', ['f', '11', '9', '14', 'a', 'e'], function (exports_1, c
                         force = false;
                     }
                     if (this._current && reality && this._current === reality && !force) return;
-                    if (this._current && !reality && this._realitySession) return;
+                    if (this._current && !reality && this._session) return;
                     if (!this._current && !cesium_imports_1.defined(reality)) {
                         reality = this._default;
                     }
@@ -7036,38 +7005,43 @@ $__System.register('d', ['f', '11', '9', '14', 'a', 'e'], function (exports_1, c
                                 realitySession.close();
                                 return;
                             }
-                            var previousRealitySession = _this._realitySession;
-                            _this._realitySession = realitySession;
+                            var previousRealitySession = _this._session;
+                            _this._session = realitySession;
                             _this._setCurrent(reality);
+                            realitySession.on['ar.reality.viewState'] = function (viewState) {
+                                if (viewState.pose) {
+                                    _this.viewStateEvent.raiseEvent(viewState);
+                                }
+                            };
+                            // Deprecated. Remove after v1.2
                             realitySession.on['ar.reality.frameState'] = function (serializedState) {
                                 var state = serializedState;
                                 if (!cesium_imports_1.defined(serializedState.view)) {
                                     if (!cesium_imports_1.defined(serializedState.eye)) throw new Error("Unable to construct view configuration: missing eye parameters");
-                                    state.view = _this.onGenerateViewFromEyeParameters(serializedState.eye);
-                                    state.eye = undefined;
-                                    state.entities = serializedState.entities || {};
+                                    var view = _this.onGenerateViewFromEyeParameters(serializedState.eye, state.time);
+                                    if (!view || !view.pose) return;
+                                    _this.viewStateEvent.raiseEvent(view);
+                                } else {
+                                    if (state.view && state.view.pose) {
+                                        _this.viewStateEvent.raiseEvent(state.view);
+                                    }
                                 }
-                                state.reality = _this.getCurrent();
-                                _this.frameEvent.raiseEvent(state);
-                            };
-                            realitySession.on['ar.reality.desiredFov'] = function (state) {
-                                _this._desiredFov = state.fov;
                             };
                             realitySession.closeEvent.addEventListener(function () {
                                 console.log('Reality session closed: ' + JSON.stringify(reality));
                                 // select a new reality if the current reality has closed without 
                                 // another reality having been requested
                                 if (_this._loadID === loadID_1) {
-                                    _this._realitySession = undefined;
+                                    _this._session = undefined;
                                     _this._current = undefined;
                                     _this._setNextReality(_this.onSelectReality());
                                 }
                             });
                             realitySession.connectEvent.addEventListener(function () {
-                                if (realitySession.info.role !== common_1.Role.REALITY_VIEW) {
-                                    realitySession.sendError({ message: "Expected a reality session" });
+                                if (!common_1.Role.isRealityViewer(realitySession.info.role)) {
+                                    realitySession.sendError({ message: "Expected a reality viewer" });
                                     realitySession.close();
-                                    throw new Error('The application "' + realitySession.uri + '" does not support being loaded as a reality');
+                                    throw new Error('The application "' + realitySession.uri + '" does not support being loaded as a reality viewer');
                                 }
                                 if (previousRealitySession) {
                                     previousRealitySession.close();
@@ -7102,7 +7076,7 @@ $__System.register('d', ['f', '11', '9', '14', 'a', 'e'], function (exports_1, c
                     var found;
                     for (var _i = 0, _a = this._loaders; _i < _a.length; _i++) {
                         var loader = _a[_i];
-                        if (loader.type === common_1.RealityView.getType(reality)) {
+                        if (loader.type === common_1.RealityViewer.getType(reality)) {
                             found = loader;
                             break;
                         }
@@ -7130,7 +7104,7 @@ $__System.register('d', ['f', '11', '9', '14', 'a', 'e'], function (exports_1, c
         }
     };
 });
-$__System.register('16', ['f', '11', 'a', '12', 'e', '14', 'd'], function (exports_1, context_1) {
+$__System.register('f', ['c', '12', '17', 'e', 'a', 'b', '11'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -7141,7 +7115,443 @@ $__System.register('16', ['f', '11', 'a', '12', 'e', '14', 'd'], function (expor
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
-    var aurelia_dependency_injection_1, cesium_imports_1, session_1, context_2, utils_1, focus_1, reality_1;
+    var aurelia_dependency_injection_1, cesium_imports_1, mobile_detect_1, common_1, session_1, utils_1, reality_1;
+    var ZoomState, DeviceService;
+    return {
+        setters: [function (aurelia_dependency_injection_1_1) {
+            aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
+        }, function (cesium_imports_1_1) {
+            cesium_imports_1 = cesium_imports_1_1;
+        }, function (mobile_detect_1_1) {
+            mobile_detect_1 = mobile_detect_1_1;
+        }, function (common_1_1) {
+            common_1 = common_1_1;
+        }, function (session_1_1) {
+            session_1 = session_1_1;
+        }, function (utils_1_1) {
+            utils_1 = utils_1_1;
+        }, function (reality_1_1) {
+            reality_1 = reality_1_1;
+        }],
+        execute: function () {
+            (function (ZoomState) {
+                ZoomState[ZoomState["OTHER"] = 0] = "OTHER";
+                ZoomState[ZoomState["START"] = 1] = "START";
+                ZoomState[ZoomState["CHANGE"] = 2] = "CHANGE";
+                ZoomState[ZoomState["END"] = 3] = "END";
+            })(ZoomState || (ZoomState = {}));
+            exports_1("ZoomState", ZoomState);
+            /**
+            * Provides device state.
+            */
+            DeviceService = function () {
+                /**
+                * Initialize the DeviceService
+                */
+                function DeviceService(sessionService, realityService) {
+                    var _this = this;
+                    this.sessionService = sessionService;
+                    this.realityService = realityService;
+                    /**
+                     * An ENU coordinate frame centered at the gps location reported by the device.
+                     * The reference frame of this frame is the FIXED (ECEF) reference frame.
+                     */
+                    this.geolocationEntity = new cesium_imports_1.Entity({ id: 'ar.device.geolocation', name: 'Device Geolocation' });
+                    /**
+                     * A frame which represents the orientation of the device. If the orientation of the
+                     * device is known absolutely, then the reference frame of this frame is the ENU
+                     * coordinate frame, [[geolocationEntity]]. Otherwise, the reference frame of this
+                     * frame is arbitrary.
+                     */
+                    this.orientationEntity = new cesium_imports_1.Entity({ id: 'ar.device.orientation', name: 'Device Orientation' });
+                    /**
+                     * A frame which represents the device. If the geopose is known, the reference frame
+                     * for this frame is the [[orientationEntity]]. Otherwise, the reference frame is arbitrary.
+                     */
+                    this.deviceEntity = new cesium_imports_1.Entity({ id: 'ar.device', name: 'Device' });
+                    /**
+                     * A frame which represents the display for the current device.
+                     * The reference frame for this frame is always the [[deviceEntity]].
+                     */
+                    this.displayEntity = new cesium_imports_1.Entity({
+                        id: 'ar.device.display',
+                        name: 'Device Display',
+                        position: new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, this.deviceEntity),
+                        orientation: new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY)
+                    });
+                    /**
+                     * The sessions that are subscribed to device state
+                     */
+                    this.subscribers = new Set();
+                    /**
+                     * The sessions that are subscribed to the device location
+                     */
+                    this.locationSubscribers = new Set();
+                    /**
+                     * The sessions that are subscribed to the device location
+                     */
+                    this.orientationSubscribers = new Set();
+                    this._subscriberTimeoutIds = new WeakMap();
+                    this._state = {
+                        time: cesium_imports_1.JulianDate.now(),
+                        viewport: this.getMaximumViewport(),
+                        defaultFov: Math.PI / 2,
+                        subviews: [{
+                            type: common_1.SubviewType.SINGULAR,
+                            frustum: {
+                                fov: Math.PI / 2
+                            }
+                        }],
+                        geolocationAccuracy: undefined,
+                        geolocationAltitudeAccuracy: undefined
+                    };
+                    this._scratchCartesian = new cesium_imports_1.Cartesian3();
+                    this._scratchQuaternion1 = new cesium_imports_1.Quaternion();
+                    this._scratchQuaternion2 = new cesium_imports_1.Quaternion();
+                    this._x90Rot = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_X, cesium_imports_1.CesiumMath.PI_OVER_TWO);
+                    this._headingDrift = 0;
+                    if (typeof navigator !== 'undefined') {
+                        this._mobileDetect = new mobile_detect_1.default(navigator.userAgent);
+                    }
+                    this.sessionService.manager.on['ar.device.state'] = function (deviceState) {
+                        if (_this.sessionService.isRealityManager) return;
+                        _this._state = deviceState;
+                        // TODO: need a better way to update entities from arbitrary SerializedEntityPose. May have to 
+                        // add functionality to ContextService
+                        _this._updateEntity(deviceState.geolocationPose, _this.geolocationEntity, cesium_imports_1.ReferenceFrame.FIXED);
+                        // only update orientation if we aren't already fetching it on our own
+                        if (!_this._deviceorientationListener) {
+                            _this._updateEntity(deviceState.orientationPose, _this.orientationEntity, _this.geolocationEntity);
+                        }
+                        _this._updateEntity(deviceState.devicePose, _this.deviceEntity, _this.orientationEntity);
+                        _this._updateEntity(deviceState.displayPose, _this.displayEntity, _this.deviceEntity);
+                    };
+                    sessionService.manager.on['ar.reality.zoom'] = sessionService.manager.on['ar.device.zoom'] = function (data) {
+                        _this.zoom(data);
+                    };
+                    var checkSubscribers = function () {
+                        if (_this.locationSubscribers.size > 0) _this.startLocationUpdates();else _this.stopLocationUpdates();
+                        if (_this.orientationSubscribers.size > 0) _this.startOrientationUpdates();else _this.stopOrientationUpdates();
+                        _this.updateDeviceState();
+                    };
+                    this.sessionService.connectEvent.addEventListener(function (session) {
+                        session.on['ar.device.subscribe'] = function (o) {
+                            _this.subscribers.add(session);
+                            if (o.location) _this.locationSubscribers.add(session);else _this.locationSubscribers.delete(session);
+                            if (o.orientation) _this.orientationSubscribers.add(session);else _this.orientationSubscribers.delete(session);
+                            var id = setTimeout(function () {
+                                _this.subscribers.delete(session);
+                                _this.locationSubscribers.delete(session);
+                                _this.orientationSubscribers.delete(session);
+                                checkSubscribers();
+                            }, o.timeout);
+                            var previousId = _this._subscriberTimeoutIds.get(session);
+                            if (previousId !== undefined) clearTimeout(previousId);
+                            _this._subscriberTimeoutIds.set(session, id);
+                            checkSubscribers();
+                        };
+                        session.on['ar.reality.desiredFov'] = session.on['ar.device.desiredFov'] = function (_a) {
+                            var fov = _a.fov;
+                            _this.onDesiredFov(fov);
+                            _this.updateDeviceState();
+                        };
+                        // temporary hack until there is a better way for apps to say they need geopose
+                        if (common_1.Role.isRealityAugmenter(session.info.role)) {
+                            _this.locationSubscribers.add(session);
+                            _this.orientationSubscribers.add(session);
+                        }
+                        _this.updateDeviceState();
+                    });
+                    if (this.sessionService.isRealityManager) {
+                        this.startOrientationUpdates();
+                        setTimeout(function () {
+                            checkSubscribers();
+                        }, 10000);
+                        if (typeof window !== 'undefined' && window.addEventListener) {
+                            var updateInterfaceOrientation_1 = function () {
+                                var interfaceOrientationProperty = _this.displayEntity.orientation;
+                                var interfaceOrientation = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_Z, (-window.orientation || 0) * cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE, _this._scratchQuaternion1);
+                                if (_this._mobileDetect && !_this._mobileDetect.mobile()) {
+                                    // for laptops, rotate device orientation by 90° around +X so that it 
+                                    // corresponds to an upright display rather than the integrated keyboard
+                                    interfaceOrientation = cesium_imports_1.Quaternion.multiply(_this._x90Rot, interfaceOrientation, interfaceOrientation);
+                                }
+                                interfaceOrientationProperty.setValue(interfaceOrientation);
+                            };
+                            window.addEventListener('resize', function () {
+                                _this.state.viewport = _this.getMaximumViewport();
+                                updateInterfaceOrientation_1();
+                            });
+                            window.addEventListener('orientationchange', function () {
+                                updateInterfaceOrientation_1();
+                            });
+                        }
+                    }
+                    if (this.sessionService.isRealityViewer) {
+                        this.sessionService.manager.connectEvent.addEventListener(function () {
+                            // when the manager connects, get orientation updates from it instead. 
+                            _this.stopOrientationUpdates();
+                        });
+                    }
+                }
+                /**
+                * Request device state updates.
+                */
+                DeviceService.prototype.update = function (o) {
+                    var _this = this;
+                    this.updateDeviceState();
+                    if (this.sessionService.isRealityViewer && o && o.orientation) {
+                        this.startOrientationUpdates();
+                    }
+                    if (this._subscriptionTimeoutId || !this.sessionService.manager.isConnected) return;
+                    o = o || {};
+                    o.timeout = o.timeout || 3000;
+                    this._subscriptionTimeoutId = setTimeout(function () {
+                        _this._subscriptionTimeoutId = undefined;
+                        _this.sessionService.manager.send('ar.device.subscribe', o);
+                    }, o.timeout * 0.75);
+                };
+                /**
+                 * Update the device state, and send to subscribers.
+                 */
+                DeviceService.prototype.updateDeviceState = function () {
+                    var deviceState = this._state;
+                    var time = cesium_imports_1.JulianDate.now(deviceState.time);
+                    deviceState.geolocationPose = utils_1.getSerializedEntityPose(this.geolocationEntity, time, cesium_imports_1.ReferenceFrame.FIXED);
+                    deviceState.orientationPose = utils_1.getSerializedEntityPose(this.orientationEntity, time, this.geolocationEntity);
+                    deviceState.devicePose = utils_1.getSerializedEntityPose(this.deviceEntity, time, this.deviceEntity.position && this.deviceEntity.position.referenceFrame);
+                    deviceState.displayPose = utils_1.getSerializedEntityPose(this.displayEntity, time, this.displayEntity.position && this.displayEntity.position.referenceFrame);
+                    this.subscribers.forEach(function (options, session) {
+                        session.send('ar.device.state', deviceState);
+                    });
+                };
+                /**
+                 * Set a desired fov in radians.
+                 */
+                DeviceService.prototype.setDesiredFov = function (fov) {
+                    this.zoom({ fov: fov || this.state.defaultFov, zoom: 1, state: ZoomState.OTHER });
+                };
+                /**
+                 * Set the default fov in radians, and adjust the desired fov to match the
+                 * previous desired / default ratio.
+                 */
+                DeviceService.prototype.setDefaultFov = function (fov) {
+                    var currentFov = this.state.subviews[0].frustum.fov;
+                    var ratio = currentFov / this.state.defaultFov;
+                    this.setDesiredFov(fov * ratio);
+                    this.state.defaultFov = fov;
+                };
+                Object.defineProperty(DeviceService.prototype, "state", {
+                    /**
+                     * Get the current device state
+                     */
+                    get: function () {
+                        return this._state;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                DeviceService.prototype._updateEntity = function (pose, entity, referenceFrame) {
+                    if (pose) {
+                        var positionValue = pose.p === 0 ? cesium_imports_1.Cartesian3.ZERO : pose.p;
+                        var orientationValue = pose.o === 0 ? cesium_imports_1.Quaternion.IDENTITY : pose.o;
+                        var positionProperty = entity.position;
+                        if (positionProperty instanceof cesium_imports_1.ConstantPositionProperty) {
+                            positionProperty.setValue(positionValue);
+                        } else {
+                            entity.position = new cesium_imports_1.ConstantPositionProperty(positionValue, referenceFrame);
+                        }
+                        var orientationProperty = entity.orientation;
+                        if (orientationProperty instanceof cesium_imports_1.ConstantProperty) {
+                            orientationProperty.setValue(orientationValue);
+                        } else {
+                            entity.orientation = new cesium_imports_1.ConstantProperty(orientationValue);
+                        }
+                    } else {
+                        entity.position = undefined;
+                        entity.orientation = undefined;
+                    }
+                };
+                DeviceService.prototype.startLocationUpdates = function () {
+                    var _this = this;
+                    // defer to the reality manager to get geolocation updates from the device 
+                    if (!this.sessionService.isRealityManager || typeof navigator == 'undefined') return;
+                    if (!cesium_imports_1.defined(this._geolocationWatchId)) {
+                        this._geolocationWatchId = navigator.geolocation.watchPosition(function (pos) {
+                            if (_this.geolocationEntity.position instanceof cesium_imports_1.SampledPositionProperty === false) {
+                                var sampledPostionProperty = new cesium_imports_1.SampledPositionProperty(cesium_imports_1.ReferenceFrame.FIXED);
+                                sampledPostionProperty.forwardExtrapolationType = cesium_imports_1.ExtrapolationType.HOLD;
+                                sampledPostionProperty.backwardExtrapolationType = cesium_imports_1.ExtrapolationType.HOLD;
+                                sampledPostionProperty.maxNumSamples = 10;
+                                _this.geolocationEntity.position = sampledPostionProperty;
+                            }
+                            var positionTime = cesium_imports_1.JulianDate.fromDate(new Date(pos.timestamp));
+                            var positionECEF = cesium_imports_1.Cartesian3.fromDegrees(pos.coords.longitude, pos.coords.latitude, pos.coords.altitude || 0, undefined, _this._scratchCartesian);
+                            _this.geolocationEntity.position.addSample(positionTime, positionECEF);
+                            if (_this.geolocationEntity.orientation instanceof cesium_imports_1.ConstantProperty === false) {
+                                _this.geolocationEntity.orientation = new cesium_imports_1.ConstantProperty();
+                            }
+                            var enuOrientation = cesium_imports_1.Transforms.headingPitchRollQuaternion(positionECEF, 0, 0, 0, undefined, _this._scratchQuaternion1);
+                            _this.geolocationEntity.orientation.setValue(enuOrientation);
+                            _this._state.geolocationAccuracy = pos.coords.accuracy;
+                            _this._state.geolocationAltitudeAccuracy = pos.coords.altitudeAccuracy || undefined;
+                            _this.updateDeviceState();
+                        }, function (error) {
+                            console.error(error);
+                        }, {
+                            enableHighAccuracy: true
+                        });
+                    }
+                };
+                DeviceService.prototype.startOrientationUpdates = function () {
+                    var _this = this;
+                    if (typeof navigator == 'undefined') return;
+                    if (!cesium_imports_1.defined(this._deviceorientationListener)) {
+                        this._deviceorientationListener = function (e) {
+                            var alphaDegrees = e.alpha;
+                            if (!cesium_imports_1.defined(alphaDegrees)) {
+                                return;
+                            }
+                            if (e.absolute) {
+                                _this._alphaOffset = 0;
+                            }
+                            var webkitCompassHeading = e['webkitCompassHeading'];
+                            var webkitCompassAccuracy = +e['webkitCompassAccuracy'];
+                            // when the phone is almost updside down, webkit flips the compass heading 
+                            // (not documented anywhere, annoyingly)
+                            // if (e.beta >= 130 || e.beta <= -130) webkitCompassHeading = undefined;
+                            if ((!cesium_imports_1.defined(_this._alphaOffset) || Math.abs(_this._headingDrift) > 5) && cesium_imports_1.defined(webkitCompassHeading) && webkitCompassAccuracy >= 0 && webkitCompassAccuracy < 50 && webkitCompassHeading >= 0) {
+                                if (!cesium_imports_1.defined(_this._alphaOffset)) {
+                                    _this._alphaOffset = -webkitCompassHeading;
+                                } else {
+                                    _this._alphaOffset -= _this._headingDrift;
+                                }
+                            }
+                            var alphaOffset = _this._alphaOffset || -webkitCompassHeading || 0;
+                            // TODO: deal with various browser quirks :\
+                            // https://mobiforge.com/design-development/html5-mobile-web-device-orientation-events
+                            var alpha = cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE * (e.alpha + alphaOffset);
+                            var beta = cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE * e.beta;
+                            var gamma = cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE * e.gamma;
+                            var alphaQuat = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_Z, alpha, _this._scratchQuaternion1);
+                            var betaQuat = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_X, beta, _this._scratchQuaternion2);
+                            var alphaBetaQuat = cesium_imports_1.Quaternion.multiply(alphaQuat, betaQuat, _this._scratchQuaternion1);
+                            var gammaQuat = cesium_imports_1.Quaternion.fromAxisAngle(cesium_imports_1.Cartesian3.UNIT_Y, gamma, _this._scratchQuaternion2);
+                            var alphaBetaGammaQuat = cesium_imports_1.Quaternion.multiply(alphaBetaQuat, gammaQuat, alphaBetaQuat);
+                            // update orientationEntity
+                            if (_this.orientationEntity.position instanceof cesium_imports_1.ConstantPositionProperty == false) {
+                                _this.orientationEntity.position = new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, _this.geolocationEntity);
+                            }
+                            if (_this.orientationEntity.orientation instanceof cesium_imports_1.ConstantProperty == false) {
+                                _this.orientationEntity.orientation = new cesium_imports_1.ConstantProperty();
+                            }
+                            _this.orientationEntity.orientation.setValue(alphaBetaGammaQuat);
+                            // make sure the device entity has a defined pose relative to the device orientation entity
+                            if (_this.deviceEntity.position instanceof cesium_imports_1.ConstantPositionProperty == false) {
+                                _this.deviceEntity.position = new cesium_imports_1.ConstantPositionProperty(cesium_imports_1.Cartesian3.ZERO, _this.orientationEntity);
+                            }
+                            if (_this.deviceEntity.orientation instanceof cesium_imports_1.ConstantProperty == false) {
+                                _this.deviceEntity.orientation = new cesium_imports_1.ConstantProperty(cesium_imports_1.Quaternion.IDENTITY);
+                            }
+                            // TODO: fix heading drift calculation (heading should match webkitCompassHeading)
+                            // if (defined(webkitCompassHeading)) {
+                            //     const q = alphaBetaGammaQuat//utils.getEntityOrientationInReferenceFrame(this.interfaceEntity, JulianDate.now(), this.locationEntity, this._scratchQuaternion1);
+                            //     var heading = -Math.atan2(2*(q.w*q.z + q.x*q.y), 1 - 2*(q.y*q.y + q.z*q.z));
+                            //     if (heading < 0) heading += 2*Math.PI;
+                            //     const {swing,twist} = swingTwistDecomposition(alphaBetaGammaQuat, Cartesian3.UNIT_Z);
+                            //     const twistAngle = 2 * Math.acos(twist.w);
+                            //     console.log(twist.w + ' ' + twistAngle * CesiumMath.DEGREES_PER_RADIAN + '\n' + webkitCompassHeading);
+                            //     // this._headingDrift = webkitCompassHeading - heading * CesiumMath.DEGREES_PER_RADIAN;
+                            // }
+                            _this.updateDeviceState();
+                        };
+                        window.addEventListener('deviceorientation', this._deviceorientationListener);
+                    }
+                };
+                DeviceService.prototype.stopLocationUpdates = function () {
+                    if (typeof navigator === 'undefined') return;
+                    if (cesium_imports_1.defined(this._geolocationWatchId)) {
+                        navigator.geolocation.clearWatch(this._geolocationWatchId);
+                        this._geolocationWatchId = undefined;
+                    }
+                };
+                DeviceService.prototype.stopOrientationUpdates = function () {
+                    if (typeof navigator === 'undefined') return;
+                    if (cesium_imports_1.defined(this._deviceorientationListener)) {
+                        window.removeEventListener('deviceorientation', this._deviceorientationListener);
+                        this._deviceorientationListener = undefined;
+                        this._alphaOffset = undefined;
+                    }
+                };
+                /**
+                 * Returns the maximum allowed viewport
+                 */
+                DeviceService.prototype.getMaximumViewport = function () {
+                    if (typeof document !== 'undefined' && document.documentElement) {
+                        return {
+                            x: 0,
+                            y: 0,
+                            width: document.documentElement.clientWidth,
+                            height: document.documentElement.clientHeight
+                        };
+                    }
+                    throw new Error("Not implemeneted for the current platform");
+                };
+                /**
+                 * Attempt to zoom
+                 */
+                DeviceService.prototype.zoom = function (data) {
+                    if (this.realityService.session && this.realityService.session.info['reality.handlesZoom']) {
+                        this.realityService.session.send('ar.device.zoom', data);
+                        this.realityService.session.send('ar.reality.zoom', data); // backwards compatability, remove at v1.2
+                    } else {
+                        var fov = this.onZoom(data);
+                        if (this.sessionService.isRealityViewer || this.sessionService.isRealityManager) {
+                            this.sessionService.manager.send('ar.device.desiredFov', { fov: fov });
+                        }
+                    }
+                };
+                /**
+                 * Handle zoom. Overridable for custom behavior.
+                 * Only called within a [[REALITY_VIEWER]].
+                 */
+                DeviceService.prototype.onZoom = function (data) {
+                    var newFov = 2 * Math.atan(Math.tan(data.fov * 0.5) / data.zoom);
+                    newFov = Math.max(10 * cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE, Math.min(newFov, 160 * cesium_imports_1.CesiumMath.RADIANS_PER_DEGREE));
+                    // snap to default
+                    if (data.state === ZoomState.END && Math.abs(newFov - this.state.defaultFov) < 0.05 /* +-6deg */) {
+                            newFov = this.state.defaultFov;
+                        }
+                    return newFov;
+                };
+                /**
+                 * Handle desired fov. Overridable for custom behavior.
+                 * Only called within a [[REALITY_MANAGER]]
+                 */
+                DeviceService.prototype.onDesiredFov = function (fov) {
+                    this.state.subviews.forEach(function (s) {
+                        s.frustum.fov = fov;
+                    });
+                };
+                DeviceService = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, reality_1.RealityService)], DeviceService);
+                return DeviceService;
+            }();
+            exports_1("DeviceService", DeviceService);
+        }
+    };
+});
+$__System.register('9', ['c', '12', 'a', '16', 'b', '14', 'f'], function (exports_1, context_1) {
+    "use strict";
+
+    var __moduleName = context_1 && context_1.id;
+    var __decorate = this && this.__decorate || function (decorators, target, key, desc) {
+        var c = arguments.length,
+            r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+            d;
+        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+        return c > 3 && r && Object.defineProperty(target, key, r), r;
+    };
+    var aurelia_dependency_injection_1, cesium_imports_1, session_1, context_2, utils_1, focus_1, device_1;
     var argonContainer, argonContainerPromise, ViewService, PinchZoomService;
     return {
         setters: [function (aurelia_dependency_injection_1_1) {
@@ -7156,8 +7566,8 @@ $__System.register('16', ['f', '11', 'a', '12', 'e', '14', 'd'], function (expor
             utils_1 = utils_1_1;
         }, function (focus_1_1) {
             focus_1 = focus_1_1;
-        }, function (reality_1_1) {
-            reality_1 = reality_1_1;
+        }, function (device_1_1) {
+            device_1 = device_1_1;
         }],
         execute: function () {
             // setup our DOM environment
@@ -7191,8 +7601,8 @@ $__System.register('16', ['f', '11', 'a', '12', 'e', '14', 'd'], function (expor
                 style.type = 'text/css';
                 document.head.insertBefore(style, document.head.firstChild);
                 var sheet = style.sheet;
-                sheet.insertRule("\n        #argon {\n            position: fixed;\n            left: 0px;\n            bottom: 0px;\n            width: 100%;\n            height: 100%;\n            margin: 0;\n            border: 0;\n            padding: 0;\n        }\n    ", 0);
-                sheet.insertRule("\n        .argon-view > * {\n            position: absolute;\n            pointer-events: none;\n        }\n    ", 1);
+                sheet.insertRule("\n        #argon {\n            position: fixed;\n            left: 0px;\n            bottom: 0px;\n            width: 100%;\n            height: 100%;\n            margin: 0;\n            border: 0;\n            padding: 0;\n            -webkit-user-select: none;\n            -webkit-tap-highlight-color: transparent;\n            user-select: none;\n        }\n    ", 0);
+                sheet.insertRule("\n        .argon-view > * {\n            position: absolute;\n            -webkit-tap-highlight-color: initial;\n        }\n    ", 1);
             }
             /**
              * Manages the view state
@@ -7254,8 +7664,29 @@ $__System.register('16', ['f', '11', 'a', '12', 'e', '14', 'd'], function (expor
                                         argonContainer.classList.add('argon-no-focus');
                                     });
                                 });
+                                // prevent pinch-zoom of the page in ios 10.
+                                argonContainer.addEventListener('touchmove', function (event) {
+                                    event.preventDefault();
+                                }, true);
+                                argonContainer.addEventListener('gesturestart', function (event) {
+                                    event.preventDefault();
+                                }, true);
                             }
                         });
+                        if (this.sessionService.isRealityViewer) {
+                            this.sessionService.manager.on['ar.view.uievent'] = function (uievent) {
+                                uievent.view = window;
+                                var e;
+                                switch (uievent.type) {
+                                    case 'wheel':
+                                        e = new WheelEvent(uievent.type, uievent);
+                                    default:
+                                        e = new MouseEvent(uievent.type, uievent);
+                                }
+                                var target = document.elementFromPoint(e.clientX, e.clientY) || window;
+                                target.dispatchEvent(e);
+                            };
+                        }
                     }
                     if (this.sessionService.isRealityManager) {
                         this.sessionService.connectEvent.addEventListener(function (session) {
@@ -7289,7 +7720,12 @@ $__System.register('16', ['f', '11', 'a', '12', 'e', '14', 'd'], function (expor
                         subview.index = index;
                         subview.type = serializedSubview.type;
                         subview.pose = _this.contextService.getEntityPose(subviewEntity, referenceFrame);
-                        subview.viewport = serializedSubview.viewport || _this._current.viewport;
+                        subview.viewport = serializedSubview.viewport || {
+                            x: 0,
+                            y: 0,
+                            width: _this._current.viewport.width,
+                            height: _this._current.viewport.height
+                        };
                         subview.frustum = _this._frustums[index];
                         if (!subview.frustum) {
                             subview.frustum = _this._frustums[index] = new cesium_imports_1.PerspectiveFrustum();
@@ -7357,15 +7793,14 @@ $__System.register('16', ['f', '11', 'a', '12', 'e', '14', 'd'], function (expor
             }();
             exports_1("ViewService", ViewService);
             PinchZoomService = function () {
-                function PinchZoomService(viewService, realityService, contextService, sessionService) {
+                function PinchZoomService(viewService, deviceService, contextService, sessionService) {
                     var _this = this;
                     this.viewService = viewService;
-                    this.realityService = realityService;
+                    this.deviceService = deviceService;
                     this.contextService = contextService;
                     this.sessionService = sessionService;
-                    if (this.sessionService.isRealityManager) {
+                    if (this.sessionService.isRealityManager && !this.sessionService.configuration['app.disablePinchZoom']) {
                         this.viewService.containingElementPromise.then(function (el) {
-                            el.style.pointerEvents = 'auto';
                             var fov = -1;
                             if (typeof PointerEvent !== 'undefined') {
                                 var evCache_1 = new Array();
@@ -7407,15 +7842,15 @@ $__System.register('16', ['f', '11', 'a', '12', 'e', '14', 'd'], function (expor
                                             startDistSquared_1 = currDistSquared;
                                             fov = state.view.subviews[0].frustum.fov;
                                             zoom_1 = 1;
-                                            _this.realityService.zoom({ zoom: zoom_1, fov: fov, state: reality_1.RealityZoomState.START });
+                                            _this.deviceService.zoom({ zoom: zoom_1, fov: fov, state: device_1.ZoomState.START });
                                         } else {
                                             // change pinch
                                             zoom_1 = currDistSquared / startDistSquared_1;
-                                            _this.realityService.zoom({ zoom: zoom_1, fov: fov, state: reality_1.RealityZoomState.CHANGE });
+                                            _this.deviceService.zoom({ zoom: zoom_1, fov: fov, state: device_1.ZoomState.CHANGE });
                                         }
                                     } else {
                                         // end pinch                            
-                                        _this.realityService.zoom({ zoom: zoom_1, fov: fov, state: reality_1.RealityZoomState.END });
+                                        _this.deviceService.zoom({ zoom: zoom_1, fov: fov, state: device_1.ZoomState.END });
                                         startDistSquared_1 = -1;
                                     }
                                 };
@@ -7438,27 +7873,28 @@ $__System.register('16', ['f', '11', 'a', '12', 'e', '14', 'd'], function (expor
                                     var state = _this.contextService.serializedFrameState;
                                     if (state && state.view.subviews[0]) {
                                         fov = state.view.subviews[0].frustum.fov;
-                                        _this.realityService.zoom({ zoom: ev.scale, fov: fov, state: reality_1.RealityZoomState.START });
+                                        _this.deviceService.zoom({ zoom: ev.scale, fov: fov, state: device_1.ZoomState.START });
                                     }
+                                    ev.preventDefault();
                                 });
                                 el.addEventListener('gesturechange', function (ev) {
-                                    _this.realityService.zoom({ zoom: ev.scale, fov: fov, state: reality_1.RealityZoomState.CHANGE });
+                                    _this.deviceService.zoom({ zoom: ev.scale, fov: fov, state: device_1.ZoomState.CHANGE });
                                 });
                                 el.addEventListener('gestureend', function (ev) {
-                                    _this.realityService.zoom({ zoom: ev.scale, fov: fov, state: reality_1.RealityZoomState.END });
+                                    _this.deviceService.zoom({ zoom: ev.scale, fov: fov, state: device_1.ZoomState.END });
                                 });
                             }
                         });
                     }
                 }
-                PinchZoomService = __decorate([aurelia_dependency_injection_1.inject(ViewService, reality_1.RealityService, context_2.ContextService, session_1.SessionService)], PinchZoomService);
+                PinchZoomService = __decorate([aurelia_dependency_injection_1.inject(ViewService, device_1.DeviceService, context_2.ContextService, session_1.SessionService)], PinchZoomService);
                 return PinchZoomService;
             }();
             exports_1("PinchZoomService", PinchZoomService);
         }
     };
 });
-$__System.register('18', ['f', 'a', 'd', '16'], function (exports_1, context_1) {
+$__System.register('19', ['c', 'a', '11', '9'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -7503,6 +7939,38 @@ $__System.register('18', ['f', 'a', 'd', '16'], function (exports_1, context_1) 
                     this.iframeElement.height = '100%';
                     viewService.containingElementPromise.then(function (container) {
                         container.insertBefore(_this.iframeElement, container.firstChild);
+                        var forwardEvents = function (e) {
+                            if (_this.currentRealitySession) {
+                                var boundingRect = _this.iframeElement.getBoundingClientRect();
+                                _this.currentRealitySession.send('ar.view.uievent', {
+                                    type: e.type,
+                                    bubbles: e.bubbles,
+                                    cancelable: e.cancelable,
+                                    detail: e.detail,
+                                    altKey: e.altKey,
+                                    ctrlKey: e.ctrlKey,
+                                    metaKey: e.metaKey,
+                                    button: e.button,
+                                    buttons: e.buttons,
+                                    clientX: e.clientX + boundingRect.left,
+                                    clientY: e.clientY + boundingRect.top,
+                                    screenX: e.screenX,
+                                    screenY: e.screenY,
+                                    movementX: e.movementX,
+                                    movementY: e.movementY,
+                                    deltaX: e.deltaX,
+                                    deltaY: e.deltaY,
+                                    deltaZ: e.deltaZ,
+                                    deltaMode: e.deltaMode,
+                                    wheelDelta: e.wheelDelta,
+                                    wheelDeltaX: e.wheelDeltaX,
+                                    wheelDeltaY: e.wheelDeltaY
+                                });
+                            }
+                        };
+                        ['click', 'dblclick', 'mousedown', 'mouseenter', 'mouseleave', 'mousemove', 'mouseout', 'mouseover', 'mouseup', 'wheel'].forEach(function (type) {
+                            container.addEventListener(type, forwardEvents, false);
+                        });
                     });
                 }
                 HostedRealityLoader.prototype.load = function (reality, callback) {
@@ -7522,12 +7990,18 @@ $__System.register('18', ['f', 'a', 'd', '16'], function (exports_1, context_1) 
                             window.removeEventListener('message', handleConnectMessage);
                             var realitySession = _this.sessionService.addManagedSessionPort(reality.uri);
                             callback(realitySession);
+                            realitySession.connectEvent.addEventListener(function () {
+                                _this.currentRealitySession = realitySession;
+                                realitySession.closeEvent.addEventListener(function () {
+                                    _this.currentRealitySession = undefined;
+                                });
+                                realitySession.send('ar.focus.state', { state: true });
+                            });
                             realitySession.open(messagePort, _this.sessionService.configuration);
                         };
                         window.addEventListener('message', handleConnectMessage);
                         _this.iframeElement.src = '';
                         _this.iframeElement.src = reality.uri;
-                        _this.iframeElement.style.pointerEvents = 'auto';
                     });
                 };
                 HostedRealityLoader = __decorate([aurelia_dependency_injection_1.inject(session_1.SessionService, view_1.ViewService)], HostedRealityLoader);
@@ -7567,7 +8041,7 @@ $__System.register('18', ['f', 'a', 'd', '16'], function (exports_1, context_1) 
 // }
 (function() {
 var define = $__System.amdDefine;
-define("19", ["1a", "1b", "1c", "1d"], function(defined, defineProperties, DeveloperError, Event) {
+define("1a", ["1b", "1c", "1d", "1e"], function(defined, defineProperties, DeveloperError, Event) {
   'use strict';
   function CallbackProperty(callback, isConstant) {
     this._callback = undefined;
@@ -7609,7 +8083,7 @@ define("19", ["1a", "1b", "1c", "1d"], function(defined, defineProperties, Devel
 })();
 (function() {
 var define = $__System.amdDefine;
-define("1e", ["1f"], function(freezeObject) {
+define("1f", ["20"], function(freezeObject) {
   'use strict';
   var ClockRange = {
     UNBOUNDED: 0,
@@ -7622,7 +8096,7 @@ define("1e", ["1f"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("20", ["1a"], function(defined) {
+define("21", ["1b"], function(defined) {
   'use strict';
   var getTimestamp;
   if (typeof performance !== 'undefined' && defined(performance.now)) {
@@ -7640,7 +8114,7 @@ define("20", ["1a"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("21", ["1e", "22", "23", "1a", "1c", "1d", "20", "24"], function(ClockRange, ClockStep, defaultValue, defined, DeveloperError, Event, getTimestamp, JulianDate) {
+define("22", ["1f", "23", "24", "1b", "1d", "1e", "21", "25"], function(ClockRange, ClockStep, defaultValue, defined, DeveloperError, Event, getTimestamp, JulianDate) {
   'use strict';
   function Clock(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
@@ -7727,7 +8201,7 @@ define("21", ["1e", "22", "23", "1a", "1c", "1d", "20", "24"], function(ClockRan
 })();
 (function() {
 var define = $__System.amdDefine;
-define("22", ["1f"], function(freezeObject) {
+define("23", ["20"], function(freezeObject) {
   'use strict';
   var ClockStep = {
     TICK_DEPENDENT: 0,
@@ -7740,7 +8214,7 @@ define("22", ["1f"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("25", ["26", "1a", "1b", "1c", "27", "28", "29"], function(createGuid, defined, defineProperties, DeveloperError, CesiumMath, Entity, EntityCollection) {
+define("26", ["27", "1b", "1c", "1d", "28", "29", "2a"], function(createGuid, defined, defineProperties, DeveloperError, CesiumMath, Entity, EntityCollection) {
   'use strict';
   var entityOptionsScratch = {id: undefined};
   var entityIdScratch = new Array(2);
@@ -8061,7 +8535,7 @@ define("25", ["26", "1a", "1b", "1c", "27", "28", "29"], function(createGuid, de
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2a", ["1a", "1b", "1c"], function(defined, defineProperties, DeveloperError) {
+define("2b", ["1b", "1c", "1d"], function(defined, defineProperties, DeveloperError) {
   'use strict';
   function AssociativeArray() {
     this._array = [];
@@ -8124,7 +8598,7 @@ define("2a", ["1a", "1b", "1c"], function(defined, defineProperties, DeveloperEr
 })();
 (function() {
 var define = $__System.amdDefine;
-define("26", [], function() {
+define("27", [], function() {
   'use strict';
   function createGuid() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -8139,7 +8613,7 @@ define("26", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2b", ["2c", "23", "1a", "1b", "1c", "1d", "2d", "2e"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, Event, ReferenceFrame, PositionProperty) {
+define("2c", ["2d", "24", "1b", "1c", "1d", "1e", "2e", "2f"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, Event, ReferenceFrame, PositionProperty) {
   'use strict';
   function ConstantPositionProperty(value, referenceFrame) {
     this._definitionChanged = new Event();
@@ -8192,7 +8666,7 @@ define("2b", ["2c", "23", "1a", "1b", "1c", "1d", "2d", "2e"], function(Cartesia
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2f", ["23", "1a", "1b", "1c", "1d"], function(defaultValue, defined, defineProperties, DeveloperError, Event) {
+define("30", ["24", "1b", "1c", "1d", "1e"], function(defaultValue, defined, defineProperties, DeveloperError, Event) {
   'use strict';
   function ConstantProperty(value) {
     this._value = undefined;
@@ -8234,7 +8708,7 @@ define("2f", ["23", "1a", "1b", "1c", "1d"], function(defaultValue, defined, def
 })();
 (function() {
 var define = $__System.amdDefine;
-define("30", ["23", "1a", "2f"], function(defaultValue, defined, ConstantProperty) {
+define("31", ["24", "1b", "30"], function(defaultValue, defined, ConstantProperty) {
   'use strict';
   function createProperty(name, privateName, subscriptionName, configurable, createPropertyCallback) {
     return {
@@ -8277,7 +8751,7 @@ define("30", ["23", "1a", "2f"], function(defaultValue, defined, ConstantPropert
 })();
 (function() {
 var define = $__System.amdDefine;
-define("31", ["30"], function(createPropertyDescriptor) {
+define("32", ["31"], function(createPropertyDescriptor) {
   'use strict';
   function createRawProperty(value) {
     return value;
@@ -8291,7 +8765,7 @@ define("31", ["30"], function(createPropertyDescriptor) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("28", ["2c", "26", "23", "1a", "1b", "1c", "1d", "32", "33", "34", "35", "@empty", "@empty", "2b", "@empty", "30", "31", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "36", "@empty", "@empty"], function(Cartesian3, createGuid, defaultValue, defined, defineProperties, DeveloperError, Event, Matrix3, Matrix4, Quaternion, Transforms, BillboardGraphics, BoxGraphics, ConstantPositionProperty, CorridorGraphics, createPropertyDescriptor, createRawPropertyDescriptor, CylinderGraphics, EllipseGraphics, EllipsoidGraphics, LabelGraphics, ModelGraphics, PathGraphics, PointGraphics, PolygonGraphics, PolylineGraphics, PolylineVolumeGraphics, Property, RectangleGraphics, WallGraphics) {
+define("29", ["2d", "27", "24", "1b", "1c", "1d", "1e", "33", "34", "35", "36", "@empty", "@empty", "2c", "@empty", "31", "32", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "37", "@empty", "@empty"], function(Cartesian3, createGuid, defaultValue, defined, defineProperties, DeveloperError, Event, Matrix3, Matrix4, Quaternion, Transforms, BillboardGraphics, BoxGraphics, ConstantPositionProperty, CorridorGraphics, createPropertyDescriptor, createRawPropertyDescriptor, CylinderGraphics, EllipseGraphics, EllipsoidGraphics, LabelGraphics, ModelGraphics, PathGraphics, PointGraphics, PolygonGraphics, PolylineGraphics, PolylineVolumeGraphics, Property, RectangleGraphics, WallGraphics) {
   'use strict';
   function createConstantPositionProperty(value) {
     return new ConstantPositionProperty(value);
@@ -8543,7 +9017,7 @@ define("28", ["2c", "26", "23", "1a", "1b", "1c", "1d", "32", "33", "34", "35", 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("29", ["2a", "26", "1a", "1b", "1c", "1d", "37", "24", "38", "39", "28"], function(AssociativeArray, createGuid, defined, defineProperties, DeveloperError, Event, Iso8601, JulianDate, RuntimeError, TimeInterval, Entity) {
+define("2a", ["2b", "27", "1b", "1c", "1d", "1e", "38", "25", "39", "3a", "29"], function(AssociativeArray, createGuid, defined, defineProperties, DeveloperError, Event, Iso8601, JulianDate, RuntimeError, TimeInterval, Entity) {
   'use strict';
   var entityOptionsScratch = {id: undefined};
   function fireChangedEvent(collection) {
@@ -8771,7 +9245,7 @@ define("29", ["2a", "26", "1a", "1b", "1c", "1d", "37", "24", "38", "39", "28"],
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3a", ["2c", "3b", "23", "1a", "1b", "1c", "3c"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, Ellipsoid) {
+define("3b", ["2d", "3c", "24", "1b", "1c", "1d", "3d"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, Ellipsoid) {
   'use strict';
   function GeographicProjection(ellipsoid) {
     this._ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
@@ -8816,7 +9290,7 @@ define("3a", ["2c", "3b", "23", "1a", "1b", "1c", "3c"], function(Cartesian3, Ca
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3d", ["23", "1a", "1c", "27"], function(defaultValue, defined, DeveloperError, CesiumMath) {
+define("3e", ["24", "1b", "1d", "28"], function(defaultValue, defined, DeveloperError, CesiumMath) {
   'use strict';
   var factorial = CesiumMath.factorial;
   function calculateCoefficientTerm(x, zIndices, xTable, derivOrder, termOrder, reservedIndices) {
@@ -9016,7 +9490,7 @@ define("3d", ["23", "1a", "1c", "27"], function(defaultValue, defined, Developer
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3e", ["1a", "1b", "1c", "32", "34", "2d", "35"], function(defined, defineProperties, DeveloperError, Matrix3, Quaternion, ReferenceFrame, Transforms) {
+define("3f", ["1b", "1c", "1d", "33", "35", "2e", "36"], function(defined, defineProperties, DeveloperError, Matrix3, Quaternion, ReferenceFrame, Transforms) {
   "use strict";
   var OrientationProperty = function() {
     DeveloperError.throwInstantiationError();
@@ -9144,7 +9618,7 @@ define("3e", ["1a", "1b", "1c", "32", "34", "2d", "35"], function(defined, defin
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3f", ["1a", "1b", "1c", "40"], function(defined, defineProperties, DeveloperError, PerspectiveOffCenterFrustum) {
+define("40", ["1b", "1c", "1d", "41"], function(defined, defineProperties, DeveloperError, PerspectiveOffCenterFrustum) {
   'use strict';
   function PerspectiveFrustum() {
     this._offCenterFrustum = new PerspectiveOffCenterFrustum();
@@ -9253,7 +9727,7 @@ define("3f", ["1a", "1b", "1c", "40"], function(defined, defineProperties, Devel
 })();
 (function() {
 var define = $__System.amdDefine;
-define("41", ["1f"], function(freezeObject) {
+define("42", ["20"], function(freezeObject) {
   'use strict';
   var Intersect = {
     OUTSIDE: -1,
@@ -9266,7 +9740,7 @@ define("41", ["1f"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("42", ["2c", "43", "23", "1a", "1c", "41", "44"], function(Cartesian3, Cartesian4, defaultValue, defined, DeveloperError, Intersect, Plane) {
+define("43", ["2d", "44", "24", "1b", "1d", "42", "45"], function(Cartesian3, Cartesian4, defaultValue, defined, DeveloperError, Intersect, Plane) {
   'use strict';
   function CullingVolume(planes) {
     this.planes = defaultValue(planes, []);
@@ -9370,7 +9844,7 @@ define("42", ["2c", "43", "23", "1a", "1c", "41", "44"], function(Cartesian3, Ca
 })();
 (function() {
 var define = $__System.amdDefine;
-define("40", ["45", "2c", "43", "23", "1a", "1b", "1c", "33", "42"], function(Cartesian2, Cartesian3, Cartesian4, defaultValue, defined, defineProperties, DeveloperError, Matrix4, CullingVolume) {
+define("41", ["46", "2d", "44", "24", "1b", "1c", "1d", "34", "43"], function(Cartesian2, Cartesian3, Cartesian4, defaultValue, defined, defineProperties, DeveloperError, Matrix4, CullingVolume) {
   'use strict';
   function PerspectiveOffCenterFrustum() {
     this.left = undefined;
@@ -9576,7 +10050,7 @@ define("40", ["45", "2c", "43", "23", "1a", "1b", "1c", "33", "42"], function(Ca
 })();
 (function() {
 var define = $__System.amdDefine;
-define("46", ["1a", "1b", "1c", "1d", "36"], function(defined, defineProperties, DeveloperError, Event, Property) {
+define("47", ["1b", "1c", "1d", "1e", "37"], function(defined, defineProperties, DeveloperError, Event, Property) {
   "use strict";
   function resolve(that) {
     var targetEntity = that._targetEntity;
@@ -9647,7 +10121,7 @@ define("46", ["1a", "1b", "1c", "1d", "36"], function(defined, defineProperties,
 })();
 (function() {
 var define = $__System.amdDefine;
-define("47", ["1a", "1b", "1c", "1d", "38", "36"], function(defined, defineProperties, DeveloperError, Event, RuntimeError, Property) {
+define("48", ["1b", "1c", "1d", "1e", "39", "37"], function(defined, defineProperties, DeveloperError, Event, RuntimeError, Property) {
   'use strict';
   function resolveEntity(that) {
     var entityIsResolved = true;
@@ -9821,7 +10295,7 @@ define("47", ["1a", "1b", "1c", "1d", "38", "36"], function(defined, definePrope
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2d", ["1f"], function(freezeObject) {
+define("2e", ["20"], function(freezeObject) {
   'use strict';
   var ReferenceFrame = {
     FIXED: 0,
@@ -9833,7 +10307,7 @@ define("2d", ["1f"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2e", ["2c", "1a", "1b", "1c", "32", "33", "34", "2d", "35"], function(Cartesian3, defined, defineProperties, DeveloperError, Matrix3, Matrix4, Quaternion, ReferenceFrame, Transforms) {
+define("2f", ["2d", "1b", "1c", "1d", "33", "34", "35", "2e", "36"], function(Cartesian3, defined, defineProperties, DeveloperError, Matrix3, Matrix4, Quaternion, ReferenceFrame, Transforms) {
   'use strict';
   function PositionProperty() {
     DeveloperError.throwInstantiationError();
@@ -9986,7 +10460,7 @@ define("2e", ["2c", "1a", "1b", "1c", "32", "33", "34", "2d", "35"], function(Ca
 })();
 (function() {
 var define = $__System.amdDefine;
-define("39", ["23", "1a", "1b", "1c", "1f", "24"], function(defaultValue, defined, defineProperties, DeveloperError, freezeObject, JulianDate) {
+define("3a", ["24", "1b", "1c", "1d", "20", "25"], function(defaultValue, defined, defineProperties, DeveloperError, freezeObject, JulianDate) {
   'use strict';
   function TimeInterval(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
@@ -10139,7 +10613,7 @@ define("39", ["23", "1a", "1b", "1c", "1f", "24"], function(defaultValue, define
 })();
 (function() {
 var define = $__System.amdDefine;
-define("37", ["1f", "24", "39"], function(freezeObject, JulianDate, TimeInterval) {
+define("38", ["20", "25", "3a"], function(freezeObject, JulianDate, TimeInterval) {
   'use strict';
   var MINIMUM_VALUE = freezeObject(JulianDate.fromIso8601('0000-01-01T00:00:00Z'));
   var MAXIMUM_VALUE = freezeObject(JulianDate.fromIso8601('9999-12-31T24:00:00Z'));
@@ -10158,7 +10632,7 @@ define("37", ["1f", "24", "39"], function(freezeObject, JulianDate, TimeInterval
 })();
 (function() {
 var define = $__System.amdDefine;
-define("36", ["23", "1a", "1b", "1c", "37"], function(defaultValue, defined, defineProperties, DeveloperError, Iso8601) {
+define("37", ["24", "1b", "1c", "1d", "38"], function(defaultValue, defined, defineProperties, DeveloperError, Iso8601) {
   'use strict';
   function Property() {
     DeveloperError.throwInstantiationError();
@@ -10212,7 +10686,7 @@ define("36", ["23", "1a", "1b", "1c", "37"], function(defaultValue, defined, def
 })();
 (function() {
 var define = $__System.amdDefine;
-define("48", ["2c", "23", "1a", "1b", "1c", "1d", "2d", "2e", "36", "49"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, Event, ReferenceFrame, PositionProperty, Property, SampledProperty) {
+define("49", ["2d", "24", "1b", "1c", "1d", "1e", "2e", "2f", "37", "4a"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, Event, ReferenceFrame, PositionProperty, Property, SampledProperty) {
   'use strict';
   function SampledPositionProperty(referenceFrame, numberOfDerivatives) {
     numberOfDerivatives = defaultValue(numberOfDerivatives, 0);
@@ -10324,7 +10798,7 @@ define("48", ["2c", "23", "1a", "1b", "1c", "1d", "2d", "2e", "36", "49"], funct
 })();
 (function() {
 var define = $__System.amdDefine;
-define("1d", ["1a", "1b", "1c"], function(defined, defineProperties, DeveloperError) {
+define("1e", ["1b", "1c", "1d"], function(defined, defineProperties, DeveloperError) {
   'use strict';
   function Event() {
     this._listeners = [];
@@ -10400,7 +10874,7 @@ define("1d", ["1a", "1b", "1c"], function(defined, defineProperties, DeveloperEr
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4a", ["1f"], function(freezeObject) {
+define("4b", ["20"], function(freezeObject) {
   'use strict';
   var ExtrapolationType = {
     NONE: 0,
@@ -10413,7 +10887,7 @@ define("4a", ["1f"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4b", ["1a", "1c"], function(defined, DeveloperError) {
+define("4c", ["1b", "1d"], function(defined, DeveloperError) {
   'use strict';
   var LinearApproximation = {type: 'Linear'};
   LinearApproximation.getRequiredDataPoints = function(degree) {
@@ -10449,7 +10923,7 @@ define("4b", ["1a", "1c"], function(defined, DeveloperError) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("49", ["4c", "23", "1a", "1b", "1c", "1d", "4a", "24", "4b"], function(binarySearch, defaultValue, defined, defineProperties, DeveloperError, Event, ExtrapolationType, JulianDate, LinearApproximation) {
+define("4a", ["4d", "24", "1b", "1c", "1d", "1e", "4b", "25", "4c"], function(binarySearch, defaultValue, defined, defineProperties, DeveloperError, Event, ExtrapolationType, JulianDate, LinearApproximation) {
   'use strict';
   var PackableNumber = {
     packedLength: 1,
@@ -10898,7 +11372,7 @@ define("49", ["4c", "23", "1a", "1b", "1c", "1d", "4a", "24", "4b"], function(bi
 })();
 (function() {
 var define = $__System.amdDefine;
-define("45", ["23", "1a", "1c", "1f", "27"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
+define("46", ["24", "1b", "1d", "20", "28"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
   'use strict';
   function Cartesian2(x, y) {
     this.x = defaultValue(x, 0.0);
@@ -11236,7 +11710,7 @@ define("45", ["23", "1a", "1c", "1f", "27"], function(defaultValue, defined, Dev
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4d", ["4e", "4c", "23", "1a", "4f", "1f", "24", "50", "51", "38", "52", "53"], function(when, binarySearch, defaultValue, defined, EarthOrientationParametersSample, freezeObject, JulianDate, LeapSecond, loadJson, RuntimeError, TimeConstants, TimeStandard) {
+define("4e", ["4f", "4d", "24", "1b", "50", "20", "25", "51", "52", "39", "53", "54"], function(when, binarySearch, defaultValue, defined, EarthOrientationParametersSample, freezeObject, JulianDate, LeapSecond, loadJson, RuntimeError, TimeConstants, TimeStandard) {
   'use strict';
   function EarthOrientationParameters(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
@@ -11462,7 +11936,7 @@ define("4d", ["4e", "4c", "23", "1a", "4f", "1f", "24", "50", "51", "38", "52", 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4f", [], function() {
+define("50", [], function() {
   'use strict';
   function EarthOrientationParametersSample(xPoleWander, yPoleWander, xPoleOffset, yPoleOffset, ut1MinusUtc) {
     this.xPoleWander = xPoleWander;
@@ -11477,7 +11951,7 @@ define("4f", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("54", ["55", "23", "1a", "1c"], function(Uri, defaultValue, defined, DeveloperError) {
+define("55", ["56", "24", "1b", "1d"], function(Uri, defaultValue, defined, DeveloperError) {
   'use strict';
   function getAbsoluteUri(relative, base) {
     if (!defined(relative)) {
@@ -11494,7 +11968,7 @@ define("54", ["55", "23", "1a", "1c"], function(Uri, defaultValue, defined, Deve
 })();
 (function() {
 var define = $__System.amdDefine;
-define("55", [], function() {
+define("56", [], function() {
   function URI(uri) {
     if (uri instanceof URI) {
       this.scheme = uri.scheme;
@@ -11642,7 +12116,7 @@ define("55", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("56", ["55", "23", "1a", "1c"], function(Uri, defaultValue, defined, DeveloperError) {
+define("57", ["56", "24", "1b", "1d"], function(Uri, defaultValue, defined, DeveloperError) {
   'use strict';
   function joinUrls(first, second, appendSlash) {
     if (!defined(first)) {
@@ -11712,7 +12186,7 @@ define("56", ["55", "23", "1a", "1c"], function(Uri, defaultValue, defined, Deve
 })();
 (function() {
 var define = $__System.amdDefine;
-define("57", ["55", "1a", "1c", "54", "56", "require"], function(Uri, defined, DeveloperError, getAbsoluteUri, joinUrls, _dereq_) {
+define("58", ["56", "1b", "1d", "55", "57", "require"], function(Uri, defined, DeveloperError, getAbsoluteUri, joinUrls, _dereq_) {
   'use strict';
   var cesiumScriptRegex = /((?:.*\/)|^)cesium[\w-]*\.js(?:\W|$)/i;
   function getBaseUrlFromCesiumScript() {
@@ -11778,7 +12252,7 @@ define("57", ["55", "1a", "1c", "54", "56", "require"], function(Uri, defined, D
 })();
 (function() {
 var define = $__System.amdDefine;
-define("58", ["23"], function(defaultValue) {
+define("59", ["24"], function(defaultValue) {
   'use strict';
   function clone(object, deep) {
     if (object === null || typeof object !== 'object') {
@@ -11805,7 +12279,7 @@ define("58", ["23"], function(defaultValue) {
 var define = $__System.amdDefine;
 (function(define) {
   'use strict';
-  define("4e", [], function() {
+  define("4f", [], function() {
     var reduceArray,
         slice,
         undef;
@@ -12148,7 +12622,7 @@ var define = $__System.amdDefine;
 })();
 (function() {
 var define = $__System.amdDefine;
-define("59", [], function() {
+define("5a", [], function() {
   'use strict';
   function parseResponseHeaders(headerString) {
     var headers = {};
@@ -12173,7 +12647,7 @@ define("59", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5a", ["1a", "59"], function(defined, parseResponseHeaders) {
+define("5b", ["1b", "5a"], function(defined, parseResponseHeaders) {
   'use strict';
   function RequestErrorEvent(statusCode, response, responseHeaders) {
     this.statusCode = statusCode;
@@ -12196,7 +12670,7 @@ define("5a", ["1a", "59"], function(defined, parseResponseHeaders) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5b", ["4e", "23", "1a", "1c", "5a", "38"], function(when, defaultValue, defined, DeveloperError, RequestErrorEvent, RuntimeError) {
+define("5c", ["4f", "24", "1b", "1d", "5b", "39"], function(when, defaultValue, defined, DeveloperError, RequestErrorEvent, RuntimeError) {
   'use strict';
   function loadWithXhr(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
@@ -12304,7 +12778,7 @@ define("5b", ["4e", "23", "1a", "1c", "5a", "38"], function(when, defaultValue, 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5c", ["5b"], function(loadWithXhr) {
+define("5d", ["5c"], function(loadWithXhr) {
   'use strict';
   function loadText(url, headers) {
     return loadWithXhr({
@@ -12318,7 +12792,7 @@ define("5c", ["5b"], function(loadWithXhr) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("51", ["58", "1a", "1c", "5c"], function(clone, defined, DeveloperError, loadText) {
+define("52", ["59", "1b", "1d", "5d"], function(clone, defined, DeveloperError, loadText) {
   'use strict';
   var defaultHeaders = {Accept: 'application/json,*/*;q=0.01'};
   function loadJson(url, headers) {
@@ -12341,7 +12815,7 @@ define("51", ["58", "1a", "1c", "5c"], function(clone, defined, DeveloperError, 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5d", ["4e", "57", "23", "1a", "5e", "24", "51", "53"], function(when, buildModuleUrl, defaultValue, defined, Iau2006XysSample, JulianDate, loadJson, TimeStandard) {
+define("5e", ["4f", "58", "24", "1b", "5f", "25", "52", "54"], function(when, buildModuleUrl, defaultValue, defined, Iau2006XysSample, JulianDate, loadJson, TimeStandard) {
   'use strict';
   function Iau2006XysData(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
@@ -12496,7 +12970,7 @@ define("5d", ["4e", "57", "23", "1a", "5e", "24", "51", "53"], function(when, bu
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5e", [], function() {
+define("5f", [], function() {
   'use strict';
   function Iau2006XysSample(x, y, s) {
     this.x = x;
@@ -12509,7 +12983,7 @@ define("5e", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5f", ["1a", "1b"], function(defined, defineProperties) {
+define("60", ["1b", "1c"], function(defined, defineProperties) {
   'use strict';
   var _supportsFullscreen;
   var _names = {
@@ -12647,7 +13121,7 @@ define("5f", ["1a", "1b"], function(defined, defineProperties) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("60", ["23", "1a", "5f"], function(defaultValue, defined, Fullscreen) {
+define("61", ["24", "1b", "60"], function(defaultValue, defined, Fullscreen) {
   'use strict';
   var theNavigator;
   if (typeof navigator !== 'undefined') {
@@ -12818,7 +13292,7 @@ define("60", ["23", "1a", "5f"], function(defaultValue, defined, Fullscreen) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("34", ["2c", "23", "1a", "1c", "60", "1f", "27", "32"], function(Cartesian3, defaultValue, defined, DeveloperError, FeatureDetection, freezeObject, CesiumMath, Matrix3) {
+define("35", ["2d", "24", "1b", "1d", "61", "20", "28", "33"], function(Cartesian3, defaultValue, defined, DeveloperError, FeatureDetection, freezeObject, CesiumMath, Matrix3) {
   'use strict';
   function Quaternion(x, y, z, w) {
     this.x = defaultValue(x, 0.0);
@@ -13394,7 +13868,7 @@ define("34", ["2c", "23", "1a", "1c", "60", "1f", "27", "32"], function(Cartesia
 })();
 (function() {
 var define = $__System.amdDefine;
-define("35", ["4e", "45", "2c", "43", "3b", "23", "1a", "1c", "4d", "4f", "3c", "5d", "5e", "24", "27", "32", "33", "34", "52"], function(when, Cartesian2, Cartesian3, Cartesian4, Cartographic, defaultValue, defined, DeveloperError, EarthOrientationParameters, EarthOrientationParametersSample, Ellipsoid, Iau2006XysData, Iau2006XysSample, JulianDate, CesiumMath, Matrix3, Matrix4, Quaternion, TimeConstants) {
+define("36", ["4f", "46", "2d", "44", "3c", "24", "1b", "1d", "4e", "50", "3d", "5e", "5f", "25", "28", "33", "34", "35", "53"], function(when, Cartesian2, Cartesian3, Cartesian4, Cartographic, defaultValue, defined, DeveloperError, EarthOrientationParameters, EarthOrientationParametersSample, Ellipsoid, Iau2006XysData, Iau2006XysSample, JulianDate, CesiumMath, Matrix3, Matrix4, Quaternion, TimeConstants) {
   'use strict';
   var Transforms = {};
   var eastNorthUpToFixedFrameNormal = new Cartesian3();
@@ -13847,7 +14321,7 @@ define("35", ["4e", "45", "2c", "43", "3b", "23", "1a", "1c", "4d", "4f", "3c", 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("61", [], function() {
+define("62", [], function() {
   function sprintf() {
     var regex = /%%|%(\d+\$)?([-+\'#0 ]*)(\*\d+\$|\*|\d+)?(\.(\*\d+\$|\*|\d+))?([scboxXuideEfFgG])/g;
     var a = arguments,
@@ -13996,7 +14470,7 @@ define("61", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4c", ["1a", "1c"], function(defined, DeveloperError) {
+define("4d", ["1b", "1d"], function(defined, DeveloperError) {
   'use strict';
   function binarySearch(array, itemToFind, comparator) {
     if (!defined(array)) {
@@ -14033,7 +14507,7 @@ define("4c", ["1a", "1c"], function(defined, DeveloperError) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("62", [], function() {
+define("63", [], function() {
   'use strict';
   function GregorianDate(year, month, day, hour, minute, second, millisecond, isLeapSecond) {
     this.year = year;
@@ -14051,7 +14525,7 @@ define("62", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("63", ["1c"], function(DeveloperError) {
+define("64", ["1d"], function(DeveloperError) {
   'use strict';
   function isLeapYear(year) {
     if (year === null || isNaN(year)) {
@@ -14065,7 +14539,7 @@ define("63", ["1c"], function(DeveloperError) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("50", [], function() {
+define("51", [], function() {
   'use strict';
   function LeapSecond(date, offset) {
     this.julianDate = date;
@@ -14077,7 +14551,7 @@ define("50", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("24", ["61", "4c", "23", "1a", "1c", "62", "63", "50", "52", "53"], function(sprintf, binarySearch, defaultValue, defined, DeveloperError, GregorianDate, isLeapYear, LeapSecond, TimeConstants, TimeStandard) {
+define("25", ["62", "4d", "24", "1b", "1d", "63", "64", "51", "53", "54"], function(sprintf, binarySearch, defaultValue, defined, DeveloperError, GregorianDate, isLeapYear, LeapSecond, TimeConstants, TimeStandard) {
   'use strict';
   var gregorianDateScratch = new GregorianDate();
   var daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -14613,7 +15087,7 @@ define("24", ["61", "4c", "23", "1a", "1c", "62", "63", "50", "52", "53"], funct
 })();
 (function() {
 var define = $__System.amdDefine;
-define("52", ["1f"], function(freezeObject) {
+define("53", ["20"], function(freezeObject) {
   'use strict';
   var TimeConstants = {
     SECONDS_PER_MILLISECOND: 0.001,
@@ -14633,7 +15107,7 @@ define("52", ["1f"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("53", ["1f"], function(freezeObject) {
+define("54", ["20"], function(freezeObject) {
   'use strict';
   var TimeStandard = {
     UTC: 0,
@@ -14645,7 +15119,7 @@ define("53", ["1f"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("64", ["2c", "1a", "1c", "24", "27", "32", "52", "53"], function(Cartesian3, defined, DeveloperError, JulianDate, CesiumMath, Matrix3, TimeConstants, TimeStandard) {
+define("65", ["2d", "1b", "1d", "25", "28", "33", "53", "54"], function(Cartesian3, defined, DeveloperError, JulianDate, CesiumMath, Matrix3, TimeConstants, TimeStandard) {
   'use strict';
   var Simon1994PlanetaryPositions = {};
   function computeTdbMinusTtSpice(daysSinceJ2000InTerrestrialTime) {
@@ -14936,7 +15410,7 @@ define("64", ["2c", "1a", "1c", "24", "27", "32", "52", "53"], function(Cartesia
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3c", ["2c", "3b", "23", "1a", "1b", "1c", "1f", "27", "65"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
+define("3d", ["2d", "3c", "24", "1b", "1c", "1d", "20", "28", "66"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
   'use strict';
   function initialize(ellipsoid, x, y, z) {
     x = defaultValue(x, 0.0);
@@ -15174,7 +15648,7 @@ define("3c", ["2c", "3b", "23", "1a", "1b", "1c", "1f", "27", "65"], function(Ca
 })();
 (function() {
 var define = $__System.amdDefine;
-define("66", ["2c", "3b", "23", "1a", "1b", "1c", "3c", "27"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, Ellipsoid, CesiumMath) {
+define("67", ["2d", "3c", "24", "1b", "1c", "1d", "3d", "28"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, Ellipsoid, CesiumMath) {
   'use strict';
   function setConstants(ellipsoidGeodesic) {
     var uSquared = ellipsoidGeodesic._uSquared;
@@ -15402,7 +15876,7 @@ define("66", ["2c", "3b", "23", "1a", "1b", "1c", "3c", "27"], function(Cartesia
 })();
 (function() {
 var define = $__System.amdDefine;
-define("65", ["2c", "1a", "1c", "27"], function(Cartesian3, defined, DeveloperError, CesiumMath) {
+define("66", ["2d", "1b", "1d", "28"], function(Cartesian3, defined, DeveloperError, CesiumMath) {
   'use strict';
   var scaleToGeodeticSurfaceIntersection = new Cartesian3();
   var scaleToGeodeticSurfaceGradient = new Cartesian3();
@@ -15484,7 +15958,7 @@ define("65", ["2c", "1a", "1c", "27"], function(Cartesian3, defined, DeveloperEr
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3b", ["2c", "23", "1a", "1c", "1f", "27", "65"], function(Cartesian3, defaultValue, defined, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
+define("3c", ["2d", "24", "1b", "1d", "20", "28", "66"], function(Cartesian3, defaultValue, defined, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
   'use strict';
   function Cartographic(longitude, latitude, height) {
     this.longitude = defaultValue(longitude, 0.0);
@@ -15586,7 +16060,7 @@ define("3b", ["2c", "23", "1a", "1c", "1f", "27", "65"], function(Cartesian3, de
 })();
 (function() {
 var define = $__System.amdDefine;
-define("67", ["1c", "68"], function(DeveloperError, QuadraticRealPolynomial) {
+define("68", ["1d", "69"], function(DeveloperError, QuadraticRealPolynomial) {
   'use strict';
   var CubicRealPolynomial = {};
   CubicRealPolynomial.computeDiscriminant = function(a, b, c, d) {
@@ -15753,7 +16227,7 @@ define("67", ["1c", "68"], function(DeveloperError, QuadraticRealPolynomial) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("68", ["1c", "27"], function(DeveloperError, CesiumMath) {
+define("69", ["1d", "28"], function(DeveloperError, CesiumMath) {
   'use strict';
   var QuadraticRealPolynomial = {};
   QuadraticRealPolynomial.computeDiscriminant = function(a, b, c) {
@@ -15834,7 +16308,7 @@ define("68", ["1c", "27"], function(DeveloperError, CesiumMath) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("69", ["67", "1c", "27", "68"], function(CubicRealPolynomial, DeveloperError, CesiumMath, QuadraticRealPolynomial) {
+define("6a", ["68", "1d", "28", "69"], function(CubicRealPolynomial, DeveloperError, CesiumMath, QuadraticRealPolynomial) {
   'use strict';
   var QuarticRealPolynomial = {};
   QuarticRealPolynomial.computeDiscriminant = function(a, b, c, d, e) {
@@ -16080,7 +16554,7 @@ define("69", ["67", "1c", "27", "68"], function(CubicRealPolynomial, DeveloperEr
 })();
 (function() {
 var define = $__System.amdDefine;
-define("6a", ["2c", "23", "1a", "1c"], function(Cartesian3, defaultValue, defined, DeveloperError) {
+define("6b", ["2d", "24", "1b", "1d"], function(Cartesian3, defaultValue, defined, DeveloperError) {
   'use strict';
   function Ray(origin, direction) {
     direction = Cartesian3.clone(defaultValue(direction, Cartesian3.ZERO));
@@ -16109,7 +16583,7 @@ define("6a", ["2c", "23", "1a", "1c"], function(Cartesian3, defaultValue, define
 })();
 (function() {
 var define = $__System.amdDefine;
-define("6b", ["2c", "3b", "23", "1a", "1c", "27", "32", "68", "69", "6a"], function(Cartesian3, Cartographic, defaultValue, defined, DeveloperError, CesiumMath, Matrix3, QuadraticRealPolynomial, QuarticRealPolynomial, Ray) {
+define("6c", ["2d", "3c", "24", "1b", "1d", "28", "33", "69", "6a", "6b"], function(Cartesian3, Cartographic, defaultValue, defined, DeveloperError, CesiumMath, Matrix3, QuadraticRealPolynomial, QuarticRealPolynomial, Ray) {
   'use strict';
   var IntersectionTests = {};
   IntersectionTests.rayPlane = function(ray, plane, result) {
@@ -16660,7 +17134,7 @@ define("6b", ["2c", "3b", "23", "1a", "1c", "27", "32", "68", "69", "6a"], funct
 })();
 (function() {
 var define = $__System.amdDefine;
-define("6c", ["1a"], function(defined) {
+define("6d", ["1b"], function(defined) {
   'use strict';
   var isArray = Array.isArray;
   if (!defined(isArray)) {
@@ -16674,7 +17148,7 @@ define("6c", ["1a"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("43", ["23", "1a", "1c", "1f", "27"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
+define("44", ["24", "1b", "1d", "20", "28"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
   'use strict';
   function Cartesian4(x, y, z, w) {
     this.x = defaultValue(x, 0.0);
@@ -17060,7 +17534,7 @@ define("43", ["23", "1a", "1c", "1f", "27"], function(defaultValue, defined, Dev
 })();
 (function() {
 var define = $__System.amdDefine;
-define("1b", ["1a"], function(defined) {
+define("1c", ["1b"], function(defined) {
   'use strict';
   var definePropertyWorks = (function() {
     try {
@@ -17081,7 +17555,7 @@ define("1b", ["1a"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("32", ["2c", "23", "1a", "1b", "1c", "1f", "27"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath) {
+define("33", ["2d", "24", "1b", "1c", "1d", "20", "28"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath) {
   'use strict';
   function Matrix3(column0Row0, column1Row0, column2Row0, column0Row1, column1Row1, column2Row1, column0Row2, column1Row2, column2Row2) {
     this[0] = defaultValue(column0Row0, 0.0);
@@ -17836,7 +18310,7 @@ define("32", ["2c", "23", "1a", "1b", "1c", "1f", "27"], function(Cartesian3, de
 })();
 (function() {
 var define = $__System.amdDefine;
-define("38", ["1a"], function(defined) {
+define("39", ["1b"], function(defined) {
   'use strict';
   function RuntimeError(message) {
     this.name = 'RuntimeError';
@@ -17866,7 +18340,7 @@ define("38", ["1a"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("33", ["2c", "43", "23", "1a", "1b", "1c", "1f", "27", "32", "38"], function(Cartesian3, Cartesian4, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath, Matrix3, RuntimeError) {
+define("34", ["2d", "44", "24", "1b", "1c", "1d", "20", "28", "33", "39"], function(Cartesian3, Cartesian4, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath, Matrix3, RuntimeError) {
   'use strict';
   function Matrix4(column0Row0, column1Row0, column2Row0, column3Row0, column0Row1, column1Row1, column2Row1, column3Row1, column0Row2, column1Row2, column2Row2, column3Row2, column0Row3, column1Row3, column2Row3, column3Row3) {
     this[0] = defaultValue(column0Row0, 0.0);
@@ -19348,7 +19822,7 @@ define("33", ["2c", "43", "23", "1a", "1b", "1c", "1f", "27", "32", "38"], funct
 })();
 (function() {
 var define = $__System.amdDefine;
-define("6d", [], function() {
+define("6e", [], function() {
   var MersenneTwister = function(seed) {
     if (seed == undefined) {
       seed = new Date().getTime();
@@ -19405,7 +19879,7 @@ define("6d", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("23", ["1f"], function(freezeObject) {
+define("24", ["20"], function(freezeObject) {
   'use strict';
   function defaultValue(a, b) {
     if (a !== undefined) {
@@ -19420,7 +19894,7 @@ define("23", ["1f"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("27", ["6d", "23", "1a", "1c"], function(MersenneTwister, defaultValue, defined, DeveloperError) {
+define("28", ["6e", "24", "1b", "1d"], function(MersenneTwister, defaultValue, defined, DeveloperError) {
   'use strict';
   var CesiumMath = {};
   CesiumMath.EPSILON1 = 0.1;
@@ -19664,7 +20138,7 @@ define("27", ["6d", "23", "1a", "1c"], function(MersenneTwister, defaultValue, d
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2c", ["23", "1a", "1c", "1f", "27"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
+define("2d", ["24", "1b", "1d", "20", "28"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
   'use strict';
   function Cartesian3(x, y, z) {
     this.x = defaultValue(x, 0.0);
@@ -20179,7 +20653,7 @@ define("2c", ["23", "1a", "1c", "1f", "27"], function(defaultValue, defined, Dev
 })();
 (function() {
 var define = $__System.amdDefine;
-define("1c", ["1a"], function(defined) {
+define("1d", ["1b"], function(defined) {
   'use strict';
   function DeveloperError(message) {
     this.name = 'DeveloperError';
@@ -20212,7 +20686,7 @@ define("1c", ["1a"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("1a", [], function() {
+define("1b", [], function() {
   'use strict';
   function defined(value) {
     return value !== undefined && value !== null;
@@ -20223,7 +20697,7 @@ define("1a", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("1f", ["1a"], function(defined) {
+define("20", ["1b"], function(defined) {
   'use strict';
   var freezeObject = Object.freeze;
   if (!defined(freezeObject)) {
@@ -20237,7 +20711,7 @@ define("1f", ["1a"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("44", ["2c", "1a", "1c", "1f"], function(Cartesian3, defined, DeveloperError, freezeObject) {
+define("45", ["2d", "1b", "1d", "20"], function(Cartesian3, defined, DeveloperError, freezeObject) {
   'use strict';
   function Plane(normal, distance) {
     if (!defined(normal)) {
@@ -20297,7 +20771,7 @@ define("44", ["2c", "1a", "1c", "1f"], function(Cartesian3, defined, DeveloperEr
 })();
 (function() {
 var define = $__System.amdDefine;
-define("6e", ["2c", "3b", "23", "1a", "1c", "3c", "66", "6b", "6c", "27", "33", "44"], function(Cartesian3, Cartographic, defaultValue, defined, DeveloperError, Ellipsoid, EllipsoidGeodesic, IntersectionTests, isArray, CesiumMath, Matrix4, Plane) {
+define("6f", ["2d", "3c", "24", "1b", "1d", "3d", "67", "6c", "6d", "28", "34", "45"], function(Cartesian3, Cartographic, defaultValue, defined, DeveloperError, Ellipsoid, EllipsoidGeodesic, IntersectionTests, isArray, CesiumMath, Matrix4, Plane) {
   'use strict';
   var PolylinePipeline = {};
   PolylinePipeline.numberOfPoints = function(p0, p1, minDistance) {
@@ -20478,7 +20952,7 @@ define("6e", ["2c", "3b", "23", "1a", "1c", "3c", "66", "6b", "6c", "27", "33", 
 })();
 // Add functionality for keeping a moving window of samples per SampledProperty,
 // so that the data doesn't accumulate indefinitely
-$__System.register("6f", ["11"], function (exports_1, context_1) {
+$__System.register("70", ["12"], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -20542,7 +21016,7 @@ $__System.register("6f", ["11"], function (exports_1, context_1) {
         }
     };
 });
-$__System.register('11', ['4c', '19', '45', '2c', '43', '21', '22', '25', '2b', '2f', '26', '23', '1a', '1c', '3c', '28', '29', '1d', '4a', '3a', '3d', '24', '27', '32', '33', '3e', '3f', '40', '2e', '36', '34', '46', '2d', '47', '48', '49', '35', '64', '6e', '6f'], function (exports_1, context_1) {
+$__System.register('12', ['4d', '1a', '46', '2d', '44', '22', '23', '26', '2c', '30', '27', '24', '1b', '1d', '3d', '29', '2a', '1e', '4b', '3b', '3e', '25', '28', '33', '34', '3f', '40', '41', '2f', '37', '35', '47', '2e', '48', '49', '4a', '36', '65', '6f', '70'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -20707,12 +21181,12 @@ $__System.register('11', ['4c', '19', '45', '2c', '43', '21', '22', '25', '2b', 
         execute: function () {}
     };
 });
-$__System.register('e', ['1d', '11'], function (exports_1, context_1) {
+$__System.register('b', ['1e', '12'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
     var Event_1, cesium_imports_1;
-    var Event, CommandQueue, getEntityPosition, getEntityOrientation, urlParser, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation;
+    var Event, CommandQueue, getEntityPosition, getEntityOrientation, urlParser, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, detectIOS;
     /**
      * Get array of ancestor reference frames of a Cesium Entity.
      * @param frame A Cesium Entity to get ancestor reference frames.
@@ -20721,11 +21195,11 @@ $__System.register('e', ['1d', '11'], function (exports_1, context_1) {
     function getAncestorReferenceFrames(frame) {
         var frames = [];
         var f = frame;
-        while (cesium_imports_1.defined(f)) {
-            frames.unshift(f);
+        do {
             var position = f.position;
             f = position && position.referenceFrame;
-        }
+            if (cesium_imports_1.defined(f)) frames.unshift(f);
+        } while (cesium_imports_1.defined(f));
         return frames;
     }
     exports_1("getAncestorReferenceFrames", getAncestorReferenceFrames);
@@ -20784,20 +21258,36 @@ $__System.register('e', ['1d', '11'], function (exports_1, context_1) {
      * @param entity The entity which the serialized pose represents.
      * @param time The time which to retrieve the pose.
      * @param referenceFrame The reference frame to use for generating the pose.
-     *  By default, uses the root reference frame of the entity.
+     * If a target reference frame is not provided, the entity pose will be
+     * serialized according to the furthest ancestor frame that resolves to a valid pose.
      * @return An EntityPose object with orientation, position and referenceFrame.
      */
-    function getSerializedEntityPose(entity, time, referenceFrame) {
-        var frame = referenceFrame ? referenceFrame : getRootReferenceFrame(entity);
+    function getSerializedEntityPose(entity, time, frame) {
+        var frames = undefined;
+        if (!cesium_imports_1.defined(frame)) {
+            frames = getAncestorReferenceFrames(entity);
+            frame = frames[0];
+        }
+        if (!cesium_imports_1.defined(frame)) return;
         var p = getEntityPositionInReferenceFrame(entity, time, frame, {});
-        if (!p) return undefined;
+        if (!p && !frames) return undefined;
         var o = getEntityOrientationInReferenceFrame(entity, time, frame, {});
-        if (!o) return undefined;
-        return {
-            p: cesium_imports_1.Cartesian3.ZERO.equalsEpsilon(p, cesium_imports_1.CesiumMath.EPSILON16) ? 0 : p,
-            o: cesium_imports_1.Quaternion.IDENTITY.equalsEpsilon(o, cesium_imports_1.CesiumMath.EPSILON16) ? 0 : o,
-            r: typeof frame === 'number' ? frame : frame.id
-        };
+        if (!o && !frames) return undefined;
+        if (p && o) {
+            return {
+                p: cesium_imports_1.Cartesian3.ZERO.equalsEpsilon(p, cesium_imports_1.CesiumMath.EPSILON16) ? 0 : p,
+                o: cesium_imports_1.Quaternion.IDENTITY.equalsEpsilon(o, cesium_imports_1.CesiumMath.EPSILON16) ? 0 : o,
+                r: typeof frame === 'number' ? frame : frame.id
+            };
+        } else if (frames) {
+            for (var i = 1; i < frames.length; i++) {
+                frame = frames[i];
+                if (!cesium_imports_1.defined(frame)) return undefined;
+                var result = getSerializedEntityPose(entity, time, frame);
+                if (result) return result;
+            }
+        }
+        return undefined;
     }
     exports_1("getSerializedEntityPose", getSerializedEntityPose);
     /**
@@ -20907,6 +21397,18 @@ $__System.register('e', ['1d', '11'], function (exports_1, context_1) {
         return true;
     }
     exports_1("convertEntityReferenceFrame", convertEntityReferenceFrame);
+    function openInArgonApp() {
+        if (detectIOS) {
+            // var now = Date.now();
+            // setTimeout(function () {
+            //     if (Date.now() - now > 1000) return;
+            //     window.location.href = "https://itunes.apple.com/us/app/argon4/id1089308600";
+            // }, 25);
+            var protocol = window.location.protocol;
+            window.location.protocol = protocol === 'https:' ? 'argon4s' : 'argon4';
+        }
+    }
+    exports_1("openInArgonApp", openInArgonApp);
     return {
         setters: [function (Event_1_1) {
             Event_1 = Event_1_1;
@@ -21195,15 +21697,23 @@ $__System.register('e', ['1d', '11'], function (exports_1, context_1) {
             scratchPerspectiveOffCenterFrustum = new cesium_imports_1.PerspectiveOffCenterFrustum();
             scratchCartesian = new cesium_imports_1.Cartesian3();
             scratchOrientation = new cesium_imports_1.Quaternion();
+            exports_1("detectIOS", detectIOS = typeof navigator !== 'undefined' && typeof window !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent) && !window['MSStream']);
         }
     };
 });
-$__System.register('1', ['2', 'f', '11', '7', 'a', '9', '12', 'b', '14', 'd', 'c', '16', '13', '8', '15', '18', 'e'], function (exports_1, context_1) {
+$__System.register('1', ['2', 'c', '12', '7', 'a', 'e', '16', 'f', '14', '11', '10', '8', '9', '13', 'd', '15', '19', 'b'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
-    var DI, Cesium, URI, session_1, common_1, context_2, device_1, focus_1, reality_1, timer_1, view_1, vuforia_1, empty_1, live_video_1, hosted_1;
-    var ArgonSystem;
+    var __extends = this && this.__extends || function (d, b) {
+        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+        function __() {
+            this.constructor = d;
+        }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+    var DI, Cesium, URI, session_1, common_1, context_2, device_1, focus_1, reality_1, timer_1, ui_1, view_1, vuforia_1, empty_1, live_video_1, hosted_1;
+    var ArgonSystem, RealityView;
     /**
      * Create an ArgonSystem instance.
      * If we are running within a [[REALITY_MANAGER]],
@@ -21221,7 +21731,7 @@ $__System.register('1', ['2', 'f', '11', '7', 'a', '9', '12', 'b', '14', 'd', 'c
         if (typeof HTMLElement === 'undefined') {
             role = common_1.Role.REALITY_MANAGER;
         } else if (navigator.userAgent.indexOf('Argon') > 0 || window.top !== window) {
-            role = common_1.Role.APPLICATION; // TODO: switch to below after next argon-app release
+            role = common_1.Role.APPLICATION; // TODO: switch to below after several argon-app releases
         } else {
             role = common_1.Role.REALITY_MANAGER;
         }
@@ -21233,21 +21743,33 @@ $__System.register('1', ['2', 'f', '11', '7', 'a', '9', '12', 'b', '14', 'd', 'c
     }
     exports_1("init", init);
     /**
+     * Deprecated. Use [[initRealityViewer]]
+     * @deprecated
+     */
+    function initReality(p) {
+        if (p === void 0) {
+            p = {};
+        }
+        return initRealityViewer(p);
+    }
+    exports_1("initReality", initReality);
+    /**
      * Initialize an [[ArgonSystem]] with the [[REALITY_VIEW]] role
      */
-    function initReality(_a) {
+    function initRealityViewer(_a) {
         var _b = _a === void 0 ? {} : _a,
             configuration = _b.configuration,
             _c = _b.container,
             container = _c === void 0 ? new DI.Container() : _c;
         var config = Object.assign(configuration || {}, {
             role: common_1.Role.REALITY_VIEW,
+            // role: Role.REALITY_VIEWER
             'reality.supportsControlPort': true
         });
         container.registerInstance('containerElement', null);
         return new ArgonSystem(config, container);
     }
-    exports_1("initReality", initReality);
+    exports_1("initRealityViewer", initRealityViewer);
     /**
      * Not yet implemented.
      * @private
@@ -21266,8 +21788,10 @@ $__System.register('1', ['2', 'f', '11', '7', 'a', '9', '12', 'b', '14', 'd', 'c
     exports_1("initLocal", initLocal);
     var exportedNames_1 = {
         'ArgonSystem': true,
+        'RealityView': true,
         'init': true,
         'initReality': true,
+        'initRealityViewer': true,
         'initLocal': true,
         'DI': true,
         'Cesium': true,
@@ -21311,6 +21835,9 @@ $__System.register('1', ['2', 'f', '11', '7', 'a', '9', '12', 'b', '14', 'd', 'c
         }, function (timer_1_1) {
             timer_1 = timer_1_1;
             exportStar_1(timer_1_1);
+        }, function (ui_1_1) {
+            ui_1 = ui_1_1;
+            exportStar_1(ui_1_1);
         }, function (view_1_1) {
             view_1 = view_1_1;
             exportStar_1(view_1_1);
@@ -21364,13 +21891,13 @@ $__System.register('1', ['2', 'f', '11', '7', 'a', '9', '12', 'b', '14', 'd', 'c
                         this.reality.registerLoader(container.get(live_video_1.LiveVideoRealityLoader));
                         if (typeof document !== 'undefined') {
                             this.reality.registerLoader(container.get(hosted_1.HostedRealityLoader));
-                            // enable pinch-zoom
                             container.get(view_1.PinchZoomService);
+                            container.get(ui_1.DefaultUIService);
                         }
                         if (live_video_1.LiveVideoRealityLoader.isAvailable()) {
-                            this.reality.setDefault(common_1.RealityView.LIVE_VIDEO);
+                            this.reality.setDefault(RealityView.LIVE_VIDEO);
                         } else {
-                            this.reality.setDefault(common_1.RealityView.EMPTY);
+                            this.reality.setDefault(RealityView.EMPTY);
                         }
                     }
                     // ensure the entire object graph is instantiated before connecting to the manager. 
@@ -21468,6 +21995,19 @@ $__System.register('1', ['2', 'f', '11', '7', 'a', '9', '12', 'b', '14', 'd', 'c
                 return ArgonSystem;
             }();
             exports_1("ArgonSystem", ArgonSystem);
+            // expose RealityView for backwards compatability
+            /**
+             * @private
+             */
+            RealityView = function (_super) {
+                __extends(RealityView, _super);
+                function RealityView() {
+                    _super.call(this);
+                    console.warn('RealityView class has been renamed to RealityViewer');
+                }
+                return RealityView;
+            }(common_1.RealityViewer);
+            exports_1("RealityView", RealityView);
         }
     };
 });
