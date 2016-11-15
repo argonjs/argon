@@ -19,7 +19,7 @@ SystemJS.config({
         },
         "test": {
             "map": {
-                "@argonjs/argon": "dist/argon.min.js"
+                "@argonjs/argon": "src/argon.ts!"
             }
         }
     },
@@ -58,16 +58,22 @@ SystemJS.config({
         "github:*/*.json"
     ],
     map: {
+        "assert": "github:jspm/nodelibs-assert@0.2.0-alpha",
         "aurelia-dependency-injection": "npm:aurelia-dependency-injection@1.0.0-beta.1.1.4",
         "aurelia-logging": "npm:aurelia-logging@1.0.0-beta.1.1.2",
         "aurelia-metadata": "npm:aurelia-metadata@1.0.0-beta.1.1.5",
         "aurelia-pal": "npm:aurelia-pal@1.0.0-beta.1.1.1",
         "aurelia-polyfills": "npm:aurelia-polyfills@1.0.0-beta.1.0.0",
         "cesium": "github:aelatgt/cesium@referenceFrames",
+        "detectrtc": "npm:detectrtc@1.3.1",
+        "fs": "github:jspm/nodelibs-fs@0.2.0-alpha",
         "mobile-detect": "npm:mobile-detect@1.3.2",
         "os": "github:jspm/nodelibs-os@0.2.0-alpha",
+        "path": "github:jspm/nodelibs-path@0.2.0-alpha",
+        "process": "github:jspm/nodelibs-process@0.2.0-alpha",
         "ts": "github:frankwallis/plugin-typescript@5.0.9",
-        "urijs": "github:medialize/URI.js@1.18.1"
+        "urijs": "github:medialize/URI.js@1.18.1",
+        "url": "github:jspm/nodelibs-url@0.2.0-alpha"
     },
     packages: {
         "github:jspm/nodelibs-os@0.2.0-alpha": {
@@ -78,6 +84,17 @@ SystemJS.config({
         "github:frankwallis/plugin-typescript@5.0.9": {
             "map": {
                 "typescript": "npm:typescript@2.0.0"
+            }
+        },
+        "github:jspm/nodelibs-url@0.2.0-alpha": {
+            "map": {
+                "url-browserify": "npm:url@0.11.0"
+            }
+        },
+        "npm:url@0.11.0": {
+            "map": {
+                "punycode": "npm:punycode@1.3.2",
+                "querystring": "npm:querystring@0.2.0"
             }
         }
     }

@@ -270,6 +270,12 @@ export class RealityViewer {
         providedReferenceFrames: ['FIXED']
     }
 
+    static LIVE_VIDEO: RealityView = {
+        uri: 'reality:live-video',
+        title: 'Live Video Reality'
+        // No reference frames provided?
+    }
+
     public uri: string;
     public title?: string;
     public providedReferenceFrames?: Array<string>;

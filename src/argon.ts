@@ -97,7 +97,11 @@ export class ArgonSystem {
                 container.get(DefaultUIService);
             }
 
-            this.reality.setDefault(RealityViewer.EMPTY);
+        if (LiveVideoRealityLoader.isAvailable()) {
+                this.reality.setDefault(RealityView.LIVE_VIDEO);
+            } else {
+                this.reality.setDefault(RealityView.EMPTY);
+            }
         }
 
         // ensure the entire object graph is instantiated before connecting to the manager. 
