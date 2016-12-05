@@ -11,50 +11,63 @@ import {
     Entity,
     Quaternion,
     Matrix3,
+    Matrix4,
+    PerspectiveFrustum,
     CesiumMath
 } from '../cesium/cesium-imports'
-import { Role, ViewState, RealityViewer } from '../common'
-import { SessionService, SessionPort } from '../session'
+import { Role, ViewState } from '../common'
+import { SessionService } from '../session'
 import { DeviceService } from '../device'
-import { RealityLoader } from '../reality'
-import { getSerializedEntityPose } from '../utils'
+import { getSerializedEntityPose, decomposePerspectiveProjectionMatrix, getEntityOrientationInReferenceFrame } from '../utils'
 import { ViewService } from '../view'
+import { RealityViewer } from './base'
 
 interface Movement {
     startPosition:Cartesian2; 
     endPosition:Cartesian2;
 }
 
-// interface PinchMovement {
-//     distance: Movement;
-//     angleAndHeight: Movement
-// }
+interface PinchMovement {
+    distance: Movement;
+    angleAndHeight: Movement;
+}
 
 @inject(SessionService, DeviceService, ViewService)
-export class EmptyRealityLoader extends RealityLoader {
+export class EmptyRealityViewer extends RealityViewer {
 
     public type = 'empty';
 
     constructor(
         private sessionService: SessionService,
         private deviceService: DeviceService,
-        private viewService: ViewService) {
-        super();
-
+        private viewService: ViewService,
+        public uri:string) {
+        super(sessionService, uri);
     }
 
-    public load(reality: RealityViewer, callback: (realitySession: SessionPort) => void): void {
-        const realitySession = this.sessionService.addManagedSessionPort(reality.uri);
-        const remoteRealitySession = this.sessionService.createSessionPort();
+    public destroy() {
+        
+    }
+
+    private _isPresenting = false;
+
+    public setPresenting(foo: boolean) : void {
+        this._isPresenting = foo;
+    }
+
+    public load(): void {
+        super.load();
+        const realitySession = this.session;
+        const remoteRealitySession = this.sessionService.createSessionPort(this.uri);
 
         remoteRealitySession.on['ar.device.state'] = () => { };
         remoteRealitySession.on['ar.view.uievent'] = () => { };
         remoteRealitySession.on['ar.context.update'] = () => { };
+        remoteRealitySession.on['ar.reality.connect'] = () => { };
 
         remoteRealitySession.connectEvent.addEventListener(() => {
-            const element = this.viewService.element;
 
-            const aggregator = new CameraEventAggregator(<any>element);
+            const aggregator = new CameraEventAggregator(<any>this.viewService.element);
 
             var flags = {
                 moveForward : false,
@@ -107,71 +120,91 @@ export class EmptyRealityLoader extends RealityLoader {
                 document.removeEventListener('keyup', keyupListener);
             });
 
-            let yaw = 0;
-            let pitch = 0;
-            // const yawQuat = new Quaternion;
+            const scratchQuaternionDragYaw = new Quaternion;
             // const pitchQuat = new Quaternion;
             const positionScratchCartesian = new Cartesian3;
             const movementScratchCartesian = new Cartesian3;
             const eyeOrientation = new Quaternion;
             const orientationMatrix = new Matrix3;
-            const up = new Cartesian3;
-            const right = new Cartesian3;
-            const forward = new Cartesian3;
+            const up = new Cartesian3(0,0,1);
+            const right = new Cartesian3(1,0,0);
+            const forward = new Cartesian3(0,-1,0);
+            const frustum = new PerspectiveFrustum();
 
             const AVERAGE_HUMAN_HEIGHT = 1.77;
-            const NEGATIVE_UNIT_Z = new Cartesian3(0,0,-1);
+            const NEGATIVE_UNIT_Y = new Cartesian3(0,-1,0);
             const X_90ROT = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, CesiumMath.PI_OVER_TWO);
 
-            const cameraPositionProperty = new ConstantPositionProperty(
+            const virtualEyePositionProperty = new ConstantPositionProperty(
                 new Cartesian3(0, 0, AVERAGE_HUMAN_HEIGHT), 
                 this.deviceService.stage
             );
-            const cameraOrientationProperty = new ConstantProperty(X_90ROT);
+            const virtualEyeOrientationProperty = new ConstantProperty(X_90ROT);
             Matrix3.fromQuaternion(eyeOrientation, orientationMatrix);
-            Matrix3.multiplyByVector(orientationMatrix, Cartesian3.UNIT_Y, up);
-            Matrix3.multiplyByVector(orientationMatrix, Cartesian3.UNIT_X, right);
-            Matrix3.multiplyByVector(orientationMatrix, NEGATIVE_UNIT_Z, forward);
 
-            const cameraEntity = new Entity({
-                position: cameraPositionProperty,
-                orientation: cameraOrientationProperty
+            const virtualEye = new Entity({
+                position: virtualEyePositionProperty,
+                orientation: virtualEyeOrientationProperty
             });
 
             const deviceService = this.deviceService;
 
             let update = (time: JulianDate) => {
                 if (remoteRealitySession.isConnected) deviceService.requestFrame(update);
+                else return;
+
+                if (!this._isPresenting) {
+                    aggregator.reset();
+                    return;
+                }
+
+                if (frustum.fov === undefined || deviceService.strict) {
+                    decomposePerspectiveProjectionMatrix(deviceService.subviews[0].projectionMatrix, frustum);
+                }
+                
+                if (!deviceService.strict) {
+                    if (aggregator.isMoving(CameraEventType.WHEEL)) {
+                        const wheelMovement = aggregator.getMovement(CameraEventType.WHEEL);
+                        const diff = wheelMovement.endPosition.y;
+                        frustum.fov = Math.min(Math.max(frustum.fov - diff * 0.02, Math.PI/8), Math.PI-Math.PI/8);
+                    }
+                    if (aggregator.isMoving(CameraEventType.PINCH)) {
+                        const pinchMovement:PinchMovement = aggregator.getMovement(CameraEventType.PINCH);
+                        const diff = pinchMovement.distance.endPosition.y - pinchMovement.distance.startPosition.y;
+                        frustum.fov = Math.min(Math.max(frustum.fov - diff * 0.02, Math.PI/8), Math.PI-Math.PI/8);
+                    }
+                    const aspect = deviceService.subviews[0].viewport.width / deviceService.subviews[0].viewport.height;
+                    frustum.aspectRatio = isNaN(aspect) ? 1 : aspect;
+                    deviceService.subviews.forEach((s)=>{
+                        Matrix4.clone(frustum.projectionMatrix, s.projectionMatrix);
+                    });
+                }
 
                 let pose = getSerializedEntityPose(this.deviceService.eye, time);
                 
                 // provide controls if the device does not have a pose
-                if (!pose) {
+                if (!pose && !deviceService.strict) {
                     
                     if (aggregator.isMoving(CameraEventType.LEFT_DRAG)) {
-                        var width = element.clientWidth;
-                        var height = element.clientHeight;
-                        // Coordinate (0.0, 0.0) will be where the mouse was clicked.
-                        
-                        const movement:Movement = aggregator.getMovement(CameraEventType.LEFT_DRAG);
-                        var movementX = (movement.endPosition.x - movement.startPosition.x) / width;
-                        var movementY = -(movement.endPosition.y - movement.startPosition.y) / height;
-                        var lookFactor = 0.05;
-                        
-                        yaw -= movementX * lookFactor;
-                        pitch -= movementY * lookFactor; 
-                        pitch = Math.max( - CesiumMath.PI_OVER_TWO, Math.min( CesiumMath.PI_OVER_TWO, pitch ) );
+                        const dragMovement = aggregator.getMovement(CameraEventType.LEFT_DRAG);
+                        const currentOrientation = getEntityOrientationInReferenceFrame(virtualEye, time, deviceService.stage, eyeOrientation);
 
-                        Quaternion.fromHeadingPitchRoll(yaw, pitch, 0, eyeOrientation);
-                        Matrix3.fromQuaternion(eyeOrientation, orientationMatrix);
-                        Matrix3.multiplyByVector(orientationMatrix, Cartesian3.UNIT_Y, up);
-                        Matrix3.multiplyByVector(orientationMatrix, Cartesian3.UNIT_X, right);
-                        Matrix3.multiplyByVector(orientationMatrix, NEGATIVE_UNIT_Z, forward);
+                        if (currentOrientation) {
+                            // const dragPitch = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, frustum.fov * (dragMovement.endPosition.y - dragMovement.startPosition.y) / app.view.getViewport().height, scratchQuaternionDragPitch);
+                            const dragYaw = Quaternion.fromAxisAngle(Cartesian3.UNIT_Y, frustum.fov * (dragMovement.endPosition.x - dragMovement.startPosition.x) / this.viewService.viewport.width, scratchQuaternionDragYaw);
+                            // const drag = Quaternion.multiply(dragPitch, dragYaw, dragYaw);
 
-                        cameraOrientationProperty.setValue(eyeOrientation);
+                            const newOrientation = Quaternion.multiply(currentOrientation, dragYaw, dragYaw);
+                            (<any>virtualEye.orientation).setValue(newOrientation);
+
+                            Matrix3.fromQuaternion(newOrientation, orientationMatrix);
+                            Matrix3.multiplyByVector(orientationMatrix, Cartesian3.UNIT_Z, up);
+                            Matrix3.multiplyByVector(orientationMatrix, Cartesian3.UNIT_X, right);
+                            Matrix3.multiplyByVector(orientationMatrix, NEGATIVE_UNIT_Y, forward);
+                        }
                     }
 
-                    const position = cameraPositionProperty.getValue(time, positionScratchCartesian);
+                    const position = virtualEyePositionProperty.getValueInReferenceFrame(time,  this.deviceService.stage, positionScratchCartesian);
                     
                     var moveRate = 0.02;
                     if (flags.moveForward) {
@@ -199,7 +232,9 @@ export class EmptyRealityLoader extends RealityLoader {
                         Cartesian3.add(position, movementScratchCartesian, position);
                     }
 
-                    pose = getSerializedEntityPose(cameraEntity, time);
+                    virtualEyePositionProperty.setValue(position, this.deviceService.stage);
+
+                    pose = getSerializedEntityPose(virtualEye, time);
                 }
 
                 aggregator.reset();
@@ -219,10 +254,11 @@ export class EmptyRealityLoader extends RealityLoader {
             deviceService.requestFrame(update);
         })
 
-        callback(realitySession);
         // Only connect after the caller is able to attach connectEvent handlers
-        const messageChannel = this.sessionService.createSynchronousMessageChannel();
-        realitySession.open(messageChannel.port1, this.sessionService.configuration);
-        remoteRealitySession.open(messageChannel.port2, { role: Role.REALITY_VIEWER });
+        Promise.resolve().then(()=>{
+            const messageChannel = this.sessionService.createSynchronousMessageChannel();
+            realitySession.open(messageChannel.port1, this.sessionService.configuration);
+            remoteRealitySession.open(messageChannel.port2, { role: Role.REALITY_VIEWER, uri: this.uri, title: 'Empty' });
+        });
     }
 }

@@ -1,15 +1,21 @@
-/// <reference types="cesium" />
-import { ReferenceFrame } from './cesium/cesium-imports';
-import { RealityViewer, DeprecatedPartialFrameState, ViewState } from './common';
-import { FocusService } from './focus';
+import { DeprecatedPartialFrameState, ViewState } from './common';
 import { SessionPort, SessionService } from './session';
 import { Event } from './utils';
-/**
- * Abstract class for a reality setup handler
- */
-export declare abstract class RealityLoader {
-    abstract type: string;
-    abstract load(reality: RealityViewer, callback: (realitySession: SessionPort) => void): any;
+import { ContextService } from './context';
+import { FocusService } from './focus';
+import { ViewService } from './view';
+import { DeviceService } from './device';
+import { RealityViewer } from './reality-viewers/base';
+export declare abstract class RealityViewerFactory {
+    private _createEmptyReality;
+    private _createLiveReality;
+    private _createHostedReality;
+    constructor(_createEmptyReality: any, _createLiveReality: any, _createHostedReality: any);
+    createRealityViewer(uri: string): RealityViewer;
+}
+export interface RealityViewerRequestOptions {
+    uri?: string;
+    geopose?: boolean;
 }
 /**
 * A service which manages the reality view.
@@ -18,70 +24,59 @@ export declare abstract class RealityLoader {
 */
 export declare class RealityService {
     private sessionService;
+    private contextService;
     private focusService;
-    /**
-     * A collection of known reality views from which the reality service can select.
-     */
-    realities: RealityViewer[];
-    /**
-     * An event that is raised when a reality control port is opened.
-     */
-    connectEvent: Event<SessionPort>;
-    /**
-     * Manager-only. An event that is raised when the current reality is changed.
-     */
-    private _changeEvent;
-    readonly changeEvent: Event<{
-        previous?: RealityViewer | undefined;
-        current: RealityViewer;
-    }>;
+    private viewService;
+    private deviceService;
+    private realityViewerFactor;
     /**
      * Manager/Viewer-only. An event that is raised when the current reality emits the next view state.
      */
-    private _viewStateEvent;
     readonly viewStateEvent: Event<ViewState>;
+    private _viewStateEvent;
     /**
-     * Manager-only. A map from a managed session to the desired reality
+     * An event that is raised when a reality viewer provides a session
+     * for sending and receiving application commands.
      */
-    desiredRealityMap: WeakMap<SessionPort, RealityViewer>;
+    readonly connectEvent: Event<SessionPort>;
+    private _connectEvent;
     /**
-     * Manager-only. A map from a desired reality to the session which requested it
+     * An event that is raised when the presenting reality viewer is changed.
      */
-    desiredRealityMapInverse: WeakMap<RealityViewer | undefined, SessionPort>;
-    /**
-     * Manager-only. An event that is raised when a session changes it's desired reality.
-     */
-    sessionDesiredRealityChangeEvent: Event<{
-        session: SessionPort;
-        previous: RealityViewer | undefined;
-        current: RealityViewer | undefined;
+    readonly changeEvent: Event<{
+        previous?: string | undefined;
+        current?: string | undefined;
     }>;
-    private _session?;
-    readonly session: SessionPort | undefined;
-    private _default;
+    private _changeEvent;
+    /**
+     * The URI for the currently presenting Reality Viewer.
+     */
+    readonly current: string | undefined;
     private _current?;
-    private _desired?;
-    private _loaders;
-    constructor(sessionService: SessionService, focusService: FocusService);
     /**
-     * Set the default reality.
+     * Manager-only. An event that is raised when a reality viewer is installed.
      */
-    setDefault(reality: RealityViewer): void;
+    readonly installedEvent: Event<{
+        uri: string;
+    }>;
+    private _installedEvent;
     /**
-     * Manager-only. Register a reality loader
+     * Manager-only. An event that is raised when a reality viewer is uninstalled.
      */
-    registerLoader(handler: RealityLoader): void;
+    readonly uninstalledEvent: Event<{
+        uri: string;
+    }>;
+    private _uninstalledEvent;
     /**
-     * Manager-only. Get the current reality view.
-     * @deprecated. Use app.context.getCurrentReality()
+     * The default Reality Viewer
      */
-    getCurrent(): RealityViewer | undefined;
-    /**
-    * Manager-only. Check if a type of reality is supported.
-    * @param type reality type
-    * @return true if a handler exists and false otherwise
-    */
-    isSupported(reality: RealityViewer): boolean;
+    default?: string;
+    readonly geoposeNeeded: boolean;
+    private _geoposeNeeded;
+    private _geoposeSubscribers;
+    private _viewerByURI;
+    private _installersByURI;
+    constructor(sessionService: SessionService, contextService: ContextService, focusService: FocusService, viewService: ViewService, deviceService: DeviceService, realityViewerFactor: RealityViewerFactory);
     /**
      * Deprecated. Use pubishViewState.
      * @deprecated
@@ -92,32 +87,30 @@ export declare class RealityService {
      */
     publishViewState(view: ViewState): void;
     /**
-     * Set the desired reality.
+     * Install the specified reality viewer
      */
-    setDesired(reality: RealityViewer | undefined): void;
+    install(uri: string): Promise<void>;
+    protected _install(session: SessionPort, uri: string): void;
+    private _connectViewerWithSession(viewerSession, session);
     /**
-     * Get the desired reality
+     * Uninstall the specified reality viewer
      */
-    getDesired(): RealityViewer | undefined;
+    uninstall(uri: string): Promise<void>;
+    protected _uninstall(session: SessionPort, uri: string): Promise<never>;
     /**
-     * Set the optional reference frames for this app
+     * Request that the provided reality viewer be presented. Pass `undefined` to
+     * hint that the manager should select the best available viewer.
      */
-    setOptionalReferenceFrames(referenceFrames: (ReferenceFrame | string)[]): void;
+    request(options: RealityViewerRequestOptions | undefined): Promise<void>;
+    protected _request(session: SessionPort, options?: RealityViewerRequestOptions): Promise<SessionPort | undefined> | undefined;
+    private _checkViewerSessionForGeoposeSupport(viewerSession);
+    private _checkGeoposeNeeded();
     /**
-     * Set the optional reference frames for this app
+     * @private
      */
-    setRequiredReferenceFrames(referenceFrames: (ReferenceFrame | string)[]): void;
-    /**
-    * Manager-only. Selects the best reality based on the realites
-    * requested by all managed sessions. Can be overriden for customized selection.
-    *
-    * @returns The reality chosen for this context. May be undefined if no
-    * realities have been requested.
-    */
-    onSelectReality(): RealityViewer | undefined;
-    private _loadID;
-    private _setNextReality(reality?, force?);
-    private _getLoader(reality);
-    private _setCurrent(reality);
-    private _executeRealityLoader(reality, callback);
+    setDesired(reality: {
+        uri: string;
+    } | undefined): void;
+    private _setPresentingReality(uri);
+    getViewerByURI(uri: string): RealityViewer | undefined;
 }

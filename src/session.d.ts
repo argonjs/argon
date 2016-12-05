@@ -1,5 +1,7 @@
 import { Configuration } from './common';
 import { Event, MessageChannelFactory, MessagePortLike, MessageChannelLike, SynchronousMessageChannel } from './utils';
+import { version } from '../package.json!';
+export { version };
 export interface Message {
     [key: string]: any;
 }
@@ -96,6 +98,7 @@ export declare class SessionPort {
      */
     close(): void;
     readonly isConnected: boolean;
+    readonly isClosed: boolean;
 }
 /**
  * A factory for creating [[SessionPort]] instances.
@@ -137,7 +140,7 @@ export declare class SessionService {
     readonly connectEvent: Event<SessionPort>;
     private _connectEvent;
     /**
-     * Manager-only. A collection of ports for the sessions managed by this session.
+     * Manager-only. A collection of ports for each managed session.
      */
     readonly managedSessions: SessionPort[];
     private _managedSessions;
@@ -166,7 +169,7 @@ export declare class SessionService {
      * to this [[ArgonSystem]].
      * @return a new SessionPort instance
      */
-    createSessionPort(uri?: string): SessionPort;
+    createSessionPort(uri: string): SessionPort;
     /**
      * Creates a message channel which asyncrhonously sends and receives messages.
      */
@@ -216,6 +219,10 @@ export declare class SessionService {
      * Throws an error if this session is a [[REALITY_AUGMENTER]]
      */
     ensureNotRealityAugmenter(): void;
+    /**
+     * Throws an error if the connection to the manager is closed
+     */
+    ensureConnected(): void;
 }
 /**
  * Connect the current [[ArgonSystem]] to itself as the [[REALITY_MANAGER]].

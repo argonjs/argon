@@ -1,6 +1,6 @@
 /// <reference types="cesium" />
 import { Entity, EntityCollection, Cartesian3, Cartographic, Quaternion, JulianDate, ReferenceFrame } from './cesium/cesium-imports';
-import { SerializedEntityPose, FrameState } from './common';
+import { SerializedEntityPose, FrameState, ViewState } from './common';
 import { SessionService } from './session';
 import { Event } from './utils';
 /**
@@ -47,12 +47,22 @@ export declare class ContextService {
      * the current frame. It is suggested that all modifications to locally managed entities
      * should occur within this event.
      */
+    frameStateEvent: Event<FrameState>;
+    /**
+     * An event that is raised when all remotely managed entities are are up-to-date for
+     * the current frame. It is suggested that all modifications to locally managed entities
+     * should occur within this event.
+     */
     updateEvent: Event<ContextService>;
     /**
      * An event that is raised when it is an approriate time to render graphics.
      * This event fires after the update event.
      */
     renderEvent: Event<ContextService>;
+    /**
+     * An event that is raised after the render event
+     */
+    postRenderEvent: Event<ContextService>;
     /**
      * An event that fires when the local origin changes.
      */
@@ -112,8 +122,8 @@ export declare class ContextService {
     /**
      * The serialized frame state for this frame
      */
-    readonly serializedFrameState: FrameState | undefined;
-    private _serializedState?;
+    readonly serializedFrameState: FrameState;
+    private _serializedFrameState;
     private _entityPoseCache;
     private _entityPoseMap;
     private _subscribedEntities;
@@ -157,7 +167,11 @@ export declare class ContextService {
      * `Cartesian3`. Otherwise undefined.
      */
     getEntityPose(entity: Entity, referenceFrame?: ReferenceFrame | Entity): EntityPose;
-    _update(serializedState: FrameState): void;
+    /**
+     * Process the next view state (which should come from the current reality viewer)
+     */
+    processViewState(view: ViewState): void;
+    protected _update(serializedState: FrameState): void;
     updateEntityFromSerializedPose(id: string, entityPose?: SerializedEntityPose): Entity;
     publishEntityState(entity: Entity, referenceFrame: ReferenceFrame | Entity): void;
     private _updateLocalOrigin(state);

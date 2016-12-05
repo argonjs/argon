@@ -166,7 +166,7 @@ export class VuforiaService {
                             })
                         }, this._controllingSession === session);
 
-                        if (this.focusService.getSession() === session) {
+                        if (this.focusService.session === session) {
                             this._setControllingSession(session);
                         }
 
@@ -284,7 +284,7 @@ export class VuforiaService {
     }
 
     private _selectControllingSession() {
-        const focusSession = this.focusService.getSession();
+        const focusSession = this.focusService.session;
 
         if (focusSession && this._sessionInitOptions.get(focusSession)) {
             this._setControllingSession(focusSession);

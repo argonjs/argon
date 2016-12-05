@@ -1,101 +1,87 @@
-System.register(['../../src/argon'], function(exports_1, context_1) {
-    "use strict";
-    var __moduleName = context_1 && context_1.id;
-    var Argon;
-    var app, scene, camera, user, userLocation, renderer, geometry, mat, posXSphere, negXSphere, posYSphere, negYSphere, posZSphere, negZSphere, axisHelper, perspectiveProjection;
-    function update(time) {
-        var pose = Argon.getSerializedEntityPose(app.device.eye, time);
-        app.reality.publishViewState({
-            time: time,
-            pose: pose,
-            viewport: app.device.viewport,
-            subviews: app.device.subviews,
-            geolocationAccuracy: undefined,
-            altitudeAccuracy: undefined,
-            compassAccuracy: undefined
-        });
-        app.device.requestFrame(update);
+import * as Argon from '../../src/argon';
+window['Argon'] = Argon;
+export const app = Argon.initRealityViewer();
+export const scene = new THREE.Scene();
+export const camera = new THREE.PerspectiveCamera();
+export const user = new THREE.Object3D();
+export const userLocation = new THREE.Object3D;
+scene.add(camera);
+scene.add(user);
+scene.add(userLocation);
+const renderer = new THREE.WebGLRenderer({
+    alpha: true,
+    logarithmicDepthBuffer: true
+});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+app.view.element.appendChild(renderer.domElement);
+// app.context.defaultReferenceFrame = app.context.localOriginEastUpSouth;
+app.context.defaultReferenceFrame = app.context.localOriginEastNorthUp;
+const geometry = new THREE.SphereGeometry(30, 32, 32);
+let mat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+export const posXSphere = new THREE.Mesh(geometry, mat);
+posXSphere.position.x = 200;
+userLocation.add(posXSphere);
+mat = new THREE.MeshBasicMaterial({ color: 0xffaaaa });
+export const negXSphere = new THREE.Mesh(geometry, mat);
+negXSphere.position.x = -200;
+userLocation.add(negXSphere);
+mat = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+export const posYSphere = new THREE.Mesh(geometry, mat);
+posYSphere.position.y = 200;
+userLocation.add(posYSphere);
+mat = new THREE.MeshBasicMaterial({ color: 0xaaffaa });
+export const negYSphere = new THREE.Mesh(geometry, mat);
+negYSphere.position.y = -200;
+userLocation.add(negYSphere);
+mat = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+export const posZSphere = new THREE.Mesh(geometry, mat);
+posZSphere.position.z = 200;
+userLocation.add(posZSphere);
+mat = new THREE.MeshBasicMaterial({ color: 0xaaaaff });
+export const negZSphere = new THREE.Mesh(geometry, mat);
+negZSphere.position.z = -200;
+userLocation.add(negZSphere);
+var axisHelper = new THREE.AxisHelper(10);
+userLocation.add(axisHelper);
+axisHelper.position.z = 50;
+var axisHelper = new THREE.AxisHelper(10);
+userLocation.add(axisHelper);
+axisHelper.position.y = -50;
+var perspectiveProjection = new Argon.Cesium.PerspectiveFrustum();
+perspectiveProjection.fov = Math.PI / 2;
+function update(time) {
+    const pose = Argon.getSerializedEntityPose(app.device.eye, time);
+    app.reality.publishViewState({
+        time,
+        pose,
+        viewport: app.device.viewport,
+        subviews: app.device.subviews,
+        geolocationAccuracy: undefined,
+        altitudeAccuracy: undefined,
+        compassAccuracy: undefined
+    });
+    app.device.requestFrame(update);
+}
+app.device.requestFrame(update);
+app.updateEvent.addEventListener(() => {
+    const userPose = app.context.getEntityPose(app.context.user);
+    if (userPose.poseStatus & Argon.PoseStatus.KNOWN) {
+        user.position.copy(userPose.position);
+        user.quaternion.copy(userPose.orientation);
+        userLocation.position.copy(userPose.position);
     }
-    return {
-        setters:[
-            function (Argon_1) {
-                Argon = Argon_1;
-            }],
-        execute: function() {
-            window['Argon'] = Argon;
-            exports_1("app", app = Argon.initReality());
-            exports_1("scene", scene = new THREE.Scene());
-            exports_1("camera", camera = new THREE.PerspectiveCamera());
-            exports_1("user", user = new THREE.Object3D());
-            exports_1("userLocation", userLocation = new THREE.Object3D);
-            scene.add(camera);
-            scene.add(user);
-            scene.add(userLocation);
-            renderer = new THREE.WebGLRenderer({
-                alpha: true,
-                logarithmicDepthBuffer: true
-            });
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            app.view.element.appendChild(renderer.domElement);
-            // app.context.defaultReferenceFrame = app.context.localOriginEastUpSouth;
-            app.context.defaultReferenceFrame = app.context.localOriginEastNorthUp;
-            geometry = new THREE.SphereGeometry(30, 32, 32);
-            mat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-            exports_1("posXSphere", posXSphere = new THREE.Mesh(geometry, mat));
-            posXSphere.position.x = 200;
-            userLocation.add(posXSphere);
-            mat = new THREE.MeshBasicMaterial({ color: 0xffaaaa });
-            exports_1("negXSphere", negXSphere = new THREE.Mesh(geometry, mat));
-            negXSphere.position.x = -200;
-            userLocation.add(negXSphere);
-            mat = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-            exports_1("posYSphere", posYSphere = new THREE.Mesh(geometry, mat));
-            posYSphere.position.y = 200;
-            userLocation.add(posYSphere);
-            mat = new THREE.MeshBasicMaterial({ color: 0xaaffaa });
-            exports_1("negYSphere", negYSphere = new THREE.Mesh(geometry, mat));
-            negYSphere.position.y = -200;
-            userLocation.add(negYSphere);
-            mat = new THREE.MeshBasicMaterial({ color: 0x0000ff });
-            exports_1("posZSphere", posZSphere = new THREE.Mesh(geometry, mat));
-            posZSphere.position.z = 200;
-            userLocation.add(posZSphere);
-            mat = new THREE.MeshBasicMaterial({ color: 0xaaaaff });
-            exports_1("negZSphere", negZSphere = new THREE.Mesh(geometry, mat));
-            negZSphere.position.z = -200;
-            userLocation.add(negZSphere);
-            axisHelper = new THREE.AxisHelper(10);
-            userLocation.add(axisHelper);
-            axisHelper.position.z = 50;
-            axisHelper = new THREE.AxisHelper(10);
-            userLocation.add(axisHelper);
-            axisHelper.position.y = -50;
-            perspectiveProjection = new Argon.Cesium.PerspectiveFrustum();
-            perspectiveProjection.fov = Math.PI / 2;
-            app.device.requestFrame(update);
-            app.updateEvent.addEventListener(function () {
-                var userPose = app.context.getEntityPose(app.context.user);
-                if (userPose.poseStatus & Argon.PoseStatus.KNOWN) {
-                    user.position.copy(userPose.position);
-                    user.quaternion.copy(userPose.orientation);
-                    userLocation.position.copy(userPose.position);
-                }
-            });
-            app.renderEvent.addEventListener(function () {
-                var viewport = app.view.getViewport();
-                renderer.setSize(viewport.width, viewport.height);
-                for (var _i = 0, _a = app.view.getSubviews(); _i < _a.length; _i++) {
-                    var subview = _a[_i];
-                    camera.position.copy(subview.pose.position);
-                    camera.quaternion.copy(subview.pose.orientation);
-                    camera.projectionMatrix.fromArray(subview.frustum.projectionMatrix);
-                    var _b = subview.viewport, x = _b.x, y = _b.y, width = _b.width, height = _b.height;
-                    renderer.setViewport(x, y, width, height);
-                    renderer.setScissor(x, y, width, height);
-                    renderer.setScissorTest(true);
-                    renderer.render(scene, camera);
-                }
-            });
-        }
+});
+app.renderEvent.addEventListener(() => {
+    const viewport = app.view.viewport;
+    renderer.setSize(viewport.width, viewport.height);
+    for (let subview of app.view.getSubviews()) {
+        camera.position.copy(subview.pose.position);
+        camera.quaternion.copy(subview.pose.orientation);
+        camera.projectionMatrix.fromArray(subview.frustum.projectionMatrix);
+        let { x, y, width, height } = subview.viewport;
+        renderer.setViewport(x, y, width, height);
+        renderer.setScissor(x, y, width, height);
+        renderer.setScissorTest(true);
+        renderer.render(scene, camera);
     }
 });

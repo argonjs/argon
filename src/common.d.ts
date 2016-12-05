@@ -1,22 +1,9 @@
 /// <reference types="cesium" />
 import { Matrix4, JulianDate, Cartesian3, Cartographic, Quaternion } from './cesium/cesium-imports';
 /**
- * Configuration options for an [[ArgonSystem]]
- */
-export interface Configuration {
-    role?: Role;
-    protocols?: string[];
-    userData?: any;
-    defaultUI?: {
-        disable?: boolean;
-    };
-    'needsGeopose'?: boolean;
-    'reality.supportsControlPort'?: boolean;
-}
-/**
  * Describes the role of an [[ArgonSystem]]
  */
-export declare enum Role {
+declare enum Role {
     /**
      * A system with this role is responsible for augmenting an arbitrary view of reality,
      * generally by overlaying computer generated graphics. A reality augmentor may also,
@@ -51,10 +38,27 @@ export declare enum Role {
      */
     REALITY_VIEW,
 }
-export declare namespace Role {
+declare namespace Role {
     function isRealityViewer(r?: Role): boolean;
     function isRealityAugmenter(r?: Role): boolean;
     function isRealityManager(r?: Role): boolean;
+}
+export { Role };
+/**
+ * Configuration options for an [[ArgonSystem]]
+ */
+export interface Configuration {
+    version?: number;
+    uri?: string;
+    title?: string;
+    role?: Role;
+    protocols?: string[];
+    userData?: any;
+    defaultUI?: {
+        disable?: boolean;
+    };
+    'needsGeopose'?: boolean;
+    'supportsCustomProtocols'?: boolean;
 }
 /**
  * Viewport values are expressed using a right-handed coordinate system with the origin
@@ -68,6 +72,7 @@ export interface Viewport {
 }
 export declare namespace Viewport {
     function clone(viewport?: Viewport, result?: Viewport): Viewport | undefined;
+    function equals(viewportA?: Viewport, viewportB?: Viewport): boolean | undefined;
 }
 /**
  * Identifies a subview in a [[SerializedSubview]]
@@ -108,13 +113,13 @@ export interface SerializedSubview {
      */
     projectionMatrix: Matrix4;
     /**
+     * The viewport for this subview (relative to the primary viewport)
+     */
+    viewport: Viewport;
+    /**
      * The pose for this subview (relative to the primary pose)
      */
     pose?: SerializedEntityPose;
-    /**
-     * The viewport for this subview (relative to the primary viewport)
-     */
-    viewport?: Viewport;
 }
 /**
  * The device state informs a [[REALITY_VIEWER]] about the current physical
@@ -132,11 +137,7 @@ export interface DeviceState {
     altitudeAccuracy: number | undefined;
     viewport: Viewport;
     subviews: SerializedSubview[];
-    strictViewport?: boolean;
-    strictSubviewViewport?: boolean;
-    strictSubviewCount?: boolean;
-    strictSubviewProjectionMatrix?: boolean;
-    strictSubviewPose?: boolean;
+    strict?: boolean;
 }
 /**
  * The view state is provided by a [[REALITY_VIEWER]], and describes how a
@@ -168,6 +169,10 @@ export interface ViewState {
      * than 0 or undefined.
      */
     compassAccuracy: number | undefined;
+    /**
+     * The source reality viewer.
+     */
+    reality?: string;
     /**
      * The primary viewport to render into. In a DOM environment,
      * the bottom left corner of the document element (document.documentElement)
@@ -208,23 +213,11 @@ export interface DeprecatedPartialFrameState {
  * Describes a complete frame state which is sent to child sessions
  */
 export interface FrameState {
-    index: number;
-    reality?: RealityViewer;
-    entities?: SerializedEntityPoseMap;
     view: ViewState;
+    index?: number;
+    entities?: SerializedEntityPoseMap;
     sendTime?: {
         dayNumber: number;
         secondsOfDay: number;
     };
-}
-/**
-* Represents a view of Reality
-*/
-export declare class RealityViewer {
-    static EMPTY: RealityViewer;
-    static LIVE_VIDEO: RealityViewer;
-    uri: string;
-    title?: string;
-    providedReferenceFrames?: Array<string>;
-    static getType(reality?: RealityViewer): string | undefined;
 }

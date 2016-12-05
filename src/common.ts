@@ -1,24 +1,9 @@
-import { Matrix4, JulianDate, Cartesian3, Cartographic, Quaternion } from './cesium/cesium-imports'
-
-/**
- * Configuration options for an [[ArgonSystem]] 
- */
-export interface Configuration {
-    role?: Role;
-    protocols?: string[];
-    userData?: any;
-    // other options / hints
-    defaultUI?: {
-        disable?: boolean
-    };
-    'needsGeopose'?: boolean;
-    'reality.supportsControlPort'?: boolean;
-}
+import { Matrix4, JulianDate, Cartesian3, Cartographic, Quaternion, CesiumMath } from './cesium/cesium-imports'
 
 /**
  * Describes the role of an [[ArgonSystem]]
  */
-export enum Role {
+enum Role {
 
     /**
      * A system with this role is responsible for augmenting an arbitrary view of reality,
@@ -60,7 +45,7 @@ export enum Role {
     REALITY_VIEW = "RealityView" as any,
 }
 
-export namespace Role {
+namespace Role {
     export function isRealityViewer(r?:Role) {
         return r === Role.REALITY_VIEWER || r === Role.REALITY_VIEW;
     }
@@ -70,6 +55,26 @@ export namespace Role {
     export function isRealityManager(r?:Role) {
         return r === Role.REALITY_MANAGER || r === Role.MANAGER;
     }
+}
+
+export { Role }
+
+/**
+ * Configuration options for an [[ArgonSystem]] 
+ */
+export interface Configuration {
+    version?: number,
+    uri?: string,
+    title?: string,
+    role?: Role;
+    protocols?: string[];
+    userData?: any;
+    // other options / hints
+    defaultUI?: {
+        disable?: boolean
+    };
+    'needsGeopose'?: boolean;
+    'supportsCustomProtocols'?: boolean;
 }
 
 /**
@@ -91,6 +96,14 @@ export namespace Viewport {
         result.width = viewport.width;
         result.height = viewport.height;
         return result;
+    }
+
+    export function equals(viewportA?:Viewport, viewportB?:Viewport) {
+        return viewportA && viewportB && 
+        CesiumMath.equalsEpsilon(viewportA.x, viewportB.x, CesiumMath.EPSILON7) &&
+        CesiumMath.equalsEpsilon(viewportA.y, viewportB.y, CesiumMath.EPSILON7) &&
+        CesiumMath.equalsEpsilon(viewportA.width, viewportB.width, CesiumMath.EPSILON7) &&
+        CesiumMath.equalsEpsilon(viewportA.height, viewportB.height, CesiumMath.EPSILON7);
     }
 }
 
@@ -152,13 +165,13 @@ export interface SerializedSubview {
      */
     projectionMatrix: Matrix4,
     /**
+     * The viewport for this subview (relative to the primary viewport)
+     */
+    viewport: Viewport
+    /**
      * The pose for this subview (relative to the primary pose)
      */
     pose?: SerializedEntityPose, // if undefined, identity is assumed
-    /**
-     * The viewport for this subview (relative to the primary viewport)
-     */
-    viewport?: Viewport // if undefined, this subview overlays the primary viewport
 }
 
 /**
@@ -177,11 +190,7 @@ export interface DeviceState {
     altitudeAccuracy: number|undefined;
     viewport: Viewport;
     subviews: SerializedSubview[];
-    strictViewport?: boolean;
-    strictSubviewViewport?: boolean;
-    strictSubviewCount?: boolean;
-    strictSubviewProjectionMatrix?: boolean
-    strictSubviewPose?: boolean
+    strict?: boolean;
 }
 
 /**
@@ -218,6 +227,11 @@ export interface ViewState {
      * than 0 or undefined. 
      */
     compassAccuracy: number|undefined,
+
+    /**
+     * The source reality viewer. 
+     */
+    reality?: string,
 
     /**
      * The primary viewport to render into. In a DOM environment, 
@@ -260,39 +274,8 @@ export interface DeprecatedPartialFrameState {
  * Describes a complete frame state which is sent to child sessions
  */
 export interface FrameState {
-    index: number,
-    reality?: RealityViewer,
-    entities?: SerializedEntityPoseMap,
     view: ViewState,
+    index?: number,
+    entities?: SerializedEntityPoseMap,
     sendTime?: { dayNumber: number, secondsOfDay: number }, // the time this state was sent
-}
-
-
-/**
-* Represents a view of Reality
-*/
-export class RealityViewer {
-    static EMPTY: RealityViewer = {
-        uri: 'reality:empty',
-        title: 'Empty Reality'
-    }
-
-    static LIVE_VIDEO: RealityViewer = {
-        uri: 'reality:live-video',
-        title: 'Live Video Reality'
-    }
-
-    public uri: string;
-    public title?: string;
-    public providedReferenceFrames?: Array<string>;
-
-    static getType(reality?: RealityViewer) {
-        if (reality === undefined) return undefined;
-        const uri = reality.uri;
-        const parts = uri.split(':');
-        if (parts[0] === 'reality') {
-            return parts[1];
-        }
-        return 'hosted';
-    }
 }

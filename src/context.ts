@@ -12,7 +12,7 @@ import {
     ReferenceFrame,
     defined
 } from './cesium/cesium-imports'
-import { SerializedEntityPose, SerializedEntityPoseMap, FrameState, Role } from './common'
+import { SerializedEntityPose, SerializedEntityPoseMap, FrameState, Role, ViewState } from './common'
 import { SessionService, SessionPort } from './session'
 import { Event, getSerializedEntityPose, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame } from './utils'
 
@@ -61,6 +61,12 @@ const scratchOriginCartesian3 = new Cartesian3(0, 0);
  */
 @inject(SessionService)
 export class ContextService {
+    /**
+     * An event that is raised when all remotely managed entities are are up-to-date for 
+     * the current frame. It is suggested that all modifications to locally managed entities 
+     * should occur within this event. 
+     */
+    public frameStateEvent = new Event<FrameState>();
 
     /**
      * An event that is raised when all remotely managed entities are are up-to-date for 
@@ -74,6 +80,11 @@ export class ContextService {
      * This event fires after the update event. 
      */
     public renderEvent = new Event<ContextService>();
+
+    /**
+     * An event that is raised after the render event 
+     */
+    public postRenderEvent = new Event<ContextService>();
 
     /**
      * An event that fires when the local origin changes.
@@ -160,12 +171,15 @@ export class ContextService {
     /**
      * The serialized frame state for this frame
      */
-    public get serializedFrameState(): FrameState | undefined {
-        return this._serializedState;
+    public get serializedFrameState() {
+        return this._serializedFrameState;
     }
 
     // the current serialized frame state
-    private _serializedState?: FrameState;
+    private _serializedFrameState: FrameState = <any>{
+        index: -1,
+        view: undefined
+    };
 
     private _entityPoseCache: SerializedEntityPoseMap = {};
     private _entityPoseMap = new Map<string, EntityPose | undefined>();
@@ -306,17 +320,24 @@ export class ContextService {
         return entityPose;
     }
 
-    // TODO: This function is called a lot. Potential for optimization. 
-    public _update(serializedState: FrameState) {
-        // if this session is the manager, we need to update our child sessions a.s.a.p
-        if (this.sessionService.isRealityManager) {
-            this._entityPoseCache = {};
-            for (const session of this.sessionService.managedSessions) {
-                if (Role.isRealityAugmenter(session.info.role))
-                    this._sendUpdateForSession(serializedState, session);
-            }
+    /**
+     * Process the next view state (which should come from the current reality viewer)
+     */
+    public processViewState(view: ViewState) {
+        const frameState = this._serializedFrameState;
+        frameState.index++;
+        frameState.view = view;
+        this._entityPoseCache = {};
+        for (const session of this.sessionService.managedSessions) {
+            if (Role.isRealityAugmenter(session.info.role))
+                this._sendUpdateForSession(frameState, session);
         }
+        this._update(frameState);
+    }
 
+    // TODO: This function is called a lot. Potential for optimization. 
+    protected _update(serializedState: FrameState) {
+        
         // our user entity is defined by the current view pose (the current reality must provide this)
         this.updateEntityFromSerializedPose(this.user.id, serializedState.view.pose);
 
@@ -351,11 +372,14 @@ export class ContextService {
         this.deltaTime = Math.min(timestamp - this.timestamp, this.maxDeltaTime);
         this.timestamp = timestamp;
         JulianDate.clone(<JulianDate>serializedState.view.time, this.time);
-        this._serializedState = serializedState;
+        this._serializedFrameState = serializedState;
 
-        // raise an event for the user to update and render the scene
+        // raise a frame state event (primarily for other services to hook into)
+        this.frameStateEvent.raiseEvent(this._serializedFrameState);
+        // raise eventß for the user to update and render the scene
         this.updateEvent.raiseEvent(this);
         this.renderEvent.raiseEvent(this);
+        this.postRenderEvent.raiseEvent(this);
     }
 
     public updateEntityFromSerializedPose(id:string, entityPose?:SerializedEntityPose) {
@@ -408,7 +432,7 @@ export class ContextService {
             this.user.position.getValueInReferenceFrame(<JulianDate>state.view.time, rootFrame, scratchCartesian3);
         const localENUFrame = this.localOriginEastNorthUp.position &&
             this.localOriginEastNorthUp.position.referenceFrame;
-        const localENUPosition = this.localOriginEastNorthUp.position && localENUFrame &&
+        const localENUPosition = this.localOriginEastNorthUp.position && defined(localENUFrame) &&
             this.localOriginEastNorthUp.position.getValueInReferenceFrame(<JulianDate>state.view.time, localENUFrame, scratchOriginCartesian3);
         if (!userPosition || !localENUPosition ||
             localENUFrame !== rootFrame ||
@@ -460,7 +484,7 @@ export class ContextService {
         state.entities = sessionEntities;
         state['time'] = state.view.time; // deprecated
         state.sendTime = JulianDate.now(<JulianDate>state.sendTime);
-        session.send('ar.context.update', state);
+        if (session.info.version) session.send('ar.context.update', state);
         state.entities = parentEntities;
     }
 

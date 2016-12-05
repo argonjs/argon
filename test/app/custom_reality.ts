@@ -5,7 +5,7 @@ declare const THREE: any;
 
 window['Argon'] = Argon;
 
-export const app = Argon.initReality();
+export const app = Argon.initRealityViewer();
 
 export const scene = new THREE.Scene();
 export const camera = new THREE.PerspectiveCamera();
@@ -101,7 +101,7 @@ app.updateEvent.addEventListener(() => {
 })
     
 app.renderEvent.addEventListener(() => {
-    const viewport = app.view.getViewport();
+    const viewport = app.view.viewport;
     renderer.setSize(viewport.width, viewport.height);
     
     for (let subview of app.view.getSubviews()) {

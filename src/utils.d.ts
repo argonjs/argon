@@ -136,6 +136,16 @@ export declare function parseURL(inURL: string): {
     hash: string;
     host: string;
 };
+export declare function resolveElement(elementOrSelector: string | HTMLElement): Promise<HTMLElement>;
+/**
+ * Returns a viewport that reflects the size of the current window
+ */
+export declare function getWindowViewport(): {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+};
 /**
  * A minimal MessageEvent interface.
  */
@@ -223,5 +233,4 @@ export declare function decomposePerspectiveProjectionMatrix(mat: Matrix4, resul
 export declare function convertEntityReferenceFrame(entity: Entity, time: JulianDate, frame: ReferenceFrame | Entity): boolean;
 export declare const isIOS: boolean;
 export declare function openInArgonApp(): void;
-export declare function blockAllUIEventBubbling(element: HTMLElement): void;
 export declare const requestAnimationFrame: any;

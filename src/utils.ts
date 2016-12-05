@@ -316,6 +316,42 @@ export function parseURL(inURL: string) {
     }
 }
 
+export function resolveElement(elementOrSelector:string|HTMLElement) {
+    if (elementOrSelector instanceof HTMLElement) {
+        return Promise.resolve(elementOrSelector);
+    } else {
+        return new Promise((resolve, reject)=>{
+            const resolveElement = () => {
+                let e = <HTMLDivElement>document.querySelector(`${elementOrSelector}`);
+                if (!e) reject(new Error(`Unable to resolve element id ${elementOrSelector}`))
+                else resolve(e);
+            }
+            if (document.readyState == 'loading') {
+                document.addEventListener('DOMContentLoaded', resolveElement);
+            } else {
+                resolveElement();
+            }
+        })
+    }
+}
+
+
+
+/**
+ * Returns a viewport that reflects the size of the current window
+ */
+export function getWindowViewport() {
+    if (typeof document !== 'undefined' && document.documentElement) {
+        return {
+            x: 0,
+            y: 0,
+            width: document.documentElement.clientWidth,
+            height: document.documentElement.clientHeight
+        }
+    }
+    throw new Error("Not implemeneted for the current platform");
+}
+
 
 /**
  * A minimal MessageEvent interface.
@@ -611,18 +647,6 @@ export function openInArgonApp() {
         const protocol = window.location.protocol;
         window.location.protocol = protocol === 'https:' ? 'argon4s' : 'argon4';
     }
-}
-
-const eventTypes = Object.keys(typeof window !== undefined ? window : {}).filter((k) => {
-    return k.substring(0,2)=='on' && 
-        (document[k]==null||typeof document[k]=='function');
-}).map((e) => e.substring(2))
-
-export function blockAllUIEventBubbling(element:HTMLElement) { 
-    const stopPropagation = (e:UIEvent) => e.stopPropagation();
-    eventTypes.forEach((type)=>{
-        element.addEventListener(type, stopPropagation, false);
-    });
 }
 
 var lastTime = 0;

@@ -17,17 +17,15 @@ import {
     defined,
 } from './cesium/cesium-imports'
 
-import { DeviceState, Viewport, SubviewType, Role, SerializedSubview } from './common'
+import { DeviceState, Viewport, SubviewType, Role, SerializedSubview, ViewState } from './common'
 
 import { ContextService } from './context'
-
-// import { RealityService } from './reality'
 
 import { ViewService } from './view'
 
 import { SessionService, SessionPort } from './session'
 
-import { getEntityPositionInReferenceFrame, requestAnimationFrame } from './utils'
+import { getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame, requestAnimationFrame } from './utils'
 
 const scratchCartesian = new Cartesian3;
 const scratchQuaternion = new Quaternion;
@@ -78,13 +76,8 @@ const AVERAGE_HUMAN_HEIGHT = 1.77;
 /**
 * Provides device state. 
 */
-@inject(SessionService, ViewService, ContextService)
+@inject(SessionService, ContextService, ViewService)
 export class DeviceService {
-
-    /**
-     * The current vrDisplay, if there is one. 
-     */
-    public vrDisplay?:VRDisplay;
     
     /**
      * A coordinate system represeting the space in which the 
@@ -167,20 +160,8 @@ export class DeviceService {
         return this._state.subviews;
     }
 
-    public get strictSubviewPose() {
-        return this._state.strictSubviewPose;
-    }
-
-    public get strictSubviewProjectionMatrix() {
-        return this._state.strictSubviewProjectionMatrix;
-    }
-
-    public get strictSubviewViewport() {
-        return this._state.strictSubviewViewport;
-    }
-
-    public get strictViewport() {
-        return this._state.strictViewport;
+    public get strict() {
+        return this._state.strict;
     }
 
     /**
@@ -193,27 +174,32 @@ export class DeviceService {
     */
     constructor(
         private sessionService: SessionService,
-        private viewService: ViewService,
-        private contextService: ContextService) {
+        private contextService: ContextService,
+        private viewService: ViewService) {
 
         this.sessionService.manager.on['ar.device.state'] = (deviceState:DeviceState) => {
             this._state = deviceState;
         }
 
         this.sessionService.connectEvent.addEventListener((session)=>{
-            if (session.info.needsGeopose) {
+            session.on['ar.device.startGeolocationUpdates'] = ()=>{
                 this.geolocationSubscribers.add(session);
-                this.startDeviceLocationUpdates();
+                this._startGeolocationUpdates();
                 session.closeEvent.addEventListener(()=>{
                     this.geolocationSubscribers.delete(session);
                     if (this.geolocationSubscribers.size === 0) 
-                        this.stopDeviceLocationUpdates();
-                })
+                        this._stopGeolocationUpdates();
+                });
+            }
+            session.on['ar.device.stopGeolocationUpdates'] = ()=>{
+                this.geolocationSubscribers.delete(session);
+                if (this.geolocationSubscribers.size === 0) 
+                    this._stopGeolocationUpdates();
             }
         })
 
         if (this.sessionService.isRealityManager || this.sessionService.isRealityViewer) {
-            this.startDeviceOrientationUpdates();
+            this.startOrientationUpdates();
         }
 
         const frustum = this._frustum;
@@ -224,20 +210,55 @@ export class DeviceService {
         Matrix4.clone(frustum.projectionMatrix, this.subviews[0].projectionMatrix);
 
         if (this.sessionService.isRealityManager) {
-            this.viewService.containingElementPromise.then(()=>{
+            this.publishDeviceState();
+            const id = setInterval(this.publishDeviceState.bind(this), 500);
+            this.sessionService.manager.closeEvent.addEventListener(()=>{
+                clearInterval(id);
+            });
+            this.viewService.viewportChangeEvent.addEventListener(()=>{
                 this.publishDeviceState();
-                setInterval(this.publishDeviceState.bind(this), 500);
-                window.addEventListener('resize', this.publishDeviceState.bind(this));
             });
         }
-        
+
+        this.sessionService.manager.closeEvent.addEventListener(()=>{
+            this.stopGeolocationUpdates();
+            this.stopOrientationUpdates();
+        })
+    }
+
+    
+    private _hasGeolocationCapability = new Promise((resolve) => {
+        this._resolveHasGeolocationCapability = resolve;
+    });
+    protected _resolveHasGeolocationCapability?:(value:boolean)=>void;
+
+    
+    private _hasOrientationCapability = new Promise((resolve)=> {
+        this._resolveHasOrientationCapability = resolve;
+    });
+    protected _resolveHasOrientationCapability?:(value:boolean)=>void;
+    
+    /**
+     * Return a promise that resolves if this device is capable of providing a geopose.  
+     * Does not resolve until the first session subscribes to geopose.
+     */
+    public hasGeoposeCapability() : Promise<boolean> { return this._hasGeoposeCapability }
+    private _hasGeoposeCapability = Promise.all<boolean>(
+        [this._hasGeolocationCapability, this._hasOrientationCapability]
+    ).then( results => results.reduce( (p, c) => p && c , true) );
+
+    private _lastRealityViewState?:ViewState;
+
+    public processViewState(viewState:ViewState) {
+        this._lastRealityViewState = viewState;
     }
 
     private _state:DeviceState = {
         viewport: {x:0,y:0, width:1, height:1},
         subviews: [{
             type: SubviewType.SINGULAR,
-            projectionMatrix: new Matrix4()
+            projectionMatrix: new Matrix4(),
+            viewport: {x:0, y:0, width: 1, height:1}
         }],
         geolocationAccuracy: undefined,
         altitudeAccuracy: undefined
@@ -275,12 +296,33 @@ export class DeviceService {
         this._eyeCartographicPosition = positionFIXED ? 
             Cartographic.fromCartesian(positionFIXED, undefined, this._eyeCartographicPosition) :
             positionFIXED;
+
+        if (positionFIXED && this._resolveHasGeolocationCapability) {
+            this._resolveHasGeolocationCapability(true);
+            this._resolveHasGeolocationCapability = undefined;
+        }
+        
+        if (this._resolveHasOrientationCapability) {
+            const orientationFIXED = getEntityOrientationInReferenceFrame(this.eye, clock.currentTime, ReferenceFrame.FIXED, scratchQuaternion);
+            if (orientationFIXED) {
+                this._resolveHasOrientationCapability(true);
+                this._resolveHasOrientationCapability = undefined;
+            }
+        }
+
+        if (!this.strict && this.sessionService.isRealityManager) {
+            const view = this._lastRealityViewState;
+            if (view && view.subviews[0]) {
+                Matrix4.clone(
+                    view.subviews[0].projectionMatrix, 
+                    this.subviews[0].projectionMatrix
+                )
+            }
+        }
     }
 
     protected updateState() {
-        if (typeof navigator !== 'undefined' &&
-            navigator.activeVRDisplays && 
-            navigator.activeVRDisplays.length) {
+        if (this.viewService.vrDisplay) {
                 this.updateStateFromWebVR();
         } else {
             this.updateStateMonocular();
@@ -288,27 +330,35 @@ export class DeviceService {
     }
 
     private updateStateFromWebVR() {
-        const vrDisplay = navigator.activeVRDisplays[0];
+        const vrDisplay = this.viewService.vrDisplay!;
         const vrFrameData = this._vrFrameData = 
             this._vrFrameData || new VRFrameData();
         if (!vrDisplay.getFrameData(vrFrameData)) return;
 
         const deviceState = this._state;
+        const layers = vrDisplay.getLayers();
+        const leftBounds = layers[0].leftBounds!;
+        const rightBounds = layers[0].rightBounds!;
+        const viewportWidth = deviceState.viewport.width;
+        const viewportHeight = deviceState.viewport.height;
+
         const subviews = deviceState.subviews;
         const leftSubview = subviews[0];
         const rightSubview = subviews[1] = subviews[1] || <SerializedSubview>{};
-        const leftViewport = leftSubview.viewport || <Viewport>{};
-        leftViewport.x = 0;
-        leftViewport.y = 0;
-        leftViewport.width = deviceState.viewport.width * 0.5;
-        leftViewport.height = deviceState.viewport.height;
-        const rightViewport = rightSubview.viewport || <Viewport>{};
-        rightViewport.x = leftViewport.width;
-        rightViewport.y = 0;
-        rightViewport.width = leftViewport.width;
-        rightViewport.height = deviceState.viewport.height;
+        leftSubview.type = SubviewType.LEFTEYE;
+        rightSubview.type = SubviewType.RIGHTEYE;
+        const leftViewport = leftSubview.viewport = leftSubview.viewport || <Viewport>{};
+        leftViewport.x = leftBounds[0] * viewportWidth;
+        leftViewport.y = leftBounds[1] * viewportHeight;
+        leftViewport.width = leftBounds[2] * viewportWidth;
+        leftViewport.height = leftBounds[3] * viewportHeight;
+        const rightViewport = rightSubview.viewport = rightSubview.viewport || <Viewport>{};
+        rightViewport.x = rightBounds[0] * viewportWidth;
+        rightViewport.y = rightBounds[1] * viewportHeight;
+        rightViewport.width = rightBounds[2] * viewportWidth;
+        rightViewport.height = rightBounds[3] * viewportHeight;
 
-        leftSubview.projectionMatrix = Matrix4.fromColumnMajorArray(
+        leftSubview.projectionMatrix = Matrix4.clone(
             <any>vrFrameData.leftProjectionMatrix, 
             leftSubview.projectionMatrix
         );
@@ -317,10 +367,13 @@ export class DeviceService {
             rightSubview.projectionMatrix
         );
 
-        const inverseStandingMatrix = Matrix4.inverseTransformation(
-            <any>vrDisplay.stageParameters.sittingToStandingTransform, 
-            scratchMatrix4
-        );
+        const inverseStandingMatrix = Matrix4.IDENTITY.clone(scratchMatrix4);
+        if (vrDisplay.stageParameters) {
+            Matrix4.inverseTransformation(
+                <any>vrDisplay.stageParameters.sittingToStandingTransform, 
+                inverseStandingMatrix
+            );
+        }
 
         const inverseStandingRotationMatrix = Matrix4.getRotation(inverseStandingMatrix, scratchMatrix3);
         const inverseStandingOrientation = Quaternion.fromRotationMatrix(inverseStandingRotationMatrix, scratchQuaternion)
@@ -369,8 +422,10 @@ export class DeviceService {
         this.setEyePoseFromDeviceOrientation();
         const state = this._state;
         state.subviews.length = 1;
-        state.subviews[0].viewport = undefined;
-        Matrix4.clone(this._frustum.projectionMatrix, state.subviews[0].projectionMatrix);
+        const subview = state.subviews[0];
+        subview.type = SubviewType.SINGULAR;
+        subview.viewport = {x:0, y:0, width:this._state.viewport.width, height:this._state.viewport.height};
+        Matrix4.clone(this._frustum.projectionMatrix, subview.projectionMatrix);
     }
 
     private setEyePoseFromDeviceOrientation() {
@@ -396,16 +451,16 @@ export class DeviceService {
     }
 
     protected updateViewport() {
-        this._frustum.aspectRatio = 
-            this._state.viewport.width / this._state.viewport.height;
-        if (this.viewService.containingElement) {
+        if (this.viewService.element) {
             this.viewport.x = 0;
             this.viewport.y = 0;
-            const width = this.viewService.containingElement.clientWidth;
-            const height = this.viewService.containingElement.clientHeight;
+            const width = this.viewService.element.clientWidth;
+            const height = this.viewService.element.clientHeight;
             this.viewport.width = width;
             this.viewport.height = height;
         }
+        const aspect = this.viewport.width / this.viewport.height;
+        this._frustum.aspectRatio = isNaN(aspect) ? 1 : aspect;
     }
 
     /**
@@ -418,8 +473,8 @@ export class DeviceService {
             this.update();
             callback(clock.currentTime);
         }
-        if (this.vrDisplay) {
-            return this.vrDisplay.requestAnimationFrame(onFrame);
+        if (this.viewService.vrDisplay) {
+            return this.viewService.vrDisplay.requestAnimationFrame(onFrame);
         } else {
             return requestAnimationFrame(onFrame);
         }
@@ -437,21 +492,6 @@ export class DeviceService {
                     session.send('ar.device.state', this._state);
             });
         }
-    }
-
-    /**
-     * Returns the maximum allowed viewport
-     */
-    public getMaximumViewport() : Viewport {
-        if (typeof document !== 'undefined' && document.documentElement) {
-            return {
-                x: 0,
-                y: 0,
-                width: document.documentElement.clientWidth,
-                height: document.documentElement.clientHeight
-            }
-        }
-        throw new Error("Not implemeneted for the current platform");
     }
 
     /**
@@ -514,10 +554,14 @@ export class DeviceService {
     private _deviceorientationListener;
     private _vrFrameData?:VRFrameData;
 
-    protected startDeviceLocationUpdates() {
+    public startGeolocationUpdates() : void {
+       this.sessionService.manager.send('ar.device.startGeolocationUpdates');
+    }
+
+    private _startGeolocationUpdates() {
         if (typeof navigator == 'undefined') return;
 
-        if (!defined(this._geolocationWatchId)) {
+        if (!defined(this._geolocationWatchId) && navigator.geolocation) {
             this._geolocationWatchId = navigator.geolocation.watchPosition((pos) => {
                 const cartographic = this._state.cartographicPosition = this._state.cartographicPosition || new Cartographic;
                 cartographic.latitude = pos.coords.latitude;
@@ -531,10 +575,17 @@ export class DeviceService {
             }, {
                 enableHighAccuracy: true
             });
+        } else if (this._resolveHasGeolocationCapability) {
+            this._resolveHasGeolocationCapability(false);
+            this._resolveHasGeolocationCapability = undefined;
         }
     }
 
-    protected stopDeviceLocationUpdates() {
+    public stopGeolocationUpdates() : void {
+        this.sessionService.manager.send('ar.device.stopGeolocationUpdates')
+    }
+
+    private _stopGeolocationUpdates() {
         if (typeof navigator !== 'undefined' && defined(this._geolocationWatchId)) {
             navigator.geolocation.clearWatch(this._geolocationWatchId);
             this._geolocationWatchId = undefined;
@@ -548,7 +599,7 @@ export class DeviceService {
     private _deviceOrientation?:Quaternion;
     private _compassAccuracy?:number;
 
-    protected startDeviceOrientationUpdates() {
+    public startOrientationUpdates() : void {
         if (typeof window == 'undefined' || !window.addEventListener) return;
 
         if (!defined(this._deviceorientationListener)) {
@@ -561,8 +612,13 @@ export class DeviceService {
                 const webkitCompassAccuracy: number = +e['webkitCompassAccuracy'];
 
                 if (!defined(alphaDegrees)) {
+                    this.stopOrientationUpdates();
+                    if (this._resolveHasOrientationCapability) {
+                        this._resolveHasOrientationCapability(false)
+                        this._resolveHasOrientationCapability = undefined;
+                    }
                     return;
-                }
+                }   
 
                 if (e.absolute) {
                     alphaOffset = 0;
@@ -615,11 +671,14 @@ export class DeviceService {
                 window.addEventListener('deviceorientationabsolute', this._deviceorientationListener)
             } else if ('ondeviceorientation' in window) {
                 window.addEventListener('deviceorientation', this._deviceorientationListener)
+            } else if (this._resolveHasOrientationCapability) {
+                this._resolveHasOrientationCapability(false);
+                this._resolveHasOrientationCapability = undefined;
             }
         }
     }
 
-    protected stopDeviceOrientationUpdates() {
+    public stopOrientationUpdates() {
         if (typeof window == 'undefined' || !window.removeEventListener) return;
 
         this._deviceOrientation = undefined;

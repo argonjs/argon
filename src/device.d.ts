@@ -1,7 +1,7 @@
 /// <reference types="webvr-api" />
 /// <reference types="cesium" />
 import { Entity, Cartographic, JulianDate } from './cesium/cesium-imports';
-import { Viewport, SerializedSubview } from './common';
+import { Viewport, SerializedSubview, ViewState } from './common';
 import { ContextService } from './context';
 import { ViewService } from './view';
 import { SessionService, SessionPort } from './session';
@@ -23,12 +23,8 @@ declare global  {
 */
 export declare class DeviceService {
     private sessionService;
-    private viewService;
     private contextService;
-    /**
-     * The current vrDisplay, if there is one.
-     */
-    vrDisplay?: VRDisplay;
+    private viewService;
     /**
      * A coordinate system represeting the space in which the
      * user is moving, positioned at the floor. For mobile devices,
@@ -66,10 +62,7 @@ export declare class DeviceService {
     readonly compassAccuracy: number | undefined;
     readonly viewport: Viewport;
     readonly subviews: SerializedSubview[];
-    readonly strictSubviewPose: boolean | undefined;
-    readonly strictSubviewProjectionMatrix: boolean | undefined;
-    readonly strictSubviewViewport: boolean | undefined;
-    readonly strictViewport: boolean | undefined;
+    readonly strict: boolean | undefined;
     /**
      * The sessions that are subscribed to the device location
      */
@@ -77,7 +70,19 @@ export declare class DeviceService {
     /**
     * Initialize the DeviceService
     */
-    constructor(sessionService: SessionService, viewService: ViewService, contextService: ContextService);
+    constructor(sessionService: SessionService, contextService: ContextService, viewService: ViewService);
+    private _hasGeolocationCapability;
+    protected _resolveHasGeolocationCapability?: (value: boolean) => void;
+    private _hasOrientationCapability;
+    protected _resolveHasOrientationCapability?: (value: boolean) => void;
+    /**
+     * Return a promise that resolves if this device is capable of providing a geopose.
+     * Does not resolve until the first session subscribes to geopose.
+     */
+    hasGeoposeCapability(): Promise<boolean>;
+    private _hasGeoposeCapability;
+    private _lastRealityViewState?;
+    processViewState(viewState: ViewState): void;
     private _state;
     private _eyeCartographicPosition?;
     private _frustum;
@@ -102,10 +107,6 @@ export declare class DeviceService {
      */
     publishDeviceState(): void;
     /**
-     * Returns the maximum allowed viewport
-     */
-    getMaximumViewport(): Viewport;
-    /**
      * Attempt to zoom
      */
     /**
@@ -121,10 +122,12 @@ export declare class DeviceService {
     private _geolocationWatchId;
     private _deviceorientationListener;
     private _vrFrameData?;
-    protected startDeviceLocationUpdates(): void;
-    protected stopDeviceLocationUpdates(): void;
+    startGeolocationUpdates(): void;
+    private _startGeolocationUpdates();
+    stopGeolocationUpdates(): void;
+    private _stopGeolocationUpdates();
     private _deviceOrientation?;
     private _compassAccuracy?;
-    protected startDeviceOrientationUpdates(): void;
-    protected stopDeviceOrientationUpdates(): void;
+    startOrientationUpdates(): void;
+    stopOrientationUpdates(): void;
 }

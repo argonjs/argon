@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
-        "target": "es5",
-        "module": "system",
+        "target": "es2015",
+        "module": "es2015",
         "declaration": true,
         "emitDecoratorMetadata": false,
         "experimentalDecorators": true,
@@ -15,6 +15,7 @@
         "traceResolution": false
     },
     "include": [
+        "types/declarations.d.ts",
         "src/**/*.ts",
         "test/**/*.ts"
     ]
