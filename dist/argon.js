@@ -18742,7 +18742,7 @@
         }
         return module.exports;
     });
-    $__System.register("1", [ "2", "3", "4", "5", "7", "8", "9", "10", "14", "15", "16", "17", "18", "19", "20", "23", "24", "25", "26", "27", "30", "31", "32", "35", "37", "38", "39", "55", "61", "78", "3d", "a", "1d", "2d", "1c", "2e", "1a", "1b", "3b", "2c", "2f", "d", "1f", "1e", "3a", "e", "f", "5f" ], function(_export, _context) {
+    $__System.register("1", [ "2", "3", "3d", "4", "9", "10", "a", "1d", "35", "2d", "14", "15", "18", "1c", "20", "19", "16", "5", "7", "2e", "1a", "1b", "8", "3b", "2c", "2f", "17", "d", "23", "24", "30", "31", "32", "1f", "27", "25", "37", "1e", "38", "39", "3a", "e", "f", "26", "55", "5f", "61", "78" ], function(_export, _context) {
         "use strict";
         var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, Clock, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, createGuid, cesium_Source_Core_defaultValue_js, defined, cesium_Source_Core_DeveloperError_js, cesium_Source_Core_Ellipsoid_js, Entity, EntityCollection, CesiumEvent, cesium_Source_Core_ExtrapolationType_js, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, cesium_Source_DataSources_ReferenceEntity_js, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, CardboardUI, _classCallCheck, _createClass, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, aureliaDependencyInjection, after, cesiumImports, w, kButtonWidthDp, kTouchSlopFactor, _possibleConstructorReturn, _inherits, Role, Role, Viewport, SubviewType, Event$$1, CommandQueue, getEntityPosition, getEntityOrientation, urlParser, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, lastTime, requestAnimationFrame$1, version, __decorate, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, WKWebViewConnectService, __decorate$1, PoseStatus, scratchCartesian3, scratchQuaternion, scratchOriginCartesian3, ContextService, __decorate$4, FocusService, __decorate$3, resolveArgonElement, IDENTITY_SUBVIEW_POSE, PresentationMode, ContainerElement, ViewService, __decorate$2, scratchCartesian$1, scratchQuaternion$1, scratchQuaternion2, scratchMatrix3, scratchMatrix4, clock, scratchTime, AVERAGE_HUMAN_HEIGHT, DeviceService, __decorate$6, RealityViewer, _get$1, __decorate$7, EmptyRealityViewer, __decorate$9, VuforiaInitResult, VuforiaHint, VuforiaServiceDelegateBase, VuforiaServiceDelegate, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, VuforiaDataSet, __decorate$8, LiveRealityViewer, __decorate$10, HostedRealityViewer, __decorate$5, RealityViewerFactory, RealityService, __decorate$11, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, ArgonSystem;
         function alwaysValid() {
@@ -19188,97 +19188,97 @@
             setters: [ function(_) {}, function(_2) {
                 AggregateError = _2.AggregateError;
                 PLATFORM = _2.PLATFORM;
+            }, function(_d) {
+                binarySearch = _d.default;
             }, function(_3) {
                 cesium_Source_DataSources_CallbackProperty_js = _3.default;
             }, function(_4) {
-                defined = _4.default;
+                CameraEventAggregator = _4.default;
             }, function(_5) {
-                cesium_Source_Core_DeveloperError_js = _5.default;
-            }, function(_6) {
-                CesiumEvent = _6.default;
-            }, function(_7) {
-                CameraEventAggregator = _7.default;
-            }, function(_8) {
-                CameraEventType = _8.default;
-            }, function(_9) {
-                Clock = _9.default;
-            }, function(_10) {
-                cesium_Source_Core_ClockStep_js = _10.default;
-            }, function(_11) {
-                cesium_Source_Core_defaultValue_js = _11.default;
-            }, function(_12) {
-                JulianDate = _12.default;
-            }, function(_13) {
-                cesium_Source_DataSources_CompositeEntityCollection_js = _13.default;
-            }, function(_14) {
-                createGuid = _14.default;
-            }, function(_15) {
-                ConstantProperty = _15.default;
-            }, function(_16) {
-                Matrix3 = _16.default;
-            }, function(_17) {
-                Matrix4 = _17.default;
-            }, function(_18) {
-                Quaternion = _18.default;
-            }, function(_19) {
-                Transforms = _19.default;
-            }, function(_20) {
-                cesium_Source_DataSources_Property_js = _20.default;
-            }, function(_21) {
-                OrientationProperty = _21.default;
-            }, function(_22) {
-                PerspectiveFrustum = _22.default;
-            }, function(_23) {
-                PerspectiveOffCenterFrustum = _23.default;
-            }, function(_24) {
-                cesium_Source_Core_Cartesian4_js = _24.default;
-            }, function(_25) {
-                cesium_Source_DataSources_ReferenceEntity_js = _25.default;
-            }, function(_26) {
-                cesium_Source_DataSources_ReferenceProperty_js = _26.default;
-            }, function(_27) {
-                SampledPositionProperty = _27.default;
-            }, function(_28) {
-                cesium_Source_Core_Simon1994PlanetaryPositions_js = _28.default;
-            }, function(_29) {
-                CardboardUI = _29.default;
-            }, function(_30) {}, function(_d) {
-                binarySearch = _d.default;
+                CameraEventType = _5.default;
             }, function(_a) {
                 cesium_Source_Core_Cartesian2_js = _a.default;
             }, function(_d2) {
                 Cartesian3 = _d2.default;
+            }, function(_6) {
+                cesium_Source_Core_Cartesian4_js = _6.default;
             }, function(_d3) {
                 Cartographic = _d3.default;
+            }, function(_7) {
+                Clock = _7.default;
+            }, function(_8) {
+                cesium_Source_Core_ClockStep_js = _8.default;
+            }, function(_9) {
+                cesium_Source_DataSources_CompositeEntityCollection_js = _9.default;
             }, function(_c) {
                 ConstantPositionProperty = _c.default;
+            }, function(_10) {
+                ConstantProperty = _10.default;
+            }, function(_11) {
+                createGuid = _11.default;
+            }, function(_12) {
+                cesium_Source_Core_defaultValue_js = _12.default;
+            }, function(_13) {
+                defined = _13.default;
+            }, function(_14) {
+                cesium_Source_Core_DeveloperError_js = _14.default;
             }, function(_e) {
                 cesium_Source_Core_Ellipsoid_js = _e.default;
             }, function(_a2) {
                 Entity = _a2.default;
             }, function(_b) {
                 EntityCollection = _b.default;
+            }, function(_15) {
+                CesiumEvent = _15.default;
             }, function(_b2) {
                 cesium_Source_Core_ExtrapolationType_js = _b2.default;
             }, function(_c2) {
                 cesium_Source_Core_GeographicProjection_js = _c2.default;
             }, function(_f) {
                 cesium_Source_Core_HermitePolynomialApproximation_js = _f.default;
+            }, function(_16) {
+                JulianDate = _16.default;
             }, function(_d4) {
                 CesiumMath = _d4.default;
+            }, function(_17) {
+                Matrix3 = _17.default;
+            }, function(_18) {
+                Matrix4 = _18.default;
+            }, function(_19) {
+                OrientationProperty = _19.default;
+            }, function(_20) {
+                PerspectiveFrustum = _20.default;
+            }, function(_21) {
+                PerspectiveOffCenterFrustum = _21.default;
             }, function(_f2) {
                 cesium_Source_DataSources_PositionProperty_js = _f2.default;
+            }, function(_22) {
+                cesium_Source_DataSources_Property_js = _22.default;
+            }, function(_23) {
+                Quaternion = _23.default;
+            }, function(_24) {
+                cesium_Source_DataSources_ReferenceEntity_js = _24.default;
             }, function(_e2) {
                 ReferenceFrame = _e2.default;
+            }, function(_25) {
+                cesium_Source_DataSources_ReferenceProperty_js = _25.default;
+            }, function(_26) {
+                SampledPositionProperty = _26.default;
             }, function(_a3) {
                 SampledProperty = _a3.default;
             }, function(_e3) {
                 cesium_Source_Core_ScreenSpaceEventHandler_js = _e3.default;
             }, function(_f3) {
                 cesium_Source_Core_ScreenSpaceEventType_js = _f3.default;
+            }, function(_27) {
+                Transforms = _27.default;
+            }, function(_28) {
+                cesium_Source_Core_Simon1994PlanetaryPositions_js = _28.default;
             }, function(_f4) {
                 cesium_Source_Core_PolylinePipeline_js = _f4.default;
-            } ],
+            }, function(_29) {
+                CardboardUI = _29.default;
+            }, function(_30) {} ],
             execute: function() {
                 _classCallCheck = function(instance, Constructor) {
                     if (!(instance instanceof Constructor)) {
@@ -21417,7 +21417,7 @@
                                 };
                                 subview.frustum = _this2._frustums[index] = _this2._frustums[index] || new PerspectiveFrustum();
                                 decomposePerspectiveProjectionMatrix(serializedSubview.projectionMatrix, subview.frustum);
-                                subview["projectionMatrix"] = serializedSubview.projectionMatrix;
+                                subview["projectionMatrix"] = subview.frustum.projectionMatrix;
                             });
                             return subviews;
                         }
