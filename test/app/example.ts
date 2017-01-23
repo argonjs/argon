@@ -1,6 +1,6 @@
-import * as Argon from '@argonjs/argon'
+// import * as Argon from '@argonjs/argon'
 // import * as Argon from '../dist/src/argon'
-// import * as Argon from '../../src/argon'
+import * as Argon from '../../src/argon'
 
 declare const THREE: any;
 
@@ -164,13 +164,13 @@ app.updateEvent.addEventListener(() => {
 })
     
 app.renderEvent.addEventListener(() => {
-    const viewport = app.view.getViewport();
+    const viewport = app.view.viewport;
     renderer.setSize(viewport.width, viewport.height);
     
     for (let subview of app.view.getSubviews()) {
         camera.position.copy(subview.pose.position);
         camera.quaternion.copy(subview.pose.orientation);
-        camera.projectionMatrix.fromArray(subview.projectionMatrix);
+        camera.projectionMatrix.fromArray(subview.frustum.projectionMatrix);
         let {x,y,width,height} = subview.viewport;
         renderer.setViewport(x,y,width,height);
         renderer.setScissor(x,y,width,height);

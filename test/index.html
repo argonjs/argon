@@ -12,7 +12,7 @@
     <script>
         System.import('mocha').then(function(mocha) {
             mocha.setup('bdd')
-            System.import('test/test.ts').then(function() {
+            System.import('test/test.ts!').then(function() {
                 mocha.checkLeaks();
                 mocha.run();
             })

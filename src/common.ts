@@ -1,48 +1,33 @@
-import { Matrix4 } from './cesium/cesium-imports'
-
-/**
- * Configuration options for an [[ArgonSystem]] 
- */
-export interface Configuration {
-    role?: Role;
-    protocols?: string[];
-    userData?: any;
-    // other options / manager hints
-    'app.disablePinchZoom'?: boolean;
-    'reality.supportsControlPort'?: boolean;
-    'reality.handlesZoom'?: boolean;
-    'reality.providedReferenceFrames'?: (number | string)[];
-}
+import { Matrix4, JulianDate, Cartesian3, Cartographic, Quaternion, CesiumMath } from './cesium/cesium-imports'
 
 /**
  * Describes the role of an [[ArgonSystem]]
  */
-export enum Role {
+enum Role {
 
     /**
      * A system with this role is responsible for augmenting an arbitrary view of reality,
      * generally by overlaying computer generated graphics. A reality augmentor may also, 
      * if appropriate, be elevated to the role of a [[REALITY_MANAGER]]. 
      */
-    REALITY_AUGMENTOR = "RealityAugmentor" as any,
+    REALITY_AUGMENTER = "RealityAugmenter" as any,
 
     /**
      * A system with this role is responsible for (at minimum) describing (and providing, 
      * if necessary) a visual representation of the world and the 3D eye pose of the viewer.
      */
-    REALITY_VIEW = "RealityView" as any,
+    REALITY_VIEWER = "RealityViewer" as any,
 
     /**
      * A system with this role is responsible for mediating access to sensors/trackers 
      * and pose data for known entities in the world, selecting/configuring/loading 
-     * [[REALITY_VIEW]]s, and providing the mechanism by which any given [[REALITY_AUGMENTOR]]
-     * can augment any given [[REALITY_VIEW]]. The reality manager may also, when appropriate, 
-     * take on the role of [[REALITY_AUGMENTOR]].
+     * [[REALITY_VIEWER]]s, and providing the mechanism by which any given [[REALITY_AUGMENTER]]
+     * can augment any given [[REALITY_VIEWER]]. 
      */
     REALITY_MANAGER = "RealityManager" as any,
 
     /**
-     * Deprecated. Use [[REALITY_AUGMENTOR]]. 
+     * Deprecated. Use [[REALITY_AUGMENTER]]. 
      * @private
      */
     APPLICATION = "Application" as any,
@@ -51,7 +36,45 @@ export enum Role {
      * Deprecated. Use [[REALITY_MANAGER]]. 
      * @private
      */
-    MANAGER = "Manager" as any
+    MANAGER = "Manager" as any,
+
+    /**
+     * Deprecated. Use [[REALITY_VIEWER]]
+     * @private
+     */
+    REALITY_VIEW = "RealityView" as any,
+}
+
+namespace Role {
+    export function isRealityViewer(r?:Role) {
+        return r === Role.REALITY_VIEWER || r === Role.REALITY_VIEW;
+    }
+    export function isRealityAugmenter(r?:Role) {
+        return r === Role.REALITY_AUGMENTER || r === Role.APPLICATION;
+    }
+    export function isRealityManager(r?:Role) {
+        return r === Role.REALITY_MANAGER || r === Role.MANAGER;
+    }
+}
+
+export { Role }
+
+/**
+ * Configuration options for an [[ArgonSystem]] 
+ */
+export interface Configuration {
+    version?: number,
+    uri?: string,
+    title?: string,
+    role?: Role;
+    protocols?: string[];
+    userData?: any;
+    // other options / hints
+    defaultUI?: {
+        disable?: boolean
+    };
+    'needsGeopose'?: boolean;
+    'supportsCustomProtocols'?: boolean;
 }
 
 /**
@@ -63,6 +86,25 @@ export interface Viewport {
     y: number,
     width: number,
     height: number
+}
+
+export namespace Viewport {
+    export function clone(viewport?:Viewport, result:Viewport=<any>{}) {
+        if (!viewport) return undefined;
+        result.x = viewport.x;
+        result.y = viewport.y;
+        result.width = viewport.width;
+        result.height = viewport.height;
+        return result;
+    }
+
+    export function equals(viewportA?:Viewport, viewportB?:Viewport) {
+        return viewportA && viewportB && 
+        CesiumMath.equalsEpsilon(viewportA.x, viewportB.x, CesiumMath.EPSILON7) &&
+        CesiumMath.equalsEpsilon(viewportA.y, viewportB.y, CesiumMath.EPSILON7) &&
+        CesiumMath.equalsEpsilon(viewportA.width, viewportB.width, CesiumMath.EPSILON7) &&
+        CesiumMath.equalsEpsilon(viewportA.height, viewportB.height, CesiumMath.EPSILON7);
+    }
 }
 
 /**
@@ -94,8 +136,8 @@ export enum SubviewType {
  * A serialized notation for the position, orientation, and referenceFrame of an entity.
  */
 export interface SerializedEntityPose {
-    p: { x: number, y: number, z: number } | number, // position, if 0, means Cartesian3.ZERO
-    o: { x: number, y: number, z: number, w: number } | number, // orientation, if 0, means Quaternion.IDENTITY
+    p: Cartesian3, // position
+    o: Quaternion, // orientation
     r: number | string, // reference frame
 }
 
@@ -119,31 +161,84 @@ export interface SerializedFrustum {
 export interface SerializedSubview {
     type: SubviewType,
     /**
-     * @deprecated
+     * The projection matrix for this subview
      */
-    projectionMatrix?: ArrayLike<number> | Matrix4,
+    projectionMatrix: Matrix4,
     /**
-     * The viewing frustum for this subview
+     * The viewport for this subview (relative to the primary viewport)
      */
-    frustum: SerializedFrustum,
-    pose?: SerializedEntityPose, // if undefined, the primary pose should be assumed
-    viewport?: Viewport // if undefined, the primary viewport should be assumed
+    viewport: Viewport
+    /**
+     * The pose for this subview (relative to the primary pose)
+     */
+    pose?: SerializedEntityPose, // if undefined, identity is assumed
 }
 
 /**
- * The serialized view parameters describe how the application should render each frame
+ * The device state informs a [[REALITY_VIEWER]] about the current physical
+ * configuration of the system, so that it may present a view that is compatible. 
+ * The [[REALITY_VIEWER]] should consider the viewport and frustum values to be 
+ * suggestions, unless their respective `strict` properties are true. The various 
+ * poses and related accuracies represent the physical configuration of the system
+ * at the (current) specified time. The [[REALITY_VIEWER]] may reuse the `time` 
+ * and `pose` when presenting a view, though this is not mandatory 
+ * (or necessarily expected).
  */
-export interface SerializedViewParameters {
+export interface DeviceState {
+    cartographicPosition?: Cartographic;
+    geolocationAccuracy: number|undefined;
+    altitudeAccuracy: number|undefined;
+    viewport: Viewport;
+    subviews: SerializedSubview[];
+    strict?: boolean;
+}
+
+/**
+ * The view state is provided by a [[REALITY_VIEWER]], and describes how a 
+ * [[REALITY_AUGMENTER]] should render the current frame.
+ */
+export interface ViewState {
     /**
-     * The primary viewport to render into. In a DOM environment, the bottom left corner of the document element 
-     * (document.documentElement) should be considered the origin. 
+     * The absolute time when this view state was created
      */
-    viewport: Viewport,
+    time: JulianDate,
 
     /**
-     * The primary pose for this view. 
+     * The viewing pose. May or may not match the 
+     * real-world (physical) viewing pose.
      */
-    pose?: SerializedEntityPose
+    pose: SerializedEntityPose|undefined,
+
+    /** 
+     * The radius (in meters) of latitudinal and longitudinal uncertainty,
+     * in relation to the FIXED reference frame. Value is greater 
+     * than 0 or undefined. 
+     */
+    geolocationAccuracy: number|undefined,
+
+    /**
+     * The accuracy of the altitude in meters. Value is greater 
+     * than 0 or undefined. 
+     */
+    altitudeAccuracy: number|undefined,
+
+    /**
+     * The accuracy of the compass in degrees. Value is greater 
+     * than 0 or undefined. 
+     */
+    compassAccuracy: number|undefined,
+
+    /**
+     * The source reality viewer. 
+     */
+    reality?: string,
+
+    /**
+     * The primary viewport to render into. In a DOM environment, 
+     * the bottom left corner of the document element (document.documentElement) 
+     * should be considered the origin. 
+     */
+    viewport: Viewport,
 
     /**
      * The list of subviews to render.
@@ -154,7 +249,7 @@ export interface SerializedViewParameters {
 /**
  * Describes the pose of a reality view and how it is able to render
  */
-export interface SerializedEyeParameters {
+export interface DeprecatedEyeParameters {
     viewport?: Viewport; // default: maximum
     pose?: SerializedEntityPose;
     stereoMultiplier?: number; // default: 1
@@ -163,48 +258,24 @@ export interface SerializedEyeParameters {
 }
 
 /**
- * Describes the serialized frame state.
+ * Deprecated. See [[ViewSpec]]
+ * Describes the partial frame state reported by reality viewers before v1.1
+ * @deprecated
  */
-export interface SerializedPartialFrameState {
+export interface DeprecatedPartialFrameState {
     index: number,
     time: { dayNumber: number, secondsOfDay: number }, // JulianDate,
-    view?: SerializedViewParameters,
-    eye?: SerializedEyeParameters,
+    view?: ViewState,
+    eye?: DeprecatedEyeParameters,
     entities?: SerializedEntityPoseMap
 }
 
 /**
  * Describes a complete frame state which is sent to child sessions
  */
-export interface SerializedFrameState extends SerializedPartialFrameState {
-    reality: RealityView,
-    entities: SerializedEntityPoseMap,
-    eye?: undefined,
-    view: SerializedViewParameters,
+export interface FrameState {
+    view: ViewState,
+    index?: number,
+    entities?: SerializedEntityPoseMap,
     sendTime?: { dayNumber: number, secondsOfDay: number }, // the time this state was sent
-}
-
-
-/**
-* Represents a view of Reality
-*/
-export class RealityView {
-    static EMPTY: RealityView = {
-        uri: 'reality:empty',
-        title: 'Reality',
-        providedReferenceFrames: ['FIXED']
-    }
-
-    public uri: string;
-    public title?: string;
-    public providedReferenceFrames?: Array<string>;
-
-    static getType(reality: RealityView) {
-        const uri = reality.uri;
-        const parts = uri.split(':');
-        if (parts[0] === 'reality') {
-            return parts[1];
-        }
-        return 'hosted';
-    }
 }

@@ -1,7 +1,7 @@
 import 'aurelia-polyfills'
 import * as DI from 'aurelia-dependency-injection'
 import * as Cesium from './cesium/cesium-imports'
-import * as URI from 'urijs';
+import './webvr'
 
 import {
     SessionService,
@@ -12,35 +12,37 @@ import {
     WKWebViewConnectService
 } from './session'
 
-import { Configuration, Role, RealityView } from './common'
-import { ContextService, Frame } from './context'
+import { Configuration, Role } from './common'
+import { ContextService } from './context'
 import { DeviceService } from './device'
 import { FocusService } from './focus'
 import { RealityService } from './reality'
-import { TimerService } from './timer'
+import { DefaultUIService } from './ui'
 import { Event } from './utils'
-import { ViewService, PinchZoomService } from './view'
+import { ViewService, ContainerElement } from './view'
 import { VuforiaService } from './vuforia'
 
-import { EmptyRealityLoader } from './reality-loader/empty'
-import { LiveVideoRealityLoader } from './reality-loader/live_video'
-import { HostedRealityLoader } from './reality-loader/hosted'
+import { RealityViewer } from './reality-viewers/base'
+import { EmptyRealityViewer } from './reality-viewers/empty'
+import { LiveRealityViewer } from './reality-viewers/live'
+import { HostedRealityViewer } from './reality-viewers/hosted'
 
-export { DI, Cesium, URI }
+export { DI, Cesium }
 export * from './common'
 export * from './context'
 export * from './device'
 export * from './focus'
 export * from './reality'
 export * from './session'
-export * from './timer'
+export * from './ui'
 export * from './utils'
 export * from './view'
 export * from './vuforia'
 export {
-    EmptyRealityLoader,
-    LiveVideoRealityLoader,
-    HostedRealityLoader
+    RealityViewer,
+    EmptyRealityViewer,
+    LiveRealityViewer,
+    HostedRealityViewer
 }
 
 /**
@@ -52,22 +54,37 @@ export {
  */
 export class ArgonSystem {
 
+    /**
+     * The ArgonSystem instance which shares a view provided by a manager
+     */
     static instance?: ArgonSystem;
 
-    constructor(config: Configuration, public container: DI.Container = new DI.Container) {
+    constructor(
+        containerElement:string|HTMLDivElement|null|undefined, 
+        config: Configuration,
+        public container: DI.Container = new DI.Container) {
         if (!ArgonSystem.instance) ArgonSystem.instance = this;
 
+        container.registerInstance(ContainerElement, containerElement || ContainerElement);
         container.registerInstance('config', config);
-        container.registerInstance(ArgonSystem, this);
 
         if (!container.hasResolver('containerElement'))
             container.registerInstance('containerElement', null);
 
-        if (config.role === Role.REALITY_MANAGER) {
+        if (Role.isRealityManager(config.role)) {
             container.registerSingleton(
                 ConnectService,
                 LoopbackConnectService
             );
+            // this.reality.registerLoader(container.get(EmptyRealityLoader));
+            // this.reality.registerLoader(container.get(LocalRealityLoader));
+
+            if (typeof document !== 'undefined') {
+                // this.reality.registerLoader(container.get(HostedRealityLoader));
+                container.get(DefaultUIService);
+            }
+
+            this.reality.default = RealityViewer.EMPTY;
         } else if (WKWebViewConnectService.isAvailable()) {
             container.registerSingleton(
                 ConnectService,
@@ -85,21 +102,8 @@ export class ArgonSystem {
             );
         }
 
-        if (config.role === Role.REALITY_MANAGER) {
-            this.reality.registerLoader(container.get(EmptyRealityLoader));
-            this.reality.registerLoader(container.get(LiveVideoRealityLoader));
-
-            if (typeof document !== 'undefined') {
-                this.reality.registerLoader(container.get(HostedRealityLoader));
-                // enable pinch-zoom
-                container.get(PinchZoomService);
-            }
-
-            this.reality.setDefault(RealityView.EMPTY);
-        }
-
         // ensure the entire object graph is instantiated before connecting to the manager. 
-        for (const key of Object.keys(ArgonSystem.prototype)) {
+        for (const key of Object.getOwnPropertyNames(ArgonSystem.prototype)) {
             this[key];
         }
 
@@ -126,10 +130,6 @@ export class ArgonSystem {
         return this.container.get(SessionService);
     }
 
-    public get timer(): TimerService {
-        return this.container.get(TimerService);
-    }
-
     public get view(): ViewService {
         return this.container.get(ViewService);
     }
@@ -140,11 +140,11 @@ export class ArgonSystem {
 
     // events
 
-    public get updateEvent(): Event<Frame> {
+    public get updateEvent(): Event<any> {
         return this.context.updateEvent;
     }
 
-    public get renderEvent(): Event<Frame> {
+    public get renderEvent(): Event<any> {
         return this.context.renderEvent;
     }
 
@@ -155,11 +155,13 @@ export class ArgonSystem {
     public get blurEvent(): Event<void> {
         return this.focus.blurEvent;
     }
-}
 
-export interface InitParameters {
-    configuration?: Configuration,
-    container?: DI.Container
+    public destroy() {
+        this.session.manager.close();
+        if (ArgonSystem.instance === this) {
+            ArgonSystem.instance = undefined;
+        }
+    }
 }
 
 /**
@@ -167,55 +169,67 @@ export interface InitParameters {
  * If we are running within a [[REALITY_MANAGER]], 
  * this function will create an ArgonSystem which has the [[REALITY_AUGMENTOR]] role. 
  * If we are not running within a [[REALITY_MANAGER]], 
- * this function will create an ArgonSystem which has the [[REALITY_MANAGER]] role. 
- * @param initParameters InitParameters
+ * this function will create an ArgonSystem which has the [[REALITY_MANAGER]] role.
  */
-export function init({ configuration, container = new DI.Container }: InitParameters = {}) {
+export function init(
+        containerElement?: string|HTMLDivElement|null,
+        configuration?: Configuration,
+        dependencyInjectionContainer?:DI.Container
+    ) {
+    if (ArgonSystem.instance) throw new Error('A shared ArgonSystem instance already exists');
+
+    // see if it is the old parameter interface
+    if (containerElement && (containerElement['configuration'] || containerElement['container'])) {
+        const deprecatedParameters = containerElement;
+        if (!configuration && deprecatedParameters['configuration'])
+            configuration = deprecatedParameters['configuration'];
+        if (!configuration && deprecatedParameters['container']) 
+            dependencyInjectionContainer = deprecatedParameters['container'];
+        containerElement = undefined;
+    }
+    
     let role: Role;
     if (typeof HTMLElement === 'undefined') {
         role = Role.REALITY_MANAGER
     } else if (navigator.userAgent.indexOf('Argon') > 0 || window.top !== window) {
-        role = Role.APPLICATION // TODO: switch to below after next argon-app release
-        // role = Role.REALITY_AUGMENTOR 
+        role = Role.APPLICATION // TODO: switch to below after several argon-app releases
+        // role = Role.REALITY_AUGMENTER
     } else {
         role = Role.REALITY_MANAGER
     }
-    const config = Object.assign(configuration || {}, <Configuration>{
-        role,
-    });
-    container.registerInstance('containerElement', null);
-    return new ArgonSystem(config, container);
+    
+    if (!configuration) configuration = {};
+    configuration.role = role;
+
+    if (!dependencyInjectionContainer) dependencyInjectionContainer = new DI.Container();
+
+    return new ArgonSystem(containerElement || null, configuration, dependencyInjectionContainer);
 }
 
 /**
- * Initialize an [[ArgonSystem]] with the [[REALITY_VIEW]] role
+ * Initialize an [[ArgonSystem]] with the [[REALITY_VIEWER]] role
  */
-export function initReality({ configuration, container = new DI.Container }: InitParameters = {}) {
-    const config = Object.assign(configuration || {}, <Configuration>{
-        role: Role.REALITY_VIEW,
-        'reality.supportsControlPort': true
-    });
-    container.registerInstance('containerElement', null);
-    return new ArgonSystem(config, container);
-}
+export function initRealityViewer(
+        configuration:Configuration = {},
+        dependencyInjectionContainer:DI.Container = new DI.Container
+    ) {
+    if (ArgonSystem.instance) throw new Error('A shared ArgonSystem instance already exists');
 
-export interface InitLocalParameters extends InitParameters {
-    containerElement: HTMLElement
+    configuration.role = Role.REALITY_VIEW; // TODO: switch to below after several argon-app releases
+    // configuration.role = Role.REALITY_VIEWER;
+    configuration['supportsCustomProtocols'] = true;
+    return new ArgonSystem(null, configuration, dependencyInjectionContainer);
 }
 
 /**
  * Not yet implemented.
  * @private
  */
-export function initLocal({ containerElement, configuration, container = new DI.Container }: InitLocalParameters) {
-    const config = Object.assign(configuration || {}, <Configuration>{
-        role: Role.REALITY_MANAGER
-    });
-    container.registerInstance('containerElement', containerElement);
-    return new ArgonSystem(config, container);
-}
-
-declare class Object {
-    static keys(o: {}): string[];
-    static assign(target, ...sources): any;
+export function initUnshared(
+        containerElement: string|HTMLElement,
+        configuration:Configuration = {},
+        dependencyInjectionContainer:DI.Container = new DI.Container
+    ) {
+    configuration.role = Role.REALITY_MANAGER;
+    return new ArgonSystem(null, configuration, dependencyInjectionContainer);
 }

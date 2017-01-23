@@ -1,16 +1,15 @@
 /// <reference types="cesium" />
-import { Entity, EntityCollection, CompositeEntityCollection, Cartesian3, Quaternion, JulianDate, ReferenceFrame } from './cesium/cesium-imports';
-import { SerializedFrameState } from './common';
+import { Entity, EntityCollection, Cartesian3, Cartographic, Quaternion, JulianDate, ReferenceFrame } from './cesium/cesium-imports';
+import { SerializedEntityPose, FrameState, ViewState } from './common';
 import { SessionService } from './session';
-import { RealityService } from './reality';
 import { Event } from './utils';
 /**
- * Describes the pose of an entity at a particular time relative to a particular reference frame
+ * Describes the current pose of an entity relative to a particular reference frame
  */
 export interface EntityPose {
     position: Cartesian3;
     orientation: Quaternion;
-    time: JulianDate;
+    referenceFrame: Entity | ReferenceFrame;
     poseStatus: PoseStatus;
 }
 /**
@@ -23,21 +22,6 @@ export declare enum PoseStatus {
     KNOWN = 1,
     FOUND = 2,
     LOST = 4,
-}
-export interface Frame {
-    /**
-     * The absolute time for this frame (as determined by the current reality)
-     */
-    time: JulianDate;
-    /**
-     * The time in milliseconds when this frame was received,
-     * based on performance.now() (or Date.now() if performance.now is not available)
-     */
-    systemTime: number;
-    /**
-     * The time in milliseconds since the previous frame's systemTime, capped to context.maxDeltaTime
-     */
-    deltaTime: number;
 }
 /**
  * Provides a means of querying the current state of reality.
@@ -58,35 +42,63 @@ export interface Frame {
  */
 export declare class ContextService {
     private sessionService;
-    private realityService;
     /**
      * An event that is raised when all remotely managed entities are are up-to-date for
      * the current frame. It is suggested that all modifications to locally managed entities
      * should occur within this event.
      */
-    updateEvent: Event<Frame>;
+    frameStateEvent: Event<FrameState>;
+    /**
+     * An event that is raised when all remotely managed entities are are up-to-date for
+     * the current frame. It is suggested that all modifications to locally managed entities
+     * should occur within this event.
+     */
+    updateEvent: Event<ContextService>;
     /**
      * An event that is raised when it is an approriate time to render graphics.
      * This event fires after the update event.
      */
-    renderEvent: Event<Frame>;
+    renderEvent: Event<ContextService>;
     /**
-     * The set of entities representing well-known reference frames.
-     * These are assumed to be readily available to applications.
+     * An event that is raised after the render event
      */
-    wellKnownReferenceFrames: EntityCollection;
-    /**
-     * The set of subscribed entities.
-     */
-    subscribedEntities: EntityCollection;
-    /**
-     * The set of entities that this session is aware of.
-     */
-    entities: CompositeEntityCollection;
+    postRenderEvent: Event<ContextService>;
     /**
      * An event that fires when the local origin changes.
      */
     localOriginChangeEvent: Event<void>;
+    /**
+     * A monotonically increasing value (in milliseconds) for the current frame state.
+     * This value is useful only for doing accurate *timing*, not for determining
+     * the absolute time. Use [[ContextService.time]] for absolute time.
+     * This value is -1 until the first [[ContextService.updateEvent]].
+     */
+    timestamp: number;
+    /**
+     * The time in milliseconds since the previous timestamp,
+     * capped to [[ContextService.maxDeltaTime]]
+     */
+    deltaTime: number;
+    /**
+     * This value caps the deltaTime for each frame. By default,
+     * the value is 1/3s (333.3ms)
+     */
+    maxDeltaTime: number;
+    /**
+     * The current (absolute) time according to the current reality.
+     * This value is arbitrary until the first [[ContextService.updateEvent]].
+     */
+    time: JulianDate;
+    /**
+     * The current cartographic position (WSG84)
+     */
+    location?: Cartographic;
+    locationAccuracy?: number;
+    locationAltitudeAccuracy?: number;
+    /**
+     * The collection of all entities this application is aware of.
+     */
+    entities: EntityCollection;
     /**
      * An entity representing the location and orientation of the user.
      */
@@ -103,37 +115,39 @@ export declare class ContextService {
      */
     localOriginEastUpSouth: Entity;
     /**
-     * The current frame
+     * The default origin to use when calling `getEntityPose`.
+     * By default, this is the `localOriginEastNorthUp` reference frame.
      */
-    readonly frame: Frame;
+    defaultReferenceFrame: Entity;
     /**
      * The serialized frame state for this frame
      */
-    readonly serializedFrameState: SerializedFrameState | undefined;
-    /**
-     * This value caps the deltaTime for each frame
-     */
-    maxDeltaTime: number;
-    private _serializedState?;
-    private _frame;
-    private _defaultReferenceFrame;
+    readonly serializedFrameState: FrameState;
+    private _serializedFrameState;
     private _entityPoseCache;
     private _entityPoseMap;
     private _subscribedEntities;
     private _updatingEntities;
     private _knownEntities;
-    constructor(sessionService: SessionService, realityService: RealityService);
+    constructor(sessionService: SessionService);
     /**
-     * Get the current time
+     * Deprecated. Use timestamp property.
+     * @private
      */
-    getTime(): JulianDate;
+    readonly systemTime: any;
     /**
-     * Set the default reference frame for `getCurrentEntityState`.
+     * Deprecated. To be removed.
+     * @private
+     */
+    private getTime();
+    /**
+     * Deprecated. To be removed.
+     * @private
      */
     setDefaultReferenceFrame(origin: Entity): void;
     /**
-     * Get the default reference frame to use when calling `getEntityPose`.
-     * By default, this is the `localOriginEastNorthUp` reference frame.
+     * Deprecated. To be removed.
+     * @private
      */
     getDefaultReferenceFrame(): Entity;
     /**
@@ -154,13 +168,14 @@ export declare class ContextService {
      */
     getEntityPose(entity: Entity, referenceFrame?: ReferenceFrame | Entity): EntityPose;
     /**
-     * deprecated
+     * Process the next view state (which should come from the current reality viewer)
      */
-    getCurrentEntityState(entity: Entity, referenceFrame: any): EntityPose;
-    private _update(serializedState);
-    updateEntityFromFrameState(id: string, state: SerializedFrameState): Entity | undefined;
+    processViewState(view: ViewState): void;
+    protected _update(serializedState: FrameState): void;
+    updateEntityFromSerializedPose(id: string, entityPose?: SerializedEntityPose): Entity;
     publishEntityState(entity: Entity, referenceFrame: ReferenceFrame | Entity): void;
     private _updateLocalOrigin(state);
-    private _sendUpdateForSession(parentState, session);
-    private _addEntityAndAncestorsToPoseMap(poseMap, id, time);
+    private _sessionEntities;
+    private _sendUpdateForSession(state, session);
+    private _getSerializedEntityPose(id, time);
 }
