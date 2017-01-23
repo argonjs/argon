@@ -1,27 +1,21 @@
-/// <reference types="cesium" />
-import { ReferenceFrame } from './cesium/cesium-imports';
-import { RealityView, SerializedPartialFrameState, SerializedFrameState, SerializedViewParameters, SerializedEyeParameters } from './common';
-import { FocusService } from './focus';
+import { DeprecatedPartialFrameState, ViewState } from './common';
 import { SessionPort, SessionService } from './session';
 import { Event } from './utils';
-/**
- * Abstract class for a reality setup handler
- */
-export declare abstract class RealityLoader {
-    abstract type: string;
-    abstract load(reality: RealityView, callback: (realitySession: SessionPort) => void): any;
+import { ContextService } from './context';
+import { FocusService } from './focus';
+import { ViewService } from './view';
+import { DeviceService } from './device';
+import { RealityViewer } from './reality-viewers/base';
+export declare abstract class RealityViewerFactory {
+    private _createEmptyReality;
+    private _createLiveReality;
+    private _createHostedReality;
+    constructor(_createEmptyReality: any, _createLiveReality: any, _createHostedReality: any);
+    createRealityViewer(uri: string): RealityViewer;
 }
-export declare enum RealityZoomState {
-    OTHER = 0,
-    START = 1,
-    CHANGE = 2,
-    END = 3,
-}
-export interface RealityZoomData {
-    zoom: number;
-    fov: number;
-    naturalFov: number;
-    state: RealityZoomState;
+export interface RealityViewerRequestOptions {
+    uri?: string;
+    geopose?: boolean;
 }
 /**
 * A service which manages the reality view.
@@ -30,140 +24,93 @@ export interface RealityZoomData {
 */
 export declare class RealityService {
     private sessionService;
+    private contextService;
     private focusService;
+    private viewService;
+    private deviceService;
+    private realityViewerFactor;
     /**
-     * A collection of known reality views from which the reality service can select.
+     * Manager/Viewer-only. An event that is raised when the current reality emits the next view state.
      */
-    realities: RealityView[];
+    readonly viewStateEvent: Event<ViewState>;
+    private _viewStateEvent;
     /**
-     * An event that is raised when a reality control port is opened.
+     * An event that is raised when a reality viewer provides a session
+     * for sending and receiving application commands.
      */
-    connectEvent: Event<SessionPort>;
+    readonly connectEvent: Event<SessionPort>;
+    private _connectEvent;
     /**
-     * Manager-only. An event that is raised when the current reality is changed.
+     * An event that is raised when the presenting reality viewer is changed.
      */
-    private _changeEvent;
     readonly changeEvent: Event<{
-        previous?: RealityView | undefined;
-        current: RealityView;
+        previous?: string | undefined;
+        current?: string | undefined;
     }>;
+    private _changeEvent;
     /**
-     * Manager-only. An event that is raised when the current reality emits the next frame state.
-     * This event contains pose updates for the entities that are managed by
-     * the current reality.
+     * The URI for the currently presenting Reality Viewer.
      */
-    private _frameEvent;
-    readonly frameEvent: Event<SerializedFrameState>;
-    /**
-     * Manager-only. A map from a managed session to the desired reality
-     */
-    desiredRealityMap: WeakMap<SessionPort, RealityView>;
-    /**
-     * Manager-only. A map from a desired reality to the session which requested it
-     */
-    desiredRealityMapInverse: WeakMap<RealityView | undefined, SessionPort>;
-    /**
-     * Manager-only. An event that is raised when a session changes it's desired reality.
-     */
-    sessionDesiredRealityChangeEvent: Event<{
-        session: SessionPort;
-        previous: RealityView | undefined;
-        current: RealityView | undefined;
-    }>;
-    private _realitySession?;
-    private _default;
+    readonly current: string | undefined;
     private _current?;
-    private _desired?;
-    private _loaders;
-    private _defaultFov;
-    private _desiredFov;
-    constructor(sessionService: SessionService, focusService: FocusService);
     /**
-     * Set the default reality.
+     * Manager-only. An event that is raised when a reality viewer is installed.
      */
-    setDefault(reality: RealityView): void;
+    readonly installedEvent: Event<{
+        uri: string;
+    }>;
+    private _installedEvent;
     /**
-     * Manager-only. Register a reality loader
+     * Manager-only. An event that is raised when a reality viewer is uninstalled.
      */
-    registerLoader(handler: RealityLoader): void;
+    readonly uninstalledEvent: Event<{
+        uri: string;
+    }>;
+    private _uninstalledEvent;
     /**
-     * Manager-only. Get the current reality view.
-     * @deprecated. Use app.context.getCurrentReality()
+     * The default Reality Viewer
      */
-    getCurrent(): RealityView | undefined;
+    default?: string;
+    readonly geoposeNeeded: boolean;
+    private _geoposeNeeded;
+    private _geoposeSubscribers;
+    private _viewerByURI;
+    private _installersByURI;
+    constructor(sessionService: SessionService, contextService: ContextService, focusService: FocusService, viewService: ViewService, deviceService: DeviceService, realityViewerFactor: RealityViewerFactory);
     /**
-    * Manager-only. Check if a type of reality is supported.
-    * @param type reality type
-    * @return true if a handler exists and false otherwise
-    */
-    isSupported(reality: RealityView): boolean;
-    /**
-     * Reality-only. Publish the next frame state.
+     * Deprecated. Use pubishViewState.
+     * @deprecated
      */
-    publishFrame(state: SerializedPartialFrameState): void;
+    publishFrame(state: DeprecatedPartialFrameState): void;
     /**
-     * Set the desired reality.
+     * RealityViewer-only. Publish the next view state.
      */
-    setDesired(reality: RealityView | undefined): void;
+    publishViewState(view: ViewState): void;
     /**
-     * Get the desired reality
+     * Install the specified reality viewer
      */
-    getDesired(): RealityView | undefined;
+    install(uri: string): Promise<void>;
+    protected _install(session: SessionPort, uri: string): void;
+    private _connectViewerWithSession(viewerSession, session);
     /**
-     * Set the optional reference frames for this app
+     * Uninstall the specified reality viewer
      */
-    setOptionalReferenceFrames(referenceFrames: (ReferenceFrame | string)[]): void;
+    uninstall(uri: string): Promise<void>;
+    protected _uninstall(session: SessionPort, uri: string): Promise<never>;
     /**
-     * Set the optional reference frames for this app
+     * Request that the provided reality viewer be presented. Pass `undefined` to
+     * hint that the manager should select the best available viewer.
      */
-    setRequiredReferenceFrames(referenceFrames: (ReferenceFrame | string)[]): void;
+    request(options: RealityViewerRequestOptions | undefined): Promise<void>;
+    protected _request(session: SessionPort, options?: RealityViewerRequestOptions): Promise<SessionPort | undefined> | undefined;
+    private _checkViewerSessionForGeoposeSupport(viewerSession);
+    private _checkGeoposeNeeded();
     /**
-     * Set a desired fov in radians.
+     * @private
      */
-    setDesiredFov(fov: number | undefined): void;
-    /**
-     * Get the desired fov in radians
-     */
-    getDesiredFov(): number | undefined;
-    /**
-     * Set the default fov in radians, and adjust the desired fov to match the
-     * previous desired / default ratio.
-     */
-    setDefaultFov(fov: number): void;
-    /**
-     * Get the default fov in radians
-     */
-    getDefaultFov(): number;
-    /**
-     * Returns a maximum viewport
-     */
-    getMaximumViewport(): {
-        x: number;
-        y: number;
-        width: number;
-        height: number;
-    };
-    /**
-    * Manager-only. Selects the best reality based on the realites
-    * requested by all managed sessions. Can be overriden for customized selection.
-    *
-    * @returns The reality chosen for this context. May be undefined if no
-    * realities have been requested.
-    */
-    onSelectReality(): RealityView | undefined;
-    private _scratchFrustum;
-    private _scratchArray;
-    onGenerateViewFromEyeParameters(eye: SerializedEyeParameters): SerializedViewParameters;
-    zoom(data: {
-        zoom: number;
-        fov: number;
-        naturalFov?: number;
-        state: RealityZoomState;
-    }): void;
-    protected onZoom(data: RealityZoomData): number;
-    private _loadID;
-    private _setNextReality(reality?, force?);
-    private _getLoader(reality);
-    private _setCurrent(reality);
-    private _executeRealityLoader(reality, callback);
+    setDesired(reality: {
+        uri: string;
+    } | undefined): void;
+    private _setPresentingReality(uri);
+    getViewerByURI(uri: string): RealityViewer | undefined;
 }

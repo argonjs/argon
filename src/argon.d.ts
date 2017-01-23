@@ -1,32 +1,32 @@
 import 'aurelia-polyfills';
 import * as DI from 'aurelia-dependency-injection';
 import * as Cesium from './cesium/cesium-imports';
-import * as URI from 'urijs';
+import './webvr';
 import { SessionService } from './session';
 import { Configuration } from './common';
-import { ContextService, Frame } from './context';
+import { ContextService } from './context';
 import { DeviceService } from './device';
 import { FocusService } from './focus';
 import { RealityService } from './reality';
-import { TimerService } from './timer';
 import { Event } from './utils';
 import { ViewService } from './view';
 import { VuforiaService } from './vuforia';
-import { EmptyRealityLoader } from './reality-loader/empty';
-import { LiveVideoRealityLoader } from './reality-loader/live_video';
-import { HostedRealityLoader } from './reality-loader/hosted';
-export { DI, Cesium, URI };
+import { RealityViewer } from './reality-viewers/base';
+import { EmptyRealityViewer } from './reality-viewers/empty';
+import { LiveRealityViewer } from './reality-viewers/live';
+import { HostedRealityViewer } from './reality-viewers/hosted';
+export { DI, Cesium };
 export * from './common';
 export * from './context';
 export * from './device';
 export * from './focus';
 export * from './reality';
 export * from './session';
-export * from './timer';
+export * from './ui';
 export * from './utils';
 export * from './view';
 export * from './vuforia';
-export { EmptyRealityLoader, LiveVideoRealityLoader, HostedRealityLoader };
+export { RealityViewer, EmptyRealityViewer, LiveRealityViewer, HostedRealityViewer };
 /**
  * A composition root which instantiates the object graph based on a provided configuration.
  * You generally want to create a new ArgonSystem via the provided [[init]] or [[initReality]] functions:
@@ -36,24 +36,23 @@ export { EmptyRealityLoader, LiveVideoRealityLoader, HostedRealityLoader };
  */
 export declare class ArgonSystem {
     container: DI.Container;
+    /**
+     * The ArgonSystem instance which shares a view provided by a manager
+     */
     static instance?: ArgonSystem;
-    constructor(config: Configuration, container?: DI.Container);
+    constructor(containerElement: string | HTMLDivElement | null | undefined, config: Configuration, container?: DI.Container);
     readonly context: ContextService;
     readonly device: DeviceService;
     readonly focus: FocusService;
     readonly reality: RealityService;
     readonly session: SessionService;
-    readonly timer: TimerService;
     readonly view: ViewService;
     readonly vuforia: VuforiaService;
-    readonly updateEvent: Event<Frame>;
-    readonly renderEvent: Event<Frame>;
+    readonly updateEvent: Event<any>;
+    readonly renderEvent: Event<any>;
     readonly focusEvent: Event<void>;
     readonly blurEvent: Event<void>;
-}
-export interface InitParameters {
-    configuration?: Configuration;
-    container?: DI.Container;
+    destroy(): void;
 }
 /**
  * Create an ArgonSystem instance.
@@ -61,18 +60,14 @@ export interface InitParameters {
  * this function will create an ArgonSystem which has the [[REALITY_AUGMENTOR]] role.
  * If we are not running within a [[REALITY_MANAGER]],
  * this function will create an ArgonSystem which has the [[REALITY_MANAGER]] role.
- * @param initParameters InitParameters
  */
-export declare function init({configuration, container}?: InitParameters): ArgonSystem;
+export declare function init(containerElement?: string | HTMLDivElement | null, configuration?: Configuration, dependencyInjectionContainer?: DI.Container): ArgonSystem;
 /**
- * Initialize an [[ArgonSystem]] with the [[REALITY_VIEW]] role
+ * Initialize an [[ArgonSystem]] with the [[REALITY_VIEWER]] role
  */
-export declare function initReality({configuration, container}?: InitParameters): ArgonSystem;
-export interface InitLocalParameters extends InitParameters {
-    containerElement: HTMLElement;
-}
+export declare function initRealityViewer(configuration?: Configuration, dependencyInjectionContainer?: DI.Container): ArgonSystem;
 /**
  * Not yet implemented.
  * @private
  */
-export declare function initLocal({containerElement, configuration, container}: InitLocalParameters): ArgonSystem;
+export declare function initUnshared(containerElement: string | HTMLElement, configuration?: Configuration, dependencyInjectionContainer?: DI.Container): ArgonSystem;

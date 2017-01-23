@@ -76,12 +76,6 @@ export declare class CommandQueue {
  */
 export declare function getAncestorReferenceFrames(frame: Entity): (Entity | ReferenceFrame)[];
 /**
- * Get root reference frame of the Cesium Entity.
- * @param frames An array of reference frames of the Cesium Entity.
- * @return the first frame from ancestor reference frames array.
- */
-export declare function getRootReferenceFrame(frame: Entity): Entity | ReferenceFrame;
-/**
  * Gets the value of the Position property at the provided time and in the provided reference frame.
  * @param entity The entity to get position.
  * @param time The time for which to retrieve the value.
@@ -112,10 +106,11 @@ export declare const getEntityOrientation: typeof getEntityOrientationInReferenc
  * @param entity The entity which the serialized pose represents.
  * @param time The time which to retrieve the pose.
  * @param referenceFrame The reference frame to use for generating the pose.
- *  By default, uses the root reference frame of the entity.
+ * If a target reference frame is not provided, the entity pose will be
+ * serialized according to the furthest ancestor frame that resolves to a valid pose.
  * @return An EntityPose object with orientation, position and referenceFrame.
  */
-export declare function getSerializedEntityPose(entity: Entity, time: JulianDate, referenceFrame?: ReferenceFrame | Entity): SerializedEntityPose | undefined;
+export declare function getSerializedEntityPose(entity: Entity, time: JulianDate, frame?: ReferenceFrame | Entity): SerializedEntityPose | undefined;
 /**
  * If urlParser does not have a value, throw error message "resolveURL requires DOM api".
  * If inURL is undefined, throw error message "expected inURL".
@@ -140,6 +135,16 @@ export declare function parseURL(inURL: string): {
     search: string;
     hash: string;
     host: string;
+};
+export declare function resolveElement(elementOrSelector: string | HTMLElement): Promise<HTMLElement>;
+/**
+ * Returns a viewport that reflects the size of the current window
+ */
+export declare function getWindowViewport(): {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
 };
 /**
  * A minimal MessageEvent interface.
@@ -226,3 +231,6 @@ export declare function decomposePerspectiveProjectionMatrix(mat: Matrix4, resul
  * not constant, or if either property cannot be converted to the new frame.
  */
 export declare function convertEntityReferenceFrame(entity: Entity, time: JulianDate, frame: ReferenceFrame | Entity): boolean;
+export declare const isIOS: boolean;
+export declare function openInArgonApp(): void;
+export declare const requestAnimationFrame: any;
