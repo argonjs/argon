@@ -1,5 +1,5 @@
 import { inject } from 'aurelia-dependency-injection'
-import { SerializedPartialFrameState } from './common'
+import { ViewState } from './common'
 import { FocusService } from './focus'
 import { SessionService, SessionPort } from './session'
 import { Event, CommandQueue, resolveURL } from './utils'
@@ -59,7 +59,7 @@ export interface VuforiaServiceDelegateInitOptions {
 export abstract class VuforiaServiceDelegateBase {
     videoEnabled: boolean;
     trackingEnabled: boolean;
-    stateUpdateEvent: Event<SerializedPartialFrameState> = new Event();
+    stateUpdateEvent: Event<ViewState> = new Event();
     abstract isAvailable(): boolean
     abstract setHint(hint: VuforiaHint, value: number): boolean;
     abstract decryptLicenseKey(encryptedLicenseData:string, session:SessionPort) : Promise<string>;
@@ -166,7 +166,7 @@ export class VuforiaService {
                             })
                         }, this._controllingSession === session);
 
-                        if (this.focusService.getSession() === session) {
+                        if (this.focusService.session === session) {
                             this._setControllingSession(session);
                         }
 
@@ -284,7 +284,7 @@ export class VuforiaService {
     }
 
     private _selectControllingSession() {
-        const focusSession = this.focusService.getSession();
+        const focusSession = this.focusService.session;
 
         if (focusSession && this._sessionInitOptions.get(focusSession)) {
             this._setControllingSession(focusSession);

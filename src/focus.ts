@@ -9,17 +9,17 @@ import { Event } from './utils';
 export class FocusService {
 
     /**
-     * An event that is raised when this session has gained focus
+     * An event that is raised when this app has gained focus
      */
     public focusEvent = new Event<void>();
 
     /**
-     * An event that is raised when this session has lost focus
+     * An event that is raised when this app has lost focus
      */
     public blurEvent = new Event<void>();
 
     /**
-     * True if this session has focus
+     * True if this app has focus
      */
     public get hasFocus() { return this._hasFocus }
     private _hasFocus = false;
@@ -43,8 +43,8 @@ export class FocusService {
         if (sessionService.isRealityManager) {
             sessionService.manager.connectEvent.addEventListener(() => {
                 setTimeout(() => {
-                    if (!this._session)
-                        this.setSession(this.sessionService.manager);
+                    if (!this._session && this.sessionService.manager.isConnected)
+                        this.session = this.sessionService.manager;
                 })
             })
         }
@@ -53,7 +53,7 @@ export class FocusService {
     /**
      * Manager-only. The managed session which currently has focus. 
      */
-    public getSession() {
+    public get session() {
         this.sessionService.ensureIsRealityManager();
         return this._session;
     }
@@ -61,7 +61,7 @@ export class FocusService {
     /**
      *  Manager-only. Grant focus to a managed session.
      */
-    public setSession(session?: SessionPort) {
+    public set session(session: SessionPort|undefined) {
         this.sessionService.ensureIsRealityManager();
         if (session && !session.isConnected)
             throw new Error('Only a connected session can be granted focus')

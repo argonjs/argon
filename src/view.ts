@@ -1,11 +1,10 @@
 import { inject } from 'aurelia-dependency-injection'
-import { Entity, Matrix4, PerspectiveFrustum } from './cesium/cesium-imports'
-import { Viewport, SubviewType, SerializedFrameState, SerializedViewParameters } from './common'
+import { Entity, Matrix4, PerspectiveFrustum, Cartesian3, Quaternion } from './cesium/cesium-imports'
+import { Viewport, SubviewType, FrameState } from './common'
 import { SessionService, SessionPort } from './session'
 import { EntityPose, ContextService } from './context'
-import { Event } from './utils'
+import { Event, decomposePerspectiveProjectionMatrix, resolveElement, isIOS } from './utils'
 import { FocusService } from './focus'
-import { RealityService, RealityZoomState } from './reality'
 
 // setup our DOM environment
 if (typeof document !== 'undefined' && document.createElement) {
@@ -20,23 +19,17 @@ if (typeof document !== 'undefined' && document.createElement) {
     argonMetaTag.name = 'argon'
     document.head.appendChild(argonMetaTag);
 
-    var argonContainer: HTMLElement;
-    var argonContainerPromise = new Promise<HTMLElement>((resolve) => {
-        const resolveArgonContainer = () => {
-            let container = <HTMLDivElement>document.querySelector('#argon');
-            if (!container) container = document.createElement('div');
-            container.id = 'argon';
-            container.classList.add('argon-view');
-            document.body.appendChild(container);
-            argonContainer = container;
-            resolve(container);
-        }
-        if (document.readyState == 'loading') {
-            document.addEventListener('DOMContentLoaded', resolveArgonContainer);
-        } else {
-            resolveArgonContainer();
-        }
-    })
+    let argonElementPromise;
+
+    var resolveArgonElement = () => {
+        if (argonElementPromise) return argonElementPromise; 
+        return argonElementPromise = resolveElement('#argon').catch(()=>{
+            const argonElement = document.createElement('div');
+            argonElement.id = 'argon';
+            document.body.appendChild(argonElement);
+            return argonElement;
+        });
+    }
 
     const style = document.createElement("style");
     style.type = 'text/css';
@@ -45,21 +38,81 @@ if (typeof document !== 'undefined' && document.createElement) {
     sheet.insertRule(`
         #argon {
             position: fixed;
-            left: 0px;
-            bottom: 0px;
             width: 100%;
             height: 100%;
+            left: 0;
+            bottom: 0;
             margin: 0;
             border: 0;
             padding: 0;
         }
-    `, 0);
+    `, sheet.cssRules.length);
+    sheet.insertRule(`
+        .argon-container > * {
+            position: absolute;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+    `, sheet.cssRules.length);
+    sheet.insertRule(`
+        .argon-container > * > * {
+            pointer-events: auto;
+            -webkit-tap-highlight-color: initial;
+            -webkit-user-select: initial;
+            user-select: initial;
+        }
+    `, sheet.cssRules.length);
+    sheet.insertRule(`
+        .argon-view {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: auto;
+        }
+    `, sheet.cssRules.length);
     sheet.insertRule(`
         .argon-view > * {
             position: absolute;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
         }
-    `, 1);
+    `, sheet.cssRules.length);
+    sheet.insertRule(`
+        .argon-view > * > * {
+            pointer-events: auto;
+        }
+    `, sheet.cssRules.length);
+    sheet.insertRule(`
+        .argon-maximized, .argon-maximized ~ * {
+            position: fixed !important;
+            width: 100% !important;
+            height: 100% !important;
+            left: 0;
+            bottom: 0;
+            margin: 0;
+            border: 0;
+            padding: 0;
+        }
+    `, sheet.cssRules.length);
+    sheet.insertRule(`
+        .argon-fullscreen {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: initial !important;
+            max-height: initial !important;
+        }
+    `, sheet.cssRules.length);
+    sheet.insertRule(`
+        .argon-interactive {
+            pointer-events: auto;
+        }
+    `, sheet.cssRules.length);
 }
 
 /**
@@ -68,22 +121,42 @@ if (typeof document !== 'undefined' && document.createElement) {
 export interface Subview {
     index: number,
     type: SubviewType,
-    projectionMatrix: Matrix4,
     frustum: PerspectiveFrustum,
     pose: EntityPose,
     viewport: Viewport
 }
 
+const IDENTITY_SUBVIEW_POSE = {p:Cartesian3.ZERO, o:Quaternion.IDENTITY, r:'ar.user'};
+
+export const enum PresentationMode {
+    EMBEDDED,
+    FULLPAGE,
+    FULLSCREEN
+}
+
+export const ContainerElement = '#argon';
+
 /**
  * Manages the view state
  */
-@inject('containerElement', SessionService, FocusService, ContextService)
+@inject(ContainerElement, SessionService, ContextService, FocusService)
 export class ViewService {
+
+    /**
+     * UI events that occur within this view. To handle an event (and prevent it from
+     * being forwarded to another layer) call event.stopImmediatePropagation().
+     */
+    public uiEvent = new Event<{event:UIEvent|MouseEvent|TouchEvent|PointerEvent|WheelEvent, forwardEvent:()=>void}>();
+
+    /**
+     * UI events to be forwarded
+     */
+    public forwardedUIEvent = new Event<UIEvent|MouseEvent|TouchEvent|PointerEvent|WheelEvent>();
 
     /**
      * An event that is raised when the root viewport has changed
      */
-    public viewportChangeEvent = new Event<{ previous: Viewport }>();
+    public viewportChangeEvent = new Event<void>();
 
     /**
      * An event that is raised when ownership of the view has been acquired by this application
@@ -96,132 +169,447 @@ export class ViewService {
     public releaseEvent = new Event<void>();
 
     /**
-     * An HTMLDivElement which matches the root viewport. This is 
-     * provide for convenience to attach other elements to (such as
-     * a webGL canvas element). Attached elements will automatically 
-     * inherit the same size and position as this element (via CSS). 
+     * An HTMLDivElement which matches the viewport.
      * This value is undefined in non-DOM environments.
      */
     public element: HTMLDivElement;
 
     /**
-     * A promise which resolves to the containing HTMLElement for this view.
+     * An HTMLDivElement which matches the viewport.
      * This value is undefined in non-DOM environments.
      */
-    public containingElementPromise: Promise<HTMLElement>;
-
+    public containerElementPromise: Promise<HTMLDivElement>;
+    
     /**
      *  Manager-only. A map of sessions to their desired viewports.
      */
     public desiredViewportMap = new WeakMap<SessionPort, Viewport>();
 
-    private _current: SerializedViewParameters;
-    private _currentViewportJSON: string;
+    /**
+     * Manager-only. The current vrdisplay that this view is presenting to,
+     * if any.
+     */
+    public get vrDisplay() { return this._vrDisplay };
+    private _vrDisplay?:VRDisplay;
 
+    private _currentViewport: Viewport;
+    private _currentViewportJSON: string;
     private _subviews: Subview[] = [];
-    private _subviewEntities: Entity[] = [];
     private _frustums: PerspectiveFrustum[] = [];
 
     constructor(
-        containerElement: HTMLElement,
+        containerElementOrSelector: string|HTMLElement,
         private sessionService: SessionService,
-        private focusService: FocusService,
-        private contextService: ContextService) {
+        private contextService: ContextService,
+        private focusService: FocusService) {
 
         if (typeof document !== 'undefined' && document.createElement) {
             const element = this.element = document.createElement('div');
-            element.style.width = '100%';
-            element.style.height = '100%';
             element.classList.add('argon-view');
 
-            this.containingElementPromise = new Promise((resolve) => {
-                if (containerElement && containerElement instanceof HTMLElement) {
+            // prevent pinch-zoom of the page in ios 10.
+            if (isIOS) {
+                element.addEventListener('touchmove', (event) => {
+                    if (event.touches.length > 1)
+                        event.preventDefault();
+                }, true);
+            }
+
+            this.containerElementPromise = new Promise((resolve)=>{
+                const insertViewportElement = (containerElement:HTMLElement) => {
+                    if (this.sessionService.manager.isClosed) return;
+
+                    containerElement.classList.add('argon-container');
                     containerElement.insertBefore(element, containerElement.firstChild);
-                    resolve(containerElement);
-                } else {
-                    argonContainer = <HTMLDivElement>document.querySelector('#argon');
-                    if (argonContainer) {
-                        argonContainer.insertBefore(element, argonContainer.firstChild);
-                        resolve(argonContainer);
-                    } else {
-                        argonContainerPromise.then((argonContainer) => {
-                            argonContainer.insertBefore(element, argonContainer.firstChild);
-                            resolve(argonContainer);
-                        })
+
+                    const handleFullscreenChange = () => {
+                        if (this._isFullscreen()) {
+                            containerElement.classList.add('argon-fullscreen');
+                        } else {
+                            containerElement.classList.remove('argon-fullscreen');
+                        }
                     }
-                    this.focusService.focusEvent.addEventListener(() => {
-                        argonContainerPromise.then((argonContainer) => {
-                            argonContainer.classList.remove('argon-no-focus');
-                            argonContainer.classList.add('argon-focus');
-                        })
-                    })
-                    this.focusService.blurEvent.addEventListener(() => {
-                        argonContainerPromise.then((argonContainer) => {
-                            argonContainer.classList.remove('argon-focus');
-                            argonContainer.classList.add('argon-no-focus');
-                        })
-                    })
+                    document.addEventListener('fullscreenchange', handleFullscreenChange);
+                    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+                    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+                    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+                    const handleVRDisplayPresentChange = (e) => {
+                        const vrDisplay:VRDisplay|undefined = e.display || e.detail.vrdisplay || e.detail.display;
+                        if (vrDisplay) {
+                            const layers = vrDisplay.getLayers();
+                            let isThisView = this._vrDisplay === vrDisplay;
+                            for (const layer of layers) {
+                                if (layer.source && this.element.contains(layer.source)) {
+                                    isThisView = true;
+                                    break;
+                                }
+                            }
+                            if (isThisView) {
+                                if (vrDisplay.isPresenting) {
+                                    this._vrDisplay = vrDisplay;
+                                    if (vrDisplay.displayName.match(/Cardboard/g)) {
+                                        this.element.classList.add('argon-maximized');
+                                        vrDisplay.getLayers()[0].source!.classList.add('argon-interactive');
+                                    }
+                                    this.viewportChangeEvent.raiseEvent(undefined);
+                                } else {
+                                    this._vrDisplay = undefined;
+                                    if (vrDisplay.displayName.match(/Cardboard/g)) {
+                                        this.element.classList.remove('argon-maximized');
+                                        const canvas = this.element.querySelector('.argon-interactive');
+                                        if (canvas) canvas.classList.remove('argon-interactive');
+                                    }
+                                    this.viewportChangeEvent.raiseEvent(undefined);
+                                }
+                            }
+                        }
+                    }
+                    window.addEventListener('vrdisplaypresentchange', handleVRDisplayPresentChange);
+
+                    this.sessionService.manager.closeEvent.addEventListener(()=>{
+                        element.remove();
+                        document.removeEventListener('fullscreenchange', handleFullscreenChange);
+                        document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+                        document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+                        document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+                    });
+                    
+                    resolve(containerElement);
+                }
+            
+                if (containerElementOrSelector && containerElementOrSelector instanceof HTMLElement) {
+                    insertViewportElement(containerElementOrSelector);
+                } else {
+                    if (containerElementOrSelector === `#argon`) {
+                        // first check synchronously
+                        let containerElement = <HTMLDivElement>document.querySelector(`#argon`);
+                        if (containerElement) {
+                            insertViewportElement(containerElement);
+                        } else {
+                            // if synchronous checks fail, wait for document to load then insert
+                            return resolveArgonElement().then(insertViewportElement);
+                        }
+                    } else {
+                        // first check synchronously
+                        let containerElement = <HTMLDivElement>document.querySelector(`${containerElementOrSelector}`);
+                        if (containerElement) {
+                            insertViewportElement(containerElement);
+                        } else {
+                            // if synchronous checks fail, wait for document to load then insert
+                            resolveElement(containerElementOrSelector).then(insertViewportElement);
+                        }
+                    }
                 }
             })
+            
+
+            this.focusService.focusEvent.addEventListener(() => {
+                element.classList.remove('argon-no-focus');
+                element.classList.add('argon-focus');
+            });
+
+            this.focusService.blurEvent.addEventListener(() => {
+                element.classList.remove('argon-focus');
+                element.classList.add('argon-no-focus');
+            });
+
+            if (this.sessionService.isRealityViewer) {
+                this._setupEventSynthesizing();
+            } else {
+                this._setupEventForwarding();
+            }
         }
 
         if (this.sessionService.isRealityManager) {
             this.sessionService.connectEvent.addEventListener((session) => {
-                session.on['ar.viewport.desired'] = (viewport: Viewport) => {
+                session.on['ar.view.desiredViewport'] = (viewport: Viewport) => {
                     this.desiredViewportMap.set(session, viewport);
+                }
+                session.on['ar.view.forwardUIEvent'] = (uievent:UIEvent) => {
+                    this.forwardedUIEvent.raiseEvent(uievent);
+                }
+                session.on['ar.view.requestEnterHmd'] = ()=> {
+                    return this._requestEnterHmd(session);
+                }
+                session.on['ar.view.requestExitHmd'] = ()=> {
+                    return this._requestExitHmd(session);
+                }
+                session.on['ar.view.isHmdActive'] = ()=> {
+                    return Promise.resolve({state:this._isHmdActive()});
+                }
+                session.on['ar.view.requestEnterFullscreen'] = ()=> {
+                    return this._requestEnterFullscreen(session);
+                }
+                session.on['ar.view.requestExitFullscreen'] = ()=> {
+                    return this._requestExitFullscreen(session);
+                }
+                session.on['ar.view.isFullscreen'] = ()=> {
+                    return Promise.resolve({state:this._isFullscreen()});
+                }
+                session.on['ar.view.requestEnterMaximized'] = ()=> {
+                    return this._requestEnterMaximized(session);
+                }
+                session.on['ar.view.requestExitMaximized'] = ()=> {
+                    return this._requestExitMaximized(session);
+                }
+                session.on['ar.view.isMaximized'] = ()=> {
+                    return Promise.resolve({state:this._isMaximized()});
+                }
+            });
+
+            this.sessionService.manager.connectEvent.addEventListener(()=>{
+                const resizeHandler = ()=> {
+                    if (this.viewport)
+                    this._update();
+                };
+                if (this.sessionService.isRealityManager && typeof window !== 'undefined') {
+                    window.addEventListener('resize', resizeHandler);
+                    this.sessionService.manager.closeEvent.addEventListener(()=>{
+                        window.removeEventListener('resize', resizeHandler);
+                    })
                 }
             });
         }
 
         this.contextService.renderEvent.addEventListener(() => {
-            const state = <SerializedFrameState>this.contextService.serializedFrameState;
-            const subviewEntities = this._subviewEntities;
-            subviewEntities.length = 0;
+            const state = <FrameState>this.contextService.serializedFrameState;
             state.view.subviews.forEach((subview, index) => {
                 const id = 'ar.view_' + index;
-                state.entities[id] = subview.pose || state.view.pose;
-                this.contextService.updateEntityFromFrameState(id, state);
-                delete state.entities[id];
-                subviewEntities[index] = this.contextService.entities.getById(id);
+                const subviewPose = subview.pose || IDENTITY_SUBVIEW_POSE;
+                this.contextService.updateEntityFromSerializedPose(id, subviewPose);
             });
             this._update();
-        })
+        });
+
+        this.contextService.postRenderEvent.addEventListener(()=>{
+            if (this.vrDisplay && this.vrDisplay.isPresenting) {
+                this.vrDisplay.submitFrame();
+            } 
+        });
     }
 
     public getSubviews(referenceFrame?: Entity): Subview[] {
         this._update();
         const subviews: Subview[] = this._subviews;
-        subviews.length = this._current.subviews.length;
-        this._current.subviews.forEach((serializedSubview, index) => {
-            const subviewEntity = this._subviewEntities[index];
-            const subview = subviews[index] = subviews[index] || <Subview>{};
+        const viewState = this.contextService.serializedFrameState!.view;
+        subviews.length = viewState.subviews.length;
+        viewState.subviews.forEach((serializedSubview, index) => {
+            const id = 'ar.view_' + index;
+            const subviewEntity = this.contextService.entities.getById(id)!;
+            const subview = subviews[index] = 
+                subviews[index] || <Subview>{};
             subview.index = index;
             subview.type = serializedSubview.type;
             subview.pose = this.contextService.getEntityPose(subviewEntity, referenceFrame);
-            subview.viewport = serializedSubview.viewport || this._current.viewport;
-
-            subview.frustum = this._frustums[index];
-            if (!subview.frustum) {
-                subview.frustum = this._frustums[index] = new PerspectiveFrustum();
-                subview.frustum.near = 0.01;
-                subview.frustum.far = 10000000;
+            subview.viewport = serializedSubview.viewport || {
+                x: 0, 
+                y: 0, 
+                width: viewState.viewport.width,
+                height: viewState.viewport.height
             }
-            subview.frustum.fov = serializedSubview.frustum.fov;
-            subview.frustum.aspectRatio = serializedSubview.frustum.aspectRatio || subview.viewport.width / subview.viewport.height;
-            subview.frustum.xOffset = serializedSubview.frustum.xOffset || 0;
-            subview.frustum.yOffset = serializedSubview.frustum.yOffset || 0;
 
-            subview.projectionMatrix = <Matrix4>serializedSubview.projectionMatrix || subview.frustum.infiniteProjectionMatrix;
+            subview.frustum = this._frustums[index] = 
+                this._frustums[index] || new PerspectiveFrustum();
+            decomposePerspectiveProjectionMatrix(serializedSubview.projectionMatrix, subview.frustum);
+            subview['projectionMatrix'] = <Matrix4>subview.frustum.projectionMatrix;
         })
         return subviews;
     }
 
-    public getViewport() {
-        return this._current.viewport;
+
+    /**
+     * Get the current viewport. Deprecated (Use View#viewport property)
+     * @private
+     */
+    protected getViewport() {
+        return this.viewport;
+    }
+
+    /**
+     * Get the current viewport
+     */
+    public get viewport() {
+        return this.contextService.serializedFrameState.view ? 
+            this.contextService.serializedFrameState.view.viewport : {x:0,y:0,width:0,height:0};
+    }
+
+    /**
+     * Request to present this view in an HMD.
+     */
+    public requestEnterHmd() : Promise<void> {
+        return this.sessionService.manager.request('ar.view.requestEnterHmd');
+    }
+
+    protected _requestEnterHmd(session:SessionPort) {
+        this._ensurePersmission(session);
+        if (typeof navigator !== 'undefined' &&
+            navigator.getVRDisplays) {
+            const requestPresent = (vrDisplay:VRDisplay) => {
+                this._vrDisplay = vrDisplay;
+                const layers:VRLayer[] = [];
+                layers[0] = {source:this.element.querySelector('canvas') || <HTMLCanvasElement>this.element.lastElementChild};
+                return vrDisplay.requestPresent(layers).catch((e)=>{
+                    this._vrDisplay = undefined;
+                    throw e;
+                })
+            }
+            if (navigator.activeVRDisplays && navigator.activeVRDisplays.length) {
+                return requestPresent(navigator.activeVRDisplays[0]);
+            } else {
+                return navigator.getVRDisplays()
+                    .then(displays => displays[0])
+                    .then(requestPresent);
+            }
+        } 
+        throw new Error('No HMD available');
+    }
+
+    /**
+     * Exit presenting this view in an HMD
+     */
+    public requestExitHmd() : Promise<void> {
+        return this.sessionService.manager.request('ar.view.requestExitHmd');
+    }
+
+    protected _requestExitHmd(session:SessionPort) {
+        this._ensurePersmission(session);
+        if (this._vrDisplay) {
+            return Promise.resolve(this._vrDisplay).then(vrDisplay => {
+                this._vrDisplay = undefined;
+                return vrDisplay.exitPresent();
+            });
+        }
+        throw new Error("Not presenting in an HMD");
+    }
+
+    /**
+     * Resolves to a boolean that indicates whether or not this view is being 
+     * presented in an HMD
+     */
+    public isHmdActive() : Promise<boolean> {
+        return this.sessionService.manager.request('ar.view.isHmdActive').then(e=>e['state']);
+    }
+
+    /**
+     * Manager-only. Returns true if this view is being 
+     * presented in an HMD. (synchronous)
+     */
+    public _isHmdActive() {
+        return this._vrDisplay ? 
+            this._vrDisplay.isPresenting : 
+            false;
+    }
+
+    /**
+     * Request to present this view in fullscreen mode
+     */
+    public requestEnterFullscreen() : Promise<void> {
+        return this.sessionService.manager.request('ar.view.requestEnterFullscreen');
+    }
+
+    protected _requestEnterFullscreen(session:SessionPort) {
+        this._ensurePersmission(session);
+        const containerElement = this.element.parentElement;
+        if (containerElement.requestFullscreen) 
+            return containerElement.requestFullscreen();
+        if (containerElement.webkitRequestFullscreen)
+            return containerElement.webkitRequestFullscreen();
+        if (containerElement['mozRequestFullscreen'])
+            return containerElement['mozRequestFullscreen']();
+        throw new Error('Fullscreen not supported');
+    }
+
+    /**
+     * Request to exit fullscreen display
+     */
+    public requestExitFullscreen() : Promise<void> {
+        return this.sessionService.manager.request('ar.view.requestExitFullscreen');
+    }
+
+    protected _requestExitFullscreen(session:SessionPort) {
+        this._ensurePersmission(session);
+        if (document.exitFullscreen) 
+            return document.exitFullscreen();
+        if (document.webkitExitFullscreen) 
+            return document.webkitExitFullscreen();
+        if (document.webkitCancelFullScreen) 
+            return document.webkitCancelFullScreen();
+        if (document['mozCancelFullScreen']) 
+            return document['mozCancelFullScreen']();
+        throw new Error('Fullscreen not supported');
+    }
+
+    /**
+     * Resolves to a boolean that indicates whether or not this view is being 
+     * presented in fullscreen
+     */
+    public isFullscreen() : Promise<boolean> {
+        return this.sessionService.manager.request('ar.view.isFullscreen').then(e=>e['state']);
+    }
+
+    /**
+     * Manager-only. Returns true if this view is being 
+     * presented in fullscreen. (synchronous)
+     */
+    public _isFullscreen() {
+        if (this.element.parentElement === document.fullscreenElement ||
+            this.element.parentElement === document.webkitFullscreenElement || 
+            this.element.parentElement === document.webkitCurrentFullScreenElement || 
+            this.element.parentElement === document['mozFullscreenElement']) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Request to present the view maximized within the containing window 
+     */
+    public requestEnterMaximized() : Promise<void> {
+        return this.sessionService.manager.request('ar.view.requestEnterMaximized');
+    }
+
+    protected _requestEnterMaximized(session:SessionPort) {
+        this._ensurePersmission(session);
+        this.element.classList.add('argon-maximized');
+        this.viewportChangeEvent.raiseEvent(undefined);
+    }
+
+    /** 
+     * Request to exit maximized mode
+     */
+    public requestExitMaximized() : Promise<void> {
+        return this.sessionService.manager.request('ar.view.requestExitMaximized');
+    }
+
+    protected _requestExitMaximized(session:SessionPort) {
+        this._ensurePersmission(session);
+        this.element.classList.remove('argon-maximized');
+        this.viewportChangeEvent.raiseEvent(undefined)
+    }
+
+    /**
+     * Resolves to a boolean that indicates whether or not the view is maximized
+     */
+    public isMaximized() : Promise<boolean> {
+        return this.sessionService.manager.request('ar.view.isMaximized').then(e=>e['state']);
+    }
+
+    /**
+     * Manager-only. Returns true if this view is maximized. (synchronous)
+     */
+    public _isMaximized() {
+        return this.element.classList.contains('argon-maximized');
+    }
+
+    protected _ensurePersmission(session:SessionPort) {
+        if (session !== this.sessionService.manager || session !== this.focusService.session)
+            throw new Error('Application must have focus');
     }
 
     /**
      * Set the desired root viewport
+     * @private
      */
     public setDesiredViewport(viewport: Viewport) {
         this.sessionService.manager.send('ar.view.desiredViewport', viewport)
@@ -233,6 +621,7 @@ export class ViewService {
      * When running on an HMD, this request will always fail. If the current reality view
      * does not support custom views, this request will fail. The manager may revoke
      * ownership at any time (even without this application calling releaseOwnership)
+     * @private
      */
     public requestOwnership() {
 
@@ -240,6 +629,7 @@ export class ViewService {
 
     /**
      * Release control over the view. 
+     * @private
      */
     public releaseOwnership() {
 
@@ -247,6 +637,7 @@ export class ViewService {
 
     /**
      * Returns true if this application has control over the view.  
+     * @private
      */
     public isOwner() {
 
@@ -255,19 +646,20 @@ export class ViewService {
     // Updates the element, if necessary, and raise a view change event
     private _update() {
         const state = this.contextService.serializedFrameState;
-        if (!state) throw new Error('Expected state to be defined');
-
+        if (!state || !state.view) return;
+        
         const view = state.view;
         const viewportJSON = JSON.stringify(view.viewport);
-        const previousViewport = this._current && this._current.viewport;
-        this._current = view;
+        // const previousViewport = this._currentViewport;
+        this._currentViewport = Viewport.clone(view.viewport, this._currentViewport)!;
 
         if (!this._currentViewportJSON || this._currentViewportJSON !== viewportJSON) {
             this._currentViewportJSON = viewportJSON;
 
-            if (this.element) {
+            if (this.element && !this.sessionService.isRealityManager) {
                 requestAnimationFrame(() => {
                     const viewport = view.viewport;
+                    this.element.style.position = 'fixed';
                     this.element.style.left = viewport.x + 'px';
                     this.element.style.bottom = viewport.y + 'px';
                     this.element.style.width = viewport.width + 'px';
@@ -275,119 +667,270 @@ export class ViewService {
                 })
             }
 
-            this.viewportChangeEvent.raiseEvent({ previous: previousViewport })
+            this.viewportChangeEvent.raiseEvent(undefined);
         }
     }
-}
+
+    private _setupEventForwarding() {
+
+        const cloneTouch = (touch:Touch, boundingRect:ClientRect) => {
+            return {
+                identifier: touch.identifier,
+                clientX: touch.clientX - boundingRect.left,
+                clientY: touch.clientY - boundingRect.top,
+                screenX: touch.screenX,
+                screenY: touch.screenY
+            };
+        }
+
+        const cloneTouches = (touches:TouchList, boundingRect:ClientRect) => {
+            if (!touches) return undefined;
+            const touchList:any = [];
+            for (var i = 0; i < touches.length; i++) {
+                const touch = touches.item(i)!;
+                touchList[i] = cloneTouch(touch, boundingRect);
+            }
+            return touchList;
+        }
+
+        let forwardEvent = false;
+
+        const eventData = {
+            event:UIEvent = <any>undefined,
+            forwardEvent: () => { forwardEvent = true }
+        }
+
+        const uievent = <any>{};
+        
+        const handleEvent = (e:MouseEvent&WheelEvent&TouchEvent)=>{
+            if (e.target === this.element || (<HTMLElement>e.target).parentElement === this.element) {
+
+                const boundingRect = this.element.getBoundingClientRect();
+
+                if (this.uiEvent.numberOfListeners > 0) {
+                    forwardEvent = false;
+                    eventData.event = e;
+                    this.uiEvent.raiseEvent(eventData);
+                     // allow the containing element to receive the current event 
+                     // for local reality viewers
+                    if (!forwardEvent) {
+                        e.stopImmediatePropagation();
+                        return;
+                    }
+                }
+
+                e.preventDefault();
+
+                const touches = cloneTouches(e.touches, boundingRect);
+                const changedTouches = cloneTouches(e.changedTouches, boundingRect);
+                const targetTouches = cloneTouches(e.targetTouches, boundingRect);
+
+                uievent.type = e.type;
+                uievent.bubbles = e.bubbles;
+                uievent.cancelable = e.cancelable;
+                uievent.detail = e.detail;
+                uievent.altKey = e.altKey;
+                uievent.ctrlKey = e.ctrlKey;
+                uievent.metaKey = e.metaKey;
+                uievent.button = e.button;
+                uievent.buttons = e.buttons;
+                uievent.clientX = e.clientX - boundingRect.left;
+                uievent.clientY = e.clientY - boundingRect.top;
+                uievent.screenX = e.screenX;
+                uievent.screenY = e.screenY;
+                uievent.movementX = e.movementX;
+                uievent.movementY = e.movementY;
+                uievent.deltaX = e.deltaX;
+                uievent.deltaY = e.deltaY;
+                uievent.deltaZ = e.deltaZ;
+                uievent.deltaMode = e.deltaMode;
+                uievent.wheelDelta = e.wheelDelta;
+                uievent.wheelDeltaX = e.wheelDeltaX;
+                uievent.wheelDeltaY = e.wheelDeltaY;
+                uievent.which = e.which; 
+                uievent.timeStamp = e.timeStamp;
+                uievent.touches = touches;
+                uievent.changedTouches = changedTouches;
+                uievent.targetTouches = targetTouches;
+
+                this.sessionService.manager.send('ar.view.forwardUIEvent', uievent);
+            } else {
+                e.stopImmediatePropagation();
+            }
+        };
+        ['wheel'
+        ,'click'
+        ,'dblclick'
+        ,'contextmenu'
+        ,'mouseover'
+        ,'mouseout'
+        ,'mousemove'
+        ,'mousedown'
+        ,'mouseup'
+        ,'touchstart'
+        ,'touchend'
+        ,'touchmove'
+        ,'touchcancel'
+        ].forEach((type)=>{
+            this.element.addEventListener(type, handleEvent, false);
+        });
+    }
+
+    public sendUIEventToSession(uievent:UIEvent, session?:SessionPort) {
+        if (session) session.send('ar.view.uievent', uievent);
+    }
 
 
-@inject(ViewService, RealityService, ContextService, SessionService)
-export class PinchZoomService {
-    constructor(
-        private viewService: ViewService,
-        private realityService: RealityService,
-        private contextService: ContextService,
-        private sessionService: SessionService) {
-        if (this.sessionService.isRealityManager) {
-            this.viewService.containingElementPromise.then((el) => {
-                el.style.pointerEvents = 'auto';
-                let fov: number = -1;
+    private _setupEventSynthesizing() {
+        let currentTarget:Element|Window|undefined;
 
-                if (typeof PointerEvent !== 'undefined') {
+        const fireMouseLeaveEvents = (target:Element|Window|undefined, relatedTarget:Element|Window|undefined, uievent:MouseEvent) => {
+            if (!target) return;
+            const eventInit:MouseEventInit = {
+                view: uievent.view,
+                clientX: uievent.clientX,
+                clientY: uievent.clientY,
+                screenX: uievent.screenX,
+                screenY: uievent.screenY,
+                relatedTarget: relatedTarget
+            };
+            // fire mouseout
+            eventInit.bubbles = true;
+            target.dispatchEvent(new MouseEvent('mouseout',eventInit));
+            // fire mouseleave events
+            eventInit.bubbles = false;
+            let el = target;
+            do { 
+                el.dispatchEvent(new MouseEvent('mouseleave',eventInit));
+                el = el['parentElement'];
+            } while (el)
+        }
 
-                    const evCache = new Array();
-                    let startDistSquared = -1;
-                    let zoom = 1;
+        const fireMouseEnterEvents = (target:Element|Window, relatedTarget:Element|Window|undefined, uievent:MouseEvent) => {
+            const eventInit:MouseEventInit = {
+                view: uievent.view,
+                clientX: uievent.clientX,
+                clientY: uievent.clientY,
+                screenX: uievent.screenX,
+                screenY: uievent.screenY,
+                relatedTarget: relatedTarget
+            };
+            // fire mouseover
+            eventInit.bubbles = true;
+            target.dispatchEvent(new MouseEvent('mouseover',eventInit));
+            // fire mouseenter events
+            eventInit.bubbles = false;
+            let el = target;
+            do { 
+                el.dispatchEvent(new MouseEvent('mouseenter',eventInit));
+                el = el['parentElement'];
+            } while (el)
+        }
 
-                    const remove_event = (ev) => {
-                        // Remove this event from the target's cache
-                        for (var i = 0; i < evCache.length; i++) {
-                            if (evCache[i].pointerId == ev.pointerId) {
-                                evCache.splice(i, 1);
-                                break;
-                            }
-                        }
+        const deserializeTouches = (touches:Touch[], target:Element|Window, uievent:TouchEvent) => {
+            touches.forEach((t, i)=>{
+                touches[i] = document.createTouch(
+                    uievent.view, target, t.identifier, 
+                    t.clientX, t.clientY, t.screenX, t.screenY
+                );
+            })
+            return touches;
+        }
+        
+        const touchTargets = {};
+        const touchStartTimes = {};
+
+        this.sessionService.manager.on['ar.view.uievent'] = (uievent:MouseEvent&WheelEvent&TouchEvent)=>{
+            (<any>uievent).view = window;
+
+            let target;
+
+            switch (uievent.type) {
+                case 'wheel':
+                    target = document.elementFromPoint(uievent.clientX, uievent.clientY) || window;
+                    target.dispatchEvent(new WheelEvent(uievent.type, uievent));
+                    break;
+                case 'mouseout':
+                    target = document.elementFromPoint(uievent.clientX, uievent.clientY) || window;
+                    fireMouseLeaveEvents(currentTarget, undefined, uievent);
+                    currentTarget = undefined;
+                    break;
+                case 'mouseover':
+                    target = document.elementFromPoint(uievent.clientX, uievent.clientY) || window;
+                    fireMouseEnterEvents(target, undefined, uievent);
+                    currentTarget = target;
+                    break;
+                case 'mousemove': 
+                    target = document.elementFromPoint(uievent.clientX, uievent.clientY) || window;
+                    if (target !== currentTarget) {
+                        fireMouseLeaveEvents(currentTarget, target, uievent);
+                        fireMouseEnterEvents(target, currentTarget, uievent);
+                        currentTarget = target;
+                    }
+                    target.dispatchEvent(new MouseEvent(uievent.type, uievent));
+                    break;
+                case 'touchstart':
+                    const primaryTouch = uievent.changedTouches[0];
+                    target = document.elementFromPoint(primaryTouch.clientX, primaryTouch.clientY);
+                    for (const t of (<Touch[]><any>uievent.changedTouches)) {
+                        touchTargets[t.identifier] = target;
+                        touchStartTimes[t.identifier] = performance.now();
+                    }
+                case 'touchmove':
+                case 'touchend':
+                case 'touchcancel':
+                    target = touchTargets[uievent.changedTouches[0].identifier];
+
+                    var evt = document.createEvent('TouchEvent');
+                    const touches = document.createTouchList.apply(document, deserializeTouches(<any>uievent.touches, target, uievent));
+                    const targetTouches = document.createTouchList.apply(document, deserializeTouches(<any>uievent.targetTouches, target, uievent));
+                    const changedTouches = document.createTouchList.apply(document, deserializeTouches(<any>uievent.changedTouches, target, uievent));
+                    // Safari, Firefox: must use initTouchEvent.
+                    if (typeof evt['initTouchEvent'] === "function") {
+                        evt['initTouchEvent'](
+                            uievent.type, uievent.bubbles, uievent.cancelable, uievent.view, uievent.detail,
+                            uievent.screenX, uievent.screenY, uievent.clientX, uievent.clientY,
+                            uievent.ctrlKey, uievent.altKey, uievent.shiftKey, uievent.metaKey,
+                            touches, targetTouches, changedTouches, 1.0, 0.0
+                        );
+                    } else {
+                        evt.initUIEvent(uievent.type, uievent.bubbles, uievent.cancelable, uievent.view, uievent.detail);
+                        (<any>evt).touches = touches;
+                        (<any>evt).targetTouches = targetTouches;
+                        (<any>evt).changedTouches = changedTouches;
                     }
 
-                    const pointerdown_handler = (ev) => {
-                        // The pointerdown event signals the start of a touch interaction.
-                        // This event is cached to support 2-finger gestures
-                        evCache.push(ev);
-                    }
-
-                    const pointermove_handler = (ev) => {
-                        // This function implements a 2-pointer pinch/zoom gesture. 
-
-                        // Find this event in the cache and update its record with this event
-                        for (var i = 0; i < evCache.length; i++) {
-                            if (ev.pointerId == evCache[i].pointerId) {
-                                evCache[i] = ev;
-                                break;
-                            }
-                        }
-
-                        const state = this.contextService.serializedFrameState;
-                        if (!state) return;
-
-                        // If two pointers are down, check for pinch gestures
-                        if (evCache.length == 2) {
-                            // Calculate the distance between the two pointers
-                            const curDiffX = Math.abs(evCache[0].clientX - evCache[1].clientX);
-                            const curDiffY = Math.abs(evCache[0].clientY - evCache[1].clientY);
-                            const currDistSquared = curDiffX * curDiffX + curDiffY * curDiffY;
-
-                            if (startDistSquared == -1) {
-                                // start pinch
-                                startDistSquared = currDistSquared;
-                                fov = state.view.subviews[0].frustum.fov;
-                                zoom = 1;
-                                this.realityService.zoom({ zoom, fov, state: RealityZoomState.START });
-                            } else {
-                                // change pinch
-                                zoom = currDistSquared / startDistSquared;
-                                this.realityService.zoom({ zoom, fov, state: RealityZoomState.CHANGE });
+                    if (uievent.type === 'touchend' || uievent.type == 'touchcancel') {
+                        target.dispatchEvent(evt);
+                        const primaryTouch = changedTouches[0];
+                        (<any>uievent).clientX = primaryTouch.clientX;
+                        (<any>uievent).clientY = primaryTouch.clientY;
+                        (<any>uievent).screenX = primaryTouch.screenX;
+                        (<any>uievent).screenY = primaryTouch.screenY;
+                        (<any>uievent).button = 0;
+                        (<any>uievent).detail = 1;
+                        if (uievent.type === 'touchend') {
+                            if (performance.now() - touchStartTimes[primaryTouch.identifier] < 300 && !evt.defaultPrevented) {
+                                target.dispatchEvent(new MouseEvent('mousedown'), uievent)
+                                target.dispatchEvent(new MouseEvent('mouseup'), uievent)
+                                target.dispatchEvent(new MouseEvent('click'), uievent)
                             }
                         } else {
-                            // end pinch                            
-                            this.realityService.zoom({ zoom, fov, state: RealityZoomState.END });
-                            startDistSquared = -1;
+                            target.dispatchEvent(new MouseEvent('mouseout'), uievent)
                         }
+                        for (const t of (<Touch[]><any>uievent.changedTouches)) {
+                            delete touchTargets[t.identifier];
+                            delete touchStartTimes[t.identifier];
+                        }
+                    } else {
+                        target.dispatchEvent(evt);
                     }
 
-                    const pointerup_handler = (ev) => {
-                        // Remove this pointer from the cache
-                        remove_event(ev);
-
-                        // If the number of pointers down is less than two then reset diff tracker
-                        if (evCache.length < 2) startDistSquared = -1;
-                    }
-
-                    el.onpointerdown = pointerdown_handler;
-                    el.onpointermove = pointermove_handler;
-
-                    // Use same handler for pointer{up,cancel,out,leave} events since
-                    // the semantics for these events - in this app - are the same.
-                    el.onpointerup = pointerup_handler;
-                    el.onpointercancel = pointerup_handler;
-                    el.onpointerout = pointerup_handler;
-                    el.onpointerleave = pointerup_handler;
-
-                } else {
-                    el.addEventListener('gesturestart', (ev: any) => {
-                        const state = this.contextService.serializedFrameState;
-                        if (state && state.view.subviews[0]) {
-                            fov = state.view.subviews[0].frustum.fov;
-                            this.realityService.zoom({ zoom: ev.scale, fov, state: RealityZoomState.START });
-                        }
-                    })
-                    el.addEventListener('gesturechange', (ev: any) => {
-                        this.realityService.zoom({ zoom: ev.scale, fov, state: RealityZoomState.CHANGE });
-                    })
-                    el.addEventListener('gestureend', (ev: any) => {
-                        this.realityService.zoom({ zoom: ev.scale, fov, state: RealityZoomState.END });
-                    })
-                }
-            })
-        }
+                    break;
+                default:                            
+                    target = document.elementFromPoint(uievent.clientX, uievent.clientY) || window;
+                    target.dispatchEvent(new MouseEvent(uievent.type, uievent));
+            }
+        };
     }
 }

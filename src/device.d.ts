@@ -1,46 +1,133 @@
+/// <reference types="webvr-api" />
 /// <reference types="cesium" />
-import { Entity } from './cesium/cesium-imports';
+import { Entity, Cartographic, JulianDate } from './cesium/cesium-imports';
+import { Viewport, SerializedSubview, ViewState } from './common';
 import { ContextService } from './context';
+import { ViewService } from './view';
+import { SessionService, SessionPort } from './session';
+declare global  {
+    class VRFrameData {
+        timestamp: number;
+        leftProjectionMatrix: Float32Array;
+        leftViewMatrix: Float32Array;
+        rightProjectionMatrix: Float32Array;
+        rightViewMatrix: Float32Array;
+        pose: VRPose;
+    }
+    interface VRDisplay {
+        getFrameData(frameData: VRFrameData): boolean;
+    }
+}
 /**
-* Provides pose state for the device.
+* Provides device state.
 */
 export declare class DeviceService {
+    private sessionService;
+    private contextService;
+    private viewService;
+    /**
+     * A coordinate system represeting the space in which the
+     * user is moving, positioned at the floor. For mobile devices,
+     * the stage follows the user. For non-mobile systems, the
+     * stage is fixed.
+     */
+    stage: Entity;
+    /**
+     * The physical viewing pose as reported by the current device
+     */
+    eye: Entity;
+    /**
+     * An East-North-Up coordinate frame centered at the eye position
+     */
+    eyeEastNorthUp: Entity;
+    /**
+     * The current cartographic position of the eye. Undefined if no geolocation is available.
+     */
+    readonly eyeCartographicPosition: Cartographic | undefined;
+    /**
+     * The radius (in meters) of latitudinal and longitudinal uncertainty,
+     * in relation to the FIXED reference frame. Value is greater than
+     * 0 or undefined.
+     */
+    readonly geolocationAccuracy: number | undefined;
+    /**
+     * The accuracy of the altitude in meters. Value is greater than
+     * 0 or undefined.
+     */
+    readonly altitudeAccuracy: number | undefined;
+    /**
+     * The accuracy of the compass in degrees. Value is greater than
+     * 0 or undefined.
+     */
+    readonly compassAccuracy: number | undefined;
+    readonly viewport: Viewport;
+    readonly subviews: SerializedSubview[];
+    readonly strict: boolean | undefined;
+    /**
+     * The sessions that are subscribed to the device location
+     */
+    protected geolocationSubscribers: Set<SessionPort>;
     /**
     * Initialize the DeviceService
     */
-    constructor(context: ContextService);
-    locationUpdatesEnabled: boolean;
-    orientationUpdatesEnabled: boolean;
+    constructor(sessionService: SessionService, contextService: ContextService, viewService: ViewService);
+    private _hasGeolocationCapability;
+    protected _resolveHasGeolocationCapability?: (value: boolean) => void;
+    private _hasOrientationCapability;
+    protected _resolveHasOrientationCapability?: (value: boolean) => void;
     /**
-     * An ENU coordinate frame centered at the gps location reported by this device
+     * Return a promise that resolves if this device is capable of providing a geopose.
+     * Does not resolve until the first session subscribes to geopose.
      */
-    geolocationEntity: Entity;
+    hasGeoposeCapability(): Promise<boolean>;
+    private _hasGeoposeCapability;
+    private _lastRealityViewState?;
+    processViewState(viewState: ViewState): void;
+    private _state;
+    private _eyeCartographicPosition?;
+    private _frustum;
+    getSubviewEntity(index: number): Entity;
     /**
-     * A frame which represents the orientation of this device relative to it's ENU coordinate frame (geolocationEntity)
-     */
-    orientationEntity: Entity;
+    * Update device state.
+    */
+    private update();
+    protected updateState(): void;
+    private updateStateFromWebVR();
+    private updateStateMonocular();
+    private setEyePoseFromDeviceOrientation();
+    private setStagePoseFromGeolocation();
+    protected updateViewport(): void;
     /**
-     * A frame which represents the pose of this device
+     * Request that the callback function be called for the next frame.
+     * @param callback function
      */
-    entity: Entity;
+    requestFrame(callback: (now: JulianDate) => any): any;
     /**
-     * A frame which describes the pose of the display relative to this device
+     * Send device state to reality viewers.
      */
-    displayEntity: Entity;
-    private _scratchCartesian;
-    private _scratchQuaternion1;
-    private _scratchQuaternion2;
-    private _x90Rot;
+    publishDeviceState(): void;
+    /**
+     * Attempt to zoom
+     */
+    /**
+     * Handle zoom. Overridable for custom behavior.
+     */
+    /**
+     * Set a desired fov in radians.
+     */
+    /**
+     * Set the default fov in radians, and adjust the desired fov to match the
+     * previous desired / default ratio.
+     */
     private _geolocationWatchId;
     private _deviceorientationListener;
-    private _mobileDetect?;
-    private _alphaOffset?;
-    private _headingDrift;
-    private _idleTimeoutId;
-    protected onIdle(): void;
-    protected onUpdate(): void;
-    /**
-    * Update the pose with latest sensor data
-    */
-    update(): void;
+    private _vrFrameData?;
+    startGeolocationUpdates(): void;
+    private _startGeolocationUpdates();
+    stopGeolocationUpdates(): void;
+    private _stopGeolocationUpdates();
+    private _deviceOrientation?;
+    private _compassAccuracy?;
+    startOrientationUpdates(): void;
+    stopOrientationUpdates(): void;
 }

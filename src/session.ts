@@ -9,6 +9,9 @@ import {
     SynchronousMessageChannel
 } from './utils';
 
+import { version } from '../package.json!'
+export { version }
+
 export interface Message {
     [key: string]: any
 };
@@ -85,8 +88,8 @@ export class SessionPort {
     constructor(public uri?: string) {
 
         this.on[SessionPort.OPEN] = (info: Configuration) => {
-            if (!info) throw new Error('Session did not provide a configuration');
-            if (this._isConnected) throw new Error('Session has already connected!');
+            if (!info) throw new Error(`Session did not provide a configuration (${this.uri})`);
+            if (this._isConnected) throw new Error(`Session has already connected! (${this.uri})`);
             this.info = info;
             this._isConnected = true;
             this._connectEvent.raiseEvent(undefined);
@@ -186,13 +189,13 @@ export class SessionPort {
                     this.send(topic + ':reject:' + id, { reason: errorMessage })
                 })
             } else {
-                const errorMessage = 'Unable to handle message ' + topic;
+                const errorMessage = 'Unable to handle message for topic ' + topic + ' (' + this.uri + ')';
                 if (expectsResponse) {
-                    this.send(topic + ':reject:' + id, { reason: errorMessage })
+                    this.send(topic + ':reject:' + id, { reason: errorMessage });
+                    this.errorEvent.raiseEvent(new Error(errorMessage));
                 } else {
-                    this.sendError({ message: errorMessage });
+                    console.warn(errorMessage);
                 }
-                this.errorEvent.raiseEvent(new Error('No handlers are available for topic ' + topic));
             }
         }
 
@@ -279,6 +282,10 @@ export class SessionPort {
     get isConnected() {
         return this._isConnected;
     }
+
+    get isClosed() {
+        return this._isClosed;
+    }
 }
 
 
@@ -326,10 +333,9 @@ export class SessionService {
     private _connectEvent = new Event<SessionPort>();
 
     /**
-     * Manager-only. A collection of ports for the sessions managed by this session.
+     * Manager-only. A collection of ports for each managed session.
      */
     public get managedSessions() {
-        this.ensureIsRealityManager();
         return this._managedSessions;
     }
     private _managedSessions: SessionPort[] = [];
@@ -343,12 +349,24 @@ export class SessionService {
         private sessionPortFactory: SessionPortFactory,
         private messageChannelFactory: MessageChannelFactory) {
 
+        configuration.version = version;
+        configuration.uri = (typeof window !== 'undefined' && window.location) ?
+            window.location.href : undefined;
+        configuration.title = (typeof document !== undefined) ? 
+            document.title : undefined;
+
         this.errorEvent.addEventListener((error) => {
             if (this.errorEvent.numberOfListeners === 1) console.error(error);
         })
 
         this.manager.errorEvent.addEventListener((error) => {
             this.errorEvent.raiseEvent(error);
+        });
+
+        this.manager.closeEvent.addEventListener(()=>{
+            this.managedSessions.forEach((s)=>{
+                s.close();
+            });
         })
 
         Object.freeze(this);
@@ -374,7 +392,7 @@ export class SessionService {
      * add message handlers to a newly connected [[SessionPort]]. 
      * @return a new [[SessionPort]] instance
      */
-    public addManagedSessionPort(uri: string) {
+    public addManagedSessionPort(uri:string) {
         this.ensureIsRealityManager();
         const session = this.sessionPortFactory.create(uri);
         session.errorEvent.addEventListener((error) => {
@@ -397,7 +415,7 @@ export class SessionService {
      * to this [[ArgonSystem]].
      * @return a new SessionPort instance
      */
-    public createSessionPort(uri?: string) {
+    public createSessionPort(uri:string) {
         return this.sessionPortFactory.create(uri);
     }
 
@@ -419,34 +437,37 @@ export class SessionService {
      * Returns true if this system represents a [[REALITY_MANAGER]]
      */
     get isRealityManager() {
-        return this.configuration.role === Role.REALITY_MANAGER || 
-            this.configuration.role === Role.MANAGER; // TODO: phase out of using Role.MANAGER enum
+        return Role.isRealityManager(this.configuration.role);
     }
     /**
-     * Returns true if this system represents a [[REALITY_AUGMENTOR]], meaning, 
+     * Returns true if this system represents a [[REALITY_AUGMENTER]], meaning, 
      * it is running within a [[REALITY_MANAGER]]
      */
     get isRealityAugmenter() {
-        return this.configuration.role === Role.REALITY_AUGMENTOR ||
-            this.configuration.role === Role.APPLICATION; // TODO: phase out use of Role.APPLICATION
+        return Role.isRealityAugmenter(this.configuration.role);
     }
 
     /**
-     * Returns true if this system is a [[REALITY_VIEW]]
+     * Returns true if this system is a [[REALITY_VIEWER]]
      */
-    get isRealityView() {
-        return this.configuration.role === Role.REALITY_VIEW;
+    get isRealityViewer() {
+        return Role.isRealityViewer(this.configuration.role);
     }
 
     /**
      * @private
      */
-    private get isManager() { console.warn("Deprecated. Use isRealityManager()"); return this.isManager }
+    private get isManager() { console.warn("Deprecated. Use isRealityManager"); return this.isManager }
 
     /**
      * @private
      */
-    private get isApplication() { console.warn("Deprecated. Use isRealityAugmenter()"); return this.isRealityAugmenter }
+    private get isApplication() { console.warn("Deprecated. Use isRealityAugmenter"); return this.isRealityAugmenter }
+
+    /**
+     * @private
+     */
+    private get isRealityView() { console.warn("Deprecated. Use isRealityViewer"); return this.isRealityViewer }
 
     /**
      * Throws an error if this system is not a [[REALITY_MANAGER]]
@@ -457,19 +478,35 @@ export class SessionService {
     }
 
     /**
-     * Throws an error if this session is not a [[REALITY_VIEW]]
+     * Throws an error if this session is not a [[REALITY_VIEWER]]
      */
-    public ensureIsRealityView() {
-        if (!this.isRealityView)
-            throw new Error('An reality-view only API was accessed from a non reality-view.')
+    public ensureIsRealityViewer() {
+        if (!this.isRealityViewer)
+            throw new Error('An reality-viewer only API was accessed from a non reality-viewer.')
     }
 
     /**
-     * Throws an error if this session is a [[REALITY_VIEW]]
+     * Throws an error if this session is a [[REALITY_VIEWER]]
      */
-    public ensureNotRealityView() {
-        if (this.isRealityView)
-            throw new Error('An non-permitted API was accessed from a reality-view.')
+    public ensureNotRealityViewer() {
+        if (this.isRealityViewer)
+            throw new Error('An non-permitted API was accessed from a reality-viewer.')
+    }
+
+    /**
+     * Throws an error if this session is a [[REALITY_AUGMENTER]]
+     */
+    public ensureNotRealityAugmenter() {
+        if (this.isRealityAugmenter)
+            throw new Error('An non-permitted API was accessed from a reality-viewer.')
+    }
+
+    /**
+     * Throws an error if the connection to the manager is closed
+     */
+    public ensureConnected() {
+        if (!this.manager.isConnected)
+            throw new Error('Session is not connected to manager')
     }
 }
 
@@ -512,7 +549,7 @@ export class DOMConnectService extends ConnectService {
      */
     connect(sessionService: SessionService) {
         const messageChannel = sessionService.createMessageChannel();
-        window.parent.postMessage({ type: 'ARGON_SESSION' }, '*', [messageChannel.port1]);
+        window.parent.postMessage({ type: 'ARGON_SESSION', name:window.name }, '*', [messageChannel.port1]);
         sessionService.manager.open(messageChannel.port2, sessionService.configuration);
     }
 }
