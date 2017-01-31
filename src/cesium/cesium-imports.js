@@ -23,6 +23,7 @@ export { default as Entity } from 'cesium/Source/DataSources/Entity';
 export { default as EntityCollection } from 'cesium/Source/DataSources/EntityCollection';
 export { default as Event } from 'cesium/Source/Core/Event';
 export { default as ExtrapolationType } from 'cesium/Source/Core/ExtrapolationType';
+export { default as FeatureDetection } from 'cesium/Source/Core/FeatureDetection';
 export { default as GeographicProjection } from 'cesium/Source/Core/GeographicProjection';
 export { default as HermitePolynomialApproximation } from 'cesium/Source/Core/HermitePolynomialApproximation';
 export { default as JulianDate } from 'cesium/Source/Core/JulianDate';

@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Argon Tests</title>    
+    <base href="../"/>
     <script src="/jspm_packages/system.src.js"></script>
     <script src="/jspm.browser.js"></script>
     <script src="/jspm.config.js"></script>
@@ -10,13 +11,7 @@
     <div id="mocha"></div>
     <div id="argon" style="pointer-events:none"></div>
     <script>
-        System.import('mocha').then(function(mocha) {
-            mocha.setup('bdd')
-            System.import('test/test.ts!').then(function() {
-                mocha.checkLeaks();
-                mocha.run();
-            })
-        })
+        System.import('./test/runner.js');
     </script>
 </body>
 </html>

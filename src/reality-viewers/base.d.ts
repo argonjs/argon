@@ -1,15 +1,24 @@
-import { SessionService, SessionPort } from '../session';
+/// <reference types="cesium" />
+import { ReferenceFrame } from '../cesium/cesium-imports';
+import { SessionPort } from '../session';
+import { Event } from '../utils';
 /**
  * Abstract class for a RealityViewer
  */
 export declare abstract class RealityViewer {
-    private _sessionService;
     uri: string;
-    session: SessionPort;
-    constructor(_sessionService: SessionService, uri: string);
-    abstract destroy(): any;
-    abstract setPresenting(flag: boolean): any;
-    load(): void;
+    providedReferenceFrames: Array<ReferenceFrame | string>;
+    connectEvent: Event<SessionPort>;
+    presentChangeEvent: Event<void>;
+    private _isPresenting;
+    readonly isPresenting: boolean;
+    private _session?;
+    readonly session: SessionPort | undefined;
+    constructor(uri: string);
+    destroy(): void;
+    setPresenting(flag: boolean): void;
+    abstract load(): any;
+    static DEFAULT: string;
     static EMPTY: string;
     static LIVE: string;
     static getType(uri?: string): string | undefined;

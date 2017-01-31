@@ -15,11 +15,12 @@ import {
     PerspectiveFrustum,
     CesiumMath
 } from '../cesium/cesium-imports'
-import { Role, ViewState } from '../common'
+import { Role, SerializedSubviewList, PHYSICAL_STAGE_ENTITY_ID } from '../common'
 import { SessionService } from '../session'
-import { DeviceService } from '../device'
-import { getSerializedEntityPose, decomposePerspectiveProjectionMatrix, getEntityOrientationInReferenceFrame } from '../utils'
+import { getEntityOrientation, decomposePerspectiveProjectionMatrix, getEntityOrientationInReferenceFrame } from '../utils'
+import { ContextService } from '../context'
 import { ViewService } from '../view'
+import { ViewportService } from '../viewport'
 import { RealityViewer } from './base'
 
 interface Movement {
@@ -32,42 +33,39 @@ interface PinchMovement {
     angleAndHeight: Movement;
 }
 
-@inject(SessionService, DeviceService, ViewService)
+@inject(SessionService, ContextService, ViewService, ViewportService)
 export class EmptyRealityViewer extends RealityViewer {
 
     public type = 'empty';
 
     constructor(
         private sessionService: SessionService,
-        private deviceService: DeviceService,
+        private contextService: ContextService,
         private viewService: ViewService,
+        private viewportService: ViewportService,
         public uri:string) {
-        super(sessionService, uri);
-    }
-
-    public destroy() {
-        
-    }
-
-    private _isPresenting = false;
-
-    public setPresenting(foo: boolean) : void {
-        this._isPresenting = foo;
+        super(uri);
     }
 
     public load(): void {
-        super.load();
-        const realitySession = this.session;
-        const remoteRealitySession = this.sessionService.createSessionPort(this.uri);
+        const session = this.sessionService.addManagedSessionPort(this.uri);
+        session.connectEvent.addEventListener(()=>{
+            this.connectEvent.raiseEvent(session);
+        });
 
-        remoteRealitySession.on['ar.device.state'] = () => { };
-        remoteRealitySession.on['ar.view.uievent'] = () => { };
-        remoteRealitySession.on['ar.context.update'] = () => { };
-        remoteRealitySession.on['ar.reality.connect'] = () => { };
+        const internalSession = this.sessionService.createSessionPort(this.uri);
+        internalSession.on['ar.device.state'] = () => { };
+        internalSession.on['ar.visibility.state'] = () => { };
+        internalSession.on['ar.focus.state'] = () => { };
+        internalSession.on['ar.viewport.uievent'] = () => { };
+        internalSession.on['ar.viewport.presentationMode'] = () => { };
+        internalSession.on['ar.view.suggestedViewState'] = () => { };
+        internalSession.on['ar.context.update'] = () => { };
+        internalSession.on['ar.reality.connect'] = () => { };
 
-        remoteRealitySession.connectEvent.addEventListener(() => {
+        internalSession.connectEvent.addEventListener(() => {
 
-            const aggregator = new CameraEventAggregator(<any>this.viewService.element);
+            const aggregator = new CameraEventAggregator(<any>this.viewportService.element);
 
             var flags = {
                 moveForward : false,
@@ -114,12 +112,14 @@ export class EmptyRealityViewer extends RealityViewer {
             document.addEventListener('keydown', keydownListener, false);
             document.addEventListener('keyup', keyupListener, false);
 
-            remoteRealitySession.closeEvent.addEventListener(()=>{
+            internalSession.closeEvent.addEventListener(()=>{
                 aggregator.destroy();
                 document.removeEventListener('keydown', keydownListener);
                 document.removeEventListener('keyup', keyupListener);
             });
 
+
+            const scratchQuaternion = new Quaternion;
             const scratchQuaternionDragYaw = new Quaternion;
             // const pitchQuat = new Quaternion;
             const positionScratchCartesian = new Cartesian3;
@@ -129,7 +129,7 @@ export class EmptyRealityViewer extends RealityViewer {
             const up = new Cartesian3(0,0,1);
             const right = new Cartesian3(1,0,0);
             const forward = new Cartesian3(0,-1,0);
-            const frustum = new PerspectiveFrustum();
+            const scratchFrustum = new PerspectiveFrustum();
 
             const AVERAGE_HUMAN_HEIGHT = 1.77;
             const NEGATIVE_UNIT_Y = new Cartesian3(0,-1,0);
@@ -137,7 +137,7 @@ export class EmptyRealityViewer extends RealityViewer {
 
             const virtualEyePositionProperty = new ConstantPositionProperty(
                 new Cartesian3(0, 0, AVERAGE_HUMAN_HEIGHT), 
-                this.deviceService.stage
+                this.contextService.entities.getById(PHYSICAL_STAGE_ENTITY_ID)
             );
             const virtualEyeOrientationProperty = new ConstantProperty(X_90ROT);
             Matrix3.fromQuaternion(eyeOrientation, orientationMatrix);
@@ -147,51 +147,61 @@ export class EmptyRealityViewer extends RealityViewer {
                 orientation: virtualEyeOrientationProperty
             });
 
-            const deviceService = this.deviceService;
+            const viewService = this.viewService;
+
+            const subviews:SerializedSubviewList = [];
 
             let update = (time: JulianDate) => {
-                if (remoteRealitySession.isConnected) deviceService.requestFrame(update);
+                if (internalSession.isConnected) viewService.requestAnimationFrame(update);
                 else return;
 
-                if (!this._isPresenting) {
+                if (!this.isPresenting) {
                     aggregator.reset();
                     return;
                 }
 
-                if (frustum.fov === undefined || deviceService.strict) {
-                    decomposePerspectiveProjectionMatrix(deviceService.subviews[0].projectionMatrix, frustum);
-                }
+                const suggestedViewState = this.viewService.suggestedViewState;
+                if (!suggestedViewState) return;
+
+                SerializedSubviewList.clone(suggestedViewState.subviews, subviews);
                 
-                if (!deviceService.strict) {
+                // provide fov controls
+                if (!suggestedViewState.strict) {                    
+                    decomposePerspectiveProjectionMatrix(subviews[0].projectionMatrix, scratchFrustum);
+                    scratchFrustum.fov = viewService.subviews[0].frustum.fov;
+
                     if (aggregator.isMoving(CameraEventType.WHEEL)) {
                         const wheelMovement = aggregator.getMovement(CameraEventType.WHEEL);
                         const diff = wheelMovement.endPosition.y;
-                        frustum.fov = Math.min(Math.max(frustum.fov - diff * 0.02, Math.PI/8), Math.PI-Math.PI/8);
+                        scratchFrustum.fov = Math.min(Math.max(scratchFrustum.fov - diff * 0.02, Math.PI/8), Math.PI-Math.PI/8);
                     }
+
                     if (aggregator.isMoving(CameraEventType.PINCH)) {
                         const pinchMovement:PinchMovement = aggregator.getMovement(CameraEventType.PINCH);
                         const diff = pinchMovement.distance.endPosition.y - pinchMovement.distance.startPosition.y;
-                        frustum.fov = Math.min(Math.max(frustum.fov - diff * 0.02, Math.PI/8), Math.PI-Math.PI/8);
+                        scratchFrustum.fov = Math.min(Math.max(scratchFrustum.fov - diff * 0.02, Math.PI/8), Math.PI-Math.PI/8);
                     }
-                    const aspect = deviceService.subviews[0].viewport.width / deviceService.subviews[0].viewport.height;
-                    frustum.aspectRatio = isNaN(aspect) ? 1 : aspect;
-                    deviceService.subviews.forEach((s)=>{
-                        Matrix4.clone(frustum.projectionMatrix, s.projectionMatrix);
+                    
+                    subviews.forEach((s)=>{                    
+                        const aspect = s.viewport.width / s.viewport.height;
+                        scratchFrustum.aspectRatio = isFinite(aspect) ? aspect : 1;
+                        Matrix4.clone(scratchFrustum.projectionMatrix, s.projectionMatrix);
                     });
                 }
 
-                let pose = getSerializedEntityPose(this.deviceService.eye, time);
+                const physicalStage = this.contextService.entities.getById(PHYSICAL_STAGE_ENTITY_ID)!;
+                const orientation = getEntityOrientation(this.viewService.physicalEye, time, physicalStage, scratchQuaternion);
                 
                 // provide controls if the device does not have a pose
-                if (!pose && !deviceService.strict) {
+                if (!orientation && !suggestedViewState.strict) {
                     
                     if (aggregator.isMoving(CameraEventType.LEFT_DRAG)) {
                         const dragMovement = aggregator.getMovement(CameraEventType.LEFT_DRAG);
-                        const currentOrientation = getEntityOrientationInReferenceFrame(virtualEye, time, deviceService.stage, eyeOrientation);
+                        const currentOrientation = getEntityOrientationInReferenceFrame(virtualEye, time, physicalStage, eyeOrientation);
 
                         if (currentOrientation) {
                             // const dragPitch = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, frustum.fov * (dragMovement.endPosition.y - dragMovement.startPosition.y) / app.view.getViewport().height, scratchQuaternionDragPitch);
-                            const dragYaw = Quaternion.fromAxisAngle(Cartesian3.UNIT_Y, frustum.fov * (dragMovement.endPosition.x - dragMovement.startPosition.x) / this.viewService.viewport.width, scratchQuaternionDragYaw);
+                            const dragYaw = Quaternion.fromAxisAngle(Cartesian3.UNIT_Y, scratchFrustum.fov * (dragMovement.endPosition.x - dragMovement.startPosition.x) / suggestedViewState.viewport.width, scratchQuaternionDragYaw);
                             // const drag = Quaternion.multiply(dragPitch, dragYaw, dragYaw);
 
                             const newOrientation = Quaternion.multiply(currentOrientation, dragYaw, dragYaw);
@@ -204,7 +214,7 @@ export class EmptyRealityViewer extends RealityViewer {
                         }
                     }
 
-                    const position = virtualEyePositionProperty.getValueInReferenceFrame(time,  this.deviceService.stage, positionScratchCartesian);
+                    const position = virtualEyePositionProperty.getValueInReferenceFrame(time, physicalStage, positionScratchCartesian);
                     
                     var moveRate = 0.02;
                     if (flags.moveForward) {
@@ -232,33 +242,31 @@ export class EmptyRealityViewer extends RealityViewer {
                         Cartesian3.add(position, movementScratchCartesian, position);
                     }
 
-                    virtualEyePositionProperty.setValue(position, this.deviceService.stage);
-
-                    pose = getSerializedEntityPose(virtualEye, time);
+                    virtualEyePositionProperty.setValue(position, physicalStage);
+                } else {
+                    virtualEyeOrientationProperty.setValue(orientation)
                 }
 
                 aggregator.reset();
 
-                const viewState: ViewState = {
+                const frameState = this.contextService.createFrameState(
                     time,
-                    pose,
-                    geolocationAccuracy: deviceService.geolocationAccuracy,
-                    altitudeAccuracy: deviceService.altitudeAccuracy,
-                    compassAccuracy: deviceService.compassAccuracy,
-                    viewport: deviceService.viewport,
-                    subviews: deviceService.subviews
-                };
-                remoteRealitySession.send('ar.reality.viewState', viewState);
+                    suggestedViewState.viewport,
+                    subviews,
+                    virtualEye
+                );
+
+                internalSession.send('ar.reality.frameState', frameState);
             }
 
-            deviceService.requestFrame(update);
-        })
+            viewService.requestAnimationFrame(update);
+        });
 
         // Only connect after the caller is able to attach connectEvent handlers
         Promise.resolve().then(()=>{
             const messageChannel = this.sessionService.createSynchronousMessageChannel();
-            realitySession.open(messageChannel.port1, this.sessionService.configuration);
-            remoteRealitySession.open(messageChannel.port2, { role: Role.REALITY_VIEWER, uri: this.uri, title: 'Empty' });
+            session.open(messageChannel.port1, this.sessionService.configuration);
+            internalSession.open(messageChannel.port2, { role: Role.REALITY_VIEWER, uri: this.uri, title: 'Empty' });
         });
     }
 }

@@ -1,4 +1,9 @@
-import { CesiumMath } from './cesium/cesium-imports';
+import { Matrix4, Cartesian3, Quaternion, CesiumMath } from './cesium/cesium-imports';
+export const AVERAGE_HUMAN_HEIGHT = 1.77;
+export const EYE_ENTITY_ID = 'ar.eye';
+export const PHYSICAL_EYE_ENTITY_ID = 'ar.physical-eye';
+export const STAGE_ENTITY_ID = 'ar.stage';
+export const PHYSICAL_STAGE_ENTITY_ID = 'ar.physical-stage';
 /**
  * Describes the role of an [[ArgonSystem]]
  */
@@ -38,7 +43,6 @@ var Role;
      */
     Role[Role["REALITY_VIEW"] = "RealityView"] = "REALITY_VIEW";
 })(Role || (Role = {}));
-var Role;
 (function (Role) {
     function isRealityViewer(r) {
         return r === Role.REALITY_VIEWER || r === Role.REALITY_VIEW;
@@ -54,27 +58,47 @@ var Role;
     Role.isRealityManager = isRealityManager;
 })(Role || (Role = {}));
 export { Role };
-export var Viewport;
-(function (Viewport) {
-    function clone(viewport, result = {}) {
-        if (!viewport)
-            return undefined;
+/**
+ * Configuration options for an [[ArgonSystem]]
+ */
+export class Configuration {
+}
+/**
+ * Viewport values are expressed using a right-handed coordinate system with the origin
+ * at the bottom left corner.
+ */
+export class Viewport {
+    static clone(viewport, result = {}) {
         result.x = viewport.x;
         result.y = viewport.y;
         result.width = viewport.width;
         result.height = viewport.height;
         return result;
     }
-    Viewport.clone = clone;
-    function equals(viewportA, viewportB) {
+    static equals(viewportA, viewportB) {
         return viewportA && viewportB &&
             CesiumMath.equalsEpsilon(viewportA.x, viewportB.x, CesiumMath.EPSILON7) &&
             CesiumMath.equalsEpsilon(viewportA.y, viewportB.y, CesiumMath.EPSILON7) &&
             CesiumMath.equalsEpsilon(viewportA.width, viewportB.width, CesiumMath.EPSILON7) &&
             CesiumMath.equalsEpsilon(viewportA.height, viewportB.height, CesiumMath.EPSILON7);
     }
-    Viewport.equals = equals;
-})(Viewport || (Viewport = {}));
+}
+export class NormalizedViewport {
+    static clone(viewport, result = {}) {
+        result.x = viewport.x;
+        result.y = viewport.y;
+        result.width = viewport.width;
+        result.height = viewport.height;
+        return result;
+    }
+    static equals(viewportA, viewportB) {
+        return viewportA && viewportB &&
+            CesiumMath.equalsEpsilon(viewportA.x, viewportB.x, CesiumMath.EPSILON7) &&
+            CesiumMath.equalsEpsilon(viewportA.y, viewportB.y, CesiumMath.EPSILON7) &&
+            CesiumMath.equalsEpsilon(viewportA.width, viewportB.width, CesiumMath.EPSILON7) &&
+            CesiumMath.equalsEpsilon(viewportA.height, viewportB.height, CesiumMath.EPSILON7);
+    }
+}
 /**
  * Identifies a subview in a [[SerializedSubview]]
  */
@@ -97,3 +121,70 @@ export var SubviewType;
      */
     SubviewType[SubviewType["OTHER"] = "Other"] = "OTHER";
 })(SubviewType || (SubviewType = {}));
+export var SerializedEntityState;
+(function (SerializedEntityState) {
+    function clone(state, result) {
+        result = result || {};
+        result.p = Cartesian3.clone(state.p, result.p);
+        result.o = Quaternion.clone(state.o, result.o);
+        result.r = state.r;
+        result.meta = state.meta;
+        return result;
+    }
+    SerializedEntityState.clone = clone;
+})(SerializedEntityState || (SerializedEntityState = {}));
+export var SerializedSubview;
+(function (SerializedSubview) {
+    function clone(subview, result) {
+        result = result || {};
+        result.type = subview.type;
+        result.projectionMatrix = Matrix4.clone(subview.projectionMatrix, result.projectionMatrix);
+        result.viewport = NormalizedViewport.clone(subview.viewport, result.viewport);
+        result.pose = subview.pose ? SerializedEntityState.clone(subview.pose, result.pose) : undefined;
+        return result;
+    }
+    SerializedSubview.clone = clone;
+})(SerializedSubview || (SerializedSubview = {}));
+// export interface PhysicalViewState {
+//     time: JulianDate,
+//     stagePose: SerializedEntityPose|undefined,
+//     stageHorizontalAccuracy: number|undefined,
+//     stageVerticalAccuracy: number|undefined,
+//     eyePose: SerializedEntityPose|undefined,
+//     eyeCompassAccuracy: number|undefined,
+//     subviews: SerializedSubviewList,
+//     strict:boolean;
+// }
+// export interface ViewState {
+//     /**
+//      * The viewing pose.
+//      */
+//     pose: SerializedEntityState|undefined,
+//     /**
+//      * The viewport to render into. In a DOM environment, 
+//      * the bottom left corner of the document element (document.documentElement) 
+//      * is the origin. 
+//      */
+//     viewport: Viewport,
+//     /**
+//      * The list of subviews to render.
+//      */
+//     subviews:SerializedSubviewList,
+//     /**
+//      * The current field of view (of each subview)
+//      */
+//     fovs: number[]
+// }
+export class SerializedSubviewList extends Array {
+    constructor() {
+        super();
+    }
+    static clone(subviews, result) {
+        result = result || new SerializedSubviewList;
+        result.length = subviews.length;
+        subviews.forEach((s, i) => {
+            result[i] = SerializedSubview.clone(s, result[i]);
+        });
+        return result;
+    }
+}

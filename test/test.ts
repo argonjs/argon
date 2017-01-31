@@ -65,14 +65,18 @@ describe('RealityService', () => {
             container.registerInstance('config', {role: Argon.Role.REALITY_MANAGER});
             container.registerSingleton(Argon.ConnectService, Argon.LoopbackConnectService);
             const realityService:Argon.RealityService = container.get(Argon.RealityService);
+            const contextService:Argon.ContextService = container.get(Argon.ContextService);
             sessionService = container.get(Argon.SessionService);
+            container.get(Argon.RealityServiceProvider);
+            container.get(Argon.ViewServiceProvider);
             
             realityService.default = Argon.RealityViewer.EMPTY;
             
-            let removeListener = realityService.viewStateEvent.addEventListener((state) => {
-                expect(realityService.current === Argon.RealityViewer.EMPTY)
-                expect(state.time).to.haveOwnProperty('dayNumber');
-                expect(state.time).to.haveOwnProperty('secondsOfDay');
+            let removeListener = contextService.frameStateEvent.addEventListener((frameState) => {
+                expect(realityService.current === Argon.RealityViewer.EMPTY);
+                expect(frameState.reality === Argon.RealityViewer.EMPTY);
+                expect(frameState.time).to.haveOwnProperty('dayNumber');
+                expect(frameState.time).to.haveOwnProperty('secondsOfDay');
                 removeListener();
                 done();
             })
@@ -90,9 +94,10 @@ describe('RealityService', () => {
             container.registerSingleton(Argon.ConnectService, Argon.LoopbackConnectService);
             const realityService:Argon.RealityService = container.get(Argon.RealityService);
             sessionService = container.get(Argon.SessionService);
+            container.get(Argon.RealityServiceProvider);
 
             sessionService.connect();
-            realityService.request({ uri: 'reality:unsupported' }).catch((error)=>{
+            realityService.request('reality:unsupported').catch((error)=>{
                 expect(error).to.be.instanceof(Error);
                 done()
             })
@@ -377,7 +382,7 @@ describe('CommandQueue', () => {
                     }, 15)
                 });
             });
-            queue.push(() => x = 10).catch(()=>{});
+            queue.push(() => x = 15).catch(()=>{});
             queue.execute();
         });
     })
@@ -491,176 +496,54 @@ describe('Context', () => {
 
 describe('VuforiaService', () => {
 
-    class MockVuforiaServiceDelegateBase extends Argon.VuforiaServiceDelegate {
-        isAvailable() {
-            return true
-        }
-    }
-
-    function createManagerWithVuforiaDelegate(DelegateClass: typeof Argon.VuforiaServiceDelegate) {
-        const container = new Argon.DI.Container();
-        container.registerSingleton(Argon.VuforiaServiceDelegate, DelegateClass)
-        const manager = Argon.init(null, {
-            role:Argon.Role.REALITY_MANAGER
-        }, container);
-        return manager;
-    }
-
-    afterEach(() => {
-        if (Argon.ArgonSystem.instance)
-            Argon.ArgonSystem.instance.destroy();
-    })
-
-    describe('new VuforiaService()', () => {
-        it('should create a VuforiaService object', () => {
-            const {vuforia} = createManagerWithVuforiaDelegate(Argon.VuforiaServiceDelegate);
-            expect(vuforia).to.be.instanceof(Argon.VuforiaService);
-        });
-        it('should load the live reality when it is the default', (done) => {
-            const {reality} = createManagerWithVuforiaDelegate(Argon.VuforiaServiceDelegate);
-            reality.default = Argon.RealityViewer.LIVE;
-            reality.changeEvent.addEventListener(({current}) => {
-                expect(current).to.equal(Argon.RealityViewer.LIVE);
-                expect(current === reality.current).to.be.true;
-                done();
-            })
-        })
-        // it('should emit update events via context when vuforia reality is active', (done) => {
-        //     const {vuforia, reality, context} = createManagerWithVuforiaReality(Argon.VuforiaServiceDelegate);;
-        //     context.updateEvent.addEventListener((frameState) => {
-        //         expect(frameState.reality.type).to.equal('vuforia');
-        //         expect(frameState.frameNumber).to.equal(42);
-        //         done()
-        //     });
-        //     reality.changeEvent.addEventListener(() => {
-        //         expect(reality.getCurrent().type).to.equal('vuforia');
-        //         const delegate:Argon.VuforiaServiceDelegate = vuforia['delegate'];
-        //         delegate.stateUpdateEvent.raiseEvent({
-        //             frameNumber: 42,
-        //             time: Argon.Cesium.JulianDate.now()
-        //         })
-        //     })
-        // })
-    })
-
     describe('#isAvailable', () => {
-        it('should call isAvailable on the VuforiaServiceDelegate', (done) => {
-            const {vuforia} = createManagerWithVuforiaDelegate(MockVuforiaServiceDelegateBase);
-            vuforia.isAvailable().then((result) => {
-                expect(result).to.equal(true);
-                done()
-            })
+        it('should resolve ar.vuforia.isAvailable request', () => {
+            const sessionService = new Argon.SessionService(
+                { role:Argon.Role.REALITY_MANAGER }, 
+                new Argon.LoopbackConnectService,
+                new Argon.SessionPortFactory,
+                new Argon.MessageChannelFactory
+            );
+            const vuforiaService = new Argon.VuforiaService(sessionService);
+            
+            sessionService.connectEvent.addEventListener((session)=>{
+                session.on['ar.vuforia.isAvailable'] = () => {
+                    return Promise.resolve({available:true})
+                }
+            });
+
+            sessionService.connect();
+            
+            return vuforiaService.isAvailable().then((available)=>{
+                expect(available).to.be.true;
+            });
         });
     })
 
     describe('#init', () => {
-        it('should call init on the VuforiaServiceDelegate', (done) => {
-            class MockVuforiaServiceDelegate extends MockVuforiaServiceDelegateBase {
-                init(options: Argon.VuforiaServiceDelegateInitOptions) {
-                    done()
-                    return Promise.resolve(Argon.VuforiaInitResult.SUCCESS);
+        it('should resolve with Argon.VuforiaAPI instance upon success', () => {
+            const sessionService = new Argon.SessionService(
+                { role:Argon.Role.REALITY_MANAGER }, 
+                new Argon.LoopbackConnectService,
+                new Argon.SessionPortFactory,
+                new Argon.MessageChannelFactory
+            );
+            const vuforiaService = new Argon.VuforiaService(sessionService);
+            
+            sessionService.connectEvent.addEventListener((session)=>{
+                session.on['ar.vuforia.init'] = (options:{encryptedLicenseData:string}) => {
+                    expect(options.encryptedLicenseData).to.equal('test');
+                    return Promise.resolve()
                 }
-            }
-            const {vuforia} = createManagerWithVuforiaDelegate(MockVuforiaServiceDelegate);
-            return vuforia.init({ encryptedLicenseData: 'test' }).then((api)=>{
+            });
+            
+            sessionService.connect();
+            
+            return vuforiaService.init({ encryptedLicenseData: 'test' }).then((api)=>{
                 expect(api).to.be.instanceof(Argon.VuforiaAPI);
-            })
+            });
         });
     })
-
-    // describe('#startCamera', () => {
-    //     it('should call startCamera on the VuforiaServiceDelegate', (done) => {
-    //         class MockVuforiaServiceDelegate extends MockVuforiaServiceDelegateBase {
-    //             startCamera() {
-    //                 done()
-    //             }
-    //         }
-    //         const {vuforia} = createManagerWithVuforiaReality(MockVuforiaServiceDelegate);
-    //         vuforia.startCamera()
-    //         vuforia.init()
-    //     });
-    // })
-
-    // describe('#stopCamera', () => {
-    //     it('should call stopCamera on the VuforiaServiceDelegate', (done) => {
-    //         class MockVuforiaServiceDelegate extends MockVuforiaServiceDelegateBase {
-    //             stopCamera() {
-    //                 done()
-    //             }
-    //         }
-    //         const {vuforia} = createManagerWithVuforiaReality(MockVuforiaServiceDelegate);
-    //         vuforia.init()
-    //         vuforia.startCamera()
-    //         vuforia.stopCamera()
-    //     });
-    // })
-
-    // describe('#createDataSet', () => {
-    //     it('should create a VuforiaDataSet object', (done) => {
-    //         let progress = 0;
-    //         class MockVuforiaServiceDelegate extends MockVuforiaServiceDelegateBase {
-    //             loadDataSet(url) {
-    //                 expect(url).to.equal(myDataSetURL);
-    //                 expect(progress).to.equal(0);
-    //                 progress++;
-    //             }
-    //             activateDataSet(url) {
-    //                 expect(url).to.equal(myDataSetURL);
-    //                 expect(progress).to.equal(1);
-    //                 progress++;
-    //             }
-    //             deactivateDataSet(url) {
-    //                 expect(url).to.equal(myDataSetURL);
-    //                 expect(progress).to.equal(2);
-    //                 progress++;
-    //             }
-    //             unloadDataSet(url) {
-    //                 expect(url).to.equal(myDataSetURL);
-    //                 expect(progress).to.equal(3);
-    //                 done();
-    //             }
-    //         }
-    //         const myDataSetURL = Argon.resolveURL("dataset_url");
-    //         const {vuforia} = createManagerWithVuforiaReality(MockVuforiaServiceDelegate);
-    //         const dataSet = vuforia.createDataSet(myDataSetURL);
-    //         vuforia.init()
-    //         dataSet.load();
-    //         dataSet.activate();
-    //         dataSet.deactivate();
-    //         dataSet.unload();
-    //     });
-    // })
-
-    // describe('VuforiaDataSet', () => {
-    //     describe('#trackablesPromise', () => {
-    //         it('should return trackables promise with trackables info', () => {
-    //             class MockVuforiaServiceDelegate extends MockVuforiaServiceDelegateBase {
-    //                 loadDataSet(url) {
-    //                     expect(url).to.equal(myDataSetURL);
-    //                     this.dataSetLoadEvent.raiseEvent({
-    //                         url,
-    //                         trackables: {
-    //                             trackableID1: {
-    //                                 id: 'trackableID1',
-    //                                 name: 'target'
-    //                             }
-    //                         }
-    //                     });
-    //                 }
-    //             }
-    //             const myDataSetURL = Argon.resolveURL("dataset_url");
-    //             const {vuforia} = createManagerWithVuforiaReality(MockVuforiaServiceDelegate);
-    //             const dataSet = vuforia.createDataSet(myDataSetURL);
-    //             vuforia.init()
-    //             dataSet.load();
-    //             return dataSet.trackablesPromise.then((trackables) => {
-    //                 expect(trackables['trackableID1'].id).to.equal('trackableID1');
-    //             })
-    //         })
-    //     })
-    // })
-
-
 })
 
 describe('Utils', () => {

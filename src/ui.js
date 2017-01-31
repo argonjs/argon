@@ -4,10 +4,14 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { inject } from 'aurelia-dependency-injection';
-import { ViewService } from './view';
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+import { autoinject } from 'aurelia-dependency-injection';
+import { ViewServiceProvider } from './view';
+import { ViewportService } from './viewport';
 import { SessionService } from './session';
-import { RealityService } from './reality';
+import { RealityService, RealityServiceProvider } from './reality';
 import * as utils from './utils';
 const openIcon = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='768' height='768'%3E%3Cpath fill='white' d='M448.5 96H672v223.5h-64.5v-114L294 519l-45-45 313.5-313.5h-114V96zm159 511.5V384H672v223.5c0 34.5-30 64.5-64.5 64.5h-447c-36 0-64.5-30-64.5-64.5v-447C96 126 124.5 96 160.5 96H384v64.5H160.5v447h447z'/%3E%3C/svg%3E")`;
 const eyeIcon = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512'%3E%3Cpath fill='white' d='M256 96C144.34 96 47.56 161.02 0 256c47.56 94.98 144.34 160 256 160 111.656 0 208.438-65.02 256-160-47.558-94.98-144.344-160-256-160zm126.225 84.852c30.08 19.187 55.57 44.887 74.717 75.148-19.146 30.26-44.637 55.96-74.718 75.148C344.427 355.258 300.78 368 256 368s-88.43-12.743-126.226-36.852c-30.08-19.186-55.57-44.886-74.716-75.148 19.146-30.262 44.637-55.962 74.717-75.148 1.96-1.25 3.938-2.46 5.93-3.65C130.725 190.866 128 205.612 128 221c0 70.69 57.308 128 128 128s128-57.31 128-128c0-15.387-2.726-30.134-7.704-43.8 1.99 1.19 3.97 2.402 5.93 3.652zM256 208c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48z'/%3E%3C/svg%3E")`;
@@ -17,11 +21,13 @@ const argonAppIcon = `url(data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/4QB
 /**
  * Provides a default UI
  */
-export let DefaultUIService = class DefaultUIService {
-    constructor(sessionService, viewService, realityService) {
+let DefaultUIService = class DefaultUIService {
+    constructor(sessionService, viewportService, realityService, realityServiceProvider, viewServiceProvider) {
         this.sessionService = sessionService;
-        this.viewService = viewService;
+        this.viewportService = viewportService;
         this.realityService = realityService;
+        this.realityServiceProvider = realityServiceProvider;
+        this.viewServiceProvider = viewServiceProvider;
         this.realityViewerItemElements = new Map();
         this.menuItems = [];
         this.menuOpen = false;
@@ -87,13 +93,9 @@ export let DefaultUIService = class DefaultUIService {
             this.element.style['userSelect'] = 'none';
             this.element.style.webkitUserSelect = 'none';
             this.element.style.zIndex = '10';
-            this.viewService.containerElementPromise.then((containerElement) => {
-                if (!this.sessionService.manager.isClosed) {
-                    containerElement.appendChild(this.element);
-                    this.sessionService.manager.closeEvent.addEventListener(() => {
-                        this.element.remove();
-                    });
-                }
+            this.viewportService.rootElement.appendChild(this.element);
+            this.sessionService.manager.closeEvent.addEventListener(() => {
+                this.element.remove();
             });
             const realityViewerOverlayElement = document.createElement('div');
             realityViewerOverlayElement.className = 'argon-overlay';
@@ -136,23 +138,23 @@ export let DefaultUIService = class DefaultUIService {
             this.realityViewerListElement.style.maxHeight = '250px';
             this.realityViewerListElement.style.overflowY = 'auto';
             this.realityViewerSelectorElement.appendChild(this.realityViewerListElement);
-            this.realityService.installedEvent.addEventListener(({ uri }) => {
-                const viewer = this.realityService.getViewerByURI(uri);
-                const session = viewer.session;
+            this.realityServiceProvider.installedEvent.addEventListener(({ viewer }) => {
+                const uri = viewer.uri;
                 const e = document.createElement('div');
                 e.innerText = uri;
-                session.connectEvent.addEventListener(() => {
+                viewer.connectEvent.addEventListener((session) => {
                     e.innerText = session.info.title || uri;
                 });
                 e.className = 'argon-ui-list-item';
                 this.realityViewerItemElements.set(uri, e);
                 this.realityViewerListElement.appendChild(e);
                 e.addEventListener('click', () => {
-                    this.realityService.request({ uri });
+                    this.realityService.request(uri);
                     realityViewerOverlayElement.remove();
                 });
             });
-            this.realityService.uninstalledEvent.addEventListener(({ uri }) => {
+            this.realityServiceProvider.uninstalledEvent.addEventListener(({ viewer }) => {
+                const uri = viewer.uri;
                 const e = this.realityViewerItemElements.get(uri);
                 this.realityViewerItemElements.delete(uri);
                 e.remove();
@@ -189,22 +191,32 @@ export let DefaultUIService = class DefaultUIService {
             this.hmdMenuItem = this._createMenuItem(vrIcon, 'Toggle Immersive Display', () => {
                 this.menuOpen = false;
                 this.updateMenu();
-                if (this.viewService._isHmdActive()) {
-                    this.viewService.requestExitHmd();
-                }
-                else {
-                    if (this.viewService._isFullscreen()) {
-                        this.viewService.requestExitFullscreen();
-                    }
-                    else {
+                switch (this.viewportService.presentationMode) {
+                    case 0 /* EMBEDDED */:
                         if (utils.isIOS || navigator['vrEnabled']) {
-                            this.viewService.requestEnterHmd();
+                            this.viewServiceProvider.requestPresentHMD();
                         }
                         else {
-                            this.viewService.requestEnterFullscreen();
+                            this.viewportService.requestPresentationMode(1 /* IMMERSIVE */);
                         }
-                    }
+                        break;
+                    case 1 /* IMMERSIVE */:
+                        this.viewportService.requestPresentationMode(0 /* EMBEDDED */);
+                        break;
                 }
+                // if (this.viewService._isHmdActive()) {
+                //     this.viewService.requestExitHmd();
+                // } else {
+                //     if (this.viewService._isFullscreen()) {
+                //         this.viewService.requestExitFullscreen();
+                //     } else {
+                //         if (utils.isIOS || navigator['vrEnabled']) {
+                //             this.viewService.requestEnterHmd();
+                //         } else {
+                //             this.viewService.requestEnterFullscreen();
+                //         }
+                //     }
+                // }
             });
             this.realityMenuItem = this._createMenuItem(eyeIcon, 'Select Reality Viewer...', () => {
                 this.menuOpen = false;
@@ -212,19 +224,19 @@ export let DefaultUIService = class DefaultUIService {
                 realityViewerOverlayElement.style.backgroundColor = 'rgba(0,0,0,0.3)';
                 this.element.appendChild(realityViewerOverlayElement);
             });
-            this.maximizeMenuItem = this._createMenuItem(fullscreenIcon, 'Toggle Maximized View', () => {
+            this.maximizeMenuItem = this._createMenuItem(fullscreenIcon, 'Toggle Immersive View', () => {
                 this.menuOpen = false;
                 this.updateMenu();
-                this.viewService.isMaximized().then((maximized) => {
-                    if (maximized)
-                        this.viewService.requestExitMaximized();
-                    else
-                        this.viewService.requestEnterMaximized();
-                });
+                if (this.viewportService.presentationMode === 1 /* IMMERSIVE */) {
+                    this.viewportService.requestPresentationMode(0 /* EMBEDDED */);
+                }
+                else {
+                    this.viewportService.requestPresentationMode(1 /* IMMERSIVE */);
+                }
             });
             this.onSelect(menuButton, this.toggleMenu.bind(this));
             this.updateMenu();
-            this.viewService.viewportChangeEvent.addEventListener(() => {
+            this.viewportService.changeEvent.addEventListener(() => {
                 this.updateMenu();
             });
         }
@@ -283,7 +295,7 @@ export let DefaultUIService = class DefaultUIService {
         this.updateMenu();
     }
     updateMenu() {
-        if (this.viewService._isHmdActive()) {
+        if (this.viewServiceProvider.isPresentingHMD) {
             this.element.style.display = 'none';
         }
         else {
@@ -293,8 +305,8 @@ export let DefaultUIService = class DefaultUIService {
         this.menuItems.push(null);
         if (utils.isIOS)
             this.menuItems.push(this.openInArgonMenuItem);
-        if (!(document.documentElement.clientWidth === this.viewService.element.clientWidth &&
-            document.documentElement.clientHeight === this.viewService.element.clientHeight))
+        if (!(document.documentElement.clientWidth === this.viewportService.element.clientWidth &&
+            document.documentElement.clientHeight === this.viewportService.element.clientHeight))
             this.menuItems.push(this.maximizeMenuItem);
         this.menuItems.push(this.hmdMenuItem);
         if (this.realityViewerItemElements.size > 0)
@@ -328,5 +340,11 @@ export let DefaultUIService = class DefaultUIService {
     }
 };
 DefaultUIService = __decorate([
-    inject(SessionService, ViewService, RealityService)
+    autoinject(),
+    __metadata("design:paramtypes", [SessionService,
+        ViewportService,
+        RealityService,
+        RealityServiceProvider,
+        ViewServiceProvider])
 ], DefaultUIService);
+export { DefaultUIService };

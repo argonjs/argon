@@ -1,12 +1,5 @@
-if (typeof document == 'undefined') {
-    const w = typeof global !== 'undefined' ? global : window;
-    // global.window = w;
-    w['WebVRConfig'] = {
-        DEFER_INITIALIZATION: typeof navigator == 'undefined'
-    };
-}
 import CardboardUI from 'googlevr/webvr-polyfill/src/cardboard-ui';
-console.log(CardboardUI);
+import 'googlevr/webvr-polyfill/src/main';
 // fix cardboard ui to listen for touch or mouse events.
 // see https://github.com/googlevr/webvr-polyfill/issues/174
 var kButtonWidthDp = 28;
@@ -30,4 +23,3 @@ CardboardUI.prototype.listen = function (optionsCallback, backCallback) {
     canvas.addEventListener('click', this.listener, false);
     canvas.addEventListener('touchstart', this.listener, false); // for some reason, using `touchend` here breaks touch events in parent DOM elements, whereas touchstart works fine.... seems like a bug in WebKit
 };
-import 'googlevr/webvr-polyfill/src/main';

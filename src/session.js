@@ -4,13 +4,17 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 import { createGuid } from './cesium/cesium-imports';
 import { inject } from 'aurelia-dependency-injection';
-import { Role } from './common';
-import { Event, MessageChannelFactory } from './utils';
-import { version } from '../package.json!';
+import { Role, Configuration } from './common';
+import { Event, MessageChannelFactory, isIOS } from './utils';
+import { version } from '../package.json';
 export { version };
 ;
+const emptyObject = Object.freeze({});
 /**
  * Provides two-way communication between two [[SessionPort]] instances.
  */
@@ -123,10 +127,11 @@ export class SessionPort {
         this.messagePort.onmessage = (evt) => {
             if (this._isClosed)
                 return;
-            const id = evt.data[0];
-            const topic = evt.data[1];
-            const message = evt.data[2] || {};
-            const expectsResponse = evt.data[3];
+            const data = typeof evt.data === 'string' ? JSON.parse(evt.data) : evt.data;
+            const id = data[0];
+            const topic = data[1];
+            const message = data[2] || emptyObject;
+            const expectsResponse = data[3];
             const handler = this.on[topic];
             if (handler && !expectsResponse) {
                 try {
@@ -160,11 +165,8 @@ export class SessionPort {
                 const errorMessage = 'Unable to handle message for topic ' + topic + ' (' + this.uri + ')';
                 if (expectsResponse) {
                     this.send(topic + ':reject:' + id, { reason: errorMessage });
-                    this.errorEvent.raiseEvent(new Error(errorMessage));
                 }
-                else {
-                    console.warn(errorMessage);
-                }
+                this.errorEvent.raiseEvent(new Error(errorMessage));
             }
         };
         this.send(SessionPort.OPEN, options);
@@ -182,7 +184,8 @@ export class SessionPort {
         if (this._isClosed)
             return false;
         const id = createGuid();
-        this.messagePort.postMessage([id, topic, message]);
+        const packet = [id, topic, message];
+        this.messagePort.postMessage(isIOS ? packet : JSON.stringify(packet)); // http://blog.runspired.com/2016/03/15/webworker-performance-benchmarks/
         return true;
     }
     /**
@@ -227,7 +230,8 @@ export class SessionPort {
                 reject(new Error(message.reason));
             };
         });
-        this.messagePort.postMessage([id, topic, message || {}, true]);
+        const packet = [id, topic, message, true];
+        this.messagePort.postMessage(isIOS ? packet : JSON.stringify(packet)); // http://blog.runspired.com/2016/03/15/webworker-performance-benchmarks/
         return result;
     }
     /**
@@ -271,7 +275,7 @@ export class ConnectService {
 /**
  * A service for managing connections to other ArgonSystem instances
  */
-export let SessionService = class SessionService {
+let SessionService = class SessionService {
     constructor(
         /**
          * The configuration of this [[ArgonSystem]]
@@ -294,7 +298,7 @@ export let SessionService = class SessionService {
         configuration.version = version;
         configuration.uri = (typeof window !== 'undefined' && window.location) ?
             window.location.href : undefined;
-        configuration.title = (typeof document !== undefined) ?
+        configuration.title = (typeof document !== 'undefined') ?
             document.title : undefined;
         this.errorEvent.addEventListener((error) => {
             if (this.errorEvent.numberOfListeners === 1)
@@ -449,8 +453,13 @@ export let SessionService = class SessionService {
     }
 };
 SessionService = __decorate([
-    inject('config', ConnectService, SessionPortFactory, MessageChannelFactory)
+    inject('config', ConnectService, SessionPortFactory, MessageChannelFactory),
+    __metadata("design:paramtypes", [Configuration,
+        ConnectService,
+        SessionPortFactory,
+        MessageChannelFactory])
 ], SessionService);
+export { SessionService };
 /**
  * Connect the current [[ArgonSystem]] to itself as the [[REALITY_MANAGER]].
  */

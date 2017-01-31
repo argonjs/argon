@@ -4,16 +4,19 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 import { inject } from 'aurelia-dependency-injection';
 import { createGuid } from '../cesium/cesium-imports';
 import { SessionService } from '../session';
-import { ViewService } from '../view';
+import { ViewportService } from '../viewport';
 import { RealityViewer } from './base';
-export let HostedRealityViewer = class HostedRealityViewer extends RealityViewer {
-    constructor(sessionService, viewService, uri) {
-        super(sessionService, uri);
+let HostedRealityViewer = class HostedRealityViewer extends RealityViewer {
+    constructor(sessionService, viewportService, uri) {
+        super(uri);
         this.sessionService = sessionService;
-        this.viewService = viewService;
+        this.viewportService = viewportService;
         this.uri = uri;
         this.type = 'hosted';
         if (typeof document !== 'undefined' && document.createElement) {
@@ -24,40 +27,49 @@ export let HostedRealityViewer = class HostedRealityViewer extends RealityViewer
             iframeElement.height = '100%';
             iframeElement.style.position = 'absolute';
             iframeElement.style.display = 'none';
-            const viewElement = this.viewService.element;
+            const viewElement = this.viewportService.element;
             viewElement.insertBefore(iframeElement, viewElement.firstChild);
+            this.presentChangeEvent.addEventListener(() => {
+                this.iframeElement.style.display = this.isPresenting ? 'initial' : 'none';
+            });
         }
     }
     destroy() {
+        super.destroy();
         if (this.iframeElement) {
             this.iframeElement.remove();
         }
     }
-    setPresenting(foo) {
-        this.iframeElement.style.display = foo ? 'initial' : 'none';
-    }
     load() {
-        super.load();
-        this.iframeElement.src = '';
-        this.iframeElement.src = this.uri;
-        let handleConnectMessage = (ev) => {
-            if (ev.data.type !== 'ARGON_SESSION')
-                return;
-            const name = ev.data.name;
-            const messagePort = ev.ports && ev.ports[0];
-            if (!messagePort)
-                throw new Error('Received an ARGON_SESSION message without a MessagePort object');
-            if (name !== this.iframeElement.name)
-                return;
-            window.removeEventListener('message', handleConnectMessage);
-            this.session.open(messagePort, this.sessionService.configuration);
-        };
-        window.addEventListener('message', handleConnectMessage);
+        if (typeof document !== 'undefined' && document.createElement) {
+            const session = this.sessionService.addManagedSessionPort(this.uri);
+            session.connectEvent.addEventListener(() => {
+                this.connectEvent.raiseEvent(session);
+            });
+            let handleConnectMessage = (ev) => {
+                if (ev.data.type !== 'ARGON_SESSION')
+                    return;
+                const name = ev.data.name;
+                const messagePort = ev.ports && ev.ports[0];
+                if (!messagePort)
+                    throw new Error('Received an ARGON_SESSION message without a MessagePort object');
+                if (name !== this.iframeElement.name)
+                    return;
+                window.removeEventListener('message', handleConnectMessage);
+                session.open(messagePort, this.sessionService.configuration);
+            };
+            window.addEventListener('message', handleConnectMessage);
+            this.iframeElement.src = '';
+            this.iframeElement.src = this.uri;
+        }
     }
 };
 HostedRealityViewer = __decorate([
-    inject(SessionService, ViewService)
+    inject(SessionService, ViewportService),
+    __metadata("design:paramtypes", [SessionService,
+        ViewportService, String])
 ], HostedRealityViewer);
+export { HostedRealityViewer };
 // @singleton()
 // @inject(SessionFactory)
 // export class DOMSessionListenerService {
