@@ -204,7 +204,7 @@
     "browser-sync": "browser-sync  start --server --directory --startPath \"index.html\" --files \"src/**\"",
     "test": "npm run browser-sync",
     "static": "static -p 3000",
-    "typedoc": "typedoc --tsconfig tsconfig.build.json --out docs --mode file --gaID UA-63191442-2 --name argon.js --readme src/README.md --target ES5 --module commonjs --experimentalDecorators --excludeNotExported --excludeExternals --ignoreCompilerErrors src",
+    "typedoc": "typedoc --tsconfig tsconfig.build.json --out docs --mode file --gaID UA-63191442-2 --name argon.js --readme src/README.md --target ES6 --module commonjs --moduleResolution node --experimentalDecorators --includeDeclarations --excludeNotExported --excludeExternals --ignoreCompilerErrors src",
     "postinstall": "npm install types/cesium types/mobile-detect"
   },
   "dependencies": {
@@ -220,7 +220,7 @@
     "jspm": "^0.17.0-beta.29",
     "node-static": "^0.7.7",
     "tsconfig-glob": "^0.2.1",
-    "typedoc": "^0.4.5",
+    "typedoc": "^0.5.5",
     "typescript": "^2.1.4",
     "typescript-formatter": "^2.3.0",
     "uglify-js": "^2.7.3"
