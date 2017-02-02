@@ -322,8 +322,13 @@ export class DefaultUIService {
         this.menuItems = [];
         this.menuItems.push(null);
         if (utils.isIOS) this.menuItems.push(this.openInArgonMenuItem);
-        if (!(window.innerWidth === this.viewportService.element.clientWidth &&                
-            window.innerHeight === this.viewportService.element.clientHeight))
+
+        const parentElement = this.viewportService.rootElement.parentElement;
+        const parentWidth = parentElement ? parentElement.clientWidth : 0;
+        const parentHeight = parentElement ? parentElement.clientHeight : 0;
+
+        if (!(window.innerWidth === parentWidth &&                
+            window.innerHeight === parentHeight))
             this.menuItems.push(this.maximizeMenuItem);
         if (utils.isIOS || navigator['vrEnabled'])
             this.menuItems.push(this.hmdMenuItem);
