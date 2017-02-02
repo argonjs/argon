@@ -1,508 +1,299 @@
-System.register(['cesium/Source/Core/Event', './cesium/cesium-imports'], function(exports_1, context_1) {
-    "use strict";
-    var __moduleName = context_1 && context_1.id;
-    var Event_1, cesium_imports_1;
-    var Event, CommandQueue, getEntityPosition, getEntityOrientation, urlParser, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation;
-    /**
-     * Get array of ancestor reference frames of a Cesium Entity.
-     * @param frame A Cesium Entity to get ancestor reference frames.
-     * @param frames An array of reference frames of the Cesium Entity.
-     */
-    function getAncestorReferenceFrames(frame) {
-        var frames = [];
-        var f = frame;
-        while (cesium_imports_1.defined(f)) {
+import { defined, PerspectiveOffCenterFrustum, ConstantPositionProperty, OrientationProperty, ConstantProperty, Quaternion, Cartesian3, Matrix4 } from './cesium/cesium-imports';
+export * from './utils/command-queue';
+export * from './utils/event';
+export * from './utils/message-channel';
+export { default as createEventSynthesizer } from './utils/ui-event-synthesizer';
+export { default as createEventForwarder } from './utils/ui-event-forwarder';
+/**
+ * Get array of ancestor reference frames of a Cesium Entity, ordered from
+ * farthest ancestor to the passed frame.
+ * @param frame A Cesium Entity to get ancestor reference frames.
+ * @param frames An array of reference frames of the Cesium Entity.
+ */
+export function getAncestorReferenceFrames(frame, result = []) {
+    const frames = result;
+    frames.length = 0;
+    frames.unshift(frame);
+    let f = frame;
+    do {
+        let position = f.position;
+        f = position && position.referenceFrame;
+        if (defined(f))
             frames.unshift(f);
-            var position = f.position;
-            f = position && position.referenceFrame;
-        }
-        return frames;
+    } while (defined(f));
+    return frames;
+}
+/**
+ * Gets the value of the Position property at the provided time and in the provided reference frame.
+ * @param entity The entity to get position.
+ * @param time The time for which to retrieve the value.
+ * @param referenceFrame The desired referenceFrame of the result.
+ * @param result The object to store the value into.
+ * @return The modified result parameter.
+ */
+export function getEntityPositionInReferenceFrame(entity, time, referenceFrame, result) {
+    return entity.position && entity.position.getValueInReferenceFrame(time, referenceFrame, result);
+}
+/**
+ * Alias of getEntityPositionInReferenceFrame
+ */
+export const getEntityPosition = getEntityPositionInReferenceFrame;
+/**
+ * Get the value of the Orientation property at the provided time and in the provided reference frame.
+ * @param entity The entity to get position.
+ * @param time The time for which to retrieve the value.
+ * @param referenceFrame The desired referenceFrame of the result.
+ * @param result The object to store the value into.
+ * @return The modified result parameter.
+ */
+export function getEntityOrientationInReferenceFrame(entity, time, referenceFrame, result) {
+    const entityFrame = entity.position && entity.position.referenceFrame;
+    if (!defined(entityFrame))
+        return undefined;
+    let orientation = entity.orientation && entity.orientation.getValue(time, result);
+    if (!defined(orientation))
+        return undefined;
+    return OrientationProperty.convertToReferenceFrame(time, orientation, entityFrame, referenceFrame, result);
+}
+/**
+ * Alias of getEntityOrientationInReferenceFrame
+ */
+export const getEntityOrientation = getEntityOrientationInReferenceFrame;
+// const scratchCartesianPositionFIXED = new Cartesian3
+// const scratchMatrix4 = new Matrix4
+// const scratchMatrix3 = new Matrix3
+//  {
+//         // if no orientation is available, calculate an orientation based on position
+//         const entityPositionFIXED = getEntityPositionInReferenceFrame(entity, time, ReferenceFrame.FIXED, scratchCartesianPositionFIXED)
+//         if (!entityPositionFIXED) return Quaternion.clone(Quaternion.IDENTITY, result)
+//         if (Cartesian3.ZERO.equals(entityPositionFIXED)) throw new Error('invalid cartographic position')
+//         const transform = Transforms.eastNorthUpToFixedFrame(entityPositionFIXED, Ellipsoid.WGS84, scratchMatrix4);
+//         const rotation = Matrix4.getRotation(transform, scratchMatrix3);
+//         const fixedOrientation = Quaternion.fromRotationMatrix(rotation, result);
+//         return OrientationProperty.convertToReferenceFrame(time, fixedOrientation, ReferenceFrame.FIXED, referenceFrame, result)
+//     }
+const _scratchFramesArray = [];
+/**
+ * Create a SerializedEntityPose from a source entity.
+ * @param entity The entity which the serialized pose represents.
+ * @param time The time which to retrieve the pose.
+ * @param referenceFrame The reference frame to use for generating the pose.
+ * If a target reference frame is not provided, the entity pose will be
+ * serialized according to the furthest ancestor frame that resolves to a valid pose.
+ * @return An EntityPose object with orientation, position and referenceFrame.
+ */
+export function getSerializedEntityState(entity, time, frame) {
+    let frames = undefined;
+    if (!defined(frame)) {
+        frames = getAncestorReferenceFrames(entity, _scratchFramesArray);
+        frame = frames[0];
     }
-    exports_1("getAncestorReferenceFrames", getAncestorReferenceFrames);
-    /**
-     * Get root reference frame of the Cesium Entity.
-     * @param frames An array of reference frames of the Cesium Entity.
-     * @return the first frame from ancestor reference frames array.
-     */
-    function getRootReferenceFrame(frame) {
-        return getAncestorReferenceFrames(frame)[0];
-    }
-    exports_1("getRootReferenceFrame", getRootReferenceFrame);
-    /**
-     * Gets the value of the Position property at the provided time and in the provided reference frame.
-     * @param entity The entity to get position.
-     * @param time The time for which to retrieve the value.
-     * @param referenceFrame The desired referenceFrame of the result.
-     * @param result The object to store the value into.
-     * @return The modified result parameter.
-     */
-    function getEntityPositionInReferenceFrame(entity, time, referenceFrame, result) {
-        return entity.position && entity.position.getValueInReferenceFrame(time, referenceFrame, result);
-    }
-    exports_1("getEntityPositionInReferenceFrame", getEntityPositionInReferenceFrame);
-    /**
-     * Get the value of the Orientation property at the provided time and in the provided reference frame.
-     * @param entity The entity to get position.
-     * @param time The time for which to retrieve the value.
-     * @param referenceFrame The desired referenceFrame of the result.
-     * @param result The object to store the value into.
-     * @return The modified result parameter.
-     */
-    function getEntityOrientationInReferenceFrame(entity, time, referenceFrame, result) {
-        var entityFrame = entity.position && entity.position.referenceFrame;
-        if (!cesium_imports_1.defined(entityFrame))
-            return undefined;
-        var orientation = entity.orientation && entity.orientation.getValue(time, result);
-        if (!cesium_imports_1.defined(orientation))
-            return undefined;
-        return cesium_imports_1.OrientationProperty.convertToReferenceFrame(time, orientation, entityFrame, referenceFrame, result);
-    }
-    exports_1("getEntityOrientationInReferenceFrame", getEntityOrientationInReferenceFrame);
-    // const scratchCartesianPositionFIXED = new Cartesian3
-    // const scratchMatrix4 = new Matrix4
-    // const scratchMatrix3 = new Matrix3
-    //  {
-    //         // if no orientation is available, calculate an orientation based on position
-    //         const entityPositionFIXED = getEntityPositionInReferenceFrame(entity, time, ReferenceFrame.FIXED, scratchCartesianPositionFIXED)
-    //         if (!entityPositionFIXED) return Quaternion.clone(Quaternion.IDENTITY, result)
-    //         if (Cartesian3.ZERO.equals(entityPositionFIXED)) throw new Error('invalid cartographic position')
-    //         const transform = Transforms.eastNorthUpToFixedFrame(entityPositionFIXED, Ellipsoid.WGS84, scratchMatrix4);
-    //         const rotation = Matrix4.getRotation(transform, scratchMatrix3);
-    //         const fixedOrientation = Quaternion.fromRotationMatrix(rotation, result);
-    //         return OrientationProperty.convertToReferenceFrame(time, fixedOrientation, ReferenceFrame.FIXED, referenceFrame, result)
-    //     }
-    /**
-     * Create a SerializedEntityPose from a source entity.
-     * @param entity The entity which the serialized pose represents.
-     * @param time The time which to retrieve the pose.
-     * @param referenceFrame The reference frame to use for generating the pose.
-     *  By default, uses the root reference frame of the entity.
-     * @return An EntityPose object with orientation, position and referenceFrame.
-     */
-    function getSerializedEntityPose(entity, time, referenceFrame) {
-        var frame = referenceFrame ? referenceFrame : getRootReferenceFrame(entity);
-        var p = getEntityPositionInReferenceFrame(entity, time, frame, {});
-        if (!p)
-            return undefined;
-        var o = getEntityOrientationInReferenceFrame(entity, time, frame, {});
-        if (!o)
-            return undefined;
+    if (!defined(frame))
+        return undefined;
+    const p = getEntityPositionInReferenceFrame(entity, time, frame, {});
+    if (!p && !frames)
+        return undefined;
+    const o = getEntityOrientationInReferenceFrame(entity, time, frame, {});
+    if (!o && !frames)
+        return undefined;
+    if (p && o) {
         return {
-            p: cesium_imports_1.Cartesian3.ZERO.equalsEpsilon(p, cesium_imports_1.CesiumMath.EPSILON16) ? 0 : p,
-            o: cesium_imports_1.Quaternion.IDENTITY.equalsEpsilon(o, cesium_imports_1.CesiumMath.EPSILON16) ? 0 : o,
-            r: typeof frame === 'number' ? frame : frame.id
+            p,
+            o,
+            r: typeof frame === 'number' ? frame : frame.id,
+            meta: typeof frame !== 'number' ? frame['meta'] : undefined
         };
     }
-    exports_1("getSerializedEntityPose", getSerializedEntityPose);
-    /**
-     * If urlParser does not have a value, throw error message "resolveURL requires DOM api".
-     * If inURL is undefined, throw error message "expected inURL".
-     * Otherwise, assign value of inURL to urlParser.href.
-     * @param inURL A URL needed to be resolved.
-     * @returns A URL ready to be parsed.
-     */
-    function resolveURL(inURL) {
-        if (!urlParser)
-            throw new Error("resolveURL requires DOM api");
-        if (inURL === undefined)
-            throw new Error('Expected inURL');
-        urlParser.href = '';
-        urlParser.href = inURL;
-        return urlParser.href;
-    }
-    exports_1("resolveURL", resolveURL);
-    /**
-     * Parse URL to an object describing details of the URL with href, protocol,
-     * hostname, port, pathname, search, hash, host.
-     * @param inURL A URL needed to be parsed.
-     * @return An object showing parsed URL with href, protocol,
-     * hostname, port, pathname, search, hash, host.
-     */
-    function parseURL(inURL) {
-        if (!urlParser)
-            throw new Error("parseURL requires DOM api");
-        if (inURL === undefined)
-            throw new Error('Expected inURL');
-        urlParser.href = '';
-        urlParser.href = inURL;
-        return {
-            href: urlParser.href,
-            protocol: urlParser.protocol,
-            hostname: urlParser.hostname,
-            port: urlParser.port,
-            pathname: urlParser.pathname,
-            search: urlParser.search,
-            hash: urlParser.hash,
-            host: urlParser.host
-        };
-    }
-    exports_1("parseURL", parseURL);
-    function decomposePerspectiveOffCenterProjectionMatrix(mat, result) {
-        var m11 = mat[cesium_imports_1.Matrix4.COLUMN0ROW0];
-        // const m12 = mat[Matrix4.COLUMN0ROW1];
-        var m22 = mat[cesium_imports_1.Matrix4.COLUMN1ROW1];
-        var m31 = mat[cesium_imports_1.Matrix4.COLUMN2ROW0];
-        var m32 = mat[cesium_imports_1.Matrix4.COLUMN2ROW1];
-        var m33 = mat[cesium_imports_1.Matrix4.COLUMN2ROW2];
-        var m43 = mat[cesium_imports_1.Matrix4.COLUMN3ROW2];
-        var near = result.near = m43 / (m33 - 1);
-        result.far = m43 / (m33 + 1);
-        result.bottom = near * (m32 - 1) / m22;
-        result.top = near * (m32 + 1) / m22;
-        result.left = near * (m31 - 1) / m11;
-        result.right = near * (m31 + 1) / m11;
-        return result;
-    }
-    exports_1("decomposePerspectiveOffCenterProjectionMatrix", decomposePerspectiveOffCenterProjectionMatrix);
-    function decomposePerspectiveProjectionMatrix(mat, result) {
-        var f = decomposePerspectiveOffCenterProjectionMatrix(mat, scratchPerspectiveOffCenterFrustum);
-        var xOffset = (f.left + f.right) / 2;
-        var yOffset = (f.top + f.bottom) / 2;
-        var near = f.near;
-        var far = f.far;
-        // const left = f.left - xOffset;
-        var right = f.right - xOffset;
-        var top = f.top - yOffset;
-        // const bottom = f.bottom - yOffset;
-        var aspectRatio = right / top;
-        var fovy = 2 * Math.atan(top / near);
-        var fov;
-        if (aspectRatio < 1) {
-            fov = fovy;
+    else if (frames) {
+        for (let i = 1; i < frames.length; i++) {
+            frame = frames[i];
+            if (!defined(frame))
+                return undefined;
+            const result = getSerializedEntityState(entity, time, frame);
+            if (result)
+                return result;
         }
-        else {
-            fov = Math.atan(Math.tan(fovy * 0.5) * aspectRatio) * 2.0;
-        }
-        result.near = near;
-        result.far = far;
-        result.fov = fov;
-        result.aspectRatio = aspectRatio;
-        result.xOffset = xOffset;
-        result.yOffset = yOffset;
-        return result;
     }
-    exports_1("decomposePerspectiveProjectionMatrix", decomposePerspectiveProjectionMatrix);
-    /**
-     * Convert an Entity's position and orientation properties to a new reference frame.
-     * The properties must be constant properties.
-     * @param entity The entity to convert.
-     * @param time The time which to retrieve the pose up the reference chain.
-     * @param referenceFrame The reference frame to convert the position and oriention to.
-     * @return a boolean indicating success or failure.  Will be false if either property is
-     * not constant, or if either property cannot be converted to the new frame.
-     */
-    function convertEntityReferenceFrame(entity, time, frame) {
-        if (!entity.position || !(entity.position instanceof cesium_imports_1.ConstantPositionProperty) ||
-            !entity.orientation || !(entity.orientation instanceof cesium_imports_1.ConstantProperty)) {
-            return false;
-        }
-        if (!getEntityPositionInReferenceFrame(entity, time, frame, scratchCartesian)) {
-            return false;
-        }
-        if (!getEntityOrientationInReferenceFrame(entity, time, frame, scratchOrientation)) {
-            return false;
-        }
-        entity.position.setValue(scratchCartesian, frame);
-        entity.orientation.setValue(scratchOrientation);
-        return true;
-    }
-    exports_1("convertEntityReferenceFrame", convertEntityReferenceFrame);
+    return undefined;
+}
+const urlParser = typeof document !== 'undefined' ? document.createElement("a") : undefined;
+/**
+ * If urlParser does not have a value, throw error message "resolveURL requires DOM api".
+ * If inURL is undefined, throw error message "expected inURL".
+ * Otherwise, assign value of inURL to urlParser.href.
+ * @param inURL A URL needed to be resolved.
+ * @returns A URL ready to be parsed.
+ */
+export function resolveURL(inURL) {
+    if (!urlParser)
+        throw new Error("resolveURL requires DOM api");
+    if (inURL === undefined)
+        throw new Error('Expected inURL');
+    urlParser.href = '';
+    urlParser.href = inURL;
+    return urlParser.href;
+}
+/**
+ * Parse URL to an object describing details of the URL with href, protocol,
+ * hostname, port, pathname, search, hash, host.
+ * @param inURL A URL needed to be parsed.
+ * @return An object showing parsed URL with href, protocol,
+ * hostname, port, pathname, search, hash, host.
+ */
+export function parseURL(inURL) {
+    if (!urlParser)
+        throw new Error("parseURL requires DOM api");
+    if (inURL === undefined)
+        throw new Error('Expected inURL');
+    urlParser.href = '';
+    urlParser.href = inURL;
     return {
-        setters:[
-            function (Event_1_1) {
-                Event_1 = Event_1_1;
-            },
-            function (cesium_imports_1_1) {
-                cesium_imports_1 = cesium_imports_1_1;
-            }],
-        execute: function() {
-            /**
-             * Provides the ability raise and subscribe to an event.
-             */
-            Event = (function () {
-                function Event() {
-                    this._event = new Event_1.default();
-                }
-                Object.defineProperty(Event.prototype, "numberOfListeners", {
-                    /**
-                     * Get the number of listeners currently subscribed to the event.
-                     * @return Number of listeners currently subscribed to the event.
-                     */
-                    get: function () {
-                        return this._event.numberOfListeners;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                /**
-                  * Add an event listener.
-                  * @param The function to be executed when the event is raised.
-                  * @return A convenience function which removes this event listener when called
-                  */
-                Event.prototype.addEventListener = function (listener) {
-                    return this._event.addEventListener(listener);
-                };
-                /**
-                 * Remove an event listener.
-                 * @param The function to be unregistered.
-                 * @return True if the listener was removed;
-                 * false if the listener and scope are not registered with the event.
-                 */
-                Event.prototype.removeEventListener = function (listener) {
-                    return this._event.removeEventListener(listener);
-                };
-                /**
-                 * Raises the event by calling each registered listener with all supplied arguments.
-                 * @param This method takes any number of parameters and passes them through to the listener functions.
-                 */
-                Event.prototype.raiseEvent = function (data) {
-                    this._event.raiseEvent(data);
-                };
-                return Event;
-            }());
-            exports_1("Event", Event);
-            /**
-            * TODO.
-            */
-            CommandQueue = (function () {
-                /**
-                 * If errorEvent has 1 listener, outputs the error message to the web console.
-                 */
-                function CommandQueue() {
-                    var _this = this;
-                    this._queue = [];
-                    this._paused = true;
-                    /**
-                     * An error event.
-                     */
-                    this.errorEvent = new Event();
-                    this.errorEvent.addEventListener(function (error) {
-                        if (_this.errorEvent.numberOfListeners === 1)
-                            console.error(error);
-                    });
-                }
-                /**
-                 * Push a command to the command queue.
-                 * @param command Any command ready to be pushed into the command queue.
-                 */
-                CommandQueue.prototype.push = function (command, execute) {
-                    var _this = this;
-                    var result = new Promise(function (resolve, reject) {
-                        _this._queue.push({
-                            command: command,
-                            reject: reject,
-                            execute: function () {
-                                // console.log('CommandQueue: Executing command ' + command.toString());
-                                var result = Promise.resolve().then(command);
-                                // result.then(() => { console.log('CommandQueue: DONE ' + command.toString()) });
-                                resolve(result);
-                                return result;
-                            }
-                        });
-                    });
-                    if (execute)
-                        this.execute();
-                    return result;
-                };
-                /**
-                 * Execute the command queue
-                 */
-                CommandQueue.prototype.execute = function () {
-                    var _this = this;
-                    this._paused = false;
-                    Promise.resolve().then(function () {
-                        if (_this._queue.length > 0 && !_this._currentCommandPending) {
-                            _this._executeNextCommand();
-                        }
-                    });
-                };
-                /**
-                 * Puase the command queue (currently executing commands will still complete)
-                 */
-                CommandQueue.prototype.pause = function () {
-                    this._paused = true;
-                };
-                /**
-                 * Clear commandQueue.
-                 */
-                CommandQueue.prototype.clear = function () {
-                    this._queue.forEach(function (item) {
-                        item.reject("Unable to execute.");
-                    });
-                    this._queue = [];
-                };
-                CommandQueue.prototype._executeNextCommand = function () {
-                    var _this = this;
-                    this._currentCommand = undefined;
-                    this._currentCommandPending = undefined;
-                    if (this._paused)
-                        return;
-                    var item = this._queue.shift();
-                    if (!item)
-                        return;
-                    this._currentCommand = item.command;
-                    this._currentCommandPending = item.execute()
-                        .then(this._executeNextCommand.bind(this))
-                        .catch(function (e) {
-                        _this.errorEvent.raiseEvent(e);
-                        _this._executeNextCommand();
-                    });
-                };
-                return CommandQueue;
-            }());
-            exports_1("CommandQueue", CommandQueue);
-            /**
-             * Alias of getEntityPositionInReferenceFrame
-             */
-            exports_1("getEntityPosition", getEntityPosition = getEntityPositionInReferenceFrame);
-            /**
-             * Alias of getEntityOrientationInReferenceFrame
-             */
-            exports_1("getEntityOrientation", getEntityOrientation = getEntityOrientationInReferenceFrame);
-            urlParser = typeof document !== 'undefined' ? document.createElement("a") : undefined;
-            /**
-             * A MessageChannel pollyfill.
-             */
-            MessageChannelLike = (function () {
-                /**
-                 * Create a MessageChannelLike instance.
-                 */
-                function MessageChannelLike() {
-                    var messageChannel = this;
-                    var _portsOpen = true;
-                    var _port1ready;
-                    var _port2ready;
-                    var _port1onmessage;
-                    _port1ready = new Promise(function (resolve) {
-                        messageChannel.port1 = {
-                            set onmessage(func) {
-                                _port1onmessage = func;
-                                resolve();
-                            },
-                            get onmessage() {
-                                return _port1onmessage;
-                            },
-                            postMessage: function (data) {
-                                if (_portsOpen) {
-                                    _port2ready.then(function () {
-                                        if (messageChannel.port2.onmessage)
-                                            messageChannel.port2.onmessage({ data: data });
-                                    });
-                                }
-                            },
-                            close: function () {
-                                _portsOpen = false;
-                            }
-                        };
-                    });
-                    var _port2onmessage;
-                    _port2ready = new Promise(function (resolve) {
-                        messageChannel.port2 = {
-                            set onmessage(func) {
-                                _port2onmessage = func;
-                                resolve();
-                            },
-                            get onmessage() {
-                                return _port2onmessage;
-                            },
-                            postMessage: function (data) {
-                                if (_portsOpen) {
-                                    _port1ready.then(function () {
-                                        if (messageChannel.port1.onmessage)
-                                            messageChannel.port1.onmessage({ data: data });
-                                    });
-                                }
-                            },
-                            close: function () {
-                                _portsOpen = false;
-                            }
-                        };
-                    });
-                }
-                return MessageChannelLike;
-            }());
-            exports_1("MessageChannelLike", MessageChannelLike);
-            /**
-             * A synchronous MessageChannel.
-             */
-            SynchronousMessageChannel = (function () {
-                /**
-                 * Create a MessageChannelLike instance.
-                 */
-                function SynchronousMessageChannel() {
-                    var messageChannel = this;
-                    var pendingMessages1 = [];
-                    var onmessage1 = function (message) {
-                        pendingMessages1.push(message);
-                    };
-                    messageChannel.port1 = {
-                        get onmessage() { return onmessage1; },
-                        set onmessage(func) {
-                            onmessage1 = func;
-                            pendingMessages1.forEach(function (data) { return func(data); });
-                            pendingMessages1 = [];
-                        },
-                        postMessage: function (data) {
-                            if (messageChannel.port2.onmessage)
-                                messageChannel.port2.onmessage({ data: data });
-                        },
-                        close: function () {
-                            messageChannel.port1.onmessage = undefined;
-                            messageChannel.port2.onmessage = undefined;
-                        }
-                    };
-                    var pendingMessages2 = [];
-                    var onmessage2 = function (message) {
-                        pendingMessages2.push(message);
-                    };
-                    messageChannel.port2 = {
-                        get onmessage() { return onmessage2; },
-                        set onmessage(func) {
-                            onmessage2 = func;
-                            pendingMessages2.forEach(function (data) { return func(data); });
-                            pendingMessages2 = [];
-                        },
-                        postMessage: function (data) {
-                            if (messageChannel.port1.onmessage)
-                                messageChannel.port1.onmessage({ data: data });
-                        },
-                        close: function () {
-                            messageChannel.port1.onmessage = undefined;
-                            messageChannel.port2.onmessage = undefined;
-                        }
-                    };
-                }
-                return SynchronousMessageChannel;
-            }());
-            exports_1("SynchronousMessageChannel", SynchronousMessageChannel);
-            /**
-             * A factory which creates MessageChannel or MessageChannelLike instances, depending on
-             * wheter or not MessageChannel is avaialble in the execution context.
-             */
-            MessageChannelFactory = (function () {
-                function MessageChannelFactory() {
-                }
-                /**
-                 * Create a MessageChannel (or MessageChannelLike) instance.
-                 */
-                MessageChannelFactory.prototype.create = function () {
-                    if (typeof MessageChannel !== 'undefined')
-                        return new MessageChannel();
-                    else
-                        return new MessageChannelLike();
-                };
-                /**
-                 * Create a SynchronousMessageChannel instance.
-                 */
-                MessageChannelFactory.prototype.createSynchronous = function () {
-                    return new SynchronousMessageChannel();
-                };
-                return MessageChannelFactory;
-            }());
-            exports_1("MessageChannelFactory", MessageChannelFactory);
-            scratchPerspectiveOffCenterFrustum = new cesium_imports_1.PerspectiveOffCenterFrustum;
-            scratchCartesian = new cesium_imports_1.Cartesian3;
-            scratchOrientation = new cesium_imports_1.Quaternion;
-        }
+        href: urlParser.href,
+        protocol: urlParser.protocol,
+        hostname: urlParser.hostname,
+        port: urlParser.port,
+        pathname: urlParser.pathname,
+        search: urlParser.search,
+        hash: urlParser.hash,
+        host: urlParser.host
+    };
+}
+export function resolveElement(elementOrSelector) {
+    if (elementOrSelector instanceof HTMLElement) {
+        return Promise.resolve(elementOrSelector);
     }
-});
+    else {
+        return new Promise((resolve, reject) => {
+            const resolveElement = () => {
+                let e = document.querySelector(`${elementOrSelector}`);
+                if (!e)
+                    reject(new Error(`Unable to resolve element id ${elementOrSelector}`));
+                else
+                    resolve(e);
+            };
+            if (document.readyState == 'loading') {
+                document.addEventListener('DOMContentLoaded', resolveElement);
+            }
+            else {
+                resolveElement();
+            }
+        });
+    }
+}
+export function decomposePerspectiveOffCenterProjectionMatrix(mat, result) {
+    const m11 = mat[Matrix4.COLUMN0ROW0];
+    // const m12 = mat[Matrix4.COLUMN0ROW1];
+    const m22 = mat[Matrix4.COLUMN1ROW1];
+    const m31 = mat[Matrix4.COLUMN2ROW0];
+    const m32 = mat[Matrix4.COLUMN2ROW1];
+    const m33 = mat[Matrix4.COLUMN2ROW2];
+    const m43 = mat[Matrix4.COLUMN3ROW2];
+    const near = result.near = m43 / (m33 - 1);
+    result.far = m43 / (m33 + 1);
+    result.bottom = near * (m32 - 1) / m22;
+    result.top = near * (m32 + 1) / m22;
+    result.left = near * (m31 - 1) / m11;
+    result.right = near * (m31 + 1) / m11;
+    return result;
+}
+const scratchPerspectiveOffCenterFrustum = new PerspectiveOffCenterFrustum;
+export function decomposePerspectiveProjectionMatrix(mat, result) {
+    const f = decomposePerspectiveOffCenterProjectionMatrix(mat, scratchPerspectiveOffCenterFrustum);
+    const xOffset = (f.left + f.right) / 2;
+    const yOffset = (f.top + f.bottom) / 2;
+    const near = f.near;
+    const far = f.far;
+    // const left = f.left - xOffset;
+    const right = f.right - xOffset;
+    const top = f.top - yOffset;
+    // const bottom = f.bottom - yOffset;
+    const aspectRatio = right / top;
+    const fovy = 2 * Math.atan(top / near);
+    let fov;
+    if (aspectRatio < 1) {
+        fov = fovy;
+    }
+    else {
+        fov = Math.atan(Math.tan(fovy * 0.5) * aspectRatio) * 2.0;
+    }
+    result.near = near;
+    result.far = far;
+    result.fov = fov;
+    result.aspectRatio = aspectRatio;
+    result.xOffset = xOffset;
+    result.yOffset = yOffset;
+    return result;
+}
+var scratchCartesian = new Cartesian3;
+var scratchOrientation = new Quaternion;
+/**
+ * Convert an Entity's position and orientation properties to a new reference frame.
+ * The properties must be constant properties.
+ * @param entity The entity to convert.
+ * @param time The time which to retrieve the pose up the reference chain.
+ * @param referenceFrame The reference frame to convert the position and oriention to.
+ * @return a boolean indicating success or failure.  Will be false if either property is
+ * not constant, or if either property cannot be converted to the new frame.
+ */
+export function convertEntityReferenceFrame(entity, time, frame) {
+    if (!entity.position || !(entity.position instanceof ConstantPositionProperty) ||
+        !entity.orientation || !(entity.orientation instanceof ConstantProperty)) {
+        return false;
+    }
+    if (!getEntityPositionInReferenceFrame(entity, time, frame, scratchCartesian)) {
+        return false;
+    }
+    if (!getEntityOrientationInReferenceFrame(entity, time, frame, scratchOrientation)) {
+        return false;
+    }
+    entity.position.setValue(scratchCartesian, frame);
+    entity.orientation.setValue(scratchOrientation);
+    return true;
+}
+export const isIOS = typeof navigator !== 'undefined' && typeof window !== 'undefined' &&
+    /iPad|iPhone|iPod/.test(navigator.userAgent) && !window['MSStream'];
+export function openInArgonApp() {
+    if (isIOS) {
+        // var now = Date.now();
+        // setTimeout(function () {
+        //     if (Date.now() - now > 1000) return;
+        //     window.location.href = "https://itunes.apple.com/us/app/argon4/id1089308600";
+        // }, 25);
+        const protocol = window.location.protocol;
+        window.location.protocol = protocol === 'https:' ? 'argon4s' : 'argon4';
+    }
+}
+var lastTime = 0;
+export const requestAnimationFrame = (typeof window !== 'undefined' && window.requestAnimationFrame) ?
+    window.requestAnimationFrame.bind(window) : (callback) => {
+    var currTime = performance.now();
+    var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+    var id = setTimeout(function () { callback(currTime + timeToCall); }, timeToCall);
+    lastTime = currTime + timeToCall;
+    return id;
+};
+export function deprecated(alternative) {
+    let didPrintWarning = false;
+    const decorator = (target, name, descriptor) => {
+        const original = descriptor.get || descriptor.value;
+        const originalType = typeof descriptor.value === 'function' ? 'function' : 'property';
+        let message = `The "${name}" ${originalType} is deprecated. `;
+        if (alternative) {
+            const alternativeType = typeof target[alternative] === 'function' ? 'function' : 'property';
+            message += `Please use the "${alternative}" ${alternativeType} instead.`;
+        }
+        const wrapped = function () {
+            if (!didPrintWarning) {
+                console.warn(message);
+                didPrintWarning = true;
+            }
+            return original.apply(this, arguments);
+        };
+        if (descriptor.value)
+            descriptor.value = wrapped;
+        else
+            descriptor.get = wrapped;
+        return descriptor;
+    };
+    return decorator;
+}

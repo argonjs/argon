@@ -1,17 +1,19 @@
 {
     "compilerOptions": {
-        "target": "es5",
-        "module": "system",
+        "target": "es2015",
+        "module": "es2015",
         "declaration": true,
-        "emitDecoratorMetadata": false,
+        "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "allowSyntheticDefaultImports": true,
         "pretty": true,
-        "sourceMap": false,
-        "lib": null,
+        "sourceMap": true,
         "moduleResolution": "node"
     },
     "include": [
         "src/**/*.ts"
+    ],
+    "files": [
+        "types/declarations.d.ts"
     ]
 }

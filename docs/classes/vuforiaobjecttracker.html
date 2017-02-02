@@ -7,7 +7,6 @@
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
-	<script src="../assets/js/modernizr.js"></script>
 </head>
 <body>
 <header>
@@ -96,10 +95,12 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="vuforiaobjecttracker.html#_datasetmap" class="tsd-kind-icon">_data<wbr>Set<wbr>Map</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="vuforiaobjecttracker.html#_deprecateddatasetinstancemap" class="tsd-kind-icon">_deprecated<wbr>Data<wbr>Set<wbr>Instance<wbr>Map</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="vuforiaobjecttracker.html#datasetactivateevent" class="tsd-kind-icon">data<wbr>Set<wbr>Activate<wbr>Event</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="vuforiaobjecttracker.html#datasetdeactivateevent" class="tsd-kind-icon">data<wbr>Set<wbr>Deactivate<wbr>Event</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="vuforiaobjecttracker.html#manager" class="tsd-kind-icon">manager</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="vuforiaobjecttracker.html#datasetloadevent" class="tsd-kind-icon">data<wbr>Set<wbr>Load<wbr>Event</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="vuforiaobjecttracker.html#datasetunloadevent" class="tsd-kind-icon">data<wbr>Set<wbr>Unload<wbr>Event</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="vuforiaobjecttracker.html#managersession" class="tsd-kind-icon">manager<wbr>Session</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -107,7 +108,10 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="vuforiaobjecttracker.html#activatedataset" class="tsd-kind-icon">activate<wbr>Data<wbr>Set</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="vuforiaobjecttracker.html#createdataset" class="tsd-kind-icon">create<wbr>Data<wbr>Set</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="vuforiaobjecttracker.html#createdatasetfromuri" class="tsd-kind-icon">create<wbr>Data<wbr>Set<wbr>FromURI</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="vuforiaobjecttracker.html#deactivatedataset" class="tsd-kind-icon">deactivate<wbr>Data<wbr>Set</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="vuforiaobjecttracker.html#loaddataset" class="tsd-kind-icon">load<wbr>Data<wbr>Set</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="vuforiaobjecttracker.html#unloaddataset" class="tsd-kind-icon">unload<wbr>Data<wbr>Set</a></li>
 							</ul>
 						</section>
 					</div>
@@ -119,20 +123,20 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Vuforia<wbr>Object<wbr>Tracker<span class="tsd-signature-symbol">(</span>manager<span class="tsd-signature-symbol">: </span><a href="sessionport.html" class="tsd-signature-type">SessionPort</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="vuforiaobjecttracker.html" class="tsd-signature-type">VuforiaObjectTracker</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Vuforia<wbr>Object<wbr>Tracker<span class="tsd-signature-symbol">(</span>managerSession<span class="tsd-signature-symbol">: </span><a href="sessionport.html" class="tsd-signature-type">SessionPort</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="vuforiaobjecttracker.html" class="tsd-signature-type">VuforiaObjectTracker</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Overwrites <a href="vuforiatracker.html">VuforiaTracker</a>.<a href="vuforiatracker.html#constructor">constructor</a></p>
+								<p>Overrides <a href="vuforiatracker.html">VuforiaTracker</a>.<a href="vuforiatracker.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/vuforia.ts#L478">vuforia.ts:478</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/vuforia.ts#L96">src/vuforia.ts:96</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>manager: <a href="sessionport.html" class="tsd-signature-type">SessionPort</a></h5>
+									<h5>managerSession: <a href="sessionport.html" class="tsd-signature-type">SessionPort</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="vuforiaobjecttracker.html" class="tsd-signature-type">VuforiaObjectTracker</a></h4>
@@ -143,42 +147,62 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="_datasetmap" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _data<wbr>Set<wbr>Map</h3>
-					<div class="tsd-signature tsd-kind-icon">_data<wbr>Set<wbr>Map<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol"> =&nbsp;new Map&lt;string, VuforiaDataSet&gt;()</span></div>
+					<a name="_deprecateddatasetinstancemap" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _deprecated<wbr>Data<wbr>Set<wbr>Instance<wbr>Map</h3>
+					<div class="tsd-signature tsd-kind-icon">_deprecated<wbr>Data<wbr>Set<wbr>Instance<wbr>Map<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="deprecatedvuforiadataset.html" class="tsd-signature-type">DeprecatedVuforiaDataSet</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Map&lt;string, DeprecatedVuforiaDataSet&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/vuforia.ts#L478">vuforia.ts:478</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/vuforia.ts#L128">src/vuforia.ts:128</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="datasetactivateevent" class="tsd-anchor"></a>
 					<h3>data<wbr>Set<wbr>Activate<wbr>Event</h3>
-					<div class="tsd-signature tsd-kind-icon">data<wbr>Set<wbr>Activate<wbr>Event<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><a href="vuforiadataset.html" class="tsd-signature-type">VuforiaDataSet</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;VuforiaDataSet&gt;()</span></div>
+					<div class="tsd-signature tsd-kind-icon">data<wbr>Set<wbr>Activate<wbr>Event<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/vuforiadatasetevent.html" class="tsd-signature-type">VuforiaDataSetEvent</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;VuforiaDataSetEvent&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/vuforia.ts#L496">vuforia.ts:496</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/vuforia.ts#L95">src/vuforia.ts:95</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="datasetdeactivateevent" class="tsd-anchor"></a>
 					<h3>data<wbr>Set<wbr>Deactivate<wbr>Event</h3>
-					<div class="tsd-signature tsd-kind-icon">data<wbr>Set<wbr>Deactivate<wbr>Event<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><a href="vuforiadataset.html" class="tsd-signature-type">VuforiaDataSet</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;VuforiaDataSet&gt;()</span></div>
+					<div class="tsd-signature tsd-kind-icon">data<wbr>Set<wbr>Deactivate<wbr>Event<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/vuforiadatasetevent.html" class="tsd-signature-type">VuforiaDataSetEvent</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;VuforiaDataSetEvent&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/vuforia.ts#L497">vuforia.ts:497</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/vuforia.ts#L96">src/vuforia.ts:96</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="datasetloadevent" class="tsd-anchor"></a>
+					<h3>data<wbr>Set<wbr>Load<wbr>Event</h3>
+					<div class="tsd-signature tsd-kind-icon">data<wbr>Set<wbr>Load<wbr>Event<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/vuforiadatasetloadevent.html" class="tsd-signature-type">VuforiaDataSetLoadEvent</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;VuforiaDataSetLoadEvent&gt;()</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/vuforia.ts#L92">src/vuforia.ts:92</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="datasetunloadevent" class="tsd-anchor"></a>
+					<h3>data<wbr>Set<wbr>Unload<wbr>Event</h3>
+					<div class="tsd-signature tsd-kind-icon">data<wbr>Set<wbr>Unload<wbr>Event<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/vuforiadatasetevent.html" class="tsd-signature-type">VuforiaDataSetEvent</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;VuforiaDataSetEvent&gt;()</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/vuforia.ts#L93">src/vuforia.ts:93</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="manager" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> manager</h3>
-					<div class="tsd-signature tsd-kind-icon">manager<span class="tsd-signature-symbol">:</span> <a href="sessionport.html" class="tsd-signature-type">SessionPort</a></div>
+					<a name="managersession" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> manager<wbr>Session</h3>
+					<div class="tsd-signature tsd-kind-icon">manager<wbr>Session<span class="tsd-signature-symbol">:</span> <a href="sessionport.html" class="tsd-signature-type">SessionPort</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/vuforia.ts#L480">vuforia.ts:480</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/vuforia.ts#L98">src/vuforia.ts:98</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -189,22 +213,27 @@
 					<a name="activatedataset" class="tsd-anchor"></a>
 					<h3>activate<wbr>Data<wbr>Set</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">activate<wbr>Data<wbr>Set<span class="tsd-signature-symbol">(</span>dataSet<span class="tsd-signature-symbol">: </span><a href="vuforiadataset.html" class="tsd-signature-type">VuforiaDataSet</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span></li>
+						<li class="tsd-signature tsd-kind-icon">activate<wbr>Data<wbr>Set<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><a href="../globals.html#vuforiadatasetid" class="tsd-signature-type">VuforiaDataSetId</a><span class="tsd-signature-symbol"> | </span><a href="deprecatedvuforiadataset.html" class="tsd-signature-type">DeprecatedVuforiaDataSet</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/vuforia.ts#L510">vuforia.ts:510</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/vuforia.ts#L175">src/vuforia.ts:175</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Load (if necesasry) and activate a dataset to enable tracking of the contained trackables</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>dataSet: <a href="vuforiadataset.html" class="tsd-signature-type">VuforiaDataSet</a></h5>
+									<h5>id: <a href="../globals.html#vuforiadatasetid" class="tsd-signature-type">VuforiaDataSetId</a><span class="tsd-signature-symbol"> | </span><a href="deprecatedvuforiadataset.html" class="tsd-signature-type">DeprecatedVuforiaDataSet</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -212,22 +241,61 @@
 					<a name="createdataset" class="tsd-anchor"></a>
 					<h3>create<wbr>Data<wbr>Set</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">create<wbr>Data<wbr>Set<span class="tsd-signature-symbol">(</span>url<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span></li>
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Data<wbr>Set<span class="tsd-signature-symbol">(</span>url<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="deprecatedvuforiadataset.html" class="tsd-signature-type">DeprecatedVuforiaDataSet</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/vuforia.ts#L499">vuforia.ts:499</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/vuforia.ts#L135">src/vuforia.ts:135</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Deprecated. Please use createDataSetFromURI instead.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>deprecated</dt>
+									<dd><p>To be removed.</p>
+									</dd>
+								</dl>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> url: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="deprecatedvuforiadataset.html" class="tsd-signature-type">DeprecatedVuforiaDataSet</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="createdatasetfromuri" class="tsd-anchor"></a>
+					<h3>create<wbr>Data<wbr>Set<wbr>FromURI</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Data<wbr>Set<wbr>FromURI<span class="tsd-signature-symbol">(</span>uri<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../globals.html#vuforiadatasetid" class="tsd-signature-type">VuforiaDataSetId</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/vuforia.ts#L150">src/vuforia.ts:150</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Fetch a dataset from the provided url.
+									If successfull, resolves to an id which represents the dataset.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>uri: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../globals.html#vuforiadatasetid" class="tsd-signature-type">VuforiaDataSetId</a><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -235,22 +303,84 @@
 					<a name="deactivatedataset" class="tsd-anchor"></a>
 					<h3>deactivate<wbr>Data<wbr>Set</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">deactivate<wbr>Data<wbr>Set<span class="tsd-signature-symbol">(</span>dataSet<span class="tsd-signature-symbol">: </span><a href="vuforiadataset.html" class="tsd-signature-type">VuforiaDataSet</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span></li>
+						<li class="tsd-signature tsd-kind-icon">deactivate<wbr>Data<wbr>Set<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><a href="../globals.html#vuforiadatasetid" class="tsd-signature-type">VuforiaDataSetId</a><span class="tsd-signature-symbol"> | </span><a href="deprecatedvuforiadataset.html" class="tsd-signature-type">DeprecatedVuforiaDataSet</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/vuforia.ts#L514">vuforia.ts:514</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/vuforia.ts#L183">src/vuforia.ts:183</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Deactivate a loaded dataset to disable tracking of the contained trackables</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>dataSet: <a href="vuforiadataset.html" class="tsd-signature-type">VuforiaDataSet</a></h5>
+									<h5>id: <a href="../globals.html#vuforiadatasetid" class="tsd-signature-type">VuforiaDataSetId</a><span class="tsd-signature-symbol"> | </span><a href="deprecatedvuforiadataset.html" class="tsd-signature-type">DeprecatedVuforiaDataSet</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="loaddataset" class="tsd-anchor"></a>
+					<h3>load<wbr>Data<wbr>Set</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">load<wbr>Data<wbr>Set<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><a href="../globals.html#vuforiadatasetid" class="tsd-signature-type">VuforiaDataSetId</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/vuforiatrackables.html" class="tsd-signature-type">VuforiaTrackables</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/vuforia.ts#L161">src/vuforia.ts:161</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Load the dataset into memory, and return a promise which
+									resolves to the contained trackables</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>id: <a href="../globals.html#vuforiadatasetid" class="tsd-signature-type">VuforiaDataSetId</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/vuforiatrackables.html" class="tsd-signature-type">VuforiaTrackables</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="unloaddataset" class="tsd-anchor"></a>
+					<h3>unload<wbr>Data<wbr>Set</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">unload<wbr>Data<wbr>Set<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><a href="../globals.html#vuforiadatasetid" class="tsd-signature-type">VuforiaDataSetId</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/vuforia.ts#L168">src/vuforia.ts:168</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Unload a dataset from memory (deactivating it if necessary)</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>id: <a href="../globals.html#vuforiadatasetid" class="tsd-signature-type">VuforiaDataSetId</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -275,7 +405,7 @@
 								<a href="vuforiaobjecttracker.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="vuforiaobjecttracker.html#_datasetmap" class="tsd-kind-icon">_data<wbr>Set<wbr>Map</a>
+								<a href="vuforiaobjecttracker.html#_deprecateddatasetinstancemap" class="tsd-kind-icon">_deprecated<wbr>Data<wbr>Set<wbr>Instance<wbr>Map</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="vuforiaobjecttracker.html#datasetactivateevent" class="tsd-kind-icon">data<wbr>Set<wbr>Activate<wbr>Event</a>
@@ -283,8 +413,14 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="vuforiaobjecttracker.html#datasetdeactivateevent" class="tsd-kind-icon">data<wbr>Set<wbr>Deactivate<wbr>Event</a>
 							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="vuforiaobjecttracker.html#datasetloadevent" class="tsd-kind-icon">data<wbr>Set<wbr>Load<wbr>Event</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="vuforiaobjecttracker.html#datasetunloadevent" class="tsd-kind-icon">data<wbr>Set<wbr>Unload<wbr>Event</a>
+							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="vuforiaobjecttracker.html#manager" class="tsd-kind-icon">manager</a>
+								<a href="vuforiaobjecttracker.html#managersession" class="tsd-kind-icon">manager<wbr>Session</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="vuforiaobjecttracker.html#activatedataset" class="tsd-kind-icon">activate<wbr>Data<wbr>Set</a>
@@ -293,7 +429,16 @@
 								<a href="vuforiaobjecttracker.html#createdataset" class="tsd-kind-icon">create<wbr>Data<wbr>Set</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="vuforiaobjecttracker.html#createdatasetfromuri" class="tsd-kind-icon">create<wbr>Data<wbr>Set<wbr>FromURI</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="vuforiaobjecttracker.html#deactivatedataset" class="tsd-kind-icon">deactivate<wbr>Data<wbr>Set</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="vuforiaobjecttracker.html#loaddataset" class="tsd-kind-icon">load<wbr>Data<wbr>Set</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="vuforiaobjecttracker.html#unloaddataset" class="tsd-kind-icon">unload<wbr>Data<wbr>Set</a>
 							</li>
 						</ul>
 					</li>
@@ -364,7 +509,7 @@
 	</div>
 </footer>
 <div class="container tsd-generator">
-	<p>Generated using <a href="http://typedoc.io" target="_blank">TypeDoc</a></p>
+	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
 </div>
 <div class="overlay"></div>
 <script src="../assets/js/main.js"></script>

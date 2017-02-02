@@ -7,7 +7,6 @@
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
-	<script src="../assets/js/modernizr.js"></script>
 </head>
 <body>
 <header>
@@ -66,9 +65,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>A service which manages the reality view.
-							For an app developer, the RealityService instance can be used to
-						set preferences which can affect how the manager selects a reality view.</p>
+						<p>A service which makes requests to manage the reality viewer.</p>
 					</div>
 				</div>
 			</section>
@@ -94,23 +91,10 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="realityservice.html#_changeevent" class="tsd-kind-icon">_change<wbr>Event</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="realityservice.html#_connectevent" class="tsd-kind-icon">_connect<wbr>Event</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="realityservice.html#_current" class="tsd-kind-icon">_current</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="realityservice.html#_default" class="tsd-kind-icon">_default</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="realityservice.html#_defaultfov" class="tsd-kind-icon">_default<wbr>Fov</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="realityservice.html#_desired" class="tsd-kind-icon">_desired</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="realityservice.html#_desiredfov" class="tsd-kind-icon">_desired<wbr>Fov</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="realityservice.html#_frameevent" class="tsd-kind-icon">_frame<wbr>Event</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="realityservice.html#_loadid" class="tsd-kind-icon">_loadID</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="realityservice.html#_loaders" class="tsd-kind-icon">_loaders</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="realityservice.html#_realitysession" class="tsd-kind-icon">_reality<wbr>Session</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="realityservice.html#_scratcharray" class="tsd-kind-icon">_scratch<wbr>Array</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="realityservice.html#_scratchfrustum" class="tsd-kind-icon">_scratch<wbr>Frustum</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="realityservice.html#connectevent" class="tsd-kind-icon">connect<wbr>Event</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="realityservice.html#desiredrealitymap" class="tsd-kind-icon">desired<wbr>Reality<wbr>Map</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="realityservice.html#desiredrealitymapinverse" class="tsd-kind-icon">desired<wbr>Reality<wbr>Map<wbr>Inverse</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="realityservice.html#focusservice" class="tsd-kind-icon">focus<wbr>Service</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="realityservice.html#realities" class="tsd-kind-icon">realities</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="realityservice.html#sessiondesiredrealitychangeevent" class="tsd-kind-icon">session<wbr>Desired<wbr>Reality<wbr>Change<wbr>Event</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="realityservice.html#contextservice" class="tsd-kind-icon">context<wbr>Service</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="realityservice.html#default" class="tsd-kind-icon">default</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="realityservice.html#sessionservice" class="tsd-kind-icon">session<wbr>Service</a></li>
 							</ul>
 						</section>
@@ -118,34 +102,17 @@
 							<h3>Accessors</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="realityservice.html#changeevent" class="tsd-kind-icon">change<wbr>Event</a></li>
-								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="realityservice.html#frameevent" class="tsd-kind-icon">frame<wbr>Event</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="realityservice.html#connectevent" class="tsd-kind-icon">connect<wbr>Event</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="realityservice.html#current" class="tsd-kind-icon">current</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="realityservice.html#_executerealityloader" class="tsd-kind-icon">_execute<wbr>Reality<wbr>Loader</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="realityservice.html#_getloader" class="tsd-kind-icon">_get<wbr>Loader</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="realityservice.html#_setcurrent" class="tsd-kind-icon">_set<wbr>Current</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="realityservice.html#_setnextreality" class="tsd-kind-icon">_set<wbr>Next<wbr>Reality</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="realityservice.html#getcurrent" class="tsd-kind-icon">get<wbr>Current</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="realityservice.html#getdefaultfov" class="tsd-kind-icon">get<wbr>Default<wbr>Fov</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="realityservice.html#getdesired" class="tsd-kind-icon">get<wbr>Desired</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="realityservice.html#getdesiredfov" class="tsd-kind-icon">get<wbr>Desired<wbr>Fov</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="realityservice.html#getmaximumviewport" class="tsd-kind-icon">get<wbr>Maximum<wbr>Viewport</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="realityservice.html#issupported" class="tsd-kind-icon">is<wbr>Supported</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="realityservice.html#ongenerateviewfromeyeparameters" class="tsd-kind-icon">on<wbr>Generate<wbr>View<wbr>From<wbr>Eye<wbr>Parameters</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="realityservice.html#onselectreality" class="tsd-kind-icon">on<wbr>Select<wbr>Reality</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="realityservice.html#onzoom" class="tsd-kind-icon">on<wbr>Zoom</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="realityservice.html#publishframe" class="tsd-kind-icon">publish<wbr>Frame</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="realityservice.html#registerloader" class="tsd-kind-icon">register<wbr>Loader</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="realityservice.html#setdefault" class="tsd-kind-icon">set<wbr>Default</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="realityservice.html#setdefaultfov" class="tsd-kind-icon">set<wbr>Default<wbr>Fov</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="realityservice.html#install" class="tsd-kind-icon">install</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="realityservice.html#request" class="tsd-kind-icon">request</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="realityservice.html#setdesired" class="tsd-kind-icon">set<wbr>Desired</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="realityservice.html#setdesiredfov" class="tsd-kind-icon">set<wbr>Desired<wbr>Fov</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="realityservice.html#setoptionalreferenceframes" class="tsd-kind-icon">set<wbr>Optional<wbr>Reference<wbr>Frames</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="realityservice.html#setrequiredreferenceframes" class="tsd-kind-icon">set<wbr>Required<wbr>Reference<wbr>Frames</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="realityservice.html#zoom" class="tsd-kind-icon">zoom</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="realityservice.html#uninstall" class="tsd-kind-icon">uninstall</a></li>
 							</ul>
 						</section>
 					</div>
@@ -157,13 +124,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Reality<wbr>Service<span class="tsd-signature-symbol">(</span>sessionService<span class="tsd-signature-symbol">: </span><a href="sessionservice.html" class="tsd-signature-type">SessionService</a>, focusService<span class="tsd-signature-symbol">: </span><a href="focusservice.html" class="tsd-signature-type">FocusService</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="realityservice.html" class="tsd-signature-type">RealityService</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Reality<wbr>Service<span class="tsd-signature-symbol">(</span>sessionService<span class="tsd-signature-symbol">: </span><a href="sessionservice.html" class="tsd-signature-type">SessionService</a>, contextService<span class="tsd-signature-symbol">: </span><a href="contextservice.html" class="tsd-signature-type">ContextService</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="realityservice.html" class="tsd-signature-type">RealityService</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L114">reality.ts:114</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/reality.ts#L75">src/reality.ts:75</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -172,7 +139,7 @@
 									<h5>sessionService: <a href="sessionservice.html" class="tsd-signature-type">SessionService</a></h5>
 								</li>
 								<li>
-									<h5>focusService: <a href="focusservice.html" class="tsd-signature-type">FocusService</a></h5>
+									<h5>contextService: <a href="contextservice.html" class="tsd-signature-type">ContextService</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="realityservice.html" class="tsd-signature-type">RealityService</a></h4>
@@ -185,217 +152,55 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="_changeevent" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _change<wbr>Event</h3>
-					<div class="tsd-signature tsd-kind-icon">_change<wbr>Event<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;{ previous?: RealityView, current: RealityView }&gt;()</span></div>
+					<div class="tsd-signature tsd-kind-icon">_change<wbr>Event<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;{ previous?: string, current: string }&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L66">reality.ts:66</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/reality.ts#L62">src/reality.ts:62</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Manager-only. An event that is raised when the current reality is changed.</p>
-						</div>
-					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="_connectevent" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _connect<wbr>Event</h3>
+					<div class="tsd-signature tsd-kind-icon">_connect<wbr>Event<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><a href="sessionport.html" class="tsd-signature-type">SessionPort</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;SessionPort&gt;()</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/reality.ts#L54">src/reality.ts:54</a></li>
+						</ul>
+					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="_current" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> <span class="tsd-flag ts-flagOptional">Optional</span> _current</h3>
-					<div class="tsd-signature tsd-kind-icon">_current<span class="tsd-signature-symbol">:</span> <a href="realityview.html" class="tsd-signature-type">RealityView</a></div>
+					<div class="tsd-signature tsd-kind-icon">_current<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L105">reality.ts:105</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/reality.ts#L70">src/reality.ts:70</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="_default" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _default</h3>
-					<div class="tsd-signature tsd-kind-icon">_default<span class="tsd-signature-symbol">:</span> <a href="realityview.html" class="tsd-signature-type">RealityView</a></div>
+					<a name="contextservice" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> context<wbr>Service</h3>
+					<div class="tsd-signature tsd-kind-icon">context<wbr>Service<span class="tsd-signature-symbol">:</span> <a href="contextservice.html" class="tsd-signature-type">ContextService</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L102">reality.ts:102</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="_defaultfov" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _default<wbr>Fov</h3>
-					<div class="tsd-signature tsd-kind-icon">_default<wbr>Fov<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;Math.PI / 2</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L113">reality.ts:113</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="_desired" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> <span class="tsd-flag ts-flagOptional">Optional</span> _desired</h3>
-					<div class="tsd-signature tsd-kind-icon">_desired<span class="tsd-signature-symbol">:</span> <a href="realityview.html" class="tsd-signature-type">RealityView</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L108">reality.ts:108</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="_desiredfov" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _desired<wbr>Fov</h3>
-					<div class="tsd-signature tsd-kind-icon">_desired<wbr>Fov<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L114">reality.ts:114</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="_frameevent" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _frame<wbr>Event</h3>
-					<div class="tsd-signature tsd-kind-icon">_frame<wbr>Event<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/serializedframestate.html" class="tsd-signature-type">SerializedFrameState</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;SerializedFrameState&gt;()</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L77">reality.ts:77</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Manager-only. An event that is raised when the current reality emits the next frame state.
-								This event contains pose updates for the entities that are managed by
-							the current reality.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="_loadid" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _loadID</h3>
-					<div class="tsd-signature tsd-kind-icon">_loadID<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;-1</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L411">reality.ts:411</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="_loaders" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _loaders</h3>
-					<div class="tsd-signature tsd-kind-icon">_loaders<span class="tsd-signature-symbol">:</span> <a href="realityloader.html" class="tsd-signature-type">RealityLoader</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L111">reality.ts:111</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="_realitysession" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> <span class="tsd-flag ts-flagOptional">Optional</span> _reality<wbr>Session</h3>
-					<div class="tsd-signature tsd-kind-icon">_reality<wbr>Session<span class="tsd-signature-symbol">:</span> <a href="sessionport.html" class="tsd-signature-type">SessionPort</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L99">reality.ts:99</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="_scratcharray" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _scratch<wbr>Array</h3>
-					<div class="tsd-signature tsd-kind-icon">_scratch<wbr>Array<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Array&lt;number&gt;()</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L359">reality.ts:359</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="_scratchfrustum" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _scratch<wbr>Frustum</h3>
-					<div class="tsd-signature tsd-kind-icon">_scratch<wbr>Frustum<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol"> =&nbsp;new PerspectiveFrustum()</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L358">reality.ts:358</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/reality.ts#L79">src/reality.ts:79</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="connectevent" class="tsd-anchor"></a>
-					<h3>connect<wbr>Event</h3>
-					<div class="tsd-signature tsd-kind-icon">connect<wbr>Event<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><a href="sessionport.html" class="tsd-signature-type">SessionPort</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;SessionPort&gt;()</span></div>
+					<a name="default" class="tsd-anchor"></a>
+					<h3>default</h3>
+					<div class="tsd-signature tsd-kind-icon">default<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;RealityViewer.EMPTY</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L61">reality.ts:61</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/reality.ts#L75">src/reality.ts:75</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>An event that is raised when a reality control port is opened.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="desiredrealitymap" class="tsd-anchor"></a>
-					<h3>desired<wbr>Reality<wbr>Map</h3>
-					<div class="tsd-signature tsd-kind-icon">desired<wbr>Reality<wbr>Map<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol"> =&nbsp;new WeakMap&lt;SessionPort, RealityView&gt;()</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L86">reality.ts:86</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Manager-only. A map from a managed session to the desired reality</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="desiredrealitymapinverse" class="tsd-anchor"></a>
-					<h3>desired<wbr>Reality<wbr>Map<wbr>Inverse</h3>
-					<div class="tsd-signature tsd-kind-icon">desired<wbr>Reality<wbr>Map<wbr>Inverse<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol"> =&nbsp;new WeakMap&lt;RealityView | undefined, SessionPort&gt;()</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L91">reality.ts:91</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Manager-only. A map from a desired reality to the session which requested it</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="focusservice" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> focus<wbr>Service</h3>
-					<div class="tsd-signature tsd-kind-icon">focus<wbr>Service<span class="tsd-signature-symbol">:</span> <a href="focusservice.html" class="tsd-signature-type">FocusService</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L118">reality.ts:118</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="realities" class="tsd-anchor"></a>
-					<h3>realities</h3>
-					<div class="tsd-signature tsd-kind-icon">realities<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="realityview.html" class="tsd-signature-type">RealityView</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Array&lt;RealityView&gt;()</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L56">reality.ts:56</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>A collection of known reality views from which the reality service can select.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="sessiondesiredrealitychangeevent" class="tsd-anchor"></a>
-					<h3>session<wbr>Desired<wbr>Reality<wbr>Change<wbr>Event</h3>
-					<div class="tsd-signature tsd-kind-icon">session<wbr>Desired<wbr>Reality<wbr>Change<wbr>Event<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;{ session: SessionPort, previous: RealityView|undefined, current: RealityView|undefined }&gt;()</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L96">reality.ts:96</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Manager-only. An event that is raised when a session changes it&#39;s desired reality.</p>
+							<p>The default Reality Viewer.</p>
 						</div>
 					</div>
 				</section>
@@ -405,7 +210,7 @@
 					<div class="tsd-signature tsd-kind-icon">session<wbr>Service<span class="tsd-signature-symbol">:</span> <a href="sessionservice.html" class="tsd-signature-type">SessionService</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L117">reality.ts:117</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/reality.ts#L78">src/reality.ts:78</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -422,488 +227,128 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L67">reality.ts:67</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/reality.ts#L59">src/reality.ts:59</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>An event that is raised when the presenting reality viewer is changed.</p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
-					<a name="frameevent" class="tsd-anchor"></a>
-					<h3>frame<wbr>Event</h3>
+					<a name="connectevent" class="tsd-anchor"></a>
+					<h3>connect<wbr>Event</h3>
 					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> frameEvent<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/serializedframestate.html" class="tsd-signature-type">SerializedFrameState</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> connectEvent<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><a href="sessionport.html" class="tsd-signature-type">SessionPort</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L78">reality.ts:78</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/reality.ts#L53">src/reality.ts:53</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/serializedframestate.html" class="tsd-signature-type">SerializedFrameState</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>An event that is raised when a reality viewer provides a session
+									for sending and receiving application commands.</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><a href="sessionport.html" class="tsd-signature-type">SessionPort</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="current" class="tsd-anchor"></a>
+					<h3>current</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> current<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/reality.ts#L67">src/reality.ts:67</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The URI for the currently presenting Reality Viewer.</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span>
+								<span class="tsd-signature-symbol"> | </span>
+								<span class="tsd-signature-type">undefined</span>
+							</h4>
 						</li>
 					</ul>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
-					<a name="_executerealityloader" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _execute<wbr>Reality<wbr>Loader</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">_execute<wbr>Reality<wbr>Loader<span class="tsd-signature-symbol">(</span>reality<span class="tsd-signature-symbol">: </span><a href="realityview.html" class="tsd-signature-type">RealityView</a>, callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="install" class="tsd-anchor"></a>
+					<h3>install</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">install<span class="tsd-signature-symbol">(</span>uri<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L535">reality.ts:535</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/reality.ts#L170">src/reality.ts:170</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Install the specified reality viewer</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>reality: <a href="realityview.html" class="tsd-signature-type">RealityView</a></h5>
+									<h5>uri: <span class="tsd-signature-type">string</span></h5>
 								</li>
-								<li>
-									<h5>callback: <span class="tsd-signature-type">function</span></h5>
-									<ul class="tsd-parameters">
-										<li class="tsd-parameter-siganture">
-											<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
-												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>realitySession<span class="tsd-signature-symbol">: </span><a href="sessionport.html" class="tsd-signature-type">SessionPort</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-											</ul>
-											<ul class="tsd-descriptions">
-												<li class="tsd-description">
-													<h4 class="tsd-parameters-title">Parameters</h4>
-													<ul class="tsd-parameters">
-														<li>
-															<h5>realitySession: <a href="sessionport.html" class="tsd-signature-type">SessionPort</a></h5>
-														</li>
-													</ul>
-													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-												</li>
-											</ul>
-										</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="request" class="tsd-anchor"></a>
+					<h3>request</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">request<span class="tsd-signature-symbol">(</span>uri<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/reality.ts#L192">src/reality.ts:192</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Request a reality viewer to be presented.</p>
+									<ul>
+										<li>Pass a url to request a (custum) hosted reality viewer</li>
+										<li><a href="realityviewer.html#default">RealityViewer.DEFAULT</a> to request the system default reality viewer</li>
+										<li><a href="realityviewer.html#live">RealityViewer.LIVE</a> to request a live reality viewer</li>
+										<li><a href="realityviewer.html#empty">RealityViewer.EMPTY</a> to request an empty reality viewer</li>
 									</ul>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
-					<a name="_getloader" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _get<wbr>Loader</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">_get<wbr>Loader<span class="tsd-signature-symbol">(</span>reality<span class="tsd-signature-symbol">: </span><a href="realityview.html" class="tsd-signature-type">RealityView</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L515">reality.ts:515</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>reality: <a href="realityview.html" class="tsd-signature-type">RealityView</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
-					<a name="_setcurrent" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _set<wbr>Current</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">_set<wbr>Current<span class="tsd-signature-symbol">(</span>reality<span class="tsd-signature-symbol">: </span><a href="realityview.html" class="tsd-signature-type">RealityView</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L526">reality.ts:526</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>reality: <a href="realityview.html" class="tsd-signature-type">RealityView</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
-					<a name="_setnextreality" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _set<wbr>Next<wbr>Reality</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">_set<wbr>Next<wbr>Reality<span class="tsd-signature-symbol">(</span>reality<span class="tsd-signature-symbol">?: </span><a href="realityview.html" class="tsd-signature-type">RealityView</a>, force<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L413">reality.ts:413</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> reality: <a href="realityview.html" class="tsd-signature-type">RealityView</a></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> force: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="getcurrent" class="tsd-anchor"></a>
-					<h3>get<wbr>Current</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Current<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="realityview.html" class="tsd-signature-type">RealityView</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L215">reality.ts:215</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Manager-only. Get the current reality view.</p>
-								</div>
-								<dl class="tsd-comment-tags">
-									<dt>deprecated</dt>
-									<dd><p>. Use app.context.getCurrentReality()</p>
-									</dd>
-								</dl>
-							</div>
-							<h4 class="tsd-returns-title">Returns <a href="realityview.html" class="tsd-signature-type">RealityView</a>
-								<span class="tsd-signature-symbol"> | </span>
-								<span class="tsd-signature-type">undefined</span>
-							</h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="getdefaultfov" class="tsd-anchor"></a>
-					<h3>get<wbr>Default<wbr>Fov</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Default<wbr>Fov<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L304">reality.ts:304</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Get the default fov in radians</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="getdesired" class="tsd-anchor"></a>
-					<h3>get<wbr>Desired</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Desired<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="realityview.html" class="tsd-signature-type">RealityView</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L256">reality.ts:256</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Get the desired reality</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <a href="realityview.html" class="tsd-signature-type">RealityView</a>
-								<span class="tsd-signature-symbol"> | </span>
-								<span class="tsd-signature-type">undefined</span>
-							</h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="getdesiredfov" class="tsd-anchor"></a>
-					<h3>get<wbr>Desired<wbr>Fov</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Desired<wbr>Fov<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L285">reality.ts:285</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Get the desired fov in radians</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span>
-								<span class="tsd-signature-symbol"> | </span>
-								<span class="tsd-signature-type">undefined</span>
-							</h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="getmaximumviewport" class="tsd-anchor"></a>
-					<h3>get<wbr>Maximum<wbr>Viewport</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Maximum<wbr>Viewport<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L311">reality.ts:311</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Returns a maximum viewport</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">object</span></h4>
-							<ul class="tsd-parameters">
-							</ul>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="issupported" class="tsd-anchor"></a>
-					<h3>is<wbr>Supported</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">is<wbr>Supported<span class="tsd-signature-symbol">(</span>reality<span class="tsd-signature-symbol">: </span><a href="realityview.html" class="tsd-signature-type">RealityView</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L225">reality.ts:225</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Manager-only. Check if a type of reality is supported.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>reality: <a href="realityview.html" class="tsd-signature-type">RealityView</a></h5>
+									<h5>uri: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
-							<p>true if a handler exists and false otherwise</p>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="ongenerateviewfromeyeparameters" class="tsd-anchor"></a>
-					<h3>on<wbr>Generate<wbr>View<wbr>From<wbr>Eye<wbr>Parameters</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">on<wbr>Generate<wbr>View<wbr>From<wbr>Eye<wbr>Parameters<span class="tsd-signature-symbol">(</span>eye<span class="tsd-signature-symbol">: </span><a href="../interfaces/serializedeyeparameters.html" class="tsd-signature-type">SerializedEyeParameters</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/serializedviewparameters.html" class="tsd-signature-type">SerializedViewParameters</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L361">reality.ts:361</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>eye: <a href="../interfaces/serializedeyeparameters.html" class="tsd-signature-type">SerializedEyeParameters</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="../interfaces/serializedviewparameters.html" class="tsd-signature-type">SerializedViewParameters</a></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="onselectreality" class="tsd-anchor"></a>
-					<h3>on<wbr>Select<wbr>Reality</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">on<wbr>Select<wbr>Reality<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="realityview.html" class="tsd-signature-type">RealityView</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L330">reality.ts:330</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Manager-only. Selects the best reality based on the realites
-									requested by all managed sessions. Can be overriden for customized selection.</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <a href="realityview.html" class="tsd-signature-type">RealityView</a>
-								<span class="tsd-signature-symbol"> | </span>
-								<span class="tsd-signature-type">undefined</span>
-							</h4>
-							<p>The reality chosen for this context. May be undefined if no
-							realities have been requested.</p>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-					<a name="onzoom" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagProtected">Protected</span> on<wbr>Zoom</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-						<li class="tsd-signature tsd-kind-icon">on<wbr>Zoom<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><a href="../interfaces/realityzoomdata.html" class="tsd-signature-type">RealityZoomData</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L398">reality.ts:398</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>data: <a href="../interfaces/realityzoomdata.html" class="tsd-signature-type">RealityZoomData</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="publishframe" class="tsd-anchor"></a>
-					<h3>publish<wbr>Frame</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">publish<wbr>Frame<span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><a href="../interfaces/serializedpartialframestate.html" class="tsd-signature-type">SerializedPartialFrameState</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L233">reality.ts:233</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Reality-only. Publish the next frame state.</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>state: <a href="../interfaces/serializedpartialframestate.html" class="tsd-signature-type">SerializedPartialFrameState</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="registerloader" class="tsd-anchor"></a>
-					<h3>register<wbr>Loader</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">register<wbr>Loader<span class="tsd-signature-symbol">(</span>handler<span class="tsd-signature-symbol">: </span><a href="realityloader.html" class="tsd-signature-type">RealityLoader</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L206">reality.ts:206</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Manager-only. Register a reality loader</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>handler: <a href="realityloader.html" class="tsd-signature-type">RealityLoader</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="setdefault" class="tsd-anchor"></a>
-					<h3>set<wbr>Default</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">set<wbr>Default<span class="tsd-signature-symbol">(</span>reality<span class="tsd-signature-symbol">: </span><a href="realityview.html" class="tsd-signature-type">RealityView</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L199">reality.ts:199</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Set the default reality.</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>reality: <a href="realityview.html" class="tsd-signature-type">RealityView</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="setdefaultfov" class="tsd-anchor"></a>
-					<h3>set<wbr>Default<wbr>Fov</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">set<wbr>Default<wbr>Fov<span class="tsd-signature-symbol">(</span>fov<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L293">reality.ts:293</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Set the default fov in radians, and adjust the desired fov to match the
-									previous desired / default ratio.</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>fov: <span class="tsd-signature-type">number</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -911,24 +356,28 @@
 					<a name="setdesired" class="tsd-anchor"></a>
 					<h3>set<wbr>Desired</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">set<wbr>Desired<span class="tsd-signature-symbol">(</span>reality<span class="tsd-signature-symbol">: </span><a href="realityview.html" class="tsd-signature-type">RealityView</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Desired<span class="tsd-signature-symbol">(</span>reality<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L243">reality.ts:243</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/reality.ts#L203">src/reality.ts:203</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Set the desired reality.</p>
+									<p>Deprecated. Use [[RealityService#request]]</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>deprecated</dt>
+									<dd></dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>reality: <a href="realityview.html" class="tsd-signature-type">RealityView</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></h5>
+									<h5>reality: <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -936,111 +385,30 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="setdesiredfov" class="tsd-anchor"></a>
-					<h3>set<wbr>Desired<wbr>Fov</h3>
+					<a name="uninstall" class="tsd-anchor"></a>
+					<h3>uninstall</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">set<wbr>Desired<wbr>Fov<span class="tsd-signature-symbol">(</span>fov<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">uninstall<span class="tsd-signature-symbol">(</span>uri<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L277">reality.ts:277</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/reality.ts#L179">src/reality.ts:179</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Set a desired fov in radians.</p>
+									<p>Uninstall the specified reality viewer</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>fov: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></h5>
+									<h5>uri: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="setoptionalreferenceframes" class="tsd-anchor"></a>
-					<h3>set<wbr>Optional<wbr>Reference<wbr>Frames</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">set<wbr>Optional<wbr>Reference<wbr>Frames<span class="tsd-signature-symbol">(</span>referenceFrames<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L263">reality.ts:263</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Set the optional reference frames for this app</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>referenceFrames: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="setrequiredreferenceframes" class="tsd-anchor"></a>
-					<h3>set<wbr>Required<wbr>Reference<wbr>Frames</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">set<wbr>Required<wbr>Reference<wbr>Frames<span class="tsd-signature-symbol">(</span>referenceFrames<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L270">reality.ts:270</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Set the optional reference frames for this app</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>referenceFrames: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="zoom" class="tsd-anchor"></a>
-					<h3>zoom</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">zoom<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/reality.ts#L386">reality.ts:386</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>data: <span class="tsd-signature-type">object</span></h5>
-									<ul class="tsd-parameters">
-									</ul>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -1068,55 +436,16 @@
 								<a href="realityservice.html#_changeevent" class="tsd-kind-icon">_change<wbr>Event</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="realityservice.html#_connectevent" class="tsd-kind-icon">_connect<wbr>Event</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="realityservice.html#_current" class="tsd-kind-icon">_current</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="realityservice.html#_default" class="tsd-kind-icon">_default</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="realityservice.html#_defaultfov" class="tsd-kind-icon">_default<wbr>Fov</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="realityservice.html#_desired" class="tsd-kind-icon">_desired</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="realityservice.html#_desiredfov" class="tsd-kind-icon">_desired<wbr>Fov</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="realityservice.html#_frameevent" class="tsd-kind-icon">_frame<wbr>Event</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="realityservice.html#_loadid" class="tsd-kind-icon">_loadID</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="realityservice.html#_loaders" class="tsd-kind-icon">_loaders</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="realityservice.html#_realitysession" class="tsd-kind-icon">_reality<wbr>Session</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="realityservice.html#_scratcharray" class="tsd-kind-icon">_scratch<wbr>Array</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="realityservice.html#_scratchfrustum" class="tsd-kind-icon">_scratch<wbr>Frustum</a>
+								<a href="realityservice.html#contextservice" class="tsd-kind-icon">context<wbr>Service</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="realityservice.html#connectevent" class="tsd-kind-icon">connect<wbr>Event</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="realityservice.html#desiredrealitymap" class="tsd-kind-icon">desired<wbr>Reality<wbr>Map</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="realityservice.html#desiredrealitymapinverse" class="tsd-kind-icon">desired<wbr>Reality<wbr>Map<wbr>Inverse</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="realityservice.html#focusservice" class="tsd-kind-icon">focus<wbr>Service</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="realityservice.html#realities" class="tsd-kind-icon">realities</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="realityservice.html#sessiondesiredrealitychangeevent" class="tsd-kind-icon">session<wbr>Desired<wbr>Reality<wbr>Change<wbr>Event</a>
+								<a href="realityservice.html#default" class="tsd-kind-icon">default</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="realityservice.html#sessionservice" class="tsd-kind-icon">session<wbr>Service</a>
@@ -1125,73 +454,22 @@
 								<a href="realityservice.html#changeevent" class="tsd-kind-icon">change<wbr>Event</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
-								<a href="realityservice.html#frameevent" class="tsd-kind-icon">frame<wbr>Event</a>
+								<a href="realityservice.html#connectevent" class="tsd-kind-icon">connect<wbr>Event</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
-								<a href="realityservice.html#_executerealityloader" class="tsd-kind-icon">_execute<wbr>Reality<wbr>Loader</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
-								<a href="realityservice.html#_getloader" class="tsd-kind-icon">_get<wbr>Loader</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
-								<a href="realityservice.html#_setcurrent" class="tsd-kind-icon">_set<wbr>Current</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
-								<a href="realityservice.html#_setnextreality" class="tsd-kind-icon">_set<wbr>Next<wbr>Reality</a>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="realityservice.html#current" class="tsd-kind-icon">current</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="realityservice.html#getcurrent" class="tsd-kind-icon">get<wbr>Current</a>
+								<a href="realityservice.html#install" class="tsd-kind-icon">install</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="realityservice.html#getdefaultfov" class="tsd-kind-icon">get<wbr>Default<wbr>Fov</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="realityservice.html#getdesired" class="tsd-kind-icon">get<wbr>Desired</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="realityservice.html#getdesiredfov" class="tsd-kind-icon">get<wbr>Desired<wbr>Fov</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="realityservice.html#getmaximumviewport" class="tsd-kind-icon">get<wbr>Maximum<wbr>Viewport</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="realityservice.html#issupported" class="tsd-kind-icon">is<wbr>Supported</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="realityservice.html#ongenerateviewfromeyeparameters" class="tsd-kind-icon">on<wbr>Generate<wbr>View<wbr>From<wbr>Eye<wbr>Parameters</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="realityservice.html#onselectreality" class="tsd-kind-icon">on<wbr>Select<wbr>Reality</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-								<a href="realityservice.html#onzoom" class="tsd-kind-icon">on<wbr>Zoom</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="realityservice.html#publishframe" class="tsd-kind-icon">publish<wbr>Frame</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="realityservice.html#registerloader" class="tsd-kind-icon">register<wbr>Loader</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="realityservice.html#setdefault" class="tsd-kind-icon">set<wbr>Default</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="realityservice.html#setdefaultfov" class="tsd-kind-icon">set<wbr>Default<wbr>Fov</a>
+								<a href="realityservice.html#request" class="tsd-kind-icon">request</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="realityservice.html#setdesired" class="tsd-kind-icon">set<wbr>Desired</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="realityservice.html#setdesiredfov" class="tsd-kind-icon">set<wbr>Desired<wbr>Fov</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="realityservice.html#setoptionalreferenceframes" class="tsd-kind-icon">set<wbr>Optional<wbr>Reference<wbr>Frames</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="realityservice.html#setrequiredreferenceframes" class="tsd-kind-icon">set<wbr>Required<wbr>Reference<wbr>Frames</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="realityservice.html#zoom" class="tsd-kind-icon">zoom</a>
+								<a href="realityservice.html#uninstall" class="tsd-kind-icon">uninstall</a>
 							</li>
 						</ul>
 					</li>
@@ -1262,7 +540,7 @@
 	</div>
 </footer>
 <div class="container tsd-generator">
-	<p>Generated using <a href="http://typedoc.io" target="_blank">TypeDoc</a></p>
+	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
 </div>
 <div class="overlay"></div>
 <script src="../assets/js/main.js"></script>

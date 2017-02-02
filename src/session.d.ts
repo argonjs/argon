@@ -1,5 +1,7 @@
 import { Configuration } from './common';
 import { Event, MessageChannelFactory, MessagePortLike, MessageChannelLike, SynchronousMessageChannel } from './utils';
+import { version } from '../package.json';
+export { version };
 export interface Message {
     [key: string]: any;
 }
@@ -24,7 +26,7 @@ export interface ErrorMessage {
  * Provides two-way communication between two [[SessionPort]] instances.
  */
 export declare class SessionPort {
-    uri?: string;
+    uri: string;
     /**
      * An event which fires when a connection has been
      * established to the other [[SessionPort]].
@@ -96,6 +98,7 @@ export declare class SessionPort {
      */
     close(): void;
     readonly isConnected: boolean;
+    readonly isClosed: boolean;
 }
 /**
  * A factory for creating [[SessionPort]] instances.
@@ -137,7 +140,7 @@ export declare class SessionService {
     readonly connectEvent: Event<SessionPort>;
     private _connectEvent;
     /**
-     * Manager-only. A collection of ports for the sessions managed by this session.
+     * Manager-only. A collection of ports for each managed session.
      */
     readonly managedSessions: SessionPort[];
     private _managedSessions;
@@ -166,7 +169,7 @@ export declare class SessionService {
      * to this [[ArgonSystem]].
      * @return a new SessionPort instance
      */
-    createSessionPort(uri?: string): SessionPort;
+    createSessionPort(uri: string): SessionPort;
     /**
      * Creates a message channel which asyncrhonously sends and receives messages.
      */
@@ -180,14 +183,14 @@ export declare class SessionService {
      */
     readonly isRealityManager: boolean;
     /**
-     * Returns true if this system represents a [[REALITY_AUGMENTOR]], meaning,
+     * Returns true if this system represents a [[REALITY_AUGMENTER]], meaning,
      * it is running within a [[REALITY_MANAGER]]
      */
     readonly isRealityAugmenter: boolean;
     /**
-     * Returns true if this system is a [[REALITY_VIEW]]
+     * Returns true if this system is a [[REALITY_VIEWER]]
      */
-    readonly isRealityView: boolean;
+    readonly isRealityViewer: boolean;
     /**
      * @private
      */
@@ -197,17 +200,29 @@ export declare class SessionService {
      */
     private readonly isApplication;
     /**
+     * @private
+     */
+    private readonly isRealityView;
+    /**
      * Throws an error if this system is not a [[REALITY_MANAGER]]
      */
     ensureIsRealityManager(): void;
     /**
-     * Throws an error if this session is not a [[REALITY_VIEW]]
+     * Throws an error if this session is not a [[REALITY_VIEWER]]
      */
-    ensureIsRealityView(): void;
+    ensureIsRealityViewer(): void;
     /**
-     * Throws an error if this session is a [[REALITY_VIEW]]
+     * Throws an error if this session is a [[REALITY_VIEWER]]
      */
-    ensureNotRealityView(): void;
+    ensureNotRealityViewer(): void;
+    /**
+     * Throws an error if this session is a [[REALITY_AUGMENTER]]
+     */
+    ensureNotRealityAugmenter(): void;
+    /**
+     * Throws an error if the connection to the manager is closed
+     */
+    ensureConnected(): void;
 }
 /**
  * Connect the current [[ArgonSystem]] to itself as the [[REALITY_MANAGER]].

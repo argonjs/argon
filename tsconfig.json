@@ -1,22 +1,16 @@
 {
+    "extends": "./tsconfig.build.json",
     "compilerOptions": {
-        "target": "es5",
-        "module": "system",
-        "declaration": true,
-        "emitDecoratorMetadata": false,
-        "experimentalDecorators": true,
-        "allowSyntheticDefaultImports": true,
-        "pretty": false,
-        "sourceMap": false,
         "lib": ["es2015", "dom"],
+        "sourceMap": false,
         "moduleResolution": "node",
         "strictNullChecks": true,
         "noUnusedLocals": true,
         "traceResolution": false
     },
     "include": [
+        "types/declarations.d.ts",
         "src/**/*.ts",
-        "example/**/*.ts",
-        "test/test.ts"
+        "test/**/*.ts"
     ]
 }

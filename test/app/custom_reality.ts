@@ -1,11 +1,11 @@
 // import * as Argon from 'argon'
-import * as Argon from '../src/argon'
+import * as Argon from '../../src/argon'
 
 declare const THREE: any;
 
 window['Argon'] = Argon;
 
-export const app = Argon.initReality();
+export const app = Argon.initRealityViewer();
 
 export const scene = new THREE.Scene();
 export const camera = new THREE.PerspectiveCamera();
@@ -15,15 +15,15 @@ scene.add(camera);
 scene.add(user);
 scene.add(userLocation);
 
-const renderer = new THREE.WebGLRenderer({ 
+const renderer = new THREE.WebGLRenderer({
     alpha: true, 
     logarithmicDepthBuffer: true
 });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-app.view.element.appendChild(renderer.domElement);
+app.viewport.element.appendChild(renderer.domElement);
 
-// app.context.setDefaultReferenceFrame(app.context.localOriginEastUpSouth);
-app.context.setDefaultReferenceFrame(app.context.localOriginEastNorthUp);
+// app.context.defaultReferenceFrame = app.context.localOriginEastUpSouth;
+app.context.defaultReferenceFrame = app.context.localOriginEastNorthUp;
 
 const geometry = new THREE.SphereGeometry( 30, 32, 32 );
 
@@ -75,19 +75,22 @@ axisHelper.position.y = -50;
 var perspectiveProjection = new Argon.Cesium.PerspectiveFrustum();
 perspectiveProjection.fov = Math.PI / 2;
 
-function update(time:Argon.Cesium.JulianDate, index:number) {
-    app.device.update();
-    app.reality.publishFrame({
+function update(time:Argon.Cesium.JulianDate) {
+    app.view.requestAnimationFrame(update);
+
+    const suggestedViewState = app.view.suggestedViewState;
+    if (!suggestedViewState) return;
+
+    const frameState = app.context.createFrameState(
         time,
-        index,
-        eye: {
-            viewport: app.reality.getMaximumViewport(),
-            pose: Argon.getSerializedEntityPose(app.device.displayEntity, time)
-        }
-    })
-    app.timer.requestFrame(update);
+        suggestedViewState.viewport,
+        suggestedViewState.subviews,
+        app.view.eye
+    );
+
+    app.context.submitFrameState(frameState);
 }
-app.timer.requestFrame(update)
+app.view.requestAnimationFrame(update)
 
 app.updateEvent.addEventListener(() => {
     const userPose = app.context.getEntityPose(app.context.user);
@@ -100,13 +103,13 @@ app.updateEvent.addEventListener(() => {
 })
     
 app.renderEvent.addEventListener(() => {
-    const viewport = app.view.getViewport();
+    const viewport = app.view.viewport;
     renderer.setSize(viewport.width, viewport.height);
     
     for (let subview of app.view.getSubviews()) {
         camera.position.copy(subview.pose.position);
         camera.quaternion.copy(subview.pose.orientation);
-        camera.projectionMatrix.fromArray(subview.projectionMatrix);
+        camera.projectionMatrix.fromArray(subview.frustum.projectionMatrix);
         let {x,y,width,height} = subview.viewport;
         renderer.setViewport(x,y,width,height);
         renderer.setScissor(x,y,width,height);

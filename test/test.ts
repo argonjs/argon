@@ -4,11 +4,12 @@ import * as Argon from '../src/argon'
 
 const expect = chai.expect;
 
-describe('Argon', () => {
+afterEach(() => {
+    if (Argon.ArgonSystem.instance)
+        Argon.ArgonSystem.instance.destroy();
+})
 
-    afterEach(() => {
-        Argon.ArgonSystem.instance = undefined;
-    })
+describe('Argon', () => {
 
     describe('#init', () => {
         it('should create an ArgonSystem w/ default options', () => {
@@ -21,22 +22,22 @@ describe('Argon', () => {
 
     describe('new ArgonSystem()', () => {
         it('should create an ArgonSystem with Role=Role.MANAGER', () => {
-            const manager = new Argon.ArgonSystem({ role: Argon.Role.REALITY_MANAGER });
+            const manager = new Argon.ArgonSystem(null, { role: Argon.Role.REALITY_MANAGER });
             expect(manager).to.be.an.instanceOf(Argon.ArgonSystem);
             expect(manager.session.configuration.role).to.equal(Argon.Role.REALITY_MANAGER);
         });
         it('should create an ArgonSystem with Role=Role.APPLICATION', () => {
-            const app = new Argon.ArgonSystem({ role: Argon.Role.REALITY_AUGMENTOR });
+            const app = new Argon.ArgonSystem(null, { role: Argon.Role.REALITY_AUGMENTER });
             expect(app).to.be.an.instanceOf(Argon.ArgonSystem);
-            expect(app.session.configuration.role).to.equal(Argon.Role.REALITY_AUGMENTOR);
+            expect(app.session.configuration.role).to.equal(Argon.Role.REALITY_AUGMENTER);
         });
         it('should create an ArgonSystem with Role=Role.REALITY_VIEW', () => {
-            const app = new Argon.ArgonSystem({ role: Argon.Role.REALITY_VIEW });
+            const app = new Argon.ArgonSystem(null, { role: Argon.Role.REALITY_VIEWER });
             expect(app).to.be.an.instanceOf(Argon.ArgonSystem);
-            expect(app.session.configuration.role).to.equal(Argon.Role.REALITY_VIEW);
+            expect(app.session.configuration.role).to.equal(Argon.Role.REALITY_VIEWER);
         });
         it('should raise a focus event when Role=Role.MANAGER', (done) => {
-            const manager = new Argon.ArgonSystem({ role: Argon.Role.REALITY_MANAGER });
+            const manager = new Argon.ArgonSystem(null, { role: Argon.Role.REALITY_MANAGER });
             expect(manager).to.be.an.instanceOf(Argon.ArgonSystem);
             expect(manager.session.configuration.role).to.equal(Argon.Role.REALITY_MANAGER);
             
@@ -49,45 +50,33 @@ describe('Argon', () => {
 
 });
 
-describe('TimerService', () => {
-
-    describe('#requestFrame', () => {
-        it('should execute callback for animation frame', (done) => {
-            var timer = new Argon.TimerService();
-            var stopAtFrame = 1;
-            timer.requestFrame(function update(time, frameNumber) {
-                expect(time).to.be.instanceof(Argon.Cesium.JulianDate);
-                expect(time.dayNumber).to.be.equal(Argon.Cesium.JulianDate.now().dayNumber);
-                expect(frameNumber).to.be.a('number');
-                if (frameNumber === stopAtFrame) done();
-                else timer.requestFrame(update);
-            })
-        });
-    })
-
-});
-
 
 describe('RealityService', () => {
-    
+    let sessionService:Argon.SessionService;
+
+    afterEach(()=>{
+        if (sessionService) sessionService.manager.close();
+    })
     
     describe('new RealityService()', () => {
 
-        it('the default reality should be used when no desired reality is set', (done) => {
+        it('the default reality should be used when no reality has been requested', (done) => {
             const container = new Argon.DI.Container();
             container.registerInstance('config', {role: Argon.Role.REALITY_MANAGER});
             container.registerSingleton(Argon.ConnectService, Argon.LoopbackConnectService);
             const realityService:Argon.RealityService = container.get(Argon.RealityService);
-            const sessionService:Argon.SessionService = container.get(Argon.SessionService);
+            const contextService:Argon.ContextService = container.get(Argon.ContextService);
+            sessionService = container.get(Argon.SessionService);
+            container.get(Argon.RealityServiceProvider);
+            container.get(Argon.ViewServiceProvider);
             
-            realityService.registerLoader(container.get(Argon.EmptyRealityLoader));
-            realityService.setDefault({uri:'reality:empty', title:'My Custom Reality'})
+            realityService.default = Argon.RealityViewer.EMPTY;
             
-            let removeListener = realityService.frameEvent.addEventListener((state) => {
-                expect(Argon.RealityView.getType(state.reality) === 'empty')
-                expect(state.time).to.haveOwnProperty('dayNumber');
-                expect(state.time).to.haveOwnProperty('secondsOfDay');
-                expect(realityService.getDesired()).to.be.undefined;
+            let removeListener = contextService.frameStateEvent.addEventListener((frameState) => {
+                expect(realityService.current === Argon.RealityViewer.EMPTY);
+                expect(frameState.reality === Argon.RealityViewer.EMPTY);
+                expect(frameState.time).to.haveOwnProperty('dayNumber');
+                expect(frameState.time).to.haveOwnProperty('secondsOfDay');
                 removeListener();
                 done();
             })
@@ -97,57 +86,21 @@ describe('RealityService', () => {
         
     })
 
-    describe('#setDesired', () => {
-
-        it('should support setting a custom reality', (done) => {
-
-            const type = 'custom_type';
-            
-            class CustomRealitySetupHandler implements Argon.RealityLoader {
-                public type = type;
-                
-                public load(reality : Argon.RealityView, callback:(realitySession:Argon.SessionPort)=>void) : void {
-                    const realitySession = sessionService.addManagedSessionPort('reality:' + type);
-                    const remoteRealitySession = sessionService.createSessionPort();
-                    const messageChannel = sessionService.createMessageChannel();
-                    callback(realitySession);
-                    remoteRealitySession.open(messageChannel.port1, { role: Argon.Role.REALITY_VIEW });
-                    realitySession.open(messageChannel.port2, sessionService.configuration);
-                }
-            }
-            
-            const container = new Argon.DI.Container();
-            container.registerInstance('config', {role: Argon.Role.REALITY_MANAGER});
-            container.registerSingleton(Argon.ConnectService, Argon.LoopbackConnectService);
-            const realityService:Argon.RealityService = container.get(Argon.RealityService);
-            const sessionService:Argon.SessionService = container.get(Argon.SessionService);
-            
-            realityService.registerLoader(container.get(CustomRealitySetupHandler));
-
-            let removeListener = realityService.changeEvent.addEventListener(() => {
-                expect(Argon.RealityView.getType(realityService.getCurrent()!)).to.equal(type);
-                removeListener();
-                done();
-            });
-            
-            sessionService.connect();
-            realityService.setDesired({uri: 'reality:custom_type', title:'My Custom Reality'});
-        });
+    describe('#request', () => {
 
         it('should raise an error for unsupported realities', (done) => {
             const container = new Argon.DI.Container();
             container.registerInstance('config', {role: Argon.Role.REALITY_MANAGER});
             container.registerSingleton(Argon.ConnectService, Argon.LoopbackConnectService);
             const realityService:Argon.RealityService = container.get(Argon.RealityService);
-            const sessionService:Argon.SessionService = container.get(Argon.SessionService);
+            sessionService = container.get(Argon.SessionService);
+            container.get(Argon.RealityServiceProvider);
 
-            sessionService.errorEvent.addEventListener((error)=>{
+            sessionService.connect();
+            realityService.request('reality:unsupported').catch((error)=>{
                 expect(error).to.be.instanceof(Error);
                 done()
             })
-            
-            sessionService.connect();
-            realityService.setDesired({ uri: 'reality:unsupported' });
         });
 
     });
@@ -207,11 +160,11 @@ describe('SessionPort', () => {
                 checkDone();
             })
             remoteSession.connectEvent.addEventListener(() => {
-                expect(remoteSession.info.role).to.equal(Argon.Role.REALITY_AUGMENTOR);
+                expect(remoteSession.info.role).to.equal(Argon.Role.REALITY_AUGMENTER);
                 expect(remoteSession.info.userData.test).to.equal('abc');
                 checkDone();
             })
-            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTOR, userData: { test: 'abc' } });
+            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTER, userData: { test: 'abc' } });
             remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_MANAGER, userData: { test: 'def' } });
 
             function checkDone() {
@@ -231,11 +184,11 @@ describe('SessionPort', () => {
                 checkDone();
             })
             remoteSession.connectEvent.addEventListener(() => {
-                expect(remoteSession.info.role).to.equal(Argon.Role.REALITY_AUGMENTOR);
+                expect(remoteSession.info.role).to.equal(Argon.Role.REALITY_AUGMENTER);
                 expect(remoteSession.info.userData.test).to.equal('abc');
                 checkDone();
             })
-            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTOR, userData: { test: 'abc' } });
+            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTER, userData: { test: 'abc' } });
             remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_MANAGER, userData: { test: 'def' } });
 
             function checkDone() {
@@ -255,11 +208,11 @@ describe('SessionPort', () => {
                 checkDone();
             })
             remoteSession.connectEvent.addEventListener(() => {
-                expect(remoteSession.info.role).to.equal(Argon.Role.REALITY_AUGMENTOR);
+                expect(remoteSession.info.role).to.equal(Argon.Role.REALITY_AUGMENTER);
                 expect(remoteSession.info.userData.test).to.equal('abc');
                 checkDone();
             })
-            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTOR, userData: { test: 'abc' } });
+            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTER, userData: { test: 'abc' } });
             remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_MANAGER, userData: { test: 'def' } });
 
             function checkDone() {
@@ -282,7 +235,7 @@ describe('SessionPort', () => {
             remoteSession.closeEvent.addEventListener(() => {
                 checkDone();
             })
-            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTOR });
+            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTER });
             remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_MANAGER });
             session.close();
             function checkDone() {
@@ -302,7 +255,7 @@ describe('SessionPort', () => {
             remoteSession.closeEvent.addEventListener(() => {
                 checkDone();
             })
-            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTOR });
+            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTER });
             remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_MANAGER });
             session.close();
             function checkDone() {
@@ -322,7 +275,7 @@ describe('SessionPort', () => {
             remoteSession.closeEvent.addEventListener(() => {
                 checkDone();
             })
-            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTOR });
+            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTER });
             remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_MANAGER });
             session.close();
             function checkDone() {
@@ -343,8 +296,8 @@ describe('SessionPort', () => {
                 expect(message.hi).to.equal(42);
                 done();
             }
-            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTOR });
-            remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_AUGMENTOR });
+            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTER });
+            remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_AUGMENTER });
             remoteSession.send('test.message', { hi: 42 });
         });
 
@@ -356,8 +309,8 @@ describe('SessionPort', () => {
                 expect(message.hi).to.equal(42);
                 done();
             }
-            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTOR });
-            remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_AUGMENTOR });
+            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTER });
+            remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_AUGMENTER });
             remoteSession.send('test.message', { hi: 42 });
         });
 
@@ -369,8 +322,8 @@ describe('SessionPort', () => {
                 expect(message.hi).to.equal(42);
                 done();
             }
-            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTOR });
-            remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_AUGMENTOR });
+            session.open(messageChannel.port1, { role: Argon.Role.REALITY_AUGMENTER });
+            remoteSession.open(messageChannel.port2, { role: Argon.Role.REALITY_AUGMENTER });
             remoteSession.send('test.message', { hi: 42 });
         });
     })
@@ -429,7 +382,7 @@ describe('CommandQueue', () => {
                     }, 15)
                 });
             });
-            queue.push(() => x = 10).catch(()=>{});
+            queue.push(() => x = 15).catch(()=>{});
             queue.execute();
         });
     })
@@ -465,8 +418,13 @@ describe('CommandQueue', () => {
 describe('Context', () => {
 
     function createSystem() {
-        return Argon.init({configuration: {role: Argon.Role.REALITY_MANAGER}});
+        return Argon.init(null, {role: Argon.Role.REALITY_MANAGER});
     }
+
+    afterEach(() => {
+        if (Argon.ArgonSystem.instance)
+            Argon.ArgonSystem.instance.destroy();
+    })
 
     describe('new Context()', () => {
         it('should create a Context object', () => {
@@ -476,7 +434,7 @@ describe('Context', () => {
         it('should emit update events with default reality', (done) => {
             const {context} = createSystem();
             let removeListener = context.updateEvent.addEventListener(() => {
-                expect(Argon.RealityView.getType(context.serializedFrameState!.reality)).to.equal('empty');
+                // expect(Argon.RealityViewer.getType(context.serializedFrameState!.reality)).to.equal('empty');
                 removeListener();
                 done();
             })
@@ -538,175 +496,54 @@ describe('Context', () => {
 
 describe('VuforiaService', () => {
 
-    class MockVuforiaServiceDelegateBase extends Argon.VuforiaServiceDelegate {
-        isAvailable() {
-            return true
-        }
-    }
-
-    function createManagerWithVuforiaDelegate(DelegateClass: typeof Argon.VuforiaServiceDelegate) {
-        const container = new Argon.DI.Container();
-        container.registerSingleton(Argon.VuforiaServiceDelegate, DelegateClass)
-        const manager = Argon.init({configuration:{
-            role:Argon.Role.REALITY_MANAGER
-        }, container});
-        return manager;
-    }
-
-    describe('new VuforiaService()', () => {
-        it('should create a VuforiaService object', () => {
-            const {vuforia} = createManagerWithVuforiaDelegate(Argon.VuforiaServiceDelegate);
-            expect(vuforia).to.be.instanceof(Argon.VuforiaService);
-        });
-        it('should add a live-video reality handler to the reality service', () => {
-            const {reality} = createManagerWithVuforiaDelegate(Argon.VuforiaServiceDelegate);
-            expect(reality.isSupported({uri:'reality:live-video'})).to.be.true;
-        })
-        it('should load the live-video reality when it is the default', (done) => {
-            const {reality} = createManagerWithVuforiaDelegate(Argon.VuforiaServiceDelegate);
-            reality.setDefault({uri:'reality:live-video'})
-            reality.changeEvent.addEventListener(({current}) => {
-                expect(current.uri).to.equal('reality:live-video');
-                expect(current === reality.getCurrent()).to.be.true;
-                done();
-            })
-        })
-        // it('should emit update events via context when vuforia reality is active', (done) => {
-        //     const {vuforia, reality, context} = createManagerWithVuforiaReality(Argon.VuforiaServiceDelegate);;
-        //     context.updateEvent.addEventListener((frameState) => {
-        //         expect(frameState.reality.type).to.equal('vuforia');
-        //         expect(frameState.frameNumber).to.equal(42);
-        //         done()
-        //     });
-        //     reality.changeEvent.addEventListener(() => {
-        //         expect(reality.getCurrent().type).to.equal('vuforia');
-        //         const delegate:Argon.VuforiaServiceDelegate = vuforia['delegate'];
-        //         delegate.stateUpdateEvent.raiseEvent({
-        //             frameNumber: 42,
-        //             time: Argon.Cesium.JulianDate.now()
-        //         })
-        //     })
-        // })
-    })
-
     describe('#isAvailable', () => {
-        it('should call isAvailable on the VuforiaServiceDelegate', (done) => {
-            const {vuforia} = createManagerWithVuforiaDelegate(MockVuforiaServiceDelegateBase);
-            vuforia.isAvailable().then((result) => {
-                expect(result).to.equal(true);
-                done()
-            })
+        it('should resolve ar.vuforia.isAvailable request', () => {
+            const sessionService = new Argon.SessionService(
+                { role:Argon.Role.REALITY_MANAGER }, 
+                new Argon.LoopbackConnectService,
+                new Argon.SessionPortFactory,
+                new Argon.MessageChannelFactory
+            );
+            const vuforiaService = new Argon.VuforiaService(sessionService);
+            
+            sessionService.connectEvent.addEventListener((session)=>{
+                session.on['ar.vuforia.isAvailable'] = () => {
+                    return Promise.resolve({available:true})
+                }
+            });
+
+            sessionService.connect();
+            
+            return vuforiaService.isAvailable().then((available)=>{
+                expect(available).to.be.true;
+            });
         });
     })
 
     describe('#init', () => {
-        it('should call init on the VuforiaServiceDelegate', (done) => {
-            class MockVuforiaServiceDelegate extends MockVuforiaServiceDelegateBase {
-                init(options: Argon.VuforiaServiceDelegateInitOptions) {
-                    done()
-                    return Promise.resolve(Argon.VuforiaInitResult.SUCCESS);
+        it('should resolve with Argon.VuforiaAPI instance upon success', () => {
+            const sessionService = new Argon.SessionService(
+                { role:Argon.Role.REALITY_MANAGER }, 
+                new Argon.LoopbackConnectService,
+                new Argon.SessionPortFactory,
+                new Argon.MessageChannelFactory
+            );
+            const vuforiaService = new Argon.VuforiaService(sessionService);
+            
+            sessionService.connectEvent.addEventListener((session)=>{
+                session.on['ar.vuforia.init'] = (options:{encryptedLicenseData:string}) => {
+                    expect(options.encryptedLicenseData).to.equal('test');
+                    return Promise.resolve()
                 }
-            }
-            const {vuforia} = createManagerWithVuforiaDelegate(MockVuforiaServiceDelegate);
-            return vuforia.init({ encryptedLicenseData: 'test' }).then((api)=>{
+            });
+            
+            sessionService.connect();
+            
+            return vuforiaService.init({ encryptedLicenseData: 'test' }).then((api)=>{
                 expect(api).to.be.instanceof(Argon.VuforiaAPI);
-            })
+            });
         });
     })
-
-    // describe('#startCamera', () => {
-    //     it('should call startCamera on the VuforiaServiceDelegate', (done) => {
-    //         class MockVuforiaServiceDelegate extends MockVuforiaServiceDelegateBase {
-    //             startCamera() {
-    //                 done()
-    //             }
-    //         }
-    //         const {vuforia} = createManagerWithVuforiaReality(MockVuforiaServiceDelegate);
-    //         vuforia.startCamera()
-    //         vuforia.init()
-    //     });
-    // })
-
-    // describe('#stopCamera', () => {
-    //     it('should call stopCamera on the VuforiaServiceDelegate', (done) => {
-    //         class MockVuforiaServiceDelegate extends MockVuforiaServiceDelegateBase {
-    //             stopCamera() {
-    //                 done()
-    //             }
-    //         }
-    //         const {vuforia} = createManagerWithVuforiaReality(MockVuforiaServiceDelegate);
-    //         vuforia.init()
-    //         vuforia.startCamera()
-    //         vuforia.stopCamera()
-    //     });
-    // })
-
-    // describe('#createDataSet', () => {
-    //     it('should create a VuforiaDataSet object', (done) => {
-    //         let progress = 0;
-    //         class MockVuforiaServiceDelegate extends MockVuforiaServiceDelegateBase {
-    //             loadDataSet(url) {
-    //                 expect(url).to.equal(myDataSetURL);
-    //                 expect(progress).to.equal(0);
-    //                 progress++;
-    //             }
-    //             activateDataSet(url) {
-    //                 expect(url).to.equal(myDataSetURL);
-    //                 expect(progress).to.equal(1);
-    //                 progress++;
-    //             }
-    //             deactivateDataSet(url) {
-    //                 expect(url).to.equal(myDataSetURL);
-    //                 expect(progress).to.equal(2);
-    //                 progress++;
-    //             }
-    //             unloadDataSet(url) {
-    //                 expect(url).to.equal(myDataSetURL);
-    //                 expect(progress).to.equal(3);
-    //                 done();
-    //             }
-    //         }
-    //         const myDataSetURL = Argon.resolveURL("dataset_url");
-    //         const {vuforia} = createManagerWithVuforiaReality(MockVuforiaServiceDelegate);
-    //         const dataSet = vuforia.createDataSet(myDataSetURL);
-    //         vuforia.init()
-    //         dataSet.load();
-    //         dataSet.activate();
-    //         dataSet.deactivate();
-    //         dataSet.unload();
-    //     });
-    // })
-
-    // describe('VuforiaDataSet', () => {
-    //     describe('#trackablesPromise', () => {
-    //         it('should return trackables promise with trackables info', () => {
-    //             class MockVuforiaServiceDelegate extends MockVuforiaServiceDelegateBase {
-    //                 loadDataSet(url) {
-    //                     expect(url).to.equal(myDataSetURL);
-    //                     this.dataSetLoadEvent.raiseEvent({
-    //                         url,
-    //                         trackables: {
-    //                             trackableID1: {
-    //                                 id: 'trackableID1',
-    //                                 name: 'target'
-    //                             }
-    //                         }
-    //                     });
-    //                 }
-    //             }
-    //             const myDataSetURL = Argon.resolveURL("dataset_url");
-    //             const {vuforia} = createManagerWithVuforiaReality(MockVuforiaServiceDelegate);
-    //             const dataSet = vuforia.createDataSet(myDataSetURL);
-    //             vuforia.init()
-    //             dataSet.load();
-    //             return dataSet.trackablesPromise.then((trackables) => {
-    //                 expect(trackables['trackableID1'].id).to.equal('trackableID1');
-    //             })
-    //         })
-    //     })
-    // })
-
-
 })
 
 describe('Utils', () => {

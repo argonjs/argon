@@ -1,94 +1,68 @@
 /// <reference types="cesium" />
-import { Entity, Matrix4, PerspectiveFrustum } from './cesium/cesium-imports';
-import { Viewport, SubviewType } from './common';
-import { SessionService, SessionPort } from './session';
-import { EntityPose, ContextService } from './context';
-import { Event } from './utils';
-import { FocusService } from './focus';
-import { RealityService } from './reality';
+import { Entity, PerspectiveFrustum, JulianDate } from './cesium/cesium-imports';
+import { SessionService } from './session';
+import { ViewportService } from './viewport';
+import { LocationService } from './location';
+import { Viewport, SubviewType, SerializedSubviewList } from './common';
+import { EntityPose, ContextService, ContextServiceProvider } from './context';
 /**
  * The rendering paramters for a particular subview
  */
-export interface Subview {
+export declare class Subview {
     index: number;
     type: SubviewType;
-    projectionMatrix: Matrix4;
     frustum: PerspectiveFrustum;
     pose: EntityPose;
     viewport: Viewport;
 }
-/**
- * Manages the view state
- */
+export interface ViewState {
+    viewport: Viewport;
+    subviews: SerializedSubviewList;
+    strict: boolean;
+}
 export declare class ViewService {
     private sessionService;
-    private focusService;
     private contextService;
-    /**
-     * An event that is raised when the root viewport has changed
-     */
-    viewportChangeEvent: Event<{
-        previous: Viewport;
-    }>;
-    /**
-     * An event that is raised when ownership of the view has been acquired by this application
-     */
-    acquireEvent: Event<void>;
-    /**
-     * An event that is raised when ownership of the view has been released from this application
-    */
-    releaseEvent: Event<void>;
-    /**
-     * An HTMLDivElement which matches the root viewport. This is
-     * provide for convenience to attach other elements to (such as
-     * a webGL canvas element). Attached elements will automatically
-     * inherit the same size and position as this element (via CSS).
-     * This value is undefined in non-DOM environments.
-     */
-    element: HTMLDivElement;
-    /**
-     * A promise which resolves to the containing HTMLElement for this view.
-     * This value is undefined in non-DOM environments.
-     */
-    containingElementPromise: Promise<HTMLElement>;
-    /**
-     *  Manager-only. A map of sessions to their desired viewports.
-     */
-    desiredViewportMap: WeakMap<SessionPort, Viewport>;
-    private _current;
-    private _currentViewportJSON;
+    private viewportService;
     private _subviews;
-    private _subviewEntities;
     private _frustums;
-    constructor(containerElement: HTMLElement, sessionService: SessionService, focusService: FocusService, contextService: ContextService);
-    getSubviews(referenceFrame?: Entity): Subview[];
-    getViewport(): Viewport;
+    constructor(sessionService: SessionService, contextService: ContextService, viewportService: ViewportService);
+    private _processFrameState(state);
     /**
-     * Set the desired root viewport
+     * An entity representing the pose of the viewer.
      */
-    setDesiredViewport(viewport: Viewport): void;
+    eye: Entity;
+    readonly eyeHeadingAccuracy: number | undefined;
     /**
-     * Request control over the view.
-     * The manager is likely to reject this request if this application is not in focus.
-     * When running on an HMD, this request will always fail. If the current reality view
-     * does not support custom views, this request will fail. The manager may revoke
-     * ownership at any time (even without this application calling releaseOwnership)
+     * An entity representing the physical pose of the viewer.
      */
-    requestOwnership(): void;
+    physicalEye: Entity;
+    suggestedViewState?: ViewState;
+    readonly element: HTMLDivElement;
+    readonly viewport: Viewport;
+    readonly subviews: Subview[];
+    getSubviews(): Subview[];
+    getSubviewEntity(index: number): Entity;
     /**
-     * Release control over the view.
+     * Request an animation frame callback.
      */
-    releaseOwnership(): void;
-    /**
-     * Returns true if this application has control over the view.
-     */
-    isOwner(): void;
-    private _update();
+    requestAnimationFrame(callback: (now: JulianDate) => void): number;
 }
-export declare class PinchZoomService {
-    private viewService;
-    private realityService;
-    private contextService;
+export declare class ViewServiceProvider {
     private sessionService;
-    constructor(viewService: ViewService, realityService: RealityService, contextService: ContextService, sessionService: SessionService);
+    private contextService;
+    private contextServiceProvider;
+    private viewService;
+    private viewportService;
+    private locationService;
+    autoSubmitFrame: boolean;
+    constructor(sessionService: SessionService, contextService: ContextService, contextServiceProvider: ContextServiceProvider, viewService: ViewService, viewportService: ViewportService, locationService: LocationService);
+    update(): void;
+    protected onUpdate(): void;
+    readonly isPresentingHMD: boolean;
+    requestPresentHMD(): Promise<void>;
+    exitPresentHMD(): Promise<void>;
+    private _updateViewSingular();
+    private _vrFrameData?;
+    private _updateViewFromWebVR(vrDisplay);
 }

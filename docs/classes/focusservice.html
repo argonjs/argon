@@ -7,7 +7,6 @@
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
-	<script src="../assets/js/modernizr.js"></script>
 </head>
 <body>
 <header>
@@ -66,7 +65,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Manages focus state</p>
+						<p>Access focus state</p>
 					</div>
 				</div>
 			</section>
@@ -92,27 +91,14 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="focusservice.html#_hasfocus" class="tsd-kind-icon">_has<wbr>Focus</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="focusservice.html#_session" class="tsd-kind-icon">_session</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="focusservice.html#_sessionfocusevent" class="tsd-kind-icon">_session<wbr>Focus<wbr>Event</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="focusservice.html#blurevent" class="tsd-kind-icon">blur<wbr>Event</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="focusservice.html#focusevent" class="tsd-kind-icon">focus<wbr>Event</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="focusservice.html#sessionservice" class="tsd-kind-icon">session<wbr>Service</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Accessors</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="focusservice.html#hasfocus" class="tsd-kind-icon">has<wbr>Focus</a></li>
-								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="focusservice.html#sessionfocusevent" class="tsd-kind-icon">session<wbr>Focus<wbr>Event</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Methods</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="focusservice.html#_setfocus" class="tsd-kind-icon">_set<wbr>Focus</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="focusservice.html#getsession" class="tsd-kind-icon">get<wbr>Session</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="focusservice.html#setsession" class="tsd-kind-icon">set<wbr>Session</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="focusservice.html#whensessionhasfocus" class="tsd-kind-icon">when<wbr>Session<wbr>Has<wbr>Focus</a></li>
 							</ul>
 						</section>
 					</div>
@@ -130,7 +116,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/focus.ts#L36">focus.ts:36</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/focus.ts#L25">src/focus.ts:25</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -152,27 +138,7 @@
 					<div class="tsd-signature tsd-kind-icon">_has<wbr>Focus<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/focus.ts#L25">focus.ts:25</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="_session" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> <span class="tsd-flag ts-flagOptional">Optional</span> _session</h3>
-					<div class="tsd-signature tsd-kind-icon">_session<span class="tsd-signature-symbol">:</span> <a href="sessionport.html" class="tsd-signature-type">SessionPort</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/focus.ts#L36">focus.ts:36</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="_sessionfocusevent" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _session<wbr>Focus<wbr>Event</h3>
-					<div class="tsd-signature tsd-kind-icon">_session<wbr>Focus<wbr>Event<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;{ previous?: SessionPort, current?: SessionPort }&gt;()</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/focus.ts#L34">focus.ts:34</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/focus.ts#L25">src/focus.ts:25</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -182,12 +148,12 @@
 					<div class="tsd-signature tsd-kind-icon">blur<wbr>Event<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;void&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/focus.ts#L19">focus.ts:19</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/focus.ts#L19">src/focus.ts:19</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>An event that is raised when this session has lost focus</p>
+							<p>An event that is raised when this app has lost focus</p>
 						</div>
 					</div>
 				</section>
@@ -197,24 +163,14 @@
 					<div class="tsd-signature tsd-kind-icon">focus<wbr>Event<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;void&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/focus.ts#L14">focus.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/focus.ts#L14">src/focus.ts:14</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>An event that is raised when this session has gained focus</p>
+							<p>An event that is raised when this app has gained focus</p>
 						</div>
 					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="sessionservice" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> session<wbr>Service</h3>
-					<div class="tsd-signature tsd-kind-icon">session<wbr>Service<span class="tsd-signature-symbol">:</span> <a href="sessionservice.html" class="tsd-signature-type">SessionService</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/focus.ts#L38">focus.ts:38</a></li>
-						</ul>
-					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
@@ -229,136 +185,15 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/focus.ts#L24">focus.ts:24</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/focus.ts#L24">src/focus.ts:24</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>True if this session has focus</p>
+									<p>True if this app has focus</p>
 								</div>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
-					<a name="sessionfocusevent" class="tsd-anchor"></a>
-					<h3>session<wbr>Focus<wbr>Event</h3>
-					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> sessionFocusEvent<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/focus.ts#L30">focus.ts:30</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Manager-only. An event that is raised when a managed session has acquired focus.</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
-					<a name="_setfocus" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _set<wbr>Focus</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">_set<wbr>Focus<span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/focus.ts#L93">focus.ts:93</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>state: <span class="tsd-signature-type">any</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="getsession" class="tsd-anchor"></a>
-					<h3>get<wbr>Session</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Session<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="sessionport.html" class="tsd-signature-type">SessionPort</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/focus.ts#L56">focus.ts:56</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Manager-only. The managed session which currently has focus.</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <a href="sessionport.html" class="tsd-signature-type">SessionPort</a></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="setsession" class="tsd-anchor"></a>
-					<h3>set<wbr>Session</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">set<wbr>Session<span class="tsd-signature-symbol">(</span>session<span class="tsd-signature-symbol">?: </span><a href="sessionport.html" class="tsd-signature-type">SessionPort</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/focus.ts#L64">focus.ts:64</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p> Manager-only. Grant focus to a managed session.</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> session: <a href="sessionport.html" class="tsd-signature-type">SessionPort</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="whensessionhasfocus" class="tsd-anchor"></a>
-					<h3>when<wbr>Session<wbr>Has<wbr>Focus</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">when<wbr>Session<wbr>Has<wbr>Focus<span class="tsd-signature-symbol">(</span>session<span class="tsd-signature-symbol">: </span><a href="sessionport.html" class="tsd-signature-type">SessionPort</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">unknown</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/focus.ts#L81">focus.ts:81</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>session: <a href="sessionport.html" class="tsd-signature-type">SessionPort</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">unknown</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -385,38 +220,14 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="focusservice.html#_hasfocus" class="tsd-kind-icon">_has<wbr>Focus</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="focusservice.html#_session" class="tsd-kind-icon">_session</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="focusservice.html#_sessionfocusevent" class="tsd-kind-icon">_session<wbr>Focus<wbr>Event</a>
-							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="focusservice.html#blurevent" class="tsd-kind-icon">blur<wbr>Event</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="focusservice.html#focusevent" class="tsd-kind-icon">focus<wbr>Event</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="focusservice.html#sessionservice" class="tsd-kind-icon">session<wbr>Service</a>
-							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="focusservice.html#hasfocus" class="tsd-kind-icon">has<wbr>Focus</a>
-							</li>
-							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
-								<a href="focusservice.html#sessionfocusevent" class="tsd-kind-icon">session<wbr>Focus<wbr>Event</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
-								<a href="focusservice.html#_setfocus" class="tsd-kind-icon">_set<wbr>Focus</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="focusservice.html#getsession" class="tsd-kind-icon">get<wbr>Session</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="focusservice.html#setsession" class="tsd-kind-icon">set<wbr>Session</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="focusservice.html#whensessionhasfocus" class="tsd-kind-icon">when<wbr>Session<wbr>Has<wbr>Focus</a>
 							</li>
 						</ul>
 					</li>
@@ -487,7 +298,7 @@
 	</div>
 </footer>
 <div class="container tsd-generator">
-	<p>Generated using <a href="http://typedoc.io" target="_blank">TypeDoc</a></p>
+	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
 </div>
 <div class="overlay"></div>
 <script src="../assets/js/main.js"></script>
