@@ -1,7 +1,7 @@
 
 let eventSynthesizerFunction:(uievent:UIEvent)=>void;
 
-export default function getEventSynthesizier() {
+function getEventSynthesizier() {
     if (eventSynthesizerFunction) return eventSynthesizerFunction;
     
     let currentMouseTarget:Element|Window|undefined;
@@ -226,3 +226,6 @@ export default function getEventSynthesizier() {
         }
     };
 }
+
+export default (typeof document !== 'undefined' && document.createElement) ? 
+    getEventSynthesizier() : undefined;
