@@ -18744,7 +18744,7 @@
     });
     $__System.register("1", [ "2", "3", "3d", "4", "9", "10", "a", "1d", "35", "2d", "14", "15", "18", "1c", "20", "19", "16", "5", "7", "2e", "1a", "1b", "8", "3b", "3e", "2c", "2f", "17", "d", "23", "24", "30", "31", "32", "1f", "27", "25", "37", "1e", "38", "39", "3a", "e", "f", "26", "55", "5f", "61", "78" ], function(_export, _context) {
         "use strict";
-        var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, Clock, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, createGuid, cesium_Source_Core_defaultValue_js, defined, cesium_Source_Core_DeveloperError_js, cesium_Source_Core_Ellipsoid_js, Entity, EntityCollection, CesiumEvent, cesium_Source_Core_ExtrapolationType_js, FeatureDetection, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, cesium_Source_DataSources_ReferenceEntity_js, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, CardboardUI, _createClass, _classCallCheck, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, aureliaDependencyInjection, after, cesiumImports, kButtonWidthDp, kTouchSlopFactor, _possibleConstructorReturn, _inherits, AVERAGE_HUMAN_HEIGHT, EYE_ENTITY_ID, PHYSICAL_EYE_ENTITY_ID, STAGE_ENTITY_ID, PHYSICAL_STAGE_ENTITY_ID, Role, Configuration, Viewport, NormalizedViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, cloneTouch, cloneTouches, getEntityPosition, getEntityOrientation, _scratchFramesArray, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, lastTime, requestAnimationFrame$1, version, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, WKWebViewConnectService, _a$1, _b$1, _defineProperty, __decorate$5, __metadata$5, PoseStatus, scratchCartesian$2, scratchCartesian2, scratchQuaternion$1, scratchOriginCartesian, scratchFrustum$1, ContextService, ContextServiceProvider, _a$5, _b$5, _c$4, _d$4, _e$4, _f$3, __decorate$6, __metadata$6, FocusService, FocusServiceProvider, _a$6, _b$6, __decorate$7, __metadata$7, VisibilityService, VisibilityServiceProvider, _a$7, _b$7, __decorate$4, __metadata$4, PresentationMode, ParentElement, ViewportService, ViewportServiceProvider, resolveArgonElement, _a$4, _b$4, _c$3, _d$3, _e$3, _f$2, __decorate$8, __metadata$8, scratchCartesian3, scratchQuaternion$2, LocationService, LocationServiceProvider, _a$8, _b$8, _c$5, _d$5, __decorate$3, __metadata$3, Subview, scratchCartesian$1, scratchQuaternion, scratchQuaternion2, scratchMatrix3, scratchMatrix4, scratchFrustum, IDENTITY_SUBVIEW_POSE, currentVRDisplay, ViewService, ViewServiceProvider, deviceOrientationListener, deviceOrientation, deviceOrientationHeadingAccuracy, clock, scratchTime, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, _h$1, RealityViewer, __decorate$10, __metadata$10, EmptyRealityViewer, _a$10, _b$10, _c$7, _d$7, _get$1, __decorate$11, __metadata$11, LiveRealityViewer, _a$11, _b$11, _c$8, _d$8, __decorate$12, __metadata$12, HostedRealityViewer, _a$12, _b$12, __decorate$9, __metadata$9, RealityViewerFactory, RealityService, RealityServiceProvider, _a$9, _b$9, _c$6, _d$6, _e$5, _f$4, _g$2, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __decorate$13, __metadata$13, VuforiaServiceProvider, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$13, _b$13, __decorate, __metadata, ArgonSystemProviders, ArgonSystem, _a, _b, _c, _d, _e, _f, _g, _h;
+        var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, Clock, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, createGuid, cesium_Source_Core_defaultValue_js, defined, cesium_Source_Core_DeveloperError_js, cesium_Source_Core_Ellipsoid_js, Entity, EntityCollection, CesiumEvent, cesium_Source_Core_ExtrapolationType_js, FeatureDetection, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, cesium_Source_DataSources_ReferenceEntity_js, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, CardboardUI, _createClass, _classCallCheck, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, aureliaDependencyInjection, after, cesiumImports, kButtonWidthDp, kTouchSlopFactor, _possibleConstructorReturn, _inherits, AVERAGE_HUMAN_HEIGHT, EYE_ENTITY_ID, PHYSICAL_EYE_ENTITY_ID, STAGE_ENTITY_ID, PHYSICAL_STAGE_ENTITY_ID, Role, Configuration, Viewport, NormalizedViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, synthesizeEvent, cloneTouch, cloneTouches, getEntityPosition, getEntityOrientation, _scratchFramesArray, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, lastTime, requestAnimationFrame$1, version, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, WKWebViewConnectService, _a$1, _b$1, _defineProperty, __decorate$5, __metadata$5, PoseStatus, scratchCartesian$2, scratchCartesian2, scratchQuaternion$1, scratchOriginCartesian, scratchFrustum$1, scratchMatrix3$1, scratchMatrix4$1, ContextService, ContextServiceProvider, _a$5, _b$5, _c$4, _d$4, _e$4, _f$3, __decorate$6, __metadata$6, FocusService, FocusServiceProvider, _a$6, _b$6, __decorate$7, __metadata$7, VisibilityService, VisibilityServiceProvider, _a$7, _b$7, __decorate$4, __metadata$4, PresentationMode, ParentElement, ViewportService, ViewportServiceProvider, resolveArgonElement, _a$4, _b$4, _c$3, _d$3, _e$3, _f$2, __decorate$8, __metadata$8, scratchCartesian3, scratchQuaternion$2, LocationService, LocationServiceProvider, _a$8, _b$8, _c$5, _d$5, __decorate$3, __metadata$3, Subview, scratchCartesian$1, scratchQuaternion, scratchQuaternion2, scratchMatrix3, scratchMatrix4, scratchFrustum, IDENTITY_SUBVIEW_POSE, currentVRDisplay, ViewService, ViewServiceProvider, deviceOrientationListener, deviceOrientation, deviceOrientationHeadingAccuracy, clock, scratchTime, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, _h$1, _j, RealityViewer, __decorate$10, __metadata$10, EmptyRealityViewer, _a$10, _b$10, _c$7, _d$7, _get$1, __decorate$11, __metadata$11, LiveRealityViewer, _a$11, _b$11, _c$8, _d$8, __decorate$12, __metadata$12, HostedRealityViewer, _a$12, _b$12, __decorate$9, __metadata$9, RealityViewerFactory, RealityService, RealityServiceProvider, _a$9, _b$9, _c$6, _d$6, _e$5, _f$4, _g$2, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __decorate$13, __metadata$13, VuforiaServiceProvider, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$13, _b$13, __decorate, __metadata, ArgonSystemProviders, ArgonSystem, _a, _b, _c, _d, _e, _f, _g, _h;
         function alwaysValid() {
             return true;
         }
@@ -19465,15 +19465,22 @@
             return defined(rf.id) ? rf.id : "" + rf;
         }
         function updatePhysicalEyePoseFromDeviceOrientation(contextService) {
-            var eye = contextService.entities.getById(PHYSICAL_EYE_ENTITY_ID);
-            var stage = contextService.entities.getById(PHYSICAL_STAGE_ENTITY_ID);
-            if (eye) {
+            var physicalEye = contextService.entities.getById(PHYSICAL_EYE_ENTITY_ID);
+            var physicalStage = contextService.entities.getById(PHYSICAL_STAGE_ENTITY_ID);
+            if (physicalEye) {
                 ensureOrientationUpdates();
-                if (!deviceOrientation) return;
+                if (!deviceOrientation) {
+                    physicalEye.position.setValue(undefined, undefined);
+                    physicalEye.orientation.setValue(undefined);
+                    physicalEye["meta"] = undefined;
+                    return;
+                }
                 var screenOrientationDegrees = screen["orientation"] && screen["orientation"].angle || window.orientation || 0;
                 var displayOrientation = Quaternion.fromAxisAngle(Cartesian3.UNIT_Z, -screenOrientationDegrees * CesiumMath.RADIANS_PER_DEGREE, scratchQuaternion2);
-                eye.position.setValue(Cartesian3.fromElements(0, 0, AVERAGE_HUMAN_HEIGHT, scratchCartesian$1), stage);
-                eye.orientation.setValue(Quaternion.multiply(deviceOrientation, displayOrientation, scratchQuaternion));
+                physicalEye.position.setValue(Cartesian3.fromElements(0, 0, AVERAGE_HUMAN_HEIGHT, scratchCartesian$1), physicalStage);
+                physicalEye.orientation.setValue(Quaternion.multiply(deviceOrientation, displayOrientation, scratchQuaternion));
+                physicalEye["meta"] = physicalEye["meta"] || {};
+                physicalEye["meta"].headingAccuracy = deviceOrientationHeadingAccuracy;
             }
         }
         function ensureOrientationUpdates() {
@@ -19492,7 +19499,7 @@
                     alphaOffset = 0;
                 }
                 deviceOrientationHeadingAccuracy = webkitCompassAccuracy > 0 ? webkitCompassAccuracy : undefined;
-                if ((!defined(alphaOffset) || Math.abs(headingDrift) > 5) && defined(webkitCompassHeading) && webkitCompassAccuracy >= 0 && webkitCompassAccuracy < 50 && webkitCompassHeading >= 0) {
+                if ((!defined(alphaOffset) || Math.abs(headingDrift) > 5) && defined(webkitCompassHeading) && webkitCompassAccuracy >= 0 && webkitCompassHeading >= 0) {
                     if (!defined(alphaOffset)) {
                         alphaOffset = -webkitCompassHeading;
                     } else {
@@ -19509,6 +19516,7 @@
                 var gammaQuat = Quaternion.fromAxisAngle(Cartesian3.UNIT_Y, gamma, scratchQuaternion2);
                 var alphaBetaGammaQuat = Quaternion.multiply(alphaBetaQuat, gammaQuat, scratchQuaternion);
                 deviceOrientation = Quaternion.clone(alphaBetaGammaQuat, deviceOrientation);
+                deviceOrientationHeadingAccuracy = webkitCompassAccuracy;
             };
             if ("ondeviceorientationabsolute" in window) {
                 window.addEventListener("deviceorientationabsolute", deviceOrientationListener);
@@ -19566,6 +19574,9 @@
             if (ArgonSystem.instance) throw new Error("A shared ArgonSystem instance already exists");
             configuration.role = Role.REALITY_VIEW;
             configuration["supportsCustomProtocols"] = true;
+            configuration["reality.supportsControlPort"] = true;
+            configuration.protocols = configuration.protocols || [];
+            configuration.protocols.push("ar.uievent");
             return new ArgonSystem(null, configuration, dependencyInjectionContainer);
         }
         return {
@@ -20409,6 +20420,7 @@
                 })(SubviewType || _export("SubviewType", SubviewType = {}));
                 (function(SerializedEntityState) {
                     function clone(state, result) {
+                        if (!state) return undefined;
                         result = result || {};
                         result.p = Cartesian3.clone(state.p, result.p);
                         result.o = Quaternion.clone(state.o, result.o);
@@ -20440,9 +20452,10 @@
                         value: function clone(subviews, result) {
                             result = result || new SerializedSubviewList();
                             result.length = subviews.length;
-                            subviews.forEach(function(s, i) {
+                            for (var i = 0; i < subviews.length; i++) {
+                                var s = subviews[i];
                                 result[i] = SerializedSubview.clone(s, result[i]);
-                            });
+                            }
                             return result;
                         }
                     } ]);
@@ -20674,6 +20687,7 @@
                     return MessageChannelFactory;
                 }());
                 eventSynthesizerFunction = void 0;
+                _export("synthesizeEvent", synthesizeEvent = typeof document !== "undefined" && document.createElement ? getEventSynthesizier() : undefined);
                 cloneTouch = function cloneTouch(touch, boundingRect) {
                     return {
                         identifier: touch.identifier,
@@ -20710,7 +20724,7 @@
                     lastTime = currTime + timeToCall;
                     return id;
                 });
-                _export("version", version = "1.1.0-beta");
+                _export("version", version = "1.1.0");
                 __decorate$1 = undefined && undefined.__decorate || function(decorators, target, key, desc) {
                     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
                     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc); else for (var i = decorators.length - 1; i >= 0; i--) {
@@ -20739,7 +20753,7 @@
                             if (!info) throw new Error("Session did not provide a configuration (" + _this.uri + ")");
                             if (_this._isConnected) throw new Error("Session has already connected! (" + _this.uri + ")");
                             _this.info = info;
-                            _this.version = _this.info.version || [];
+                            _this.version = _this.info.version || [ 0 ];
                             _this._isConnected = true;
                             _this._connectEvent.raiseEvent(undefined);
                         };
@@ -21206,6 +21220,8 @@
                 scratchQuaternion$1 = new Quaternion(0, 0);
                 scratchOriginCartesian = new Cartesian3(0, 0);
                 scratchFrustum$1 = new PerspectiveFrustum();
+                scratchMatrix3$1 = new Matrix3();
+                scratchMatrix4$1 = new Matrix4();
                 _export("ContextService", ContextService = function() {
                     function ContextService(sessionService) {
                         var _this = this;
@@ -21245,11 +21261,16 @@
                         };
                         this._frameIndex = -1;
                         this.sessionService.manager.on["ar.context.update"] = function(state) {
+                            if (typeof state.reality !== "string") {
+                                state.reality = state.reality && state.reality["uri"];
+                            }
                             if (!state.viewport && state["view"] && state["view"].viewport) {
                                 state.viewport = state["view"].viewport;
                             }
                             if (!state.subviews && state["view"] && state["view"].subviews) {
                                 state.subviews = state["view"].subviews;
+                                scratchFrustum$1.near = .01;
+                                scratchFrustum$1.far = 1e7;
                                 var _iteratorNormalCompletion = true;
                                 var _didIteratorError = false;
                                 var _iteratorError = undefined;
@@ -21257,9 +21278,11 @@
                                     for (var _iterator = state.subviews[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                                         var s = _step.value;
                                         var frustum = s["frustum"];
+                                        scratchFrustum$1.xOffset = frustum.xOffset;
+                                        scratchFrustum$1.yOffset = frustum.yOffset;
                                         scratchFrustum$1.fov = frustum.fov;
                                         scratchFrustum$1.aspectRatio = frustum.aspectRatio;
-                                        s.projectionMatrix = Matrix4.clone(scratchFrustum$1.projectionMatrix);
+                                        s.projectionMatrix = Matrix4.clone(scratchFrustum$1.projectionMatrix, s.projectionMatrix);
                                     }
                                 } catch (err) {
                                     _didIteratorError = true;
@@ -21477,10 +21500,10 @@
                             this.deltaTime = Math.min(timestamp - this.timestamp, this.maxDeltaTime);
                             this.timestamp = timestamp;
                             JulianDate.clone(frameState.time, this.time);
-                            this._serializedFrameState = frameState;
-                            this.frameStateEvent.raiseEvent(frameState);
                             this._updateStage(frameState);
                             this._updateLocalOrigin(frameState);
+                            this._serializedFrameState = frameState;
+                            this.frameStateEvent.raiseEvent(frameState);
                             this.updateEvent.raiseEvent(this);
                             this.renderEvent.raiseEvent(this);
                             this.postRenderEvent.raiseEvent(this);
@@ -21519,26 +21542,36 @@
                             var physicalEye = this.entities.getById(PHYSICAL_EYE_ENTITY_ID);
                             var physicalStage = this.entities.getById(PHYSICAL_STAGE_ENTITY_ID);
                             if (!eye || !stage) return;
+                            stage.position && stage.position.setValue(undefined, undefined);
+                            stage.orientation && stage.orientation.setValue(undefined);
                             var time = state.time;
                             if (physicalEye && physicalStage) {
-                                var physicalEyeRelativeToPhysicalStagePosition = getEntityPositionInReferenceFrame(physicalEye, time, physicalStage, scratchCartesian$2);
+                                var physicalEyeStageOffset = getEntityPositionInReferenceFrame(physicalEye, time, physicalStage, scratchCartesian$2);
                             }
-                            if (!physicalEyeRelativeToPhysicalStagePosition) {
-                                physicalEyeRelativeToPhysicalStagePosition = Cartesian3.fromElements(0, 0, AVERAGE_HUMAN_HEIGHT, scratchCartesian$2);
+                            if (!physicalEyeStageOffset) {
+                                physicalEyeStageOffset = Cartesian3.fromElements(0, 0, AVERAGE_HUMAN_HEIGHT, scratchCartesian$2);
                             }
-                            if (eye && stage) {
-                                var eyeFIXEDPosition = getEntityPositionInReferenceFrame(eye, time, ReferenceFrame.FIXED, scratchCartesian2);
-                            }
-                            if (eyeFIXEDPosition) {
-                                var stageFIXEDPosition = Cartesian3.subtract(eyeFIXEDPosition, physicalEyeRelativeToPhysicalStagePosition, scratchCartesian$2);
-                                var enuOrientation = Transforms.headingPitchRollQuaternion(stageFIXEDPosition, 0, 0, 0, undefined, scratchQuaternion$1);
+                            var eyePositionFixed = getEntityPositionInReferenceFrame(eye, time, ReferenceFrame.FIXED, scratchCartesian2);
+                            if (eyePositionFixed) {
+                                var enuToFixedFrameTransform = Transforms.eastNorthUpToFixedFrame(eyePositionFixed, undefined, scratchMatrix4$1);
+                                var enuRotationMatrix = Matrix4.getRotation(enuToFixedFrameTransform, scratchMatrix3$1);
+                                var enuOrientation = Quaternion.fromRotationMatrix(enuRotationMatrix);
+                                var physicalEyeStageOffsetFixed = Matrix3.multiplyByVector(enuRotationMatrix, physicalEyeStageOffset, physicalEyeStageOffset);
+                                var stagePositionFixed = Cartesian3.subtract(eyePositionFixed, physicalEyeStageOffsetFixed, physicalEyeStageOffsetFixed);
                                 stage.position = stage.position || new ConstantPositionProperty();
                                 stage.orientation = stage.orientation || new ConstantProperty();
-                                stage.position.setValue(stageFIXEDPosition, ReferenceFrame.FIXED);
+                                stage.position.setValue(stagePositionFixed, ReferenceFrame.FIXED);
                                 stage.orientation.setValue(enuOrientation);
                             } else {
-                                stage.position.setValue(Cartesian3.ZERO, physicalStage);
-                                stage.orientation.setValue(Quaternion.IDENTITY);
+                                var eyeFrame = eye && eye.position ? eye.position.referenceFrame : undefined;
+                                if (eyeFrame) {
+                                    var eyePositionRelativeToEyeFrame = getEntityPositionInReferenceFrame(eye, time, eyeFrame, scratchCartesian2);
+                                    if (eyePositionRelativeToEyeFrame) {
+                                        var stagePositionRelativeToEye = Cartesian3.subtract(eyePositionRelativeToEyeFrame, physicalEyeStageOffset, physicalEyeStageOffset);
+                                        stage.position.setValue(stagePositionRelativeToEye, eyeFrame);
+                                        stage.orientation.setValue(Quaternion.IDENTITY);
+                                    }
+                                }
                             }
                         }
                     }, {
@@ -21548,7 +21581,7 @@
                             var stage = this.entities.getById(STAGE_ENTITY_ID);
                             var stageFrame = stage && stage.position ? stage.position.referenceFrame : undefined;
                             if (!eye || !stage) return;
-                            if (!stageFrame) {
+                            if (!defined(stageFrame)) {
                                 if (this.localOriginEastNorthUp.position.referenceFrame !== stage) {
                                     this.localOriginEastNorthUp.position.setValue(Cartesian3.ZERO, stage);
                                     this.localOriginEastNorthUp.orientation.setValue(Quaternion.IDENTITY);
@@ -21556,7 +21589,7 @@
                                 }
                                 return;
                             }
-                            var eyePosition = eye.position.getValueInReferenceFrame(state.time, stageFrame, scratchCartesian$2);
+                            var eyePosition = eye.position && eye.position.getValueInReferenceFrame(state.time, stageFrame, scratchCartesian$2);
                             if (!eyePosition) return;
                             var localOriginPosition = this.localOriginEastNorthUp.position.getValueInReferenceFrame(state.time, stageFrame, scratchOriginCartesian);
                             if (!localOriginPosition || Cartesian3.magnitude(Cartesian3.subtract(eyePosition, localOriginPosition, scratchOriginCartesian)) > 5e3) {
@@ -21937,7 +21970,7 @@
                     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
                 };
                 (function(PresentationMode) {
-                    PresentationMode[PresentationMode["EMBEDDED"] = 0] = "EMBEDDED";
+                    PresentationMode[PresentationMode["PAGE"] = 0] = "PAGE";
                     PresentationMode[PresentationMode["IMMERSIVE"] = 1] = "IMMERSIVE";
                 })(PresentationMode || _export("PresentationMode", PresentationMode = {}));
                 _export("ParentElement", ParentElement = "#argon");
@@ -21951,69 +21984,85 @@
                         this.uiEvent = new Event();
                         this.changeEvent = new Event();
                         this.presentationModeChangeEvent = new Event();
-                        this._presentationMode = PresentationMode.EMBEDDED;
+                        this._presentationMode = PresentationMode.PAGE;
                         this.autoPublishEmbeddedViewport = true;
                         if (typeof document !== "undefined" && document.createElement) {
-                            (function() {
-                                _this.rootElement = document.createElement("div");
-                                _this.rootElement.classList.add("argon-view");
-                                var viewportElement = _this.element = document.createElement("div");
-                                viewportElement.classList.add("argon-viewport");
-                                _this.rootElement.appendChild(viewportElement);
-                                if (isIOS) {
-                                    viewportElement.addEventListener("touchmove", function(event) {
-                                        if (event.touches.length > 1) event.preventDefault();
-                                    }, true);
-                                }
-                                var insertRootIntoParentElement = function insertRootIntoParentElement(parentElement) {
-                                    if (_this.sessionService.manager.isClosed) return;
-                                    parentElement.insertBefore(_this.rootElement, parentElement.firstChild);
-                                    _this.sessionService.manager.closeEvent.addEventListener(function() {
-                                        _this.rootElement.remove();
-                                    });
-                                };
-                                if (parentElementOrSelector && parentElementOrSelector instanceof HTMLElement) {
-                                    insertRootIntoParentElement(parentElementOrSelector);
-                                } else if (parentElementOrSelector === "#argon") {
-                                    var parentElement = document.querySelector("#argon");
-                                    if (parentElement) {
-                                        insertRootIntoParentElement(parentElement);
-                                    } else {
-                                        resolveArgonElement().then(insertRootIntoParentElement);
-                                    }
-                                } else if (parentElementOrSelector) {
-                                    var _parentElement = document.querySelector("" + parentElementOrSelector);
-                                    if (_parentElement) {
-                                        insertRootIntoParentElement(_parentElement);
-                                    } else {
-                                        resolveElement(parentElementOrSelector).then(insertRootIntoParentElement);
-                                    }
-                                }
-                                _this.focusService.focusEvent.addEventListener(function() {
-                                    viewportElement.classList.remove("argon-no-focus");
-                                    viewportElement.classList.add("argon-focus");
+                            this.rootElement = document.createElement("div");
+                            this.rootElement.classList.add("argon-view");
+                            var viewportElement = this.element = document.createElement("div");
+                            viewportElement.classList.add("argon-viewport");
+                            this.rootElement.appendChild(viewportElement);
+                            if (isIOS) {
+                                viewportElement.addEventListener("touchmove", function(event) {
+                                    if (event.touches.length > 1) event.preventDefault();
+                                }, true);
+                            }
+                            var insertRootIntoParentElement = function insertRootIntoParentElement(parentElement) {
+                                if (_this.sessionService.manager.isClosed) return;
+                                parentElement.insertBefore(_this.rootElement, parentElement.firstChild);
+                                _this.sessionService.manager.closeEvent.addEventListener(function() {
+                                    _this.rootElement.remove();
                                 });
-                                _this.focusService.blurEvent.addEventListener(function() {
-                                    viewportElement.classList.remove("argon-focus");
-                                    viewportElement.classList.add("argon-no-focus");
-                                });
-                                _this.sessionService.manager.on["ar.viewport.uievent"] = getEventSynthesizier();
-                                if (!_this.sessionService.isRealityViewer) {
-                                    createEventForwarder(_this, function(uievent) {
-                                        if (_this.sessionService.manager.isConnected && _this.sessionService.manager.version[0] > 1) _this.sessionService.manager.send("ar.viewport.forwardUIEvent", uievent);
-                                    });
-                                    _this._watchEmbeddedViewport();
+                            };
+                            if (parentElementOrSelector && parentElementOrSelector instanceof HTMLElement) {
+                                insertRootIntoParentElement(parentElementOrSelector);
+                            } else if (parentElementOrSelector === "#argon") {
+                                var parentElement = document.querySelector("#argon");
+                                if (parentElement) {
+                                    insertRootIntoParentElement(parentElement);
+                                } else {
+                                    resolveArgonElement().then(insertRootIntoParentElement);
                                 }
-                            })();
+                            } else if (parentElementOrSelector) {
+                                var _parentElement = document.querySelector("" + parentElementOrSelector);
+                                if (_parentElement) {
+                                    insertRootIntoParentElement(_parentElement);
+                                } else {
+                                    resolveElement(parentElementOrSelector).then(insertRootIntoParentElement);
+                                }
+                            }
+                            this.focusService.focusEvent.addEventListener(function() {
+                                document.documentElement.classList.remove("argon-no-focus");
+                                document.documentElement.classList.remove("argon-blur");
+                                document.documentElement.classList.add("argon-focus");
+                            });
+                            this.focusService.blurEvent.addEventListener(function() {
+                                document.documentElement.classList.remove("argon-focus");
+                                document.documentElement.classList.add("argon-blur");
+                                document.documentElement.classList.add("argon-no-focus");
+                            });
+                            this.presentationModeChangeEvent.addEventListener(function(mode) {
+                                switch (mode) {
+                                  case PresentationMode.PAGE:
+                                    _this.rootElement.classList.remove("argon-maximize");
+                                    document.documentElement.classList.remove("argon-immersive");
+                                    break;
+
+                                  case PresentationMode.IMMERSIVE:
+                                    _this.rootElement.classList.add("argon-maximize");
+                                    document.documentElement.classList.add("argon-immersive");
+                                    break;
+                                }
+                            });
+                            this.sessionService.manager.on["ar.viewport.uievent"] = synthesizeEvent;
+                            if (!this.sessionService.isRealityViewer) {
+                                createEventForwarder(this, function(event) {
+                                    if (_this.sessionService.manager.isConnected && _this.sessionService.manager.version[0] >= 1) _this.sessionService.manager.send("ar.viewport.forwardUIEvent", event);
+                                });
+                                this._watchEmbeddedViewport();
+                            }
                         }
                         sessionService.manager.on["ar.viewport.presentationMode"] = function(_ref) {
                             var mode = _ref.mode;
-                            _this._presentationMode = mode;
-                            _this.onUpdatePresentationMode(mode);
-                            _this.changeEvent.raiseEvent(undefined);
+                            _this._updatePresentationMode(mode);
                         };
                         this.contextService.frameStateEvent.addEventListener(function(state) {
                             _this._updateViewport(state.viewport);
+                        });
+                        sessionService.manager.connectEvent.addEventListener(function() {
+                            if (sessionService.manager.version[0] === 0) {
+                                _this._updatePresentationMode(PresentationMode.IMMERSIVE);
+                            }
                         });
                     }
                     _createClass(ViewportService, [ {
@@ -22024,22 +22073,19 @@
                             });
                         }
                     }, {
-                        key: "onUpdatePresentationMode",
-                        value: function onUpdatePresentationMode(mode) {
-                            switch (mode) {
-                              case PresentationMode.EMBEDDED:
-                                this.rootElement.classList.remove("argon-immersive");
-                                break;
-
-                              case PresentationMode.IMMERSIVE:
-                                this.rootElement.classList.add("argon-immersive");
-                                break;
+                        key: "_updatePresentationMode",
+                        value: function _updatePresentationMode(mode) {
+                            var currentMode = this.presentationMode;
+                            if (currentMode !== mode) {
+                                this._presentationMode = mode;
+                                this.presentationModeChangeEvent.raiseEvent(mode);
+                                this.changeEvent.raiseEvent(undefined);
                             }
                         }
                     }, {
                         key: "publishEmbeddedViewport",
                         value: function publishEmbeddedViewport(viewport) {
-                            if (this.sessionService.manager.isConnected && this.sessionService.manager.version[0] > 1) this.sessionService.manager.send("ar.viewport.embeddedViewport", {
+                            if (this.sessionService.manager.isConnected && this.sessionService.manager.version[0] >= 1) this.sessionService.manager.send("ar.viewport.embeddedViewport", {
                                 viewport: viewport
                             });
                         }
@@ -22074,8 +22120,9 @@
                             var _this3 = this;
                             var publish = function publish() {
                                 if (_this3.element && _this3.autoPublishEmbeddedViewport) {
-                                    var rect = _this3.element.getBoundingClientRect();
-                                    _this3.publishEmbeddedViewport({
+                                    var parentElement = _this3.rootElement.parentElement;
+                                    var rect = parentElement && parentElement.getBoundingClientRect();
+                                    rect && _this3.publishEmbeddedViewport({
                                         x: rect.left,
                                         y: window.innerHeight - rect.bottom,
                                         width: rect.width,
@@ -22201,12 +22248,13 @@
                         document.head.insertBefore(style, document.head.firstChild);
                         var sheet = style.sheet;
                         sheet.insertRule("\n        #argon {\n            position: fixed;\n            width: 100%;\n            height: 100%;\n            left: 0;\n            bottom: 0;\n            margin: 0;\n            border: 0;\n            padding: 0;\n        }\n    ", sheet.cssRules.length);
+                        sheet.insertRule("\n        .argon-view, .argon-view ~ * {\n            width: 100%;\n            height: 100%;\n        }\n    ", sheet.cssRules.length);
                         sheet.insertRule("\n        .argon-view > * {\n            position: absolute;\n            overflow: hidden;\n            width: 100%;\n            height: 100%;\n            pointer-events: none;\n            -webkit-tap-highlight-color: transparent;\n            -webkit-user-select: none;\n            user-select: none;\n        }\n    ", sheet.cssRules.length);
                         sheet.insertRule("\n        .argon-view > * > * {\n            pointer-events: auto;\n            -webkit-tap-highlight-color: initial;\n            -webkit-user-select: initial;\n            user-select: initial;\n        }\n    ", sheet.cssRules.length);
                         sheet.insertRule("\n        .argon-viewport {\n            position: absolute;\n            width: 100%;\n            height: 100%;\n            pointer-events: auto;\n        }\n    ", sheet.cssRules.length);
                         sheet.insertRule("\n        .argon-viewport > * {\n            position: absolute;\n            width: 100%;\n            height: 100%;\n            pointer-events: none;\n        }\n    ", sheet.cssRules.length);
                         sheet.insertRule("\n        .argon-viewport > * > * {\n            pointer-events: auto;\n        }\n    ", sheet.cssRules.length);
-                        sheet.insertRule("\n        .argon-immersive, .argon-immersive ~ * {\n            pointer-events: none;\n            position: fixed !important;\n            width: 100% !important;\n            height: 100% !important;\n            left: 0;\n            bottom: 0;\n            margin: 0;\n            border: 0;\n            padding: 0;\n        }\n    ", sheet.cssRules.length);
+                        sheet.insertRule("\n        .argon-maximize, .argon-maximize ~ * {\n            pointer-events: none;\n            position: fixed !important;\n            width: 100% !important;\n            height: 100% !important;\n            left: 0;\n            bottom: 0;\n            margin: 0;\n            border: 0;\n            padding: 0;\n        }\n    ", sheet.cssRules.length);
                         sheet.insertRule("\n        .argon-interactive {\n            pointer-events: auto;\n        }\n    ", sheet.cssRules.length);
                     })();
                 }
@@ -22457,7 +22505,7 @@
                 };
                 currentVRDisplay = void 0;
                 _export("ViewService", ViewService = function() {
-                    function ViewService(sessionService, contextService, viewportService) {
+                    function ViewService(sessionService, contextService, viewportService, container) {
                         var _this = this;
                         _classCallCheck(this, ViewService);
                         this.sessionService = sessionService;
@@ -22484,10 +22532,18 @@
                             _this._processFrameState(state);
                         });
                         this._processFrameState(this.contextService.serializedFrameState);
+                        this.sessionService.manager.connectEvent.addEventListener(function() {
+                            if (_this.sessionService.manager.version[0] === 0) {
+                                container.get(ViewServiceProvider);
+                            }
+                        });
                     }
                     _createClass(ViewService, [ {
                         key: "_processFrameState",
                         value: function _processFrameState(state) {
+                            if (!state.entities || !state.entities[this.physicalEye.id]) {
+                                updatePhysicalEyePoseFromDeviceOrientation(this.contextService);
+                            }
                             var serializedSubviewList = state.subviews;
                             var subviews = this._subviews;
                             subviews.length = serializedSubviewList.length;
@@ -22529,9 +22585,6 @@
                                         throw _iteratorError;
                                     }
                                 }
-                            }
-                            if (!state.entities || !state.entities[this.physicalEye.id]) {
-                                updatePhysicalEyePoseFromDeviceOrientation(this.contextService);
                             }
                         }
                     }, {
@@ -22600,7 +22653,7 @@
                 }());
                 __decorate$3([ deprecated$1("app.viewport.element"), __metadata$3("design:type", Object), __metadata$3("design:paramtypes", []) ], ViewService.prototype, "element", null);
                 __decorate$3([ deprecated$1("app.viewport.current"), __metadata$3("design:type", Function), __metadata$3("design:paramtypes", []), __metadata$3("design:returntype", void 0) ], ViewService.prototype, "getViewport", null);
-                _export("ViewService", ViewService = __decorate$3([ autoinject, __metadata$3("design:paramtypes", [ typeof (_a$3 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$3 || Object, typeof (_b$3 = typeof ContextService !== "undefined" && ContextService) === "function" && _b$3 || Object, typeof (_c$2 = typeof ViewportService !== "undefined" && ViewportService) === "function" && _c$2 || Object ]) ], ViewService));
+                _export("ViewService", ViewService = __decorate$3([ autoinject, __metadata$3("design:paramtypes", [ typeof (_a$3 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$3 || Object, typeof (_b$3 = typeof ContextService !== "undefined" && ContextService) === "function" && _b$3 || Object, typeof (_c$2 = typeof ViewportService !== "undefined" && ViewportService) === "function" && _c$2 || Object, typeof (_d$2 = typeof Container !== "undefined" && Container) === "function" && _d$2 || Object ]) ], ViewService));
                 _export("ViewServiceProvider", ViewServiceProvider = function() {
                     function ViewServiceProvider(sessionService, contextService, contextServiceProvider, viewService, viewportService, locationService) {
                         var _this3 = this;
@@ -22624,6 +22677,8 @@
                                 currentVRDisplay.submitFrame();
                             }
                         });
+                        var currentCanvas = void 0;
+                        var previousPresentationMode = void 0;
                         var handleVRDisplayPresentChange = function handleVRDisplayPresentChange(e) {
                             var vrDisplay = e.display || e.detail.vrdisplay || e.detail.display;
                             if (vrDisplay) {
@@ -22658,19 +22713,23 @@
                                     if (vrDisplay.isPresenting) {
                                         currentVRDisplay = vrDisplay;
                                         if (vrDisplay.displayName.match(/Cardboard/g)) {
-                                            vrDisplay.getLayers()[0].source.classList.add("argon-interactive");
+                                            currentCanvas = vrDisplay.getLayers()[0].source;
+                                            if (currentCanvas) currentCanvas.classList.add("argon-interactive");
+                                            previousPresentationMode = _this3.viewportService.presentationMode;
                                             _this3.viewportService.requestPresentationMode(PresentationMode.IMMERSIVE);
                                         }
                                     } else {
                                         currentVRDisplay = undefined;
-                                        if (vrDisplay.displayName.match(/Cardboard/g)) {
-                                            vrDisplay.getLayers()[0].source.classList.remove("argon-interactive");
+                                        if (currentCanvas && vrDisplay.displayName.match(/Cardboard/g)) {
+                                            currentCanvas.classList.remove("argon-interactive");
+                                            currentCanvas = undefined;
+                                            _this3.viewportService.requestPresentationMode(previousPresentationMode);
                                         }
                                     }
                                 }
                             }
-                            _this3.viewportService.presentationModeChangeEvent.addEventListener(function() {
-                                if (_this3.viewportService.presentationMode === PresentationMode.EMBEDDED) _this3.exitPresentHMD();
+                            _this3.viewportService.presentationModeChangeEvent.addEventListener(function(mode) {
+                                if (mode === PresentationMode.PAGE) _this3.exitPresentHMD();
                             });
                         };
                         window.addEventListener("vrdisplaypresentchange", handleVRDisplayPresentChange);
@@ -22739,8 +22798,8 @@
                             var viewport = suggestedViewState.viewport = suggestedViewState.viewport || {};
                             viewport.x = 0;
                             viewport.y = 0;
-                            viewport.width = this.viewportService.element.clientWidth;
-                            viewport.height = this.viewportService.element.clientHeight;
+                            viewport.width = this.viewportService.rootElement.clientWidth;
+                            viewport.height = this.viewportService.rootElement.clientHeight;
                             var subviews = suggestedViewState.subviews = suggestedViewState.subviews || [];
                             subviews.length = 1;
                             var subview = subviews[0] = subviews[0] || {};
@@ -22765,8 +22824,8 @@
                             var viewport = suggestedViewState.viewport = suggestedViewState.viewport || {};
                             viewport.x = 0;
                             viewport.y = 0;
-                            viewport.width = this.viewportService.element.clientWidth;
-                            viewport.height = this.viewportService.element.clientHeight;
+                            viewport.width = this.viewportService.rootElement.clientWidth;
+                            viewport.height = this.viewportService.rootElement.clientHeight;
                             var vrFrameData = this._vrFrameData = this._vrFrameData || new VRFrameData();
                             if (!vrDisplay["getFrameData"](vrFrameData)) return this.viewService.suggestedViewState;
                             var layers = vrDisplay.getLayers();
@@ -22824,7 +22883,7 @@
                     } ]);
                     return ViewServiceProvider;
                 }());
-                _export("ViewServiceProvider", ViewServiceProvider = __decorate$3([ autoinject, __metadata$3("design:paramtypes", [ typeof (_d$2 = typeof SessionService !== "undefined" && SessionService) === "function" && _d$2 || Object, typeof (_e$2 = typeof ContextService !== "undefined" && ContextService) === "function" && _e$2 || Object, typeof (_f$1 = typeof ContextServiceProvider !== "undefined" && ContextServiceProvider) === "function" && _f$1 || Object, ViewService, typeof (_g$1 = typeof ViewportService !== "undefined" && ViewportService) === "function" && _g$1 || Object, typeof (_h$1 = typeof LocationService !== "undefined" && LocationService) === "function" && _h$1 || Object ]) ], ViewServiceProvider));
+                _export("ViewServiceProvider", ViewServiceProvider = __decorate$3([ autoinject, __metadata$3("design:paramtypes", [ typeof (_e$2 = typeof SessionService !== "undefined" && SessionService) === "function" && _e$2 || Object, typeof (_f$1 = typeof ContextService !== "undefined" && ContextService) === "function" && _f$1 || Object, typeof (_g$1 = typeof ContextServiceProvider !== "undefined" && ContextServiceProvider) === "function" && _g$1 || Object, ViewService, typeof (_h$1 = typeof ViewportService !== "undefined" && ViewportService) === "function" && _h$1 || Object, typeof (_j = typeof LocationService !== "undefined" && LocationService) === "function" && _j || Object ]) ], ViewServiceProvider));
                 deviceOrientationListener = void 0;
                 deviceOrientation = void 0;
                 deviceOrientationHeadingAccuracy = void 0;
@@ -23436,8 +23495,29 @@
                             });
                             realityControlSession.open(messageChannel.port2, _this.sessionService.configuration);
                         };
+                        var i = 0;
                         this.contextService.frameStateEvent.addEventListener(function(frameState) {
-                            if (sessionService.isRealityViewer && sessionService.manager.isConnected) sessionService.manager.send("ar.reality.frameState", frameState);
+                            if (sessionService.isRealityViewer && sessionService.manager.isConnected) {
+                                if (sessionService.manager.version[0] === 0) {
+                                    var view = frameState["view"] = frameState["view"] || {};
+                                    view.pose = frameState.entities["ar.eye"];
+                                    view.viewport = frameState.viewport;
+                                    view.subviews = frameState.subviews;
+                                    for (var _i = 0; _i < view.subviews.length; _i++) {
+                                        var s = view.subviews[_i];
+                                        s["frustum"] = decomposePerspectiveProjectionMatrix(s.projectionMatrix, s["frustum"] || {});
+                                    }
+                                    delete frameState.entities["ar.eye"];
+                                    delete frameState.viewport;
+                                    delete frameState.subviews;
+                                    i++ % 2 === 0 && sessionService.manager.send("ar.reality.frameState", frameState);
+                                    frameState.entities["ar.eye"] = view.pose;
+                                    frameState.viewport = view.viewport;
+                                    frameState.subviews = view.subviews;
+                                } else {
+                                    sessionService.manager.send("ar.reality.frameState", frameState);
+                                }
+                            }
                             var current = frameState.reality;
                             var previous = _this._current;
                             if (previous !== current) {
@@ -23451,7 +23531,7 @@
                     _createClass(RealityService, [ {
                         key: "install",
                         value: function install(uri) {
-                            if (this.sessionService.manager.version[0] > 1 !== true) return Promise.reject(new Error("Not supported"));
+                            if (this.sessionService.manager.version[0] >= 1 !== true) return Promise.reject(new Error("Not supported"));
                             return this.sessionService.manager.request("ar.reality.install", {
                                 uri: uri
                             });
@@ -23459,7 +23539,7 @@
                     }, {
                         key: "uninstall",
                         value: function uninstall(uri) {
-                            if (this.sessionService.manager.version[0] > 1 !== true) return Promise.reject(new Error("Not supported"));
+                            if (this.sessionService.manager.version[0] >= 1 !== true) return Promise.reject(new Error("Not supported"));
                             return this.sessionService.manager.request("ar.reality.uninstall", {
                                 uri: uri
                             });
@@ -23467,7 +23547,7 @@
                     }, {
                         key: "request",
                         value: function request(uri) {
-                            if (this.sessionService.manager.version[0] > 1 !== true) return this.sessionService.manager.request("ar.reality.desired", {
+                            if (this.sessionService.manager.version[0] >= 1 !== true) return this.sessionService.manager.request("ar.reality.desired", {
                                 reality: {
                                     uri: uri
                                 }
@@ -23890,7 +23970,7 @@
                                     _this.menuOpen = false;
                                     _this.updateMenu();
                                     if (_this.viewportService.presentationMode === PresentationMode.IMMERSIVE) {
-                                        _this.viewportService.requestPresentationMode(PresentationMode.EMBEDDED);
+                                        _this.viewportService.requestPresentationMode(PresentationMode.PAGE);
                                     } else {
                                         _this.viewportService.requestPresentationMode(PresentationMode.IMMERSIVE);
                                     }
@@ -23972,7 +24052,10 @@
                             this.menuItems = [];
                             this.menuItems.push(null);
                             if (isIOS) this.menuItems.push(this.openInArgonMenuItem);
-                            if (!(window.innerWidth === this.viewportService.element.clientWidth && window.innerHeight === this.viewportService.element.clientHeight)) this.menuItems.push(this.maximizeMenuItem);
+                            var parentElement = this.viewportService.rootElement.parentElement;
+                            var parentWidth = parentElement ? parentElement.clientWidth : 0;
+                            var parentHeight = parentElement ? parentElement.clientHeight : 0;
+                            if (!(window.innerWidth === parentWidth && window.innerHeight === parentHeight)) this.menuItems.push(this.maximizeMenuItem);
                             if (isIOS || navigator["vrEnabled"]) this.menuItems.push(this.hmdMenuItem);
                             if (this.realityViewerItemElements.size > 0) this.menuItems.push(this.realityMenuItem);
                             this.menuItems.push(null);
@@ -24426,7 +24509,7 @@
                 _export("openInArgonApp", openInArgonApp);
                 _export("requestAnimationFrame", requestAnimationFrame$1);
                 _export("deprecated", deprecated$1);
-                _export("createEventSynthesizer", getEventSynthesizier);
+                _export("synthesizeEvent", synthesizeEvent);
                 _export("createEventForwarder", createEventForwarder);
                 _export("CommandQueue", CommandQueue);
                 _export("Event", Event);
