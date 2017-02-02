@@ -242,7 +242,7 @@ export class DefaultUIService {
                 this.menuOpen = false;
                 this.updateMenu();
                 if (this.viewportService.presentationMode === PresentationMode.IMMERSIVE) {
-                    this.viewportService.requestPresentationMode(PresentationMode.EMBEDDED);
+                    this.viewportService.requestPresentationMode(PresentationMode.PAGE);
                 } else {
                     this.viewportService.requestPresentationMode(PresentationMode.IMMERSIVE);
                 }
