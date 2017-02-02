@@ -36,6 +36,4 @@ Change Log
     * Moved `ViewService#element` into `ViewportService#element`
     * Added `rootElement`
 * Added `eye` and `physicalEye` entites to `ViewService`
-    * Added `requestPresentationMode`, `PresentationMode.PAGE` and `PresentationMode.IMMERSIVE`
-    * Moved `ViewService#element` into `ViewportService#element`
 * Added `suggestedViewState` to `ViewService` (for use by RealityViewers, mainly)
