@@ -198,7 +198,7 @@
   "scripts": {
     "format": "tsfmt -r",
     "build:browser": "jspm build src/argon.ts .tmp/argon-build.js --format umd --global-name Argon --skip-source-maps && derequire .tmp/argon-build.js > dist/argon.js",
-    "build:node": "jspm build src/argon.ts .tmp/argon-build.js --node --format umd --global-name Argon --skip-source-maps && derequire .tmp/argon-build.js > dist/argon.node.js",
+    "build:core": "jspm build src/argon.ts .tmp/argon-build.js --node --format umd --global-name Argon --skip-source-maps && derequire .tmp/argon-build.js > dist/argon.core.js",
     "prebuild": "npm run build:browser && uglifyjs dist/argon.js -b -o dist/argon.js",
     "build": "uglifyjs dist/argon.js -m -c warnings=false -o dist/argon.min.js",
     "browser-sync": "browser-sync  start --server --directory --startPath \"index.html\" --files \"src/**\"",
