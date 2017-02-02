@@ -14,9 +14,12 @@ how you used it by sending mail to Blair MacIntyre (blair@cc.gatech.edu).*
 
 ## Quick Start
 
-To install the argon.js library manually, include this minified build in your project:
+To install the argon.js library manually, include one of the following scripts in your project:
 
-* [argon.min.js](https://github.com/argonjs/argon/raw/master/argon.min.js)
+* [argon.min.js](https://github.com/argonjs/argon/raw/master/argon.min.js) - includes WebVR polyfill
+* [argon.js](https://github.com/argonjs/argon/raw/master/argon.min.js) - includes WebVR polyfill
+* [argon.core.js](https://github.com/argonjs/argon/raw/master/argon.min.js)
+> Note: These are UMD builds, meaning they should be compatible with standard module formats (commonjs, AMD, global).
 
 To install with npm:
 
