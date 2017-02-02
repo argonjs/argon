@@ -163,6 +163,13 @@ export class ViewportService {
         this.contextService.frameStateEvent.addEventListener((state) => {
             this._updateViewport(state.viewport);
         });
+
+        // older version of argon-app manager only property supported immersive mode. 
+        sessionService.manager.connectEvent.addEventListener(()=>{
+            if (sessionService.manager.version[0] === 0) {
+                this._updatePresentationMode(PresentationMode.IMMERSIVE);
+            }
+        })
     }
 
     /**

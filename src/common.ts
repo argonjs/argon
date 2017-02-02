@@ -169,7 +169,8 @@ export interface SerializedEntityState {
 }
 
 export namespace SerializedEntityState {
-    export function clone(state:SerializedEntityState, result?:SerializedEntityState) {
+    export function clone(state?:SerializedEntityState, result?:SerializedEntityState) {
+        if (!state) return undefined;
         result = result || <SerializedEntityState><any>{};
         result.p = Cartesian3.clone(state.p, result.p);
         result.o = Quaternion.clone(state.o, result.o);
@@ -289,9 +290,10 @@ export class SerializedSubviewList extends Array<SerializedSubview> {
     static clone(subviews:SerializedSubviewList, result?:SerializedSubviewList) {
         result = result || new SerializedSubviewList;
         result.length = subviews.length;
-        subviews.forEach((s, i)=>{
+        for (let i=0; i < subviews.length; i++) {
+            const s = subviews[i];
             result![i] = SerializedSubview.clone(s, result![i]);
-        });
+        }
         return result;
     }
 }
@@ -349,6 +351,6 @@ export interface FrameState {
     subviews: SerializedSubviewList,
     reality?: string,
     index?: number,
-    entities?: SerializedEntityStateMap,
+    entities: SerializedEntityStateMap,
     sendTime?: { dayNumber: number, secondsOfDay: number }, // the time this state was sent
 }

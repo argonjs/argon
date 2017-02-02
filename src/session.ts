@@ -101,7 +101,7 @@ export class SessionPort {
             if (!info) throw new Error(`Session did not provide a configuration (${this.uri})`);
             if (this._isConnected) throw new Error(`Session has already connected! (${this.uri})`);
             this.info = info;
-            this.version = this.info.version || [];
+            this.version = this.info.version || [0];
             this._isConnected = true;
             this._connectEvent.raiseEvent(undefined);
         }

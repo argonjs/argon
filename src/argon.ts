@@ -262,6 +262,9 @@ export function initRealityViewer(
     configuration.role = Role.REALITY_VIEW; // TODO: switch to below after several argon-app releases
     // configuration.role = Role.REALITY_VIEWER;
     configuration['supportsCustomProtocols'] = true;
+    configuration['reality.supportsControlPort'] = true; // backwards compat for above
+    configuration.protocols = configuration.protocols || [];
+    configuration.protocols.push('ar.uievent')
     return new ArgonSystem(null, configuration, dependencyInjectionContainer);
 }
 

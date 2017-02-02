@@ -172,16 +172,16 @@ export class VuforiaObjectTracker extends VuforiaTracker {
     /**
      * Load (if necesasry) and activate a dataset to enable tracking of the contained trackables
      */
-    public activateDataSet(id: VuforiaDataSetId): Promise<void> {
-        id = (<any>id instanceof DeprecatedVuforiaDataSet) ? (<DeprecatedVuforiaDataSet><any>id).id : id; // backwards compatability
+    public activateDataSet(id: VuforiaDataSetId|DeprecatedVuforiaDataSet): Promise<void> {
+        id = (id instanceof DeprecatedVuforiaDataSet) ? id.id : id; // backwards compatability
         return this.managerSession.request('ar.vuforia.objectTrackerActivateDataSet', { id });
     }
 
     /**
      * Deactivate a loaded dataset to disable tracking of the contained trackables
      */
-    public deactivateDataSet(id: VuforiaDataSetId): Promise<void> {
-        id = (<any>id instanceof DeprecatedVuforiaDataSet) ? (<DeprecatedVuforiaDataSet><any>id).id : id; // backwards compatability
+    public deactivateDataSet(id: VuforiaDataSetId|DeprecatedVuforiaDataSet): Promise<void> {
+        id = (id instanceof DeprecatedVuforiaDataSet) ? id.id : id; // backwards compatability
         return this.managerSession.request('ar.vuforia.objectTrackerDeactivateDataSet', { id });
     }
 }

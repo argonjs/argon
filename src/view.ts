@@ -1,4 +1,4 @@
-import { autoinject } from 'aurelia-dependency-injection'
+import { autoinject, Container } from 'aurelia-dependency-injection'
 import { 
     ConstantPositionProperty,
     ConstantProperty,
@@ -78,7 +78,8 @@ export class ViewService {
     constructor(
         private sessionService: SessionService,
         private contextService: ContextService,
-        private viewportService: ViewportService
+        private viewportService: ViewportService,
+        container: Container
     ) {
         this.sessionService.manager.on['ar.view.suggestedViewState'] = (viewState:ViewState) => {
             this.suggestedViewState = viewState;
@@ -88,9 +89,22 @@ export class ViewService {
             this._processFrameState(state);
         });
         this._processFrameState(this.contextService.serializedFrameState);
+
+        // backwards-compatability hack: if using an older manager version,
+        // we have to provide the suggestedViewState ourselves
+        this.sessionService.manager.connectEvent.addEventListener(()=>{
+            if (this.sessionService.manager.version[0] === 0) {
+                container.get(ViewServiceProvider);
+            }
+        })
     }
 
     private _processFrameState(state:FrameState) {
+        // if the manager has not given us a physical eye pose, update from device orientation
+        if (!state.entities || !state.entities[this.physicalEye.id]) {
+            updatePhysicalEyePoseFromDeviceOrientation(this.contextService);
+        }
+
         const serializedSubviewList = state.subviews;
         const subviews: Subview[] = this._subviews;
         subviews.length = serializedSubviewList.length;
@@ -115,11 +129,6 @@ export class ViewService {
             decomposePerspectiveProjectionMatrix(serializedSubview.projectionMatrix, subview.frustum);
             subview['projectionMatrix'] = <Matrix4>subview.frustum.projectionMatrix;
             index++;
-        }
-        
-        // if the manager has not given us a physical eye pose, update from device orientation
-        if (!state.entities || !state.entities[this.physicalEye.id]) {
-            updatePhysicalEyePoseFromDeviceOrientation(this.contextService);
         }
     }
      
@@ -179,7 +188,7 @@ export class ViewService {
     }
 
     /**
-     * Request an animation frame callback.
+     * Request an animation frame cal\\\\\\\\\\\\\]]]]]]]]]]]\\\\lback.
      */
     public requestAnimationFrame(callback:(now:JulianDate)=>void) {
         const onFrame = () => {
@@ -226,6 +235,9 @@ export class ViewServiceProvider {
             }
         });
 
+        let currentCanvas:HTMLElement|undefined;
+        let previousPresentationMode:PresentationMode;
+
         const handleVRDisplayPresentChange = (e) => {
             const vrDisplay:VRDisplay|undefined = e.display || e.detail.vrdisplay || e.detail.display;
             if (vrDisplay) {
@@ -241,20 +253,24 @@ export class ViewServiceProvider {
                     if (vrDisplay.isPresenting) {
                         currentVRDisplay = vrDisplay;
                         if (vrDisplay.displayName.match(/Cardboard/g)) {
-                            vrDisplay.getLayers()[0].source!.classList.add('argon-interactive');
+                            currentCanvas = vrDisplay.getLayers()[0].source;
+                            if (currentCanvas) currentCanvas.classList.add('argon-interactive');
+                            previousPresentationMode = this.viewportService.presentationMode;
                             this.viewportService.requestPresentationMode(PresentationMode.IMMERSIVE);
                         }
                     } else {
                         currentVRDisplay = undefined;
-                        if (vrDisplay.displayName.match(/Cardboard/g)) {
-                            vrDisplay.getLayers()[0].source!.classList.remove('argon-interactive');
+                        if (currentCanvas && vrDisplay.displayName.match(/Cardboard/g)) {
+                            currentCanvas.classList.remove('argon-interactive');
+                            currentCanvas = undefined;
+                            this.viewportService.requestPresentationMode(previousPresentationMode);
                         }
                     }
                 }
             }
 
-            this.viewportService.presentationModeChangeEvent.addEventListener(()=>{
-                if (this.viewportService.presentationMode === PresentationMode.EMBEDDED) 
+            this.viewportService.presentationModeChangeEvent.addEventListener((mode)=>{
+                if (mode === PresentationMode.PAGE) 
                     this.exitPresentHMD();
             });
         }
@@ -326,8 +342,8 @@ export class ViewServiceProvider {
         const viewport = suggestedViewState.viewport = suggestedViewState.viewport || <Viewport>{};
         viewport.x = 0;
         viewport.y = 0;
-        viewport.width = this.viewportService.element.clientWidth;
-        viewport.height = this.viewportService.element.clientHeight;
+        viewport.width = this.viewportService.rootElement.clientWidth;
+        viewport.height = this.viewportService.rootElement.clientHeight;
 
         const subviews = suggestedViewState.subviews = suggestedViewState.subviews || [];
         subviews.length = 1;
@@ -359,8 +375,8 @@ export class ViewServiceProvider {
         const viewport = suggestedViewState.viewport = suggestedViewState.viewport || <Viewport>{};
         viewport.x = 0;
         viewport.y = 0;
-        viewport.width = this.viewportService.element.clientWidth;
-        viewport.height = this.viewportService.element.clientHeight;
+        viewport.width = this.viewportService.rootElement.clientWidth;
+        viewport.height = this.viewportService.rootElement.clientHeight;
 
         const vrFrameData : VRFrameData = this._vrFrameData = 
             this._vrFrameData || new VRFrameData();
@@ -456,13 +472,26 @@ let deviceOrientation:Quaternion|undefined;
 let deviceOrientationHeadingAccuracy:number|undefined;
 
 function updatePhysicalEyePoseFromDeviceOrientation(contextService:ContextService) {
-    const eye = contextService.entities.getById(PHYSICAL_EYE_ENTITY_ID);
-    const stage = contextService.entities.getById(PHYSICAL_STAGE_ENTITY_ID);
+    const physicalEye = contextService.entities.getById(PHYSICAL_EYE_ENTITY_ID);
+    const physicalStage = contextService.entities.getById(PHYSICAL_STAGE_ENTITY_ID);
 
-    if (eye) {
+    if (physicalEye) {
         ensureOrientationUpdates();
 
-        if (!deviceOrientation) return;
+        if (!deviceOrientation) {
+            (physicalEye.position as ConstantPositionProperty).setValue(
+                undefined,
+                undefined
+            );
+
+            (physicalEye.orientation as ConstantProperty).setValue(
+                undefined
+            );
+
+            physicalEye['meta'] = undefined;
+
+            return;
+        }
 
         const screenOrientationDegrees = (screen['orientation'] && screen['orientation'].angle) || window.orientation || 0;
 
@@ -473,18 +502,22 @@ function updatePhysicalEyePoseFromDeviceOrientation(contextService:ContextServic
                 scratchQuaternion2
             );
         
-        (eye.position as ConstantPositionProperty).setValue(
+        (physicalEye.position as ConstantPositionProperty).setValue(
             Cartesian3.fromElements(0,0,AVERAGE_HUMAN_HEIGHT, scratchCartesian), 
-            stage
+            physicalStage
         );
 
-        (eye.orientation as ConstantProperty).setValue(
+        (physicalEye.orientation as ConstantProperty).setValue(
             Quaternion.multiply(
                 deviceOrientation, 
                 displayOrientation, 
                 scratchQuaternion
             )
         );
+
+        physicalEye['meta'] = physicalEye['meta'] || {};
+        physicalEye['meta'].headingAccuracy = deviceOrientationHeadingAccuracy;
+        
     }
 }
 
@@ -520,7 +553,7 @@ function ensureOrientationUpdates(this:void) : void {
         if ((!defined(alphaOffset) || Math.abs(headingDrift) > 5) &&
             defined(webkitCompassHeading) &&
             webkitCompassAccuracy >= 0 &&
-            webkitCompassAccuracy < 50 &&
+            // webkitCompassAccuracy < 50 &&
             webkitCompassHeading >= 0) {
             if (!defined(alphaOffset)) {
                 alphaOffset = -webkitCompassHeading;
@@ -542,6 +575,7 @@ function ensureOrientationUpdates(this:void) : void {
         const alphaBetaGammaQuat = Quaternion.multiply(alphaBetaQuat, gammaQuat, scratchQuaternion);
 
         deviceOrientation = Quaternion.clone(alphaBetaGammaQuat, deviceOrientation);
+        deviceOrientationHeadingAccuracy = webkitCompassAccuracy;
 
         // TODO: fix heading drift calculation (heading should match webkitCompassHeading)
         // if (defined(webkitCompassHeading)) {
