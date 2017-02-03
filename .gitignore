@@ -2,4 +2,7 @@ node_modules
 jspm_packages
 .vscode/tasks.json
 .tmp
-*.js.map
+src/*.js
+src/*.js.map
+test/*.js
+test/*.js.map
