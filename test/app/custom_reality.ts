@@ -103,7 +103,7 @@ app.updateEvent.addEventListener(() => {
 })
     
 app.renderEvent.addEventListener(() => {
-    const viewport = app.view.viewport;
+    const viewport = app.viewport.current;
     renderer.setSize(viewport.width, viewport.height);
     
     for (let subview of app.view.getSubviews()) {
