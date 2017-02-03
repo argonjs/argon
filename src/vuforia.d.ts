@@ -80,11 +80,11 @@ export declare class VuforiaObjectTracker extends VuforiaTracker {
     /**
      * Load (if necesasry) and activate a dataset to enable tracking of the contained trackables
      */
-    activateDataSet(id: VuforiaDataSetId): Promise<void>;
+    activateDataSet(id: VuforiaDataSetId | DeprecatedVuforiaDataSet): Promise<void>;
     /**
      * Deactivate a loaded dataset to disable tracking of the contained trackables
      */
-    deactivateDataSet(id: VuforiaDataSetId): Promise<void>;
+    deactivateDataSet(id: VuforiaDataSetId | DeprecatedVuforiaDataSet): Promise<void>;
 }
 /**
  * A map from names of trackable data sets to their ids, names, and sizes TODO

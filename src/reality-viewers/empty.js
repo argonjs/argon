@@ -139,7 +139,7 @@ let EmptyRealityViewer = class EmptyRealityViewer extends RealityViewer {
                     }
                     subviews.forEach((s) => {
                         const aspect = s.viewport.width / s.viewport.height;
-                        scratchFrustum.aspectRatio = isNaN(aspect) ? 1 : aspect;
+                        scratchFrustum.aspectRatio = isFinite(aspect) ? aspect : 1;
                         Matrix4.clone(scratchFrustum.projectionMatrix, s.projectionMatrix);
                     });
                 }

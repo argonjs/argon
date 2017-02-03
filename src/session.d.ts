@@ -53,6 +53,11 @@ export declare class SessionPort {
      * Describes the configuration of the connected session.
      */
     info: Configuration;
+    /**
+     * The version of argon.js which is used by the connecting session.
+     * This property is an empty array until the session connects.
+     */
+    version: number[];
     static OPEN: string;
     static CLOSE: string;
     static ERROR: string;

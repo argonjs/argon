@@ -37,7 +37,7 @@ let LocationService = class LocationService {
         this.stage = this.contextService.entities.add(new Entity({
             id: STAGE_ENTITY_ID,
             name: 'Stage',
-            position: new ConstantPositionProperty(undefined, undefined),
+            position: new ConstantPositionProperty(Cartesian3.ZERO, this.physicalStage),
             orientation: new ConstantProperty(Quaternion.IDENTITY)
         }));
         /**
@@ -46,9 +46,7 @@ let LocationService = class LocationService {
          */
         this.physicalStage = this.contextService.entities.add(new Entity({
             id: PHYSICAL_STAGE_ENTITY_ID,
-            name: 'Physical Stage',
-            position: new ConstantPositionProperty(undefined, undefined),
-            orientation: new ConstantProperty(undefined)
+            name: 'Physical Stage'
         }));
         contextService.frameStateEvent.addEventListener(() => {
             this.stageCartographic = this._updateCartographic(this.stage, this.stageCartographic);
@@ -161,6 +159,8 @@ let LocationServiceProvider = class LocationServiceProvider {
             const height = defined(altitude) ? altitude - AVERAGE_HUMAN_HEIGHT : 0;
             const fixedPosition = Cartesian3.fromDegrees(longitude, latitude, height, undefined, scratchCartesian3);
             const enuOrientation = Transforms.headingPitchRollQuaternion(fixedPosition, 0, 0, 0, undefined, scratchQuaternion);
+            physicalStage.position = physicalStage.position || new ConstantPositionProperty();
+            physicalStage.orientation = physicalStage.orientation || new ConstantProperty();
             physicalStage.position.setValue(fixedPosition, ReferenceFrame.FIXED);
             physicalStage.orientation.setValue(enuOrientation);
             physicalStage['meta'] = {
@@ -169,8 +169,8 @@ let LocationServiceProvider = class LocationServiceProvider {
             };
         }
         else {
-            physicalStage.position.setValue(undefined, undefined);
-            physicalStage.orientation.setValue(undefined);
+            physicalStage.position = undefined;
+            physicalStage.orientation = undefined;
             physicalStage['meta'] = undefined;
         }
         this.contextServiceProvider.publishEntityState(physicalStage);

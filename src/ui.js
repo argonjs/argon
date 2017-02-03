@@ -188,35 +188,22 @@ let DefaultUIService = class DefaultUIService {
                 this.updateMenu();
                 utils.openInArgonApp();
             });
-            this.hmdMenuItem = this._createMenuItem(vrIcon, 'Toggle Immersive Display', () => {
+            this.hmdMenuItem = this._createMenuItem(vrIcon, 'Toggle HMD', () => {
                 this.menuOpen = false;
                 this.updateMenu();
-                switch (this.viewportService.presentationMode) {
-                    case 0 /* EMBEDDED */:
-                        if (utils.isIOS || navigator['vrEnabled']) {
-                            this.viewServiceProvider.requestPresentHMD();
-                        }
-                        else {
-                            this.viewportService.requestPresentationMode(1 /* IMMERSIVE */);
-                        }
-                        break;
-                    case 1 /* IMMERSIVE */:
-                        this.viewportService.requestPresentationMode(0 /* EMBEDDED */);
-                        break;
+                if (this.viewServiceProvider.isPresentingHMD) {
+                    this.viewServiceProvider.exitPresentHMD();
                 }
-                // if (this.viewService._isHmdActive()) {
-                //     this.viewService.requestExitHmd();
-                // } else {
-                //     if (this.viewService._isFullscreen()) {
-                //         this.viewService.requestExitFullscreen();
-                //     } else {
-                //         if (utils.isIOS || navigator['vrEnabled']) {
-                //             this.viewService.requestEnterHmd();
-                //         } else {
-                //             this.viewService.requestEnterFullscreen();
-                //         }
-                //     }
-                // }
+                else {
+                    if (utils.isIOS) {
+                        this.viewportService.requestPresentationMode(1 /* IMMERSIVE */).then(() => {
+                            return this.viewServiceProvider.requestPresentHMD();
+                        });
+                    }
+                    else {
+                        this.viewServiceProvider.requestPresentHMD();
+                    }
+                }
             });
             this.realityMenuItem = this._createMenuItem(eyeIcon, 'Select Reality Viewer...', () => {
                 this.menuOpen = false;
@@ -228,7 +215,7 @@ let DefaultUIService = class DefaultUIService {
                 this.menuOpen = false;
                 this.updateMenu();
                 if (this.viewportService.presentationMode === 1 /* IMMERSIVE */) {
-                    this.viewportService.requestPresentationMode(0 /* EMBEDDED */);
+                    this.viewportService.requestPresentationMode(0 /* PAGE */);
                 }
                 else {
                     this.viewportService.requestPresentationMode(1 /* IMMERSIVE */);
@@ -305,10 +292,14 @@ let DefaultUIService = class DefaultUIService {
         this.menuItems.push(null);
         if (utils.isIOS)
             this.menuItems.push(this.openInArgonMenuItem);
-        if (!(document.documentElement.clientWidth === this.viewportService.element.clientWidth &&
-            document.documentElement.clientHeight === this.viewportService.element.clientHeight))
+        const parentElement = this.viewportService.rootElement.parentElement;
+        const parentWidth = parentElement ? parentElement.clientWidth : 0;
+        const parentHeight = parentElement ? parentElement.clientHeight : 0;
+        if (!(window.innerWidth === parentWidth &&
+            window.innerHeight === parentHeight))
             this.menuItems.push(this.maximizeMenuItem);
-        this.menuItems.push(this.hmdMenuItem);
+        if (utils.isIOS || navigator['vrEnabled'])
+            this.menuItems.push(this.hmdMenuItem);
         if (this.realityViewerItemElements.size > 0)
             this.menuItems.push(this.realityMenuItem);
         this.menuItems.push(null);

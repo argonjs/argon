@@ -8,10 +8,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { autoinject } from 'aurelia-dependency-injection';
-import { Entity, EntityCollection, ConstantPositionProperty, ConstantProperty, Transforms, Cartesian3, Quaternion, JulianDate, ReferenceFrame, PerspectiveFrustum, defined } from './cesium/cesium-imports';
+import { Entity, EntityCollection, ConstantPositionProperty, ConstantProperty, Transforms, Cartesian3, Quaternion, Matrix3, Matrix4, JulianDate, ReferenceFrame, PerspectiveFrustum, defined } from './cesium/cesium-imports';
 import { AVERAGE_HUMAN_HEIGHT, SerializedSubviewList, SubviewType, Viewport, Role, EYE_ENTITY_ID, PHYSICAL_EYE_ENTITY_ID, STAGE_ENTITY_ID, PHYSICAL_STAGE_ENTITY_ID } from './common';
 import { SessionService } from './session';
-import { Event, getAncestorReferenceFrames, getSerializedEntityState, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame, deprecated } from './utils';
+import { Event, getSerializedEntityState, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame, deprecated } from './utils';
 /**
 * A bitmask that provides metadata about the pose of an EntityPose.
 *   KNOWN - the pose of the entity state is defined.
@@ -29,6 +29,8 @@ const scratchCartesian2 = new Cartesian3(0, 0);
 const scratchQuaternion = new Quaternion(0, 0);
 const scratchOriginCartesian = new Cartesian3(0, 0);
 const scratchFrustum = new PerspectiveFrustum();
+const scratchMatrix3 = new Matrix3;
+const scratchMatrix4 = new Matrix4;
 /**
  * Provides a means of querying the current state of reality.
  *
@@ -134,6 +136,30 @@ let ContextService = class ContextService {
         };
         this._frameIndex = -1;
         this.sessionService.manager.on['ar.context.update'] = (state) => {
+            // backwards-compat
+            if (typeof state.reality !== 'string') {
+                state.reality = state.reality && state.reality['uri'];
+            }
+            if (!state.viewport && state['view'] && state['view'].viewport) {
+                state.viewport = state['view'].viewport;
+            }
+            if (!state.subviews && state['view'] && state['view'].subviews) {
+                state.subviews = state['view'].subviews;
+                scratchFrustum.near = 0.01;
+                scratchFrustum.far = 10000000;
+                for (const s of state.subviews) {
+                    const frustum = s['frustum'];
+                    scratchFrustum.xOffset = frustum.xOffset;
+                    scratchFrustum.yOffset = frustum.yOffset;
+                    scratchFrustum.fov = frustum.fov;
+                    scratchFrustum.aspectRatio = frustum.aspectRatio;
+                    s.projectionMatrix = Matrix4.clone(scratchFrustum.projectionMatrix, s.projectionMatrix);
+                }
+            }
+            if (!state.entities[EYE_ENTITY_ID] && state['view'] && state['view'].pose) {
+                state.entities[EYE_ENTITY_ID] = state['view'].pose;
+            }
+            // end backwards-compat
             this._update(state);
         };
         this.sessionService.manager.on['ar.context.entityStateMap'] = (entityStateMap) => {
@@ -279,6 +305,10 @@ let ContextService = class ContextService {
         eyeMeta.horizontalAccuracy = horizontalAccuracy || eyeMeta.horizontalAccuracy;
         eyeMeta.verticalAccuracy = verticalAccuracy || eyeMeta.verticalAccuracy;
         eyeMeta.headingAccuracy = headingAccuracy || eyeMeta.headingAccuracy;
+        for (const s of subviewList) {
+            if (!isFinite(s.projectionMatrix[0]))
+                throw new Error('Invalid projection matrix (contains non-finite values)');
+        }
         const frameState = this._scratchFrameState;
         frameState.time = JulianDate.clone(time, frameState.time);
         frameState.viewport = Viewport.clone(viewport, frameState.viewport);
@@ -321,13 +351,13 @@ let ContextService = class ContextService {
         this.deltaTime = Math.min(timestamp - this.timestamp, this.maxDeltaTime);
         this.timestamp = timestamp;
         JulianDate.clone(frameState.time, this.time);
-        // raise a frame state event (primarily for other services to hook into)
-        this._serializedFrameState = frameState;
-        this.frameStateEvent.raiseEvent(frameState);
         // update our stage & local origin. 
         // TODO: move both of these into the location service, handle in frameStateEvent?
         this._updateStage(frameState);
         this._updateLocalOrigin(frameState);
+        // raise a frame state event (primarily for other services to hook into)
+        this._serializedFrameState = frameState;
+        this.frameStateEvent.raiseEvent(frameState);
         // raise events for the user to update and render the scene
         this.updateEvent.raiseEvent(this);
         this.renderEvent.raiseEvent(this);
@@ -370,47 +400,64 @@ let ContextService = class ContextService {
         const physicalStage = this.entities.getById(PHYSICAL_STAGE_ENTITY_ID);
         if (!eye || !stage)
             return;
+        stage.position && stage.position.setValue(undefined, undefined);
+        stage.orientation && stage.orientation.setValue(undefined);
         const time = state.time;
         if (physicalEye && physicalStage) {
-            var physicalEyeRelativeToPhysicalStagePosition = getEntityPositionInReferenceFrame(physicalEye, time, physicalStage, scratchCartesian);
+            var physicalEyeStageOffset = getEntityPositionInReferenceFrame(physicalEye, time, physicalStage, scratchCartesian);
         }
-        if (!physicalEyeRelativeToPhysicalStagePosition) {
-            physicalEyeRelativeToPhysicalStagePosition = Cartesian3.fromElements(0, 0, AVERAGE_HUMAN_HEIGHT, scratchCartesian);
+        if (!physicalEyeStageOffset) {
+            physicalEyeStageOffset = Cartesian3.fromElements(0, 0, AVERAGE_HUMAN_HEIGHT, scratchCartesian);
         }
-        if (eye && stage) {
-            var eyeFIXEDPosition = getEntityPositionInReferenceFrame(eye, time, ReferenceFrame.FIXED, scratchCartesian2);
-        }
-        if (eyeFIXEDPosition) {
-            const stageFIXEDPosition = Cartesian3.subtract(eyeFIXEDPosition, physicalEyeRelativeToPhysicalStagePosition, scratchCartesian);
-            const enuOrientation = Transforms.headingPitchRollQuaternion(stageFIXEDPosition, 0, 0, 0, undefined, scratchQuaternion);
-            stage.position.setValue(stageFIXEDPosition, ReferenceFrame.FIXED);
+        const eyePositionFixed = getEntityPositionInReferenceFrame(eye, time, ReferenceFrame.FIXED, scratchCartesian2);
+        if (eyePositionFixed) {
+            const enuToFixedFrameTransform = Transforms.eastNorthUpToFixedFrame(eyePositionFixed, undefined, scratchMatrix4);
+            const enuRotationMatrix = Matrix4.getRotation(enuToFixedFrameTransform, scratchMatrix3);
+            const enuOrientation = Quaternion.fromRotationMatrix(enuRotationMatrix);
+            const physicalEyeStageOffsetFixed = Matrix3.multiplyByVector(enuRotationMatrix, physicalEyeStageOffset, physicalEyeStageOffset);
+            const stagePositionFixed = Cartesian3.subtract(eyePositionFixed, physicalEyeStageOffsetFixed, physicalEyeStageOffsetFixed);
+            stage.position = stage.position || new ConstantPositionProperty();
+            stage.orientation = stage.orientation || new ConstantProperty();
+            stage.position.setValue(stagePositionFixed, ReferenceFrame.FIXED);
             stage.orientation.setValue(enuOrientation);
         }
         else {
-            const rootEyeFrame = getAncestorReferenceFrames(eye)[0];
-            const stageRootPosition = Cartesian3.subtract(Cartesian3.ZERO, physicalEyeRelativeToPhysicalStagePosition, scratchCartesian);
-            stage.position.setValue(stageRootPosition, rootEyeFrame);
-            stage.orientation.setValue(Quaternion.IDENTITY);
+            const eyeFrame = eye && eye.position ? eye.position.referenceFrame : undefined;
+            if (eyeFrame) {
+                const eyePositionRelativeToEyeFrame = getEntityPositionInReferenceFrame(eye, time, eyeFrame, scratchCartesian2);
+                if (eyePositionRelativeToEyeFrame) {
+                    const stagePositionRelativeToEye = Cartesian3.subtract(eyePositionRelativeToEyeFrame, physicalEyeStageOffset, physicalEyeStageOffset);
+                    stage.position.setValue(stagePositionRelativeToEye, eyeFrame);
+                    stage.orientation.setValue(Quaternion.IDENTITY);
+                }
+            }
         }
     }
     _updateLocalOrigin(state) {
         const eye = this.entities.getById(EYE_ENTITY_ID);
         const stage = this.entities.getById(STAGE_ENTITY_ID);
         const stageFrame = stage && stage.position ? stage.position.referenceFrame : undefined;
-        if (!eye || !stage || !defined(stageFrame))
+        if (!eye || !stage)
             return;
-        const eyePosition = eye.position &&
-            eye.position.getValueInReferenceFrame(state.time, stageFrame, scratchCartesian);
+        if (!defined(stageFrame)) {
+            if (this.localOriginEastNorthUp.position.referenceFrame !== stage) {
+                this.localOriginEastNorthUp.position.setValue(Cartesian3.ZERO, stage);
+                this.localOriginEastNorthUp.orientation.setValue(Quaternion.IDENTITY);
+                this.localOriginChangeEvent.raiseEvent(undefined);
+            }
+            return;
+        }
+        const eyePosition = eye.position && eye.position.getValueInReferenceFrame(state.time, stageFrame, scratchCartesian);
         if (!eyePosition)
             return;
-        const localOriginPosition = this.localOriginEastNorthUp.position &&
-            this.localOriginEastNorthUp.position.getValueInReferenceFrame(state.time, stageFrame, scratchOriginCartesian);
+        const localOriginPosition = this.localOriginEastNorthUp
+            .position.getValueInReferenceFrame(state.time, stageFrame, scratchOriginCartesian);
         if (!localOriginPosition ||
             Cartesian3.magnitude(Cartesian3.subtract(eyePosition, localOriginPosition, scratchOriginCartesian)) > 5000) {
             const localOriginPositionProperty = this.localOriginEastNorthUp.position;
             const localOriginOrientationProperty = this.localOriginEastNorthUp.orientation;
-            const stagePosition = stage.position && stage.position.getValue(state.time);
-            const stageOrientation = stage.orientation && stage.orientation.getValue(state.time);
+            const stagePosition = stage.position && stage.position.getValueInReferenceFrame(state.time, stageFrame, scratchCartesian);
+            const stageOrientation = stage.orientation && stage.orientation.getValue(state.time, scratchQuaternion);
             localOriginPositionProperty.setValue(stagePosition, stageFrame);
             localOriginOrientationProperty.setValue(stageOrientation);
             this.localOriginChangeEvent.raiseEvent(undefined);

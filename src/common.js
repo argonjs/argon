@@ -124,6 +124,8 @@ export var SubviewType;
 export var SerializedEntityState;
 (function (SerializedEntityState) {
     function clone(state, result) {
+        if (!state)
+            return undefined;
         result = result || {};
         result.p = Cartesian3.clone(state.p, result.p);
         result.o = Quaternion.clone(state.o, result.o);
@@ -182,9 +184,10 @@ export class SerializedSubviewList extends Array {
     static clone(subviews, result) {
         result = result || new SerializedSubviewList;
         result.length = subviews.length;
-        subviews.forEach((s, i) => {
+        for (let i = 0; i < subviews.length; i++) {
+            const s = subviews[i];
             result[i] = SerializedSubview.clone(s, result[i]);
-        });
+        }
         return result;
     }
 }

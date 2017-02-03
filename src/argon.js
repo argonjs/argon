@@ -40,7 +40,7 @@ export * from './viewport';
 export * from './visibility';
 export * from './vuforia';
 export { RealityViewer, EmptyRealityViewer, LiveRealityViewer, HostedRealityViewer };
-let ArgonSystemProviders = class ArgonSystemProviders {
+let ArgonSystemProvider = class ArgonSystemProvider {
     constructor(context, focus, location, visibility, reality, view, viewport, vuforia) {
         this.context = context;
         this.focus = focus;
@@ -52,7 +52,7 @@ let ArgonSystemProviders = class ArgonSystemProviders {
         this.vuforia = vuforia;
     }
 };
-ArgonSystemProviders = __decorate([
+ArgonSystemProvider = __decorate([
     DI.autoinject(),
     __metadata("design:paramtypes", [ContextServiceProvider,
         FocusServiceProvider,
@@ -62,8 +62,8 @@ ArgonSystemProviders = __decorate([
         ViewServiceProvider,
         ViewportServiceProvider,
         VuforiaServiceProvider])
-], ArgonSystemProviders);
-export { ArgonSystemProviders };
+], ArgonSystemProvider);
+export { ArgonSystemProvider };
 /**
  * A composition root which instantiates the object graph based on a provided configuration.
  * You generally want to create a new ArgonSystem via the provided [[init]] or [[initReality]] functions:
@@ -102,9 +102,9 @@ export class ArgonSystem {
         }
         this.session.connect();
     }
-    get providers() {
-        if (this.session.isRealityManager)
-            return this.container.get(ArgonSystemProviders);
+    get provider() {
+        this.session.ensureIsRealityManager();
+        return this.container.get(ArgonSystemProvider);
     }
     get context() {
         return this.container.get(ContextService);
@@ -202,6 +202,9 @@ export function initRealityViewer(configuration = {}, dependencyInjectionContain
     configuration.role = Role.REALITY_VIEW; // TODO: switch to below after several argon-app releases
     // configuration.role = Role.REALITY_VIEWER;
     configuration['supportsCustomProtocols'] = true;
+    configuration['reality.supportsControlPort'] = true; // backwards compat for above
+    configuration.protocols = configuration.protocols || [];
+    configuration.protocols.push('ar.uievent');
     return new ArgonSystem(null, configuration, dependencyInjectionContainer);
 }
 /**

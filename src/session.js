@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 import { createGuid } from './cesium/cesium-imports';
 import { inject } from 'aurelia-dependency-injection';
 import { Role, Configuration } from './common';
-import { Event, MessageChannelFactory, isIOS } from './utils';
+import { deprecated, Event, MessageChannelFactory, isIOS } from './utils';
 import { version } from '../package.json';
 export { version };
 ;
@@ -34,6 +34,11 @@ export class SessionPort {
          * A map from topic to message handler.
          */
         this.on = {};
+        /**
+         * The version of argon.js which is used by the connecting session.
+         * This property is an empty array until the session connects.
+         */
+        this.version = [];
         this._isOpened = false;
         this._isConnected = false;
         this._isClosed = false;
@@ -43,6 +48,7 @@ export class SessionPort {
             if (this._isConnected)
                 throw new Error(`Session has already connected! (${this.uri})`);
             this.info = info;
+            this.version = this.info.version || [0];
             this._isConnected = true;
             this._connectEvent.raiseEvent(undefined);
         };
@@ -295,7 +301,7 @@ let SessionService = class SessionService {
         this.errorEvent = new Event();
         this._connectEvent = new Event();
         this._managedSessions = [];
-        configuration.version = version;
+        configuration.version = extractVersion(version);
         configuration.uri = (typeof window !== 'undefined' && window.location) ?
             window.location.href : undefined;
         configuration.title = (typeof document !== 'undefined') ?
@@ -389,33 +395,33 @@ let SessionService = class SessionService {
      * Returns true if this system represents a [[REALITY_MANAGER]]
      */
     get isRealityManager() {
-        return Role.isRealityManager(this.configuration.role);
+        return Role.isRealityManager(this.configuration && this.configuration.role);
     }
     /**
      * Returns true if this system represents a [[REALITY_AUGMENTER]], meaning,
      * it is running within a [[REALITY_MANAGER]]
      */
     get isRealityAugmenter() {
-        return Role.isRealityAugmenter(this.configuration.role);
+        return Role.isRealityAugmenter(this.configuration && this.configuration.role);
     }
     /**
      * Returns true if this system is a [[REALITY_VIEWER]]
      */
     get isRealityViewer() {
-        return Role.isRealityViewer(this.configuration.role);
+        return Role.isRealityViewer(this.configuration && this.configuration.role);
     }
     /**
      * @private
      */
-    get isManager() { console.warn("Deprecated. Use isRealityManager"); return this.isManager; }
+    get isManager() { return this.isRealityManager; }
     /**
      * @private
      */
-    get isApplication() { console.warn("Deprecated. Use isRealityAugmenter"); return this.isRealityAugmenter; }
+    get isApplication() { return this.isRealityAugmenter; }
     /**
      * @private
      */
-    get isRealityView() { console.warn("Deprecated. Use isRealityViewer"); return this.isRealityViewer; }
+    get isRealityView() { return this.isRealityViewer; }
     /**
      * Throws an error if this system is not a [[REALITY_MANAGER]]
      */
@@ -452,6 +458,21 @@ let SessionService = class SessionService {
             throw new Error('Session is not connected to manager');
     }
 };
+__decorate([
+    deprecated('isRealityManager'),
+    __metadata("design:type", Object),
+    __metadata("design:paramtypes", [])
+], SessionService.prototype, "isManager", null);
+__decorate([
+    deprecated('isRealityAugmenter'),
+    __metadata("design:type", Object),
+    __metadata("design:paramtypes", [])
+], SessionService.prototype, "isApplication", null);
+__decorate([
+    deprecated('isRealityViewer'),
+    __metadata("design:type", Object),
+    __metadata("design:paramtypes", [])
+], SessionService.prototype, "isRealityView", null);
 SessionService = __decorate([
     inject('config', ConnectService, SessionPortFactory, MessageChannelFactory),
     __metadata("design:paramtypes", [Configuration,
@@ -542,4 +563,11 @@ export class WKWebViewConnectService extends ConnectService {
             sessionService.manager.close();
         });
     }
+}
+function extractVersion(versionString) {
+    var parts = versionString.split('.');
+    for (var i = 0, len = parts.length; i < len; ++i) {
+        parts[i] = parseInt(parts[i], 10);
+    }
+    return parts;
 }

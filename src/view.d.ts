@@ -1,4 +1,5 @@
 /// <reference types="cesium" />
+import { Container } from 'aurelia-dependency-injection';
 import { Entity, PerspectiveFrustum, JulianDate } from './cesium/cesium-imports';
 import { SessionService } from './session';
 import { ViewportService } from './viewport';
@@ -26,7 +27,7 @@ export declare class ViewService {
     private viewportService;
     private _subviews;
     private _frustums;
-    constructor(sessionService: SessionService, contextService: ContextService, viewportService: ViewportService);
+    constructor(sessionService: SessionService, contextService: ContextService, viewportService: ViewportService, container: Container);
     private _processFrameState(state);
     /**
      * An entity representing the pose of the viewer.
@@ -39,12 +40,12 @@ export declare class ViewService {
     physicalEye: Entity;
     suggestedViewState?: ViewState;
     readonly element: HTMLDivElement;
-    readonly viewport: Viewport;
+    getViewport(): Viewport;
     readonly subviews: Subview[];
     getSubviews(): Subview[];
     getSubviewEntity(index: number): Entity;
     /**
-     * Request an animation frame callback.
+     * Request an animation frame cal\\\\\\\\\\\\\]]]]]]]]]]]\\\\lback.
      */
     requestAnimationFrame(callback: (now: JulianDate) => void): number;
 }

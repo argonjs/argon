@@ -53,7 +53,7 @@ export { Role };
  * Configuration options for an [[ArgonSystem]]
  */
 export declare abstract class Configuration {
-    version?: string;
+    version?: number[];
     uri?: string;
     title?: string;
     role?: Role;
@@ -103,7 +103,7 @@ export interface SerializedEntityState {
     meta?: any;
 }
 export declare namespace SerializedEntityState {
-    function clone(state: SerializedEntityState, result?: SerializedEntityState): SerializedEntityState;
+    function clone(state?: SerializedEntityState, result?: SerializedEntityState): SerializedEntityState | undefined;
 }
 /**
  * A map of entity ids and their associated poses.
@@ -198,7 +198,7 @@ export interface FrameState {
     subviews: SerializedSubviewList;
     reality?: string;
     index?: number;
-    entities?: SerializedEntityStateMap;
+    entities: SerializedEntityStateMap;
     sendTime?: {
         dayNumber: number;
         secondsOfDay: number;

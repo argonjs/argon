@@ -31,7 +31,7 @@ export * from './viewport';
 export * from './visibility';
 export * from './vuforia';
 export { RealityViewer, EmptyRealityViewer, LiveRealityViewer, HostedRealityViewer };
-export declare class ArgonSystemProviders {
+export declare class ArgonSystemProvider {
     context: ContextServiceProvider;
     focus: FocusServiceProvider;
     location: LocationServiceProvider;
@@ -56,7 +56,7 @@ export declare class ArgonSystem {
      */
     static instance?: ArgonSystem;
     constructor(parentElement: string | HTMLDivElement | null | undefined, config: Configuration, container?: DI.Container);
-    readonly providers: any;
+    readonly provider: ArgonSystemProvider;
     readonly context: ContextService;
     readonly focus: FocusService;
     readonly location: LocationService;

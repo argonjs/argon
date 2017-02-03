@@ -5,7 +5,7 @@ import { Event } from './utils';
 import { FocusService, FocusServiceProvider } from './focus';
 import { VisibilityServiceProvider } from './visibility';
 export declare const enum PresentationMode {
-    EMBEDDED = 0,
+    PAGE = 0,
     IMMERSIVE = 1,
 }
 export declare const ParentElement = "#argon";
@@ -31,7 +31,7 @@ export declare class ViewportService {
     /**
      * An event that is raised when the presentation mode has changed
      */
-    presentationModeChangeEvent: Event<void>;
+    presentationModeChangeEvent: Event<PresentationMode>;
     /**
      * The current presentation mode
      */
@@ -60,11 +60,11 @@ export declare class ViewportService {
     readonly current: Viewport;
     /**
      * Request a presentation mode
-     * - [[PresentationMode.EMBEDDED]] : present AR view within the document
-     * - [[PresentationMode.IMMERSIVE]] : present only AR content
+     * - [[PresentationMode.PAGE]] : present the entire document
+     * - [[PresentationMode.IMMERSIVE]] : present only the argon.js view
      */
-    requestPresentationMode(mode: PresentationMode): void;
-    protected onUpdatePresentationMode(mode: PresentationMode): void;
+    requestPresentationMode(mode: PresentationMode): Promise<void>;
+    private _updatePresentationMode(mode);
     /**
      * Publish the viewport being used in [[PresentationMode.EMBEDDED]]
      * so that other apps can use the same viewport

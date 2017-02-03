@@ -1,5 +1,5 @@
 let eventSynthesizerFunction;
-export default function getEventSynthesizier() {
+function getEventSynthesizier() {
     if (eventSynthesizerFunction)
         return eventSynthesizerFunction;
     let currentMouseTarget;
@@ -204,3 +204,5 @@ export default function getEventSynthesizier() {
         }
     };
 }
+export default (typeof document !== 'undefined' && document.createElement) ?
+    getEventSynthesizier() : undefined;
