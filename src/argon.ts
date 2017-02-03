@@ -51,7 +51,7 @@ export {
 }
 
 @DI.autoinject()
-export class ArgonSystemProviders {
+export class ArgonSystemProvider {
     constructor(
         public context:ContextServiceProvider,
         public focus:FocusServiceProvider,
@@ -125,10 +125,10 @@ export class ArgonSystem {
 
         this.session.connect();
     }
-
-    public get providers() {
-        if (this.session.isRealityManager) 
-            return this.container.get(ArgonSystemProviders);
+    
+    public get provider() : ArgonSystemProvider {
+        this.session.ensureIsRealityManager();
+        return this.container.get(ArgonSystemProvider);
     }
 
     public get context(): ContextService {
