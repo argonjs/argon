@@ -158,7 +158,6 @@ export class ViewService {
 
     public suggestedViewState? : ViewState;
 
-    @deprecated('app.viewport.element')
     public get element() {
         return this.viewportService.element;
     }
