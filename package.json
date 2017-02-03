@@ -199,13 +199,16 @@
     "format": "tsfmt -r",
     "build:browser": "jspm build src/argon.ts .tmp/argon-build.js --format umd --global-name Argon --skip-source-maps && derequire .tmp/argon-build.js > dist/argon.js",
     "build:core": "jspm build src/argon.ts .tmp/argon-build.js --node --format umd --global-name Argon --skip-source-maps && derequire .tmp/argon-build.js > dist/argon.core.js",
-    "prebuild": "npm run build:browser && uglifyjs dist/argon.js -b -o dist/argon.js",
+    "prebuild": "npm run build:core && npm run build:browser && uglifyjs dist/argon.js -b -o dist/argon.js",
     "build": "uglifyjs dist/argon.js -m -c warnings=false -o dist/argon.min.js",
     "browser-sync": "browser-sync  start --server --directory --startPath \"index.html\" --files \"src/**\"",
     "test": "npm run browser-sync",
     "static": "static -p 3000",
     "typedoc": "typedoc --tsconfig tsconfig.build.json --out docs --mode file --gaID UA-63191442-2 --name argon.js --readme src/README.md --target ES6 --module commonjs --moduleResolution node --experimentalDecorators --includeDeclarations --excludeNotExported --excludeExternals --ignoreCompilerErrors src",
-    "postinstall": "npm install types/cesium types/mobile-detect"
+    "postinstall": "npm install types/cesium types/mobile-detect",
+    "tsc": "tsc",
+    "preversion": "[[ -z $(git status --porcelain) ]] && npm run tsc && npm run build && git add -A dist && git commit -m 'Update build'",
+    "postversion": "git push && git push --tags"
   },
   "dependencies": {
     "aurelia-dependency-injection": "^1.0.0"
