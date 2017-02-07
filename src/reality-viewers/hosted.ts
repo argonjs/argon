@@ -2,10 +2,10 @@
 import { inject } from 'aurelia-dependency-injection'
 import { createGuid } from '../cesium/cesium-imports'
 import { SessionService } from '../session'
-import { ViewService } from '../view'
+import { ViewportService } from '../viewport'
 import { RealityViewer } from './base'
 
-@inject(SessionService, ViewService)
+@inject(SessionService, ViewportService)
 export class HostedRealityViewer extends RealityViewer {
 
     public type = 'hosted';
@@ -14,9 +14,9 @@ export class HostedRealityViewer extends RealityViewer {
 
     constructor(
         private sessionService: SessionService,
-        private viewService: ViewService,
+        private viewportService: ViewportService,
         public uri:string) {
-        super(sessionService, uri);
+        super(uri);
 
         if (typeof document !== 'undefined' && document.createElement) {
             const iframeElement = this.iframeElement = document.createElement('iframe');
@@ -26,42 +26,48 @@ export class HostedRealityViewer extends RealityViewer {
             iframeElement.height = '100%';
             iframeElement.style.position = 'absolute';
             iframeElement.style.display = 'none';
-            const viewElement = this.viewService.element;
+            const viewElement = this.viewportService.element;
             viewElement.insertBefore(iframeElement!, viewElement.firstChild);
+
+            this.presentChangeEvent.addEventListener(()=>{
+                this.iframeElement.style.display = this.isPresenting ? 'initial' : 'none';
+            })
         }
     }
 
     public destroy() {
+        super.destroy();
         if (this.iframeElement) {
             this.iframeElement.remove();
         }
     }
 
-    public setPresenting(foo:boolean) {
-        this.iframeElement.style.display = foo ? 'initial' : 'none';
-    }
-
     public load(): void {
-        super.load();
-        
-        this.iframeElement.src = '';
-        this.iframeElement.src = this.uri;
+        if (typeof document !== 'undefined' && document.createElement) {
+            const session = this.sessionService.addManagedSessionPort(this.uri);
+            session.connectEvent.addEventListener(()=>{
+                this.connectEvent.raiseEvent(session);
+            });
 
-        let handleConnectMessage = (ev:MessageEvent) => {
-            if (ev.data.type !== 'ARGON_SESSION') return;
-            const name = ev.data.name;
-            const messagePort: MessagePort = ev.ports && ev.ports[0];
+            let handleConnectMessage = (ev:MessageEvent) => {
+                if (ev.data.type !== 'ARGON_SESSION') return;
+                const name = ev.data.name;
+                const messagePort: MessagePort = ev.ports && ev.ports[0];
 
-            if (!messagePort)
-                throw new Error('Received an ARGON_SESSION message without a MessagePort object');
-            
-            if (name !== this.iframeElement.name) return;
+                if (!messagePort)
+                    throw new Error('Received an ARGON_SESSION message without a MessagePort object');
+                
+                if (name !== this.iframeElement.name) return;
 
-            window.removeEventListener('message', handleConnectMessage);
+                window.removeEventListener('message', handleConnectMessage);
 
-            this.session.open(messagePort, this.sessionService.configuration);
-        };
-        window.addEventListener('message', handleConnectMessage);
+                session.open(messagePort, this.sessionService.configuration);
+            };
+            window.addEventListener('message', handleConnectMessage);
+
+            this.iframeElement.src = '';
+            this.iframeElement.src = this.uri;
+        }
     }
 }
 

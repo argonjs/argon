@@ -2,14 +2,16 @@ import { createGuid } from './cesium/cesium-imports';
 import { inject } from 'aurelia-dependency-injection';
 import { Role, Configuration } from './common'
 import { 
+    deprecated,
     Event, 
     MessageChannelFactory, 
     MessagePortLike, 
     MessageChannelLike,
-    SynchronousMessageChannel
+    SynchronousMessageChannel,
+    isIOS
 } from './utils';
 
-import { version } from '../package.json!'
+import { version } from '../package.json'
 export { version }
 
 export interface Message {
@@ -35,6 +37,8 @@ export interface ErrorMessage {
     message: string
     stack?: string
 }
+
+const emptyObject = Object.freeze({})
 
 /**
  * Provides two-way communication between two [[SessionPort]] instances.
@@ -77,6 +81,12 @@ export class SessionPort {
      */
     public info: Configuration;
 
+    /**
+     * The version of argon.js which is used by the connecting session.
+     * This property is an empty array until the session connects.
+     */
+    public version: number[] = [];
+
     public static OPEN = 'ar.session.open';
     public static CLOSE = 'ar.session.close';
     public static ERROR = 'ar.session.error';
@@ -91,6 +101,7 @@ export class SessionPort {
             if (!info) throw new Error(`Session did not provide a configuration (${this.uri})`);
             if (this._isConnected) throw new Error(`Session has already connected! (${this.uri})`);
             this.info = info;
+            this.version = this.info.version || [0];
             this._isConnected = true;
             this._connectEvent.raiseEvent(undefined);
         }
@@ -162,10 +173,13 @@ export class SessionPort {
 
         this.messagePort.onmessage = (evt: MessageEvent) => {
             if (this._isClosed) return;
-            const id = evt.data[0];
-            const topic = evt.data[1];
-            const message = evt.data[2] || {};
-            const expectsResponse = evt.data[3];
+
+            const data = typeof evt.data === 'string' ? JSON.parse(evt.data) : evt.data;
+            
+            const id = data[0];
+            const topic = data[1];
+            const message = data[2] || emptyObject;
+            const expectsResponse = data[3];
             const handler = this.on[topic];
 
             if (handler && !expectsResponse) {
@@ -192,10 +206,8 @@ export class SessionPort {
                 const errorMessage = 'Unable to handle message for topic ' + topic + ' (' + this.uri + ')';
                 if (expectsResponse) {
                     this.send(topic + ':reject:' + id, { reason: errorMessage });
-                    this.errorEvent.raiseEvent(new Error(errorMessage));
-                } else {
-                    console.warn(errorMessage);
                 }
+                this.errorEvent.raiseEvent(new Error(errorMessage));
             }
         }
 
@@ -213,7 +225,8 @@ export class SessionPort {
         if (!this._isOpened) throw new Error('Session must be open to send messages');
         if (this._isClosed) return false;
         const id = createGuid();
-        this.messagePort.postMessage([id, topic, message]);
+        const packet = [id, topic, message];
+        this.messagePort.postMessage(isIOS ? packet : JSON.stringify(packet)); // http://blog.runspired.com/2016/03/15/webworker-performance-benchmarks/
         return true;
     }
 
@@ -260,7 +273,8 @@ export class SessionPort {
                 reject(new Error(message.reason));
             }
         })
-        this.messagePort.postMessage([id, topic, message || {}, true]);
+        const packet = [id, topic, message, true];
+        this.messagePort.postMessage(isIOS ? packet : JSON.stringify(packet)); // http://blog.runspired.com/2016/03/15/webworker-performance-benchmarks/
         return result;
     }
 
@@ -349,10 +363,10 @@ export class SessionService {
         private sessionPortFactory: SessionPortFactory,
         private messageChannelFactory: MessageChannelFactory) {
 
-        configuration.version = version;
+        configuration.version = extractVersion(version);
         configuration.uri = (typeof window !== 'undefined' && window.location) ?
             window.location.href : undefined;
-        configuration.title = (typeof document !== undefined) ? 
+        configuration.title = (typeof document !== 'undefined') ? 
             document.title : undefined;
 
         this.errorEvent.addEventListener((error) => {
@@ -437,37 +451,40 @@ export class SessionService {
      * Returns true if this system represents a [[REALITY_MANAGER]]
      */
     get isRealityManager() {
-        return Role.isRealityManager(this.configuration.role);
+        return Role.isRealityManager(this.configuration && this.configuration.role);
     }
     /**
      * Returns true if this system represents a [[REALITY_AUGMENTER]], meaning, 
      * it is running within a [[REALITY_MANAGER]]
      */
     get isRealityAugmenter() {
-        return Role.isRealityAugmenter(this.configuration.role);
+        return Role.isRealityAugmenter(this.configuration && this.configuration.role);
     }
 
     /**
      * Returns true if this system is a [[REALITY_VIEWER]]
      */
     get isRealityViewer() {
-        return Role.isRealityViewer(this.configuration.role);
+        return Role.isRealityViewer(this.configuration && this.configuration.role);
     }
 
     /**
      * @private
      */
-    private get isManager() { console.warn("Deprecated. Use isRealityManager"); return this.isManager }
+    @deprecated('isRealityManager')
+    private get isManager() { return this.isRealityManager }
 
     /**
      * @private
      */
-    private get isApplication() { console.warn("Deprecated. Use isRealityAugmenter"); return this.isRealityAugmenter }
+    @deprecated('isRealityAugmenter')
+    private get isApplication() { return this.isRealityAugmenter }
 
     /**
      * @private
      */
-    private get isRealityView() { console.warn("Deprecated. Use isRealityViewer"); return this.isRealityViewer }
+    @deprecated('isRealityViewer')
+    private get isRealityView() { return this.isRealityViewer }
 
     /**
      * Throws an error if this system is not a [[REALITY_MANAGER]]
@@ -604,4 +621,12 @@ export class WKWebViewConnectService extends ConnectService {
             sessionService.manager.close();
         })
     }
+}
+
+function extractVersion(versionString) {
+    var parts = versionString.split('.');
+    for (var i = 0, len = parts.length; i < len; ++i) {
+        parts[i] = parseInt(parts[i], 10);
+    }
+    return parts;
 }

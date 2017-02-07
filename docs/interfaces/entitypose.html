@@ -7,7 +7,6 @@
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
-	<script src="../assets/js/modernizr.js"></script>
 </head>
 <body>
 <header>
@@ -66,7 +65,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Describes the pose of an entity at a particular time relative to a particular reference frame</p>
+						<p>Describes the current pose of an entity relative to a particular reference frame</p>
 					</div>
 				</div>
 			</section>
@@ -88,7 +87,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="entitypose.html#orientation" class="tsd-kind-icon">orientation</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="entitypose.html#posestatus" class="tsd-kind-icon">pose<wbr>Status</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="entitypose.html#position" class="tsd-kind-icon">position</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="entitypose.html#time" class="tsd-kind-icon">time</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="entitypose.html#referenceframe" class="tsd-kind-icon">reference<wbr>Frame</a></li>
 							</ul>
 						</section>
 					</div>
@@ -102,7 +101,7 @@
 					<div class="tsd-signature tsd-kind-icon">orientation<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Quaternion</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/context.ts#L27">context.ts:27</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/context.ts#L37">src/context.ts:37</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -112,7 +111,7 @@
 					<div class="tsd-signature tsd-kind-icon">pose<wbr>Status<span class="tsd-signature-symbol">:</span> <a href="../enums/posestatus.html" class="tsd-signature-type">PoseStatus</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/context.ts#L29">context.ts:29</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/context.ts#L39">src/context.ts:39</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -122,17 +121,17 @@
 					<div class="tsd-signature tsd-kind-icon">position<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Cartesian3</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/context.ts#L26">context.ts:26</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/context.ts#L36">src/context.ts:36</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="time" class="tsd-anchor"></a>
-					<h3>time</h3>
-					<div class="tsd-signature tsd-kind-icon">time<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">JulianDate</span></div>
+					<a name="referenceframe" class="tsd-anchor"></a>
+					<h3>reference<wbr>Frame</h3>
+					<div class="tsd-signature tsd-kind-icon">reference<wbr>Frame<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Entity</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ReferenceFrame</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/context.ts#L28">context.ts:28</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/context.ts#L38">src/context.ts:38</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -163,7 +162,7 @@
 								<a href="entitypose.html#position" class="tsd-kind-icon">position</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="entitypose.html#time" class="tsd-kind-icon">time</a>
+								<a href="entitypose.html#referenceframe" class="tsd-kind-icon">reference<wbr>Frame</a>
 							</li>
 						</ul>
 					</li>
@@ -234,7 +233,7 @@
 	</div>
 </footer>
 <div class="container tsd-generator">
-	<p>Generated using <a href="http://typedoc.io" target="_blank">TypeDoc</a></p>
+	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
 </div>
 <div class="overlay"></div>
 <script src="../assets/js/main.js"></script>

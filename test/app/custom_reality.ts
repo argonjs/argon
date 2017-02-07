@@ -15,12 +15,12 @@ scene.add(camera);
 scene.add(user);
 scene.add(userLocation);
 
-const renderer = new THREE.WebGLRenderer({ 
+const renderer = new THREE.WebGLRenderer({
     alpha: true, 
     logarithmicDepthBuffer: true
 });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-app.view.element.appendChild(renderer.domElement);
+app.viewport.element.appendChild(renderer.domElement);
 
 // app.context.defaultReferenceFrame = app.context.localOriginEastUpSouth;
 app.context.defaultReferenceFrame = app.context.localOriginEastNorthUp;
@@ -76,19 +76,21 @@ var perspectiveProjection = new Argon.Cesium.PerspectiveFrustum();
 perspectiveProjection.fov = Math.PI / 2;
 
 function update(time:Argon.Cesium.JulianDate) {
-    const pose = Argon.getSerializedEntityPose(app.device.eye, time);
-    app.reality.publishViewState({
+    app.view.requestAnimationFrame(update);
+
+    const suggestedViewState = app.view.suggestedViewState;
+    if (!suggestedViewState) return;
+
+    const frameState = app.context.createFrameState(
         time,
-        pose,
-        viewport: app.device.viewport,
-        subviews: app.device.subviews,
-        geolocationAccuracy: undefined,
-        altitudeAccuracy: undefined,
-        compassAccuracy: undefined
-    });
-    app.device.requestFrame(update);
+        suggestedViewState.viewport,
+        suggestedViewState.subviews,
+        app.view.eye
+    );
+
+    app.context.submitFrameState(frameState);
 }
-app.device.requestFrame(update)
+app.view.requestAnimationFrame(update)
 
 app.updateEvent.addEventListener(() => {
     const userPose = app.context.getEntityPose(app.context.user);
@@ -101,7 +103,7 @@ app.updateEvent.addEventListener(() => {
 })
     
 app.renderEvent.addEventListener(() => {
-    const viewport = app.view.viewport;
+    const viewport = app.viewport.current;
     renderer.setSize(viewport.width, viewport.height);
     
     for (let subview of app.view.getSubviews()) {

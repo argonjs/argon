@@ -1,458 +1,319 @@
-import { inject } from 'aurelia-dependency-injection'
-import { Entity, Matrix4, PerspectiveFrustum, Cartesian3, Quaternion } from './cesium/cesium-imports'
-import { Viewport, SubviewType, FrameState } from './common'
-import { SessionService, SessionPort } from './session'
-import { EntityPose, ContextService } from './context'
-import { Event, decomposePerspectiveProjectionMatrix, resolveElement, isIOS } from './utils'
-import { FocusService } from './focus'
-
-// setup our DOM environment
-if (typeof document !== 'undefined' && document.createElement) {
-    let viewportMetaTag = <HTMLMetaElement>document.querySelector('meta[name=viewport]');
-    if (!viewportMetaTag) viewportMetaTag = document.createElement('meta');
-    viewportMetaTag.name = 'viewport'
-    viewportMetaTag.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'
-    document.head.appendChild(viewportMetaTag);
-
-    let argonMetaTag = <HTMLMetaElement>document.querySelector('meta[name=argon]');
-    if (!argonMetaTag) argonMetaTag = document.createElement('meta');
-    argonMetaTag.name = 'argon'
-    document.head.appendChild(argonMetaTag);
-
-    let argonElementPromise;
-
-    var resolveArgonElement = () => {
-        if (argonElementPromise) return argonElementPromise; 
-        return argonElementPromise = resolveElement('#argon').catch(()=>{
-            const argonElement = document.createElement('div');
-            argonElement.id = 'argon';
-            document.body.appendChild(argonElement);
-            return argonElement;
-        });
-    }
-
-    const style = document.createElement("style");
-    style.type = 'text/css';
-    document.head.insertBefore(style, document.head.firstChild);
-    const sheet = <CSSStyleSheet>style.sheet;
-    sheet.insertRule(`
-        #argon {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            left: 0;
-            bottom: 0;
-            margin: 0;
-            border: 0;
-            padding: 0;
-        }
-    `, sheet.cssRules.length);
-    sheet.insertRule(`
-        .argon-container > * {
-            position: absolute;
-            overflow: hidden;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            -webkit-tap-highlight-color: transparent;
-            -webkit-user-select: none;
-            user-select: none;
-        }
-    `, sheet.cssRules.length);
-    sheet.insertRule(`
-        .argon-container > * > * {
-            pointer-events: auto;
-            -webkit-tap-highlight-color: initial;
-            -webkit-user-select: initial;
-            user-select: initial;
-        }
-    `, sheet.cssRules.length);
-    sheet.insertRule(`
-        .argon-view {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            pointer-events: auto;
-        }
-    `, sheet.cssRules.length);
-    sheet.insertRule(`
-        .argon-view > * {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-    `, sheet.cssRules.length);
-    sheet.insertRule(`
-        .argon-view > * > * {
-            pointer-events: auto;
-        }
-    `, sheet.cssRules.length);
-    sheet.insertRule(`
-        .argon-maximized, .argon-maximized ~ * {
-            position: fixed !important;
-            width: 100% !important;
-            height: 100% !important;
-            left: 0;
-            bottom: 0;
-            margin: 0;
-            border: 0;
-            padding: 0;
-        }
-    `, sheet.cssRules.length);
-    sheet.insertRule(`
-        .argon-fullscreen {
-            width: 100% !important;
-            height: 100% !important;
-            max-width: initial !important;
-            max-height: initial !important;
-        }
-    `, sheet.cssRules.length);
-    sheet.insertRule(`
-        .argon-interactive {
-            pointer-events: auto;
-        }
-    `, sheet.cssRules.length);
-}
+import { autoinject, Container } from 'aurelia-dependency-injection'
+import { 
+    ConstantPositionProperty,
+    ConstantProperty,
+    Clock,
+    Entity, 
+    Matrix3,
+    Matrix4, 
+    PerspectiveFrustum, 
+    Cartesian3, 
+    Quaternion,
+    JulianDate,
+    CesiumMath,
+    // ReferenceFrame,
+    // Transforms,
+    defined
+} from './cesium/cesium-imports'
+import { SessionService } from './session'
+import { ViewportService, PresentationMode } from './viewport'
+import { 
+    LocationService
+} from './location'
+import { 
+    Role, 
+    FrameState,
+    Viewport, 
+    SubviewType, 
+    SerializedSubviewList, 
+    AVERAGE_HUMAN_HEIGHT,
+    STAGE_ENTITY_ID, 
+    PHYSICAL_STAGE_ENTITY_ID,
+    EYE_ENTITY_ID,
+    PHYSICAL_EYE_ENTITY_ID
+} from './common'
+import { EntityPose, ContextService, ContextServiceProvider } from './context'
+import {
+    deprecated,
+    // getAncestorReferenceFrames,
+    // getEntityPositionInReferenceFrame,
+    decomposePerspectiveProjectionMatrix
+} from './utils'
 
 /**
  * The rendering paramters for a particular subview
  */
-export interface Subview {
-    index: number,
-    type: SubviewType,
-    frustum: PerspectiveFrustum,
-    pose: EntityPose,
-    viewport: Viewport
+export class Subview {
+    index: number;
+    type: SubviewType;
+    frustum: PerspectiveFrustum;
+    pose: EntityPose;
+    viewport: Viewport;
 }
 
-const IDENTITY_SUBVIEW_POSE = {p:Cartesian3.ZERO, o:Quaternion.IDENTITY, r:'ar.user'};
+const scratchCartesian = new Cartesian3;
+// const scratchCartesian2 = new Cartesian3;
+const scratchQuaternion = new Quaternion;
+const scratchQuaternion2 = new Quaternion;
+const scratchMatrix3 = new Matrix3;
+const scratchMatrix4 = new Matrix4;
+const scratchFrustum = new PerspectiveFrustum();
 
-export const enum PresentationMode {
-    EMBEDDED,
-    FULLPAGE,
-    FULLSCREEN
-}
+export interface ViewState {
+    viewport: Viewport,
+    subviews: SerializedSubviewList, 
+    strict: boolean
+};
 
-export const ContainerElement = '#argon';
+const IDENTITY_SUBVIEW_POSE = {p:Cartesian3.ZERO, o:Quaternion.IDENTITY, r:EYE_ENTITY_ID};
 
-/**
- * Manages the view state
- */
-@inject(ContainerElement, SessionService, ContextService, FocusService)
+let currentVRDisplay:any;
+
+@autoinject
 export class ViewService {
 
-    /**
-     * UI events that occur within this view. To handle an event (and prevent it from
-     * being forwarded to another layer) call event.stopImmediatePropagation().
-     */
-    public uiEvent = new Event<{event:UIEvent|MouseEvent|TouchEvent|PointerEvent|WheelEvent, forwardEvent:()=>void}>();
-
-    /**
-     * UI events to be forwarded
-     */
-    public forwardedUIEvent = new Event<UIEvent|MouseEvent|TouchEvent|PointerEvent|WheelEvent>();
-
-    /**
-     * An event that is raised when the root viewport has changed
-     */
-    public viewportChangeEvent = new Event<void>();
-
-    /**
-     * An event that is raised when ownership of the view has been acquired by this application
-     */
-    public acquireEvent = new Event<void>();
-
-    /** 
-     * An event that is raised when ownership of the view has been released from this application
-    */
-    public releaseEvent = new Event<void>();
-
-    /**
-     * An HTMLDivElement which matches the viewport.
-     * This value is undefined in non-DOM environments.
-     */
-    public element: HTMLDivElement;
-
-    /**
-     * An HTMLDivElement which matches the viewport.
-     * This value is undefined in non-DOM environments.
-     */
-    public containerElementPromise: Promise<HTMLDivElement>;
-    
-    /**
-     *  Manager-only. A map of sessions to their desired viewports.
-     */
-    public desiredViewportMap = new WeakMap<SessionPort, Viewport>();
-
-    /**
-     * Manager-only. The current vrdisplay that this view is presenting to,
-     * if any.
-     */
-    public get vrDisplay() { return this._vrDisplay };
-    private _vrDisplay?:VRDisplay;
-
-    private _currentViewport: Viewport;
-    private _currentViewportJSON: string;
     private _subviews: Subview[] = [];
     private _frustums: PerspectiveFrustum[] = [];
 
     constructor(
-        containerElementOrSelector: string|HTMLElement,
         private sessionService: SessionService,
         private contextService: ContextService,
-        private focusService: FocusService) {
+        private viewportService: ViewportService,
+        container: Container
+    ) {
+        this.sessionService.manager.on['ar.view.suggestedViewState'] = (viewState:ViewState) => {
+            this.suggestedViewState = viewState;
+        };
 
-        if (typeof document !== 'undefined' && document.createElement) {
-            const element = this.element = document.createElement('div');
-            element.classList.add('argon-view');
-
-            // prevent pinch-zoom of the page in ios 10.
-            if (isIOS) {
-                element.addEventListener('touchmove', (event) => {
-                    if (event.touches.length > 1)
-                        event.preventDefault();
-                }, true);
-            }
-
-            this.containerElementPromise = new Promise((resolve)=>{
-                const insertViewportElement = (containerElement:HTMLElement) => {
-                    if (this.sessionService.manager.isClosed) return;
-
-                    containerElement.classList.add('argon-container');
-                    containerElement.insertBefore(element, containerElement.firstChild);
-
-                    const handleFullscreenChange = () => {
-                        if (this._isFullscreen()) {
-                            containerElement.classList.add('argon-fullscreen');
-                        } else {
-                            containerElement.classList.remove('argon-fullscreen');
-                        }
-                    }
-                    document.addEventListener('fullscreenchange', handleFullscreenChange);
-                    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-                    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
-                    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
-
-                    const handleVRDisplayPresentChange = (e) => {
-                        const vrDisplay:VRDisplay|undefined = e.display || e.detail.vrdisplay || e.detail.display;
-                        if (vrDisplay) {
-                            const layers = vrDisplay.getLayers();
-                            let isThisView = this._vrDisplay === vrDisplay;
-                            for (const layer of layers) {
-                                if (layer.source && this.element.contains(layer.source)) {
-                                    isThisView = true;
-                                    break;
-                                }
-                            }
-                            if (isThisView) {
-                                if (vrDisplay.isPresenting) {
-                                    this._vrDisplay = vrDisplay;
-                                    if (vrDisplay.displayName.match(/Cardboard/g)) {
-                                        this.element.classList.add('argon-maximized');
-                                        vrDisplay.getLayers()[0].source!.classList.add('argon-interactive');
-                                    }
-                                    this.viewportChangeEvent.raiseEvent(undefined);
-                                } else {
-                                    this._vrDisplay = undefined;
-                                    if (vrDisplay.displayName.match(/Cardboard/g)) {
-                                        this.element.classList.remove('argon-maximized');
-                                        const canvas = this.element.querySelector('.argon-interactive');
-                                        if (canvas) canvas.classList.remove('argon-interactive');
-                                    }
-                                    this.viewportChangeEvent.raiseEvent(undefined);
-                                }
-                            }
-                        }
-                    }
-                    window.addEventListener('vrdisplaypresentchange', handleVRDisplayPresentChange);
-
-                    this.sessionService.manager.closeEvent.addEventListener(()=>{
-                        element.remove();
-                        document.removeEventListener('fullscreenchange', handleFullscreenChange);
-                        document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
-                        document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
-                        document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
-                    });
-                    
-                    resolve(containerElement);
-                }
-            
-                if (containerElementOrSelector && containerElementOrSelector instanceof HTMLElement) {
-                    insertViewportElement(containerElementOrSelector);
-                } else {
-                    if (containerElementOrSelector === `#argon`) {
-                        // first check synchronously
-                        let containerElement = <HTMLDivElement>document.querySelector(`#argon`);
-                        if (containerElement) {
-                            insertViewportElement(containerElement);
-                        } else {
-                            // if synchronous checks fail, wait for document to load then insert
-                            return resolveArgonElement().then(insertViewportElement);
-                        }
-                    } else {
-                        // first check synchronously
-                        let containerElement = <HTMLDivElement>document.querySelector(`${containerElementOrSelector}`);
-                        if (containerElement) {
-                            insertViewportElement(containerElement);
-                        } else {
-                            // if synchronous checks fail, wait for document to load then insert
-                            resolveElement(containerElementOrSelector).then(insertViewportElement);
-                        }
-                    }
-                }
-            })
-            
-
-            this.focusService.focusEvent.addEventListener(() => {
-                element.classList.remove('argon-no-focus');
-                element.classList.add('argon-focus');
-            });
-
-            this.focusService.blurEvent.addEventListener(() => {
-                element.classList.remove('argon-focus');
-                element.classList.add('argon-no-focus');
-            });
-
-            if (this.sessionService.isRealityViewer) {
-                this._setupEventSynthesizing();
-            } else {
-                this._setupEventForwarding();
-            }
-        }
-
-        if (this.sessionService.isRealityManager) {
-            this.sessionService.connectEvent.addEventListener((session) => {
-                session.on['ar.view.desiredViewport'] = (viewport: Viewport) => {
-                    this.desiredViewportMap.set(session, viewport);
-                }
-                session.on['ar.view.forwardUIEvent'] = (uievent:UIEvent) => {
-                    this.forwardedUIEvent.raiseEvent(uievent);
-                }
-                session.on['ar.view.requestEnterHmd'] = ()=> {
-                    return this._requestEnterHmd(session);
-                }
-                session.on['ar.view.requestExitHmd'] = ()=> {
-                    return this._requestExitHmd(session);
-                }
-                session.on['ar.view.isHmdActive'] = ()=> {
-                    return Promise.resolve({state:this._isHmdActive()});
-                }
-                session.on['ar.view.requestEnterFullscreen'] = ()=> {
-                    return this._requestEnterFullscreen(session);
-                }
-                session.on['ar.view.requestExitFullscreen'] = ()=> {
-                    return this._requestExitFullscreen(session);
-                }
-                session.on['ar.view.isFullscreen'] = ()=> {
-                    return Promise.resolve({state:this._isFullscreen()});
-                }
-                session.on['ar.view.requestEnterMaximized'] = ()=> {
-                    return this._requestEnterMaximized(session);
-                }
-                session.on['ar.view.requestExitMaximized'] = ()=> {
-                    return this._requestExitMaximized(session);
-                }
-                session.on['ar.view.isMaximized'] = ()=> {
-                    return Promise.resolve({state:this._isMaximized()});
-                }
-            });
-
-            this.sessionService.manager.connectEvent.addEventListener(()=>{
-                const resizeHandler = ()=> {
-                    if (this.viewport)
-                    this._update();
-                };
-                if (this.sessionService.isRealityManager && typeof window !== 'undefined') {
-                    window.addEventListener('resize', resizeHandler);
-                    this.sessionService.manager.closeEvent.addEventListener(()=>{
-                        window.removeEventListener('resize', resizeHandler);
-                    })
-                }
-            });
-        }
-
-        this.contextService.renderEvent.addEventListener(() => {
-            const state = <FrameState>this.contextService.serializedFrameState;
-            state.view.subviews.forEach((subview, index) => {
-                const id = 'ar.view_' + index;
-                const subviewPose = subview.pose || IDENTITY_SUBVIEW_POSE;
-                this.contextService.updateEntityFromSerializedPose(id, subviewPose);
-            });
-            this._update();
+        this.contextService.frameStateEvent.addEventListener((state) => {
+            this._processFrameState(state);
         });
+        this._processFrameState(this.contextService.serializedFrameState);
 
-        this.contextService.postRenderEvent.addEventListener(()=>{
-            if (this.vrDisplay && this.vrDisplay.isPresenting) {
-                this.vrDisplay.submitFrame();
-            } 
-        });
+        // backwards-compatability hack: if using an older manager version,
+        // we have to provide the suggestedViewState ourselves
+        this.sessionService.manager.connectEvent.addEventListener(()=>{
+            if (this.sessionService.manager.version[0] === 0) {
+                container.get(ViewServiceProvider);
+            }
+        })
     }
 
-    public getSubviews(referenceFrame?: Entity): Subview[] {
-        this._update();
+    private _processFrameState(state:FrameState) {
+        // if the manager has not given us a physical eye pose, update from device orientation
+        if (!state.entities || !state.entities[this.physicalEye.id]) {
+            updatePhysicalEyePoseFromDeviceOrientation(this.contextService);
+        }
+
+        const serializedSubviewList = state.subviews;
         const subviews: Subview[] = this._subviews;
-        const viewState = this.contextService.serializedFrameState!.view;
-        subviews.length = viewState.subviews.length;
-        viewState.subviews.forEach((serializedSubview, index) => {
+        subviews.length = serializedSubviewList.length;
+
+        let index = 0;
+        for (const serializedSubview of serializedSubviewList) {
             const id = 'ar.view_' + index;
+            const subviewPose = serializedSubview.pose || IDENTITY_SUBVIEW_POSE;
+            this.contextService.updateEntityFromSerializedPose(id, subviewPose);
             const subviewEntity = this.contextService.entities.getById(id)!;
-            const subview = subviews[index] = 
-                subviews[index] || <Subview>{};
+            const subview = subviews[index] = subviews[index] || <Subview>{};
             subview.index = index;
             subview.type = serializedSubview.type;
-            subview.pose = this.contextService.getEntityPose(subviewEntity, referenceFrame);
-            subview.viewport = serializedSubview.viewport || {
-                x: 0, 
-                y: 0, 
-                width: viewState.viewport.width,
-                height: viewState.viewport.height
-            }
-
+            subview.pose = this.contextService.getEntityPose(subviewEntity);
+            subview.viewport = subview.viewport || {};
+            subview.viewport.x = serializedSubview.viewport.x;
+            subview.viewport.y = serializedSubview.viewport.y;
+            subview.viewport.width = serializedSubview.viewport.width;
+            subview.viewport.height = serializedSubview.viewport.height;
             subview.frustum = this._frustums[index] = 
                 this._frustums[index] || new PerspectiveFrustum();
             decomposePerspectiveProjectionMatrix(serializedSubview.projectionMatrix, subview.frustum);
             subview['projectionMatrix'] = <Matrix4>subview.frustum.projectionMatrix;
-        })
-        return subviews;
+            index++;
+        }
+    }
+     
+    /**
+     * An entity representing the pose of the viewer. 
+     */
+    public eye: Entity = this.contextService.entities.add(new Entity({
+        id: EYE_ENTITY_ID,
+        name: 'Eye',
+        position: new ConstantPositionProperty(undefined, undefined),
+        orientation: new ConstantProperty(Quaternion.IDENTITY)
+    }));
+
+    public get eyeHeadingAccuracy() : number|undefined {
+        return this.eye['meta'].headingAccuracy;
+    }    
+    
+    /**
+     * An entity representing the physical pose of the viewer. 
+     */
+    public physicalEye: Entity = this.contextService.entities.add(new Entity({
+        id: PHYSICAL_EYE_ENTITY_ID,
+        name: 'Physical Eye',
+        position: new ConstantPositionProperty(undefined, undefined),
+        orientation: new ConstantProperty(Quaternion.IDENTITY)
+    }));
+
+    public suggestedViewState? : ViewState;
+
+    public get element() {
+        return this.viewportService.element;
     }
 
+    @deprecated('app.viewport.current')
+    public getViewport() {
+        return this.viewportService.current;
+    }
+
+    public get subviews() {
+        return this._subviews;
+    }
+
+    public getSubviews(): Subview[] {
+        return this._subviews;
+    }
+
+    public getSubviewEntity(index:number) {
+        const subviewEntity = this.contextService.entities.getOrCreateEntity('ar.view_'+index);
+        if (!subviewEntity.position) {
+            subviewEntity.position = new ConstantPositionProperty();
+        }
+        if (!subviewEntity.orientation) {
+            subviewEntity.orientation = new ConstantProperty();
+        }
+        return subviewEntity;
+    }
 
     /**
-     * Get the current viewport. Deprecated (Use View#viewport property)
-     * @private
+     * Request an animation frame cal\\\\\\\\\\\\\]]]]]]]]]]]\\\\lback.
      */
-    protected getViewport() {
-        return this.viewport;
+    public requestAnimationFrame(callback:(now:JulianDate)=>void) {
+        const onFrame = () => {
+            tick();
+            if (this.suggestedViewState) {
+                callback(clock.currentTime);
+            } else this.requestAnimationFrame(callback);
+        }
+        if (currentVRDisplay) {
+            return (currentVRDisplay as VRDisplay).requestAnimationFrame(onFrame);
+        } else {
+            return requestAnimationFrame(onFrame);
+        }
+    }
+}
+
+@autoinject
+export class ViewServiceProvider {
+
+    public autoSubmitFrame = true;
+
+    constructor(
+        private sessionService: SessionService,
+        private contextService: ContextService,
+        private contextServiceProvider: ContextServiceProvider,
+        private viewService: ViewService,
+        private viewportService:ViewportService,
+        private locationService:LocationService
+    ) {
+            
+        this.contextServiceProvider.publishingReferenceFrameMap.set(this.viewService.eye.id, STAGE_ENTITY_ID);
+        this.contextServiceProvider.publishingReferenceFrameMap.set(this.viewService.physicalEye.id, PHYSICAL_STAGE_ENTITY_ID);
+
+        const onAnimationFrame = () => {
+            if (!this.sessionService.manager.isClosed) 
+                this.viewService.requestAnimationFrame(onAnimationFrame);
+            this.update();
+        }
+        this.viewService.requestAnimationFrame(onAnimationFrame);
+
+        this.contextService.postRenderEvent.addEventListener(()=>{
+            if (this.autoSubmitFrame && currentVRDisplay && currentVRDisplay.isPresenting) {
+                currentVRDisplay.submitFrame();
+            }
+        });
+
+        let currentCanvas:HTMLElement|undefined;
+        let previousPresentationMode:PresentationMode;
+
+        const handleVRDisplayPresentChange = (e) => {
+            const vrDisplay:VRDisplay|undefined = e.display || e.detail.vrdisplay || e.detail.display;
+            if (vrDisplay) {
+                const layers = vrDisplay.getLayers();
+                let isThisView = currentVRDisplay === vrDisplay;
+                for (const layer of layers) {
+                    if (layer.source && this.viewportService.element.contains(layer.source)) {
+                        isThisView = true;
+                        break;
+                    }
+                }
+                if (isThisView) {
+                    if (vrDisplay.isPresenting) {
+                        currentVRDisplay = vrDisplay;
+                        if (vrDisplay.displayName.match(/Cardboard/g)) {
+                            currentCanvas = vrDisplay.getLayers()[0].source;
+                            if (currentCanvas) currentCanvas.classList.add('argon-interactive');
+                            previousPresentationMode = this.viewportService.presentationMode;
+                            this.viewportService.requestPresentationMode(PresentationMode.IMMERSIVE);
+                        }
+                    } else {
+                        currentVRDisplay = undefined;
+                        if (currentCanvas && vrDisplay.displayName.match(/Cardboard/g)) {
+                            currentCanvas.classList.remove('argon-interactive');
+                            currentCanvas = undefined;
+                            this.viewportService.requestPresentationMode(previousPresentationMode);
+                        }
+                    }
+                }
+            }
+
+            this.viewportService.presentationModeChangeEvent.addEventListener((mode)=>{
+                if (mode === PresentationMode.PAGE) 
+                    this.exitPresentHMD();
+            });
+        }
+        window.addEventListener('vrdisplaypresentchange', handleVRDisplayPresentChange);
+
+        this.update();
     }
 
-    /**
-     * Get the current viewport
-     */
-    public get viewport() {
-        return this.contextService.serializedFrameState.view ? 
-            this.contextService.serializedFrameState.view.viewport : {x:0,y:0,width:0,height:0};
+    public update() {
+        // update view state and physical eye entities
+        this.onUpdate();
+
+        // publish the view state and the physical eye entities.
+        this.contextServiceProvider.publishEntityState(this.viewService.physicalEye);
+        this.sessionService.managedSessions.forEach((s)=>{
+            if (Role.isRealityViewer(s.info.role))
+                s.send('ar.view.suggestedViewState', this.viewService.suggestedViewState);
+        });
     }
 
-    /**
-     * Request to present this view in an HMD.
-     */
-    public requestEnterHmd() : Promise<void> {
-        return this.sessionService.manager.request('ar.view.requestEnterHmd');
+    protected onUpdate() {
+        if (currentVRDisplay) {
+           this._updateViewFromWebVR(currentVRDisplay);
+        } else {
+            this._updateViewSingular();
+        }
     }
 
-    protected _requestEnterHmd(session:SessionPort) {
-        this._ensurePersmission(session);
+    public get isPresentingHMD() {
+        return !!(currentVRDisplay && (currentVRDisplay as VRDisplay).isPresenting);
+    }
+
+    public requestPresentHMD() : Promise<void> {
         if (typeof navigator !== 'undefined' &&
             navigator.getVRDisplays) {
             const requestPresent = (vrDisplay:VRDisplay) => {
-                this._vrDisplay = vrDisplay;
+                currentVRDisplay = vrDisplay;
+                const element = this.viewportService.element;
                 const layers:VRLayer[] = [];
-                layers[0] = {source:this.element.querySelector('canvas') || <HTMLCanvasElement>this.element.lastElementChild};
+                layers[0] = {source:element.querySelector('canvas') || <HTMLCanvasElement>element.lastElementChild};
                 return vrDisplay.requestPresent(layers).catch((e)=>{
-                    this._vrDisplay = undefined;
+                    currentVRDisplay = undefined;
                     throw e;
-                })
+                });
             }
             if (navigator.activeVRDisplays && navigator.activeVRDisplays.length) {
                 return requestPresent(navigator.activeVRDisplays[0]);
@@ -461,476 +322,308 @@ export class ViewService {
                     .then(displays => displays[0])
                     .then(requestPresent);
             }
-        } 
+        }
         throw new Error('No HMD available');
     }
 
-    /**
-     * Exit presenting this view in an HMD
-     */
-    public requestExitHmd() : Promise<void> {
-        return this.sessionService.manager.request('ar.view.requestExitHmd');
-    }
-
-    protected _requestExitHmd(session:SessionPort) {
-        this._ensurePersmission(session);
-        if (this._vrDisplay) {
-            return Promise.resolve(this._vrDisplay).then(vrDisplay => {
-                this._vrDisplay = undefined;
-                return vrDisplay.exitPresent();
-            });
+    public exitPresentHMD() : Promise<void> {
+        if (currentVRDisplay) {
+            const vrDisplay:VRDisplay = currentVRDisplay;
+            currentVRDisplay = undefined;
+            return vrDisplay.exitPresent();
         }
-        throw new Error("Not presenting in an HMD");
+        return Promise.resolve();
     }
 
-    /**
-     * Resolves to a boolean that indicates whether or not this view is being 
-     * presented in an HMD
-     */
-    public isHmdActive() : Promise<boolean> {
-        return this.sessionService.manager.request('ar.view.isHmdActive').then(e=>e['state']);
+    private _updateViewSingular() {
+        const suggestedViewState = this.viewService.suggestedViewState = 
+            this.viewService.suggestedViewState || <ViewState>{};
+        const viewport = suggestedViewState.viewport = suggestedViewState.viewport || <Viewport>{};
+        viewport.x = 0;
+        viewport.y = 0;
+        viewport.width = this.viewportService.rootElement.clientWidth;
+        viewport.height = this.viewportService.rootElement.clientHeight;
+
+        const subviews = suggestedViewState.subviews = suggestedViewState.subviews || [];
+        subviews.length = 1;
+        const subview = subviews[0] = subviews[0] || {};
+        subview.type = SubviewType.SINGULAR;
+        subview.viewport = subview.viewport || {};
+        subview.viewport.x = 0;
+        subview.viewport.y = 0;
+        subview.viewport.width = viewport.width;
+        subview.viewport.height = viewport.height;
+
+        const aspect = viewport.width / viewport.height;
+        scratchFrustum.near = 0.01;
+        scratchFrustum.far = 500000000;
+        scratchFrustum.fov = Math.PI / 3;
+        scratchFrustum.aspectRatio = isFinite(aspect) && aspect !== 0 ? aspect : 1;
+        subview.projectionMatrix = Matrix4.clone(scratchFrustum.projectionMatrix, subview.projectionMatrix);
+
+        updatePhysicalEyePoseFromDeviceOrientation(this.contextService);
     }
 
-    /**
-     * Manager-only. Returns true if this view is being 
-     * presented in an HMD. (synchronous)
-     */
-    public _isHmdActive() {
-        return this._vrDisplay ? 
-            this._vrDisplay.isPresenting : 
-            false;
-    }
+    private _vrFrameData?:any;
 
-    /**
-     * Request to present this view in fullscreen mode
-     */
-    public requestEnterFullscreen() : Promise<void> {
-        return this.sessionService.manager.request('ar.view.requestEnterFullscreen');
-    }
+    private _updateViewFromWebVR(vrDisplay : VRDisplay) {
 
-    protected _requestEnterFullscreen(session:SessionPort) {
-        this._ensurePersmission(session);
-        const containerElement = this.element.parentElement;
-        if (containerElement.requestFullscreen) 
-            return containerElement.requestFullscreen();
-        if (containerElement.webkitRequestFullscreen)
-            return containerElement.webkitRequestFullscreen();
-        if (containerElement['mozRequestFullscreen'])
-            return containerElement['mozRequestFullscreen']();
-        throw new Error('Fullscreen not supported');
-    }
+        const suggestedViewState = this.viewService.suggestedViewState = 
+            this.viewService.suggestedViewState || <ViewState>{};
 
-    /**
-     * Request to exit fullscreen display
-     */
-    public requestExitFullscreen() : Promise<void> {
-        return this.sessionService.manager.request('ar.view.requestExitFullscreen');
-    }
+        const viewport = suggestedViewState.viewport = suggestedViewState.viewport || <Viewport>{};
+        viewport.x = 0;
+        viewport.y = 0;
+        viewport.width = this.viewportService.rootElement.clientWidth;
+        viewport.height = this.viewportService.rootElement.clientHeight;
 
-    protected _requestExitFullscreen(session:SessionPort) {
-        this._ensurePersmission(session);
-        if (document.exitFullscreen) 
-            return document.exitFullscreen();
-        if (document.webkitExitFullscreen) 
-            return document.webkitExitFullscreen();
-        if (document.webkitCancelFullScreen) 
-            return document.webkitCancelFullScreen();
-        if (document['mozCancelFullScreen']) 
-            return document['mozCancelFullScreen']();
-        throw new Error('Fullscreen not supported');
-    }
+        const vrFrameData : VRFrameData = this._vrFrameData = 
+            this._vrFrameData || new VRFrameData();
+        if (!vrDisplay['getFrameData'](vrFrameData)) 
+            return this.viewService.suggestedViewState;
 
-    /**
-     * Resolves to a boolean that indicates whether or not this view is being 
-     * presented in fullscreen
-     */
-    public isFullscreen() : Promise<boolean> {
-        return this.sessionService.manager.request('ar.view.isFullscreen').then(e=>e['state']);
-    }
-
-    /**
-     * Manager-only. Returns true if this view is being 
-     * presented in fullscreen. (synchronous)
-     */
-    public _isFullscreen() {
-        if (this.element.parentElement === document.fullscreenElement ||
-            this.element.parentElement === document.webkitFullscreenElement || 
-            this.element.parentElement === document.webkitCurrentFullScreenElement || 
-            this.element.parentElement === document['mozFullscreenElement']) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Request to present the view maximized within the containing window 
-     */
-    public requestEnterMaximized() : Promise<void> {
-        return this.sessionService.manager.request('ar.view.requestEnterMaximized');
-    }
-
-    protected _requestEnterMaximized(session:SessionPort) {
-        this._ensurePersmission(session);
-        this.element.classList.add('argon-maximized');
-        this.viewportChangeEvent.raiseEvent(undefined);
-    }
-
-    /** 
-     * Request to exit maximized mode
-     */
-    public requestExitMaximized() : Promise<void> {
-        return this.sessionService.manager.request('ar.view.requestExitMaximized');
-    }
-
-    protected _requestExitMaximized(session:SessionPort) {
-        this._ensurePersmission(session);
-        this.element.classList.remove('argon-maximized');
-        this.viewportChangeEvent.raiseEvent(undefined)
-    }
-
-    /**
-     * Resolves to a boolean that indicates whether or not the view is maximized
-     */
-    public isMaximized() : Promise<boolean> {
-        return this.sessionService.manager.request('ar.view.isMaximized').then(e=>e['state']);
-    }
-
-    /**
-     * Manager-only. Returns true if this view is maximized. (synchronous)
-     */
-    public _isMaximized() {
-        return this.element.classList.contains('argon-maximized');
-    }
-
-    protected _ensurePersmission(session:SessionPort) {
-        if (session !== this.sessionService.manager || session !== this.focusService.session)
-            throw new Error('Application must have focus');
-    }
-
-    /**
-     * Set the desired root viewport
-     * @private
-     */
-    public setDesiredViewport(viewport: Viewport) {
-        this.sessionService.manager.send('ar.view.desiredViewport', viewport)
-    }
-
-    /**
-     * Request control over the view. 
-     * The manager is likely to reject this request if this application is not in focus. 
-     * When running on an HMD, this request will always fail. If the current reality view
-     * does not support custom views, this request will fail. The manager may revoke
-     * ownership at any time (even without this application calling releaseOwnership)
-     * @private
-     */
-    public requestOwnership() {
-
-    }
-
-    /**
-     * Release control over the view. 
-     * @private
-     */
-    public releaseOwnership() {
-
-    }
-
-    /**
-     * Returns true if this application has control over the view.  
-     * @private
-     */
-    public isOwner() {
-
-    }
-
-    // Updates the element, if necessary, and raise a view change event
-    private _update() {
-        const state = this.contextService.serializedFrameState;
-        if (!state || !state.view) return;
+        const layers = vrDisplay.getLayers();
+        const leftBounds = layers[0].leftBounds!;
+        const rightBounds = layers[0].rightBounds!;
         
-        const view = state.view;
-        const viewportJSON = JSON.stringify(view.viewport);
-        // const previousViewport = this._currentViewport;
-        this._currentViewport = Viewport.clone(view.viewport, this._currentViewport)!;
+        const subviews = suggestedViewState.subviews = suggestedViewState.subviews || [];
 
-        if (!this._currentViewportJSON || this._currentViewportJSON !== viewportJSON) {
-            this._currentViewportJSON = viewportJSON;
+        const leftSubview = subviews[0] = subviews[0] || {};
+        const rightSubview = subviews[1] = subviews[1] || {};
+        leftSubview.type = SubviewType.LEFTEYE;
+        rightSubview.type = SubviewType.RIGHTEYE;
+        const leftViewport = leftSubview.viewport = leftSubview.viewport || <Viewport>{};
+        leftViewport.x = leftBounds[0] * viewport.width;
+        leftViewport.y = leftBounds[1] * viewport.height;
+        leftViewport.width = leftBounds[2] * viewport.width;
+        leftViewport.height = leftBounds[3] * viewport.height;
+        const rightViewport = rightSubview.viewport = rightSubview.viewport || <Viewport>{};
+        rightViewport.x = rightBounds[0] * viewport.width;
+        rightViewport.y = rightBounds[1] * viewport.height;
+        rightViewport.width = rightBounds[2] * viewport.width;
+        rightViewport.height = rightBounds[3] * viewport.height;
 
-            if (this.element && !this.sessionService.isRealityManager) {
-                requestAnimationFrame(() => {
-                    const viewport = view.viewport;
-                    this.element.style.position = 'fixed';
-                    this.element.style.left = viewport.x + 'px';
-                    this.element.style.bottom = viewport.y + 'px';
-                    this.element.style.width = viewport.width + 'px';
-                    this.element.style.height = viewport.height + 'px';
-                })
-            }
+        leftSubview.projectionMatrix = Matrix4.clone(
+            <any>vrFrameData.leftProjectionMatrix, 
+            leftSubview.projectionMatrix
+        );
+        rightSubview.projectionMatrix = Matrix4.clone(
+            <any>vrFrameData.rightProjectionMatrix, 
+            rightSubview.projectionMatrix
+        );
 
-            this.viewportChangeEvent.raiseEvent(undefined);
+        const inverseStandingMatrix = Matrix4.IDENTITY.clone(scratchMatrix4);
+        if (vrDisplay.stageParameters) {
+            Matrix4.inverseTransformation(
+                <any>vrDisplay.stageParameters.sittingToStandingTransform, 
+                inverseStandingMatrix
+            );
         }
+
+        const inverseStandingRotationMatrix = Matrix4.getRotation(inverseStandingMatrix, scratchMatrix3);
+        const inverseStandingOrientation = Quaternion.fromRotationMatrix(inverseStandingRotationMatrix, scratchQuaternion)
+
+        const leftStandingViewMatrix = Matrix4.multiplyTransformation(
+            <any>vrFrameData.leftViewMatrix, 
+            inverseStandingMatrix, 
+            scratchMatrix4
+        );
+
+        const rightStandingViewMatrix = Matrix4.multiplyTransformation(
+            <any>vrFrameData.rightViewMatrix, 
+            inverseStandingMatrix, 
+            scratchMatrix4
+        );
+        const eye = this.viewService.physicalEye;
+        const stage = this.locationService.physicalStage;
+
+        if (!vrDisplay.displayName.match(/polyfill/g)) {
+            const sittingEyePosition : Cartesian3|undefined = vrFrameData.pose.position ? 
+                Cartesian3.unpack(<any>vrFrameData.pose.position, 0, scratchCartesian) : undefined;
+            const stageEyePosition : Cartesian3|undefined = sittingEyePosition ? 
+                Matrix4.multiplyByPoint(inverseStandingMatrix, sittingEyePosition, scratchCartesian) : undefined;
+            const sittingEyeOrientation : Quaternion|undefined = vrFrameData.pose.orientation ? 
+                Quaternion.unpack(<any>vrFrameData.pose.orientation, 0, scratchQuaternion2) : undefined;
+            const stageEyeOrientation = sittingEyeOrientation ? 
+                Quaternion.multiply(inverseStandingOrientation, sittingEyeOrientation, scratchQuaternion) : undefined;
+
+            (eye.position as ConstantPositionProperty).setValue(stageEyePosition, stage);
+            (eye.orientation as ConstantProperty).setValue(stageEyeOrientation);
+        } else {
+            // The polyfill does not support reporting an absolute orientation (yet), 
+            // so fall back to our own pose calculation if we are using the polyfill device
+            updatePhysicalEyePoseFromDeviceOrientation(this.contextService);
+        }
+
+        const leftEye = this.viewService.getSubviewEntity(0);
+        const stageLeftEyePosition = Matrix4.getTranslation(leftStandingViewMatrix, scratchCartesian);
+        (leftEye.position as ConstantPositionProperty).setValue(stageLeftEyePosition, stage);
+
+        const rightEye = this.viewService.getSubviewEntity(1);
+        const stageRightEyePosition = Matrix4.getTranslation(rightStandingViewMatrix, scratchCartesian);
+        (rightEye.position as ConstantPositionProperty).setValue(stageRightEyePosition, stage);
     }
+}
 
-    private _setupEventForwarding() {
+let deviceOrientationListener;
 
-        const cloneTouch = (touch:Touch, boundingRect:ClientRect) => {
-            return {
-                identifier: touch.identifier,
-                clientX: touch.clientX - boundingRect.left,
-                clientY: touch.clientY - boundingRect.top,
-                screenX: touch.screenX,
-                screenY: touch.screenY
-            };
+let deviceOrientation:Quaternion|undefined;
+let deviceOrientationHeadingAccuracy:number|undefined;
+
+function updatePhysicalEyePoseFromDeviceOrientation(contextService:ContextService) {
+    const physicalEye = contextService.entities.getById(PHYSICAL_EYE_ENTITY_ID);
+    const physicalStage = contextService.entities.getById(PHYSICAL_STAGE_ENTITY_ID);
+
+    if (physicalEye) {
+        ensureOrientationUpdates();
+
+        if (!deviceOrientation) {
+            (physicalEye.position as ConstantPositionProperty).setValue(
+                undefined,
+                undefined
+            );
+
+            (physicalEye.orientation as ConstantProperty).setValue(
+                undefined
+            );
+
+            physicalEye['meta'] = undefined;
+
+            return;
         }
 
-        const cloneTouches = (touches:TouchList, boundingRect:ClientRect) => {
-            if (!touches) return undefined;
-            const touchList:any = [];
-            for (var i = 0; i < touches.length; i++) {
-                const touch = touches.item(i)!;
-                touchList[i] = cloneTouch(touch, boundingRect);
-            }
-            return touchList;
-        }
+        const screenOrientationDegrees = (screen['orientation'] && screen['orientation'].angle) || window.orientation || 0;
 
-        let forwardEvent = false;
-
-        const eventData = {
-            event:UIEvent = <any>undefined,
-            forwardEvent: () => { forwardEvent = true }
-        }
-
-        const uievent = <any>{};
+        const displayOrientation = 
+            Quaternion.fromAxisAngle(
+                Cartesian3.UNIT_Z, 
+                - screenOrientationDegrees * CesiumMath.RADIANS_PER_DEGREE, 
+                scratchQuaternion2
+            );
         
-        const handleEvent = (e:MouseEvent&WheelEvent&TouchEvent)=>{
-            if (e.target === this.element || (<HTMLElement>e.target).parentElement === this.element) {
+        (physicalEye.position as ConstantPositionProperty).setValue(
+            Cartesian3.fromElements(0,0,AVERAGE_HUMAN_HEIGHT, scratchCartesian), 
+            physicalStage
+        );
 
-                const boundingRect = this.element.getBoundingClientRect();
+        (physicalEye.orientation as ConstantProperty).setValue(
+            Quaternion.multiply(
+                deviceOrientation, 
+                displayOrientation, 
+                scratchQuaternion
+            )
+        );
 
-                if (this.uiEvent.numberOfListeners > 0) {
-                    forwardEvent = false;
-                    eventData.event = e;
-                    this.uiEvent.raiseEvent(eventData);
-                     // allow the containing element to receive the current event 
-                     // for local reality viewers
-                    if (!forwardEvent) {
-                        e.stopImmediatePropagation();
-                        return;
-                    }
-                }
+        physicalEye['meta'] = physicalEye['meta'] || {};
+        physicalEye['meta'].headingAccuracy = deviceOrientationHeadingAccuracy;
+        
+    }
+}
 
-                e.preventDefault();
+function ensureOrientationUpdates(this:void) : void {
+    if (typeof window == 'undefined' || !window.addEventListener) 
+        throw new Error('Orientation updates not supported');
 
-                const touches = cloneTouches(e.touches, boundingRect);
-                const changedTouches = cloneTouches(e.changedTouches, boundingRect);
-                const targetTouches = cloneTouches(e.targetTouches, boundingRect);
+    if (defined(deviceOrientationListener)) return;
 
-                uievent.type = e.type;
-                uievent.bubbles = e.bubbles;
-                uievent.cancelable = e.cancelable;
-                uievent.detail = e.detail;
-                uievent.altKey = e.altKey;
-                uievent.ctrlKey = e.ctrlKey;
-                uievent.metaKey = e.metaKey;
-                uievent.button = e.button;
-                uievent.buttons = e.buttons;
-                uievent.clientX = e.clientX - boundingRect.left;
-                uievent.clientY = e.clientY - boundingRect.top;
-                uievent.screenX = e.screenX;
-                uievent.screenY = e.screenY;
-                uievent.movementX = e.movementX;
-                uievent.movementY = e.movementY;
-                uievent.deltaX = e.deltaX;
-                uievent.deltaY = e.deltaY;
-                uievent.deltaZ = e.deltaZ;
-                uievent.deltaMode = e.deltaMode;
-                uievent.wheelDelta = e.wheelDelta;
-                uievent.wheelDeltaX = e.wheelDeltaX;
-                uievent.wheelDeltaY = e.wheelDeltaY;
-                uievent.which = e.which; 
-                uievent.timeStamp = e.timeStamp;
-                uievent.touches = touches;
-                uievent.changedTouches = changedTouches;
-                uievent.targetTouches = targetTouches;
+    let headingDrift = 0;
+    let alphaOffset:number|undefined = undefined;
 
-                this.sessionService.manager.send('ar.view.forwardUIEvent', uievent);
+    deviceOrientationListener = (e: DeviceOrientationEvent) => {
+
+        let alphaDegrees = e.alpha;
+        let webkitCompassHeading: number = e['webkitCompassHeading'];
+        const webkitCompassAccuracy: number = +e['webkitCompassAccuracy'];
+
+        if (!defined(alphaDegrees)) {
+            return;
+        }
+
+        if (e.absolute) {
+            alphaOffset = 0;
+        }
+
+        // when the phone is almost updside down, webkit flips the compass heading 
+        // (not documented anywhere, annoyingly)
+        // if (e.beta >= 130 || e.beta <= -130) webkitCompassHeading = undefined;
+
+        deviceOrientationHeadingAccuracy = webkitCompassAccuracy > 0 ? webkitCompassAccuracy : undefined;
+
+        if ((!defined(alphaOffset) || Math.abs(headingDrift) > 5) &&
+            defined(webkitCompassHeading) &&
+            webkitCompassAccuracy >= 0 &&
+            // webkitCompassAccuracy < 50 &&
+            webkitCompassHeading >= 0) {
+            if (!defined(alphaOffset)) {
+                alphaOffset = -webkitCompassHeading;
             } else {
-                e.stopImmediatePropagation();
+                alphaOffset -= headingDrift;
             }
-        };
-        ['wheel'
-        ,'click'
-        ,'dblclick'
-        ,'contextmenu'
-        ,'mouseover'
-        ,'mouseout'
-        ,'mousemove'
-        ,'mousedown'
-        ,'mouseup'
-        ,'touchstart'
-        ,'touchend'
-        ,'touchmove'
-        ,'touchcancel'
-        ].forEach((type)=>{
-            this.element.addEventListener(type, handleEvent, false);
-        });
-    }
-
-    public sendUIEventToSession(uievent:UIEvent, session?:SessionPort) {
-        if (session) session.send('ar.view.uievent', uievent);
-    }
-
-
-    private _setupEventSynthesizing() {
-        let currentTarget:Element|Window|undefined;
-
-        const fireMouseLeaveEvents = (target:Element|Window|undefined, relatedTarget:Element|Window|undefined, uievent:MouseEvent) => {
-            if (!target) return;
-            const eventInit:MouseEventInit = {
-                view: uievent.view,
-                clientX: uievent.clientX,
-                clientY: uievent.clientY,
-                screenX: uievent.screenX,
-                screenY: uievent.screenY,
-                relatedTarget: relatedTarget
-            };
-            // fire mouseout
-            eventInit.bubbles = true;
-            target.dispatchEvent(new MouseEvent('mouseout',eventInit));
-            // fire mouseleave events
-            eventInit.bubbles = false;
-            let el = target;
-            do { 
-                el.dispatchEvent(new MouseEvent('mouseleave',eventInit));
-                el = el['parentElement'];
-            } while (el)
         }
 
-        const fireMouseEnterEvents = (target:Element|Window, relatedTarget:Element|Window|undefined, uievent:MouseEvent) => {
-            const eventInit:MouseEventInit = {
-                view: uievent.view,
-                clientX: uievent.clientX,
-                clientY: uievent.clientY,
-                screenX: uievent.screenX,
-                screenY: uievent.screenY,
-                relatedTarget: relatedTarget
-            };
-            // fire mouseover
-            eventInit.bubbles = true;
-            target.dispatchEvent(new MouseEvent('mouseover',eventInit));
-            // fire mouseenter events
-            eventInit.bubbles = false;
-            let el = target;
-            do { 
-                el.dispatchEvent(new MouseEvent('mouseenter',eventInit));
-                el = el['parentElement'];
-            } while (el)
-        }
+        if (!defined(alphaOffset)) return;
 
-        const deserializeTouches = (touches:Touch[], target:Element|Window, uievent:TouchEvent) => {
-            touches.forEach((t, i)=>{
-                touches[i] = document.createTouch(
-                    uievent.view, target, t.identifier, 
-                    t.clientX, t.clientY, t.screenX, t.screenY
-                );
-            })
-            return touches;
-        }
-        
-        const touchTargets = {};
-        const touchStartTimes = {};
+        const alpha = CesiumMath.RADIANS_PER_DEGREE * (e.alpha + alphaOffset || -webkitCompassHeading || 0);
+        const beta = CesiumMath.RADIANS_PER_DEGREE * e.beta;
+        const gamma = CesiumMath.RADIANS_PER_DEGREE * e.gamma;
 
-        this.sessionService.manager.on['ar.view.uievent'] = (uievent:MouseEvent&WheelEvent&TouchEvent)=>{
-            (<any>uievent).view = window;
+        const alphaQuat = Quaternion.fromAxisAngle(Cartesian3.UNIT_Z, alpha, scratchQuaternion);
+        const betaQuat = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, beta, scratchQuaternion2);
+        const alphaBetaQuat = Quaternion.multiply(alphaQuat, betaQuat, scratchQuaternion);
+        const gammaQuat = Quaternion.fromAxisAngle(Cartesian3.UNIT_Y, gamma, scratchQuaternion2);
+        const alphaBetaGammaQuat = Quaternion.multiply(alphaBetaQuat, gammaQuat, scratchQuaternion);
 
-            let target;
+        deviceOrientation = Quaternion.clone(alphaBetaGammaQuat, deviceOrientation);
+        deviceOrientationHeadingAccuracy = webkitCompassAccuracy;
 
-            switch (uievent.type) {
-                case 'wheel':
-                    target = document.elementFromPoint(uievent.clientX, uievent.clientY) || window;
-                    target.dispatchEvent(new WheelEvent(uievent.type, uievent));
-                    break;
-                case 'mouseout':
-                    target = document.elementFromPoint(uievent.clientX, uievent.clientY) || window;
-                    fireMouseLeaveEvents(currentTarget, undefined, uievent);
-                    currentTarget = undefined;
-                    break;
-                case 'mouseover':
-                    target = document.elementFromPoint(uievent.clientX, uievent.clientY) || window;
-                    fireMouseEnterEvents(target, undefined, uievent);
-                    currentTarget = target;
-                    break;
-                case 'mousemove': 
-                    target = document.elementFromPoint(uievent.clientX, uievent.clientY) || window;
-                    if (target !== currentTarget) {
-                        fireMouseLeaveEvents(currentTarget, target, uievent);
-                        fireMouseEnterEvents(target, currentTarget, uievent);
-                        currentTarget = target;
-                    }
-                    target.dispatchEvent(new MouseEvent(uievent.type, uievent));
-                    break;
-                case 'touchstart':
-                    const primaryTouch = uievent.changedTouches[0];
-                    target = document.elementFromPoint(primaryTouch.clientX, primaryTouch.clientY);
-                    for (const t of (<Touch[]><any>uievent.changedTouches)) {
-                        touchTargets[t.identifier] = target;
-                        touchStartTimes[t.identifier] = performance.now();
-                    }
-                case 'touchmove':
-                case 'touchend':
-                case 'touchcancel':
-                    target = touchTargets[uievent.changedTouches[0].identifier];
-
-                    var evt = document.createEvent('TouchEvent');
-                    const touches = document.createTouchList.apply(document, deserializeTouches(<any>uievent.touches, target, uievent));
-                    const targetTouches = document.createTouchList.apply(document, deserializeTouches(<any>uievent.targetTouches, target, uievent));
-                    const changedTouches = document.createTouchList.apply(document, deserializeTouches(<any>uievent.changedTouches, target, uievent));
-                    // Safari, Firefox: must use initTouchEvent.
-                    if (typeof evt['initTouchEvent'] === "function") {
-                        evt['initTouchEvent'](
-                            uievent.type, uievent.bubbles, uievent.cancelable, uievent.view, uievent.detail,
-                            uievent.screenX, uievent.screenY, uievent.clientX, uievent.clientY,
-                            uievent.ctrlKey, uievent.altKey, uievent.shiftKey, uievent.metaKey,
-                            touches, targetTouches, changedTouches, 1.0, 0.0
-                        );
-                    } else {
-                        evt.initUIEvent(uievent.type, uievent.bubbles, uievent.cancelable, uievent.view, uievent.detail);
-                        (<any>evt).touches = touches;
-                        (<any>evt).targetTouches = targetTouches;
-                        (<any>evt).changedTouches = changedTouches;
-                    }
-
-                    if (uievent.type === 'touchend' || uievent.type == 'touchcancel') {
-                        target.dispatchEvent(evt);
-                        const primaryTouch = changedTouches[0];
-                        (<any>uievent).clientX = primaryTouch.clientX;
-                        (<any>uievent).clientY = primaryTouch.clientY;
-                        (<any>uievent).screenX = primaryTouch.screenX;
-                        (<any>uievent).screenY = primaryTouch.screenY;
-                        (<any>uievent).button = 0;
-                        (<any>uievent).detail = 1;
-                        if (uievent.type === 'touchend') {
-                            if (performance.now() - touchStartTimes[primaryTouch.identifier] < 300 && !evt.defaultPrevented) {
-                                target.dispatchEvent(new MouseEvent('mousedown'), uievent)
-                                target.dispatchEvent(new MouseEvent('mouseup'), uievent)
-                                target.dispatchEvent(new MouseEvent('click'), uievent)
-                            }
-                        } else {
-                            target.dispatchEvent(new MouseEvent('mouseout'), uievent)
-                        }
-                        for (const t of (<Touch[]><any>uievent.changedTouches)) {
-                            delete touchTargets[t.identifier];
-                            delete touchStartTimes[t.identifier];
-                        }
-                    } else {
-                        target.dispatchEvent(evt);
-                    }
-
-                    break;
-                default:                            
-                    target = document.elementFromPoint(uievent.clientX, uievent.clientY) || window;
-                    target.dispatchEvent(new MouseEvent(uievent.type, uievent));
-            }
-        };
+        // TODO: fix heading drift calculation (heading should match webkitCompassHeading)
+        // if (defined(webkitCompassHeading)) {
+        //     const q = alphaBetaGammaQuat//utils.getEntityOrientationInReferenceFrame(this.interfaceEntity, JulianDate.now(), this.locationEntity, this._scratchQuaternion1);
+        //     var heading = -Math.atan2(2*(q.w*q.z + q.x*q.y), 1 - 2*(q.y*q.y + q.z*q.z));
+        //     if (heading < 0) heading += 2*Math.PI;
+        //     const {swing,twist} = swingTwistDecomposition(alphaBetaGammaQuat, Cartesian3.UNIT_Z);
+        //     const twistAngle = 2 * Math.acos(twist.w);
+        //     console.log(twist.w + ' ' + twistAngle * CesiumMath.DEGREES_PER_RADIAN + '\n' + webkitCompassHeading);
+        //     // this._headingDrift = webkitCompassHeading - heading * CesiumMath.DEGREES_PER_RADIAN;
+        // }
     }
+
+    if ('ondeviceorientationabsolute' in window) {
+        window.addEventListener('deviceorientationabsolute', deviceOrientationListener)
+    } else if ('ondeviceorientation' in window) {
+        window.addEventListener('deviceorientation', deviceOrientationListener)
+    }
+}
+
+
+const clock = new Clock();
+const scratchTime = new JulianDate(0,0);
+
+// Enforce monotonically increasing time, and deal with 
+// clock drift by either slowing down or speeding up,
+// while never going backwards
+function tick() {
+    const secondsBeforeTick = clock.currentTime.secondsOfDay; 
+    clock.tick();
+    const secondsAfterTick = clock.currentTime.secondsOfDay;
+    const now = JulianDate.now(scratchTime);
+    const secondsDrift = JulianDate.secondsDifference(clock.currentTime, now);
+    if (secondsDrift > 0.033) {
+        const halfTimeStep = (secondsAfterTick - secondsBeforeTick) / 2;
+        clock.currentTime.secondsOfDay -= halfTimeStep;
+    } else if (secondsDrift < 0.5) {
+        JulianDate.clone(now, clock.currentTime);
+    }
+}
+
+declare class VRFrameData {
+    timestamp:number;
+
+    leftProjectionMatrix:Float32Array;
+    leftViewMatrix:Float32Array;
+
+    rightProjectionMatrix:Float32Array;
+    rightViewMatrix:Float32Array;
+
+    pose:VRPose;
 }

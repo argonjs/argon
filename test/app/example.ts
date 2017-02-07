@@ -26,7 +26,7 @@ const renderer = new THREE.WebGLRenderer({
     logarithmicDepthBuffer: true
 });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-app.view.element.appendChild(renderer.domElement);
+app.viewport.rootElement.appendChild(renderer.domElement);
 
 // app.context.setDefaultReferenceFrame(app.context.localOriginEastUpSouth);
 app.context.setDefaultReferenceFrame(app.context.localOriginEastNorthUp);
@@ -112,10 +112,9 @@ kDYZIbq+RqPwaZhg0hXpT5Fwz97y4Z5NyjAu44kiYAK2Du0Vyi1e0PMtW2ja4ZH0
 =d+oG
 -----END PGP MESSAGE-----`
 }).then((api)=>{
-    api.objectTracker.createDataSet('dataset/StonesAndChips.xml').then( (dataSet)=>{
+    api.objectTracker.createDataSetFromURI('dataset/StonesAndChips.xml').then( (id)=>{
 
-        dataSet.load().then(()=>{
-            const trackables = dataSet.getTrackables();
+        api.objectTracker.loadDataSet(id).then((trackables)=>{
             
             const stonesEntity = app.context.subscribeToEntityById(trackables['stones'].id)
             const stonesObject = new THREE.Object3D;
@@ -149,7 +148,7 @@ kDYZIbq+RqPwaZhg0hXpT5Fwz97y4Z5NyjAu44kiYAK2Du0Vyi1e0PMtW2ja4ZH0
             })
         });
         
-        api.objectTracker.activateDataSet(dataSet);
+        api.objectTracker.activateDataSet(id);
     });
 })
 
@@ -164,7 +163,7 @@ app.updateEvent.addEventListener(() => {
 })
     
 app.renderEvent.addEventListener(() => {
-    const viewport = app.view.viewport;
+    const viewport = app.viewport.current;
     renderer.setSize(viewport.width, viewport.height);
     
     for (let subview of app.view.getSubviews()) {

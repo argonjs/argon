@@ -1,19 +1,17 @@
-import { inject, Factory } from 'aurelia-dependency-injection'
+import { autoinject, inject, Factory } from 'aurelia-dependency-injection'
 import {
-    createGuid,
-    ReferenceFrame
+    createGuid
 } from './cesium/cesium-imports'
 import {
     Role,
-    DeprecatedPartialFrameState,
-    ViewState,
+    FrameState
 } from './common'
 import { SessionPort, SessionService } from './session'
-import { Event } from './utils'
-import { ContextService, PoseStatus } from './context'
-import { FocusService } from './focus'
-import { ViewService } from './view'
-import { DeviceService } from './device'
+import { Event, deprecated, decomposePerspectiveProjectionMatrix } from './utils'
+import { ContextService } from './context'
+import { FocusServiceProvider } from './focus'
+import { VisibilityServiceProvider } from './visibility'
+import { ViewportServiceProvider } from './viewport'
 
 import { RealityViewer } from './reality-viewers/base'
 import { EmptyRealityViewer } from './reality-viewers/empty'
@@ -31,43 +29,22 @@ export abstract class RealityViewerFactory {
     createRealityViewer(uri:string) : RealityViewer {
         switch (RealityViewer.getType(uri)) {
             case RealityViewer.EMPTY: 
-                var realityViewer = this._createEmptyReality();
-                realityViewer.uri = uri;
-                return realityViewer;
+                return this._createEmptyReality(uri);
             case RealityViewer.LIVE:
-                var realityViewer = this._createLiveReality();
-                realityViewer.uri = uri;
-                return realityViewer;
+                return this._createLiveReality(uri);
             case 'hosted':
-                var realityViewer = this._createHostedReality();
-                realityViewer.uri = uri;
-                return realityViewer;
+                return this._createHostedReality(uri);
             default:
-                throw new Error('Unsupported Reality Viewer URI: ' + uri)
+                throw new Error('Unsupported Reality Viewer: ' + uri)
         }
     }
 }
 
-export interface RealityViewerRequestOptions {
-    uri?: string;
-    geopose?: boolean;
-}
-
 /**
-* A service which manages the reality view. 
-* For an app developer, the RealityService instance can be used to 
-* set preferences which can affect how the manager selects a reality view.
+* A service which makes requests to manage the reality viewer.
 */
-@inject(SessionService, ContextService, FocusService, ViewService, DeviceService, RealityViewerFactory)
+@autoinject()
 export class RealityService {
-    /**
-     * Manager/Viewer-only. An event that is raised when the current reality emits the next view state.
-     */
-    public get viewStateEvent() {
-        this.sessionService.ensureNotRealityAugmenter();
-        return this._viewStateEvent;
-    }
-    private _viewStateEvent = new Event<ViewState>();
 
     /**
      * An event that is raised when a reality viewer provides a session 
@@ -82,7 +59,7 @@ export class RealityService {
     public get changeEvent() {
         return this._changeEvent;
     }
-    private _changeEvent = new Event<{ previous?: string, current?: string }>();
+    private _changeEvent = new Event<{ previous?: string, current: string }>();
 
     /**
      * The URI for the currently presenting Reality Viewer. 
@@ -93,116 +70,14 @@ export class RealityService {
     private _current?: string;
 
     /**
-     * Manager-only. An event that is raised when a reality viewer is installed.
+     * The default Reality Viewer.
      */
-    public get installedEvent() {
-        this.sessionService.ensureIsRealityManager();
-        return this._installedEvent;
-    }
-    private _installedEvent = new Event<{ uri:string }>();
-
-    /**
-     * Manager-only. An event that is raised when a reality viewer is uninstalled.
-     */
-    public get uninstalledEvent() {
-        this.sessionService.ensureIsRealityManager();
-        return this._uninstalledEvent;
-    }
-    private _uninstalledEvent = new Event<{ uri:string }>();
-
-    // /**
-    // * Manager-only. The session for the current presenting reality viewer.
-    // */
-    // public get currentSession() {
-    //     this.sessionService.ensureIsRealityManager();
-    //     return this._current ? this._sessions.get(this._current) : undefined;
-    // }
-
-    // /**
-    //  * Manager-only. A uri map of sessions for connected reality viewers. 
-    //  */
-    // public get sessions() {
-    //     this.sessionService.ensureIsRealityManager();
-    //     return this._sessions;
-    // }
-    // private _sessions = new Map<string,SessionPort>();
-
-    /**
-     * The default Reality Viewer
-     */
-    public default?: string;
-
-    public get geoposeNeeded() { return this._geoposeNeeded }
-    private _geoposeNeeded:boolean;
-    private _geoposeSubscribers = new Set<SessionPort>();
-
-    private _viewerByURI = new Map<string, RealityViewer>();
-    private _installersByURI = new Map<string, Set<SessionPort>>();
+    public default = RealityViewer.EMPTY;
 
     constructor(
         private sessionService: SessionService,
-        private contextService: ContextService,
-        private focusService: FocusService,
-        private viewService: ViewService,
-        private deviceService: DeviceService,
-        private realityViewerFactor: RealityViewerFactory) {
-
-        this._viewStateEvent.addEventListener((viewState)=>{
-            if (this.sessionService.isRealityViewer) {
-                if (this.sessionService.manager.isConnected) 
-                    this.sessionService.manager.send('ar.reality.viewState', viewState);
-                viewState.reality = 'self';
-            }
-            this.deviceService.processViewState(viewState);
-            this.contextService.processViewState(viewState);
-        });
-
-        if (sessionService.isRealityManager) {
-            sessionService.manager.connectEvent.addEventListener(() => {
-                setTimeout(() => {
-                    if (!this._current && this.default)
-                        this._request(this.sessionService.manager);
-                })
-            });
-            this.viewService.forwardedUIEvent.addEventListener((uievent)=>{
-                const viewer = this._viewerByURI.get(this.current!);
-                if (viewer) viewService.sendUIEventToSession(uievent, viewer.session);
-            });
-        } else {
-            this.contextService.frameStateEvent.addEventListener((frameState)=> {
-                this._setPresentingReality(frameState.view.reality!);
-            });
-        }
-
-        sessionService.connectEvent.addEventListener((session) => {
-            if (!Role.isRealityViewer(session.info.role)) {
-                session.on['ar.reality.install'] = ({uri}:{uri:string}) => {
-                    return this._install(session, uri);
-                };
-                session.on['ar.reality.uninstall'] = ({uri}:{uri:string}) => {
-                    return this._uninstall(session, uri);
-                };
-                session.on['ar.reality.request'] = ({options}:{options:RealityViewerRequestOptions}) => {
-                    return this._request(session, options);
-                };
-                session.on['ar.reality.desired'] = (message:{reality:{uri:string}}) => {
-                    const {reality} = message;
-                    if (reality) {
-                        if (reality['type']) { // For backwards compatability. Remove in future version. 
-                            const type = reality['type'] as string;
-                            reality.uri = reality.uri || 'reality:' + type;
-                            if (type === 'hosted') reality.uri = reality['url'];
-                        }
-                    }
-                    this._request(session, reality);
-                }
-            }
-
-            session.closeEvent.addEventListener(()=>{
-                this._geoposeSubscribers.delete(session);
-                this._checkGeoposeNeeded();
-            })
-        });
+        private contextService: ContextService
+    ) {
 
         sessionService.manager.on['ar.reality.connect'] = ({id}: { id: string }) => {
             const realityControlSession = this.sessionService.createSessionPort(id);
@@ -235,76 +110,205 @@ export class RealityService {
             });
 
             realityControlSession.open(messageChannel.port2, this.sessionService.configuration);
-        }
-    }
+        };
+        
+        let i = 0;
 
-    /**
-     * Deprecated. Use pubishViewState. 
-     * @deprecated 
-     */
-    public publishFrame(state: DeprecatedPartialFrameState) {
-        throw new Error('publishFrame is deprecated. Use publishViewState()');
+        this.contextService.frameStateEvent.addEventListener((frameState)=>{
+            if (sessionService.isRealityViewer && sessionService.manager.isConnected) {
+                
+                // backwards compatability
+                if (sessionService.manager.version[0] === 0) {
+                    const view = frameState['view'] = frameState['view'] || {};
+                    view.pose = frameState.entities['ar.eye'];
+                    view.viewport = frameState.viewport;
+                    view.subviews = frameState.subviews;
+                    for (let i=0; i < view.subviews.length; i++) {
+                        const s = view.subviews[i];
+                        s['frustum'] = decomposePerspectiveProjectionMatrix(s.projectionMatrix, <any>s['frustum'] || {})
+                    }
+                    delete frameState.entities['ar.eye'];
+                    delete frameState.viewport;
+                    delete frameState.subviews;
+
+                    // throttle for 30fps
+                    i++ % 2 === 0 && sessionService.manager.send('ar.reality.frameState', frameState);
+
+                    frameState.entities['ar.eye'] = view.pose;
+                    frameState.viewport = view.viewport;
+                    frameState.subviews = view.subviews;
+                    // delete frameState['view'];
+                } else {
+                    sessionService.manager.send('ar.reality.frameState', frameState);
+                }
+            }
+            
+            const current = frameState.reality!;
+            const previous = this._current;
+            if (previous !== current) {
+                this.changeEvent.raiseEvent({ previous, current });
+            }
+        });
     }
 
     /**
      * RealityViewer-only. Publish the next view state.
      */
-    public publishViewState(view: ViewState) {
-        this.sessionService.ensureIsRealityViewer();
-        this._viewStateEvent.raiseEvent(view);
-    }
+    // public publishViewState(viewState: ViewState) {
+    //     this.sessionService.ensureIsRealityViewer();
+    //     if (this.sessionService.isRealityViewer) {
+    //         if (this.sessionService.manager.isConnected)
+    //             this.sessionService.manager.send('ar.reality.viewState', viewState);
+    //         viewState.reality = 'self';
+    //     }
+    //     this.contextService.pushNextFrameState(viewState);
+    // }
 
     /**
      * Install the specified reality viewer
      */
     public install(uri: string) : Promise<void> {
-        this.sessionService.ensureNotRealityViewer();
+        if (this.sessionService.manager.version[0] >= 1 !== true)
+            return Promise.reject(new Error('Not supported'))
         return this.sessionService.manager.request('ar.reality.install', {uri});
     }
+    
+    /**
+     * Uninstall the specified reality viewer
+     */
+    public uninstall(uri: string): Promise<void> {
+        if (this.sessionService.manager.version[0] >= 1 !== true)
+            return Promise.reject(new Error('Not supported'))
+        return this.sessionService.manager.request('ar.reality.uninstall', {uri});
+    }
 
-    protected _install(session:SessionPort, uri:string) {
+    /**
+     * Request a reality viewer to be presented. 
+     * - Pass a url to request a (custum) hosted reality viewer
+     * - [[RealityViewer.DEFAULT]] to request the system default reality viewer
+     * - [[RealityViewer.LIVE]] to request a live reality viewer 
+     * - [[RealityViewer.EMPTY]] to request an empty reality viewer
+     */
+    public request(uri:string): Promise<void> {
+        if (this.sessionService.manager.version[0] >= 1 !== true)
+            return this.sessionService.manager.request('ar.reality.desired', {reality:{uri}});
+        return this.sessionService.manager.request('ar.reality.request', {uri});
+    }
+
+    /**
+     * Deprecated. Use [[RealityService#request]]
+     * @deprecated
+     */
+    @deprecated('request')
+    public setDesired(reality: {uri:string} | undefined) {
+        this.request(reality ? reality.uri : RealityViewer.DEFAULT);
+    }
+
+}
+
+@autoinject
+export class RealityServiceProvider {
+
+    /**
+     * An event that is raised when a reality viewer is installed.
+     */
+    public installedEvent = new Event<{ viewer:RealityViewer }>();
+
+    /**
+     * An event that is raised when a reality viewer is uninstalled.
+     */
+    public uninstalledEvent = new Event<{ viewer:RealityViewer }>();
+
+    public get presentingRealityViewer() { return this._presentingRealityViewer }
+    private _presentingRealityViewer:RealityViewer|undefined;
+
+    private _viewerByURI = new Map<string, RealityViewer>();
+    private _installersByURI = new Map<string, Set<SessionPort>>();
+
+    constructor(
+        private sessionService:SessionService,
+        private realityService:RealityService,
+        private contextService:ContextService,
+        private viewportServiceProvider:ViewportServiceProvider,
+        private visibilityServiceProvider:VisibilityServiceProvider,
+        private focusServiceProvider: FocusServiceProvider,
+        private realityViewerFactory:RealityViewerFactory,
+    ) {
+        sessionService.ensureIsRealityManager();
+        
+        sessionService.manager.connectEvent.addEventListener(() => {
+            setTimeout(() => {
+                if (!this._presentingRealityViewer && this.realityService.default)
+                    this._handleRequest(this.sessionService.manager, {
+                        uri:this.realityService.default
+                    });
+            });
+        });
+
+        sessionService.manager.closeEvent.addEventListener(()=>{
+            this._viewerByURI.forEach((v)=>{
+                v.destroy();
+            });
+        });
+
+        sessionService.connectEvent.addEventListener((session) => {
+            if (!Role.isRealityViewer(session.info.role)) {
+                session.on['ar.reality.install'] = ({uri}:{uri:string}) => {
+                    return this._handleInstall(session, uri);
+                };
+                session.on['ar.reality.uninstall'] = ({uri}:{uri:string}) => {
+                    return this._handleUninstall(session, uri);
+                };
+                session.on['ar.reality.request'] = (message:{uri:string}) => {
+                    return this._handleRequest(session, message);
+                };
+                // For backwards compatability. 
+                session.on['ar.reality.desired'] = (message:{reality:{uri:string}}) => {
+                    const {reality} = message;
+                    if (reality) {
+                        if (reality['type']) {
+                            const type = reality['type'] as string;
+                            reality.uri = reality.uri || 'reality:' + type;
+                            if (type === 'hosted') reality.uri = reality['url'];
+                        }
+                    }
+                    this._handleRequest(session, {uri:reality.uri});
+                }
+            }
+        });
+        
+        this.viewportServiceProvider.forwardedUIEvent.addEventListener((uievent)=>{
+            const session = this._presentingRealityViewer && this._presentingRealityViewer.session;
+            if (session) viewportServiceProvider.sendUIEventToSession(uievent, session);
+        });
+    }
+
+    private _handleInstall(session:SessionPort, uri:string) {
         let installers = this._installersByURI.get(uri);
-        this._installersByURI.set(uri, installers);
 
         if (installers) {
             installers.add(session);
         } else {
-            const viewer = this.realityViewerFactor.createRealityViewer(uri);
+            const viewer = this.realityViewerFactory.createRealityViewer(uri);
             this._viewerByURI.set(uri, viewer);
 
             installers = new Set<SessionPort>();
             installers.add(session);
             this._installersByURI.set(uri, installers);
-            
-            viewer.load();
-            const viewerSession = viewer.session;
 
-            if (viewerSession.isConnected) throw new Error('Expected an unconnected session');
-
-            viewerSession.on['ar.reality.viewState'] = (view: ViewState) => {
-                this.contextService.updateEntityFromSerializedPose(viewerSession.uri!, view.pose);
-                if (this._current === uri) {
-                    view.reality = uri;
-                    this._viewStateEvent.raiseEvent(view);
-                }
-            }
-
-            // Deprecated. Remove after v1.2
-            viewerSession.on['ar.reality.frameState'] = (serializedState: DeprecatedPartialFrameState) => {
-            }
-
-            viewerSession.closeEvent.addEventListener(() => {
-                this.contextService.entities.removeById(viewerSession.uri);
-                console.log('Reality session closed: ' + uri);
-            })
-
-            viewerSession.connectEvent.addEventListener(() => {
-                if (!viewerSession.uri) throw new Error('RealityViewer session must have a uri');
+            viewer.connectEvent.addEventListener((viewerSession)=>{
 
                 if (!Role.isRealityViewer(viewerSession.info.role)) {
                     viewerSession.sendError({ message: "Expected a reality viewer" });
                     viewerSession.close();
                     throw new Error('The application "' + viewerSession.uri + '" does not support being loaded as a reality viewer');
+                }
+
+                viewerSession.on['ar.reality.frameState'] = (frame: FrameState) => {
+                    if (this._presentingRealityViewer === viewer) {
+                        frame.reality = viewer.uri;
+                        this.contextService.submitFrameState(frame);
+                    }
                 }
 
                 if (viewerSession.info['supportsCustomProtocols']) {
@@ -313,15 +317,29 @@ export class RealityService {
                     for (session of this.sessionService.managedSessions) {
                         this._connectViewerWithSession(viewerSession, session);
                     }
+
                     const remove = this.sessionService.connectEvent.addEventListener((session)=>{
                         this._connectViewerWithSession(viewerSession, session);
                     })
+                    
                     viewerSession.closeEvent.addEventListener(()=>remove());
                 }
+
+                const removePresentChangeListener = viewer.presentChangeEvent.addEventListener(()=>{
+                    this.visibilityServiceProvider.set(viewerSession, viewer.isPresenting)
+                });
+
+                this.visibilityServiceProvider.set(viewerSession, viewer.isPresenting);
+
+                viewerSession.closeEvent.addEventListener(() => {
+                    removePresentChangeListener();
+                    this.contextService.entities.removeById(viewerSession.uri);
+                    console.log('Reality session closed: ' + uri);
+                });
             });
 
-            this._viewerByURI.set(uri, viewer);
-            this._installedEvent.raiseEvent({uri});
+            viewer.load();
+            this.installedEvent.raiseEvent({viewer});
         }
     }
 
@@ -353,129 +371,55 @@ export class RealityService {
             viewerSession.close();
         })
     }
-    
-    /**
-     * Uninstall the specified reality viewer
-     */
-    public uninstall(uri: string): Promise<void> {
-        this.sessionService.ensureNotRealityViewer();
-        return this.sessionService.manager.request('ar.reality.uninstall', {uri});
-    }
 
-    protected _uninstall(session: SessionPort, uri:string) {
+    protected _handleUninstall(session: SessionPort, uri:string) {
         const installers = this._installersByURI.get(uri);
         if (installers) {
             if (installers.size === 0) {
                 const viewer = this._viewerByURI.get(uri)!;
                 this._viewerByURI.delete(uri);
-                viewer.session.close();
                 viewer.destroy();
-                this._uninstalledEvent.raiseEvent({uri});
+                this.uninstalledEvent.raiseEvent({viewer});
             }
         }
         return Promise.reject(new Error("Unable to uninstall a reality viewer which is not installed"));
     }
 
-    /**
-     * Request that the provided reality viewer be presented. Pass `undefined` to 
-     * hint that the manager should select the best available viewer.
-     */
-    public request(options: RealityViewerRequestOptions|string|undefined): Promise<void> {
-        this.sessionService.ensureNotRealityViewer();
-        if (typeof options === 'string') options = {uri:options};
-        return this.sessionService.manager.request('ar.reality.request', {options});
-    }
+    protected _handleRequest(session: SessionPort, options:{uri:string}) : Promise<void> {
+        if (this.focusServiceProvider.session === session || session === this.sessionService.manager) {
+            
+            let uri = options && options.uri || RealityViewer.DEFAULT;
 
-    protected _request(session: SessionPort, options?: RealityViewerRequestOptions) {
-        if (options && options.geopose) {
-            this._geoposeSubscribers.add(session);
-            this._checkGeoposeNeeded();
-        } else {
-            this._geoposeSubscribers.delete(session);
-            this._checkGeoposeNeeded();
-        }
-
-        if (this.focusService.session === session || session === this.sessionService.manager) {
-            if (!options) options = {uri: this.default};
-            if (options && options.uri) {
-                let viewer = this._viewerByURI.get(options.uri);
-                if (!viewer) {
-                    this._install(session, options.uri);
-                }
-                this._setPresentingReality(options.uri);
-                return;
-            } else if (options && options.geopose) {
-                const geoposeSessionChecks:Array<Promise<void>> = [];
-                for (const viewer of <RealityViewer[]><any>this._viewerByURI.values()) {
-                    geoposeSessionChecks.push(
-                        this._checkViewerSessionForGeoposeSupport(viewer.session)
-                    );
-                }
-                return Promise.all<SessionPort|undefined>(geoposeSessionChecks).then(results => {
-                    const geoposeSessions = results.filter(session => session !== undefined);
-                    if (geoposeSessions.length > 0) {
-                        return geoposeSessions[0];
-                    }
-                    throw new Error('No installed viewers have geopose support');
-                });
+            switch (uri) {
+                case RealityViewer.DEFAULT: 
+                    uri = this.realityService.default;
             }
+            
+            let viewer = this._viewerByURI.get(uri);
+            if (!viewer) {
+                this._handleInstall(session, uri);
+            }
+            this._setPresentingRealityViewer(this._viewerByURI.get(uri)!);
+
+            return Promise.resolve();
         }
+
         throw new Error('Request Denied');
     }
 
-    private _checkViewerSessionForGeoposeSupport(viewerSession:SessionPort) : Promise<SessionPort|undefined> { 
-        const uri = viewerSession.uri!;
-        if (RealityViewer.getType(uri) === 'hosted') {
-            const viewerEye = this.contextService.entities.getById(uri);
-            if (!viewerEye) 
-                return Promise.resolve(undefined);
-            const viewerPose = this.contextService.getEntityPose(viewerEye, ReferenceFrame.FIXED);
-            if (viewerPose.poseStatus & PoseStatus.KNOWN) 
-                return Promise.resolve(viewerSession);
-            return Promise.resolve(undefined);
-        }
-        return this.deviceService.hasGeoposeCapability().then((has) => {
-            return has ? viewerSession : undefined
+    private _setPresentingRealityViewer(viewer: RealityViewer) {
+        if (!viewer) throw new Error('Invalid State. Expected a RealityViewer instance');
+        if (this._presentingRealityViewer === viewer) return;
+    
+        this._viewerByURI.forEach((v)=>{
+            v.setPresenting(v === viewer);
         });
-    }
 
-    private _checkGeoposeNeeded() {
-        if (!this._geoposeNeeded && this._geoposeSubscribers.size > 0) {
-            this._geoposeNeeded = true;
-            this.deviceService.startGeolocationUpdates();
-            this.deviceService.startOrientationUpdates();
-        } else if (this._geoposeNeeded && this._geoposeSubscribers.size === 0) {
-            this._geoposeNeeded = false;
-            this.deviceService.stopGeolocationUpdates();
-            this.deviceService.stopOrientationUpdates();
-        }
-    }
-
-    /**
-     * @private
-     */
-    public setDesired(reality: {uri:string} | undefined) {
-        this.sessionService.ensureNotRealityViewer();
-        console.warn('RealityService#setDesired is deprecated. Use RealityService#request')
-        this.request(reality);
-    }
-
-    private _setPresentingReality(uri: string) {
-        if (!(this._current && this._current === uri)) {
-            this._viewerByURI.forEach((v)=>{
-                v.setPresenting(v.uri === uri);
-            });
-
-            const previous = this._current;
-            this._current = uri;
-            this.changeEvent.raiseEvent({ previous, current: uri });
-            if (this.sessionService.isRealityManager)
-                console.log('Reality changed to: ' + uri);
-        }
+        this._presentingRealityViewer = viewer;
+        console.log('Presenting reality viewer changed to: ' + viewer.uri);
     }
 
     public getViewerByURI(uri: string) {
         return this._viewerByURI.get(uri);
     }
-
 }

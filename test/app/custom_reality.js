@@ -1,3 +1,4 @@
+// import * as Argon from 'argon'
 import * as Argon from '../../src/argon';
 window['Argon'] = Argon;
 export const app = Argon.initRealityViewer();
@@ -13,7 +14,7 @@ const renderer = new THREE.WebGLRenderer({
     logarithmicDepthBuffer: true
 });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-app.view.element.appendChild(renderer.domElement);
+app.viewport.element.appendChild(renderer.domElement);
 // app.context.defaultReferenceFrame = app.context.localOriginEastUpSouth;
 app.context.defaultReferenceFrame = app.context.localOriginEastNorthUp;
 const geometry = new THREE.SphereGeometry(30, 32, 32);
@@ -50,19 +51,14 @@ axisHelper.position.y = -50;
 var perspectiveProjection = new Argon.Cesium.PerspectiveFrustum();
 perspectiveProjection.fov = Math.PI / 2;
 function update(time) {
-    const pose = Argon.getSerializedEntityPose(app.device.eye, time);
-    app.reality.publishViewState({
-        time,
-        pose,
-        viewport: app.device.viewport,
-        subviews: app.device.subviews,
-        geolocationAccuracy: undefined,
-        altitudeAccuracy: undefined,
-        compassAccuracy: undefined
-    });
-    app.device.requestFrame(update);
+    app.view.requestAnimationFrame(update);
+    const suggestedViewState = app.view.suggestedViewState;
+    if (!suggestedViewState)
+        return;
+    const frameState = app.context.createFrameState(time, suggestedViewState.viewport, suggestedViewState.subviews, app.view.eye);
+    app.context.submitFrameState(frameState);
 }
-app.device.requestFrame(update);
+app.view.requestAnimationFrame(update);
 app.updateEvent.addEventListener(() => {
     const userPose = app.context.getEntityPose(app.context.user);
     if (userPose.poseStatus & Argon.PoseStatus.KNOWN) {
@@ -72,7 +68,7 @@ app.updateEvent.addEventListener(() => {
     }
 });
 app.renderEvent.addEventListener(() => {
-    const viewport = app.view.viewport;
+    const viewport = app.viewport.current;
     renderer.setSize(viewport.width, viewport.height);
     for (let subview of app.view.getSubviews()) {
         camera.position.copy(subview.pose.position);

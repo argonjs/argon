@@ -1,5 +1,4 @@
-import { SerializedEntityPose } from './common'
-import CesiumEvent from 'cesium/Source/Core/Event';
+import { SerializedEntityState } from './common'
 import {
     defined,
     Entity,
@@ -16,151 +15,22 @@ import {
     Matrix4
 } from './cesium/cesium-imports'
 
-/**
- * A callback for removing the event listener.
- */
-export type RemoveCallback = () => void;
+export * from './utils/command-queue';
+export * from './utils/event';
+export * from './utils/message-channel';
+export {default as synthesizeEvent} from './utils/ui-event-synthesizer';
+export {default as createEventForwarder} from './utils/ui-event-forwarder';
 
 /**
- * Provides the ability raise and subscribe to an event.
- */
-export class Event<T> {
-
-    private _event = new CesiumEvent();
-    /**
-     * Get the number of listeners currently subscribed to the event.
-     * @return Number of listeners currently subscribed to the event.
-     */
-    get numberOfListeners() {
-        return this._event.numberOfListeners;
-    }
-
-    /**
-      * Add an event listener.
-      * @param The function to be executed when the event is raised.
-      * @return A convenience function which removes this event listener when called
-      */
-    addEventListener(listener: (data: T) => void): RemoveCallback {
-        return this._event.addEventListener(listener);
-    }
-
-    /**
-     * Remove an event listener.
-     * @param The function to be unregistered.
-     * @return True if the listener was removed; 
-     * false if the listener and scope are not registered with the event.
-     */
-    removeEventListener(listener: (data: T) => void): boolean {
-        return this._event.removeEventListener(listener);
-    }
-
-    /**
-     * Raises the event by calling each registered listener with all supplied arguments.
-     * @param This method takes any number of parameters and passes them through to the listener functions.
-     */
-    raiseEvent(data: T): void {
-        this._event.raiseEvent(data);
-    }
-
-}
-
-/**
-* TODO.
-*/
-export class CommandQueue {
-    private _queue: Array<{ command: Function, execute: Function, reject: (reason: any) => void }> = [];
-    private _currentCommand: Function | undefined;
-    private _currentCommandPending: Promise<any> | undefined;
-    private _paused = true;
-
-    /**
-     * An error event.
-     */
-    public errorEvent = new Event<Error>();
-
-    /**
-     * If errorEvent has 1 listener, outputs the error message to the web console.
-     */
-    constructor() {
-        this.errorEvent.addEventListener((error) => {
-            if (this.errorEvent.numberOfListeners === 1) console.error(error);
-        })
-    }
-
-    /**
-     * Push a command to the command queue.
-     * @param command Any command ready to be pushed into the command queue.
-     */
-    public push<TResult>(command: () => TResult, execute?: boolean): Promise<TResult> {
-        const result = new Promise<TResult>((resolve, reject) => {
-            this._queue.push({
-                command,
-                reject,
-                execute: () => {
-                    // console.log('CommandQueue: Executing command ' + command.toString());
-                    const result = Promise.resolve().then(command);
-                    // result.then(() => { console.log('CommandQueue: DONE ' + command.toString()) });
-                    resolve(result);
-                    return result;
-                }
-            });
-        });
-        if (execute) this.execute();
-        return result;
-    }
-
-    /**
-     * Execute the command queue
-     */
-    public execute() {
-        this._paused = false;
-        Promise.resolve().then(() => {
-            if (this._queue.length > 0 && !this._currentCommandPending) {
-                this._executeNextCommand();
-            }
-        });
-    }
-
-    /**
-     * Puase the command queue (currently executing commands will still complete)
-     */
-    public pause() {
-        this._paused = true;
-    }
-
-    /**
-     * Clear commandQueue.
-     */
-    public clear() {
-        this._queue.forEach((item) => {
-            item.reject("Unable to execute.")
-        })
-        this._queue = [];
-    }
-
-    private _executeNextCommand() {
-        this._currentCommand = undefined;
-        this._currentCommandPending = undefined;
-        if (this._paused) return;
-        const item = this._queue.shift();
-        if (!item) return;
-        this._currentCommand = item.command;
-        this._currentCommandPending = item.execute()
-            .then(this._executeNextCommand.bind(this))
-            .catch((e) => {
-                this.errorEvent.raiseEvent(e);
-                this._executeNextCommand();
-            });
-    }
-}
-
-/**
- * Get array of ancestor reference frames of a Cesium Entity.
+ * Get array of ancestor reference frames of a Cesium Entity, ordered from 
+ * farthest ancestor to the passed frame.
  * @param frame A Cesium Entity to get ancestor reference frames.
  * @param frames An array of reference frames of the Cesium Entity.
  */
-export function getAncestorReferenceFrames(frame: Entity) {
-    const frames: Array<Entity | ReferenceFrame> = [];
+export function getAncestorReferenceFrames(frame: Entity, result=[]) {
+    const frames: Array<Entity | ReferenceFrame> = result;
+    frames.length = 0;
+    frames.unshift(frame);
     let f: Entity | ReferenceFrame | undefined = frame;
     do {
         let position: PositionProperty | undefined = (f as Entity).position;
@@ -232,6 +102,8 @@ export const getEntityOrientation = getEntityOrientationInReferenceFrame;
 //         return OrientationProperty.convertToReferenceFrame(time, fixedOrientation, ReferenceFrame.FIXED, referenceFrame, result)
 //     }
 
+const _scratchFramesArray = [];
+
 /**
  * Create a SerializedEntityPose from a source entity. 
  * @param entity The entity which the serialized pose represents. 
@@ -241,15 +113,15 @@ export const getEntityOrientation = getEntityOrientationInReferenceFrame;
  * serialized according to the furthest ancestor frame that resolves to a valid pose.
  * @return An EntityPose object with orientation, position and referenceFrame.
  */
-export function getSerializedEntityPose(entity: Entity, time: JulianDate, frame?: ReferenceFrame | Entity): SerializedEntityPose | undefined {
+export function getSerializedEntityState(entity: Entity, time: JulianDate, frame?: ReferenceFrame | Entity): SerializedEntityState | undefined {
     let frames:(ReferenceFrame|Entity|undefined)[]|undefined = undefined;
     
     if (!defined(frame)) {
-        frames = getAncestorReferenceFrames(entity);
+        frames = getAncestorReferenceFrames(entity, _scratchFramesArray);
         frame = frames[0];
     }
 
-    if (!defined(frame)) return;
+    if (!defined(frame)) return undefined;
 
     const p = getEntityPositionInReferenceFrame(entity, time, frame, <Cartesian3>{});
     if (!p && !frames) return undefined;
@@ -260,13 +132,14 @@ export function getSerializedEntityPose(entity: Entity, time: JulianDate, frame?
         return {
             p,
             o,
-            r: typeof frame === 'number' ? frame : frame.id
+            r: typeof frame === 'number' ? frame : frame.id,
+            meta: typeof frame !== 'number' ? frame['meta'] : undefined
         };
     } else if (frames) {
         for (let i=1; i<frames.length; i++) {
             frame = frames[i];
             if (!defined(frame)) return undefined;
-            const result = getSerializedEntityPose(entity, time, frame);
+            const result = getSerializedEntityState(entity, time, frame);
             if (result) return result;
         }
     }
@@ -332,218 +205,6 @@ export function resolveElement(elementOrSelector:string|HTMLElement) {
                 resolveElement();
             }
         })
-    }
-}
-
-
-
-/**
- * Returns a viewport that reflects the size of the current window
- */
-export function getWindowViewport() {
-    if (typeof document !== 'undefined' && document.documentElement) {
-        return {
-            x: 0,
-            y: 0,
-            width: document.documentElement.clientWidth,
-            height: document.documentElement.clientHeight
-        }
-    }
-    throw new Error("Not implemeneted for the current platform");
-}
-
-
-/**
- * A minimal MessageEvent interface.
- */
-export declare class MessageEventLike {
-    constructor(data: any);
-    data: any;
-}
-
-/**
- * A minimal MessagePort interface.
- */
-export interface MessagePortLike {
-
-    /**
-      * A callback for handling incoming messages.
-      */
-    onmessage?: (ev: MessageEventLike) => any;
-
-    /**
-     * Send a message through this message port.
-     * @param message The message needed to be posted.
-     */
-    postMessage(message?: any): void;
-
-    /**
-     * Close this message port. 
-     */
-    close?: () => void;
-}
-
-/**
- * A MessageChannel pollyfill. 
- */
-export class MessageChannelLike {
-
-    /**
-     * The first port.
-     */
-    public port1: MessagePortLike;
-
-    /**
-     * The second port.
-     */
-    public port2: MessagePortLike;
-
-    /**
-     * Create a MessageChannelLike instance. 
-     */
-    constructor() {
-        const messageChannel = this;
-        let _portsOpen = true;
-
-        let _port1ready: Promise<{}>;
-        let _port2ready: Promise<{}>;
-
-        let _port1onmessage: (messageEvent: MessageEventLike) => void;
-        _port1ready = new Promise((resolve) => {
-            messageChannel.port1 = {
-                set onmessage(func) {
-                    _port1onmessage = func;
-                    resolve();
-                },
-                get onmessage() {
-                    return _port1onmessage;
-                },
-                postMessage(data: any) {
-                    if (_portsOpen) {
-                        _port2ready.then(() => {
-                            if (messageChannel.port2.onmessage)
-                                messageChannel.port2.onmessage({ data });
-                        })
-                    }
-                },
-                close() {
-                    _portsOpen = false;
-                }
-            }
-        });
-
-        let _port2onmessage: (messageEvent: MessageEventLike) => void;
-        _port2ready = new Promise((resolve) => {
-            messageChannel.port2 = <MessagePortLike>{
-                set onmessage(func) {
-                    _port2onmessage = func;
-                    resolve();
-                },
-                get onmessage() {
-                    return _port2onmessage;
-                },
-                postMessage(data: any) {
-                    if (_portsOpen) {
-                        _port1ready.then(() => {
-                            if (messageChannel.port1.onmessage)
-                                messageChannel.port1.onmessage({ data });
-                        })
-                    }
-                },
-                close() {
-                    _portsOpen = false;
-                }
-            }
-        });
-
-    }
-}
-
-
-/**
- * A synchronous MessageChannel. 
- */
-export class SynchronousMessageChannel {
-
-    /**
-     * The first port.
-     */
-    public port1: MessagePortLike;
-
-    /**
-     * The second port.
-     */
-    public port2: MessagePortLike;
-
-    /**
-     * Create a MessageChannelLike instance. 
-     */
-    constructor() {
-        const messageChannel = this;
-
-        let pendingMessages1: any[] = []
-        let onmessage1 = function(message) {
-            pendingMessages1.push(message);
-        }
-        messageChannel.port1 = {
-            get onmessage() { return onmessage1 },
-            set onmessage(func) {
-                onmessage1 = func;
-                pendingMessages1.forEach((data) => func(data))
-                pendingMessages1 = [];
-            },
-            postMessage(data: any) {
-                if (messageChannel.port2.onmessage)
-                    messageChannel.port2.onmessage({ data });
-            },
-            close() {
-                messageChannel.port1.onmessage = undefined;
-                messageChannel.port2.onmessage = undefined;
-            }
-        }
-
-        let pendingMessages2: any[] = []
-        let onmessage2 = function(message) {
-            pendingMessages2.push(message);
-        }
-        messageChannel.port2 = <MessagePortLike>{
-            get onmessage() { return onmessage2 },
-            set onmessage(func) {
-                onmessage2 = func;
-                pendingMessages2.forEach((data) => func(data))
-                pendingMessages2 = [];
-            },
-            postMessage(data: any) {
-                if (messageChannel.port1.onmessage)
-                    messageChannel.port1.onmessage({ data });
-            },
-            close() {
-                messageChannel.port1.onmessage = undefined;
-                messageChannel.port2.onmessage = undefined;
-            }
-        }
-    }
-}
-
-/**
- * A factory which creates MessageChannel or MessageChannelLike instances, depending on
- * wheter or not MessageChannel is avaialble in the execution context. 
- */
-export class MessageChannelFactory {
-
-    /**
-     * Create a MessageChannel (or MessageChannelLike) instance.
-     */
-    public create(): MessageChannelLike {
-        if (typeof MessageChannel !== 'undefined') return new MessageChannel()
-        else return new MessageChannelLike();
-    }
-
-    /**
-     * Create a SynchronousMessageChannel instance.
-     */
-    public createSynchronous(): SynchronousMessageChannel {
-        return new SynchronousMessageChannel()
     }
 }
 
@@ -651,7 +312,7 @@ export function openInArgonApp() {
 
 var lastTime = 0;
 export const requestAnimationFrame = 
-    (window && window.requestAnimationFrame) ? 
+    (typeof window !== 'undefined' && window.requestAnimationFrame) ? 
     window.requestAnimationFrame.bind(window) : (callback) => {
     var currTime = performance.now();
     var timeToCall = Math.max(0, 16 - (currTime - lastTime));
@@ -659,4 +320,36 @@ export const requestAnimationFrame =
         timeToCall);
     lastTime = currTime + timeToCall;
     return id;
+}
+
+
+export function deprecated(alternative?: string) : MethodDecorator {
+    let didPrintWarning = false;
+
+    const decorator = (target, name:string, descriptor:PropertyDescriptor) => {
+        const original = descriptor.get || descriptor.value;
+        const originalType = typeof descriptor.value === 'function' ? 'function' : 'property';
+
+        let message = `The "${name}" ${originalType} is deprecated. `;
+
+        if (alternative) {
+            const alternativeType = typeof target[alternative] === 'function' ? 'function' : 'property'
+            message += `Please use the "${alternative}" ${alternativeType} instead.`
+        }
+        
+        const wrapped = function() {
+            if (!didPrintWarning) {
+                console.warn(message);
+                didPrintWarning = true;
+            }
+            return original!.apply(this, arguments);
+        };
+
+        if (descriptor.value) descriptor.value = wrapped
+        else descriptor.get = wrapped;
+
+        return descriptor;
+    };
+
+    return decorator;
 }

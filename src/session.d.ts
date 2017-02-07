@@ -1,6 +1,6 @@
 import { Configuration } from './common';
 import { Event, MessageChannelFactory, MessagePortLike, MessageChannelLike, SynchronousMessageChannel } from './utils';
-import { version } from '../package.json!';
+import { version } from '../package.json';
 export { version };
 export interface Message {
     [key: string]: any;
@@ -26,7 +26,7 @@ export interface ErrorMessage {
  * Provides two-way communication between two [[SessionPort]] instances.
  */
 export declare class SessionPort {
-    uri?: string;
+    uri: string;
     /**
      * An event which fires when a connection has been
      * established to the other [[SessionPort]].
@@ -53,6 +53,11 @@ export declare class SessionPort {
      * Describes the configuration of the connected session.
      */
     info: Configuration;
+    /**
+     * The version of argon.js which is used by the connecting session.
+     * This property is an empty array until the session connects.
+     */
+    version: number[];
     static OPEN: string;
     static CLOSE: string;
     static ERROR: string;

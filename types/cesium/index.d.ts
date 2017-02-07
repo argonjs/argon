@@ -86,6 +86,10 @@ declare module 'cesium/Source/DataSources/Entity' {
     import { Entity } from 'cesium';
     export default Entity;
 }
+declare module 'cesium/Source/Core/FeatureDetection' {
+    import { FeatureDetection } from 'cesium';
+    export default FeatureDetection;
+}
 declare module 'cesium/Source/DataSources/EntityCollection' {
     import { EntityCollection } from 'cesium';
     export default EntityCollection;
@@ -459,7 +463,7 @@ declare module 'cesium' {
         static fromRadians(longitude: number, latitude: number, height?: number, result?: Cartographic): Cartographic;
         static fromCartesian(cartesian:Cartesian3, ellipsoid?:Ellipsoid, result?:Cartographic): Cartographic|undefined;
         static fromDegrees(longitude: number, latitude: number, height?: number, result?: Cartographic): Cartographic;
-        static clone(cartographic: Cartographic, result?: Cartographic): Cartographic;
+        static clone(cartographic: Cartographic, result?: Cartographic): Cartographic|undefined;
         static equals(left?: Cartographic, right?: Cartographic): boolean;
         static equalsEpsilon(left: Cartographic, right: Cartographic, epsilon: number): boolean;
     }
@@ -4449,11 +4453,25 @@ declare module 'cesium' {
         HOLD,
         EXTRAPOLATE,
     }
-
+    
     module FeatureDetection {
-        function supportsFullscreen();
-        function supportsTypedArrays();
-        function supportsWebWorkers();
+        function isChrome() : boolean
+        function chromeVersion() : Array<number>|undefined
+        function isSafari() : boolean
+        function safariVersion() : Array<number>|undefined
+        function isWebkit() : boolean
+        function webkitVersion() : (Array<number>&{isNightly:boolean})|undefined
+        function isInternetExplorer() : boolean
+        function internetExplorerVersion() : Array<number>|undefined
+        function isEdge() : boolean
+        function edgeVersion() : Array<number>|undefined
+        function isFirefox() : boolean
+        function firefoxVersion() : Array<number>|undefined
+        function isWindows() : boolean
+        function hardwareConcurrency() : number
+        function supportsPointerEvents() : boolean
+        function supportsImageRenderingPixelate() : boolean
+        function imageRenderingValue() : boolean
     }
 
     enum Fullscreen {

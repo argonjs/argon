@@ -1,14 +1,13 @@
 import { inject } from 'aurelia-dependency-injection'
 import { JulianDate } from '../cesium/cesium-imports'
-import { Role, ViewState } from '../common'
-import { SessionService } from '../session'
-import { DeviceService } from '../device'
+import { Role } from '../common'
+import { SessionService, SessionPort } from '../session'
 import { ViewService } from '../view'
-import { VuforiaServiceDelegate } from '../vuforia'
-import * as utils from '../utils'
+import { ViewportService } from '../viewport'
+import { ContextService } from '../context'
 import { RealityViewer } from './base'
 
-@inject(SessionService, VuforiaServiceDelegate, ViewService, DeviceService)
+@inject(SessionService, ViewportService, ViewService, ContextService)
 export class LiveRealityViewer extends RealityViewer {
 
     public videoElement: HTMLVideoElement;
@@ -22,11 +21,11 @@ export class LiveRealityViewer extends RealityViewer {
 
     constructor(
         private sessionService: SessionService,
-        private vuforiaDelegate: VuforiaServiceDelegate,
+        private viewportService: ViewportService,
         private viewService: ViewService,
-        private deviceService: DeviceService,
+        private contextService: ContextService,
         public uri:string) {
-        super(sessionService, uri);
+        super(uri);
 
         if (typeof document !== 'undefined') {
             this.settingsIframe = document.createElement('iframe');
@@ -44,36 +43,48 @@ export class LiveRealityViewer extends RealityViewer {
             this.videoElement.autoplay = true;
             this.videoElement.style.display = 'none';
 
-            const viewElement = this.viewService.element;
+            const viewElement = this.viewportService.element;
             viewElement.insertBefore(this.settingsIframe, viewElement.firstChild);
             viewElement.insertBefore(this.videoElement, viewElement.firstChild);
 
             this.canvas = document.createElement('canvas');
             this.context = this.canvas.getContext('2d')!;
+
+            window.addEventListener('message', (event) => {
+                const origin = event.origin;
+                if (origin === 'http://argonjs.io') {
+                    this.videoFov = event.data; // TODO: this is not flexible. Should be passing an object with message type and data
+                }
+            });
         }
+
+        this.presentChangeEvent.addEventListener(()=>{
+            if (typeof document !== 'undefined') {
+                this.videoElement.style.display = this.isPresenting ? 'initial' : 'none';
+            }
+        })
     }
 
     public destroy() {
-        this.settingsIframe.remove();
-        this.videoElement.remove();
-        this.canvas.remove();
+        super.destroy();
+        if (typeof document !== 'undefined') {
+            this.settingsIframe.remove();
+            this.videoElement.remove();
+            this.canvas.remove();
+        }
     }
 
-    public setPresenting(foo:boolean) {
-        this.videoElement.style.display = foo ? 'initial' : 'none';
-    }
+    protected setupInternalSession(session:SessionPort) {
+        session.on['ar.device.state'] = () => { };
+        session.on['ar.visibility.state'] = () => { };
+        session.on['ar.focus.state'] = () => { };
+        session.on['ar.viewport.presentationMode'] = () => { };
+        session.on['ar.viewport.uievent'] = () => { };
+        session.on['ar.view.suggestedViewState'] = () => { };
+        session.on['ar.context.update'] = () => { };
+        session.on['ar.reality.connect'] = () => { };
 
-    public load(): void {
-        super.load();
-        const realitySession = this.session;
-        const remoteRealitySession = this.sessionService.createSessionPort(this.uri);
-
-        remoteRealitySession.on['ar.device.state'] = () => { };
-        remoteRealitySession.on['ar.view.uievent'] = () => { };
-        remoteRealitySession.on['ar.context.update'] = () => { };
-        remoteRealitySession.on['ar.reality.connect'] = () => { };
-
-        remoteRealitySession.connectEvent.addEventListener(() => {
+        session.connectEvent.addEventListener(() => {
             if (this.videoElement) {
                 const videoElement = this.videoElement!;
                 const mediaDevices = navigator.mediaDevices;
@@ -81,17 +92,31 @@ export class LiveRealityViewer extends RealityViewer {
                     mediaDevices['msGetUserMedia'] || mediaDevices['webkitGetUserMedia']).bind(mediaDevices);
                 
                 getUserMedia({ audio: false, video: true }).then((videoStream: MediaStream) => {
-                    videoElement.src = window.URL.createObjectURL(videoStream);
+                    const stopVideoStream = () => {
+                        for (const t of videoStream.getTracks()) {
+                            t.stop();
+                        }
+                    }
+                    if (session.isConnected) {
+                        videoElement.src = window.URL.createObjectURL(videoStream);
+                        session.closeEvent.addEventListener(stopVideoStream)
+                    } else {
+                        stopVideoStream();
+                    }
                 }).catch((error: DOMException) => {
-                    remoteRealitySession.errorEvent.raiseEvent(error);  
+                    session.errorEvent.raiseEvent(error);  
                 });
 
-                const deviceService = this.deviceService;
+                const viewService = this.viewService;
                 let lastFrameTime = -1;
+
                 let update = (time: JulianDate) => {
-                    if (realitySession.isConnected) 
-                        this.deviceService.requestFrame(update);
+                    if (session.isConnected) 
+                        viewService.requestAnimationFrame(update);
                     else return;
+
+                    const suggestedViewState = viewService.suggestedViewState;
+                    if (!suggestedViewState) return;
 
                     if (videoElement.currentTime != lastFrameTime) {
                         lastFrameTime = videoElement.currentTime;
@@ -99,62 +124,36 @@ export class LiveRealityViewer extends RealityViewer {
                         // const videoWidth = videoElement.videoWidth;
                         // const videoHeight = videoElement.videoHeight;
 
-                        const viewState: ViewState = {
+                        const frameState = this.contextService.createFrameState(
                             time,
-                            pose: utils.getSerializedEntityPose(deviceService.eye, time),
-                            geolocationAccuracy: deviceService.geolocationAccuracy,
-                            altitudeAccuracy: deviceService.altitudeAccuracy,
-                            compassAccuracy: deviceService.compassAccuracy,
-                            viewport: deviceService.viewport,
-                            subviews: deviceService.subviews
-                        };
+                            suggestedViewState.viewport,
+                            suggestedViewState.subviews,
+                            viewService.eye
+                        );
                         
-                        remoteRealitySession.send('ar.reality.viewState', viewState);
+                        session.send('ar.reality.frameState', frameState);
                     }
                 };
 
-                this.deviceService.requestFrame(update);
+                viewService.requestAnimationFrame(update);
             }
+        });
+    }
 
-            this.vuforiaDelegate.videoEnabled = true;
-            this.vuforiaDelegate.trackingEnabled = true;
-
-            const remove = this.vuforiaDelegate.stateUpdateEvent.addEventListener((viewState) => {
-                remoteRealitySession.send('ar.reality.viewState', viewState);
-            });
-
-            remoteRealitySession.closeEvent.addEventListener(() => {
-                remove();
-                this.vuforiaDelegate.videoEnabled = false;
-                this.vuforiaDelegate.trackingEnabled = false;
-            });
+    public load(): void {
+        const session = this.sessionService.addManagedSessionPort(this.uri);
+        session.connectEvent.addEventListener(()=>{
+            this.connectEvent.raiseEvent(session);
         });
 
-        if (typeof document !== 'undefined' && typeof navigator !== 'undefined') {
-            window.addEventListener('message', (event) => {
-                const origin = event.origin;
-                if (origin === 'http://argonjs.io') {
-                    this.videoFov = event.data; // TODO: this is not flexible. Should be passing an object with message type and data
-                }
-            });
-
-            const mediaDevices = navigator.mediaDevices;
-            const getUserMedia = (mediaDevices.getUserMedia || mediaDevices['mozGetUserMedia'] ||
-                mediaDevices['msGetUserMedia'] || mediaDevices['webkitGetUserMedia']).bind(mediaDevices);
-
-            getUserMedia({ audio: false, video: true }).then((videoStream: MediaStream) => {
-                this.videoElement.src = window.URL.createObjectURL(videoStream);
-            }).catch((error: DOMException) => {
-                remoteRealitySession.errorEvent.raiseEvent(error);  
-            });
-        }
-        
+        const internalSession = this.sessionService.createSessionPort(this.uri);
+        this.setupInternalSession(internalSession);
         
         // Only connect after the caller is able to attach connectEvent handlers
         Promise.resolve().then(()=>{
             const messageChannel = this.sessionService.createSynchronousMessageChannel();
-            realitySession.open(messageChannel.port1, this.sessionService.configuration);
-            remoteRealitySession.open(messageChannel.port2, { role: Role.REALITY_VIEWER, title: 'Local' });
+            session.open(messageChannel.port1, this.sessionService.configuration);
+            internalSession.open(messageChannel.port2, { role: Role.REALITY_VIEWER, title: 'Live' });
         })
     }
 

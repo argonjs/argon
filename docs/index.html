@@ -7,7 +7,6 @@
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/main.css">
-	<script src="assets/js/modernizr.js"></script>
 </head>
 <body>
 <header>
@@ -70,14 +69,14 @@
 				<h2 id="api">API</h2>
 				<p>There are essentially 3 types of systems that are defined by the <em>argon.js</em> framework:</p>
 				<ul>
-					<li><strong><a href="enums/role.html#reality_augmentor">REALITY_AUGMENTOR</a></strong> - a system that is responsible for <em>augmenting</em> a view of reality. </li>
-					<li><strong><a href="enums/role.html#reality_view">REALITY_VIEW</a></strong> - a system that is responsible for <em>presenting</em> a view of reality</li>
-					<li><strong><a href="enums/role.html#reality_manager">REALITY_MANAGER</a></strong> - a system that is responsible for <em>blending</em> a particular <strong>Reality View</strong> with
+					<li><strong>[[REALITY_AUGMENTOR]]</strong> - a system that is responsible for <em>augmenting</em> a view of reality. </li>
+					<li><strong>[[REALITY_VIEW]]</strong> - a system that is responsible for <em>presenting</em> a view of reality</li>
+					<li><strong>[[REALITY_MANAGER]]</strong> - a system that is responsible for <em>blending</em> a particular <strong>Reality View</strong> with
 					one or more <strong>Reality Augmentors</strong></li>
 				</ul>
 				<p>Traditionally, Augmented Reality (AR) apps have had to take on all three of these roles
 					at once. However, by separating these concerns out, each role can be easily swapped out
-					with another implmentation, allowing for a much for flexible and adaptive AR application
+					with another implmentation, allowing for a much more flexible and adaptive AR application
 				ecosystem. </p>
 				<p>The <em>argon.js</em> framework also anticipates a future in which AR-enabled browsers
 					(functioning as a <strong>Reality Manager</strong>) may give users control over the way they interact
@@ -91,7 +90,7 @@
 					(which already allows multiple apps to run and be visible at the same time, for example),
 				and these use-cases have informed the design of <em>argon.js</em>.</p>
 				<h3 id="the-structure-of-an-ar-enabled-app">The structure of an AR-enabled app</h3>
-				<p>In general, we simply call <a href="classes/vuforiaservicedelegatebase.html#init">init</a> to initailize our app:</p>
+				<p>In general, we simply call <a href="classes/vuforiaservice.html#init">init</a> to initailize our app:</p>
 				<pre><code class="lang-js"><span class="hljs-keyword">var</span> app = Argon.init();
 </code></pre>
 				<blockquote>
@@ -105,7 +104,7 @@
 							<strong>Reality Manager</strong>. However, if your app detects that it is running as a
 					<strong>Reality Manager</strong>, it may assume more control over the entire experience.</sub></p>
 				</blockquote>
-				<p>The object returned by <a href="classes/vuforiaservicedelegatebase.html#init">init</a> is an instance of <a href="classes/argonsystem.html">ArgonSystem</a>. By convention, we
+				<p>The object returned by <a href="classes/vuforiaservice.html#init">init</a> is an instance of <a href="classes/argonsystem.html">ArgonSystem</a>. By convention, we
 					store this instance in a variable called <code>app</code>. Various services are made available
 					via this instance. For example, your app will need to continually respond to changes
 					in the world in order to update it&#39;s augmentations. <a href="classes/argonsystem.html#updateevent">ArgonSystem.updateEvent</a>
@@ -117,8 +116,10 @@
 				<p>In <em>argon.js</em>, all objects are represented in geospatial coordinates, using <a href="https://cesiumjs.org/Cesium/Build/Documentation/Entity.html">cesium.js
 					Entities</a> (a subset
 					of Cesium&#39;s API is availabe in the <code>Argon.Cesium</code> namespace). <a href="classes/argonsystem.html#context">ArgonSystem.context</a>
-					is a <a href="classes/contextservice.html">ContextService</a> instance whose purpose is to keep track of entities that you
-				can augment, or subscribe to new entities so that your app can be made aware of them.</p>
+					exposes a <a href="classes/contextservice.html">ContextService</a> instance whose purpose is to keep track of entities that
+					you can augment, or subscribe to new entities so that your app can be made aware of
+					them. Via the <a href="classes/contextservice.html#getentitypose">ContextService.getEntityPose</a> method, you can convert an Entity from
+				geospatial coordinates into your local scenegraph coordinates. </p>
 				<p>In your <code>update</code> event handler, you can, for example, query the current
 					pose of an Entity by calling <a href="classes/contextservice.html#getentitypose">ContextService.getEntityPose</a> and
 				passing the desired entity instance.</p>
@@ -145,6 +146,12 @@
 					<li class="globals  ">
 						<a href="globals.html"><em>Globals</em></a>
 					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/serializedentitystate.html">Serialized<wbr>Entity<wbr>State</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/serializedsubview.html">Serialized<wbr>Subview</a>
+					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
@@ -153,25 +160,22 @@
 						<a href="enums/posestatus.html" class="tsd-kind-icon">Pose<wbr>Status</a>
 					</li>
 					<li class=" tsd-kind-enum">
-						<a href="enums/realityzoomstate.html" class="tsd-kind-icon">Reality<wbr>Zoom<wbr>State</a>
-					</li>
-					<li class=" tsd-kind-enum">
-						<a href="enums/role.html" class="tsd-kind-icon">Role</a>
+						<a href="enums/presentationmode.html" class="tsd-kind-icon">Presentation<wbr>Mode</a>
 					</li>
 					<li class=" tsd-kind-enum">
 						<a href="enums/subviewtype.html" class="tsd-kind-icon">Subview<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-enum">
-						<a href="enums/vuforiahint.html" class="tsd-kind-icon">Vuforia<wbr>Hint</a>
-					</li>
-					<li class=" tsd-kind-enum">
-						<a href="enums/vuforiainitresult.html" class="tsd-kind-icon">Vuforia<wbr>Init<wbr>Result</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/argonsystem.html" class="tsd-kind-icon">Argon<wbr>System</a>
 					</li>
 					<li class=" tsd-kind-class">
+						<a href="classes/argonsystemproviders.html" class="tsd-kind-icon">Argon<wbr>System<wbr>Providers</a>
+					</li>
+					<li class=" tsd-kind-class">
 						<a href="classes/commandqueue.html" class="tsd-kind-icon">Command<wbr>Queue</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/configuration.html" class="tsd-kind-icon">Configuration</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/connectservice.html" class="tsd-kind-icon">Connect<wbr>Service</a>
@@ -180,16 +184,22 @@
 						<a href="classes/contextservice.html" class="tsd-kind-icon">Context<wbr>Service</a>
 					</li>
 					<li class=" tsd-kind-class">
+						<a href="classes/contextserviceprovider.html" class="tsd-kind-icon">Context<wbr>Service<wbr>Provider</a>
+					</li>
+					<li class=" tsd-kind-class">
 						<a href="classes/domconnectservice.html" class="tsd-kind-icon">DOMConnect<wbr>Service</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/debugconnectservice.html" class="tsd-kind-icon">Debug<wbr>Connect<wbr>Service</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/deviceservice.html" class="tsd-kind-icon">Device<wbr>Service</a>
+						<a href="classes/defaultuiservice.html" class="tsd-kind-icon">DefaultUIService</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/emptyrealityloader.html" class="tsd-kind-icon">Empty<wbr>Reality<wbr>Loader</a>
+						<a href="classes/deprecatedvuforiadataset.html" class="tsd-kind-icon">Deprecated<wbr>Vuforia<wbr>Data<wbr>Set</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/emptyrealityviewer.html" class="tsd-kind-icon">Empty<wbr>Reality<wbr>Viewer</a>
 					</li>
 					<li class=" tsd-kind-class tsd-has-type-parameter">
 						<a href="classes/event.html" class="tsd-kind-icon">Event</a>
@@ -198,10 +208,19 @@
 						<a href="classes/focusservice.html" class="tsd-kind-icon">Focus<wbr>Service</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/hostedrealityloader.html" class="tsd-kind-icon">Hosted<wbr>Reality<wbr>Loader</a>
+						<a href="classes/focusserviceprovider.html" class="tsd-kind-icon">Focus<wbr>Service<wbr>Provider</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/livevideorealityloader.html" class="tsd-kind-icon">Live<wbr>Video<wbr>Reality<wbr>Loader</a>
+						<a href="classes/hostedrealityviewer.html" class="tsd-kind-icon">Hosted<wbr>Reality<wbr>Viewer</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/liverealityviewer.html" class="tsd-kind-icon">Live<wbr>Reality<wbr>Viewer</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/locationservice.html" class="tsd-kind-icon">Location<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/locationserviceprovider.html" class="tsd-kind-icon">Location<wbr>Service<wbr>Provider</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/loopbackconnectservice.html" class="tsd-kind-icon">Loopback<wbr>Connect<wbr>Service</a>
@@ -216,16 +235,22 @@
 						<a href="classes/messageeventlike.html" class="tsd-kind-icon">Message<wbr>Event<wbr>Like</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/pinchzoomservice.html" class="tsd-kind-icon">Pinch<wbr>Zoom<wbr>Service</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/realityloader.html" class="tsd-kind-icon">Reality<wbr>Loader</a>
+						<a href="classes/normalizedviewport.html" class="tsd-kind-icon">Normalized<wbr>Viewport</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/realityservice.html" class="tsd-kind-icon">Reality<wbr>Service</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/realityview.html" class="tsd-kind-icon">Reality<wbr>View</a>
+						<a href="classes/realityserviceprovider.html" class="tsd-kind-icon">Reality<wbr>Service<wbr>Provider</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/realityviewer.html" class="tsd-kind-icon">Reality<wbr>Viewer</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/realityviewerfactory.html" class="tsd-kind-icon">Reality<wbr>Viewer<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/serializedsubviewlist.html" class="tsd-kind-icon">Serialized<wbr>Subview<wbr>List</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/sessionport.html" class="tsd-kind-icon">Session<wbr>Port</a>
@@ -237,19 +262,34 @@
 						<a href="classes/sessionservice.html" class="tsd-kind-icon">Session<wbr>Service</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/synchronousmessagechannel.html" class="tsd-kind-icon">Synchronous<wbr>Message<wbr>Channel</a>
+						<a href="classes/subview.html" class="tsd-kind-icon">Subview</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/timerservice.html" class="tsd-kind-icon">Timer<wbr>Service</a>
+						<a href="classes/synchronousmessagechannel.html" class="tsd-kind-icon">Synchronous<wbr>Message<wbr>Channel</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/viewservice.html" class="tsd-kind-icon">View<wbr>Service</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/vuforiaapi.html" class="tsd-kind-icon">VuforiaAPI</a>
+						<a href="classes/viewserviceprovider.html" class="tsd-kind-icon">View<wbr>Service<wbr>Provider</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/vuforiadataset.html" class="tsd-kind-icon">Vuforia<wbr>Data<wbr>Set</a>
+						<a href="classes/viewport.html" class="tsd-kind-icon">Viewport</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/viewportservice.html" class="tsd-kind-icon">Viewport<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/viewportserviceprovider.html" class="tsd-kind-icon">Viewport<wbr>Service<wbr>Provider</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/visibilityservice.html" class="tsd-kind-icon">Visibility<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/visibilityserviceprovider.html" class="tsd-kind-icon">Visibility<wbr>Service<wbr>Provider</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/vuforiaapi.html" class="tsd-kind-icon">VuforiaAPI</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/vuforiaobjecttracker.html" class="tsd-kind-icon">Vuforia<wbr>Object<wbr>Tracker</a>
@@ -258,10 +298,7 @@
 						<a href="classes/vuforiaservice.html" class="tsd-kind-icon">Vuforia<wbr>Service</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/vuforiaservicedelegate.html" class="tsd-kind-icon">Vuforia<wbr>Service<wbr>Delegate</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/vuforiaservicedelegatebase.html" class="tsd-kind-icon">Vuforia<wbr>Service<wbr>Delegate<wbr>Base</a>
+						<a href="classes/vuforiaserviceprovider.html" class="tsd-kind-icon">Vuforia<wbr>Service<wbr>Provider</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/vuforiatracker.html" class="tsd-kind-icon">Vuforia<wbr>Tracker</a>
@@ -270,7 +307,10 @@
 						<a href="classes/wkwebviewconnectservice.html" class="tsd-kind-icon">WKWeb<wbr>View<wbr>Connect<wbr>Service</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="interfaces/configuration.html" class="tsd-kind-icon">Configuration</a>
+						<a href="interfaces/deprecatedeyeparameters.html" class="tsd-kind-icon">Deprecated<wbr>Eye<wbr>Parameters</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/deprecatedpartialframestate.html" class="tsd-kind-icon">Deprecated<wbr>Partial<wbr>Frame<wbr>State</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/entitypose.html" class="tsd-kind-icon">Entity<wbr>Pose</a>
@@ -279,13 +319,10 @@
 						<a href="interfaces/errormessage.html" class="tsd-kind-icon">Error<wbr>Message</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="interfaces/frame.html" class="tsd-kind-icon">Frame</a>
+						<a href="interfaces/framestate.html" class="tsd-kind-icon">Frame<wbr>State</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="interfaces/initlocalparameters.html" class="tsd-kind-icon">Init<wbr>Local<wbr>Parameters</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/initparameters.html" class="tsd-kind-icon">Init<wbr>Parameters</a>
+						<a href="interfaces/geolocationoptions.html" class="tsd-kind-icon">Geolocation<wbr>Options</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/message.html" class="tsd-kind-icon">Message</a>
@@ -297,43 +334,22 @@
 						<a href="interfaces/messageportlike.html" class="tsd-kind-icon">Message<wbr>Port<wbr>Like</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="interfaces/realityzoomdata.html" class="tsd-kind-icon">Reality<wbr>Zoom<wbr>Data</a>
+						<a href="interfaces/readonlyserializedsubview.html" class="tsd-kind-icon">Readonly<wbr>Serialized<wbr>Subview</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="interfaces/serializedentitypose.html" class="tsd-kind-icon">Serialized<wbr>Entity<wbr>Pose</a>
+						<a href="interfaces/serializeddevicestate.html" class="tsd-kind-icon">Serialized<wbr>Device<wbr>State</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="interfaces/serializedentityposemap.html" class="tsd-kind-icon">Serialized<wbr>Entity<wbr>Pose<wbr>Map</a>
+						<a href="interfaces/serializedentitystatemap.html" class="tsd-kind-icon">Serialized<wbr>Entity<wbr>State<wbr>Map</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="interfaces/serializedeyeparameters.html" class="tsd-kind-icon">Serialized<wbr>Eye<wbr>Parameters</a>
+						<a href="interfaces/viewstate.html" class="tsd-kind-icon">View<wbr>State</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="interfaces/serializedframestate.html" class="tsd-kind-icon">Serialized<wbr>Frame<wbr>State</a>
+						<a href="interfaces/vuforiadatasetevent.html" class="tsd-kind-icon">Vuforia<wbr>Data<wbr>Set<wbr>Event</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="interfaces/serializedfrustum.html" class="tsd-kind-icon">Serialized<wbr>Frustum</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/serializedpartialframestate.html" class="tsd-kind-icon">Serialized<wbr>Partial<wbr>Frame<wbr>State</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/serializedsubview.html" class="tsd-kind-icon">Serialized<wbr>Subview</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/serializedviewparameters.html" class="tsd-kind-icon">Serialized<wbr>View<wbr>Parameters</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/subview.html" class="tsd-kind-icon">Subview</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/viewport.html" class="tsd-kind-icon">Viewport</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/vuforiainitoptions.html" class="tsd-kind-icon">Vuforia<wbr>Init<wbr>Options</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/vuforiaservicedelegateinitoptions.html" class="tsd-kind-icon">Vuforia<wbr>Service<wbr>Delegate<wbr>Init<wbr>Options</a>
+						<a href="interfaces/vuforiadatasetloadevent.html" class="tsd-kind-icon">Vuforia<wbr>Data<wbr>Set<wbr>Load<wbr>Event</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/vuforiatrackables.html" class="tsd-kind-icon">Vuforia<wbr>Trackables</a>
@@ -344,20 +360,53 @@
 					<li class=" tsd-kind-type-alias">
 						<a href="globals.html#removecallback" class="tsd-kind-icon">Remove<wbr>Callback</a>
 					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#vuforiadatasetid" class="tsd-kind-icon">Vuforia<wbr>Data<wbr>Set<wbr>Id</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#average_human_height" class="tsd-kind-icon">AVERAGE_<wbr>HUMAN_<wbr>HEIGHT</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#eye_entity_id" class="tsd-kind-icon">EYE_<wbr>ENTITY_<wbr>ID</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#physical_eye_entity_id" class="tsd-kind-icon">PHYSICAL_<wbr>EYE_<wbr>ENTITY_<wbr>ID</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#physical_stage_entity_id" class="tsd-kind-icon">PHYSICAL_<wbr>STAGE_<wbr>ENTITY_<wbr>ID</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#parentelement" class="tsd-kind-icon">Parent<wbr>Element</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#stage_entity_id" class="tsd-kind-icon">STAGE_<wbr>ENTITY_<wbr>ID</a>
+					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#getentityorientation" class="tsd-kind-icon">get<wbr>Entity<wbr>Orientation</a>
 					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#getentityposition" class="tsd-kind-icon">get<wbr>Entity<wbr>Position</a>
 					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#isios" class="tsd-kind-icon">isIOS</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#requestanimationframe" class="tsd-kind-icon">request<wbr>Animation<wbr>Frame</a>
+					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#convertentityreferenceframe" class="tsd-kind-icon">convert<wbr>Entity<wbr>Reference<wbr>Frame</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#createeventforwarder" class="tsd-kind-icon">create<wbr>Event<wbr>Forwarder</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#decomposeperspectiveoffcenterprojectionmatrix" class="tsd-kind-icon">decompose<wbr>Perspective<wbr>Off<wbr>Center<wbr>Projection<wbr>Matrix</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#decomposeperspectiveprojectionmatrix" class="tsd-kind-icon">decompose<wbr>Perspective<wbr>Projection<wbr>Matrix</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#deprecated" class="tsd-kind-icon">deprecated</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#getancestorreferenceframes" class="tsd-kind-icon">get<wbr>Ancestor<wbr>Reference<wbr>Frames</a>
@@ -369,22 +418,22 @@
 						<a href="globals.html#getentitypositioninreferenceframe" class="tsd-kind-icon">get<wbr>Entity<wbr>Position<wbr>InReference<wbr>Frame</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#getrootreferenceframe" class="tsd-kind-icon">get<wbr>Root<wbr>Reference<wbr>Frame</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="globals.html#getserializedentitypose" class="tsd-kind-icon">get<wbr>Serialized<wbr>Entity<wbr>Pose</a>
+						<a href="globals.html#getserializedentitystate" class="tsd-kind-icon">get<wbr>Serialized<wbr>Entity<wbr>State</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#init" class="tsd-kind-icon">init</a>
 					</li>
-					<li class=" tsd-kind-function tsd-is-private">
-						<a href="globals.html#initlocal" class="tsd-kind-icon">init<wbr>Local</a>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#initrealityviewer" class="tsd-kind-icon">init<wbr>Reality<wbr>Viewer</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#initreality" class="tsd-kind-icon">init<wbr>Reality</a>
+						<a href="globals.html#openinargonapp" class="tsd-kind-icon">open<wbr>InArgon<wbr>App</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#parseurl" class="tsd-kind-icon">parseURL</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#resolveelement" class="tsd-kind-icon">resolve<wbr>Element</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#resolveurl" class="tsd-kind-icon">resolveURL</a>
@@ -454,7 +503,7 @@
 	</div>
 </footer>
 <div class="container tsd-generator">
-	<p>Generated using <a href="http://typedoc.io" target="_blank">TypeDoc</a></p>
+	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
 </div>
 <div class="overlay"></div>
 <script src="assets/js/main.js"></script>

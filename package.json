@@ -1,33 +1,53 @@
 {
   "name": "@argonjs/argon",
-  "version": "1.1.0-beta",
-  "main": "dist/argon.js",
+  "version": "1.1.2",
+  "main": "dist/argon.core.js",
+  "browser": "dist/argon.js",
   "typings": "index.d.ts",
   "jspm": {
-    "format": "cjs",
+    "format": "esm",
     "jspmPackage": true,
+    "main": "src/argon.js",
     "dependencies": {
       "cesium": "github:aelatgt/cesium@referenceFrames",
       "aurelia-dependency-injection": "npm:aurelia-dependency-injection@^1.2.0",
       "aurelia-polyfills": "npm:aurelia-polyfills@^1.0.0-beta.1.0.0",
       "googlevr/webvr-polyfill": "github:googlevr/webvr-polyfill@0.9.3",
-      "json": "github:systemjs/plugin-json@^0.2.1",
+      "json": "github:systemjs/plugin-json@^0.2.3",
       "mobile-detect": "npm:mobile-detect@^1.3.2",
-      "object-assign": "npm:object-assign@^4.1.0",
-      "plugin-babel": "npm:systemjs-plugin-babel@^0.0.17",
-      "ts": "github:frankwallis/plugin-typescript@^5.2.9",
-      "urijs": "github:medialize/URI.js@^1.18.1"
+      "object-assign": "npm:object-assign@^4.1.0"
     },
     "devDependencies": {
+      "buffer": "npm:jspm-nodelibs-buffer@^0.2.0",
       "chai": "npm:chai@^3.5.0",
+      "child_process": "npm:jspm-nodelibs-child_process@^0.2.0",
+      "constants": "npm:jspm-nodelibs-constants@^0.2.0",
+      "crypto": "npm:jspm-nodelibs-crypto@^0.2.0",
       "css": "github:systemjs/plugin-css@^0.1.19",
-      "mocha": "npm:mocha@^2.3.3"
+      "events": "npm:jspm-nodelibs-events@^0.2.0",
+      "fs": "npm:jspm-nodelibs-fs@^0.2.0",
+      "mocha": "npm:mocha@^3.2.0",
+      "module": "npm:jspm-nodelibs-module@^0.2.0",
+      "net": "npm:jspm-nodelibs-net@^0.2.0",
+      "os": "npm:jspm-nodelibs-os@^0.2.0",
+      "path": "npm:jspm-nodelibs-path@^0.2.0",
+      "process": "npm:jspm-nodelibs-process@^0.2.0",
+      "stream": "npm:jspm-nodelibs-stream@^0.2.0",
+      "string_decoder": "npm:jspm-nodelibs-string_decoder@^0.2.0",
+      "ts": "github:frankwallis/plugin-typescript@^5.3.3",
+      "util": "npm:jspm-nodelibs-util@^0.2.0",
+      "vm": "npm:jspm-nodelibs-vm@^0.2.0"
     },
     "peerDependencies": {
+      "assert": "npm:jspm-nodelibs-assert@^0.2.0",
       "aurelia-metadata": "npm:aurelia-metadata@^1.0.0",
+<<<<<<< HEAD
       "aurelia-pal": "npm:aurelia-pal@^1.0.0",
       "net": "npm:jspm-nodelibs-net@^0.2.0",
       "os": "npm:jspm-nodelibs-os@^0.2.0"
+=======
+      "aurelia-pal": "npm:aurelia-pal@^1.0.0"
+>>>>>>> b2935729304bfe564be76b9c64654b4bf3ec5250
     },
     "overrides": {
       "npm:aurelia-dependency-injection@1.2.0": {
@@ -67,6 +87,17 @@
           "process": "@empty"
         }
       },
+      "npm:debug@2.6.0": {
+        "main": "src/browser.js",
+        "jspmNodeConversion": false,
+        "format": "cjs",
+        "map": {
+          "fs": "@empty",
+          "net": "@empty",
+          "tty": "@empty",
+          "util": "@empty"
+        }
+      },
       "npm:deep-eql@0.1.3": {
         "main": "index.js",
         "format": "cjs",
@@ -83,22 +114,6 @@
         "format": "cjs",
         "jspmPackage": true,
         "map": {}
-      },
-      "npm:mocha@2.4.5": {
-        "browser": "mocha",
-        "main": "mocha",
-        "meta": {
-          "mocha.js": {
-            "deps": [
-              "./mocha.css!"
-            ],
-            "exports": "mocha"
-          }
-        },
-        "dependencies": {
-          "css": "*"
-        },
-        "registry": "jspm"
       },
       "github:aelatgt/cesium@referenceFrames": {
         "registry": "github",
@@ -121,33 +136,82 @@
           "./Source/DataSources/WallGraphics": "@empty"
         }
       },
-      "npm:typescript@2.0.7": {
+      "npm:mocha@3.2.0": {
+        "main": "./mocha.js",
+        "jspmNodeConversion": false,
+        "meta": {
+          "mocha.js": {
+            "deps": [
+              "./mocha.css!"
+            ],
+            "exports": "Mocha",
+            "format": "global"
+          }
+        },
+        "dependencies": {
+          "css": "*",
+          "debug": "^2.2.0",
+          "json3": "npm:json3@3.3.2",
+          "lodash.create": "npm:lodash.create@3.1.1"
+        },
+        "registry": "jspm",
+        "map": {
+          "./mocha.js": {
+            "node": "./lib/mocha.js"
+          },
+          "escape-string-regexp": "@empty",
+          "growl": "@empty",
+          "./lib/reporters.js": "./lib/reporters/index.js",
+          "./lib/interfaces.js": "./lib/interfaces/index.js",
+          "./lib/to-iso-string.js": "./lib/to-iso-string/index.js",
+          "glob": "@empty",
+          "mkdirp": "@empty",
+          "jade": "@empty",
+          "diff": "@empty",
+          "supports-color": "@empty",
+          "path": "@node/path",
+          "fs": "@node/fs",
+          "util": "@node/util",
+          "events": "@node/events",
+          "tty": "@node/tty"
+        }
+      },
+      "npm:ms@0.7.2": {
+        "jspmNodeConversion": false,
+        "format": "cjs"
+      },
+      "npm:typescript@2.1.4": {
         "browser": {},
         "map": {
-          "crypto": "@empty",
           "buffer": "@empty",
           "child_process": "@empty",
           "fs": "@empty",
           "path": "@empty",
           "process": "@empty",
           "readline": "@empty"
+        },
+        "dependencies": {
+          "source-map-support": "*"
         }
       }
     }
   },
   "scripts": {
     "format": "tsfmt -r",
-    "build:jspm": "jspm build src/argon.ts .tmp/argon-build.js --format umd --global-name Argon --skip-source-maps && derequire .tmp/argon-build.js > dist/argon.js",
-    "prebuild": "npm run build:jspm && uglifyjs dist/argon.js -b -o dist/argon.js",
+    "build:browser": "jspm build src/argon.ts .tmp/argon-build.js --format umd --global-name Argon --skip-source-maps && derequire .tmp/argon-build.js > dist/argon.js",
+    "build:core": "jspm build src/argon.ts .tmp/argon-build.js --node --format umd --global-name Argon --skip-source-maps && derequire .tmp/argon-build.js > dist/argon.core.js",
+    "prebuild": "npm run build:core && npm run build:browser && uglifyjs dist/argon.js -b -o dist/argon.js",
     "build": "uglifyjs dist/argon.js -m -c warnings=false -o dist/argon.min.js",
     "browser-sync": "browser-sync  start --server --directory --startPath \"index.html\" --files \"src/**\"",
     "test": "npm run browser-sync",
     "static": "static -p 3000",
-    "typedoc": "typedoc --tsconfig tsconfig.build.json --out docs --mode file --gaID UA-63191442-2 --name argon.js --readme src/README.md --target ES5 --module commonjs --experimentalDecorators --excludeNotExported --excludeExternals --ignoreCompilerErrors src",
-    "postinstall": "npm install types/cesium types/mobile-detect"
+    "typedoc": "typedoc --tsconfig tsconfig.build.json --out docs --mode file --gaID UA-63191442-2 --name argon.js --readme src/README.md --target ES6 --module commonjs --moduleResolution node --experimentalDecorators --includeDeclarations --excludeNotExported --excludeExternals --ignoreCompilerErrors src",
+    "postinstall": "npm install types/cesium types/mobile-detect",
+    "tsc": "tsc",
+    "preversion": "[[ -z $(git status --porcelain) ]] && npm run tsc && npm run build && git add -A dist && git commit -m 'Update build'",
+    "postversion": "git push && git push --tags"
   },
   "dependencies": {
-    "@types/urijs": "^1.15.26",
     "aurelia-dependency-injection": "^1.0.0"
   },
   "devDependencies": {
@@ -160,8 +224,8 @@
     "jspm": "^0.17.0-beta.29",
     "node-static": "^0.7.7",
     "tsconfig-glob": "^0.2.1",
-    "typedoc": "^0.4.5",
-    "typescript": "^2.0.0",
+    "typedoc": "^0.5.5",
+    "typescript": "^2.1.4",
     "typescript-formatter": "^2.3.0",
     "uglify-js": "^2.7.3"
   }

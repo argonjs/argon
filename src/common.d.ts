@@ -1,5 +1,10 @@
 /// <reference types="cesium" />
 import { Matrix4, JulianDate, Cartesian3, Cartographic, Quaternion } from './cesium/cesium-imports';
+export declare const AVERAGE_HUMAN_HEIGHT = 1.77;
+export declare const EYE_ENTITY_ID = "ar.eye";
+export declare const PHYSICAL_EYE_ENTITY_ID = "ar.physical-eye";
+export declare const STAGE_ENTITY_ID = "ar.stage";
+export declare const PHYSICAL_STAGE_ENTITY_ID = "ar.physical-stage";
 /**
  * Describes the role of an [[ArgonSystem]]
  */
@@ -47,8 +52,8 @@ export { Role };
 /**
  * Configuration options for an [[ArgonSystem]]
  */
-export interface Configuration {
-    version?: number;
+export declare abstract class Configuration {
+    version?: number[];
     uri?: string;
     title?: string;
     role?: Role;
@@ -57,22 +62,27 @@ export interface Configuration {
     defaultUI?: {
         disable?: boolean;
     };
-    'needsGeopose'?: boolean;
     'supportsCustomProtocols'?: boolean;
 }
 /**
  * Viewport values are expressed using a right-handed coordinate system with the origin
  * at the bottom left corner.
  */
-export interface Viewport {
+export declare class Viewport {
     x: number;
     y: number;
     width: number;
     height: number;
+    static clone(viewport: Viewport, result?: Viewport): Viewport;
+    static equals(viewportA?: Viewport, viewportB?: Viewport): boolean | undefined;
 }
-export declare namespace Viewport {
-    function clone(viewport?: Viewport, result?: Viewport): Viewport | undefined;
-    function equals(viewportA?: Viewport, viewportB?: Viewport): boolean | undefined;
+export declare class NormalizedViewport {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    static clone(viewport: NormalizedViewport, result?: NormalizedViewport): NormalizedViewport;
+    static equals(viewportA?: NormalizedViewport, viewportB?: NormalizedViewport): boolean | undefined;
 }
 /**
  * Identifies a subview in a [[SerializedSubview]]
@@ -86,22 +96,20 @@ export declare enum SubviewType {
 /**
  * A serialized notation for the position, orientation, and referenceFrame of an entity.
  */
-export interface SerializedEntityPose {
+export interface SerializedEntityState {
     p: Cartesian3;
     o: Quaternion;
     r: number | string;
+    meta?: any;
+}
+export declare namespace SerializedEntityState {
+    function clone(state?: SerializedEntityState, result?: SerializedEntityState): SerializedEntityState | undefined;
 }
 /**
  * A map of entity ids and their associated poses.
  */
-export interface SerializedEntityPoseMap {
-    [id: string]: SerializedEntityPose | undefined;
-}
-export interface SerializedFrustum {
-    xOffset?: number;
-    yOffset?: number;
-    fov: number;
-    aspectRatio?: number;
+export interface SerializedEntityStateMap {
+    [id: string]: SerializedEntityState | undefined;
 }
 /**
  * The serialized rendering parameters for a particular subview
@@ -115,81 +123,53 @@ export interface SerializedSubview {
     /**
      * The viewport for this subview (relative to the primary viewport)
      */
-    viewport: Viewport;
+    viewport: NormalizedViewport;
     /**
      * The pose for this subview (relative to the primary pose)
      */
-    pose?: SerializedEntityPose;
+    pose?: SerializedEntityState;
 }
 /**
- * The device state informs a [[REALITY_VIEWER]] about the current physical
- * configuration of the system, so that it may present a view that is compatible.
- * The [[REALITY_VIEWER]] should consider the viewport and frustum values to be
- * suggestions, unless their respective `strict` properties are true. The various
- * poses and related accuracies represent the physical configuration of the system
- * at the (current) specified time. The [[REALITY_VIEWER]] may reuse the `time`
- * and `pose` when presenting a view, though this is not mandatory
- * (or necessarily expected).
+ * The serialized rendering parameters for a particular subview
  */
-export interface DeviceState {
-    cartographicPosition?: Cartographic;
-    geolocationAccuracy: number | undefined;
-    altitudeAccuracy: number | undefined;
-    viewport: Viewport;
-    subviews: SerializedSubview[];
-    strict?: boolean;
+export interface ReadonlySerializedSubview {
+    readonly type: SubviewType;
+    /**
+     * The projection matrix for this subview
+     */
+    readonly projectionMatrix: Readonly<Matrix4>;
+    /**
+     * The viewport for this subview (relative to the primary viewport)
+     */
+    readonly viewport: Readonly<Viewport>;
+    /**
+     * The pose for this subview (relative to the primary pose)
+     */
+    readonly pose?: Readonly<SerializedEntityState>;
 }
-/**
- * The view state is provided by a [[REALITY_VIEWER]], and describes how a
- * [[REALITY_AUGMENTER]] should render the current frame.
- */
-export interface ViewState {
-    /**
-     * The absolute time when this view state was created
-     */
-    time: JulianDate;
-    /**
-     * The viewing pose. May or may not match the
-     * real-world (physical) viewing pose.
-     */
-    pose: SerializedEntityPose | undefined;
-    /**
-     * The radius (in meters) of latitudinal and longitudinal uncertainty,
-     * in relation to the FIXED reference frame. Value is greater
-     * than 0 or undefined.
-     */
-    geolocationAccuracy: number | undefined;
-    /**
-     * The accuracy of the altitude in meters. Value is greater
-     * than 0 or undefined.
-     */
-    altitudeAccuracy: number | undefined;
-    /**
-     * The accuracy of the compass in degrees. Value is greater
-     * than 0 or undefined.
-     */
-    compassAccuracy: number | undefined;
-    /**
-     * The source reality viewer.
-     */
-    reality?: string;
-    /**
-     * The primary viewport to render into. In a DOM environment,
-     * the bottom left corner of the document element (document.documentElement)
-     * should be considered the origin.
-     */
+export declare namespace SerializedSubview {
+    function clone(subview: SerializedSubview, result?: SerializedSubview): SerializedSubview;
+}
+export interface SerializedDeviceState {
+    currentFov: number;
+    eyeCartographicPosition: Cartographic | undefined;
+    eyeHorizontalAccuracy: number | undefined;
+    eyeVerticalAccuracy: number | undefined;
     viewport: Viewport;
-    /**
-     * The list of subviews to render.
-     */
     subviews: SerializedSubview[];
+    strictSubviews: boolean;
+    isPresentingHMD: boolean;
+}
+export declare class SerializedSubviewList extends Array<SerializedSubview> {
+    constructor();
+    static clone(subviews: SerializedSubviewList, result?: SerializedSubviewList): SerializedSubviewList;
 }
 /**
  * Describes the pose of a reality view and how it is able to render
  */
 export interface DeprecatedEyeParameters {
     viewport?: Viewport;
-    pose?: SerializedEntityPose;
+    pose?: SerializedEntityState;
     stereoMultiplier?: number;
     fov?: number;
     aspect?: number;
@@ -205,17 +185,20 @@ export interface DeprecatedPartialFrameState {
         dayNumber: number;
         secondsOfDay: number;
     };
-    view?: ViewState;
+    view?: any;
     eye?: DeprecatedEyeParameters;
-    entities?: SerializedEntityPoseMap;
+    entities?: SerializedEntityStateMap;
 }
 /**
  * Describes a complete frame state which is sent to child sessions
  */
 export interface FrameState {
-    view: ViewState;
+    time: JulianDate;
+    viewport: Viewport;
+    subviews: SerializedSubviewList;
+    reality?: string;
     index?: number;
-    entities?: SerializedEntityPoseMap;
+    entities: SerializedEntityStateMap;
     sendTime?: {
         dayNumber: number;
         secondsOfDay: number;

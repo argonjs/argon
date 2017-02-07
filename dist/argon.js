@@ -18742,9 +18742,13 @@
         }
         return module.exports;
     });
+<<<<<<< HEAD
     $__System.register("1", [ "2", "3", "3d", "4", "9", "10", "a", "1d", "35", "2d", "14", "15", "18", "1c", "20", "19", "16", "5", "7", "2e", "1a", "1b", "8", "3b", "2c", "2f", "17", "d", "23", "24", "30", "31", "32", "1f", "27", "25", "37", "1e", "38", "39", "3a", "e", "f", "26", "55", "5f", "61", "78" ], function(_export, _context) {
+=======
+    $__System.register("1", [ "2", "3", "3d", "4", "9", "10", "a", "1d", "35", "2d", "14", "15", "18", "1c", "20", "19", "16", "5", "7", "2e", "1a", "1b", "8", "3b", "3e", "2c", "2f", "17", "d", "23", "24", "30", "31", "32", "1f", "27", "25", "37", "1e", "38", "39", "3a", "e", "f", "26", "55", "5f", "61", "78" ], function(_export, _context) {
+>>>>>>> b2935729304bfe564be76b9c64654b4bf3ec5250
         "use strict";
-        var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, Clock, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, createGuid, cesium_Source_Core_defaultValue_js, defined, cesium_Source_Core_DeveloperError_js, cesium_Source_Core_Ellipsoid_js, Entity, EntityCollection, CesiumEvent, cesium_Source_Core_ExtrapolationType_js, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, cesium_Source_DataSources_ReferenceEntity_js, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, CardboardUI, _classCallCheck, _createClass, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, aureliaDependencyInjection, after, cesiumImports, w, kButtonWidthDp, kTouchSlopFactor, _possibleConstructorReturn, _inherits, Role, Role, Viewport, SubviewType, Event$$1, CommandQueue, getEntityPosition, getEntityOrientation, urlParser, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, lastTime, requestAnimationFrame$1, version, __decorate, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, WKWebViewConnectService, __decorate$1, PoseStatus, scratchCartesian3, scratchQuaternion, scratchOriginCartesian3, ContextService, __decorate$4, FocusService, __decorate$3, resolveArgonElement, IDENTITY_SUBVIEW_POSE, PresentationMode, ContainerElement, ViewService, __decorate$2, scratchCartesian$1, scratchQuaternion$1, scratchQuaternion2, scratchMatrix3, scratchMatrix4, clock, scratchTime, AVERAGE_HUMAN_HEIGHT, DeviceService, __decorate$6, RealityViewer, _get$1, __decorate$7, EmptyRealityViewer, __decorate$9, VuforiaInitResult, VuforiaHint, VuforiaServiceDelegateBase, VuforiaServiceDelegate, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, VuforiaDataSet, __decorate$8, LiveRealityViewer, __decorate$10, HostedRealityViewer, __decorate$5, RealityViewerFactory, RealityService, __decorate$11, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, ArgonSystem;
+        var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, Clock, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, createGuid, cesium_Source_Core_defaultValue_js, defined, cesium_Source_Core_DeveloperError_js, cesium_Source_Core_Ellipsoid_js, Entity, EntityCollection, CesiumEvent, cesium_Source_Core_ExtrapolationType_js, FeatureDetection, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, cesium_Source_DataSources_ReferenceEntity_js, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, CardboardUI, _createClass, _classCallCheck, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, aureliaDependencyInjection, after, cesiumImports, kButtonWidthDp, kTouchSlopFactor, _possibleConstructorReturn, _inherits, AVERAGE_HUMAN_HEIGHT, EYE_ENTITY_ID, PHYSICAL_EYE_ENTITY_ID, STAGE_ENTITY_ID, PHYSICAL_STAGE_ENTITY_ID, Role, Configuration, Viewport, NormalizedViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, synthesizeEvent, cloneTouch, cloneTouches, getEntityPosition, getEntityOrientation, _scratchFramesArray, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, lastTime, requestAnimationFrame$1, version, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, WKWebViewConnectService, _a$1, _b$1, _defineProperty, __decorate$5, __metadata$5, PoseStatus, scratchCartesian$2, scratchCartesian2, scratchQuaternion$1, scratchOriginCartesian, scratchFrustum$1, scratchMatrix3$1, scratchMatrix4$1, ContextService, ContextServiceProvider, _a$5, _b$5, _c$4, _d$4, _e$4, _f$3, __decorate$6, __metadata$6, FocusService, FocusServiceProvider, _a$6, _b$6, __decorate$7, __metadata$7, VisibilityService, VisibilityServiceProvider, _a$7, _b$7, __decorate$4, __metadata$4, PresentationMode, ParentElement, ViewportService, ViewportServiceProvider, resolveArgonElement, _a$4, _b$4, _c$3, _d$3, _e$3, _f$2, __decorate$8, __metadata$8, scratchCartesian3, scratchQuaternion$2, LocationService, LocationServiceProvider, _a$8, _b$8, _c$5, _d$5, __decorate$3, __metadata$3, Subview, scratchCartesian$1, scratchQuaternion, scratchQuaternion2, scratchMatrix3, scratchMatrix4, scratchFrustum, IDENTITY_SUBVIEW_POSE, currentVRDisplay, ViewService, ViewServiceProvider, deviceOrientationListener, deviceOrientation, deviceOrientationHeadingAccuracy, clock, scratchTime, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, _h$1, _j, RealityViewer, __decorate$10, __metadata$10, EmptyRealityViewer, _a$10, _b$10, _c$7, _d$7, _get$1, __decorate$11, __metadata$11, LiveRealityViewer, _a$11, _b$11, _c$8, _d$8, __decorate$12, __metadata$12, HostedRealityViewer, _a$12, _b$12, __decorate$9, __metadata$9, RealityViewerFactory, RealityService, RealityServiceProvider, _a$9, _b$9, _c$6, _d$6, _e$5, _f$4, _g$2, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __decorate$13, __metadata$13, VuforiaServiceProvider, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$13, _b$13, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, _a, _b, _c, _d, _e, _f, _g, _h;
         function alwaysValid() {
             return true;
         }
@@ -18975,8 +18979,317 @@
                 property._updateTableLength = true;
             }
         }
+        function getEventSynthesizier() {
+            if (eventSynthesizerFunction) return eventSynthesizerFunction;
+            var currentMouseTarget = void 0;
+            var fireMouseLeaveEvents = function fireMouseLeaveEvents(target, relatedTarget, uievent) {
+                if (!target) return;
+                var eventInit = {
+                    view: uievent.view,
+                    clientX: uievent.clientX,
+                    clientY: uievent.clientY,
+                    screenX: uievent.screenX,
+                    screenY: uievent.screenY,
+                    relatedTarget: relatedTarget
+                };
+                eventInit.bubbles = true;
+                target.dispatchEvent(new MouseEvent("mouseout", eventInit));
+                eventInit.bubbles = false;
+                var el = target;
+                do {
+                    el.dispatchEvent(new MouseEvent("mouseleave", eventInit));
+                    el = el["parentElement"];
+                } while (el);
+            };
+            var fireMouseEnterEvents = function fireMouseEnterEvents(target, relatedTarget, uievent) {
+                var eventInit = {
+                    view: uievent.view,
+                    clientX: uievent.clientX,
+                    clientY: uievent.clientY,
+                    screenX: uievent.screenX,
+                    screenY: uievent.screenY,
+                    relatedTarget: relatedTarget
+                };
+                eventInit.bubbles = true;
+                target.dispatchEvent(new MouseEvent("mouseover", eventInit));
+                eventInit.bubbles = false;
+                var el = target;
+                do {
+                    el.dispatchEvent(new MouseEvent("mouseenter", eventInit));
+                    el = el["parentElement"];
+                } while (el);
+            };
+            var firePointerEnterEvents = function firePointerEnterEvents(target, relatedTarget, uievent) {
+                var bubbles = uievent.bubbles;
+                uievent.bubbles = true;
+                target.dispatchEvent(new PointerEvent("pointerover", uievent));
+                uievent.bubbles = false;
+                var el = target;
+                do {
+                    el.dispatchEvent(new MouseEvent("pointerenter", uievent));
+                    el = el["parentElement"];
+                } while (el);
+                uievent.bubbles = bubbles;
+            };
+            var firePointerLeaveEvents = function firePointerLeaveEvents(target, relatedTarget, uievent) {
+                if (!target) return;
+                uievent.bubbles = true;
+                target.dispatchEvent(new PointerEvent("pointerout", uievent));
+                uievent.bubbles = false;
+                var el = target;
+                do {
+                    el.dispatchEvent(new MouseEvent("pointerleave", uievent));
+                    el = el["parentElement"];
+                } while (el);
+            };
+            var deserializeTouches = function deserializeTouches(touches, target, uievent) {
+                touches.forEach(function(t, i) {
+                    touches[i] = document.createTouch(uievent.view, target, t.identifier, t.clientX, t.clientY, t.screenX, t.screenY);
+                });
+                return touches;
+            };
+            var touchTargets = {};
+            var touchStartTimes = {};
+            var pointerTargets = {};
+            var capturedPointerTargets = {};
+            document.documentElement.addEventListener("gotpointercapture", function(e) {
+                capturedPointerTargets[e.pointerId] = e.target;
+            });
+            document.documentElement.addEventListener("lostpointercapture", function(e) {
+                delete capturedPointerTargets[e.pointerId];
+            });
+            return eventSynthesizerFunction = function eventSynthesizerFunction(uievent) {
+                uievent.view = window;
+                var target = void 0;
+                switch (uievent.type) {
+                  case "wheel":
+                    target = document.elementFromPoint(uievent.clientX, uievent.clientY) || window;
+                    target.dispatchEvent(new WheelEvent(uievent.type, uievent));
+                    break;
+
+                  case "mouseleave":
+                    target = document.elementFromPoint(uievent.clientX, uievent.clientY) || window;
+                    fireMouseLeaveEvents(currentMouseTarget, undefined, uievent);
+                    currentMouseTarget = undefined;
+                    break;
+
+                  case "mouseenter":
+                    target = document.elementFromPoint(uievent.clientX, uievent.clientY) || window;
+                    fireMouseEnterEvents(target, undefined, uievent);
+                    currentMouseTarget = target;
+                    break;
+
+                  case "mousemove":
+                    target = document.elementFromPoint(uievent.clientX, uievent.clientY) || window;
+                    if (target !== currentMouseTarget) {
+                        fireMouseLeaveEvents(currentMouseTarget, target, uievent);
+                        fireMouseEnterEvents(target, currentMouseTarget, uievent);
+                        currentMouseTarget = target;
+                    }
+                    target.dispatchEvent(new MouseEvent(uievent.type, uievent));
+                    break;
+
+                  case "touchstart":
+                    var primaryTouch = uievent.changedTouches[0];
+                    target = document.elementFromPoint(primaryTouch.clientX, primaryTouch.clientY) || window;
+                    var _iteratorNormalCompletion = true;
+                    var _didIteratorError = false;
+                    var _iteratorError = undefined;
+                    try {
+                        for (var _iterator = uievent.changedTouches[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                            var t = _step.value;
+                            touchTargets[t.identifier] = target;
+                            touchStartTimes[t.identifier] = performance.now();
+                        }
+                    } catch (err) {
+                        _didIteratorError = true;
+                        _iteratorError = err;
+                    } finally {
+                        try {
+                            if (!_iteratorNormalCompletion && _iterator.return) {
+                                _iterator.return();
+                            }
+                        } finally {
+                            if (_didIteratorError) {
+                                throw _iteratorError;
+                            }
+                        }
+                    }
+
+                  case "touchmove":
+                  case "touchend":
+                  case "touchcancel":
+                    target = touchTargets[uievent.changedTouches[0].identifier];
+                    var evt = document.createEvent("TouchEvent");
+                    var touches = document.createTouchList.apply(document, deserializeTouches(uievent.touches, target, uievent));
+                    var targetTouches = document.createTouchList.apply(document, deserializeTouches(uievent.targetTouches, target, uievent));
+                    var changedTouches = document.createTouchList.apply(document, deserializeTouches(uievent.changedTouches, target, uievent));
+                    if (typeof evt["initTouchEvent"] === "function") {
+                        evt["initTouchEvent"](uievent.type, uievent.bubbles, uievent.cancelable, uievent.view, uievent.detail, uievent.screenX, uievent.screenY, uievent.clientX, uievent.clientY, uievent.ctrlKey, uievent.altKey, uievent.shiftKey, uievent.metaKey, touches, targetTouches, changedTouches, 1, 0);
+                    } else {
+                        evt.initUIEvent(uievent.type, uievent.bubbles, uievent.cancelable, uievent.view, uievent.detail);
+                        evt.touches = touches;
+                        evt.targetTouches = targetTouches;
+                        evt.changedTouches = changedTouches;
+                    }
+                    if (uievent.type === "touchend" || uievent.type == "touchcancel") {
+                        target.dispatchEvent(evt);
+                        var _primaryTouch = changedTouches[0];
+                        uievent.clientX = _primaryTouch.clientX;
+                        uievent.clientY = _primaryTouch.clientY;
+                        uievent.screenX = _primaryTouch.screenX;
+                        uievent.screenY = _primaryTouch.screenY;
+                        uievent.button = 0;
+                        uievent.detail = 1;
+                        if (uievent.type === "touchend") {
+                            if (performance.now() - touchStartTimes[_primaryTouch.identifier] < 300 && !evt.defaultPrevented) {
+                                target.dispatchEvent(new MouseEvent("mousedown", uievent));
+                                target.dispatchEvent(new MouseEvent("mouseup", uievent));
+                                target.dispatchEvent(new MouseEvent("click", uievent));
+                            }
+                        } else {
+                            target.dispatchEvent(new MouseEvent("mouseout", uievent));
+                        }
+                        var _iteratorNormalCompletion2 = true;
+                        var _didIteratorError2 = false;
+                        var _iteratorError2 = undefined;
+                        try {
+                            for (var _iterator2 = uievent.changedTouches[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                                var _t = _step2.value;
+                                delete touchTargets[_t.identifier];
+                                delete touchStartTimes[_t.identifier];
+                            }
+                        } catch (err) {
+                            _didIteratorError2 = true;
+                            _iteratorError2 = err;
+                        } finally {
+                            try {
+                                if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                                    _iterator2.return();
+                                }
+                            } finally {
+                                if (_didIteratorError2) {
+                                    throw _iteratorError2;
+                                }
+                            }
+                        }
+                    } else {
+                        target.dispatchEvent(evt);
+                    }
+                    break;
+
+                  case "pointerenter":
+                  case "pointerleave":
+                  case "pointermove":
+                  case "pointercancel":
+                  case "pointerdown":
+                  case "pointerup":
+                    var previousTarget = pointerTargets[uievent.pointerId];
+                    var capturedTarget = target = capturedPointerTargets[uievent.pointerId];
+                    var isLeaving = uievent.type === "pointerleave" || uievent.type === "pointercancel";
+                    var pointerEvent = new PointerEvent(uievent.type, uievent);
+                    if (capturedTarget) {
+                        capturedTarget.dispatchEvent(pointerEvent);
+                    } else {
+                        target = document.elementFromPoint(uievent.clientX, uievent.clientY) || window;
+                        if (target !== previousTarget) {
+                            firePointerLeaveEvents(previousTarget, target, uievent);
+                            if (!isLeaving) firePointerEnterEvents(target, previousTarget, uievent);
+                        }
+                        target.dispatchEvent(pointerEvent);
+                    }
+                    if (isLeaving) {
+                        delete pointerTargets[uievent.pointerId];
+                    } else {
+                        pointerTargets[uievent.pointerId] = target;
+                    }
+                    break;
+
+                  default:
+                    target = document.elementFromPoint(uievent.clientX, uievent.clientY) || window;
+                    target.dispatchEvent(new MouseEvent(uievent.type, uievent));
+                }
+            };
+        }
+        function createEventForwarder(viewportService, callback) {
+            var _forwardEvent = false;
+            var eventData = {
+                event: UIEvent = undefined,
+                forwardEvent: function forwardEvent() {
+                    _forwardEvent = true;
+                }
+            };
+            var uievent = {};
+            var handleEvent = function handleEvent(e) {
+                if (e.target === viewportService.element || e.target.parentElement === viewportService.element) {
+                    var boundingRect = viewportService.element.getBoundingClientRect();
+                    if (viewportService.uiEvent.numberOfListeners > 0) {
+                        _forwardEvent = false;
+                        eventData.event = e;
+                        viewportService.uiEvent.raiseEvent(eventData);
+                        if (!_forwardEvent) {
+                            e.stopImmediatePropagation();
+                            return;
+                        }
+                    }
+                    e.preventDefault();
+                    var touches = cloneTouches(e.touches, boundingRect);
+                    var changedTouches = cloneTouches(e.changedTouches, boundingRect);
+                    var targetTouches = cloneTouches(e.targetTouches, boundingRect);
+                    uievent.timeStamp = e.timeStamp;
+                    uievent.type = e.type;
+                    uievent.bubbles = e.bubbles;
+                    uievent.cancelable = e.cancelable;
+                    uievent.which = e.which;
+                    uievent.detail = e.detail;
+                    uievent.altKey = e.altKey;
+                    uievent.ctrlKey = e.ctrlKey;
+                    uievent.metaKey = e.metaKey;
+                    uievent.button = e.button;
+                    uievent.buttons = e.buttons;
+                    uievent.clientX = e.clientX - boundingRect.left;
+                    uievent.clientY = e.clientY - boundingRect.top;
+                    uievent.screenX = e.screenX;
+                    uievent.screenY = e.screenY;
+                    uievent.movementX = e.movementX;
+                    uievent.movementY = e.movementY;
+                    uievent.deltaX = e.deltaX;
+                    uievent.deltaY = e.deltaY;
+                    uievent.deltaZ = e.deltaZ;
+                    uievent.deltaMode = e.deltaMode;
+                    uievent.wheelDelta = e.wheelDelta;
+                    uievent.wheelDeltaX = e.wheelDeltaX;
+                    uievent.wheelDeltaY = e.wheelDeltaY;
+                    uievent.touches = touches;
+                    uievent.changedTouches = changedTouches;
+                    uievent.targetTouches = targetTouches;
+                    uievent.pointerId = e.pointerId;
+                    uievent.width = e.width;
+                    uievent.height = e.height;
+                    uievent.pressure = e.pressure;
+                    uievent.tiltX = e.tiltX;
+                    uievent.tiltY = e.tiltY;
+                    uievent.isPrimary = e.isPrimary;
+                    callback(uievent);
+                } else {
+                    e.stopImmediatePropagation();
+                }
+            };
+            var forwardedEvent = [ "wheel", "click", "dblclick", "contextmenu" ];
+            if (FeatureDetection.supportsPointerEvents()) {
+                forwardedEvent.push("pointerenter", "pointerleave", "pointerdown", "pointermove", "pointerup", "pointercancel");
+            } else {
+                forwardedEvent.push("mouseenter", "mouseleave", "mousedown", "mousemove", "mouseup", "touchstart", "touchend", "touchmove", "touchcancel");
+            }
+            forwardedEvent.forEach(function(type) {
+                viewportService.element.addEventListener(type, handleEvent, false);
+            });
+        }
         function getAncestorReferenceFrames(frame) {
-            var frames = [];
+            var result = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+            var frames = result;
+            frames.length = 0;
+            frames.unshift(frame);
             var f = frame;
             do {
                 var position = f.position;
@@ -18995,13 +19308,13 @@
             if (!defined(orientation)) return undefined;
             return OrientationProperty.convertToReferenceFrame(time, orientation, entityFrame, referenceFrame, result);
         }
-        function getSerializedEntityPose(entity, time, frame) {
+        function getSerializedEntityState(entity, time, frame) {
             var frames = undefined;
             if (!defined(frame)) {
-                frames = getAncestorReferenceFrames(entity);
+                frames = getAncestorReferenceFrames(entity, _scratchFramesArray);
                 frame = frames[0];
             }
-            if (!defined(frame)) return;
+            if (!defined(frame)) return undefined;
             var p = getEntityPositionInReferenceFrame(entity, time, frame, {});
             if (!p && !frames) return undefined;
             var o = getEntityOrientationInReferenceFrame(entity, time, frame, {});
@@ -19010,13 +19323,14 @@
                 return {
                     p: p,
                     o: o,
-                    r: typeof frame === "number" ? frame : frame.id
+                    r: typeof frame === "number" ? frame : frame.id,
+                    meta: typeof frame !== "number" ? frame["meta"] : undefined
                 };
             } else if (frames) {
                 for (var i = 1; i < frames.length; i++) {
                     frame = frames[i];
                     if (!defined(frame)) return undefined;
-                    var result = getSerializedEntityPose(entity, time, frame);
+                    var result = getSerializedEntityState(entity, time, frame);
                     if (result) return result;
                 }
             }
@@ -19061,17 +19375,6 @@
                     }
                 });
             }
-        }
-        function getWindowViewport() {
-            if (typeof document !== "undefined" && document.documentElement) {
-                return {
-                    x: 0,
-                    y: 0,
-                    width: document.documentElement.clientWidth,
-                    height: document.documentElement.clientHeight
-                };
-            }
-            throw new Error("Not implemeneted for the current platform");
         }
         function decomposePerspectiveOffCenterProjectionMatrix(mat, result) {
             var m11 = mat[Matrix4.COLUMN0ROW0];
@@ -19132,9 +19435,98 @@
                 window.location.protocol = protocol === "https:" ? "argon4s" : "argon4";
             }
         }
+        function deprecated$1(alternative) {
+            var didPrintWarning = false;
+            var decorator = function decorator(target, name, descriptor) {
+                var original = descriptor.get || descriptor.value;
+                var originalType = typeof descriptor.value === "function" ? "function" : "property";
+                var message = 'The "' + name + '" ' + originalType + " is deprecated. ";
+                if (alternative) {
+                    var alternativeType = typeof target[alternative] === "function" ? "function" : "property";
+                    message += 'Please use the "' + alternative + '" ' + alternativeType + " instead.";
+                }
+                var wrapped = function wrapped() {
+                    if (!didPrintWarning) {
+                        console.warn(message);
+                        didPrintWarning = true;
+                    }
+                    return original.apply(this, arguments);
+                };
+                if (descriptor.value) descriptor.value = wrapped; else descriptor.get = wrapped;
+                return descriptor;
+            };
+            return decorator;
+        }
+        function extractVersion(versionString) {
+            var parts = versionString.split(".");
+            for (var i = 0, len = parts.length; i < len; ++i) {
+                parts[i] = parseInt(parts[i], 10);
+            }
+            return parts;
+        }
         function _stringFromReferenceFrame(referenceFrame) {
             var rf = referenceFrame;
             return defined(rf.id) ? rf.id : "" + rf;
+        }
+        function updatePhysicalEyePoseFromDeviceOrientation(contextService) {
+            var physicalEye = contextService.entities.getById(PHYSICAL_EYE_ENTITY_ID);
+            var physicalStage = contextService.entities.getById(PHYSICAL_STAGE_ENTITY_ID);
+            if (physicalEye) {
+                ensureOrientationUpdates();
+                if (!deviceOrientation) {
+                    physicalEye.position.setValue(undefined, undefined);
+                    physicalEye.orientation.setValue(undefined);
+                    physicalEye["meta"] = undefined;
+                    return;
+                }
+                var screenOrientationDegrees = screen["orientation"] && screen["orientation"].angle || window.orientation || 0;
+                var displayOrientation = Quaternion.fromAxisAngle(Cartesian3.UNIT_Z, -screenOrientationDegrees * CesiumMath.RADIANS_PER_DEGREE, scratchQuaternion2);
+                physicalEye.position.setValue(Cartesian3.fromElements(0, 0, AVERAGE_HUMAN_HEIGHT, scratchCartesian$1), physicalStage);
+                physicalEye.orientation.setValue(Quaternion.multiply(deviceOrientation, displayOrientation, scratchQuaternion));
+                physicalEye["meta"] = physicalEye["meta"] || {};
+                physicalEye["meta"].headingAccuracy = deviceOrientationHeadingAccuracy;
+            }
+        }
+        function ensureOrientationUpdates() {
+            if (typeof window == "undefined" || !window.addEventListener) throw new Error("Orientation updates not supported");
+            if (defined(deviceOrientationListener)) return;
+            var headingDrift = 0;
+            var alphaOffset = undefined;
+            deviceOrientationListener = function deviceOrientationListener(e) {
+                var alphaDegrees = e.alpha;
+                var webkitCompassHeading = e["webkitCompassHeading"];
+                var webkitCompassAccuracy = +e["webkitCompassAccuracy"];
+                if (!defined(alphaDegrees)) {
+                    return;
+                }
+                if (e.absolute) {
+                    alphaOffset = 0;
+                }
+                deviceOrientationHeadingAccuracy = webkitCompassAccuracy > 0 ? webkitCompassAccuracy : undefined;
+                if ((!defined(alphaOffset) || Math.abs(headingDrift) > 5) && defined(webkitCompassHeading) && webkitCompassAccuracy >= 0 && webkitCompassHeading >= 0) {
+                    if (!defined(alphaOffset)) {
+                        alphaOffset = -webkitCompassHeading;
+                    } else {
+                        alphaOffset -= headingDrift;
+                    }
+                }
+                if (!defined(alphaOffset)) return;
+                var alpha = CesiumMath.RADIANS_PER_DEGREE * (e.alpha + alphaOffset || -webkitCompassHeading || 0);
+                var beta = CesiumMath.RADIANS_PER_DEGREE * e.beta;
+                var gamma = CesiumMath.RADIANS_PER_DEGREE * e.gamma;
+                var alphaQuat = Quaternion.fromAxisAngle(Cartesian3.UNIT_Z, alpha, scratchQuaternion);
+                var betaQuat = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, beta, scratchQuaternion2);
+                var alphaBetaQuat = Quaternion.multiply(alphaQuat, betaQuat, scratchQuaternion);
+                var gammaQuat = Quaternion.fromAxisAngle(Cartesian3.UNIT_Y, gamma, scratchQuaternion2);
+                var alphaBetaGammaQuat = Quaternion.multiply(alphaBetaQuat, gammaQuat, scratchQuaternion);
+                deviceOrientation = Quaternion.clone(alphaBetaGammaQuat, deviceOrientation);
+                deviceOrientationHeadingAccuracy = webkitCompassAccuracy;
+            };
+            if ("ondeviceorientationabsolute" in window) {
+                window.addEventListener("deviceorientationabsolute", deviceOrientationListener);
+            } else if ("ondeviceorientation" in window) {
+                window.addEventListener("deviceorientation", deviceOrientationListener);
+            }
         }
         function tick() {
             var secondsBeforeTick = clock.currentTime.secondsOfDay;
@@ -19149,13 +19541,23 @@
                 JulianDate.clone(now, clock.currentTime);
             }
         }
-        function init$1(containerElement, configuration, dependencyInjectionContainer) {
+        function init$1(parentElementOrConfig, configurationOrDIContainer, dependencyInjectionContainer) {
             if (ArgonSystem.instance) throw new Error("A shared ArgonSystem instance already exists");
-            if (containerElement && (containerElement["configuration"] || containerElement["container"])) {
-                var deprecatedParameters = containerElement;
+            var parentElement = void 0;
+            var configuration = void 0;
+            if (configurationOrDIContainer instanceof Container) {
+                parentElement = ParentElement;
+                configuration = parentElementOrConfig;
+                dependencyInjectionContainer = configurationOrDIContainer;
+            } else {
+                parentElement = parentElementOrConfig;
+                configuration = configurationOrDIContainer;
+            }
+            if (parentElement && (parentElement["configuration"] || parentElement["container"])) {
+                var deprecatedParameters = parentElement;
                 if (!configuration && deprecatedParameters["configuration"]) configuration = deprecatedParameters["configuration"];
                 if (!configuration && deprecatedParameters["container"]) dependencyInjectionContainer = deprecatedParameters["container"];
-                containerElement = undefined;
+                parentElement = undefined;
             }
             var role = void 0;
             if (typeof HTMLElement === "undefined") {
@@ -19168,7 +19570,7 @@
             if (!configuration) configuration = {};
             configuration.role = role;
             if (!dependencyInjectionContainer) dependencyInjectionContainer = new Container();
-            return new ArgonSystem(containerElement || null, configuration, dependencyInjectionContainer);
+            return new ArgonSystem(parentElement || null, configuration, dependencyInjectionContainer);
         }
         function initRealityViewer() {
             var configuration = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -19176,26 +19578,29 @@
             if (ArgonSystem.instance) throw new Error("A shared ArgonSystem instance already exists");
             configuration.role = Role.REALITY_VIEW;
             configuration["supportsCustomProtocols"] = true;
-            return new ArgonSystem(null, configuration, dependencyInjectionContainer);
-        }
-        function initUnshared(containerElement) {
-            var configuration = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-            var dependencyInjectionContainer = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : new Container();
-            configuration.role = Role.REALITY_MANAGER;
+            configuration["reality.supportsControlPort"] = true;
+            configuration.protocols = configuration.protocols || [];
+            configuration.protocols.push("ar.uievent");
             return new ArgonSystem(null, configuration, dependencyInjectionContainer);
         }
         return {
             setters: [ function(_) {}, function(_2) {
                 AggregateError = _2.AggregateError;
                 PLATFORM = _2.PLATFORM;
+<<<<<<< HEAD
             }, function(_d) {
                 binarySearch = _d.default;
+=======
+            }, function(_d2) {
+                binarySearch = _d2.default;
+>>>>>>> b2935729304bfe564be76b9c64654b4bf3ec5250
             }, function(_3) {
                 cesium_Source_DataSources_CallbackProperty_js = _3.default;
             }, function(_4) {
                 CameraEventAggregator = _4.default;
             }, function(_5) {
                 CameraEventType = _5.default;
+<<<<<<< HEAD
             }, function(_a) {
                 cesium_Source_Core_Cartesian2_js = _a.default;
             }, function(_d2) {
@@ -19204,14 +19609,29 @@
                 cesium_Source_Core_Cartesian4_js = _6.default;
             }, function(_d3) {
                 Cartographic = _d3.default;
+=======
+            }, function(_a2) {
+                cesium_Source_Core_Cartesian2_js = _a2.default;
+            }, function(_d3) {
+                Cartesian3 = _d3.default;
+            }, function(_6) {
+                cesium_Source_Core_Cartesian4_js = _6.default;
+            }, function(_d4) {
+                Cartographic = _d4.default;
+>>>>>>> b2935729304bfe564be76b9c64654b4bf3ec5250
             }, function(_7) {
                 Clock = _7.default;
             }, function(_8) {
                 cesium_Source_Core_ClockStep_js = _8.default;
             }, function(_9) {
                 cesium_Source_DataSources_CompositeEntityCollection_js = _9.default;
+<<<<<<< HEAD
             }, function(_c) {
                 ConstantPositionProperty = _c.default;
+=======
+            }, function(_c2) {
+                ConstantPositionProperty = _c2.default;
+>>>>>>> b2935729304bfe564be76b9c64654b4bf3ec5250
             }, function(_10) {
                 ConstantProperty = _10.default;
             }, function(_11) {
@@ -19222,6 +19642,7 @@
                 defined = _13.default;
             }, function(_14) {
                 cesium_Source_Core_DeveloperError_js = _14.default;
+<<<<<<< HEAD
             }, function(_e) {
                 cesium_Source_Core_Ellipsoid_js = _e.default;
             }, function(_a2) {
@@ -19240,6 +19661,28 @@
                 JulianDate = _16.default;
             }, function(_d4) {
                 CesiumMath = _d4.default;
+=======
+            }, function(_e2) {
+                cesium_Source_Core_Ellipsoid_js = _e2.default;
+            }, function(_a3) {
+                Entity = _a3.default;
+            }, function(_b2) {
+                EntityCollection = _b2.default;
+            }, function(_15) {
+                CesiumEvent = _15.default;
+            }, function(_b3) {
+                cesium_Source_Core_ExtrapolationType_js = _b3.default;
+            }, function(_e3) {
+                FeatureDetection = _e3.default;
+            }, function(_c3) {
+                cesium_Source_Core_GeographicProjection_js = _c3.default;
+            }, function(_f2) {
+                cesium_Source_Core_HermitePolynomialApproximation_js = _f2.default;
+            }, function(_16) {
+                JulianDate = _16.default;
+            }, function(_d5) {
+                CesiumMath = _d5.default;
+>>>>>>> b2935729304bfe564be76b9c64654b4bf3ec5250
             }, function(_17) {
                 Matrix3 = _17.default;
             }, function(_18) {
@@ -19250,41 +19693,60 @@
                 PerspectiveFrustum = _20.default;
             }, function(_21) {
                 PerspectiveOffCenterFrustum = _21.default;
+<<<<<<< HEAD
             }, function(_f2) {
                 cesium_Source_DataSources_PositionProperty_js = _f2.default;
+=======
+            }, function(_f3) {
+                cesium_Source_DataSources_PositionProperty_js = _f3.default;
+>>>>>>> b2935729304bfe564be76b9c64654b4bf3ec5250
             }, function(_22) {
                 cesium_Source_DataSources_Property_js = _22.default;
             }, function(_23) {
                 Quaternion = _23.default;
             }, function(_24) {
                 cesium_Source_DataSources_ReferenceEntity_js = _24.default;
+<<<<<<< HEAD
             }, function(_e2) {
                 ReferenceFrame = _e2.default;
+=======
+            }, function(_e4) {
+                ReferenceFrame = _e4.default;
+>>>>>>> b2935729304bfe564be76b9c64654b4bf3ec5250
             }, function(_25) {
                 cesium_Source_DataSources_ReferenceProperty_js = _25.default;
             }, function(_26) {
                 SampledPositionProperty = _26.default;
+<<<<<<< HEAD
             }, function(_a3) {
                 SampledProperty = _a3.default;
             }, function(_e3) {
                 cesium_Source_Core_ScreenSpaceEventHandler_js = _e3.default;
             }, function(_f3) {
                 cesium_Source_Core_ScreenSpaceEventType_js = _f3.default;
+=======
+            }, function(_a4) {
+                SampledProperty = _a4.default;
+            }, function(_e5) {
+                cesium_Source_Core_ScreenSpaceEventHandler_js = _e5.default;
+            }, function(_f4) {
+                cesium_Source_Core_ScreenSpaceEventType_js = _f4.default;
+>>>>>>> b2935729304bfe564be76b9c64654b4bf3ec5250
             }, function(_27) {
                 Transforms = _27.default;
             }, function(_28) {
                 cesium_Source_Core_Simon1994PlanetaryPositions_js = _28.default;
+<<<<<<< HEAD
             }, function(_f4) {
                 cesium_Source_Core_PolylinePipeline_js = _f4.default;
+=======
+            }, function(_f5) {
+                cesium_Source_Core_PolylinePipeline_js = _f5.default;
+>>>>>>> b2935729304bfe564be76b9c64654b4bf3ec5250
             }, function(_29) {
                 CardboardUI = _29.default;
             }, function(_30) {} ],
             execute: function() {
-                _classCallCheck = function(instance, Constructor) {
-                    if (!(instance instanceof Constructor)) {
-                        throw new TypeError("Cannot call a class as a function");
-                    }
-                };
                 _createClass = function() {
                     function defineProperties(target, props) {
                         for (var i = 0; i < props.length; i++) {
@@ -19301,6 +19763,11 @@
                         return Constructor;
                     };
                 }();
+                _classCallCheck = function(instance, Constructor) {
+                    if (!(instance instanceof Constructor)) {
+                        throw new TypeError("Cannot call a class as a function");
+                    }
+                };
                 _extends = Object.assign || function(target) {
                     for (var i = 1; i < arguments.length; i++) {
                         var source = arguments[i];
@@ -19880,6 +20347,7 @@
                     EntityCollection: EntityCollection,
                     Event: CesiumEvent,
                     ExtrapolationType: cesium_Source_Core_ExtrapolationType_js,
+                    FeatureDetection: FeatureDetection,
                     GeographicProjection: cesium_Source_Core_GeographicProjection_js,
                     HermitePolynomialApproximation: cesium_Source_Core_HermitePolynomialApproximation_js,
                     JulianDate: JulianDate,
@@ -19903,13 +20371,6 @@
                     Simon1994PlanetaryPositions: cesium_Source_Core_Simon1994PlanetaryPositions_js,
                     PolylinePipeline: cesium_Source_Core_PolylinePipeline_js
                 }));
-                if (typeof document == "undefined") {
-                    w = typeof global !== "undefined" ? global : window;
-                    w["WebVRConfig"] = {
-                        DEFER_INITIALIZATION: typeof navigator == "undefined"
-                    };
-                }
-                console.log(CardboardUI);
                 kButtonWidthDp = 28;
                 kTouchSlopFactor = 1.5;
                 CardboardUI.prototype.listen = function(optionsCallback, backCallback) {
@@ -19947,6 +20408,11 @@
                     });
                     if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
                 };
+                _export("AVERAGE_HUMAN_HEIGHT", AVERAGE_HUMAN_HEIGHT = 1.77);
+                _export("EYE_ENTITY_ID", EYE_ENTITY_ID = "ar.eye");
+                _export("PHYSICAL_EYE_ENTITY_ID", PHYSICAL_EYE_ENTITY_ID = "ar.physical-eye");
+                _export("STAGE_ENTITY_ID", STAGE_ENTITY_ID = "ar.stage");
+                _export("PHYSICAL_STAGE_ENTITY_ID", PHYSICAL_STAGE_ENTITY_ID = "ar.physical-stage");
                 (function(Role) {
                     Role[Role["REALITY_AUGMENTER"] = "RealityAugmenter"] = "REALITY_AUGMENTER";
                     Role[Role["REALITY_VIEWER"] = "RealityViewer"] = "REALITY_VIEWER";
@@ -19969,34 +20435,108 @@
                     }
                     Role.isRealityManager = isRealityManager;
                 })(Role || _export("Role", Role = {}));
-                (function(Viewport) {
-                    function clone(viewport) {
-                        var result = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-                        if (!viewport) return undefined;
-                        result.x = viewport.x;
-                        result.y = viewport.y;
-                        result.width = viewport.width;
-                        result.height = viewport.height;
-                        return result;
+                _export("Configuration", Configuration = function Configuration() {
+                    _classCallCheck(this, Configuration);
+                });
+                _export("Viewport", Viewport = function() {
+                    function Viewport() {
+                        _classCallCheck(this, Viewport);
                     }
-                    Viewport.clone = clone;
-                    function equals(viewportA, viewportB) {
-                        return viewportA && viewportB && CesiumMath.equalsEpsilon(viewportA.x, viewportB.x, CesiumMath.EPSILON7) && CesiumMath.equalsEpsilon(viewportA.y, viewportB.y, CesiumMath.EPSILON7) && CesiumMath.equalsEpsilon(viewportA.width, viewportB.width, CesiumMath.EPSILON7) && CesiumMath.equalsEpsilon(viewportA.height, viewportB.height, CesiumMath.EPSILON7);
+                    _createClass(Viewport, null, [ {
+                        key: "clone",
+                        value: function clone(viewport) {
+                            var result = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+                            result.x = viewport.x;
+                            result.y = viewport.y;
+                            result.width = viewport.width;
+                            result.height = viewport.height;
+                            return result;
+                        }
+                    }, {
+                        key: "equals",
+                        value: function equals(viewportA, viewportB) {
+                            return viewportA && viewportB && CesiumMath.equalsEpsilon(viewportA.x, viewportB.x, CesiumMath.EPSILON7) && CesiumMath.equalsEpsilon(viewportA.y, viewportB.y, CesiumMath.EPSILON7) && CesiumMath.equalsEpsilon(viewportA.width, viewportB.width, CesiumMath.EPSILON7) && CesiumMath.equalsEpsilon(viewportA.height, viewportB.height, CesiumMath.EPSILON7);
+                        }
+                    } ]);
+                    return Viewport;
+                }());
+                _export("NormalizedViewport", NormalizedViewport = function() {
+                    function NormalizedViewport() {
+                        _classCallCheck(this, NormalizedViewport);
                     }
-                    Viewport.equals = equals;
-                })(Viewport || _export("Viewport", Viewport = {}));
+                    _createClass(NormalizedViewport, null, [ {
+                        key: "clone",
+                        value: function clone(viewport) {
+                            var result = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+                            result.x = viewport.x;
+                            result.y = viewport.y;
+                            result.width = viewport.width;
+                            result.height = viewport.height;
+                            return result;
+                        }
+                    }, {
+                        key: "equals",
+                        value: function equals(viewportA, viewportB) {
+                            return viewportA && viewportB && CesiumMath.equalsEpsilon(viewportA.x, viewportB.x, CesiumMath.EPSILON7) && CesiumMath.equalsEpsilon(viewportA.y, viewportB.y, CesiumMath.EPSILON7) && CesiumMath.equalsEpsilon(viewportA.width, viewportB.width, CesiumMath.EPSILON7) && CesiumMath.equalsEpsilon(viewportA.height, viewportB.height, CesiumMath.EPSILON7);
+                        }
+                    } ]);
+                    return NormalizedViewport;
+                }());
                 (function(SubviewType) {
                     SubviewType[SubviewType["SINGULAR"] = "Singular"] = "SINGULAR";
                     SubviewType[SubviewType["LEFTEYE"] = "LeftEye"] = "LEFTEYE";
                     SubviewType[SubviewType["RIGHTEYE"] = "RightEye"] = "RIGHTEYE";
                     SubviewType[SubviewType["OTHER"] = "Other"] = "OTHER";
                 })(SubviewType || _export("SubviewType", SubviewType = {}));
-                _export("Event", Event$$1 = function() {
-                    function Event$$1() {
-                        _classCallCheck(this, Event$$1);
+                (function(SerializedEntityState) {
+                    function clone(state, result) {
+                        if (!state) return undefined;
+                        result = result || {};
+                        result.p = Cartesian3.clone(state.p, result.p);
+                        result.o = Quaternion.clone(state.o, result.o);
+                        result.r = state.r;
+                        result.meta = state.meta;
+                        return result;
+                    }
+                    SerializedEntityState.clone = clone;
+                })(SerializedEntityState || _export("SerializedEntityState", SerializedEntityState = {}));
+                (function(SerializedSubview) {
+                    function clone(subview, result) {
+                        result = result || {};
+                        result.type = subview.type;
+                        result.projectionMatrix = Matrix4.clone(subview.projectionMatrix, result.projectionMatrix);
+                        result.viewport = NormalizedViewport.clone(subview.viewport, result.viewport);
+                        result.pose = subview.pose ? SerializedEntityState.clone(subview.pose, result.pose) : undefined;
+                        return result;
+                    }
+                    SerializedSubview.clone = clone;
+                })(SerializedSubview || _export("SerializedSubview", SerializedSubview = {}));
+                _export("SerializedSubviewList", SerializedSubviewList = function(_Array) {
+                    _inherits(SerializedSubviewList, _Array);
+                    function SerializedSubviewList() {
+                        _classCallCheck(this, SerializedSubviewList);
+                        return _possibleConstructorReturn(this, (SerializedSubviewList.__proto__ || Object.getPrototypeOf(SerializedSubviewList)).call(this));
+                    }
+                    _createClass(SerializedSubviewList, null, [ {
+                        key: "clone",
+                        value: function clone(subviews, result) {
+                            result = result || new SerializedSubviewList();
+                            result.length = subviews.length;
+                            for (var i = 0; i < subviews.length; i++) {
+                                var s = subviews[i];
+                                result[i] = SerializedSubview.clone(s, result[i]);
+                            }
+                            return result;
+                        }
+                    } ]);
+                    return SerializedSubviewList;
+                }(Array));
+                _export("Event", Event = function() {
+                    function Event() {
+                        _classCallCheck(this, Event);
                         this._event = new CesiumEvent();
                     }
-                    _createClass(Event$$1, [ {
+                    _createClass(Event, [ {
                         key: "addEventListener",
                         value: function addEventListener(listener) {
                             return this._event.addEventListener(listener);
@@ -20017,7 +20557,7 @@
                             return this._event.numberOfListeners;
                         }
                     } ]);
-                    return Event$$1;
+                    return Event;
                 }());
                 _export("CommandQueue", CommandQueue = function() {
                     function CommandQueue() {
@@ -20025,7 +20565,7 @@
                         _classCallCheck(this, CommandQueue);
                         this._queue = [];
                         this._paused = true;
-                        this.errorEvent = new Event$$1();
+                        this.errorEvent = new Event();
                         this.errorEvent.addEventListener(function(error) {
                             if (_this.errorEvent.numberOfListeners === 1) console.error(error);
                         });
@@ -20090,9 +20630,6 @@
                     } ]);
                     return CommandQueue;
                 }());
-                _export("getEntityPosition", getEntityPosition = getEntityPositionInReferenceFrame);
-                _export("getEntityOrientation", getEntityOrientation = getEntityOrientationInReferenceFrame);
-                urlParser = typeof document !== "undefined" ? document.createElement("a") : undefined;
                 _export("MessageChannelLike", MessageChannelLike = function MessageChannelLike() {
                     _classCallCheck(this, MessageChannelLike);
                     var messageChannel = this;
@@ -20219,12 +20756,36 @@
                     } ]);
                     return MessageChannelFactory;
                 }());
+                eventSynthesizerFunction = void 0;
+                _export("synthesizeEvent", synthesizeEvent = typeof document !== "undefined" && document.createElement ? getEventSynthesizier() : undefined);
+                cloneTouch = function cloneTouch(touch, boundingRect) {
+                    return {
+                        identifier: touch.identifier,
+                        clientX: touch.clientX - boundingRect.left,
+                        clientY: touch.clientY - boundingRect.top,
+                        screenX: touch.screenX,
+                        screenY: touch.screenY
+                    };
+                };
+                cloneTouches = function cloneTouches(touches, boundingRect) {
+                    if (!touches) return undefined;
+                    var touchList = [];
+                    for (var i = 0; i < touches.length; i++) {
+                        var touch = touches.item(i);
+                        touchList[i] = cloneTouch(touch, boundingRect);
+                    }
+                    return touchList;
+                };
+                _export("getEntityPosition", getEntityPosition = getEntityPositionInReferenceFrame);
+                _export("getEntityOrientation", getEntityOrientation = getEntityOrientationInReferenceFrame);
+                _scratchFramesArray = [];
+                urlParser = typeof document !== "undefined" ? document.createElement("a") : undefined;
                 scratchPerspectiveOffCenterFrustum = new PerspectiveOffCenterFrustum();
                 scratchCartesian = new Cartesian3();
                 scratchOrientation = new Quaternion();
                 _export("isIOS", isIOS = typeof navigator !== "undefined" && typeof window !== "undefined" && /iPad|iPhone|iPod/.test(navigator.userAgent) && !window["MSStream"]);
                 lastTime = 0;
-                _export("requestAnimationFrame", requestAnimationFrame$1 = window && window.requestAnimationFrame ? window.requestAnimationFrame.bind(window) : function(callback) {
+                _export("requestAnimationFrame", requestAnimationFrame$1 = typeof window !== "undefined" && window.requestAnimationFrame ? window.requestAnimationFrame.bind(window) : function(callback) {
                     var currTime = performance.now();
                     var timeToCall = Math.max(0, 16 - (currTime - lastTime));
                     var id = setTimeout(function() {
@@ -20233,23 +20794,28 @@
                     lastTime = currTime + timeToCall;
                     return id;
                 });
-                _export("version", version = "1.1.0-beta");
-                __decorate = undefined && undefined.__decorate || function(decorators, target, key, desc) {
+                _export("version", version = "1.1.1");
+                __decorate$1 = undefined && undefined.__decorate || function(decorators, target, key, desc) {
                     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
                     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc); else for (var i = decorators.length - 1; i >= 0; i--) {
                         if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
                     }
                     return c > 3 && r && Object.defineProperty(target, key, r), r;
                 };
+                __metadata$1 = undefined && undefined.__metadata || function(k, v) {
+                    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+                };
+                emptyObject = Object.freeze({});
                 _export("SessionPort", SessionPort = function() {
                     function SessionPort(uri) {
                         var _this = this;
                         _classCallCheck(this, SessionPort);
                         this.uri = uri;
-                        this._connectEvent = new Event$$1();
-                        this.closeEvent = new Event$$1();
-                        this.errorEvent = new Event$$1();
+                        this._connectEvent = new Event();
+                        this.closeEvent = new Event();
+                        this.errorEvent = new Event();
                         this.on = {};
+                        this.version = [];
                         this._isOpened = false;
                         this._isConnected = false;
                         this._isClosed = false;
@@ -20257,6 +20823,7 @@
                             if (!info) throw new Error("Session did not provide a configuration (" + _this.uri + ")");
                             if (_this._isConnected) throw new Error("Session has already connected! (" + _this.uri + ")");
                             _this.info = info;
+                            _this.version = _this.info.version || [ 0 ];
                             _this._isConnected = true;
                             _this._connectEvent.raiseEvent(undefined);
                         };
@@ -20317,10 +20884,11 @@
                             this._isOpened = true;
                             this.messagePort.onmessage = function(evt) {
                                 if (_this2._isClosed) return;
-                                var id = evt.data[0];
-                                var topic = evt.data[1];
-                                var message = evt.data[2] || {};
-                                var expectsResponse = evt.data[3];
+                                var data = typeof evt.data === "string" ? JSON.parse(evt.data) : evt.data;
+                                var id = data[0];
+                                var topic = data[1];
+                                var message = data[2] || emptyObject;
+                                var expectsResponse = data[3];
                                 var handler = _this2.on[topic];
                                 if (handler && !expectsResponse) {
                                     try {
@@ -20351,10 +20919,8 @@
                                         _this2.send(topic + ":reject:" + id, {
                                             reason: errorMessage
                                         });
-                                        _this2.errorEvent.raiseEvent(new Error(errorMessage));
-                                    } else {
-                                        console.warn(errorMessage);
                                     }
+                                    _this2.errorEvent.raiseEvent(new Error(errorMessage));
                                 }
                             };
                             this.send(SessionPort.OPEN, options);
@@ -20365,7 +20931,8 @@
                             if (!this._isOpened) throw new Error("Session must be open to send messages");
                             if (this._isClosed) return false;
                             var id = createGuid();
-                            this.messagePort.postMessage([ id, topic, message ]);
+                            var packet = [ id, topic, message ];
+                            this.messagePort.postMessage(isIOS ? packet : JSON.stringify(packet));
                             return true;
                         }
                     }, {
@@ -20401,7 +20968,8 @@
                                     reject(new Error(message.reason));
                                 };
                             });
-                            this.messagePort.postMessage([ id, topic, message || {}, true ]);
+                            var packet = [ id, topic, message, true ];
+                            this.messagePort.postMessage(isIOS ? packet : JSON.stringify(packet));
                             return result;
                         }
                     }, {
@@ -20462,12 +21030,12 @@
                         this.sessionPortFactory = sessionPortFactory;
                         this.messageChannelFactory = messageChannelFactory;
                         this.manager = this.createSessionPort("argon:manager");
-                        this.errorEvent = new Event$$1();
-                        this._connectEvent = new Event$$1();
+                        this.errorEvent = new Event();
+                        this._connectEvent = new Event();
                         this._managedSessions = [];
-                        configuration.version = version;
+                        configuration.version = extractVersion(version);
                         configuration.uri = typeof window !== "undefined" && window.location ? window.location.href : undefined;
-                        configuration.title = typeof document !== undefined ? document.title : undefined;
+                        configuration.title = typeof document !== "undefined" ? document.title : undefined;
                         this.errorEvent.addEventListener(function(error) {
                             if (_this4.errorEvent.numberOfListeners === 1) console.error(error);
                         });
@@ -20562,40 +21130,40 @@
                     }, {
                         key: "isRealityManager",
                         get: function get() {
-                            return Role.isRealityManager(this.configuration.role);
+                            return Role.isRealityManager(this.configuration && this.configuration.role);
                         }
                     }, {
                         key: "isRealityAugmenter",
                         get: function get() {
-                            return Role.isRealityAugmenter(this.configuration.role);
+                            return Role.isRealityAugmenter(this.configuration && this.configuration.role);
                         }
                     }, {
                         key: "isRealityViewer",
                         get: function get() {
-                            return Role.isRealityViewer(this.configuration.role);
+                            return Role.isRealityViewer(this.configuration && this.configuration.role);
                         }
                     }, {
                         key: "isManager",
                         get: function get() {
-                            console.warn("Deprecated. Use isRealityManager");
-                            return this.isManager;
+                            return this.isRealityManager;
                         }
                     }, {
                         key: "isApplication",
                         get: function get() {
-                            console.warn("Deprecated. Use isRealityAugmenter");
                             return this.isRealityAugmenter;
                         }
                     }, {
                         key: "isRealityView",
                         get: function get() {
-                            console.warn("Deprecated. Use isRealityViewer");
                             return this.isRealityViewer;
                         }
                     } ]);
                     return SessionService;
                 }());
-                _export("SessionService", SessionService = __decorate([ inject("config", ConnectService, SessionPortFactory, MessageChannelFactory) ], SessionService));
+                __decorate$1([ deprecated$1("isRealityManager"), __metadata$1("design:type", Object), __metadata$1("design:paramtypes", []) ], SessionService.prototype, "isManager", null);
+                __decorate$1([ deprecated$1("isRealityAugmenter"), __metadata$1("design:type", Object), __metadata$1("design:paramtypes", []) ], SessionService.prototype, "isApplication", null);
+                __decorate$1([ deprecated$1("isRealityViewer"), __metadata$1("design:type", Object), __metadata$1("design:paramtypes", []) ], SessionService.prototype, "isRealityView", null);
+                _export("SessionService", SessionService = __decorate$1([ inject("config", ConnectService, SessionPortFactory, MessageChannelFactory), __metadata$1("design:paramtypes", [ typeof (_a$1 = typeof Configuration !== "undefined" && Configuration) === "function" && _a$1 || Object, ConnectService, SessionPortFactory, typeof (_b$1 = typeof MessageChannelFactory !== "undefined" && MessageChannelFactory) === "function" && _b$1 || Object ]) ], SessionService));
                 _export("LoopbackConnectService", LoopbackConnectService = function(_ConnectService) {
                     _inherits(LoopbackConnectService, _ConnectService);
                     function LoopbackConnectService() {
@@ -20689,42 +21257,56 @@
                     } ]);
                     return WKWebViewConnectService;
                 }(ConnectService));
-                __decorate$1 = undefined && undefined.__decorate || function(decorators, target, key, desc) {
+                _defineProperty = function(obj, key, value) {
+                    if (key in obj) {
+                        Object.defineProperty(obj, key, {
+                            value: value,
+                            enumerable: true,
+                            configurable: true,
+                            writable: true
+                        });
+                    } else {
+                        obj[key] = value;
+                    }
+                    return obj;
+                };
+                __decorate$5 = undefined && undefined.__decorate || function(decorators, target, key, desc) {
                     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
                     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc); else for (var i = decorators.length - 1; i >= 0; i--) {
                         if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
                     }
                     return c > 3 && r && Object.defineProperty(target, key, r), r;
                 };
+                __metadata$5 = undefined && undefined.__metadata || function(k, v) {
+                    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+                };
                 (function(PoseStatus) {
                     PoseStatus[PoseStatus["KNOWN"] = 1] = "KNOWN";
                     PoseStatus[PoseStatus["FOUND"] = 2] = "FOUND";
                     PoseStatus[PoseStatus["LOST"] = 4] = "LOST";
                 })(PoseStatus || _export("PoseStatus", PoseStatus = {}));
-                scratchCartesian3 = new Cartesian3(0, 0);
-                scratchQuaternion = new Quaternion(0, 0);
-                scratchOriginCartesian3 = new Cartesian3(0, 0);
+                scratchCartesian$2 = new Cartesian3(0, 0);
+                scratchCartesian2 = new Cartesian3(0, 0);
+                scratchQuaternion$1 = new Quaternion(0, 0);
+                scratchOriginCartesian = new Cartesian3(0, 0);
+                scratchFrustum$1 = new PerspectiveFrustum();
+                scratchMatrix3$1 = new Matrix3();
+                scratchMatrix4$1 = new Matrix4();
                 _export("ContextService", ContextService = function() {
                     function ContextService(sessionService) {
                         var _this = this;
                         _classCallCheck(this, ContextService);
                         this.sessionService = sessionService;
-                        this.frameStateEvent = new Event$$1();
-                        this.updateEvent = new Event$$1();
-                        this.renderEvent = new Event$$1();
-                        this.postRenderEvent = new Event$$1();
-                        this.localOriginChangeEvent = new Event$$1();
+                        this.frameStateEvent = new Event();
+                        this.updateEvent = new Event();
+                        this.renderEvent = new Event();
+                        this.postRenderEvent = new Event();
+                        this.localOriginChangeEvent = new Event();
                         this.timestamp = -1;
                         this.deltaTime = 0;
                         this.maxDeltaTime = 1 / 3 * 1e3;
                         this.time = new JulianDate(0, 0);
                         this.entities = new EntityCollection();
-                        this.user = this.entities.add(new Entity({
-                            id: "ar.user",
-                            name: "user",
-                            position: new ConstantPositionProperty(undefined, ReferenceFrame.FIXED),
-                            orientation: new ConstantProperty(Quaternion.IDENTITY)
-                        }));
                         this.localOriginEastNorthUp = this.entities.add(new Entity({
                             id: "ar.localENU",
                             name: "localOriginENU",
@@ -20738,60 +21320,104 @@
                             orientation: new ConstantProperty(Quaternion.fromAxisAngle(Cartesian3.UNIT_X, Math.PI / 2))
                         }));
                         this.defaultReferenceFrame = this.localOriginEastNorthUp;
-                        this._serializedFrameState = {
-                            index: -1,
-                            view: undefined
-                        };
-                        this._entityPoseCache = {};
                         this._entityPoseMap = new Map();
-                        this._subscribedEntities = new WeakMap();
                         this._updatingEntities = new Set();
                         this._knownEntities = new Set();
-                        this._sessionEntities = {};
-                        if (this.sessionService.isRealityManager || this.sessionService.isRealityViewer) {
-                            this.sessionService.connectEvent.addEventListener(function(session) {
-                                _this._subscribedEntities.set(session, new Set());
-                                session.on["ar.context.subscribe"] = function(_ref) {
-                                    var id = _ref.id;
-                                    var subscriptions = _this._subscribedEntities.get(session);
-                                    if (subscriptions) subscriptions.add(id);
-                                };
-                            });
-                        } else {
-                            this.sessionService.manager.on["ar.context.update"] = function(state) {
-                                _this._update(state);
-                            };
-                        }
+                        this._scratchFrameState = {
+                            time: {},
+                            entities: {},
+                            viewport: {},
+                            subviews: []
+                        };
+                        this._frameIndex = -1;
+                        this.sessionService.manager.on["ar.context.update"] = function(state) {
+                            if (typeof state.reality !== "string") {
+                                state.reality = state.reality && state.reality["uri"];
+                            }
+                            if (!state.viewport && state["view"] && state["view"].viewport) {
+                                state.viewport = state["view"].viewport;
+                            }
+                            if (!state.subviews && state["view"] && state["view"].subviews) {
+                                state.subviews = state["view"].subviews;
+                                scratchFrustum$1.near = .01;
+                                scratchFrustum$1.far = 1e7;
+                                var _iteratorNormalCompletion = true;
+                                var _didIteratorError = false;
+                                var _iteratorError = undefined;
+                                try {
+                                    for (var _iterator = state.subviews[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                                        var s = _step.value;
+                                        var frustum = s["frustum"];
+                                        scratchFrustum$1.xOffset = frustum.xOffset;
+                                        scratchFrustum$1.yOffset = frustum.yOffset;
+                                        scratchFrustum$1.fov = frustum.fov;
+                                        scratchFrustum$1.aspectRatio = frustum.aspectRatio;
+                                        s.projectionMatrix = Matrix4.clone(scratchFrustum$1.projectionMatrix, s.projectionMatrix);
+                                    }
+                                } catch (err) {
+                                    _didIteratorError = true;
+                                    _iteratorError = err;
+                                } finally {
+                                    try {
+                                        if (!_iteratorNormalCompletion && _iterator.return) {
+                                            _iterator.return();
+                                        }
+                                    } finally {
+                                        if (_didIteratorError) {
+                                            throw _iteratorError;
+                                        }
+                                    }
+                                }
+                            }
+                            if (!state.entities[EYE_ENTITY_ID] && state["view"] && state["view"].pose) {
+                                state.entities[EYE_ENTITY_ID] = state["view"].pose;
+                            }
+                            _this._update(state);
+                        };
+                        this.sessionService.manager.on["ar.context.entityStateMap"] = function(entityStateMap) {
+                            for (var id in entityStateMap) {
+                                _this.updateEntityFromSerializedPose(id, entityStateMap[id]);
+                            }
+                        };
+                        scratchFrustum$1.fov = Math.PI / 3;
+                        scratchFrustum$1.aspectRatio = 1;
+                        this._serializedFrameState = {
+                            reality: undefined,
+                            time: JulianDate.now(),
+                            entities: {},
+                            viewport: {
+                                x: 0,
+                                y: 0,
+                                width: 0,
+                                height: 0
+                            },
+                            subviews: [ {
+                                type: SubviewType.SINGULAR,
+                                viewport: {
+                                    x: 0,
+                                    y: 0,
+                                    width: 1,
+                                    height: 1
+                                },
+                                projectionMatrix: scratchFrustum$1.projectionMatrix
+                            } ]
+                        };
+                        this._update(this._serializedFrameState);
                     }
                     _createClass(ContextService, [ {
                         key: "getTime",
                         value: function getTime() {
-                            var _this2 = this;
-                            console.warn("getTime function is deprecated. Use the ContextService.time property instead.");
-                            this.getTime = function() {
-                                return _this2.time;
-                            };
-                            return this.getTime();
+                            return this.time;
                         }
                     }, {
                         key: "setDefaultReferenceFrame",
                         value: function setDefaultReferenceFrame(origin) {
-                            var _this3 = this;
-                            console.warn("setDefaultReferenceFrame is deprecated. Use the ContextService.defaultReferenceFrame property directly.");
-                            this.setDefaultReferenceFrame = function(origin) {
-                                return _this3.defaultReferenceFrame = origin;
-                            };
-                            this.setDefaultReferenceFrame(origin);
+                            this.defaultReferenceFrame = origin;
                         }
                     }, {
                         key: "getDefaultReferenceFrame",
                         value: function getDefaultReferenceFrame() {
-                            var _this4 = this;
-                            console.warn("getDefaultReferenceFrame is deprecated. Use the ContextService.defaultReferenceFrame property directly.");
-                            this.getDefaultReferenceFrame = function() {
-                                return _this4.defaultReferenceFrame;
-                            };
-                            return this.getDefaultReferenceFrame();
+                            return this.defaultReferenceFrame;
                         }
                     }, {
                         key: "subscribeToEntityById",
@@ -20802,13 +21428,38 @@
                             return this.entities.getOrCreateEntity(id);
                         }
                     }, {
+                        key: "subscribe",
+                        value: function subscribe(id) {
+                            var _this2 = this;
+                            id = id.id || id;
+                            return this.sessionService.manager.request("ar.context.subscribe", {
+                                id: id
+                            }).then(function() {
+                                return _this2.entities.getOrCreateEntity(id);
+                            });
+                        }
+                    }, {
+                        key: "unsubscribe",
+                        value: function unsubscribe(id) {
+                            id = id.id || id;
+                            this.sessionService.manager.send("ar.context.unsubscribe", {
+                                id: id
+                            });
+                        }
+                    }, {
                         key: "getEntityPose",
-                        value: function getEntityPose(entity) {
-                            var referenceFrame = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.defaultReferenceFrame;
+                        value: function getEntityPose(entityOrId) {
+                            var referenceFrameOrId = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.defaultReferenceFrame;
                             var time = this.time;
+                            var entity = entityOrId;
+                            if (typeof entity === "string") entity = this.entities.getById(entityOrId);
+                            if (!entity) throw new Error("Unknown entity " + entityOrId);
+                            var referenceFrame = referenceFrameOrId;
+                            if (typeof referenceFrame === "string") referenceFrame = this.entities.getById(referenceFrameOrId);
+                            if (!defined(referenceFrame)) throw new Error("Unknown entity " + referenceFrameOrId);
                             var key = entity.id + "@" + _stringFromReferenceFrame(referenceFrame);
                             var entityPose = this._entityPoseMap.get(key);
-                            if (!defined(entityPose)) {
+                            if (!entityPose) {
                                 entityPose = {
                                     position: new Cartesian3(),
                                     orientation: new Quaternion(),
@@ -20834,62 +21485,19 @@
                             return entityPose;
                         }
                     }, {
-                        key: "processViewState",
-                        value: function processViewState(view) {
-                            var frameState = this._serializedFrameState;
-                            frameState.index++;
-                            frameState.view = view;
-                            this._entityPoseCache = {};
-                            var _iteratorNormalCompletion = true;
-                            var _didIteratorError = false;
-                            var _iteratorError = undefined;
-                            try {
-                                for (var _iterator = this.sessionService.managedSessions[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                                    var session = _step.value;
-                                    if (Role.isRealityAugmenter(session.info.role)) this._sendUpdateForSession(frameState, session);
-                                }
-                            } catch (err) {
-                                _didIteratorError = true;
-                                _iteratorError = err;
-                            } finally {
-                                try {
-                                    if (!_iteratorNormalCompletion && _iterator.return) {
-                                        _iterator.return();
-                                    }
-                                } finally {
-                                    if (_didIteratorError) {
-                                        throw _iteratorError;
-                                    }
-                                }
-                            }
-                            this._update(frameState);
-                        }
-                    }, {
-                        key: "_update",
-                        value: function _update(serializedState) {
-                            this.updateEntityFromSerializedPose(this.user.id, serializedState.view.pose);
-                            this._knownEntities.clear();
-                            if (serializedState.entities) {
-                                for (var id in serializedState.entities) {
-                                    this.updateEntityFromSerializedPose(id, serializedState.entities[id]);
-                                    this._updatingEntities.add(id);
-                                    this._knownEntities.add(id);
-                                }
-                            }
+                        key: "createFrameState",
+                        value: function createFrameState(time, viewport, subviewList, eye, horizontalAccuracy, verticalAccuracy, headingAccuracy) {
+                            var eyeMeta = eye["meta"] = eye["meta"] || {};
+                            eyeMeta.horizontalAccuracy = horizontalAccuracy || eyeMeta.horizontalAccuracy;
+                            eyeMeta.verticalAccuracy = verticalAccuracy || eyeMeta.verticalAccuracy;
+                            eyeMeta.headingAccuracy = headingAccuracy || eyeMeta.headingAccuracy;
                             var _iteratorNormalCompletion2 = true;
                             var _didIteratorError2 = false;
                             var _iteratorError2 = undefined;
                             try {
-                                for (var _iterator2 = this._updatingEntities[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                                    var _id = _step2.value;
-                                    if (!this._knownEntities.has(_id)) {
-                                        var entity = this.entities.getById(_id);
-                                        if (entity) {
-                                            entity.position = undefined;
-                                            entity.orientation = undefined;
-                                        }
-                                        this._updatingEntities.delete(_id);
-                                    }
+                                for (var _iterator2 = subviewList[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                                    var s = _step2.value;
+                                    if (!isFinite(s.projectionMatrix[0])) throw new Error("Invalid projection matrix (contains non-finite values)");
                                 }
                             } catch (err) {
                                 _didIteratorError2 = true;
@@ -20905,13 +21513,67 @@
                                     }
                                 }
                             }
-                            this._updateLocalOrigin(serializedState);
+                            var frameState = this._scratchFrameState;
+                            frameState.time = JulianDate.clone(time, frameState.time);
+                            frameState.viewport = Viewport.clone(viewport, frameState.viewport);
+                            frameState.subviews = SerializedSubviewList.clone(subviewList, frameState.subviews);
+                            frameState.entities[EYE_ENTITY_ID] = getSerializedEntityState(eye, time);
+                            return frameState;
+                        }
+                    }, {
+                        key: "submitFrameState",
+                        value: function submitFrameState(frameState) {
+                            frameState.index = ++this._frameIndex;
+                            this._update(frameState);
+                        }
+                    }, {
+                        key: "_update",
+                        value: function _update(frameState) {
+                            this._knownEntities.clear();
+                            if (frameState.entities) {
+                                for (var id in frameState.entities) {
+                                    this.updateEntityFromSerializedPose(id, frameState.entities[id]);
+                                    this._updatingEntities.add(id);
+                                    this._knownEntities.add(id);
+                                }
+                            }
+                            var _iteratorNormalCompletion3 = true;
+                            var _didIteratorError3 = false;
+                            var _iteratorError3 = undefined;
+                            try {
+                                for (var _iterator3 = this._updatingEntities[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                                    var _id = _step3.value;
+                                    if (!this._knownEntities.has(_id)) {
+                                        var entity = this.entities.getById(_id);
+                                        if (entity) {
+                                            entity.position = undefined;
+                                            entity.orientation = undefined;
+                                        }
+                                        this._updatingEntities.delete(_id);
+                                    }
+                                }
+                            } catch (err) {
+                                _didIteratorError3 = true;
+                                _iteratorError3 = err;
+                            } finally {
+                                try {
+                                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                                        _iterator3.return();
+                                    }
+                                } finally {
+                                    if (_didIteratorError3) {
+                                        throw _iteratorError3;
+                                    }
+                                }
+                            }
                             var timestamp = performance.now();
                             this.deltaTime = Math.min(timestamp - this.timestamp, this.maxDeltaTime);
                             this.timestamp = timestamp;
-                            JulianDate.clone(serializedState.view.time, this.time);
-                            this._serializedFrameState = serializedState;
-                            this.frameStateEvent.raiseEvent(this._serializedFrameState);
+                            JulianDate.clone(frameState.time, this.time);
+                            this._updateStage(frameState);
+                            this._updateLocalOrigin(frameState);
+                            this._serializedFrameState = frameState;
+                            this.frameStateEvent.raiseEvent(frameState);
                             this.updateEvent.raiseEvent(this);
                             this.renderEvent.raiseEvent(this);
                             this.postRenderEvent.raiseEvent(this);
@@ -20943,84 +21605,77 @@
                             return entity;
                         }
                     }, {
-                        key: "publishEntityState",
-                        value: function publishEntityState(entity, referenceFrame) {}
+                        key: "_updateStage",
+                        value: function _updateStage(state) {
+                            var eye = this.entities.getById(EYE_ENTITY_ID);
+                            var stage = this.entities.getById(STAGE_ENTITY_ID);
+                            var physicalEye = this.entities.getById(PHYSICAL_EYE_ENTITY_ID);
+                            var physicalStage = this.entities.getById(PHYSICAL_STAGE_ENTITY_ID);
+                            if (!eye || !stage) return;
+                            stage.position && stage.position.setValue(undefined, undefined);
+                            stage.orientation && stage.orientation.setValue(undefined);
+                            var time = state.time;
+                            if (physicalEye && physicalStage) {
+                                var physicalEyeStageOffset = getEntityPositionInReferenceFrame(physicalEye, time, physicalStage, scratchCartesian$2);
+                            }
+                            if (!physicalEyeStageOffset) {
+                                physicalEyeStageOffset = Cartesian3.fromElements(0, 0, AVERAGE_HUMAN_HEIGHT, scratchCartesian$2);
+                            }
+                            var eyePositionFixed = getEntityPositionInReferenceFrame(eye, time, ReferenceFrame.FIXED, scratchCartesian2);
+                            if (eyePositionFixed) {
+                                var enuToFixedFrameTransform = Transforms.eastNorthUpToFixedFrame(eyePositionFixed, undefined, scratchMatrix4$1);
+                                var enuRotationMatrix = Matrix4.getRotation(enuToFixedFrameTransform, scratchMatrix3$1);
+                                var enuOrientation = Quaternion.fromRotationMatrix(enuRotationMatrix);
+                                var physicalEyeStageOffsetFixed = Matrix3.multiplyByVector(enuRotationMatrix, physicalEyeStageOffset, physicalEyeStageOffset);
+                                var stagePositionFixed = Cartesian3.subtract(eyePositionFixed, physicalEyeStageOffsetFixed, physicalEyeStageOffsetFixed);
+                                stage.position = stage.position || new ConstantPositionProperty();
+                                stage.orientation = stage.orientation || new ConstantProperty();
+                                stage.position.setValue(stagePositionFixed, ReferenceFrame.FIXED);
+                                stage.orientation.setValue(enuOrientation);
+                            } else {
+                                var eyeFrame = eye && eye.position ? eye.position.referenceFrame : undefined;
+                                if (eyeFrame) {
+                                    var eyePositionRelativeToEyeFrame = getEntityPositionInReferenceFrame(eye, time, eyeFrame, scratchCartesian2);
+                                    if (eyePositionRelativeToEyeFrame) {
+                                        var stagePositionRelativeToEye = Cartesian3.subtract(eyePositionRelativeToEyeFrame, physicalEyeStageOffset, physicalEyeStageOffset);
+                                        stage.position.setValue(stagePositionRelativeToEye, eyeFrame);
+                                        stage.orientation.setValue(Quaternion.IDENTITY);
+                                    }
+                                }
+                            }
+                        }
                     }, {
                         key: "_updateLocalOrigin",
                         value: function _updateLocalOrigin(state) {
-                            var pose = state.view.pose;
-                            var rootFrame = pose ? typeof pose.r === "number" ? pose.r : this.entities.getOrCreateEntity(pose.r) : this.user;
-                            var userPosition = this.user.position && this.user.position.getValueInReferenceFrame(state.view.time, rootFrame, scratchCartesian3);
-                            var localENUFrame = this.localOriginEastNorthUp.position && this.localOriginEastNorthUp.position.referenceFrame;
-                            var localENUPosition = this.localOriginEastNorthUp.position && defined(localENUFrame) && this.localOriginEastNorthUp.position.getValueInReferenceFrame(state.view.time, localENUFrame, scratchOriginCartesian3);
-                            if (!userPosition || !localENUPosition || localENUFrame !== rootFrame || Cartesian3.magnitudeSquared(Cartesian3.subtract(userPosition, localENUPosition, scratchOriginCartesian3)) > 25e6) {
-                                var localENUPositionProperty = this.localOriginEastNorthUp.position;
-                                var localENUOrientationProperty = this.localOriginEastNorthUp.orientation;
-                                if (userPosition) {
-                                    localENUPositionProperty.setValue(userPosition, rootFrame);
-                                    if (rootFrame === ReferenceFrame.FIXED) {
-                                        var enuOrientation = Transforms.headingPitchRollQuaternion(userPosition, 0, 0, 0, undefined, scratchQuaternion);
-                                        localENUOrientationProperty.setValue(enuOrientation);
-                                    } else {
-                                        localENUOrientationProperty.setValue(Quaternion.IDENTITY);
-                                    }
-                                } else {
-                                    localENUPositionProperty.setValue(Cartesian3.ZERO, this.user);
-                                    localENUOrientationProperty.setValue(Quaternion.IDENTITY);
+                            var eye = this.entities.getById(EYE_ENTITY_ID);
+                            var stage = this.entities.getById(STAGE_ENTITY_ID);
+                            var stageFrame = stage && stage.position ? stage.position.referenceFrame : undefined;
+                            if (!eye || !stage) return;
+                            if (!defined(stageFrame)) {
+                                if (this.localOriginEastNorthUp.position.referenceFrame !== stage) {
+                                    this.localOriginEastNorthUp.position.setValue(Cartesian3.ZERO, stage);
+                                    this.localOriginEastNorthUp.orientation.setValue(Quaternion.IDENTITY);
+                                    this.localOriginChangeEvent.raiseEvent(undefined);
                                 }
+                                return;
+                            }
+                            var eyePosition = eye.position && eye.position.getValueInReferenceFrame(state.time, stageFrame, scratchCartesian$2);
+                            if (!eyePosition) return;
+                            var localOriginPosition = this.localOriginEastNorthUp.position.getValueInReferenceFrame(state.time, stageFrame, scratchOriginCartesian);
+                            if (!localOriginPosition || Cartesian3.magnitude(Cartesian3.subtract(eyePosition, localOriginPosition, scratchOriginCartesian)) > 5e3) {
+                                var localOriginPositionProperty = this.localOriginEastNorthUp.position;
+                                var localOriginOrientationProperty = this.localOriginEastNorthUp.orientation;
+                                var stagePosition = stage.position && stage.position.getValueInReferenceFrame(state.time, stageFrame, scratchCartesian$2);
+                                var stageOrientation = stage.orientation && stage.orientation.getValue(state.time, scratchQuaternion$1);
+                                localOriginPositionProperty.setValue(stagePosition, stageFrame);
+                                localOriginOrientationProperty.setValue(stageOrientation);
                                 this.localOriginChangeEvent.raiseEvent(undefined);
                             }
                         }
                     }, {
-                        key: "_sendUpdateForSession",
-                        value: function _sendUpdateForSession(state, session) {
-                            var sessionEntities = this._sessionEntities;
-                            for (var id in sessionEntities) {
-                                delete sessionEntities[id];
-                            }
-                            if (state.entities) {
-                                for (var id in state.entities) {
-                                    sessionEntities[id] = state.entities[id];
-                                }
-                            }
-                            var _iteratorNormalCompletion3 = true;
-                            var _didIteratorError3 = false;
-                            var _iteratorError3 = undefined;
-                            try {
-                                for (var _iterator3 = this._subscribedEntities.get(session)[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                                    var _id2 = _step3.value;
-                                    sessionEntities[_id2] = this._getSerializedEntityPose(_id2, state.view.time);
-                                }
-                            } catch (err) {
-                                _didIteratorError3 = true;
-                                _iteratorError3 = err;
-                            } finally {
-                                try {
-                                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
-                                        _iterator3.return();
-                                    }
-                                } finally {
-                                    if (_didIteratorError3) {
-                                        throw _iteratorError3;
-                                    }
-                                }
-                            }
-                            var parentEntities = state.entities;
-                            state.entities = sessionEntities;
-                            state["time"] = state.view.time;
-                            state.sendTime = JulianDate.now(state.sendTime);
-                            if (session.info.version) session.send("ar.context.update", state);
-                            state.entities = parentEntities;
-                        }
-                    }, {
-                        key: "_getSerializedEntityPose",
-                        value: function _getSerializedEntityPose(id, time) {
-                            if (!defined(this._entityPoseCache[id])) {
-                                var entity = this.entities.getById(id);
-                                if (!entity) return undefined;
-                                this._entityPoseCache[id] = getSerializedEntityPose(entity, time);
-                            }
-                            return this._entityPoseCache[id];
+                        key: "user",
+                        get: function get() {
+                            return this.entities.getById(EYE_ENTITY_ID);
                         }
                     }, {
                         key: "serializedFrameState",
@@ -21030,92 +21685,261 @@
                     }, {
                         key: "systemTime",
                         get: function get() {
-                            var _this5 = this;
-                            console.warn("systemTime property is deprecated. Use timestamp property");
-                            Object.defineProperty(this, "systemTime", {
-                                get: function get() {
-                                    return _this5.timestamp;
-                                }
-                            });
-                            return this.systemTime;
+                            return this.timestamp;
                         }
                     } ]);
                     return ContextService;
                 }());
-                _export("ContextService", ContextService = __decorate$1([ inject(SessionService) ], ContextService));
-                __decorate$4 = undefined && undefined.__decorate || function(decorators, target, key, desc) {
+                __decorate$5([ deprecated$1("timestamp"), __metadata$5("design:type", Object), __metadata$5("design:paramtypes", []) ], ContextService.prototype, "systemTime", null);
+                __decorate$5([ deprecated$1("time"), __metadata$5("design:type", Function), __metadata$5("design:paramtypes", []), __metadata$5("design:returntype", typeof (_a$5 = typeof JulianDate !== "undefined" && JulianDate) === "function" && _a$5 || Object) ], ContextService.prototype, "getTime", null);
+                __decorate$5([ deprecated$1("defaultReferenceFrame"), __metadata$5("design:type", Function), __metadata$5("design:paramtypes", [ typeof (_b$5 = typeof Entity !== "undefined" && Entity) === "function" && _b$5 || Object ]), __metadata$5("design:returntype", void 0) ], ContextService.prototype, "setDefaultReferenceFrame", null);
+                __decorate$5([ deprecated$1("defaultReferenceFrame"), __metadata$5("design:type", Function), __metadata$5("design:paramtypes", []), __metadata$5("design:returntype", typeof (_c$4 = typeof Entity !== "undefined" && Entity) === "function" && _c$4 || Object) ], ContextService.prototype, "getDefaultReferenceFrame", null);
+                __decorate$5([ deprecated$1("subscribe"), __metadata$5("design:type", Function), __metadata$5("design:paramtypes", [ String ]), __metadata$5("design:returntype", typeof (_d$4 = typeof Entity !== "undefined" && Entity) === "function" && _d$4 || Object) ], ContextService.prototype, "subscribeToEntityById", null);
+                _export("ContextService", ContextService = __decorate$5([ autoinject(), __metadata$5("design:paramtypes", [ typeof (_e$4 = typeof SessionService !== "undefined" && SessionService) === "function" && _e$4 || Object ]) ], ContextService));
+                _export("ContextServiceProvider", ContextServiceProvider = function() {
+                    function ContextServiceProvider(sessionService, contextService) {
+                        var _this3 = this;
+                        _classCallCheck(this, ContextServiceProvider);
+                        this.sessionService = sessionService;
+                        this.contextService = contextService;
+                        this.entitySubscriptionsBySubscriber = new WeakMap();
+                        this.subscribersByEntityId = new Map();
+                        this.subscribersChangeEvent = new Event();
+                        this.publishingReferenceFrameMap = new Map();
+                        this._entityPoseCache = {};
+                        this._sessionEntities = {};
+                        sessionService.connectEvent.addEventListener(function(session) {
+                            var subscriptions = new Set();
+                            _this3.entitySubscriptionsBySubscriber.set(session, subscriptions);
+                            session.on["ar.context.subscribe"] = function(_ref) {
+                                var id = _ref.id;
+                                var subscribers = _this3.subscribersByEntityId.get(id) || new Set();
+                                _this3.subscribersByEntityId.set(id, subscribers);
+                                subscribers.add(session);
+                                subscriptions.add(id);
+                                _this3.subscribersChangeEvent.raiseEvent({
+                                    id: id,
+                                    subscribers: subscribers
+                                });
+                                session.closeEvent.addEventListener(function() {
+                                    subscribers.delete(session);
+                                    _this3.subscribersChangeEvent.raiseEvent({
+                                        id: id,
+                                        subscribers: subscribers
+                                    });
+                                });
+                            };
+                            session.on["ar.context.unsubscribe"] = function(_ref2) {
+                                var id = _ref2.id;
+                                var subscribers = _this3.subscribersByEntityId.get(id);
+                                subscribers && subscribers.delete(session);
+                                subscriptions.delete(id);
+                                _this3.subscribersChangeEvent.raiseEvent({
+                                    id: id,
+                                    subscribers: subscribers
+                                });
+                            };
+                            session.closeEvent.addEventListener(function() {
+                                subscriptions.forEach(function(id) {
+                                    var subscribers = _this3.subscribersByEntityId.get(id);
+                                    subscribers && subscribers.delete(session);
+                                    _this3.subscribersChangeEvent.raiseEvent({
+                                        id: id,
+                                        subscribers: subscribers
+                                    });
+                                });
+                                _this3.entitySubscriptionsBySubscriber.delete(session);
+                            });
+                        });
+                        this.contextService.updateEvent.addEventListener(function() {
+                            _this3._publishUpdates();
+                        });
+                    }
+                    _createClass(ContextServiceProvider, [ {
+                        key: "publishEntityState",
+                        value: function publishEntityState(idOrEntity) {
+                            var time = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.contextService.time;
+                            var id = void 0;
+                            var entity = void 0;
+                            if (idOrEntity.id) {
+                                entity = idOrEntity;
+                                id = entity.id;
+                            } else {
+                                id = idOrEntity;
+                                entity = this.contextService.entities.getById(id);
+                            }
+                            var subscribers = this.subscribersByEntityId.get(id);
+                            if (entity && subscribers) {
+                                var referenceFrameId = this.publishingReferenceFrameMap.get(id);
+                                var referenceFrame = defined(referenceFrameId) && typeof referenceFrameId === "string" ? this.contextService.entities.getById(referenceFrameId) : referenceFrameId;
+                                var entityStateMap = _defineProperty({}, id, getSerializedEntityState(entity, time, referenceFrame));
+                                var _iteratorNormalCompletion4 = true;
+                                var _didIteratorError4 = false;
+                                var _iteratorError4 = undefined;
+                                try {
+                                    for (var _iterator4 = subscribers[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                                        var s = _step4.value;
+                                        s.send("ar.context.entityStateMap", entityStateMap);
+                                    }
+                                } catch (err) {
+                                    _didIteratorError4 = true;
+                                    _iteratorError4 = err;
+                                } finally {
+                                    try {
+                                        if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                                            _iterator4.return();
+                                        }
+                                    } finally {
+                                        if (_didIteratorError4) {
+                                            throw _iteratorError4;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }, {
+                        key: "_publishUpdates",
+                        value: function _publishUpdates() {
+                            this._entityPoseCache = {};
+                            var _iteratorNormalCompletion5 = true;
+                            var _didIteratorError5 = false;
+                            var _iteratorError5 = undefined;
+                            try {
+                                for (var _iterator5 = this.sessionService.managedSessions[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+                                    var session = _step5.value;
+                                    if (Role.isRealityAugmenter(session.info.role)) this._sendUpdateForSession(session);
+                                }
+                            } catch (err) {
+                                _didIteratorError5 = true;
+                                _iteratorError5 = err;
+                            } finally {
+                                try {
+                                    if (!_iteratorNormalCompletion5 && _iterator5.return) {
+                                        _iterator5.return();
+                                    }
+                                } finally {
+                                    if (_didIteratorError5) {
+                                        throw _iteratorError5;
+                                    }
+                                }
+                            }
+                        }
+                    }, {
+                        key: "_sendUpdateForSession",
+                        value: function _sendUpdateForSession(session) {
+                            var state = this.contextService.serializedFrameState;
+                            var sessionEntities = this._sessionEntities;
+                            for (var id in sessionEntities) {
+                                delete sessionEntities[id];
+                            }
+                            if (state.entities) {
+                                for (var id in state.entities) {
+                                    sessionEntities[id] = state.entities[id];
+                                }
+                            }
+                            var _iteratorNormalCompletion6 = true;
+                            var _didIteratorError6 = false;
+                            var _iteratorError6 = undefined;
+                            try {
+                                for (var _iterator6 = this.entitySubscriptionsBySubscriber.get(session)[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+                                    var _id2 = _step6.value;
+                                    var entity = this.contextService.entities.getById(_id2);
+                                    sessionEntities[_id2] = this._getSerializedEntityState(entity, state.time);
+                                }
+                            } catch (err) {
+                                _didIteratorError6 = true;
+                                _iteratorError6 = err;
+                            } finally {
+                                try {
+                                    if (!_iteratorNormalCompletion6 && _iterator6.return) {
+                                        _iterator6.return();
+                                    }
+                                } finally {
+                                    if (_didIteratorError6) {
+                                        throw _iteratorError6;
+                                    }
+                                }
+                            }
+                            var parentEntities = state.entities;
+                            state.entities = sessionEntities;
+                            state.time = state.time;
+                            state.sendTime = JulianDate.now(state.sendTime);
+                            if (session.info.version) session.send("ar.context.update", state);
+                            state.entities = parentEntities;
+                        }
+                    }, {
+                        key: "_getSerializedEntityState",
+                        value: function _getSerializedEntityState(entity, time) {
+                            if (!entity) return undefined;
+                            var id = entity.id;
+                            if (!defined(this._entityPoseCache[id])) {
+                                var referenceFrameId = this.publishingReferenceFrameMap.get(id);
+                                var referenceFrame = defined(referenceFrameId) && typeof referenceFrameId === "string" ? this.contextService.entities.getById(referenceFrameId) : referenceFrameId;
+                                this._entityPoseCache[id] = getSerializedEntityState(entity, time, referenceFrame);
+                            }
+                            return this._entityPoseCache[id];
+                        }
+                    } ]);
+                    return ContextServiceProvider;
+                }());
+                _export("ContextServiceProvider", ContextServiceProvider = __decorate$5([ autoinject(), __metadata$5("design:paramtypes", [ typeof (_f$3 = typeof SessionService !== "undefined" && SessionService) === "function" && _f$3 || Object, ContextService ]) ], ContextServiceProvider));
+                __decorate$6 = undefined && undefined.__decorate || function(decorators, target, key, desc) {
                     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
                     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc); else for (var i = decorators.length - 1; i >= 0; i--) {
                         if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
                     }
                     return c > 3 && r && Object.defineProperty(target, key, r), r;
                 };
+                __metadata$6 = undefined && undefined.__metadata || function(k, v) {
+                    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+                };
                 _export("FocusService", FocusService = function() {
                     function FocusService(sessionService) {
                         var _this = this;
                         _classCallCheck(this, FocusService);
-                        this.sessionService = sessionService;
-                        this.focusEvent = new Event$$1();
-                        this.blurEvent = new Event$$1();
+                        this.focusEvent = new Event();
+                        this.blurEvent = new Event();
                         this._hasFocus = false;
-                        this._sessionFocusEvent = new Event$$1();
-                        sessionService.manager.on["ar.focus.state"] = function(message) {
-                            _this._setFocus(message.state);
-                        };
-                        if (sessionService.isRealityManager) {
-                            sessionService.manager.connectEvent.addEventListener(function() {
-                                setTimeout(function() {
-                                    if (!_this._session && _this.sessionService.manager.isConnected) _this.session = _this.sessionService.manager;
-                                });
-                            });
-                        }
-                    }
-                    _createClass(FocusService, [ {
-                        key: "whenSessionHasFocus",
-                        value: function whenSessionHasFocus(session) {
-                            var _this2 = this;
-                            this.sessionService.ensureIsRealityManager();
-                            return new Promise(function(resolve) {
-                                var remove = _this2.sessionFocusEvent.addEventListener(function(_ref) {
-                                    var current = _ref.current;
-                                    if (current === session) {
-                                        remove();
-                                        resolve();
-                                    }
-                                });
-                            });
-                        }
-                    }, {
-                        key: "_setFocus",
-                        value: function _setFocus(state) {
-                            if (this._hasFocus !== state) {
-                                this._hasFocus = state;
+                        sessionService.manager.on["ar.focus.state"] = function(_ref) {
+                            var state = _ref.state;
+                            if (_this._hasFocus !== state) {
+                                _this._hasFocus = state;
                                 if (state) {
-                                    this.focusEvent.raiseEvent(undefined);
+                                    _this.focusEvent.raiseEvent(undefined);
                                 } else {
-                                    this.blurEvent.raiseEvent(undefined);
+                                    _this.blurEvent.raiseEvent(undefined);
                                 }
                             }
-                        }
-                    }, {
+                        };
+                    }
+                    _createClass(FocusService, [ {
                         key: "hasFocus",
                         get: function get() {
                             return this._hasFocus;
                         }
-                    }, {
-                        key: "sessionFocusEvent",
-                        get: function get() {
-                            this.sessionService.ensureIsRealityManager();
-                            return this._sessionFocusEvent;
-                        }
-                    }, {
+                    } ]);
+                    return FocusService;
+                }());
+                _export("FocusService", FocusService = __decorate$6([ inject(SessionService), __metadata$6("design:paramtypes", [ typeof (_a$6 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$6 || Object ]) ], FocusService));
+                _export("FocusServiceProvider", FocusServiceProvider = function() {
+                    function FocusServiceProvider(sessionService) {
+                        var _this2 = this;
+                        _classCallCheck(this, FocusServiceProvider);
+                        this.sessionService = sessionService;
+                        this.sessionFocusEvent = new Event();
+                        sessionService.ensureIsRealityManager();
+                        sessionService.manager.connectEvent.addEventListener(function() {
+                            setTimeout(function() {
+                                if (!_this2._session && _this2.sessionService.manager.isConnected) _this2.session = _this2.sessionService.manager;
+                            });
+                        });
+                    }
+                    _createClass(FocusServiceProvider, [ {
                         key: "session",
                         get: function get() {
-                            this.sessionService.ensureIsRealityManager();
                             return this._session;
                         },
                         set: function set(session) {
-                            this.sessionService.ensureIsRealityManager();
                             if (session && !session.isConnected) throw new Error("Only a connected session can be granted focus");
                             var previousFocussedSession = this._session;
                             if (previousFocussedSession !== session) {
@@ -21133,16 +21957,368 @@
                             }
                         }
                     } ]);
-                    return FocusService;
+                    return FocusServiceProvider;
                 }());
-                _export("FocusService", FocusService = __decorate$4([ inject(SessionService) ], FocusService));
-                __decorate$3 = undefined && undefined.__decorate || function(decorators, target, key, desc) {
+                _export("FocusServiceProvider", FocusServiceProvider = __decorate$6([ inject(SessionService, FocusService), __metadata$6("design:paramtypes", [ typeof (_b$6 = typeof SessionService !== "undefined" && SessionService) === "function" && _b$6 || Object ]) ], FocusServiceProvider));
+                __decorate$7 = undefined && undefined.__decorate || function(decorators, target, key, desc) {
                     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
                     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc); else for (var i = decorators.length - 1; i >= 0; i--) {
                         if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
                     }
                     return c > 3 && r && Object.defineProperty(target, key, r), r;
                 };
+                __metadata$7 = undefined && undefined.__metadata || function(k, v) {
+                    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+                };
+                _export("VisibilityService", VisibilityService = function() {
+                    function VisibilityService(sessionService) {
+                        var _this = this;
+                        _classCallCheck(this, VisibilityService);
+                        this.showEvent = new Event();
+                        this.hideEvent = new Event();
+                        this._isVisible = false;
+                        sessionService.manager.on["ar.visibility.state"] = function(_ref) {
+                            var state = _ref.state;
+                            if (_this._isVisible !== state) {
+                                _this._isVisible = state;
+                                if (state) _this.showEvent.raiseEvent(undefined); else _this.hideEvent.raiseEvent(undefined);
+                            }
+                        };
+                    }
+                    _createClass(VisibilityService, [ {
+                        key: "isVisible",
+                        get: function get() {
+                            return this._isVisible;
+                        }
+                    } ]);
+                    return VisibilityService;
+                }());
+                _export("VisibilityService", VisibilityService = __decorate$7([ inject(SessionService), __metadata$7("design:paramtypes", [ typeof (_a$7 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$7 || Object ]) ], VisibilityService));
+                _export("VisibilityServiceProvider", VisibilityServiceProvider = function() {
+                    function VisibilityServiceProvider(sessionService) {
+                        var _this2 = this;
+                        _classCallCheck(this, VisibilityServiceProvider);
+                        this.visibleSessions = new Set();
+                        this.sessionChangeEvent = new Event();
+                        sessionService.ensureIsRealityManager();
+                        this.sessionChangeEvent.addEventListener(function(session) {
+                            session.send("ar.visibility.state", {
+                                state: _this2.visibleSessions.has(session)
+                            });
+                        });
+                        sessionService.manager.connectEvent.addEventListener(function() {
+                            _this2.set(sessionService.manager, true);
+                        });
+                    }
+                    _createClass(VisibilityServiceProvider, [ {
+                        key: "set",
+                        value: function set(session, visibility) {
+                            if (visibility) {
+                                if (!this.visibleSessions.has(session)) {
+                                    this.visibleSessions.add(session);
+                                    this.sessionChangeEvent.raiseEvent(session);
+                                }
+                            } else {
+                                if (this.visibleSessions.has(session)) {
+                                    this.visibleSessions.delete(session);
+                                    this.sessionChangeEvent.raiseEvent(session);
+                                }
+                            }
+                        }
+                    } ]);
+                    return VisibilityServiceProvider;
+                }());
+                _export("VisibilityServiceProvider", VisibilityServiceProvider = __decorate$7([ inject(SessionService, VisibilityService), __metadata$7("design:paramtypes", [ typeof (_b$7 = typeof SessionService !== "undefined" && SessionService) === "function" && _b$7 || Object ]) ], VisibilityServiceProvider));
+                __decorate$4 = undefined && undefined.__decorate || function(decorators, target, key, desc) {
+                    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+                    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc); else for (var i = decorators.length - 1; i >= 0; i--) {
+                        if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+                    }
+                    return c > 3 && r && Object.defineProperty(target, key, r), r;
+                };
+                __metadata$4 = undefined && undefined.__metadata || function(k, v) {
+                    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+                };
+                (function(PresentationMode) {
+                    PresentationMode[PresentationMode["PAGE"] = 0] = "PAGE";
+                    PresentationMode[PresentationMode["IMMERSIVE"] = 1] = "IMMERSIVE";
+                })(PresentationMode || _export("PresentationMode", PresentationMode = {}));
+                _export("ParentElement", ParentElement = "#argon");
+                _export("ViewportService", ViewportService = function() {
+                    function ViewportService(sessionService, contextService, focusService, parentElementOrSelector) {
+                        var _this = this;
+                        _classCallCheck(this, ViewportService);
+                        this.sessionService = sessionService;
+                        this.contextService = contextService;
+                        this.focusService = focusService;
+                        this.uiEvent = new Event();
+                        this.changeEvent = new Event();
+                        this.presentationModeChangeEvent = new Event();
+                        this._presentationMode = PresentationMode.PAGE;
+                        this.autoPublishEmbeddedViewport = true;
+                        if (typeof document !== "undefined" && document.createElement) {
+                            this.rootElement = document.createElement("div");
+                            this.rootElement.classList.add("argon-view");
+                            var viewportElement = this.element = document.createElement("div");
+                            viewportElement.classList.add("argon-viewport");
+                            this.rootElement.appendChild(viewportElement);
+                            if (isIOS) {
+                                viewportElement.addEventListener("touchmove", function(event) {
+                                    if (event.touches.length > 1) event.preventDefault();
+                                }, true);
+                            }
+                            var insertRootIntoParentElement = function insertRootIntoParentElement(parentElement) {
+                                if (_this.sessionService.manager.isClosed) return;
+                                parentElement.insertBefore(_this.rootElement, parentElement.firstChild);
+                                _this.sessionService.manager.closeEvent.addEventListener(function() {
+                                    _this.rootElement.remove();
+                                });
+                            };
+                            if (parentElementOrSelector && parentElementOrSelector instanceof HTMLElement) {
+                                insertRootIntoParentElement(parentElementOrSelector);
+                            } else if (parentElementOrSelector === "#argon") {
+                                var parentElement = document.querySelector("#argon");
+                                if (parentElement) {
+                                    insertRootIntoParentElement(parentElement);
+                                } else {
+                                    resolveArgonElement().then(insertRootIntoParentElement);
+                                }
+                            } else if (parentElementOrSelector) {
+                                var _parentElement = document.querySelector("" + parentElementOrSelector);
+                                if (_parentElement) {
+                                    insertRootIntoParentElement(_parentElement);
+                                } else {
+                                    resolveElement(parentElementOrSelector).then(insertRootIntoParentElement);
+                                }
+                            }
+                            this.focusService.focusEvent.addEventListener(function() {
+                                document.documentElement.classList.remove("argon-no-focus");
+                                document.documentElement.classList.remove("argon-blur");
+                                document.documentElement.classList.add("argon-focus");
+                            });
+                            this.focusService.blurEvent.addEventListener(function() {
+                                document.documentElement.classList.remove("argon-focus");
+                                document.documentElement.classList.add("argon-blur");
+                                document.documentElement.classList.add("argon-no-focus");
+                            });
+                            this.presentationModeChangeEvent.addEventListener(function(mode) {
+                                switch (mode) {
+                                  case PresentationMode.PAGE:
+                                    _this.rootElement.classList.remove("argon-maximize");
+                                    document.documentElement.classList.remove("argon-immersive");
+                                    break;
+
+                                  case PresentationMode.IMMERSIVE:
+                                    _this.rootElement.classList.add("argon-maximize");
+                                    document.documentElement.classList.add("argon-immersive");
+                                    break;
+                                }
+                            });
+                            this.sessionService.manager.on["ar.viewport.uievent"] = synthesizeEvent;
+                            if (!this.sessionService.isRealityViewer) {
+                                createEventForwarder(this, function(event) {
+                                    if (_this.sessionService.manager.isConnected && _this.sessionService.manager.version[0] >= 1) _this.sessionService.manager.send("ar.viewport.forwardUIEvent", event);
+                                });
+                                this._watchEmbeddedViewport();
+                            }
+                        }
+                        sessionService.manager.on["ar.viewport.presentationMode"] = function(_ref) {
+                            var mode = _ref.mode;
+                            _this._updatePresentationMode(mode);
+                        };
+                        this.contextService.frameStateEvent.addEventListener(function(state) {
+                            _this._updateViewport(state.viewport);
+                        });
+                        sessionService.manager.connectEvent.addEventListener(function() {
+                            if (sessionService.manager.version[0] === 0) {
+                                _this._updatePresentationMode(PresentationMode.IMMERSIVE);
+                            }
+                        });
+                    }
+<<<<<<< HEAD
+                    _createClass(ViewService, [ {
+                        key: "getSubviews",
+                        value: function getSubviews(referenceFrame) {
+                            var _this2 = this;
+                            this._update();
+                            var subviews = this._subviews;
+                            var viewState = this.contextService.serializedFrameState.view;
+                            subviews.length = viewState.subviews.length;
+                            viewState.subviews.forEach(function(serializedSubview, index) {
+                                var id = "ar.view_" + index;
+                                var subviewEntity = _this2.contextService.entities.getById(id);
+                                var subview = subviews[index] = subviews[index] || {};
+                                subview.index = index;
+                                subview.type = serializedSubview.type;
+                                subview.pose = _this2.contextService.getEntityPose(subviewEntity, referenceFrame);
+                                subview.viewport = serializedSubview.viewport || {
+                                    x: 0,
+                                    y: 0,
+                                    width: viewState.viewport.width,
+                                    height: viewState.viewport.height
+                                };
+                                subview.frustum = _this2._frustums[index] = _this2._frustums[index] || new PerspectiveFrustum();
+                                decomposePerspectiveProjectionMatrix(serializedSubview.projectionMatrix, subview.frustum);
+                                subview["projectionMatrix"] = subview.frustum.projectionMatrix;
+=======
+                    _createClass(ViewportService, [ {
+                        key: "requestPresentationMode",
+                        value: function requestPresentationMode(mode) {
+                            return this.sessionService.manager.request("ar.viewport.requestPresentationMode", {
+                                mode: mode
+>>>>>>> b2935729304bfe564be76b9c64654b4bf3ec5250
+                            });
+                        }
+                    }, {
+                        key: "_updatePresentationMode",
+                        value: function _updatePresentationMode(mode) {
+                            var currentMode = this.presentationMode;
+                            if (currentMode !== mode) {
+                                this._presentationMode = mode;
+                                this.presentationModeChangeEvent.raiseEvent(mode);
+                                this.changeEvent.raiseEvent(undefined);
+                            }
+                        }
+                    }, {
+                        key: "publishEmbeddedViewport",
+                        value: function publishEmbeddedViewport(viewport) {
+                            if (this.sessionService.manager.isConnected && this.sessionService.manager.version[0] >= 1) this.sessionService.manager.send("ar.viewport.embeddedViewport", {
+                                viewport: viewport
+                            });
+                        }
+                    }, {
+                        key: "_updateViewport",
+                        value: function _updateViewport(viewport) {
+                            var _this2 = this;
+                            var viewportJSON = JSON.stringify(viewport);
+                            this._currentViewport = Viewport.clone(viewport, this._currentViewport);
+                            if (!this._currentViewportJSON || this._currentViewportJSON !== viewportJSON) {
+                                this._currentViewportJSON = viewportJSON;
+                                if (this.element && !this.sessionService.isRealityManager) {
+                                    requestAnimationFrame(function() {
+                                        _this2.element.style.position = "fixed";
+                                        _this2.element.style.left = viewport.x + "px";
+                                        _this2.element.style.bottom = viewport.y + "px";
+                                        _this2.element.style.width = viewport.width + "px";
+                                        _this2.element.style.height = viewport.height + "px";
+                                    });
+                                }
+                                this.changeEvent.raiseEvent(undefined);
+                            }
+                        }
+                    }, {
+                        key: "sendUIEventToSession",
+                        value: function sendUIEventToSession(uievent, session) {
+                            if (session && session.isConnected) session.send("ar.viewport.uievent", uievent);
+                        }
+                    }, {
+                        key: "_watchEmbeddedViewport",
+                        value: function _watchEmbeddedViewport() {
+                            var _this3 = this;
+                            var publish = function publish() {
+                                if (_this3.element && _this3.autoPublishEmbeddedViewport) {
+                                    var parentElement = _this3.rootElement.parentElement;
+                                    var rect = parentElement && parentElement.getBoundingClientRect();
+                                    rect && _this3.publishEmbeddedViewport({
+                                        x: rect.left,
+                                        y: window.innerHeight - rect.bottom,
+                                        width: rect.width,
+                                        height: rect.height
+                                    });
+                                }
+                            };
+                            setInterval(function() {
+                                if (!_this3.focusService.hasFocus) publish();
+                            }, 500);
+                            this.contextService.frameStateEvent.addEventListener(function() {
+                                if (_this3.focusService.hasFocus) publish();
+                            });
+                        }
+                    }, {
+                        key: "presentationMode",
+                        get: function get() {
+                            return this._presentationMode;
+                        }
+                    }, {
+                        key: "current",
+                        get: function get() {
+                            return this.contextService.serializedFrameState.viewport;
+                        }
+                    } ]);
+                    return ViewportService;
+                }());
+                _export("ViewportService", ViewportService = __decorate$4([ inject(SessionService, ContextService, FocusService, Optional.of(ParentElement)), __metadata$4("design:paramtypes", [ typeof (_a$4 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$4 || Object, typeof (_b$4 = typeof ContextService !== "undefined" && ContextService) === "function" && _b$4 || Object, typeof (_c$3 = typeof FocusService !== "undefined" && FocusService) === "function" && _c$3 || Object, Object ]) ], ViewportService));
+                _export("ViewportServiceProvider", ViewportServiceProvider = function() {
+                    function ViewportServiceProvider(sessionService, viewportService, focusServiceProvider, visibilityServiceProvider) {
+                        var _this4 = this;
+                        _classCallCheck(this, ViewportServiceProvider);
+                        this.sessionService = sessionService;
+                        this.viewportService = viewportService;
+                        this.focusServiceProvider = focusServiceProvider;
+                        this.embeddedViewports = new WeakMap();
+                        this.forwardedUIEvent = new Event();
+                        sessionService.ensureIsRealityManager();
+                        sessionService.connectEvent.addEventListener(function(session) {
+                            session.on["ar.viewport.forwardUIEvent"] = function(uievent) {
+                                _this4.forwardedUIEvent.raiseEvent(uievent);
+                            };
+                            session.on["ar.viewport.requestPresentationMode"] = function(_ref2) {
+                                var mode = _ref2.mode;
+                                return _this4._handleRequestPresentationMode(session, mode);
+                            };
+                            session.on["ar.viewport.embeddedViewport"] = function(viewport) {
+                                _this4.embeddedViewports.set(session, viewport);
+                            };
+                        });
+                    }
+                    _createClass(ViewportServiceProvider, [ {
+                        key: "sendUIEventToSession",
+                        value: function sendUIEventToSession(uievent, session) {
+                            session.send("ar.viewport.uievent", uievent);
+                        }
+                    }, {
+                        key: "_handleRequestPresentationMode",
+                        value: function _handleRequestPresentationMode(session, mode) {
+                            this._ensurePersmission(session);
+                            if (this.viewportService.presentationMode !== mode) {
+                                this.sessionService.manager.send("ar.viewport.presentationMode", {
+                                    mode: mode
+                                });
+                                var _iteratorNormalCompletion = true;
+                                var _didIteratorError = false;
+                                var _iteratorError = undefined;
+                                try {
+                                    for (var _iterator = this.sessionService.managedSessions[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                                        session = _step.value;
+                                        session.send("ar.viewport.presentationMode", {
+                                            mode: mode
+                                        });
+                                    }
+                                } catch (err) {
+                                    _didIteratorError = true;
+                                    _iteratorError = err;
+                                } finally {
+                                    try {
+                                        if (!_iteratorNormalCompletion && _iterator.return) {
+                                            _iterator.return();
+                                        }
+                                    } finally {
+                                        if (_didIteratorError) {
+                                            throw _iteratorError;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }, {
+                        key: "_ensurePersmission",
+                        value: function _ensurePersmission(session) {
+                            if (session !== this.sessionService.manager && session !== this.focusServiceProvider.session) throw new Error("Application must have focus");
+                        }
+                    } ]);
+                    return ViewportServiceProvider;
+                }());
+                _export("ViewportServiceProvider", ViewportServiceProvider = __decorate$4([ autoinject(), __metadata$4("design:paramtypes", [ typeof (_d$3 = typeof SessionService !== "undefined" && SessionService) === "function" && _d$3 || Object, ViewportService, typeof (_e$3 = typeof FocusServiceProvider !== "undefined" && FocusServiceProvider) === "function" && _e$3 || Object, typeof (_f$2 = typeof VisibilityServiceProvider !== "undefined" && VisibilityServiceProvider) === "function" && _f$2 || Object ]) ], ViewportServiceProvider));
                 if (typeof document !== "undefined" && document.createElement) {
                     (function() {
                         var viewportMetaTag = document.querySelector("meta[name=viewport]");
@@ -21169,282 +22345,525 @@
                         document.head.insertBefore(style, document.head.firstChild);
                         var sheet = style.sheet;
                         sheet.insertRule("\n        #argon {\n            position: fixed;\n            width: 100%;\n            height: 100%;\n            left: 0;\n            bottom: 0;\n            margin: 0;\n            border: 0;\n            padding: 0;\n        }\n    ", sheet.cssRules.length);
-                        sheet.insertRule("\n        .argon-container > * {\n            position: absolute;\n            overflow: hidden;\n            width: 100%;\n            height: 100%;\n            pointer-events: none;\n            -webkit-tap-highlight-color: transparent;\n            -webkit-user-select: none;\n            user-select: none;\n        }\n    ", sheet.cssRules.length);
-                        sheet.insertRule("\n        .argon-container > * > * {\n            pointer-events: auto;\n            -webkit-tap-highlight-color: initial;\n            -webkit-user-select: initial;\n            user-select: initial;\n        }\n    ", sheet.cssRules.length);
-                        sheet.insertRule("\n        .argon-view {\n            position: absolute;\n            width: 100%;\n            height: 100%;\n            pointer-events: auto;\n        }\n    ", sheet.cssRules.length);
-                        sheet.insertRule("\n        .argon-view > * {\n            position: absolute;\n            width: 100%;\n            height: 100%;\n            pointer-events: none;\n        }\n    ", sheet.cssRules.length);
-                        sheet.insertRule("\n        .argon-view > * > * {\n            pointer-events: auto;\n        }\n    ", sheet.cssRules.length);
-                        sheet.insertRule("\n        .argon-maximized, .argon-maximized ~ * {\n            position: fixed !important;\n            width: 100% !important;\n            height: 100% !important;\n            left: 0;\n            bottom: 0;\n            margin: 0;\n            border: 0;\n            padding: 0;\n        }\n    ", sheet.cssRules.length);
-                        sheet.insertRule("\n        .argon-fullscreen {\n            width: 100% !important;\n            height: 100% !important;\n            max-width: initial !important;\n            max-height: initial !important;\n        }\n    ", sheet.cssRules.length);
+                        sheet.insertRule("\n        .argon-view, .argon-view ~ * {\n            width: 100%;\n            height: 100%;\n        }\n    ", sheet.cssRules.length);
+                        sheet.insertRule("\n        .argon-view > * {\n            position: absolute;\n            overflow: hidden;\n            width: 100%;\n            height: 100%;\n            pointer-events: none;\n            -webkit-tap-highlight-color: transparent;\n            -webkit-user-select: none;\n            user-select: none;\n        }\n    ", sheet.cssRules.length);
+                        sheet.insertRule("\n        .argon-view > * > * {\n            pointer-events: auto;\n            -webkit-tap-highlight-color: initial;\n            -webkit-user-select: initial;\n            user-select: initial;\n        }\n    ", sheet.cssRules.length);
+                        sheet.insertRule("\n        .argon-viewport {\n            position: absolute;\n            width: 100%;\n            height: 100%;\n            pointer-events: auto;\n        }\n    ", sheet.cssRules.length);
+                        sheet.insertRule("\n        .argon-viewport > * {\n            position: absolute;\n            width: 100%;\n            height: 100%;\n            pointer-events: none;\n        }\n    ", sheet.cssRules.length);
+                        sheet.insertRule("\n        .argon-viewport > * > * {\n            pointer-events: auto;\n        }\n    ", sheet.cssRules.length);
+                        sheet.insertRule("\n        .argon-maximize, .argon-maximize ~ * {\n            pointer-events: none;\n            position: fixed !important;\n            width: 100% !important;\n            height: 100% !important;\n            left: 0;\n            bottom: 0;\n            margin: 0;\n            border: 0;\n            padding: 0;\n        }\n    ", sheet.cssRules.length);
                         sheet.insertRule("\n        .argon-interactive {\n            pointer-events: auto;\n        }\n    ", sheet.cssRules.length);
                     })();
                 }
+                __decorate$8 = undefined && undefined.__decorate || function(decorators, target, key, desc) {
+                    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+                    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc); else for (var i = decorators.length - 1; i >= 0; i--) {
+                        if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+                    }
+                    return c > 3 && r && Object.defineProperty(target, key, r), r;
+                };
+                __metadata$8 = undefined && undefined.__metadata || function(k, v) {
+                    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+                };
+                scratchCartesian3 = new Cartesian3();
+                scratchQuaternion$2 = new Quaternion();
+                _export("LocationService", LocationService = function() {
+                    function LocationService(sessionService, contextService) {
+                        var _this = this;
+                        _classCallCheck(this, LocationService);
+                        this.sessionService = sessionService;
+                        this.contextService = contextService;
+                        this.stage = this.contextService.entities.add(new Entity({
+                            id: STAGE_ENTITY_ID,
+                            name: "Stage",
+                            position: new ConstantPositionProperty(Cartesian3.ZERO, this.physicalStage),
+                            orientation: new ConstantProperty(Quaternion.IDENTITY)
+                        }));
+                        this.physicalStage = this.contextService.entities.add(new Entity({
+                            id: PHYSICAL_STAGE_ENTITY_ID,
+                            name: "Physical Stage"
+                        }));
+                        contextService.frameStateEvent.addEventListener(function() {
+                            _this.stageCartographic = _this._updateCartographic(_this.stage, _this.stageCartographic);
+                            _this.physicalStageCartographic = _this._updateCartographic(_this.physicalStage, _this.physicalStageCartographic);
+                        });
+                    }
+                    _createClass(LocationService, [ {
+                        key: "subscribeGeopose",
+                        value: function subscribeGeopose(options) {
+                            if (options && options.physical) {
+                                return Promise.all([ this.contextService.subscribe(PHYSICAL_STAGE_ENTITY_ID), this.contextService.subscribe(STAGE_ENTITY_ID) ]).then(function() {});
+                            }
+                            return this.contextService.subscribe(STAGE_ENTITY_ID).then(function() {});
+                        }
+                    }, {
+                        key: "unsubscribeGeopose",
+                        value: function unsubscribeGeopose() {
+                            this.contextService.unsubscribe(STAGE_ENTITY_ID);
+                            this.contextService.unsubscribe(PHYSICAL_STAGE_ENTITY_ID);
+                        }
+                    }, {
+                        key: "setGeolocationOptions",
+                        value: function setGeolocationOptions(options) {
+                            this.sessionService.manager.send("ar.location.setGeolocationOptions", {
+                                options: options
+                            });
+                        }
+                    }, {
+                        key: "_updateCartographic",
+                        value: function _updateCartographic(entity, cartographic) {
+                            if (!entity) return undefined;
+                            var fixedPosition = getEntityPositionInReferenceFrame(entity, this.contextService.time, ReferenceFrame.FIXED, scratchCartesian3);
+                            if (fixedPosition) {
+                                cartographic = cartographic || new Cartographic();
+                                return Cartographic.fromCartesian(fixedPosition, undefined, cartographic);
+                            }
+                            return undefined;
+                        }
+                    }, {
+                        key: "stageHorizontalAccuracy",
+                        get: function get() {
+                            return this.stage["meta"] ? this.stage["meta"].horizontalAccuracy : undefined;
+                        }
+                    }, {
+                        key: "stageVerticalAccuracy",
+                        get: function get() {
+                            return this.stage["meta"] ? this.stage["meta"].verticalAccuracy : undefined;
+                        }
+                    }, {
+                        key: "physicalStageHorizontalAccuracy",
+                        get: function get() {
+                            return this.physicalStage["meta"] ? this.physicalStage["meta"].horizontalAccuracy : undefined;
+                        }
+                    }, {
+                        key: "physicalStageVerticalAccuracy",
+                        get: function get() {
+                            return this.physicalStage["meta"] ? this.physicalStage["meta"].verticalAccuracy : undefined;
+                        }
+                    } ]);
+                    return LocationService;
+                }());
+                _export("LocationService", LocationService = __decorate$8([ autoinject(), __metadata$8("design:paramtypes", [ typeof (_a$8 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$8 || Object, typeof (_b$8 = typeof ContextService !== "undefined" && ContextService) === "function" && _b$8 || Object ]) ], LocationService));
+                _export("LocationServiceProvider", LocationServiceProvider = function() {
+                    function LocationServiceProvider(sessionService, contextServiceProvider, locationService) {
+                        var _this2 = this;
+                        _classCallCheck(this, LocationServiceProvider);
+                        this.sessionService = sessionService;
+                        this.contextServiceProvider = contextServiceProvider;
+                        this.locationService = locationService;
+                        this._sessionGeolocationOptions = new Map();
+                        this.sessionService.connectEvent.addEventListener(function(session) {
+                            session.on["ar.location.setGeolocationOptions"] = function(options) {
+                                _this2._handleSetGeolocationOptions(session, options);
+                            };
+                        });
+                        this.contextServiceProvider.subscribersChangeEvent.addEventListener(function(_ref) {
+                            var id = _ref.id;
+                            if (locationService.physicalStage.id !== id) return;
+                            _this2._checkPhysicalStageSubscribers();
+                        });
+                        this.contextServiceProvider.publishingReferenceFrameMap.set(locationService.stage.id, ReferenceFrame.FIXED);
+                        this.contextServiceProvider.publishingReferenceFrameMap.set(locationService.physicalStage.id, ReferenceFrame.FIXED);
+                    }
+                    _createClass(LocationServiceProvider, [ {
+                        key: "_checkPhysicalStageSubscribers",
+                        value: function _checkPhysicalStageSubscribers() {
+                            var physicalStageId = this.locationService.physicalStage.id;
+                            var subscribers = this.contextServiceProvider.subscribersByEntityId.get(physicalStageId);
+                            if (subscribers && subscribers.size > 0) {
+                                if (JSON.stringify(this._targetGeolocationOptions) !== JSON.stringify(this._currentGeolocationOptions)) {
+                                    this._currentGeolocationOptions = this._targetGeolocationOptions;
+                                    this.onStopGeolocationUpdates();
+                                    this.onStartGeolocationUpdates(this._targetGeolocationOptions);
+                                }
+                            } else {
+                                this.onStopGeolocationUpdates();
+                                this._currentGeolocationOptions = undefined;
+                            }
+                        }
+                    }, {
+                        key: "_handleSetGeolocationOptions",
+                        value: function _handleSetGeolocationOptions(session, options) {
+                            var _this3 = this;
+                            this._sessionGeolocationOptions.set(session, options);
+                            session.closeEvent.addEventListener(function() {
+                                _this3._updateGeolocationOptions();
+                            });
+                            this._updateGeolocationOptions();
+                        }
+                    }, {
+                        key: "_updateGeolocationOptions",
+                        value: function _updateGeolocationOptions() {
+                            var reducedOptions = {};
+                            var _iteratorNormalCompletion = true;
+                            var _didIteratorError = false;
+                            var _iteratorError = undefined;
+                            try {
+                                for (var _iterator = this._sessionGeolocationOptions.values()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                                    var o = _step.value;
+                                    reducedOptions.enableHighAccuracy = reducedOptions.enableHighAccuracy || o.enableHighAccuracy;
+                                }
+                            } catch (err) {
+                                _didIteratorError = true;
+                                _iteratorError = err;
+                            } finally {
+                                try {
+                                    if (!_iteratorNormalCompletion && _iterator.return) {
+                                        _iterator.return();
+                                    }
+                                } finally {
+                                    if (_didIteratorError) {
+                                        throw _iteratorError;
+                                    }
+                                }
+                            }
+                            if (this._targetGeolocationOptions.enableHighAccuracy !== reducedOptions.enableHighAccuracy) {
+                                this._targetGeolocationOptions = reducedOptions;
+                                this._checkPhysicalStageSubscribers();
+                            }
+                        }
+                    }, {
+                        key: "setGeolocation",
+                        value: function setGeolocation(longitude, latitude, altitude, horizontalAccuracy, verticalAccuracy) {
+                            var physicalStage = this.locationService.physicalStage;
+                            if (defined(longitude) && defined(latitude)) {
+                                var height = defined(altitude) ? altitude - AVERAGE_HUMAN_HEIGHT : 0;
+                                var fixedPosition = Cartesian3.fromDegrees(longitude, latitude, height, undefined, scratchCartesian3);
+                                var enuOrientation = Transforms.headingPitchRollQuaternion(fixedPosition, 0, 0, 0, undefined, scratchQuaternion$2);
+                                physicalStage.position = physicalStage.position || new ConstantPositionProperty();
+                                physicalStage.orientation = physicalStage.orientation || new ConstantProperty();
+                                physicalStage.position.setValue(fixedPosition, ReferenceFrame.FIXED);
+                                physicalStage.orientation.setValue(enuOrientation);
+                                physicalStage["meta"] = {
+                                    horizontalAccuracy: horizontalAccuracy,
+                                    verticalAccuracy: verticalAccuracy
+                                };
+                            } else {
+                                physicalStage.position = undefined;
+                                physicalStage.orientation = undefined;
+                                physicalStage["meta"] = undefined;
+                            }
+                            this.contextServiceProvider.publishEntityState(physicalStage);
+                        }
+                    }, {
+                        key: "onStartGeolocationUpdates",
+                        value: function onStartGeolocationUpdates(options) {
+                            var _this4 = this;
+                            if (typeof navigator == "undefined" || !navigator.geolocation) throw new Error("Unable to start geolocation updates");
+                            return new Promise(function(resolve, reject) {
+                                if (!defined(_this4._geolocationWatchId)) {
+                                    (function() {
+                                        var didResolve = false;
+                                        _this4._geolocationWatchId = navigator.geolocation.watchPosition(function(pos) {
+                                            if (!didResolve) resolve(), didResolve = true;
+                                            _this4.setGeolocation(pos.coords.longitude, pos.coords.latitude, pos.coords.altitude || 0, pos.coords.accuracy > 0 ? pos.coords.accuracy : undefined, pos.coords.altitudeAccuracy || undefined);
+                                        }, reject, options);
+                                    })();
+                                } else {
+                                    resolve();
+                                }
+                            });
+                        }
+                    }, {
+                        key: "onStopGeolocationUpdates",
+                        value: function onStopGeolocationUpdates() {
+                            if (typeof navigator !== "undefined" && defined(this._geolocationWatchId)) {
+                                navigator.geolocation.clearWatch(this._geolocationWatchId);
+                                this._geolocationWatchId = undefined;
+                            }
+                        }
+                    } ]);
+                    return LocationServiceProvider;
+                }());
+                _export("LocationServiceProvider", LocationServiceProvider = __decorate$8([ autoinject(), __metadata$8("design:paramtypes", [ typeof (_c$5 = typeof SessionService !== "undefined" && SessionService) === "function" && _c$5 || Object, typeof (_d$5 = typeof ContextServiceProvider !== "undefined" && ContextServiceProvider) === "function" && _d$5 || Object, LocationService ]) ], LocationServiceProvider));
+                __decorate$3 = undefined && undefined.__decorate || function(decorators, target, key, desc) {
+                    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+                    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc); else for (var i = decorators.length - 1; i >= 0; i--) {
+                        if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+                    }
+                    return c > 3 && r && Object.defineProperty(target, key, r), r;
+                };
+                __metadata$3 = undefined && undefined.__metadata || function(k, v) {
+                    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+                };
+                _export("Subview", Subview = function Subview() {
+                    _classCallCheck(this, Subview);
+                });
+                scratchCartesian$1 = new Cartesian3();
+                scratchQuaternion = new Quaternion();
+                scratchQuaternion2 = new Quaternion();
+                scratchMatrix3 = new Matrix3();
+                scratchMatrix4 = new Matrix4();
+                scratchFrustum = new PerspectiveFrustum();
                 IDENTITY_SUBVIEW_POSE = {
                     p: Cartesian3.ZERO,
                     o: Quaternion.IDENTITY,
-                    r: "ar.user"
+                    r: EYE_ENTITY_ID
                 };
-                (function(PresentationMode) {
-                    PresentationMode[PresentationMode["EMBEDDED"] = 0] = "EMBEDDED";
-                    PresentationMode[PresentationMode["FULLPAGE"] = 1] = "FULLPAGE";
-                    PresentationMode[PresentationMode["FULLSCREEN"] = 2] = "FULLSCREEN";
-                })(PresentationMode || _export("PresentationMode", PresentationMode = {}));
-                _export("ContainerElement", ContainerElement = "#argon");
+                currentVRDisplay = void 0;
                 _export("ViewService", ViewService = function() {
-                    function ViewService(containerElementOrSelector, sessionService, contextService, focusService) {
+                    function ViewService(sessionService, contextService, viewportService, container) {
                         var _this = this;
                         _classCallCheck(this, ViewService);
                         this.sessionService = sessionService;
                         this.contextService = contextService;
-                        this.focusService = focusService;
-                        this.uiEvent = new Event$$1();
-                        this.forwardedUIEvent = new Event$$1();
-                        this.viewportChangeEvent = new Event$$1();
-                        this.acquireEvent = new Event$$1();
-                        this.releaseEvent = new Event$$1();
-                        this.desiredViewportMap = new WeakMap();
+                        this.viewportService = viewportService;
                         this._subviews = [];
                         this._frustums = [];
-                        if (typeof document !== "undefined" && document.createElement) {
-                            (function() {
-                                var element = _this.element = document.createElement("div");
-                                element.classList.add("argon-view");
-                                if (isIOS) {
-                                    element.addEventListener("touchmove", function(event) {
-                                        if (event.touches.length > 1) event.preventDefault();
-                                    }, true);
-                                }
-                                _this.containerElementPromise = new Promise(function(resolve) {
-                                    var insertViewportElement = function insertViewportElement(containerElement) {
-                                        if (_this.sessionService.manager.isClosed) return;
-                                        containerElement.classList.add("argon-container");
-                                        containerElement.insertBefore(element, containerElement.firstChild);
-                                        var handleFullscreenChange = function handleFullscreenChange() {
-                                            if (_this._isFullscreen()) {
-                                                containerElement.classList.add("argon-fullscreen");
-                                            } else {
-                                                containerElement.classList.remove("argon-fullscreen");
-                                            }
-                                        };
-                                        document.addEventListener("fullscreenchange", handleFullscreenChange);
-                                        document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
-                                        document.addEventListener("mozfullscreenchange", handleFullscreenChange);
-                                        document.addEventListener("MSFullscreenChange", handleFullscreenChange);
-                                        var handleVRDisplayPresentChange = function handleVRDisplayPresentChange(e) {
-                                            var vrDisplay = e.display || e.detail.vrdisplay || e.detail.display;
-                                            if (vrDisplay) {
-                                                var layers = vrDisplay.getLayers();
-                                                var isThisView = _this._vrDisplay === vrDisplay;
-                                                var _iteratorNormalCompletion = true;
-                                                var _didIteratorError = false;
-                                                var _iteratorError = undefined;
-                                                try {
-                                                    for (var _iterator = layers[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                                                        var layer = _step.value;
-                                                        if (layer.source && _this.element.contains(layer.source)) {
-                                                            isThisView = true;
-                                                            break;
-                                                        }
-                                                    }
-                                                } catch (err) {
-                                                    _didIteratorError = true;
-                                                    _iteratorError = err;
-                                                } finally {
-                                                    try {
-                                                        if (!_iteratorNormalCompletion && _iterator.return) {
-                                                            _iterator.return();
-                                                        }
-                                                    } finally {
-                                                        if (_didIteratorError) {
-                                                            throw _iteratorError;
-                                                        }
-                                                    }
-                                                }
-                                                if (isThisView) {
-                                                    if (vrDisplay.isPresenting) {
-                                                        _this._vrDisplay = vrDisplay;
-                                                        if (vrDisplay.displayName.match(/Cardboard/g)) {
-                                                            _this.element.classList.add("argon-maximized");
-                                                            vrDisplay.getLayers()[0].source.classList.add("argon-interactive");
-                                                        }
-                                                        _this.viewportChangeEvent.raiseEvent(undefined);
-                                                    } else {
-                                                        _this._vrDisplay = undefined;
-                                                        if (vrDisplay.displayName.match(/Cardboard/g)) {
-                                                            _this.element.classList.remove("argon-maximized");
-                                                            var canvas = _this.element.querySelector(".argon-interactive");
-                                                            if (canvas) canvas.classList.remove("argon-interactive");
-                                                        }
-                                                        _this.viewportChangeEvent.raiseEvent(undefined);
-                                                    }
-                                                }
-                                            }
-                                        };
-                                        window.addEventListener("vrdisplaypresentchange", handleVRDisplayPresentChange);
-                                        _this.sessionService.manager.closeEvent.addEventListener(function() {
-                                            element.remove();
-                                            document.removeEventListener("fullscreenchange", handleFullscreenChange);
-                                            document.removeEventListener("webkitfullscreenchange", handleFullscreenChange);
-                                            document.removeEventListener("mozfullscreenchange", handleFullscreenChange);
-                                            document.removeEventListener("MSFullscreenChange", handleFullscreenChange);
-                                        });
-                                        resolve(containerElement);
-                                    };
-                                    if (containerElementOrSelector && containerElementOrSelector instanceof HTMLElement) {
-                                        insertViewportElement(containerElementOrSelector);
-                                    } else {
-                                        if (containerElementOrSelector === "#argon") {
-                                            var containerElement = document.querySelector("#argon");
-                                            if (containerElement) {
-                                                insertViewportElement(containerElement);
-                                            } else {
-                                                return resolveArgonElement().then(insertViewportElement);
-                                            }
-                                        } else {
-                                            var _containerElement = document.querySelector("" + containerElementOrSelector);
-                                            if (_containerElement) {
-                                                insertViewportElement(_containerElement);
-                                            } else {
-                                                resolveElement(containerElementOrSelector).then(insertViewportElement);
-                                            }
-                                        }
-                                    }
-                                });
-                                _this.focusService.focusEvent.addEventListener(function() {
-                                    element.classList.remove("argon-no-focus");
-                                    element.classList.add("argon-focus");
-                                });
-                                _this.focusService.blurEvent.addEventListener(function() {
-                                    element.classList.remove("argon-focus");
-                                    element.classList.add("argon-no-focus");
-                                });
-                                if (_this.sessionService.isRealityViewer) {
-                                    _this._setupEventSynthesizing();
-                                } else {
-                                    _this._setupEventForwarding();
-                                }
-                            })();
-                        }
-                        if (this.sessionService.isRealityManager) {
-                            this.sessionService.connectEvent.addEventListener(function(session) {
-                                session.on["ar.view.desiredViewport"] = function(viewport) {
-                                    _this.desiredViewportMap.set(session, viewport);
-                                };
-                                session.on["ar.view.forwardUIEvent"] = function(uievent) {
-                                    _this.forwardedUIEvent.raiseEvent(uievent);
-                                };
-                                session.on["ar.view.requestEnterHmd"] = function() {
-                                    return _this._requestEnterHmd(session);
-                                };
-                                session.on["ar.view.requestExitHmd"] = function() {
-                                    return _this._requestExitHmd(session);
-                                };
-                                session.on["ar.view.isHmdActive"] = function() {
-                                    return Promise.resolve({
-                                        state: _this._isHmdActive()
-                                    });
-                                };
-                                session.on["ar.view.requestEnterFullscreen"] = function() {
-                                    return _this._requestEnterFullscreen(session);
-                                };
-                                session.on["ar.view.requestExitFullscreen"] = function() {
-                                    return _this._requestExitFullscreen(session);
-                                };
-                                session.on["ar.view.isFullscreen"] = function() {
-                                    return Promise.resolve({
-                                        state: _this._isFullscreen()
-                                    });
-                                };
-                                session.on["ar.view.requestEnterMaximized"] = function() {
-                                    return _this._requestEnterMaximized(session);
-                                };
-                                session.on["ar.view.requestExitMaximized"] = function() {
-                                    return _this._requestExitMaximized(session);
-                                };
-                                session.on["ar.view.isMaximized"] = function() {
-                                    return Promise.resolve({
-                                        state: _this._isMaximized()
-                                    });
-                                };
-                            });
-                            this.sessionService.manager.connectEvent.addEventListener(function() {
-                                var resizeHandler = function resizeHandler() {
-                                    if (_this.viewport) _this._update();
-                                };
-                                if (_this.sessionService.isRealityManager && typeof window !== "undefined") {
-                                    window.addEventListener("resize", resizeHandler);
-                                    _this.sessionService.manager.closeEvent.addEventListener(function() {
-                                        window.removeEventListener("resize", resizeHandler);
-                                    });
-                                }
-                            });
-                        }
-                        this.contextService.renderEvent.addEventListener(function() {
-                            var state = _this.contextService.serializedFrameState;
-                            state.view.subviews.forEach(function(subview, index) {
-                                var id = "ar.view_" + index;
-                                var subviewPose = subview.pose || IDENTITY_SUBVIEW_POSE;
-                                _this.contextService.updateEntityFromSerializedPose(id, subviewPose);
-                            });
-                            _this._update();
+                        this.eye = this.contextService.entities.add(new Entity({
+                            id: EYE_ENTITY_ID,
+                            name: "Eye",
+                            position: new ConstantPositionProperty(undefined, undefined),
+                            orientation: new ConstantProperty(Quaternion.IDENTITY)
+                        }));
+                        this.physicalEye = this.contextService.entities.add(new Entity({
+                            id: PHYSICAL_EYE_ENTITY_ID,
+                            name: "Physical Eye",
+                            position: new ConstantPositionProperty(undefined, undefined),
+                            orientation: new ConstantProperty(Quaternion.IDENTITY)
+                        }));
+                        this.sessionService.manager.on["ar.view.suggestedViewState"] = function(viewState) {
+                            _this.suggestedViewState = viewState;
+                        };
+                        this.contextService.frameStateEvent.addEventListener(function(state) {
+                            _this._processFrameState(state);
                         });
-                        this.contextService.postRenderEvent.addEventListener(function() {
-                            if (_this.vrDisplay && _this.vrDisplay.isPresenting) {
-                                _this.vrDisplay.submitFrame();
+                        this._processFrameState(this.contextService.serializedFrameState);
+                        this.sessionService.manager.connectEvent.addEventListener(function() {
+                            if (_this.sessionService.manager.version[0] === 0) {
+                                container.get(ViewServiceProvider);
                             }
                         });
                     }
                     _createClass(ViewService, [ {
-                        key: "getSubviews",
-                        value: function getSubviews(referenceFrame) {
-                            var _this2 = this;
-                            this._update();
+                        key: "_processFrameState",
+                        value: function _processFrameState(state) {
+                            if (!state.entities || !state.entities[this.physicalEye.id]) {
+                                updatePhysicalEyePoseFromDeviceOrientation(this.contextService);
+                            }
+                            var serializedSubviewList = state.subviews;
                             var subviews = this._subviews;
-                            var viewState = this.contextService.serializedFrameState.view;
-                            subviews.length = viewState.subviews.length;
-                            viewState.subviews.forEach(function(serializedSubview, index) {
-                                var id = "ar.view_" + index;
-                                var subviewEntity = _this2.contextService.entities.getById(id);
-                                var subview = subviews[index] = subviews[index] || {};
-                                subview.index = index;
-                                subview.type = serializedSubview.type;
-                                subview.pose = _this2.contextService.getEntityPose(subviewEntity, referenceFrame);
-                                subview.viewport = serializedSubview.viewport || {
-                                    x: 0,
-                                    y: 0,
-                                    width: viewState.viewport.width,
-                                    height: viewState.viewport.height
-                                };
-                                subview.frustum = _this2._frustums[index] = _this2._frustums[index] || new PerspectiveFrustum();
-                                decomposePerspectiveProjectionMatrix(serializedSubview.projectionMatrix, subview.frustum);
-                                subview["projectionMatrix"] = subview.frustum.projectionMatrix;
-                            });
-                            return subviews;
+                            subviews.length = serializedSubviewList.length;
+                            var index = 0;
+                            var _iteratorNormalCompletion = true;
+                            var _didIteratorError = false;
+                            var _iteratorError = undefined;
+                            try {
+                                for (var _iterator = serializedSubviewList[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                                    var serializedSubview = _step.value;
+                                    var id = "ar.view_" + index;
+                                    var subviewPose = serializedSubview.pose || IDENTITY_SUBVIEW_POSE;
+                                    this.contextService.updateEntityFromSerializedPose(id, subviewPose);
+                                    var subviewEntity = this.contextService.entities.getById(id);
+                                    var subview = subviews[index] = subviews[index] || {};
+                                    subview.index = index;
+                                    subview.type = serializedSubview.type;
+                                    subview.pose = this.contextService.getEntityPose(subviewEntity);
+                                    subview.viewport = subview.viewport || {};
+                                    subview.viewport.x = serializedSubview.viewport.x;
+                                    subview.viewport.y = serializedSubview.viewport.y;
+                                    subview.viewport.width = serializedSubview.viewport.width;
+                                    subview.viewport.height = serializedSubview.viewport.height;
+                                    subview.frustum = this._frustums[index] = this._frustums[index] || new PerspectiveFrustum();
+                                    decomposePerspectiveProjectionMatrix(serializedSubview.projectionMatrix, subview.frustum);
+                                    subview["projectionMatrix"] = subview.frustum.projectionMatrix;
+                                    index++;
+                                }
+                            } catch (err) {
+                                _didIteratorError = true;
+                                _iteratorError = err;
+                            } finally {
+                                try {
+                                    if (!_iteratorNormalCompletion && _iterator.return) {
+                                        _iterator.return();
+                                    }
+                                } finally {
+                                    if (_didIteratorError) {
+                                        throw _iteratorError;
+                                    }
+                                }
+                            }
                         }
                     }, {
                         key: "getViewport",
                         value: function getViewport() {
-                            return this.viewport;
+                            return this.viewportService.current;
                         }
                     }, {
-                        key: "requestEnterHmd",
-                        value: function requestEnterHmd() {
-                            return this.sessionService.manager.request("ar.view.requestEnterHmd");
+                        key: "getSubviews",
+                        value: function getSubviews() {
+                            return this._subviews;
                         }
                     }, {
-                        key: "_requestEnterHmd",
-                        value: function _requestEnterHmd(session) {
-                            var _this3 = this;
-                            this._ensurePersmission(session);
+                        key: "getSubviewEntity",
+                        value: function getSubviewEntity(index) {
+                            var subviewEntity = this.contextService.entities.getOrCreateEntity("ar.view_" + index);
+                            if (!subviewEntity.position) {
+                                subviewEntity.position = new ConstantPositionProperty();
+                            }
+                            if (!subviewEntity.orientation) {
+                                subviewEntity.orientation = new ConstantProperty();
+                            }
+                            return subviewEntity;
+                        }
+                    }, {
+                        key: "requestAnimationFrame",
+                        value: function(_requestAnimationFrame) {
+                            function requestAnimationFrame$$1(_x) {
+                                return _requestAnimationFrame.apply(this, arguments);
+                            }
+                            requestAnimationFrame$$1.toString = function() {
+                                return _requestAnimationFrame.toString();
+                            };
+                            return requestAnimationFrame$$1;
+                        }(function(callback) {
+                            var _this2 = this;
+                            var onFrame = function onFrame() {
+                                tick();
+                                if (_this2.suggestedViewState) {
+                                    callback(clock.currentTime);
+                                } else _this2.requestAnimationFrame(callback);
+                            };
+                            if (currentVRDisplay) {
+                                return currentVRDisplay.requestAnimationFrame(onFrame);
+                            } else {
+                                return requestAnimationFrame(onFrame);
+                            }
+                        })
+                    }, {
+                        key: "eyeHeadingAccuracy",
+                        get: function get() {
+                            return this.eye["meta"].headingAccuracy;
+                        }
+                    }, {
+                        key: "element",
+                        get: function get() {
+                            return this.viewportService.element;
+                        }
+                    }, {
+                        key: "subviews",
+                        get: function get() {
+                            return this._subviews;
+                        }
+                    } ]);
+                    return ViewService;
+                }());
+                __decorate$3([ deprecated$1("app.viewport.current"), __metadata$3("design:type", Function), __metadata$3("design:paramtypes", []), __metadata$3("design:returntype", void 0) ], ViewService.prototype, "getViewport", null);
+                _export("ViewService", ViewService = __decorate$3([ autoinject, __metadata$3("design:paramtypes", [ typeof (_a$3 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$3 || Object, typeof (_b$3 = typeof ContextService !== "undefined" && ContextService) === "function" && _b$3 || Object, typeof (_c$2 = typeof ViewportService !== "undefined" && ViewportService) === "function" && _c$2 || Object, typeof (_d$2 = typeof Container !== "undefined" && Container) === "function" && _d$2 || Object ]) ], ViewService));
+                _export("ViewServiceProvider", ViewServiceProvider = function() {
+                    function ViewServiceProvider(sessionService, contextService, contextServiceProvider, viewService, viewportService, locationService) {
+                        var _this3 = this;
+                        _classCallCheck(this, ViewServiceProvider);
+                        this.sessionService = sessionService;
+                        this.contextService = contextService;
+                        this.contextServiceProvider = contextServiceProvider;
+                        this.viewService = viewService;
+                        this.viewportService = viewportService;
+                        this.locationService = locationService;
+                        this.autoSubmitFrame = true;
+                        this.contextServiceProvider.publishingReferenceFrameMap.set(this.viewService.eye.id, STAGE_ENTITY_ID);
+                        this.contextServiceProvider.publishingReferenceFrameMap.set(this.viewService.physicalEye.id, PHYSICAL_STAGE_ENTITY_ID);
+                        var onAnimationFrame = function onAnimationFrame() {
+                            if (!_this3.sessionService.manager.isClosed) _this3.viewService.requestAnimationFrame(onAnimationFrame);
+                            _this3.update();
+                        };
+                        this.viewService.requestAnimationFrame(onAnimationFrame);
+                        this.contextService.postRenderEvent.addEventListener(function() {
+                            if (_this3.autoSubmitFrame && currentVRDisplay && currentVRDisplay.isPresenting) {
+                                currentVRDisplay.submitFrame();
+                            }
+                        });
+                        var currentCanvas = void 0;
+                        var previousPresentationMode = void 0;
+                        var handleVRDisplayPresentChange = function handleVRDisplayPresentChange(e) {
+                            var vrDisplay = e.display || e.detail.vrdisplay || e.detail.display;
+                            if (vrDisplay) {
+                                var layers = vrDisplay.getLayers();
+                                var isThisView = currentVRDisplay === vrDisplay;
+                                var _iteratorNormalCompletion2 = true;
+                                var _didIteratorError2 = false;
+                                var _iteratorError2 = undefined;
+                                try {
+                                    for (var _iterator2 = layers[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                                        var layer = _step2.value;
+                                        if (layer.source && _this3.viewportService.element.contains(layer.source)) {
+                                            isThisView = true;
+                                            break;
+                                        }
+                                    }
+                                } catch (err) {
+                                    _didIteratorError2 = true;
+                                    _iteratorError2 = err;
+                                } finally {
+                                    try {
+                                        if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                                            _iterator2.return();
+                                        }
+                                    } finally {
+                                        if (_didIteratorError2) {
+                                            throw _iteratorError2;
+                                        }
+                                    }
+                                }
+                                if (isThisView) {
+                                    if (vrDisplay.isPresenting) {
+                                        currentVRDisplay = vrDisplay;
+                                        if (vrDisplay.displayName.match(/Cardboard/g)) {
+                                            currentCanvas = vrDisplay.getLayers()[0].source;
+                                            if (currentCanvas) currentCanvas.classList.add("argon-interactive");
+                                            previousPresentationMode = _this3.viewportService.presentationMode;
+                                            _this3.viewportService.requestPresentationMode(PresentationMode.IMMERSIVE);
+                                        }
+                                    } else {
+                                        currentVRDisplay = undefined;
+                                        if (currentCanvas && vrDisplay.displayName.match(/Cardboard/g)) {
+                                            currentCanvas.classList.remove("argon-interactive");
+                                            currentCanvas = undefined;
+                                            _this3.viewportService.requestPresentationMode(previousPresentationMode);
+                                        }
+                                    }
+                                }
+                            }
+                            _this3.viewportService.presentationModeChangeEvent.addEventListener(function(mode) {
+                                if (mode === PresentationMode.PAGE) _this3.exitPresentHMD();
+                            });
+                        };
+                        window.addEventListener("vrdisplaypresentchange", handleVRDisplayPresentChange);
+                        this.update();
+                    }
+                    _createClass(ViewServiceProvider, [ {
+                        key: "update",
+                        value: function update() {
+                            var _this4 = this;
+                            this.onUpdate();
+                            this.contextServiceProvider.publishEntityState(this.viewService.physicalEye);
+                            this.sessionService.managedSessions.forEach(function(s) {
+                                if (Role.isRealityViewer(s.info.role)) s.send("ar.view.suggestedViewState", _this4.viewService.suggestedViewState);
+                            });
+                        }
+                    }, {
+                        key: "onUpdate",
+                        value: function onUpdate() {
+                            if (currentVRDisplay) {
+                                this._updateViewFromWebVR(currentVRDisplay);
+                            } else {
+                                this._updateViewSingular();
+                            }
+                        }
+                    }, {
+                        key: "requestPresentHMD",
+                        value: function requestPresentHMD() {
+                            var _this5 = this;
                             if (typeof navigator !== "undefined" && navigator.getVRDisplays) {
                                 var requestPresent = function requestPresent(vrDisplay) {
-                                    _this3._vrDisplay = vrDisplay;
+                                    currentVRDisplay = vrDisplay;
+                                    var element = _this5.viewportService.element;
                                     var layers = [];
                                     layers[0] = {
-                                        source: _this3.element.querySelector("canvas") || _this3.element.lastElementChild
+                                        source: element.querySelector("canvas") || element.lastElementChild
                                     };
                                     return vrDisplay.requestPresent(layers).catch(function(e) {
-                                        _this3._vrDisplay = undefined;
+                                        currentVRDisplay = undefined;
                                         throw e;
                                     });
                                 };
@@ -21459,644 +22878,70 @@
                             throw new Error("No HMD available");
                         }
                     }, {
-                        key: "requestExitHmd",
-                        value: function requestExitHmd() {
-                            return this.sessionService.manager.request("ar.view.requestExitHmd");
-                        }
-                    }, {
-                        key: "_requestExitHmd",
-                        value: function _requestExitHmd(session) {
-                            var _this4 = this;
-                            this._ensurePersmission(session);
-                            if (this._vrDisplay) {
-                                return Promise.resolve(this._vrDisplay).then(function(vrDisplay) {
-                                    _this4._vrDisplay = undefined;
-                                    return vrDisplay.exitPresent();
-                                });
+                        key: "exitPresentHMD",
+                        value: function exitPresentHMD() {
+                            if (currentVRDisplay) {
+                                var vrDisplay = currentVRDisplay;
+                                currentVRDisplay = undefined;
+                                return vrDisplay.exitPresent();
                             }
-                            throw new Error("Not presenting in an HMD");
+                            return Promise.resolve();
                         }
                     }, {
-                        key: "isHmdActive",
-                        value: function isHmdActive() {
-                            return this.sessionService.manager.request("ar.view.isHmdActive").then(function(e) {
-                                return e["state"];
-                            });
+                        key: "_updateViewSingular",
+                        value: function _updateViewSingular() {
+                            var suggestedViewState = this.viewService.suggestedViewState = this.viewService.suggestedViewState || {};
+                            var viewport = suggestedViewState.viewport = suggestedViewState.viewport || {};
+                            viewport.x = 0;
+                            viewport.y = 0;
+                            viewport.width = this.viewportService.rootElement.clientWidth;
+                            viewport.height = this.viewportService.rootElement.clientHeight;
+                            var subviews = suggestedViewState.subviews = suggestedViewState.subviews || [];
+                            subviews.length = 1;
+                            var subview = subviews[0] = subviews[0] || {};
+                            subview.type = SubviewType.SINGULAR;
+                            subview.viewport = subview.viewport || {};
+                            subview.viewport.x = 0;
+                            subview.viewport.y = 0;
+                            subview.viewport.width = viewport.width;
+                            subview.viewport.height = viewport.height;
+                            var aspect = viewport.width / viewport.height;
+                            scratchFrustum.near = .01;
+                            scratchFrustum.far = 5e8;
+                            scratchFrustum.fov = Math.PI / 3;
+                            scratchFrustum.aspectRatio = isFinite(aspect) && aspect !== 0 ? aspect : 1;
+                            subview.projectionMatrix = Matrix4.clone(scratchFrustum.projectionMatrix, subview.projectionMatrix);
+                            updatePhysicalEyePoseFromDeviceOrientation(this.contextService);
                         }
                     }, {
-                        key: "_isHmdActive",
-                        value: function _isHmdActive() {
-                            return this._vrDisplay ? this._vrDisplay.isPresenting : false;
-                        }
-                    }, {
-                        key: "requestEnterFullscreen",
-                        value: function requestEnterFullscreen() {
-                            return this.sessionService.manager.request("ar.view.requestEnterFullscreen");
-                        }
-                    }, {
-                        key: "_requestEnterFullscreen",
-                        value: function _requestEnterFullscreen(session) {
-                            this._ensurePersmission(session);
-                            var containerElement = this.element.parentElement;
-                            if (containerElement.requestFullscreen) return containerElement.requestFullscreen();
-                            if (containerElement.webkitRequestFullscreen) return containerElement.webkitRequestFullscreen();
-                            if (containerElement["mozRequestFullscreen"]) return containerElement["mozRequestFullscreen"]();
-                            throw new Error("Fullscreen not supported");
-                        }
-                    }, {
-                        key: "requestExitFullscreen",
-                        value: function requestExitFullscreen() {
-                            return this.sessionService.manager.request("ar.view.requestExitFullscreen");
-                        }
-                    }, {
-                        key: "_requestExitFullscreen",
-                        value: function _requestExitFullscreen(session) {
-                            this._ensurePersmission(session);
-                            if (document.exitFullscreen) return document.exitFullscreen();
-                            if (document.webkitExitFullscreen) return document.webkitExitFullscreen();
-                            if (document.webkitCancelFullScreen) return document.webkitCancelFullScreen();
-                            if (document["mozCancelFullScreen"]) return document["mozCancelFullScreen"]();
-                            throw new Error("Fullscreen not supported");
-                        }
-                    }, {
-                        key: "isFullscreen",
-                        value: function isFullscreen() {
-                            return this.sessionService.manager.request("ar.view.isFullscreen").then(function(e) {
-                                return e["state"];
-                            });
-                        }
-                    }, {
-                        key: "_isFullscreen",
-                        value: function _isFullscreen() {
-                            if (this.element.parentElement === document.fullscreenElement || this.element.parentElement === document.webkitFullscreenElement || this.element.parentElement === document.webkitCurrentFullScreenElement || this.element.parentElement === document["mozFullscreenElement"]) {
-                                return true;
-                            }
-                            return false;
-                        }
-                    }, {
-                        key: "requestEnterMaximized",
-                        value: function requestEnterMaximized() {
-                            return this.sessionService.manager.request("ar.view.requestEnterMaximized");
-                        }
-                    }, {
-                        key: "_requestEnterMaximized",
-                        value: function _requestEnterMaximized(session) {
-                            this._ensurePersmission(session);
-                            this.element.classList.add("argon-maximized");
-                            this.viewportChangeEvent.raiseEvent(undefined);
-                        }
-                    }, {
-                        key: "requestExitMaximized",
-                        value: function requestExitMaximized() {
-                            return this.sessionService.manager.request("ar.view.requestExitMaximized");
-                        }
-                    }, {
-                        key: "_requestExitMaximized",
-                        value: function _requestExitMaximized(session) {
-                            this._ensurePersmission(session);
-                            this.element.classList.remove("argon-maximized");
-                            this.viewportChangeEvent.raiseEvent(undefined);
-                        }
-                    }, {
-                        key: "isMaximized",
-                        value: function isMaximized() {
-                            return this.sessionService.manager.request("ar.view.isMaximized").then(function(e) {
-                                return e["state"];
-                            });
-                        }
-                    }, {
-                        key: "_isMaximized",
-                        value: function _isMaximized() {
-                            return this.element.classList.contains("argon-maximized");
-                        }
-                    }, {
-                        key: "_ensurePersmission",
-                        value: function _ensurePersmission(session) {
-                            if (session !== this.sessionService.manager || session !== this.focusService.session) throw new Error("Application must have focus");
-                        }
-                    }, {
-                        key: "setDesiredViewport",
-                        value: function setDesiredViewport(viewport) {
-                            this.sessionService.manager.send("ar.view.desiredViewport", viewport);
-                        }
-                    }, {
-                        key: "requestOwnership",
-                        value: function requestOwnership() {}
-                    }, {
-                        key: "releaseOwnership",
-                        value: function releaseOwnership() {}
-                    }, {
-                        key: "isOwner",
-                        value: function isOwner() {}
-                    }, {
-                        key: "_update",
-                        value: function _update() {
-                            var _this5 = this;
-                            var state = this.contextService.serializedFrameState;
-                            if (!state || !state.view) return;
-                            var view = state.view;
-                            var viewportJSON = JSON.stringify(view.viewport);
-                            this._currentViewport = Viewport.clone(view.viewport, this._currentViewport);
-                            if (!this._currentViewportJSON || this._currentViewportJSON !== viewportJSON) {
-                                this._currentViewportJSON = viewportJSON;
-                                if (this.element && !this.sessionService.isRealityManager) {
-                                    requestAnimationFrame(function() {
-                                        var viewport = view.viewport;
-                                        _this5.element.style.position = "fixed";
-                                        _this5.element.style.left = viewport.x + "px";
-                                        _this5.element.style.bottom = viewport.y + "px";
-                                        _this5.element.style.width = viewport.width + "px";
-                                        _this5.element.style.height = viewport.height + "px";
-                                    });
-                                }
-                                this.viewportChangeEvent.raiseEvent(undefined);
-                            }
-                        }
-                    }, {
-                        key: "_setupEventForwarding",
-                        value: function _setupEventForwarding() {
-                            var _this6 = this;
-                            var cloneTouch = function cloneTouch(touch, boundingRect) {
-                                return {
-                                    identifier: touch.identifier,
-                                    clientX: touch.clientX - boundingRect.left,
-                                    clientY: touch.clientY - boundingRect.top,
-                                    screenX: touch.screenX,
-                                    screenY: touch.screenY
-                                };
-                            };
-                            var cloneTouches = function cloneTouches(touches, boundingRect) {
-                                if (!touches) return undefined;
-                                var touchList = [];
-                                for (var i = 0; i < touches.length; i++) {
-                                    var touch = touches.item(i);
-                                    touchList[i] = cloneTouch(touch, boundingRect);
-                                }
-                                return touchList;
-                            };
-                            var _forwardEvent = false;
-                            var eventData = {
-                                event: UIEvent = undefined,
-                                forwardEvent: function forwardEvent() {
-                                    _forwardEvent = true;
-                                }
-                            };
-                            var uievent = {};
-                            var handleEvent = function handleEvent(e) {
-                                if (e.target === _this6.element || e.target.parentElement === _this6.element) {
-                                    var boundingRect = _this6.element.getBoundingClientRect();
-                                    if (_this6.uiEvent.numberOfListeners > 0) {
-                                        _forwardEvent = false;
-                                        eventData.event = e;
-                                        _this6.uiEvent.raiseEvent(eventData);
-                                        if (!_forwardEvent) {
-                                            e.stopImmediatePropagation();
-                                            return;
-                                        }
-                                    }
-                                    e.preventDefault();
-                                    var touches = cloneTouches(e.touches, boundingRect);
-                                    var changedTouches = cloneTouches(e.changedTouches, boundingRect);
-                                    var targetTouches = cloneTouches(e.targetTouches, boundingRect);
-                                    uievent.type = e.type;
-                                    uievent.bubbles = e.bubbles;
-                                    uievent.cancelable = e.cancelable;
-                                    uievent.detail = e.detail;
-                                    uievent.altKey = e.altKey;
-                                    uievent.ctrlKey = e.ctrlKey;
-                                    uievent.metaKey = e.metaKey;
-                                    uievent.button = e.button;
-                                    uievent.buttons = e.buttons;
-                                    uievent.clientX = e.clientX - boundingRect.left;
-                                    uievent.clientY = e.clientY - boundingRect.top;
-                                    uievent.screenX = e.screenX;
-                                    uievent.screenY = e.screenY;
-                                    uievent.movementX = e.movementX;
-                                    uievent.movementY = e.movementY;
-                                    uievent.deltaX = e.deltaX;
-                                    uievent.deltaY = e.deltaY;
-                                    uievent.deltaZ = e.deltaZ;
-                                    uievent.deltaMode = e.deltaMode;
-                                    uievent.wheelDelta = e.wheelDelta;
-                                    uievent.wheelDeltaX = e.wheelDeltaX;
-                                    uievent.wheelDeltaY = e.wheelDeltaY;
-                                    uievent.which = e.which;
-                                    uievent.timeStamp = e.timeStamp;
-                                    uievent.touches = touches;
-                                    uievent.changedTouches = changedTouches;
-                                    uievent.targetTouches = targetTouches;
-                                    _this6.sessionService.manager.send("ar.view.forwardUIEvent", uievent);
-                                } else {
-                                    e.stopImmediatePropagation();
-                                }
-                            };
-                            [ "wheel", "click", "dblclick", "contextmenu", "mouseover", "mouseout", "mousemove", "mousedown", "mouseup", "touchstart", "touchend", "touchmove", "touchcancel" ].forEach(function(type) {
-                                _this6.element.addEventListener(type, handleEvent, false);
-                            });
-                        }
-                    }, {
-                        key: "sendUIEventToSession",
-                        value: function sendUIEventToSession(uievent, session) {
-                            if (session) session.send("ar.view.uievent", uievent);
-                        }
-                    }, {
-                        key: "_setupEventSynthesizing",
-                        value: function _setupEventSynthesizing() {
-                            var currentTarget = void 0;
-                            var fireMouseLeaveEvents = function fireMouseLeaveEvents(target, relatedTarget, uievent) {
-                                if (!target) return;
-                                var eventInit = {
-                                    view: uievent.view,
-                                    clientX: uievent.clientX,
-                                    clientY: uievent.clientY,
-                                    screenX: uievent.screenX,
-                                    screenY: uievent.screenY,
-                                    relatedTarget: relatedTarget
-                                };
-                                eventInit.bubbles = true;
-                                target.dispatchEvent(new MouseEvent("mouseout", eventInit));
-                                eventInit.bubbles = false;
-                                var el = target;
-                                do {
-                                    el.dispatchEvent(new MouseEvent("mouseleave", eventInit));
-                                    el = el["parentElement"];
-                                } while (el);
-                            };
-                            var fireMouseEnterEvents = function fireMouseEnterEvents(target, relatedTarget, uievent) {
-                                var eventInit = {
-                                    view: uievent.view,
-                                    clientX: uievent.clientX,
-                                    clientY: uievent.clientY,
-                                    screenX: uievent.screenX,
-                                    screenY: uievent.screenY,
-                                    relatedTarget: relatedTarget
-                                };
-                                eventInit.bubbles = true;
-                                target.dispatchEvent(new MouseEvent("mouseover", eventInit));
-                                eventInit.bubbles = false;
-                                var el = target;
-                                do {
-                                    el.dispatchEvent(new MouseEvent("mouseenter", eventInit));
-                                    el = el["parentElement"];
-                                } while (el);
-                            };
-                            var deserializeTouches = function deserializeTouches(touches, target, uievent) {
-                                touches.forEach(function(t, i) {
-                                    touches[i] = document.createTouch(uievent.view, target, t.identifier, t.clientX, t.clientY, t.screenX, t.screenY);
-                                });
-                                return touches;
-                            };
-                            var touchTargets = {};
-                            var touchStartTimes = {};
-                            this.sessionService.manager.on["ar.view.uievent"] = function(uievent) {
-                                uievent.view = window;
-                                var target = void 0;
-                                switch (uievent.type) {
-                                  case "wheel":
-                                    target = document.elementFromPoint(uievent.clientX, uievent.clientY) || window;
-                                    target.dispatchEvent(new WheelEvent(uievent.type, uievent));
-                                    break;
-
-                                  case "mouseout":
-                                    target = document.elementFromPoint(uievent.clientX, uievent.clientY) || window;
-                                    fireMouseLeaveEvents(currentTarget, undefined, uievent);
-                                    currentTarget = undefined;
-                                    break;
-
-                                  case "mouseover":
-                                    target = document.elementFromPoint(uievent.clientX, uievent.clientY) || window;
-                                    fireMouseEnterEvents(target, undefined, uievent);
-                                    currentTarget = target;
-                                    break;
-
-                                  case "mousemove":
-                                    target = document.elementFromPoint(uievent.clientX, uievent.clientY) || window;
-                                    if (target !== currentTarget) {
-                                        fireMouseLeaveEvents(currentTarget, target, uievent);
-                                        fireMouseEnterEvents(target, currentTarget, uievent);
-                                        currentTarget = target;
-                                    }
-                                    target.dispatchEvent(new MouseEvent(uievent.type, uievent));
-                                    break;
-
-                                  case "touchstart":
-                                    var primaryTouch = uievent.changedTouches[0];
-                                    target = document.elementFromPoint(primaryTouch.clientX, primaryTouch.clientY);
-                                    var _iteratorNormalCompletion2 = true;
-                                    var _didIteratorError2 = false;
-                                    var _iteratorError2 = undefined;
-                                    try {
-                                        for (var _iterator2 = uievent.changedTouches[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                                            var t = _step2.value;
-                                            touchTargets[t.identifier] = target;
-                                            touchStartTimes[t.identifier] = performance.now();
-                                        }
-                                    } catch (err) {
-                                        _didIteratorError2 = true;
-                                        _iteratorError2 = err;
-                                    } finally {
-                                        try {
-                                            if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                                                _iterator2.return();
-                                            }
-                                        } finally {
-                                            if (_didIteratorError2) {
-                                                throw _iteratorError2;
-                                            }
-                                        }
-                                    }
-
-                                  case "touchmove":
-                                  case "touchend":
-                                  case "touchcancel":
-                                    target = touchTargets[uievent.changedTouches[0].identifier];
-                                    var evt = document.createEvent("TouchEvent");
-                                    var touches = document.createTouchList.apply(document, deserializeTouches(uievent.touches, target, uievent));
-                                    var targetTouches = document.createTouchList.apply(document, deserializeTouches(uievent.targetTouches, target, uievent));
-                                    var changedTouches = document.createTouchList.apply(document, deserializeTouches(uievent.changedTouches, target, uievent));
-                                    if (typeof evt["initTouchEvent"] === "function") {
-                                        evt["initTouchEvent"](uievent.type, uievent.bubbles, uievent.cancelable, uievent.view, uievent.detail, uievent.screenX, uievent.screenY, uievent.clientX, uievent.clientY, uievent.ctrlKey, uievent.altKey, uievent.shiftKey, uievent.metaKey, touches, targetTouches, changedTouches, 1, 0);
-                                    } else {
-                                        evt.initUIEvent(uievent.type, uievent.bubbles, uievent.cancelable, uievent.view, uievent.detail);
-                                        evt.touches = touches;
-                                        evt.targetTouches = targetTouches;
-                                        evt.changedTouches = changedTouches;
-                                    }
-                                    if (uievent.type === "touchend" || uievent.type == "touchcancel") {
-                                        target.dispatchEvent(evt);
-                                        var _primaryTouch = changedTouches[0];
-                                        uievent.clientX = _primaryTouch.clientX;
-                                        uievent.clientY = _primaryTouch.clientY;
-                                        uievent.screenX = _primaryTouch.screenX;
-                                        uievent.screenY = _primaryTouch.screenY;
-                                        uievent.button = 0;
-                                        uievent.detail = 1;
-                                        if (uievent.type === "touchend") {
-                                            if (performance.now() - touchStartTimes[_primaryTouch.identifier] < 300 && !evt.defaultPrevented) {
-                                                target.dispatchEvent(new MouseEvent("mousedown"), uievent);
-                                                target.dispatchEvent(new MouseEvent("mouseup"), uievent);
-                                                target.dispatchEvent(new MouseEvent("click"), uievent);
-                                            }
-                                        } else {
-                                            target.dispatchEvent(new MouseEvent("mouseout"), uievent);
-                                        }
-                                        var _iteratorNormalCompletion3 = true;
-                                        var _didIteratorError3 = false;
-                                        var _iteratorError3 = undefined;
-                                        try {
-                                            for (var _iterator3 = uievent.changedTouches[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                                                var _t = _step3.value;
-                                                delete touchTargets[_t.identifier];
-                                                delete touchStartTimes[_t.identifier];
-                                            }
-                                        } catch (err) {
-                                            _didIteratorError3 = true;
-                                            _iteratorError3 = err;
-                                        } finally {
-                                            try {
-                                                if (!_iteratorNormalCompletion3 && _iterator3.return) {
-                                                    _iterator3.return();
-                                                }
-                                            } finally {
-                                                if (_didIteratorError3) {
-                                                    throw _iteratorError3;
-                                                }
-                                            }
-                                        }
-                                    } else {
-                                        target.dispatchEvent(evt);
-                                    }
-                                    break;
-
-                                  default:
-                                    target = document.elementFromPoint(uievent.clientX, uievent.clientY) || window;
-                                    target.dispatchEvent(new MouseEvent(uievent.type, uievent));
-                                }
-                            };
-                        }
-                    }, {
-                        key: "vrDisplay",
-                        get: function get() {
-                            return this._vrDisplay;
-                        }
-                    }, {
-                        key: "viewport",
-                        get: function get() {
-                            return this.contextService.serializedFrameState.view ? this.contextService.serializedFrameState.view.viewport : {
-                                x: 0,
-                                y: 0,
-                                width: 0,
-                                height: 0
-                            };
-                        }
-                    } ]);
-                    return ViewService;
-                }());
-                _export("ViewService", ViewService = __decorate$3([ inject(ContainerElement, SessionService, ContextService, FocusService) ], ViewService));
-                __decorate$2 = undefined && undefined.__decorate || function(decorators, target, key, desc) {
-                    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-                    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc); else for (var i = decorators.length - 1; i >= 0; i--) {
-                        if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-                    }
-                    return c > 3 && r && Object.defineProperty(target, key, r), r;
-                };
-                scratchCartesian$1 = new Cartesian3();
-                scratchQuaternion$1 = new Quaternion();
-                scratchQuaternion2 = new Quaternion();
-                scratchMatrix3 = new Matrix3();
-                scratchMatrix4 = new Matrix4();
-                clock = new Clock();
-                scratchTime = new JulianDate(0, 0);
-                AVERAGE_HUMAN_HEIGHT = 1.77;
-                _export("DeviceService", DeviceService = function() {
-                    function DeviceService(sessionService, contextService, viewService) {
-                        var _this = this;
-                        _classCallCheck(this, DeviceService);
-                        this.sessionService = sessionService;
-                        this.contextService = contextService;
-                        this.viewService = viewService;
-                        this.stage = this.contextService.entities.add(new Entity({
-                            id: "ar.device.stage",
-                            name: "Device Stage",
-                            position: new ConstantPositionProperty(undefined, ReferenceFrame.FIXED),
-                            orientation: new ConstantProperty(undefined)
-                        }));
-                        this.eye = this.contextService.entities.add(new Entity({
-                            id: "ar.device.eye",
-                            name: "Device Eye",
-                            position: new ConstantPositionProperty(undefined, undefined),
-                            orientation: new ConstantProperty(undefined)
-                        }));
-                        this.eyeEastNorthUp = this.contextService.entities.add(new Entity({
-                            id: "ar.device.eyeEastNorthUp",
-                            name: "Device Eye - ENU",
-                            position: new ConstantPositionProperty(undefined, undefined),
-                            orientation: new ConstantProperty(undefined)
-                        }));
-                        this.geolocationSubscribers = new Set();
-                        this._hasGeolocationCapability = new Promise(function(resolve) {
-                            _this._resolveHasGeolocationCapability = resolve;
-                        });
-                        this._hasOrientationCapability = new Promise(function(resolve) {
-                            _this._resolveHasOrientationCapability = resolve;
-                        });
-                        this._hasGeoposeCapability = Promise.all([ this._hasGeolocationCapability, this._hasOrientationCapability ]).then(function(results) {
-                            return results.reduce(function(p, c) {
-                                return p && c;
-                            }, true);
-                        });
-                        this._state = {
-                            viewport: {
-                                x: 0,
-                                y: 0,
-                                width: 1,
-                                height: 1
-                            },
-                            subviews: [ {
-                                type: SubviewType.SINGULAR,
-                                projectionMatrix: new Matrix4(),
-                                viewport: {
-                                    x: 0,
-                                    y: 0,
-                                    width: 1,
-                                    height: 1
-                                }
-                            } ],
-                            geolocationAccuracy: undefined,
-                            altitudeAccuracy: undefined
-                        };
-                        this._frustum = new PerspectiveFrustum();
-                        this.sessionService.manager.on["ar.device.state"] = function(deviceState) {
-                            _this._state = deviceState;
-                        };
-                        this.sessionService.connectEvent.addEventListener(function(session) {
-                            session.on["ar.device.startGeolocationUpdates"] = function() {
-                                _this.geolocationSubscribers.add(session);
-                                _this._startGeolocationUpdates();
-                                session.closeEvent.addEventListener(function() {
-                                    _this.geolocationSubscribers.delete(session);
-                                    if (_this.geolocationSubscribers.size === 0) _this._stopGeolocationUpdates();
-                                });
-                            };
-                            session.on["ar.device.stopGeolocationUpdates"] = function() {
-                                _this.geolocationSubscribers.delete(session);
-                                if (_this.geolocationSubscribers.size === 0) _this._stopGeolocationUpdates();
-                            };
-                        });
-                        if (this.sessionService.isRealityManager || this.sessionService.isRealityViewer) {
-                            this.startOrientationUpdates();
-                        }
-                        var frustum = this._frustum;
-                        frustum.near = .01;
-                        frustum.far = 5e8;
-                        frustum.fov = Math.PI / 3;
-                        frustum.aspectRatio = 1;
-                        Matrix4.clone(frustum.projectionMatrix, this.subviews[0].projectionMatrix);
-                        if (this.sessionService.isRealityManager) {
-                            (function() {
-                                _this.publishDeviceState();
-                                var id = setInterval(_this.publishDeviceState.bind(_this), 500);
-                                _this.sessionService.manager.closeEvent.addEventListener(function() {
-                                    clearInterval(id);
-                                });
-                                _this.viewService.viewportChangeEvent.addEventListener(function() {
-                                    _this.publishDeviceState();
-                                });
-                            })();
-                        }
-                        this.sessionService.manager.closeEvent.addEventListener(function() {
-                            _this.stopGeolocationUpdates();
-                            _this.stopOrientationUpdates();
-                        });
-                    }
-                    _createClass(DeviceService, [ {
-                        key: "hasGeoposeCapability",
-                        value: function hasGeoposeCapability() {
-                            return this._hasGeoposeCapability;
-                        }
-                    }, {
-                        key: "processViewState",
-                        value: function processViewState(viewState) {
-                            this._lastRealityViewState = viewState;
-                        }
-                    }, {
-                        key: "getSubviewEntity",
-                        value: function getSubviewEntity(index) {
-                            var subviewEntity = this.contextService.entities.getOrCreateEntity("ar.device.view_" + index);
-                            if (!subviewEntity.position) {
-                                subviewEntity.position = new ConstantPositionProperty();
-                            }
-                            if (!subviewEntity.orientation) {
-                                subviewEntity.orientation = new ConstantProperty();
-                            }
-                            return subviewEntity;
-                        }
-                    }, {
-                        key: "update",
-                        value: function update() {
-                            this.sessionService.ensureNotRealityAugmenter();
-                            if (this.sessionService.isRealityManager) {
-                                this.updateViewport();
-                                this.updateState();
-                            } else {
-                                this.setEyePoseFromDeviceOrientation();
-                            }
-                            var positionFIXED = getEntityPositionInReferenceFrame(this.eye, clock.currentTime, ReferenceFrame.FIXED, scratchCartesian$1);
-                            this._eyeCartographicPosition = positionFIXED ? Cartographic.fromCartesian(positionFIXED, undefined, this._eyeCartographicPosition) : positionFIXED;
-                            if (positionFIXED && this._resolveHasGeolocationCapability) {
-                                this._resolveHasGeolocationCapability(true);
-                                this._resolveHasGeolocationCapability = undefined;
-                            }
-                            if (this._resolveHasOrientationCapability) {
-                                var orientationFIXED = getEntityOrientationInReferenceFrame(this.eye, clock.currentTime, ReferenceFrame.FIXED, scratchQuaternion$1);
-                                if (orientationFIXED) {
-                                    this._resolveHasOrientationCapability(true);
-                                    this._resolveHasOrientationCapability = undefined;
-                                }
-                            }
-                            if (!this.strict && this.sessionService.isRealityManager) {
-                                var view = this._lastRealityViewState;
-                                if (view && view.subviews[0]) {
-                                    Matrix4.clone(view.subviews[0].projectionMatrix, this.subviews[0].projectionMatrix);
-                                }
-                            }
-                        }
-                    }, {
-                        key: "updateState",
-                        value: function updateState() {
-                            if (this.viewService.vrDisplay) {
-                                this.updateStateFromWebVR();
-                            } else {
-                                this.updateStateMonocular();
-                            }
-                        }
-                    }, {
-                        key: "updateStateFromWebVR",
-                        value: function updateStateFromWebVR() {
-                            var vrDisplay = this.viewService.vrDisplay;
+                        key: "_updateViewFromWebVR",
+                        value: function _updateViewFromWebVR(vrDisplay) {
+                            var suggestedViewState = this.viewService.suggestedViewState = this.viewService.suggestedViewState || {};
+                            var viewport = suggestedViewState.viewport = suggestedViewState.viewport || {};
+                            viewport.x = 0;
+                            viewport.y = 0;
+                            viewport.width = this.viewportService.rootElement.clientWidth;
+                            viewport.height = this.viewportService.rootElement.clientHeight;
                             var vrFrameData = this._vrFrameData = this._vrFrameData || new VRFrameData();
-                            if (!vrDisplay.getFrameData(vrFrameData)) return;
-                            var deviceState = this._state;
+                            if (!vrDisplay["getFrameData"](vrFrameData)) return this.viewService.suggestedViewState;
                             var layers = vrDisplay.getLayers();
                             var leftBounds = layers[0].leftBounds;
                             var rightBounds = layers[0].rightBounds;
-                            var viewportWidth = deviceState.viewport.width;
-                            var viewportHeight = deviceState.viewport.height;
-                            var subviews = deviceState.subviews;
-                            var leftSubview = subviews[0];
+                            var subviews = suggestedViewState.subviews = suggestedViewState.subviews || [];
+                            var leftSubview = subviews[0] = subviews[0] || {};
                             var rightSubview = subviews[1] = subviews[1] || {};
                             leftSubview.type = SubviewType.LEFTEYE;
                             rightSubview.type = SubviewType.RIGHTEYE;
                             var leftViewport = leftSubview.viewport = leftSubview.viewport || {};
-                            leftViewport.x = leftBounds[0] * viewportWidth;
-                            leftViewport.y = leftBounds[1] * viewportHeight;
-                            leftViewport.width = leftBounds[2] * viewportWidth;
-                            leftViewport.height = leftBounds[3] * viewportHeight;
+                            leftViewport.x = leftBounds[0] * viewport.width;
+                            leftViewport.y = leftBounds[1] * viewport.height;
+                            leftViewport.width = leftBounds[2] * viewport.width;
+                            leftViewport.height = leftBounds[3] * viewport.height;
                             var rightViewport = rightSubview.viewport = rightSubview.viewport || {};
-                            rightViewport.x = rightBounds[0] * viewportWidth;
-                            rightViewport.y = rightBounds[1] * viewportHeight;
-                            rightViewport.width = rightBounds[2] * viewportWidth;
-                            rightViewport.height = rightBounds[3] * viewportHeight;
+                            rightViewport.x = rightBounds[0] * viewport.width;
+                            rightViewport.y = rightBounds[1] * viewport.height;
+                            rightViewport.width = rightBounds[2] * viewport.width;
+                            rightViewport.height = rightBounds[3] * viewport.height;
                             leftSubview.projectionMatrix = Matrix4.clone(vrFrameData.leftProjectionMatrix, leftSubview.projectionMatrix);
                             rightSubview.projectionMatrix = Matrix4.clone(vrFrameData.rightProjectionMatrix, rightSubview.projectionMatrix);
                             var inverseStandingMatrix = Matrix4.IDENTITY.clone(scratchMatrix4);
@@ -22104,283 +22949,83 @@
                                 Matrix4.inverseTransformation(vrDisplay.stageParameters.sittingToStandingTransform, inverseStandingMatrix);
                             }
                             var inverseStandingRotationMatrix = Matrix4.getRotation(inverseStandingMatrix, scratchMatrix3);
-                            var inverseStandingOrientation = Quaternion.fromRotationMatrix(inverseStandingRotationMatrix, scratchQuaternion$1);
+                            var inverseStandingOrientation = Quaternion.fromRotationMatrix(inverseStandingRotationMatrix, scratchQuaternion);
                             var leftStandingViewMatrix = Matrix4.multiplyTransformation(vrFrameData.leftViewMatrix, inverseStandingMatrix, scratchMatrix4);
                             var rightStandingViewMatrix = Matrix4.multiplyTransformation(vrFrameData.rightViewMatrix, inverseStandingMatrix, scratchMatrix4);
-                            this.setStagePoseFromGeolocation();
+                            var eye = this.viewService.physicalEye;
+                            var stage = this.locationService.physicalStage;
                             if (!vrDisplay.displayName.match(/polyfill/g)) {
-                                var sittingEyePosition = Cartesian3.unpack(vrFrameData.pose.position, 0, scratchCartesian$1);
-                                var stageEyePosition = Matrix4.multiplyByPoint(inverseStandingMatrix, sittingEyePosition, scratchCartesian$1);
-                                var sittingEyeOrientation = Quaternion.unpack(vrFrameData.pose.orientation, 0, scratchQuaternion2);
-                                var stageEyeOrientation = Quaternion.multiply(inverseStandingOrientation, sittingEyeOrientation, scratchQuaternion$1);
-                                var eye = this.eye;
-                                eye.position.setValue(stageEyePosition, this.stage);
+                                var sittingEyePosition = vrFrameData.pose.position ? Cartesian3.unpack(vrFrameData.pose.position, 0, scratchCartesian$1) : undefined;
+                                var stageEyePosition = sittingEyePosition ? Matrix4.multiplyByPoint(inverseStandingMatrix, sittingEyePosition, scratchCartesian$1) : undefined;
+                                var sittingEyeOrientation = vrFrameData.pose.orientation ? Quaternion.unpack(vrFrameData.pose.orientation, 0, scratchQuaternion2) : undefined;
+                                var stageEyeOrientation = sittingEyeOrientation ? Quaternion.multiply(inverseStandingOrientation, sittingEyeOrientation, scratchQuaternion) : undefined;
+                                eye.position.setValue(stageEyePosition, stage);
                                 eye.orientation.setValue(stageEyeOrientation);
-                                var leftEye = this.getSubviewEntity(0);
-                                var stageLeftEyePosition = Matrix4.getTranslation(leftStandingViewMatrix, scratchCartesian$1);
-                                leftEye.position.setValue(stageLeftEyePosition, this.stage);
-                                var rightEye = this.getSubviewEntity(1);
-                                var stageRightEyePosition = Matrix4.getTranslation(rightStandingViewMatrix, scratchCartesian$1);
-                                rightEye.position.setValue(stageRightEyePosition, this.stage);
                             } else {
-                                this.setEyePoseFromDeviceOrientation();
+                                updatePhysicalEyePoseFromDeviceOrientation(this.contextService);
                             }
+                            var leftEye = this.viewService.getSubviewEntity(0);
+                            var stageLeftEyePosition = Matrix4.getTranslation(leftStandingViewMatrix, scratchCartesian$1);
+                            leftEye.position.setValue(stageLeftEyePosition, stage);
+                            var rightEye = this.viewService.getSubviewEntity(1);
+                            var stageRightEyePosition = Matrix4.getTranslation(rightStandingViewMatrix, scratchCartesian$1);
+                            rightEye.position.setValue(stageRightEyePosition, stage);
                         }
                     }, {
-                        key: "updateStateMonocular",
-                        value: function updateStateMonocular() {
-                            this.setStagePoseFromGeolocation();
-                            this.setEyePoseFromDeviceOrientation();
-                            var state = this._state;
-                            state.subviews.length = 1;
-                            var subview = state.subviews[0];
-                            subview.type = SubviewType.SINGULAR;
-                            subview.viewport = {
-                                x: 0,
-                                y: 0,
-                                width: this._state.viewport.width,
-                                height: this._state.viewport.height
-                            };
-                            Matrix4.clone(this._frustum.projectionMatrix, subview.projectionMatrix);
-                        }
-                    }, {
-                        key: "setEyePoseFromDeviceOrientation",
-                        value: function setEyePoseFromDeviceOrientation() {
-                            var stageOffset = Cartesian3.fromElements(0, 0, AVERAGE_HUMAN_HEIGHT, scratchCartesian$1);
-                            this.eye.position.setValue(stageOffset, this.stage);
-                            this.eye.orientation.setValue(this._deviceOrientation);
-                        }
-                    }, {
-                        key: "setStagePoseFromGeolocation",
-                        value: function setStagePoseFromGeolocation() {
-                            var deviceCartographicPosition = this._state.cartographicPosition;
-                            if (deviceCartographicPosition) {
-                                var lon = deviceCartographicPosition.longitude;
-                                var lat = deviceCartographicPosition.latitude;
-                                var height = deviceCartographicPosition.height - AVERAGE_HUMAN_HEIGHT;
-                                var positionECEF = Cartesian3.fromDegrees(lon, lat, height, undefined, scratchCartesian$1);
-                                var enuOrientation = Transforms.headingPitchRollQuaternion(positionECEF, 0, 0, 0, undefined, scratchQuaternion$1);
-                                this.stage.position.setValue(positionECEF, ReferenceFrame.FIXED);
-                                this.stage.orientation.setValue(enuOrientation);
-                            } else {
-                                this.stage.position.setValue(undefined, ReferenceFrame.FIXED);
-                                this.stage.orientation.setValue(undefined);
-                            }
-                        }
-                    }, {
-                        key: "updateViewport",
-                        value: function updateViewport() {
-                            if (this.viewService.element) {
-                                this.viewport.x = 0;
-                                this.viewport.y = 0;
-                                var width = this.viewService.element.clientWidth;
-                                var height = this.viewService.element.clientHeight;
-                                this.viewport.width = width;
-                                this.viewport.height = height;
-                            }
-                            var aspect = this.viewport.width / this.viewport.height;
-                            this._frustum.aspectRatio = isNaN(aspect) ? 1 : aspect;
-                        }
-                    }, {
-                        key: "requestFrame",
-                        value: function requestFrame(callback) {
-                            var _this2 = this;
-                            var onFrame = function onFrame() {
-                                tick();
-                                _this2.update();
-                                callback(clock.currentTime);
-                            };
-                            if (this.viewService.vrDisplay) {
-                                return this.viewService.vrDisplay.requestAnimationFrame(onFrame);
-                            } else {
-                                return requestAnimationFrame$1(onFrame);
-                            }
-                        }
-                    }, {
-                        key: "publishDeviceState",
-                        value: function publishDeviceState() {
-                            var _this3 = this;
-                            this.sessionService.ensureIsRealityManager();
-                            if (this.sessionService.isRealityManager) {
-                                this.update();
-                                this.sessionService.managedSessions.forEach(function(session) {
-                                    if (Role.isRealityViewer(session.info.role)) session.send("ar.device.state", _this3._state);
-                                });
-                            }
-                        }
-                    }, {
-                        key: "startGeolocationUpdates",
-                        value: function startGeolocationUpdates() {
-                            this.sessionService.manager.send("ar.device.startGeolocationUpdates");
-                        }
-                    }, {
-                        key: "_startGeolocationUpdates",
-                        value: function _startGeolocationUpdates() {
-                            var _this4 = this;
-                            if (typeof navigator == "undefined") return;
-                            if (!defined(this._geolocationWatchId) && navigator.geolocation) {
-                                this._geolocationWatchId = navigator.geolocation.watchPosition(function(pos) {
-                                    var cartographic = _this4._state.cartographicPosition = _this4._state.cartographicPosition || new Cartographic();
-                                    cartographic.latitude = pos.coords.latitude;
-                                    cartographic.longitude = pos.coords.longitude;
-                                    cartographic.height = pos.coords.altitude || 0;
-                                    _this4._state.geolocationAccuracy = pos.coords.accuracy > 0 ? pos.coords.accuracy : undefined;
-                                    _this4._state.altitudeAccuracy = pos.coords.altitudeAccuracy || undefined;
-                                    _this4.publishDeviceState();
-                                }, function(error) {
-                                    console.error(error);
-                                }, {
-                                    enableHighAccuracy: true
-                                });
-                            } else if (this._resolveHasGeolocationCapability) {
-                                this._resolveHasGeolocationCapability(false);
-                                this._resolveHasGeolocationCapability = undefined;
-                            }
-                        }
-                    }, {
-                        key: "stopGeolocationUpdates",
-                        value: function stopGeolocationUpdates() {
-                            this.sessionService.manager.send("ar.device.stopGeolocationUpdates");
-                        }
-                    }, {
-                        key: "_stopGeolocationUpdates",
-                        value: function _stopGeolocationUpdates() {
-                            if (typeof navigator !== "undefined" && defined(this._geolocationWatchId)) {
-                                navigator.geolocation.clearWatch(this._geolocationWatchId);
-                                this._geolocationWatchId = undefined;
-                            }
-                            this._state.cartographicPosition = undefined;
-                            this._state.geolocationAccuracy = undefined;
-                            this._state.altitudeAccuracy = undefined;
-                            this.publishDeviceState();
-                        }
-                    }, {
-                        key: "startOrientationUpdates",
-                        value: function startOrientationUpdates() {
-                            var _this5 = this;
-                            if (typeof window == "undefined" || !window.addEventListener) return;
-                            if (!defined(this._deviceorientationListener)) {
-                                (function() {
-                                    var headingDrift = 0;
-                                    var alphaOffset = undefined;
-                                    _this5._deviceorientationListener = function(e) {
-                                        var alphaDegrees = e.alpha;
-                                        var webkitCompassHeading = e["webkitCompassHeading"];
-                                        var webkitCompassAccuracy = +e["webkitCompassAccuracy"];
-                                        if (!defined(alphaDegrees)) {
-                                            _this5.stopOrientationUpdates();
-                                            if (_this5._resolveHasOrientationCapability) {
-                                                _this5._resolveHasOrientationCapability(false);
-                                                _this5._resolveHasOrientationCapability = undefined;
-                                            }
-                                            return;
-                                        }
-                                        if (e.absolute) {
-                                            alphaOffset = 0;
-                                        }
-                                        if ((!defined(alphaOffset) || Math.abs(headingDrift) > 5) && defined(webkitCompassHeading) && webkitCompassAccuracy >= 0 && webkitCompassAccuracy < 50 && webkitCompassHeading >= 0) {
-                                            if (!defined(alphaOffset)) {
-                                                alphaOffset = -webkitCompassHeading;
-                                            } else {
-                                                alphaOffset -= headingDrift;
-                                            }
-                                            _this5._compassAccuracy = webkitCompassAccuracy > 0 ? webkitCompassAccuracy : undefined;
-                                        }
-                                        var alpha = CesiumMath.RADIANS_PER_DEGREE * (e.alpha + alphaOffset || -webkitCompassHeading || 0);
-                                        var beta = CesiumMath.RADIANS_PER_DEGREE * e.beta;
-                                        var gamma = CesiumMath.RADIANS_PER_DEGREE * e.gamma;
-                                        var alphaQuat = Quaternion.fromAxisAngle(Cartesian3.UNIT_Z, alpha, scratchQuaternion$1);
-                                        var betaQuat = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, beta, scratchQuaternion2);
-                                        var alphaBetaQuat = Quaternion.multiply(alphaQuat, betaQuat, scratchQuaternion$1);
-                                        var gammaQuat = Quaternion.fromAxisAngle(Cartesian3.UNIT_Y, gamma, scratchQuaternion2);
-                                        var alphaBetaGammaQuat = Quaternion.multiply(alphaBetaQuat, gammaQuat, scratchQuaternion$1);
-                                        var screenOrientationAngle = screen["orientation"] && screen["orientation"].angle || window.orientation || 0;
-                                        var screenOrientationQuat = Quaternion.fromAxisAngle(Cartesian3.UNIT_Z, -screenOrientationAngle * CesiumMath.RADIANS_PER_DEGREE, scratchQuaternion2);
-                                        _this5._deviceOrientation = Quaternion.multiply(alphaBetaGammaQuat, screenOrientationQuat, _this5._deviceOrientation || new Quaternion());
-                                    };
-                                    if ("ondeviceorientationabsolute" in window) {
-                                        window.addEventListener("deviceorientationabsolute", _this5._deviceorientationListener);
-                                    } else if ("ondeviceorientation" in window) {
-                                        window.addEventListener("deviceorientation", _this5._deviceorientationListener);
-                                    } else if (_this5._resolveHasOrientationCapability) {
-                                        _this5._resolveHasOrientationCapability(false);
-                                        _this5._resolveHasOrientationCapability = undefined;
-                                    }
-                                })();
-                            }
-                        }
-                    }, {
-                        key: "stopOrientationUpdates",
-                        value: function stopOrientationUpdates() {
-                            if (typeof window == "undefined" || !window.removeEventListener) return;
-                            this._deviceOrientation = undefined;
-                            this._compassAccuracy = undefined;
-                            if (this._deviceorientationListener) {
-                                if ("ondeviceorientationabsolute" in window) {
-                                    window.removeEventListener("deviceorientationabsolute", this._deviceorientationListener);
-                                } else if ("ondeviceorientation" in window) {
-                                    window.removeEventListener("deviceorientation", this._deviceorientationListener);
-                                }
-                                this._deviceorientationListener = undefined;
-                            }
-                        }
-                    }, {
-                        key: "eyeCartographicPosition",
+                        key: "isPresentingHMD",
                         get: function get() {
-                            return this._eyeCartographicPosition;
-                        }
-                    }, {
-                        key: "geolocationAccuracy",
-                        get: function get() {
-                            return this._state.geolocationAccuracy;
-                        }
-                    }, {
-                        key: "altitudeAccuracy",
-                        get: function get() {
-                            return this._state.altitudeAccuracy;
-                        }
-                    }, {
-                        key: "compassAccuracy",
-                        get: function get() {
-                            return this._compassAccuracy;
-                        }
-                    }, {
-                        key: "viewport",
-                        get: function get() {
-                            return this._state.viewport;
-                        }
-                    }, {
-                        key: "subviews",
-                        get: function get() {
-                            return this._state.subviews;
-                        }
-                    }, {
-                        key: "strict",
-                        get: function get() {
-                            return this._state.strict;
+                            return !!(currentVRDisplay && currentVRDisplay.isPresenting);
                         }
                     } ]);
-                    return DeviceService;
+                    return ViewServiceProvider;
                 }());
-                _export("DeviceService", DeviceService = __decorate$2([ inject(SessionService, ContextService, ViewService) ], DeviceService));
-                __decorate$6 = undefined && undefined.__decorate || function(decorators, target, key, desc) {
-                    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-                    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc); else for (var i = decorators.length - 1; i >= 0; i--) {
-                        if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-                    }
-                    return c > 3 && r && Object.defineProperty(target, key, r), r;
-                };
+                _export("ViewServiceProvider", ViewServiceProvider = __decorate$3([ autoinject, __metadata$3("design:paramtypes", [ typeof (_e$2 = typeof SessionService !== "undefined" && SessionService) === "function" && _e$2 || Object, typeof (_f$1 = typeof ContextService !== "undefined" && ContextService) === "function" && _f$1 || Object, typeof (_g$1 = typeof ContextServiceProvider !== "undefined" && ContextServiceProvider) === "function" && _g$1 || Object, ViewService, typeof (_h$1 = typeof ViewportService !== "undefined" && ViewportService) === "function" && _h$1 || Object, typeof (_j = typeof LocationService !== "undefined" && LocationService) === "function" && _j || Object ]) ], ViewServiceProvider));
+                deviceOrientationListener = void 0;
+                deviceOrientation = void 0;
+                deviceOrientationHeadingAccuracy = void 0;
+                clock = new Clock();
+                scratchTime = new JulianDate(0, 0);
                 _export("RealityViewer", RealityViewer = function() {
-                    function RealityViewer(_sessionService, uri) {
+                    function RealityViewer(uri) {
+                        var _this = this;
                         _classCallCheck(this, RealityViewer);
-                        this._sessionService = _sessionService;
                         this.uri = uri;
+                        this.providedReferenceFrames = [];
+                        this.connectEvent = new Event();
+                        this.presentChangeEvent = new Event();
+                        this._isPresenting = false;
+                        this.connectEvent.addEventListener(function(session) {
+                            if (_this._session) _this._session.close();
+                            _this._session = session;
+                            session.closeEvent.addEventListener(function() {
+                                if (_this._session === session) _this._session = undefined;
+                            });
+                        });
                     }
                     _createClass(RealityViewer, [ {
-                        key: "load",
-                        value: function load() {
-                            if (this.session) this.session.close();
-                            this.session = this._sessionService.addManagedSessionPort(this.uri);
+                        key: "destroy",
+                        value: function destroy() {
+                            if (this.session) {
+                                this.session.close();
+                            }
+                        }
+                    }, {
+                        key: "setPresenting",
+                        value: function setPresenting(flag) {
+                            if (this._isPresenting !== flag) {
+                                this._isPresenting = flag;
+                                this.presentChangeEvent.raiseEvent(undefined);
+                            }
+                        }
+                    }, {
+                        key: "isPresenting",
+                        get: function get() {
+                            return this._isPresenting;
+                        }
+                    }, {
+                        key: "session",
+                        get: function get() {
+                            return this._session;
                         }
                     } ], [ {
                         key: "getType",
@@ -22394,70 +23039,51 @@
                     } ]);
                     return RealityViewer;
                 }());
+                RealityViewer.DEFAULT = "reality:default";
                 RealityViewer.EMPTY = "reality:empty";
                 RealityViewer.LIVE = "reality:live";
-                _export("RealityViewer", RealityViewer = __decorate$6([ inject(SessionService) ], RealityViewer));
-                _get$1 = function get(object, property, receiver) {
-                    if (object === null) object = Function.prototype;
-                    var desc = Object.getOwnPropertyDescriptor(object, property);
-                    if (desc === undefined) {
-                        var parent = Object.getPrototypeOf(object);
-                        if (parent === null) {
-                            return undefined;
-                        } else {
-                            return get(parent, property, receiver);
-                        }
-                    } else if ("value" in desc) {
-                        return desc.value;
-                    } else {
-                        var getter = desc.get;
-                        if (getter === undefined) {
-                            return undefined;
-                        }
-                        return getter.call(receiver);
-                    }
-                };
-                __decorate$7 = undefined && undefined.__decorate || function(decorators, target, key, desc) {
+                __decorate$10 = undefined && undefined.__decorate || function(decorators, target, key, desc) {
                     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
                     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc); else for (var i = decorators.length - 1; i >= 0; i--) {
                         if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
                     }
                     return c > 3 && r && Object.defineProperty(target, key, r), r;
                 };
+                __metadata$10 = undefined && undefined.__metadata || function(k, v) {
+                    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+                };
                 _export("EmptyRealityViewer", EmptyRealityViewer = function(_RealityViewer) {
                     _inherits(EmptyRealityViewer, _RealityViewer);
-                    function EmptyRealityViewer(sessionService, deviceService, viewService, uri) {
+                    function EmptyRealityViewer(sessionService, contextService, viewService, viewportService, uri) {
                         _classCallCheck(this, EmptyRealityViewer);
-                        var _this = _possibleConstructorReturn(this, (EmptyRealityViewer.__proto__ || Object.getPrototypeOf(EmptyRealityViewer)).call(this, sessionService, uri));
+                        var _this = _possibleConstructorReturn(this, (EmptyRealityViewer.__proto__ || Object.getPrototypeOf(EmptyRealityViewer)).call(this, uri));
                         _this.sessionService = sessionService;
-                        _this.deviceService = deviceService;
+                        _this.contextService = contextService;
                         _this.viewService = viewService;
+                        _this.viewportService = viewportService;
                         _this.uri = uri;
                         _this.type = "empty";
-                        _this._isPresenting = false;
                         return _this;
                     }
                     _createClass(EmptyRealityViewer, [ {
-                        key: "destroy",
-                        value: function destroy() {}
-                    }, {
-                        key: "setPresenting",
-                        value: function setPresenting(foo) {
-                            this._isPresenting = foo;
-                        }
-                    }, {
                         key: "load",
                         value: function load() {
                             var _this2 = this;
-                            _get$1(EmptyRealityViewer.prototype.__proto__ || Object.getPrototypeOf(EmptyRealityViewer.prototype), "load", this).call(this);
-                            var realitySession = this.session;
-                            var remoteRealitySession = this.sessionService.createSessionPort(this.uri);
-                            remoteRealitySession.on["ar.device.state"] = function() {};
-                            remoteRealitySession.on["ar.view.uievent"] = function() {};
-                            remoteRealitySession.on["ar.context.update"] = function() {};
-                            remoteRealitySession.on["ar.reality.connect"] = function() {};
-                            remoteRealitySession.connectEvent.addEventListener(function() {
-                                var aggregator = new CameraEventAggregator(_this2.viewService.element);
+                            var session = this.sessionService.addManagedSessionPort(this.uri);
+                            session.connectEvent.addEventListener(function() {
+                                _this2.connectEvent.raiseEvent(session);
+                            });
+                            var internalSession = this.sessionService.createSessionPort(this.uri);
+                            internalSession.on["ar.device.state"] = function() {};
+                            internalSession.on["ar.visibility.state"] = function() {};
+                            internalSession.on["ar.focus.state"] = function() {};
+                            internalSession.on["ar.viewport.uievent"] = function() {};
+                            internalSession.on["ar.viewport.presentationMode"] = function() {};
+                            internalSession.on["ar.view.suggestedViewState"] = function() {};
+                            internalSession.on["ar.context.update"] = function() {};
+                            internalSession.on["ar.reality.connect"] = function() {};
+                            internalSession.connectEvent.addEventListener(function() {
+                                var aggregator = new CameraEventAggregator(_this2.viewportService.element);
                                 var flags = {
                                     moveForward: false,
                                     moveBackward: false,
@@ -22504,11 +23130,12 @@
                                 };
                                 document.addEventListener("keydown", keydownListener, false);
                                 document.addEventListener("keyup", keyupListener, false);
-                                remoteRealitySession.closeEvent.addEventListener(function() {
+                                internalSession.closeEvent.addEventListener(function() {
                                     aggregator.destroy();
                                     document.removeEventListener("keydown", keydownListener);
                                     document.removeEventListener("keyup", keyupListener);
                                 });
+                                var scratchQuaternion = new Quaternion();
                                 var scratchQuaternionDragYaw = new Quaternion();
                                 var positionScratchCartesian = new Cartesian3();
                                 var movementScratchCartesian = new Cartesian3();
@@ -22517,51 +23144,55 @@
                                 var up = new Cartesian3(0, 0, 1);
                                 var right = new Cartesian3(1, 0, 0);
                                 var forward = new Cartesian3(0, -1, 0);
-                                var frustum = new PerspectiveFrustum();
-                                var AVERAGE_HUMAN_HEIGHT = 1.77;
+                                var scratchFrustum = new PerspectiveFrustum();
+                                var AVERAGE_HUMAN_HEIGHT$$1 = 1.77;
                                 var NEGATIVE_UNIT_Y = new Cartesian3(0, -1, 0);
                                 var X_90ROT = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, CesiumMath.PI_OVER_TWO);
-                                var virtualEyePositionProperty = new ConstantPositionProperty(new Cartesian3(0, 0, AVERAGE_HUMAN_HEIGHT), _this2.deviceService.stage);
+                                var virtualEyePositionProperty = new ConstantPositionProperty(new Cartesian3(0, 0, AVERAGE_HUMAN_HEIGHT$$1), _this2.contextService.entities.getById(PHYSICAL_STAGE_ENTITY_ID));
                                 var virtualEyeOrientationProperty = new ConstantProperty(X_90ROT);
                                 Matrix3.fromQuaternion(eyeOrientation, orientationMatrix);
                                 var virtualEye = new Entity({
                                     position: virtualEyePositionProperty,
                                     orientation: virtualEyeOrientationProperty
                                 });
-                                var deviceService = _this2.deviceService;
+                                var viewService = _this2.viewService;
+                                var subviews = [];
                                 var update = function update(time) {
-                                    if (remoteRealitySession.isConnected) deviceService.requestFrame(update); else return;
-                                    if (!_this2._isPresenting) {
+                                    if (internalSession.isConnected) viewService.requestAnimationFrame(update); else return;
+                                    if (!_this2.isPresenting) {
                                         aggregator.reset();
                                         return;
                                     }
-                                    if (frustum.fov === undefined || deviceService.strict) {
-                                        decomposePerspectiveProjectionMatrix(deviceService.subviews[0].projectionMatrix, frustum);
-                                    }
-                                    if (!deviceService.strict) {
+                                    var suggestedViewState = _this2.viewService.suggestedViewState;
+                                    if (!suggestedViewState) return;
+                                    SerializedSubviewList.clone(suggestedViewState.subviews, subviews);
+                                    if (!suggestedViewState.strict) {
+                                        decomposePerspectiveProjectionMatrix(subviews[0].projectionMatrix, scratchFrustum);
+                                        scratchFrustum.fov = viewService.subviews[0].frustum.fov;
                                         if (aggregator.isMoving(CameraEventType.WHEEL)) {
                                             var wheelMovement = aggregator.getMovement(CameraEventType.WHEEL);
                                             var diff = wheelMovement.endPosition.y;
-                                            frustum.fov = Math.min(Math.max(frustum.fov - diff * .02, Math.PI / 8), Math.PI - Math.PI / 8);
+                                            scratchFrustum.fov = Math.min(Math.max(scratchFrustum.fov - diff * .02, Math.PI / 8), Math.PI - Math.PI / 8);
                                         }
                                         if (aggregator.isMoving(CameraEventType.PINCH)) {
                                             var pinchMovement = aggregator.getMovement(CameraEventType.PINCH);
                                             var _diff = pinchMovement.distance.endPosition.y - pinchMovement.distance.startPosition.y;
-                                            frustum.fov = Math.min(Math.max(frustum.fov - _diff * .02, Math.PI / 8), Math.PI - Math.PI / 8);
+                                            scratchFrustum.fov = Math.min(Math.max(scratchFrustum.fov - _diff * .02, Math.PI / 8), Math.PI - Math.PI / 8);
                                         }
-                                        var aspect = deviceService.subviews[0].viewport.width / deviceService.subviews[0].viewport.height;
-                                        frustum.aspectRatio = isNaN(aspect) ? 1 : aspect;
-                                        deviceService.subviews.forEach(function(s) {
-                                            Matrix4.clone(frustum.projectionMatrix, s.projectionMatrix);
+                                        subviews.forEach(function(s) {
+                                            var aspect = s.viewport.width / s.viewport.height;
+                                            scratchFrustum.aspectRatio = isFinite(aspect) ? aspect : 1;
+                                            Matrix4.clone(scratchFrustum.projectionMatrix, s.projectionMatrix);
                                         });
                                     }
-                                    var pose = getSerializedEntityPose(_this2.deviceService.eye, time);
-                                    if (!pose && !deviceService.strict) {
+                                    var physicalStage = _this2.contextService.entities.getById(PHYSICAL_STAGE_ENTITY_ID);
+                                    var orientation = getEntityOrientation(_this2.viewService.physicalEye, time, physicalStage, scratchQuaternion);
+                                    if (!orientation && !suggestedViewState.strict) {
                                         if (aggregator.isMoving(CameraEventType.LEFT_DRAG)) {
                                             var dragMovement = aggregator.getMovement(CameraEventType.LEFT_DRAG);
-                                            var currentOrientation = getEntityOrientationInReferenceFrame(virtualEye, time, deviceService.stage, eyeOrientation);
+                                            var currentOrientation = getEntityOrientationInReferenceFrame(virtualEye, time, physicalStage, eyeOrientation);
                                             if (currentOrientation) {
-                                                var dragYaw = Quaternion.fromAxisAngle(Cartesian3.UNIT_Y, frustum.fov * (dragMovement.endPosition.x - dragMovement.startPosition.x) / _this2.viewService.viewport.width, scratchQuaternionDragYaw);
+                                                var dragYaw = Quaternion.fromAxisAngle(Cartesian3.UNIT_Y, scratchFrustum.fov * (dragMovement.endPosition.x - dragMovement.startPosition.x) / suggestedViewState.viewport.width, scratchQuaternionDragYaw);
                                                 var newOrientation = Quaternion.multiply(currentOrientation, dragYaw, dragYaw);
                                                 virtualEye.orientation.setValue(newOrientation);
                                                 Matrix3.fromQuaternion(newOrientation, orientationMatrix);
@@ -22570,7 +23201,7 @@
                                                 Matrix3.multiplyByVector(orientationMatrix, NEGATIVE_UNIT_Y, forward);
                                             }
                                         }
-                                        var position = virtualEyePositionProperty.getValueInReferenceFrame(time, _this2.deviceService.stage, positionScratchCartesian);
+                                        var position = virtualEyePositionProperty.getValueInReferenceFrame(time, physicalStage, positionScratchCartesian);
                                         var moveRate = .02;
                                         if (flags.moveForward) {
                                             Cartesian3.multiplyByScalar(forward, moveRate, movementScratchCartesian);
@@ -22596,27 +23227,20 @@
                                             Cartesian3.multiplyByScalar(right, moveRate, movementScratchCartesian);
                                             Cartesian3.add(position, movementScratchCartesian, position);
                                         }
-                                        virtualEyePositionProperty.setValue(position, _this2.deviceService.stage);
-                                        pose = getSerializedEntityPose(virtualEye, time);
+                                        virtualEyePositionProperty.setValue(position, physicalStage);
+                                    } else {
+                                        virtualEyeOrientationProperty.setValue(orientation);
                                     }
                                     aggregator.reset();
-                                    var viewState = {
-                                        time: time,
-                                        pose: pose,
-                                        geolocationAccuracy: deviceService.geolocationAccuracy,
-                                        altitudeAccuracy: deviceService.altitudeAccuracy,
-                                        compassAccuracy: deviceService.compassAccuracy,
-                                        viewport: deviceService.viewport,
-                                        subviews: deviceService.subviews
-                                    };
-                                    remoteRealitySession.send("ar.reality.viewState", viewState);
+                                    var frameState = _this2.contextService.createFrameState(time, suggestedViewState.viewport, subviews, virtualEye);
+                                    internalSession.send("ar.reality.frameState", frameState);
                                 };
-                                deviceService.requestFrame(update);
+                                viewService.requestAnimationFrame(update);
                             });
                             Promise.resolve().then(function() {
                                 var messageChannel = _this2.sessionService.createSynchronousMessageChannel();
-                                realitySession.open(messageChannel.port1, _this2.sessionService.configuration);
-                                remoteRealitySession.open(messageChannel.port2, {
+                                session.open(messageChannel.port1, _this2.sessionService.configuration);
+                                internalSession.open(messageChannel.port2, {
                                     role: Role.REALITY_VIEWER,
                                     uri: _this2.uri,
                                     title: "Empty"
@@ -22626,558 +23250,46 @@
                     } ]);
                     return EmptyRealityViewer;
                 }(RealityViewer));
-                _export("EmptyRealityViewer", EmptyRealityViewer = __decorate$7([ inject(SessionService, DeviceService, ViewService) ], EmptyRealityViewer));
-                __decorate$9 = undefined && undefined.__decorate || function(decorators, target, key, desc) {
+                _export("EmptyRealityViewer", EmptyRealityViewer = __decorate$10([ inject(SessionService, ContextService, ViewService, ViewportService), __metadata$10("design:paramtypes", [ typeof (_a$10 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$10 || Object, typeof (_b$10 = typeof ContextService !== "undefined" && ContextService) === "function" && _b$10 || Object, typeof (_c$7 = typeof ViewService !== "undefined" && ViewService) === "function" && _c$7 || Object, typeof (_d$7 = typeof ViewportService !== "undefined" && ViewportService) === "function" && _d$7 || Object, String ]) ], EmptyRealityViewer));
+                _get$1 = function get(object, property, receiver) {
+                    if (object === null) object = Function.prototype;
+                    var desc = Object.getOwnPropertyDescriptor(object, property);
+                    if (desc === undefined) {
+                        var parent = Object.getPrototypeOf(object);
+                        if (parent === null) {
+                            return undefined;
+                        } else {
+                            return get(parent, property, receiver);
+                        }
+                    } else if ("value" in desc) {
+                        return desc.value;
+                    } else {
+                        var getter = desc.get;
+                        if (getter === undefined) {
+                            return undefined;
+                        }
+                        return getter.call(receiver);
+                    }
+                };
+                __decorate$11 = undefined && undefined.__decorate || function(decorators, target, key, desc) {
                     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
                     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc); else for (var i = decorators.length - 1; i >= 0; i--) {
                         if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
                     }
                     return c > 3 && r && Object.defineProperty(target, key, r), r;
                 };
-                (function(VuforiaInitResult) {
-                    VuforiaInitResult[VuforiaInitResult["SUCCESS"] = 100] = "SUCCESS";
-                    VuforiaInitResult[VuforiaInitResult["INIT_ERROR"] = -1] = "INIT_ERROR";
-                    VuforiaInitResult[VuforiaInitResult["INIT_DEVICE_NOT_SUPPORTED"] = -2] = "INIT_DEVICE_NOT_SUPPORTED";
-                    VuforiaInitResult[VuforiaInitResult["INIT_NO_CAMERA_ACCESS"] = -3] = "INIT_NO_CAMERA_ACCESS";
-                    VuforiaInitResult[VuforiaInitResult["INIT_LICENSE_ERROR_MISSING_KEY"] = -4] = "INIT_LICENSE_ERROR_MISSING_KEY";
-                    VuforiaInitResult[VuforiaInitResult["INIT_LICENSE_ERROR_INVALID_KEY"] = -5] = "INIT_LICENSE_ERROR_INVALID_KEY";
-                    VuforiaInitResult[VuforiaInitResult["INIT_LICENSE_ERROR_NO_NETWORK_PERMANENT"] = -6] = "INIT_LICENSE_ERROR_NO_NETWORK_PERMANENT";
-                    VuforiaInitResult[VuforiaInitResult["INIT_LICENSE_ERROR_NO_NETWORK_TRANSIENT"] = -7] = "INIT_LICENSE_ERROR_NO_NETWORK_TRANSIENT";
-                    VuforiaInitResult[VuforiaInitResult["INIT_LICENSE_ERROR_CANCELED_KEY"] = -8] = "INIT_LICENSE_ERROR_CANCELED_KEY";
-                    VuforiaInitResult[VuforiaInitResult["INIT_LICENSE_ERROR_PRODUCT_TYPE_MISMATCH"] = -9] = "INIT_LICENSE_ERROR_PRODUCT_TYPE_MISMATCH";
-                    VuforiaInitResult[VuforiaInitResult["INIT_EXTERNAL_DEVICE_NOT_DETECTED"] = -10] = "INIT_EXTERNAL_DEVICE_NOT_DETECTED";
-                })(VuforiaInitResult || _export("VuforiaInitResult", VuforiaInitResult = {}));
-                (function(VuforiaHint) {
-                    VuforiaHint[VuforiaHint["MaxSimultaneousImageTargets"] = 0] = "MaxSimultaneousImageTargets";
-                    VuforiaHint[VuforiaHint["MaxSimultaneousObjectTargets"] = 1] = "MaxSimultaneousObjectTargets";
-                    VuforiaHint[VuforiaHint["DelayedLoadingObjectDatasets"] = 2] = "DelayedLoadingObjectDatasets";
-                })(VuforiaHint || _export("VuforiaHint", VuforiaHint = {}));
-                _export("VuforiaServiceDelegateBase", VuforiaServiceDelegateBase = function VuforiaServiceDelegateBase() {
-                    _classCallCheck(this, VuforiaServiceDelegateBase);
-                    this.stateUpdateEvent = new Event$$1();
-                });
-                _export("VuforiaServiceDelegate", VuforiaServiceDelegate = function(_VuforiaServiceDelega) {
-                    _inherits(VuforiaServiceDelegate, _VuforiaServiceDelega);
-                    function VuforiaServiceDelegate() {
-                        _classCallCheck(this, VuforiaServiceDelegate);
-                        return _possibleConstructorReturn(this, (VuforiaServiceDelegate.__proto__ || Object.getPrototypeOf(VuforiaServiceDelegate)).apply(this, arguments));
-                    }
-                    _createClass(VuforiaServiceDelegate, [ {
-                        key: "isAvailable",
-                        value: function isAvailable() {
-                            return false;
-                        }
-                    }, {
-                        key: "setHint",
-                        value: function setHint(hint, value) {
-                            return true;
-                        }
-                    }, {
-                        key: "decryptLicenseKey",
-                        value: function decryptLicenseKey(encryptedLicenseData, session) {
-                            return Promise.resolve(undefined);
-                        }
-                    }, {
-                        key: "init",
-                        value: function init(options) {
-                            return Promise.resolve(VuforiaInitResult.SUCCESS);
-                        }
-                    }, {
-                        key: "deinit",
-                        value: function deinit() {}
-                    }, {
-                        key: "cameraDeviceInitAndStart",
-                        value: function cameraDeviceInitAndStart() {
-                            return true;
-                        }
-                    }, {
-                        key: "cameraDeviceSetFlashTorchMode",
-                        value: function cameraDeviceSetFlashTorchMode(on) {
-                            return true;
-                        }
-                    }, {
-                        key: "objectTrackerInit",
-                        value: function objectTrackerInit() {
-                            return true;
-                        }
-                    }, {
-                        key: "objectTrackerCreateDataSet",
-                        value: function objectTrackerCreateDataSet(url) {
-                            return "";
-                        }
-                    }, {
-                        key: "objectTrackerDestroyDataSet",
-                        value: function objectTrackerDestroyDataSet(id) {
-                            return true;
-                        }
-                    }, {
-                        key: "objectTrackerActivateDataSet",
-                        value: function objectTrackerActivateDataSet(id) {
-                            return true;
-                        }
-                    }, {
-                        key: "objectTrackerDeactivateDataSet",
-                        value: function objectTrackerDeactivateDataSet(id) {
-                            return true;
-                        }
-                    }, {
-                        key: "dataSetFetch",
-                        value: function dataSetFetch(id) {
-                            return Promise.resolve(undefined);
-                        }
-                    }, {
-                        key: "dataSetLoad",
-                        value: function dataSetLoad(id) {
-                            return Promise.resolve();
-                        }
-                    } ]);
-                    return VuforiaServiceDelegate;
-                }(VuforiaServiceDelegateBase));
-                _export("VuforiaService", VuforiaService = function() {
-                    function VuforiaService(sessionService, focusService, delegate) {
-                        var _this2 = this;
-                        _classCallCheck(this, VuforiaService);
-                        this.sessionService = sessionService;
-                        this.focusService = focusService;
-                        this.delegate = delegate;
-                        this._sessionSwitcherCommandQueue = new CommandQueue();
-                        this._sessionCommandQueue = new WeakMap();
-                        this._sessionInitOptions = new WeakMap();
-                        this._sessionInitPromise = new WeakMap();
-                        this._sessionIsInitialized = new WeakMap();
-                        this._sessionCreatedDataSets = new WeakMap();
-                        this._sessionActivatedDataSets = new WeakMap();
-                        if (sessionService.isRealityManager) {
-                            this._sessionSwitcherCommandQueue.errorEvent.addEventListener(function(err) {
-                                _this2.sessionService.errorEvent.raiseEvent(err);
-                            });
-                            sessionService.connectEvent.addEventListener(function(session) {
-                                var commandQueue = new CommandQueue();
-                                commandQueue.errorEvent.addEventListener(function(err) {
-                                    _this2.sessionService.errorEvent.raiseEvent(err);
-                                    session.sendError(err);
-                                });
-                                _this2._sessionCommandQueue.set(session, commandQueue);
-                                var createdDataSets = new Set();
-                                _this2._sessionCreatedDataSets.set(session, createdDataSets);
-                                var activatedDataSets = new Set();
-                                _this2._sessionActivatedDataSets.set(session, activatedDataSets);
-                                session.on["ar.vuforia.isAvailable"] = function() {
-                                    return Promise.resolve({
-                                        available: delegate.isAvailable()
-                                    });
-                                };
-                                session.on["ar.vuforia.init"] = function(options) {
-                                    if (!delegate.isAvailable()) throw new Error("Vuforia is not supported");
-                                    if (_this2._sessionIsInitialized.get(session)) throw new Error("Vuforia has already been initialized");
-                                    if (!options.key && !options.encryptedLicenseData) throw new Error("Expected `encryptedLicenseData` field. You can encrypt your Vuforia license key at http://docs.argonjs.io/start/vuforia-pgp-encryptor");
-                                    var keyPromise = options.key ? Promise.resolve(options.key) : delegate.decryptLicenseKey(options.encryptedLicenseData, session);
-                                    return keyPromise.then(function(key) {
-                                        _this2._sessionInitOptions.set(session, {
-                                            key: key
-                                        });
-                                        var result = commandQueue.push(function() {
-                                            return _this2._init(session).then(function() {
-                                                _this2._sessionIsInitialized.set(session, true);
-                                            });
-                                        }, _this2._controllingSession === session);
-                                        if (_this2.focusService.session === session) {
-                                            _this2._setControllingSession(session);
-                                        }
-                                        _this2._sessionInitPromise.set(session, result);
-                                        return result;
-                                    });
-                                };
-                                session.on["ar.vuforia.objectTrackerCreateDataSet"] = function(_ref) {
-                                    var url = _ref.url;
-                                    return commandQueue.push(function() {
-                                        var id = delegate.objectTrackerCreateDataSet(url);
-                                        if (id) {
-                                            createdDataSets.add(id);
-                                            return Promise.resolve({
-                                                id: id
-                                            });
-                                        }
-                                        throw new Error("Unable to create DataSet");
-                                    }, _this2._controllingSession === session);
-                                };
-                                session.on["ar.vuforia.objectTrackerActivateDataSet"] = function(_ref2) {
-                                    var id = _ref2.id;
-                                    return commandQueue.push(function() {
-                                        if (delegate.objectTrackerActivateDataSet(id)) {
-                                            activatedDataSets.add(id);
-                                            session.send("ar.vuforia.objectTrackerActivateDataSetEvent", {
-                                                id: id
-                                            });
-                                            return;
-                                        }
-                                        throw new Error("Unable to activate DataSet (" + id + ")");
-                                    }, _this2._controllingSession === session);
-                                };
-                                session.on["ar.vuforia.objectTrackerDeactivateDataSet"] = function(_ref3) {
-                                    var id = _ref3.id;
-                                    return commandQueue.push(function() {
-                                        if (delegate.objectTrackerDeactivateDataSet(id)) {
-                                            activatedDataSets.delete(id);
-                                            session.send("ar.vuforia.objectTrackerDeactivateDataSetEvent", {
-                                                id: id
-                                            });
-                                            return;
-                                        }
-                                        throw new Error("Unable to deactivate DataSet (" + id + ")");
-                                    }, _this2._controllingSession === session);
-                                };
-                                session.on["ar.vuforia.dataSetFetch"] = function(_ref4) {
-                                    var id = _ref4.id;
-                                    return commandQueue.push(function() {
-                                        return delegate.dataSetFetch(id);
-                                    }, _this2._controllingSession === session);
-                                };
-                                session.on["ar.vuforia.dataSetLoad"] = function(_ref5) {
-                                    var id = _ref5.id;
-                                    return commandQueue.push(function() {
-                                        return delegate.dataSetLoad(id);
-                                    }, _this2._controllingSession === session);
-                                };
-                                session.closeEvent.addEventListener(function() {
-                                    if (_this2._controllingSession === session) {
-                                        commandQueue.clear();
-                                        commandQueue.push(function() {
-                                            _this2._cleanupSession(session);
-                                            setTimeout(function() {
-                                                _this2._ensureActiveSession();
-                                            }, 2e3);
-                                        }, true);
-                                    } else {
-                                        _this2._cleanupSession(session);
-                                    }
-                                });
-                            });
-                            focusService.sessionFocusEvent.addEventListener(function(_ref6) {
-                                var current = _ref6.current;
-                                if (current && _this2._sessionInitOptions.get(current)) {
-                                    _this2._setControllingSession(current);
-                                }
-                            });
-                        }
-                    }
-                    _createClass(VuforiaService, [ {
-                        key: "isAvailable",
-                        value: function isAvailable() {
-                            return this.sessionService.manager.request("ar.vuforia.isAvailable").then(function(message) {
-                                return message.available;
-                            });
-                        }
-                    }, {
-                        key: "initWithUnencryptedKey",
-                        value: function initWithUnencryptedKey(options, force) {
-                            var _this3 = this;
-                            if (!force) this.sessionService.ensureIsRealityManager();
-                            return this.sessionService.manager.request("ar.vuforia.init", options).then(function() {
-                                return new VuforiaAPI(_this3.sessionService.manager);
-                            });
-                        }
-                    }, {
-                        key: "init",
-                        value: function init(options) {
-                            var _this4 = this;
-                            if (!options.encryptedLicenseData || typeof options.encryptedLicenseData !== "string") throw new Error("options.encryptedLicenseData is required.");
-                            return this.sessionService.manager.request("ar.vuforia.init", options).then(function() {
-                                return new VuforiaAPI(_this4.sessionService.manager);
-                            });
-                        }
-                    }, {
-                        key: "_ensureActiveSession",
-                        value: function _ensureActiveSession() {
-                            console.log("VuforiaService: Ensuring an active session is in control.");
-                            if (this._controllingSession && this._controllingSession.isConnected) return;
-                            this._selectControllingSession();
-                        }
-                    }, {
-                        key: "_selectControllingSession",
-                        value: function _selectControllingSession() {
-                            var focusSession = this.focusService.session;
-                            if (focusSession && this._sessionInitOptions.get(focusSession)) {
-                                this._setControllingSession(focusSession);
-                                return;
-                            }
-                            var _iteratorNormalCompletion = true;
-                            var _didIteratorError = false;
-                            var _iteratorError = undefined;
-                            try {
-                                for (var _iterator = this.sessionService.managedSessions[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                                    var session = _step.value;
-                                    if (this._sessionInitOptions.get(session)) {
-                                        this._setControllingSession(session);
-                                        return;
-                                    }
-                                }
-                            } catch (err) {
-                                _didIteratorError = true;
-                                _iteratorError = err;
-                            } finally {
-                                try {
-                                    if (!_iteratorNormalCompletion && _iterator.return) {
-                                        _iterator.return();
-                                    }
-                                } finally {
-                                    if (_didIteratorError) {
-                                        throw _iteratorError;
-                                    }
-                                }
-                            }
-                            if (this._sessionInitOptions.get(this.sessionService.manager)) this._setControllingSession(this.sessionService.manager);
-                        }
-                    }, {
-                        key: "_setControllingSession",
-                        value: function _setControllingSession(session) {
-                            var _this5 = this;
-                            if (this._controllingSession === session) return;
-                            console.log("VuforiaService: Setting controlling session to " + session.uri);
-                            this._sessionSwitcherCommandQueue.clear();
-                            this._sessionSwitcherCommandQueue.push(function() {
-                                return _this5._pauseSession().then(function() {
-                                    return _this5._resumeSession(session);
-                                });
-                            }, true);
-                        }
-                    }, {
-                        key: "_resumeSession",
-                        value: function _resumeSession(session) {
-                            if (this._controllingSession) throw new Error("Attempted to resume a session while a session is still in control");
-                            if (session) console.log("VuforiaService: Resuming session " + session.uri);
-                            var initOptions = this._sessionInitOptions.get(session);
-                            if (!initOptions) {
-                                throw new Error("Attempted to resume a session without initialization options");
-                            }
-                            this._controllingSession = session;
-                            var commandQueue = this._sessionCommandQueue.get(session);
-                            if (this._sessionIsInitialized.get(session)) {
-                                return this._init(session).then(function() {
-                                    commandQueue.execute();
-                                }).catch(function(err) {
-                                    session.sendError(err);
-                                });
-                            } else {
-                                commandQueue.execute();
-                                return this._sessionInitPromise.get(session);
-                            }
-                        }
-                    }, {
-                        key: "_pauseSession",
-                        value: function _pauseSession() {
-                            var _this6 = this;
-                            var session = this._controllingSession;
-                            if (!session) return Promise.resolve(undefined);
-                            console.log("VuforiaService: Pausing session " + session.uri);
-                            var commandQueue = this._sessionCommandQueue.get(session);
-                            return commandQueue.push(function() {
-                                commandQueue.pause();
-                                _this6._controllingSession = undefined;
-                                return _this6._deinit(session);
-                            }, true);
-                        }
-                    }, {
-                        key: "_cleanupSession",
-                        value: function _cleanupSession(session) {
-                            var _this7 = this;
-                            if (!this._sessionInitOptions.has(session)) return;
-                            this._sessionInitOptions.delete(session);
-                            var createdDataSets = this._sessionCreatedDataSets.get(session);
-                            console.log("VuforiaService: Deactivating datasets for session " + session.uri);
-                            this._sessionActivatedDataSets.get(session).forEach(function(id) {
-                                _this7.delegate.objectTrackerDeactivateDataSet(id);
-                            });
-                            this._sessionActivatedDataSets.delete(session);
-                            console.log("VuforiaService: Destroying objects for session " + session.uri);
-                            createdDataSets.forEach(function(id) {
-                                _this7.delegate.objectTrackerDestroyDataSet(id);
-                            });
-                            this._sessionCreatedDataSets.delete(session);
-                        }
-                    }, {
-                        key: "_init",
-                        value: function _init(session) {
-                            var _this8 = this;
-                            console.log("Attempting to initialize vuforia for " + session.uri);
-                            var options = this._sessionInitOptions.get(session);
-                            return this.delegate.init(options).then(function(initResult) {
-                                if (initResult !== VuforiaInitResult.SUCCESS) {
-                                    throw new Error("Vuforia init failed: " + VuforiaInitResult[initResult]);
-                                }
-                                if (!_this8.delegate.objectTrackerInit()) {
-                                    throw new Error("Vuforia init failed: Unable to initialize ObjectTracker");
-                                }
-                                var success = true;
-                                _this8._sessionActivatedDataSets.get(session).forEach(function(id) {
-                                    success = success && _this8.delegate.objectTrackerActivateDataSet(id);
-                                    if (success) {
-                                        session.send("ar.vuforia.objectTrackerActivateDataSetEvent", {
-                                            id: id
-                                        });
-                                    }
-                                });
-                                if (!success) {
-                                    throw new Error("Vuforia init failed: Unable to restore active datasets");
-                                }
-                                if (!_this8.delegate.cameraDeviceInitAndStart()) {
-                                    throw new Error("Vuforia init failed: Unable to complete initialization");
-                                }
-                                console.log("Vuforia init success");
-                            }).catch(function(err) {
-                                console.log("Vuforia init fail: " + err.message);
-                                _this8._sessionInitOptions.delete(session);
-                                _this8._sessionIsInitialized.set(session, false);
-                                _this8._deinit(session);
-                                _this8._ensureActiveSession();
-                                throw err;
-                            });
-                        }
-                    }, {
-                        key: "_deinit",
-                        value: function _deinit(session) {
-                            var _this9 = this;
-                            var activatedDataSets = this._sessionActivatedDataSets.get(session);
-                            if (activatedDataSets) {
-                                activatedDataSets.forEach(function(id) {
-                                    _this9.delegate.objectTrackerDeactivateDataSet(id);
-                                    session.send("ar.vuforia.objectTrackerDeactivateDataSetEvent", {
-                                        id: id
-                                    });
-                                });
-                            }
-                            this.delegate.deinit();
-                        }
-                    } ]);
-                    return VuforiaService;
-                }());
-                _export("VuforiaService", VuforiaService = __decorate$9([ inject(SessionService, FocusService, VuforiaServiceDelegate) ], VuforiaService));
-                _export("VuforiaAPI", VuforiaAPI = function VuforiaAPI(manager) {
-                    _classCallCheck(this, VuforiaAPI);
-                    this.objectTracker = new VuforiaObjectTracker(manager);
-                });
-                _export("VuforiaTracker", VuforiaTracker = function VuforiaTracker() {
-                    _classCallCheck(this, VuforiaTracker);
-                });
-                _export("VuforiaObjectTracker", VuforiaObjectTracker = function(_VuforiaTracker) {
-                    _inherits(VuforiaObjectTracker, _VuforiaTracker);
-                    function VuforiaObjectTracker(manager) {
-                        _classCallCheck(this, VuforiaObjectTracker);
-                        var _this10 = _possibleConstructorReturn(this, (VuforiaObjectTracker.__proto__ || Object.getPrototypeOf(VuforiaObjectTracker)).call(this));
-                        _this10.manager = manager;
-                        _this10._dataSetMap = new Map();
-                        _this10.dataSetActivateEvent = new Event$$1();
-                        _this10.dataSetDeactivateEvent = new Event$$1();
-                        manager.on["ar.vuforia.objectTrackerActivateDataSetEvent"] = function(_ref7) {
-                            var id = _ref7.id;
-                            var dataSet = _this10._dataSetMap.get(id);
-                            dataSet._onActivate();
-                            _this10.dataSetActivateEvent.raiseEvent(dataSet);
-                        };
-                        manager.on["ar.vuforia.objectTrackerDeactivateDataSetEvent"] = function(_ref8) {
-                            var id = _ref8.id;
-                            var dataSet = _this10._dataSetMap.get(id);
-                            dataSet._onDeactivate();
-                            _this10.dataSetDeactivateEvent.raiseEvent(dataSet);
-                        };
-                        return _this10;
-                    }
-                    _createClass(VuforiaObjectTracker, [ {
-                        key: "createDataSet",
-                        value: function createDataSet(url) {
-                            var _this11 = this;
-                            if (url && window.document) {
-                                url = resolveURL(url);
-                            }
-                            return this.manager.request("ar.vuforia.objectTrackerCreateDataSet", {
-                                url: url
-                            }).then(function(message) {
-                                var dataSet = new VuforiaDataSet(message.id, _this11.manager);
-                                _this11._dataSetMap.set(message.id, dataSet);
-                                return dataSet;
-                            });
-                        }
-                    }, {
-                        key: "activateDataSet",
-                        value: function activateDataSet(dataSet) {
-                            return this.manager.request("ar.vuforia.objectTrackerActivateDataSet", {
-                                id: dataSet.id
-                            });
-                        }
-                    }, {
-                        key: "deactivateDataSet",
-                        value: function deactivateDataSet(dataSet) {
-                            return this.manager.request("ar.vuforia.objectTrackerDeactivateDataSet", {
-                                id: dataSet.id
-                            });
-                        }
-                    } ]);
-                    return VuforiaObjectTracker;
-                }(VuforiaTracker));
-                _export("VuforiaDataSet", VuforiaDataSet = function() {
-                    function VuforiaDataSet(id, manager) {
-                        _classCallCheck(this, VuforiaDataSet);
-                        this.id = id;
-                        this.manager = manager;
-                        this._isActive = false;
-                    }
-                    _createClass(VuforiaDataSet, [ {
-                        key: "_onActivate",
-                        value: function _onActivate() {
-                            this._isActive = true;
-                        }
-                    }, {
-                        key: "_onDeactivate",
-                        value: function _onDeactivate() {
-                            this._isActive = false;
-                        }
-                    }, {
-                        key: "fetch",
-                        value: function fetch() {
-                            return this.manager.request("ar.vuforia.dataSetFetch", {
-                                id: this.id
-                            }).then(function() {});
-                        }
-                    }, {
-                        key: "load",
-                        value: function load() {
-                            var _this12 = this;
-                            return this.manager.request("ar.vuforia.dataSetLoad", {
-                                id: this.id
-                            }).then(function(trackables) {
-                                _this12._trackables = trackables;
-                                return trackables;
-                            });
-                        }
-                    }, {
-                        key: "isActive",
-                        value: function isActive() {
-                            return this._isActive;
-                        }
-                    }, {
-                        key: "getTrackables",
-                        value: function getTrackables() {
-                            return this._trackables;
-                        }
-                    } ]);
-                    return VuforiaDataSet;
-                }());
-                __decorate$8 = undefined && undefined.__decorate || function(decorators, target, key, desc) {
-                    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-                    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc); else for (var i = decorators.length - 1; i >= 0; i--) {
-                        if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-                    }
-                    return c > 3 && r && Object.defineProperty(target, key, r), r;
+                __metadata$11 = undefined && undefined.__metadata || function(k, v) {
+                    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
                 };
                 _export("LiveRealityViewer", LiveRealityViewer = function(_RealityViewer) {
                     _inherits(LiveRealityViewer, _RealityViewer);
-                    function LiveRealityViewer(sessionService, vuforiaDelegate, viewService, deviceService, uri) {
+                    function LiveRealityViewer(sessionService, viewportService, viewService, contextService, uri) {
                         _classCallCheck(this, LiveRealityViewer);
-                        var _this = _possibleConstructorReturn(this, (LiveRealityViewer.__proto__ || Object.getPrototypeOf(LiveRealityViewer)).call(this, sessionService, uri));
+                        var _this = _possibleConstructorReturn(this, (LiveRealityViewer.__proto__ || Object.getPrototypeOf(LiveRealityViewer)).call(this, uri));
                         _this.sessionService = sessionService;
-                        _this.vuforiaDelegate = vuforiaDelegate;
+                        _this.viewportService = viewportService;
                         _this.viewService = viewService;
-                        _this.deviceService = deviceService;
+                        _this.contextService = contextService;
                         _this.uri = uri;
                         if (typeof document !== "undefined") {
                             _this.settingsIframe = document.createElement("iframe");
@@ -23192,38 +23304,48 @@
                             _this.videoElement.controls = false;
                             _this.videoElement.autoplay = true;
                             _this.videoElement.style.display = "none";
-                            var viewElement = _this.viewService.element;
+                            var viewElement = _this.viewportService.element;
                             viewElement.insertBefore(_this.settingsIframe, viewElement.firstChild);
                             viewElement.insertBefore(_this.videoElement, viewElement.firstChild);
                             _this.canvas = document.createElement("canvas");
                             _this.context = _this.canvas.getContext("2d");
+                            window.addEventListener("message", function(event) {
+                                var origin = event.origin;
+                                if (origin === "http://argonjs.io") {
+                                    _this.videoFov = event.data;
+                                }
+                            });
                         }
+                        _this.presentChangeEvent.addEventListener(function() {
+                            if (typeof document !== "undefined") {
+                                _this.videoElement.style.display = _this.isPresenting ? "initial" : "none";
+                            }
+                        });
                         return _this;
                     }
                     _createClass(LiveRealityViewer, [ {
                         key: "destroy",
                         value: function destroy() {
-                            this.settingsIframe.remove();
-                            this.videoElement.remove();
-                            this.canvas.remove();
+                            _get$1(LiveRealityViewer.prototype.__proto__ || Object.getPrototypeOf(LiveRealityViewer.prototype), "destroy", this).call(this);
+                            if (typeof document !== "undefined") {
+                                this.settingsIframe.remove();
+                                this.videoElement.remove();
+                                this.canvas.remove();
+                            }
                         }
                     }, {
-                        key: "setPresenting",
-                        value: function setPresenting(foo) {
-                            this.videoElement.style.display = foo ? "initial" : "none";
-                        }
-                    }, {
-                        key: "load",
-                        value: function load() {
+                        key: "setupInternalSession",
+                        value: function setupInternalSession(session) {
                             var _this2 = this;
-                            _get$1(LiveRealityViewer.prototype.__proto__ || Object.getPrototypeOf(LiveRealityViewer.prototype), "load", this).call(this);
-                            var realitySession = this.session;
-                            var remoteRealitySession = this.sessionService.createSessionPort(this.uri);
-                            remoteRealitySession.on["ar.device.state"] = function() {};
-                            remoteRealitySession.on["ar.view.uievent"] = function() {};
-                            remoteRealitySession.on["ar.context.update"] = function() {};
-                            remoteRealitySession.on["ar.reality.connect"] = function() {};
-                            remoteRealitySession.connectEvent.addEventListener(function() {
+                            session.on["ar.device.state"] = function() {};
+                            session.on["ar.visibility.state"] = function() {};
+                            session.on["ar.focus.state"] = function() {};
+                            session.on["ar.viewport.presentationMode"] = function() {};
+                            session.on["ar.viewport.uievent"] = function() {};
+                            session.on["ar.view.suggestedViewState"] = function() {};
+                            session.on["ar.context.update"] = function() {};
+                            session.on["ar.reality.connect"] = function() {};
+                            session.connectEvent.addEventListener(function() {
                                 if (_this2.videoElement) {
                                     (function() {
                                         var videoElement = _this2.videoElement;
@@ -23233,66 +23355,72 @@
                                             audio: false,
                                             video: true
                                         }).then(function(videoStream) {
-                                            videoElement.src = window.URL.createObjectURL(videoStream);
+                                            var stopVideoStream = function stopVideoStream() {
+                                                var _iteratorNormalCompletion = true;
+                                                var _didIteratorError = false;
+                                                var _iteratorError = undefined;
+                                                try {
+                                                    for (var _iterator = videoStream.getTracks()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                                                        var t = _step.value;
+                                                        t.stop();
+                                                    }
+                                                } catch (err) {
+                                                    _didIteratorError = true;
+                                                    _iteratorError = err;
+                                                } finally {
+                                                    try {
+                                                        if (!_iteratorNormalCompletion && _iterator.return) {
+                                                            _iterator.return();
+                                                        }
+                                                    } finally {
+                                                        if (_didIteratorError) {
+                                                            throw _iteratorError;
+                                                        }
+                                                    }
+                                                }
+                                            };
+                                            if (session.isConnected) {
+                                                videoElement.src = window.URL.createObjectURL(videoStream);
+                                                session.closeEvent.addEventListener(stopVideoStream);
+                                            } else {
+                                                stopVideoStream();
+                                            }
                                         }).catch(function(error) {
-                                            remoteRealitySession.errorEvent.raiseEvent(error);
+                                            session.errorEvent.raiseEvent(error);
                                         });
-                                        var deviceService = _this2.deviceService;
+                                        var viewService = _this2.viewService;
                                         var lastFrameTime = -1;
                                         var update = function update(time) {
-                                            if (realitySession.isConnected) _this2.deviceService.requestFrame(update); else return;
+                                            if (session.isConnected) viewService.requestAnimationFrame(update); else return;
+                                            var suggestedViewState = viewService.suggestedViewState;
+                                            if (!suggestedViewState) return;
                                             if (videoElement.currentTime != lastFrameTime) {
                                                 lastFrameTime = videoElement.currentTime;
-                                                var viewState = {
-                                                    time: time,
-                                                    pose: getSerializedEntityPose(deviceService.eye, time),
-                                                    geolocationAccuracy: deviceService.geolocationAccuracy,
-                                                    altitudeAccuracy: deviceService.altitudeAccuracy,
-                                                    compassAccuracy: deviceService.compassAccuracy,
-                                                    viewport: deviceService.viewport,
-                                                    subviews: deviceService.subviews
-                                                };
-                                                remoteRealitySession.send("ar.reality.viewState", viewState);
+                                                var frameState = _this2.contextService.createFrameState(time, suggestedViewState.viewport, suggestedViewState.subviews, viewService.eye);
+                                                session.send("ar.reality.frameState", frameState);
                                             }
                                         };
-                                        _this2.deviceService.requestFrame(update);
+                                        viewService.requestAnimationFrame(update);
                                     })();
                                 }
-                                _this2.vuforiaDelegate.videoEnabled = true;
-                                _this2.vuforiaDelegate.trackingEnabled = true;
-                                var remove = _this2.vuforiaDelegate.stateUpdateEvent.addEventListener(function(viewState) {
-                                    remoteRealitySession.send("ar.reality.viewState", viewState);
-                                });
-                                remoteRealitySession.closeEvent.addEventListener(function() {
-                                    remove();
-                                    _this2.vuforiaDelegate.videoEnabled = false;
-                                    _this2.vuforiaDelegate.trackingEnabled = false;
-                                });
                             });
-                            if (typeof document !== "undefined" && typeof navigator !== "undefined") {
-                                window.addEventListener("message", function(event) {
-                                    var origin = event.origin;
-                                    if (origin === "http://argonjs.io") {
-                                        _this2.videoFov = event.data;
-                                    }
-                                });
-                                var mediaDevices = navigator.mediaDevices;
-                                var getUserMedia = (mediaDevices.getUserMedia || mediaDevices["mozGetUserMedia"] || mediaDevices["msGetUserMedia"] || mediaDevices["webkitGetUserMedia"]).bind(mediaDevices);
-                                getUserMedia({
-                                    audio: false,
-                                    video: true
-                                }).then(function(videoStream) {
-                                    _this2.videoElement.src = window.URL.createObjectURL(videoStream);
-                                }).catch(function(error) {
-                                    remoteRealitySession.errorEvent.raiseEvent(error);
-                                });
-                            }
+                        }
+                    }, {
+                        key: "load",
+                        value: function load() {
+                            var _this3 = this;
+                            var session = this.sessionService.addManagedSessionPort(this.uri);
+                            session.connectEvent.addEventListener(function() {
+                                _this3.connectEvent.raiseEvent(session);
+                            });
+                            var internalSession = this.sessionService.createSessionPort(this.uri);
+                            this.setupInternalSession(internalSession);
                             Promise.resolve().then(function() {
-                                var messageChannel = _this2.sessionService.createSynchronousMessageChannel();
-                                realitySession.open(messageChannel.port1, _this2.sessionService.configuration);
-                                remoteRealitySession.open(messageChannel.port2, {
+                                var messageChannel = _this3.sessionService.createSynchronousMessageChannel();
+                                session.open(messageChannel.port1, _this3.sessionService.configuration);
+                                internalSession.open(messageChannel.port2, {
                                     role: Role.REALITY_VIEWER,
-                                    title: "Local"
+                                    title: "Live"
                                 });
                             });
                         }
@@ -23317,21 +23445,24 @@
                     } ]);
                     return LiveRealityViewer;
                 }(RealityViewer));
-                _export("LiveRealityViewer", LiveRealityViewer = __decorate$8([ inject(SessionService, VuforiaServiceDelegate, ViewService, DeviceService) ], LiveRealityViewer));
-                __decorate$10 = undefined && undefined.__decorate || function(decorators, target, key, desc) {
+                _export("LiveRealityViewer", LiveRealityViewer = __decorate$11([ inject(SessionService, ViewportService, ViewService, ContextService), __metadata$11("design:paramtypes", [ typeof (_a$11 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$11 || Object, typeof (_b$11 = typeof ViewportService !== "undefined" && ViewportService) === "function" && _b$11 || Object, typeof (_c$8 = typeof ViewService !== "undefined" && ViewService) === "function" && _c$8 || Object, typeof (_d$8 = typeof ContextService !== "undefined" && ContextService) === "function" && _d$8 || Object, String ]) ], LiveRealityViewer));
+                __decorate$12 = undefined && undefined.__decorate || function(decorators, target, key, desc) {
                     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
                     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc); else for (var i = decorators.length - 1; i >= 0; i--) {
                         if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
                     }
                     return c > 3 && r && Object.defineProperty(target, key, r), r;
                 };
+                __metadata$12 = undefined && undefined.__metadata || function(k, v) {
+                    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+                };
                 _export("HostedRealityViewer", HostedRealityViewer = function(_RealityViewer) {
                     _inherits(HostedRealityViewer, _RealityViewer);
-                    function HostedRealityViewer(sessionService, viewService, uri) {
+                    function HostedRealityViewer(sessionService, viewportService, uri) {
                         _classCallCheck(this, HostedRealityViewer);
-                        var _this = _possibleConstructorReturn(this, (HostedRealityViewer.__proto__ || Object.getPrototypeOf(HostedRealityViewer)).call(this, sessionService, uri));
+                        var _this = _possibleConstructorReturn(this, (HostedRealityViewer.__proto__ || Object.getPrototypeOf(HostedRealityViewer)).call(this, uri));
                         _this.sessionService = sessionService;
-                        _this.viewService = viewService;
+                        _this.viewportService = viewportService;
                         _this.uri = uri;
                         _this.type = "hosted";
                         if (typeof document !== "undefined" && document.createElement) {
@@ -23342,51 +23473,60 @@
                             iframeElement.height = "100%";
                             iframeElement.style.position = "absolute";
                             iframeElement.style.display = "none";
-                            var viewElement = _this.viewService.element;
+                            var viewElement = _this.viewportService.element;
                             viewElement.insertBefore(iframeElement, viewElement.firstChild);
+                            _this.presentChangeEvent.addEventListener(function() {
+                                _this.iframeElement.style.display = _this.isPresenting ? "initial" : "none";
+                            });
                         }
                         return _this;
                     }
                     _createClass(HostedRealityViewer, [ {
                         key: "destroy",
                         value: function destroy() {
+                            _get$1(HostedRealityViewer.prototype.__proto__ || Object.getPrototypeOf(HostedRealityViewer.prototype), "destroy", this).call(this);
                             if (this.iframeElement) {
                                 this.iframeElement.remove();
                             }
                         }
                     }, {
-                        key: "setPresenting",
-                        value: function setPresenting(foo) {
-                            this.iframeElement.style.display = foo ? "initial" : "none";
-                        }
-                    }, {
                         key: "load",
                         value: function load() {
                             var _this2 = this;
-                            _get$1(HostedRealityViewer.prototype.__proto__ || Object.getPrototypeOf(HostedRealityViewer.prototype), "load", this).call(this);
-                            this.iframeElement.src = "";
-                            this.iframeElement.src = this.uri;
-                            var handleConnectMessage = function handleConnectMessage(ev) {
-                                if (ev.data.type !== "ARGON_SESSION") return;
-                                var name = ev.data.name;
-                                var messagePort = ev.ports && ev.ports[0];
-                                if (!messagePort) throw new Error("Received an ARGON_SESSION message without a MessagePort object");
-                                if (name !== _this2.iframeElement.name) return;
-                                window.removeEventListener("message", handleConnectMessage);
-                                _this2.session.open(messagePort, _this2.sessionService.configuration);
-                            };
-                            window.addEventListener("message", handleConnectMessage);
+                            if (typeof document !== "undefined" && document.createElement) {
+                                (function() {
+                                    var session = _this2.sessionService.addManagedSessionPort(_this2.uri);
+                                    session.connectEvent.addEventListener(function() {
+                                        _this2.connectEvent.raiseEvent(session);
+                                    });
+                                    var handleConnectMessage = function handleConnectMessage(ev) {
+                                        if (ev.data.type !== "ARGON_SESSION") return;
+                                        var name = ev.data.name;
+                                        var messagePort = ev.ports && ev.ports[0];
+                                        if (!messagePort) throw new Error("Received an ARGON_SESSION message without a MessagePort object");
+                                        if (name !== _this2.iframeElement.name) return;
+                                        window.removeEventListener("message", handleConnectMessage);
+                                        session.open(messagePort, _this2.sessionService.configuration);
+                                    };
+                                    window.addEventListener("message", handleConnectMessage);
+                                    _this2.iframeElement.src = "";
+                                    _this2.iframeElement.src = _this2.uri;
+                                })();
+                            }
                         }
                     } ]);
                     return HostedRealityViewer;
                 }(RealityViewer));
-                _export("HostedRealityViewer", HostedRealityViewer = __decorate$10([ inject(SessionService, ViewService) ], HostedRealityViewer));
-                __decorate$5 = undefined && undefined.__decorate || function(decorators, target, key, desc) {
+                _export("HostedRealityViewer", HostedRealityViewer = __decorate$12([ inject(SessionService, ViewportService), __metadata$12("design:paramtypes", [ typeof (_a$12 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$12 || Object, typeof (_b$12 = typeof ViewportService !== "undefined" && ViewportService) === "function" && _b$12 || Object, String ]) ], HostedRealityViewer));
+                __decorate$9 = undefined && undefined.__decorate || function(decorators, target, key, desc) {
                     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
                     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc); else for (var i = decorators.length - 1; i >= 0; i--) {
                         if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
                     }
                     return c > 3 && r && Object.defineProperty(target, key, r), r;
+                };
+                __metadata$9 = undefined && undefined.__metadata || function(k, v) {
+                    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
                 };
                 _export("RealityViewerFactory", RealityViewerFactory = function() {
                     function RealityViewerFactory(_createEmptyReality, _createLiveReality, _createHostedReality) {
@@ -23400,102 +23540,33 @@
                         value: function createRealityViewer(uri) {
                             switch (RealityViewer.getType(uri)) {
                               case RealityViewer.EMPTY:
-                                var realityViewer = this._createEmptyReality();
-                                realityViewer.uri = uri;
-                                return realityViewer;
+                                return this._createEmptyReality(uri);
 
                               case RealityViewer.LIVE:
-                                var realityViewer = this._createLiveReality();
-                                realityViewer.uri = uri;
-                                return realityViewer;
+                                return this._createLiveReality(uri);
 
                               case "hosted":
-                                var realityViewer = this._createHostedReality();
-                                realityViewer.uri = uri;
-                                return realityViewer;
+                                return this._createHostedReality(uri);
 
                               default:
-                                throw new Error("Unsupported Reality Viewer URI: " + uri);
+                                throw new Error("Unsupported Reality Viewer: " + uri);
                             }
                         }
                     } ]);
                     return RealityViewerFactory;
                 }());
-                _export("RealityViewerFactory", RealityViewerFactory = __decorate$5([ inject(Factory.of(EmptyRealityViewer), Factory.of(LiveRealityViewer), Factory.of(HostedRealityViewer)) ], RealityViewerFactory));
+                _export("RealityViewerFactory", RealityViewerFactory = __decorate$9([ inject(Factory.of(EmptyRealityViewer), Factory.of(LiveRealityViewer), Factory.of(HostedRealityViewer)), __metadata$9("design:paramtypes", [ Object, Object, Object ]) ], RealityViewerFactory));
                 _export("RealityService", RealityService = function() {
-                    function RealityService(sessionService, contextService, focusService, viewService, deviceService, realityViewerFactor) {
+                    function RealityService(sessionService, contextService) {
                         var _this = this;
                         _classCallCheck(this, RealityService);
                         this.sessionService = sessionService;
                         this.contextService = contextService;
-                        this.focusService = focusService;
-                        this.viewService = viewService;
-                        this.deviceService = deviceService;
-                        this.realityViewerFactor = realityViewerFactor;
-                        this._viewStateEvent = new Event$$1();
-                        this._connectEvent = new Event$$1();
-                        this._changeEvent = new Event$$1();
-                        this._installedEvent = new Event$$1();
-                        this._uninstalledEvent = new Event$$1();
-                        this._geoposeSubscribers = new Set();
-                        this._viewerByURI = new Map();
-                        this._installersByURI = new Map();
-                        this._viewStateEvent.addEventListener(function(viewState) {
-                            if (_this.sessionService.isRealityViewer) {
-                                if (_this.sessionService.manager.isConnected) _this.sessionService.manager.send("ar.reality.viewState", viewState);
-                                viewState.reality = "self";
-                            }
-                            _this.deviceService.processViewState(viewState);
-                            _this.contextService.processViewState(viewState);
-                        });
-                        if (sessionService.isRealityManager) {
-                            sessionService.manager.connectEvent.addEventListener(function() {
-                                setTimeout(function() {
-                                    if (!_this._current && _this.default) _this._request(_this.sessionService.manager);
-                                });
-                            });
-                            this.viewService.forwardedUIEvent.addEventListener(function(uievent) {
-                                var viewer = _this._viewerByURI.get(_this.current);
-                                if (viewer) viewService.sendUIEventToSession(uievent, viewer.session);
-                            });
-                        } else {
-                            this.contextService.frameStateEvent.addEventListener(function(frameState) {
-                                _this._setPresentingReality(frameState.view.reality);
-                            });
-                        }
-                        sessionService.connectEvent.addEventListener(function(session) {
-                            if (!Role.isRealityViewer(session.info.role)) {
-                                session.on["ar.reality.install"] = function(_ref) {
-                                    var uri = _ref.uri;
-                                    return _this._install(session, uri);
-                                };
-                                session.on["ar.reality.uninstall"] = function(_ref2) {
-                                    var uri = _ref2.uri;
-                                    return _this._uninstall(session, uri);
-                                };
-                                session.on["ar.reality.request"] = function(_ref3) {
-                                    var options = _ref3.options;
-                                    return _this._request(session, options);
-                                };
-                                session.on["ar.reality.desired"] = function(message) {
-                                    var reality = message.reality;
-                                    if (reality) {
-                                        if (reality["type"]) {
-                                            var type = reality["type"];
-                                            reality.uri = reality.uri || "reality:" + type;
-                                            if (type === "hosted") reality.uri = reality["url"];
-                                        }
-                                    }
-                                    _this._request(session, reality);
-                                };
-                            }
-                            session.closeEvent.addEventListener(function() {
-                                _this._geoposeSubscribers.delete(session);
-                                _this._checkGeoposeNeeded();
-                            });
-                        });
-                        sessionService.manager.on["ar.reality.connect"] = function(_ref4) {
-                            var id = _ref4.id;
+                        this._connectEvent = new Event();
+                        this._changeEvent = new Event();
+                        this.default = RealityViewer.EMPTY;
+                        sessionService.manager.on["ar.reality.connect"] = function(_ref) {
+                            var id = _ref.id;
                             var realityControlSession = _this.sessionService.createSessionPort(id);
                             var messageChannel = _this.sessionService.createSynchronousMessageChannel();
                             var ROUTE_MESSAGE_KEY = "ar.reality.message.route." + id;
@@ -23520,58 +23591,168 @@
                             });
                             realityControlSession.open(messageChannel.port2, _this.sessionService.configuration);
                         };
+                        var i = 0;
+                        this.contextService.frameStateEvent.addEventListener(function(frameState) {
+                            if (sessionService.isRealityViewer && sessionService.manager.isConnected) {
+                                if (sessionService.manager.version[0] === 0) {
+                                    var view = frameState["view"] = frameState["view"] || {};
+                                    view.pose = frameState.entities["ar.eye"];
+                                    view.viewport = frameState.viewport;
+                                    view.subviews = frameState.subviews;
+                                    for (var _i = 0; _i < view.subviews.length; _i++) {
+                                        var s = view.subviews[_i];
+                                        s["frustum"] = decomposePerspectiveProjectionMatrix(s.projectionMatrix, s["frustum"] || {});
+                                    }
+                                    delete frameState.entities["ar.eye"];
+                                    delete frameState.viewport;
+                                    delete frameState.subviews;
+                                    i++ % 2 === 0 && sessionService.manager.send("ar.reality.frameState", frameState);
+                                    frameState.entities["ar.eye"] = view.pose;
+                                    frameState.viewport = view.viewport;
+                                    frameState.subviews = view.subviews;
+                                } else {
+                                    sessionService.manager.send("ar.reality.frameState", frameState);
+                                }
+                            }
+                            var current = frameState.reality;
+                            var previous = _this._current;
+                            if (previous !== current) {
+                                _this.changeEvent.raiseEvent({
+                                    previous: previous,
+                                    current: current
+                                });
+                            }
+                        });
                     }
                     _createClass(RealityService, [ {
-                        key: "publishFrame",
-                        value: function publishFrame(state) {
-                            throw new Error("publishFrame is deprecated. Use publishViewState()");
-                        }
-                    }, {
-                        key: "publishViewState",
-                        value: function publishViewState(view) {
-                            this.sessionService.ensureIsRealityViewer();
-                            this._viewStateEvent.raiseEvent(view);
-                        }
-                    }, {
                         key: "install",
                         value: function install(uri) {
-                            this.sessionService.ensureNotRealityViewer();
+                            if (this.sessionService.manager.version[0] >= 1 !== true) return Promise.reject(new Error("Not supported"));
                             return this.sessionService.manager.request("ar.reality.install", {
                                 uri: uri
                             });
                         }
                     }, {
-                        key: "_install",
-                        value: function _install(session, uri) {
-                            var _this2 = this;
+                        key: "uninstall",
+                        value: function uninstall(uri) {
+                            if (this.sessionService.manager.version[0] >= 1 !== true) return Promise.reject(new Error("Not supported"));
+                            return this.sessionService.manager.request("ar.reality.uninstall", {
+                                uri: uri
+                            });
+                        }
+                    }, {
+                        key: "request",
+                        value: function request(uri) {
+                            if (this.sessionService.manager.version[0] >= 1 !== true) return this.sessionService.manager.request("ar.reality.desired", {
+                                reality: {
+                                    uri: uri
+                                }
+                            });
+                            return this.sessionService.manager.request("ar.reality.request", {
+                                uri: uri
+                            });
+                        }
+                    }, {
+                        key: "setDesired",
+                        value: function setDesired(reality) {
+                            this.request(reality ? reality.uri : RealityViewer.DEFAULT);
+                        }
+                    }, {
+                        key: "connectEvent",
+                        get: function get() {
+                            return this._connectEvent;
+                        }
+                    }, {
+                        key: "changeEvent",
+                        get: function get() {
+                            return this._changeEvent;
+                        }
+                    }, {
+                        key: "current",
+                        get: function get() {
+                            return this._current;
+                        }
+                    } ]);
+                    return RealityService;
+                }());
+                __decorate$9([ deprecated$1("request"), __metadata$9("design:type", Function), __metadata$9("design:paramtypes", [ Object ]), __metadata$9("design:returntype", void 0) ], RealityService.prototype, "setDesired", null);
+                _export("RealityService", RealityService = __decorate$9([ autoinject(), __metadata$9("design:paramtypes", [ typeof (_a$9 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$9 || Object, typeof (_b$9 = typeof ContextService !== "undefined" && ContextService) === "function" && _b$9 || Object ]) ], RealityService));
+                _export("RealityServiceProvider", RealityServiceProvider = function() {
+                    function RealityServiceProvider(sessionService, realityService, contextService, viewportServiceProvider, visibilityServiceProvider, focusServiceProvider, realityViewerFactory) {
+                        var _this2 = this;
+                        _classCallCheck(this, RealityServiceProvider);
+                        this.sessionService = sessionService;
+                        this.realityService = realityService;
+                        this.contextService = contextService;
+                        this.viewportServiceProvider = viewportServiceProvider;
+                        this.visibilityServiceProvider = visibilityServiceProvider;
+                        this.focusServiceProvider = focusServiceProvider;
+                        this.realityViewerFactory = realityViewerFactory;
+                        this.installedEvent = new Event();
+                        this.uninstalledEvent = new Event();
+                        this._viewerByURI = new Map();
+                        this._installersByURI = new Map();
+                        sessionService.ensureIsRealityManager();
+                        sessionService.manager.connectEvent.addEventListener(function() {
+                            setTimeout(function() {
+                                if (!_this2._presentingRealityViewer && _this2.realityService.default) _this2._handleRequest(_this2.sessionService.manager, {
+                                    uri: _this2.realityService.default
+                                });
+                            });
+                        });
+                        sessionService.manager.closeEvent.addEventListener(function() {
+                            _this2._viewerByURI.forEach(function(v) {
+                                v.destroy();
+                            });
+                        });
+                        sessionService.connectEvent.addEventListener(function(session) {
+                            if (!Role.isRealityViewer(session.info.role)) {
+                                session.on["ar.reality.install"] = function(_ref2) {
+                                    var uri = _ref2.uri;
+                                    return _this2._handleInstall(session, uri);
+                                };
+                                session.on["ar.reality.uninstall"] = function(_ref3) {
+                                    var uri = _ref3.uri;
+                                    return _this2._handleUninstall(session, uri);
+                                };
+                                session.on["ar.reality.request"] = function(message) {
+                                    return _this2._handleRequest(session, message);
+                                };
+                                session.on["ar.reality.desired"] = function(message) {
+                                    var reality = message.reality;
+                                    if (reality) {
+                                        if (reality["type"]) {
+                                            var type = reality["type"];
+                                            reality.uri = reality.uri || "reality:" + type;
+                                            if (type === "hosted") reality.uri = reality["url"];
+                                        }
+                                    }
+                                    _this2._handleRequest(session, {
+                                        uri: reality.uri
+                                    });
+                                };
+                            }
+                        });
+                        this.viewportServiceProvider.forwardedUIEvent.addEventListener(function(uievent) {
+                            var session = _this2._presentingRealityViewer && _this2._presentingRealityViewer.session;
+                            if (session) viewportServiceProvider.sendUIEventToSession(uievent, session);
+                        });
+                    }
+                    _createClass(RealityServiceProvider, [ {
+                        key: "_handleInstall",
+                        value: function _handleInstall(session, uri) {
+                            var _this3 = this;
                             var installers = this._installersByURI.get(uri);
-                            this._installersByURI.set(uri, installers);
                             if (installers) {
                                 installers.add(session);
                             } else {
                                 (function() {
-                                    var viewer = _this2.realityViewerFactor.createRealityViewer(uri);
-                                    _this2._viewerByURI.set(uri, viewer);
+                                    var viewer = _this3.realityViewerFactory.createRealityViewer(uri);
+                                    _this3._viewerByURI.set(uri, viewer);
                                     installers = new Set();
                                     installers.add(session);
-                                    _this2._installersByURI.set(uri, installers);
-                                    viewer.load();
-                                    var viewerSession = viewer.session;
-                                    if (viewerSession.isConnected) throw new Error("Expected an unconnected session");
-                                    viewerSession.on["ar.reality.viewState"] = function(view) {
-                                        _this2.contextService.updateEntityFromSerializedPose(viewerSession.uri, view.pose);
-                                        if (_this2._current === uri) {
-                                            view.reality = uri;
-                                            _this2._viewStateEvent.raiseEvent(view);
-                                        }
-                                    };
-                                    viewerSession.on["ar.reality.frameState"] = function(serializedState) {};
-                                    viewerSession.closeEvent.addEventListener(function() {
-                                        _this2.contextService.entities.removeById(viewerSession.uri);
-                                        console.log("Reality session closed: " + uri);
-                                    });
-                                    viewerSession.connectEvent.addEventListener(function() {
-                                        if (!viewerSession.uri) throw new Error("RealityViewer session must have a uri");
+                                    _this3._installersByURI.set(uri, installers);
+                                    viewer.connectEvent.addEventListener(function(viewerSession) {
                                         if (!Role.isRealityViewer(viewerSession.info.role)) {
                                             viewerSession.sendError({
                                                 message: "Expected a reality viewer"
@@ -23579,16 +23760,22 @@
                                             viewerSession.close();
                                             throw new Error('The application "' + viewerSession.uri + '" does not support being loaded as a reality viewer');
                                         }
+                                        viewerSession.on["ar.reality.frameState"] = function(frame) {
+                                            if (_this3._presentingRealityViewer === viewer) {
+                                                frame.reality = viewer.uri;
+                                                _this3.contextService.submitFrameState(frame);
+                                            }
+                                        };
                                         if (viewerSession.info["supportsCustomProtocols"]) {
                                             (function() {
-                                                _this2._connectViewerWithSession(viewerSession, _this2.sessionService.manager);
+                                                _this3._connectViewerWithSession(viewerSession, _this3.sessionService.manager);
                                                 var _iteratorNormalCompletion = true;
                                                 var _didIteratorError = false;
                                                 var _iteratorError = undefined;
                                                 try {
-                                                    for (var _iterator = _this2.sessionService.managedSessions[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                                                    for (var _iterator = _this3.sessionService.managedSessions[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                                                         session = _step.value;
-                                                        _this2._connectViewerWithSession(viewerSession, session);
+                                                        _this3._connectViewerWithSession(viewerSession, session);
                                                     }
                                                 } catch (err) {
                                                     _didIteratorError = true;
@@ -23604,18 +23791,27 @@
                                                         }
                                                     }
                                                 }
-                                                var remove = _this2.sessionService.connectEvent.addEventListener(function(session) {
-                                                    _this2._connectViewerWithSession(viewerSession, session);
+                                                var remove = _this3.sessionService.connectEvent.addEventListener(function(session) {
+                                                    _this3._connectViewerWithSession(viewerSession, session);
                                                 });
                                                 viewerSession.closeEvent.addEventListener(function() {
                                                     return remove();
                                                 });
                                             })();
                                         }
+                                        var removePresentChangeListener = viewer.presentChangeEvent.addEventListener(function() {
+                                            _this3.visibilityServiceProvider.set(viewerSession, viewer.isPresenting);
+                                        });
+                                        _this3.visibilityServiceProvider.set(viewerSession, viewer.isPresenting);
+                                        viewerSession.closeEvent.addEventListener(function() {
+                                            removePresentChangeListener();
+                                            _this3.contextService.entities.removeById(viewerSession.uri);
+                                            console.log("Reality session closed: " + uri);
+                                        });
                                     });
-                                    _this2._viewerByURI.set(uri, viewer);
-                                    _this2._installedEvent.raiseEvent({
-                                        uri: uri
+                                    viewer.load();
+                                    _this3.installedEvent.raiseEvent({
+                                        viewer: viewer
                                     });
                                 })();
                             }
@@ -23649,149 +23845,49 @@
                             });
                         }
                     }, {
-                        key: "uninstall",
-                        value: function uninstall(uri) {
-                            this.sessionService.ensureNotRealityViewer();
-                            return this.sessionService.manager.request("ar.reality.uninstall", {
-                                uri: uri
-                            });
-                        }
-                    }, {
-                        key: "_uninstall",
-                        value: function _uninstall(session, uri) {
+                        key: "_handleUninstall",
+                        value: function _handleUninstall(session, uri) {
                             var installers = this._installersByURI.get(uri);
                             if (installers) {
                                 if (installers.size === 0) {
                                     var viewer = this._viewerByURI.get(uri);
                                     this._viewerByURI.delete(uri);
-                                    viewer.session.close();
                                     viewer.destroy();
-                                    this._uninstalledEvent.raiseEvent({
-                                        uri: uri
+                                    this.uninstalledEvent.raiseEvent({
+                                        viewer: viewer
                                     });
                                 }
                             }
                             return Promise.reject(new Error("Unable to uninstall a reality viewer which is not installed"));
                         }
                     }, {
-                        key: "request",
-                        value: function request(options) {
-                            this.sessionService.ensureNotRealityViewer();
-                            if (typeof options === "string") options = {
-                                uri: options
-                            };
-                            return this.sessionService.manager.request("ar.reality.request", {
-                                options: options
-                            });
-                        }
-                    }, {
-                        key: "_request",
-                        value: function _request(session, options) {
-                            if (options && options.geopose) {
-                                this._geoposeSubscribers.add(session);
-                                this._checkGeoposeNeeded();
-                            } else {
-                                this._geoposeSubscribers.delete(session);
-                                this._checkGeoposeNeeded();
-                            }
-                            if (this.focusService.session === session || session === this.sessionService.manager) {
-                                if (!options) options = {
-                                    uri: this.default
-                                };
-                                if (options && options.uri) {
-                                    var viewer = this._viewerByURI.get(options.uri);
-                                    if (!viewer) {
-                                        this._install(session, options.uri);
-                                    }
-                                    this._setPresentingReality(options.uri);
-                                    return;
-                                } else if (options && options.geopose) {
-                                    var geoposeSessionChecks = [];
-                                    var _iteratorNormalCompletion2 = true;
-                                    var _didIteratorError2 = false;
-                                    var _iteratorError2 = undefined;
-                                    try {
-                                        for (var _iterator2 = this._viewerByURI.values()[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                                            var _viewer = _step2.value;
-                                            geoposeSessionChecks.push(this._checkViewerSessionForGeoposeSupport(_viewer.session));
-                                        }
-                                    } catch (err) {
-                                        _didIteratorError2 = true;
-                                        _iteratorError2 = err;
-                                    } finally {
-                                        try {
-                                            if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                                                _iterator2.return();
-                                            }
-                                        } finally {
-                                            if (_didIteratorError2) {
-                                                throw _iteratorError2;
-                                            }
-                                        }
-                                    }
-                                    return Promise.all(geoposeSessionChecks).then(function(results) {
-                                        var geoposeSessions = results.filter(function(session) {
-                                            return session !== undefined;
-                                        });
-                                        if (geoposeSessions.length > 0) {
-                                            return geoposeSessions[0];
-                                        }
-                                        throw new Error("No installed viewers have geopose support");
-                                    });
+                        key: "_handleRequest",
+                        value: function _handleRequest(session, options) {
+                            if (this.focusServiceProvider.session === session || session === this.sessionService.manager) {
+                                var uri = options && options.uri || RealityViewer.DEFAULT;
+                                switch (uri) {
+                                  case RealityViewer.DEFAULT:
+                                    uri = this.realityService.default;
                                 }
+                                var viewer = this._viewerByURI.get(uri);
+                                if (!viewer) {
+                                    this._handleInstall(session, uri);
+                                }
+                                this._setPresentingRealityViewer(this._viewerByURI.get(uri));
+                                return Promise.resolve();
                             }
                             throw new Error("Request Denied");
                         }
                     }, {
-                        key: "_checkViewerSessionForGeoposeSupport",
-                        value: function _checkViewerSessionForGeoposeSupport(viewerSession) {
-                            var uri = viewerSession.uri;
-                            if (RealityViewer.getType(uri) === "hosted") {
-                                var viewerEye = this.contextService.entities.getById(uri);
-                                if (!viewerEye) return Promise.resolve(undefined);
-                                var viewerPose = this.contextService.getEntityPose(viewerEye, ReferenceFrame.FIXED);
-                                if (viewerPose.poseStatus & PoseStatus.KNOWN) return Promise.resolve(viewerSession);
-                                return Promise.resolve(undefined);
-                            }
-                            return this.deviceService.hasGeoposeCapability().then(function(has) {
-                                return has ? viewerSession : undefined;
+                        key: "_setPresentingRealityViewer",
+                        value: function _setPresentingRealityViewer(viewer) {
+                            if (!viewer) throw new Error("Invalid State. Expected a RealityViewer instance");
+                            if (this._presentingRealityViewer === viewer) return;
+                            this._viewerByURI.forEach(function(v) {
+                                v.setPresenting(v === viewer);
                             });
-                        }
-                    }, {
-                        key: "_checkGeoposeNeeded",
-                        value: function _checkGeoposeNeeded() {
-                            if (!this._geoposeNeeded && this._geoposeSubscribers.size > 0) {
-                                this._geoposeNeeded = true;
-                                this.deviceService.startGeolocationUpdates();
-                                this.deviceService.startOrientationUpdates();
-                            } else if (this._geoposeNeeded && this._geoposeSubscribers.size === 0) {
-                                this._geoposeNeeded = false;
-                                this.deviceService.stopGeolocationUpdates();
-                                this.deviceService.stopOrientationUpdates();
-                            }
-                        }
-                    }, {
-                        key: "setDesired",
-                        value: function setDesired(reality) {
-                            this.sessionService.ensureNotRealityViewer();
-                            console.warn("RealityService#setDesired is deprecated. Use RealityService#request");
-                            this.request(reality);
-                        }
-                    }, {
-                        key: "_setPresentingReality",
-                        value: function _setPresentingReality(uri) {
-                            if (!(this._current && this._current === uri)) {
-                                this._viewerByURI.forEach(function(v) {
-                                    v.setPresenting(v.uri === uri);
-                                });
-                                var previous = this._current;
-                                this._current = uri;
-                                this.changeEvent.raiseEvent({
-                                    previous: previous,
-                                    current: uri
-                                });
-                                if (this.sessionService.isRealityManager) console.log("Reality changed to: " + uri);
-                            }
+                            this._presentingRealityViewer = viewer;
+                            console.log("Presenting reality viewer changed to: " + viewer.uri);
                         }
                     }, {
                         key: "getViewerByURI",
@@ -23799,53 +23895,23 @@
                             return this._viewerByURI.get(uri);
                         }
                     }, {
-                        key: "viewStateEvent",
+                        key: "presentingRealityViewer",
                         get: function get() {
-                            this.sessionService.ensureNotRealityAugmenter();
-                            return this._viewStateEvent;
-                        }
-                    }, {
-                        key: "connectEvent",
-                        get: function get() {
-                            return this._connectEvent;
-                        }
-                    }, {
-                        key: "changeEvent",
-                        get: function get() {
-                            return this._changeEvent;
-                        }
-                    }, {
-                        key: "current",
-                        get: function get() {
-                            return this._current;
-                        }
-                    }, {
-                        key: "installedEvent",
-                        get: function get() {
-                            this.sessionService.ensureIsRealityManager();
-                            return this._installedEvent;
-                        }
-                    }, {
-                        key: "uninstalledEvent",
-                        get: function get() {
-                            this.sessionService.ensureIsRealityManager();
-                            return this._uninstalledEvent;
-                        }
-                    }, {
-                        key: "geoposeNeeded",
-                        get: function get() {
-                            return this._geoposeNeeded;
+                            return this._presentingRealityViewer;
                         }
                     } ]);
-                    return RealityService;
+                    return RealityServiceProvider;
                 }());
-                _export("RealityService", RealityService = __decorate$5([ inject(SessionService, ContextService, FocusService, ViewService, DeviceService, RealityViewerFactory) ], RealityService));
-                __decorate$11 = undefined && undefined.__decorate || function(decorators, target, key, desc) {
+                _export("RealityServiceProvider", RealityServiceProvider = __decorate$9([ autoinject, __metadata$9("design:paramtypes", [ typeof (_c$6 = typeof SessionService !== "undefined" && SessionService) === "function" && _c$6 || Object, RealityService, typeof (_d$6 = typeof ContextService !== "undefined" && ContextService) === "function" && _d$6 || Object, typeof (_e$5 = typeof ViewportServiceProvider !== "undefined" && ViewportServiceProvider) === "function" && _e$5 || Object, typeof (_f$4 = typeof VisibilityServiceProvider !== "undefined" && VisibilityServiceProvider) === "function" && _f$4 || Object, typeof (_g$2 = typeof FocusServiceProvider !== "undefined" && FocusServiceProvider) === "function" && _g$2 || Object, RealityViewerFactory ]) ], RealityServiceProvider));
+                __decorate$2 = undefined && undefined.__decorate || function(decorators, target, key, desc) {
                     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
                     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc); else for (var i = decorators.length - 1; i >= 0; i--) {
                         if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
                     }
                     return c > 3 && r && Object.defineProperty(target, key, r), r;
+                };
+                __metadata$2 = undefined && undefined.__metadata || function(k, v) {
+                    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
                 };
                 openIcon = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='768' height='768'%3E%3Cpath fill='white' d='M448.5 96H672v223.5h-64.5v-114L294 519l-45-45 313.5-313.5h-114V96zm159 511.5V384H672v223.5c0 34.5-30 64.5-64.5 64.5h-447c-36 0-64.5-30-64.5-64.5v-447C96 126 124.5 96 160.5 96H384v64.5H160.5v447h447z'/%3E%3C/svg%3E\")";
                 eyeIcon = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512'%3E%3Cpath fill='white' d='M256 96C144.34 96 47.56 161.02 0 256c47.56 94.98 144.34 160 256 160 111.656 0 208.438-65.02 256-160-47.558-94.98-144.344-160-256-160zm126.225 84.852c30.08 19.187 55.57 44.887 74.717 75.148-19.146 30.26-44.637 55.96-74.718 75.148C344.427 355.258 300.78 368 256 368s-88.43-12.743-126.226-36.852c-30.08-19.186-55.57-44.886-74.716-75.148 19.146-30.262 44.637-55.962 74.717-75.148 1.96-1.25 3.938-2.46 5.93-3.65C130.725 190.866 128 205.612 128 221c0 70.69 57.308 128 128 128s128-57.31 128-128c0-15.387-2.726-30.134-7.704-43.8 1.99 1.19 3.97 2.402 5.93 3.652zM256 208c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48z'/%3E%3C/svg%3E\")";
@@ -23853,12 +23919,14 @@
                 fullscreenIcon = 'url(\'data:image/svg+xml;utf8,<svg width="512" height="512" version="1.1" viewBox="-3 -3 17 17" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd" id="Page-1" stroke="none" stroke-width="1"><g fill="white" id="Core" transform="translate(-215.000000, -257.000000)"><g id="fullscreen" transform="translate(215.000000, 257.000000)"><path d="M2,9 L0,9 L0,14 L5,14 L5,12 L2,12 L2,9 L2,9 Z M0,5 L2,5 L2,2 L5,2 L5,0 L0,0 L0,5 L0,5 Z M12,12 L9,12 L9,14 L14,14 L14,9 L12,9 L12,12 L12,12 Z M9,0 L9,2 L12,2 L12,5 L14,5 L14,0 L9,0 L9,0 Z" id="Shape"/></g></g></g></svg>\')';
                 argonAppIcon = "url(data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/4QBYRXhpZgAATU0AKgAAAAgABAExAAIAAAARAAAAPlEQAAEAAAABAQAAAFERAAQAAAABAAAAAFESAAQAAAABAAAAAAAAAABBZG9iZSBJbWFnZVJlYWR5AAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/2wBDAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAARCACQAJADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9ObW1tTbW5NrbDMEJwtvCo5jU8KqBVHoFAAHAAFT/AGS1/wCfW3/78x//ABNFp/x6Wv8A17w/+i1qxX/ILOVXnl71T4n1l3/4C+4/1nUNF7vRfZ8vQr/ZLX/n1t/+/Mf/AMTR9ktf+fW3/wC/Mf8A8TViip5qv81T75f10X3D5P7v/kv/AACv9ktf+fW3/wC/Mf8A8TR9ktf+fW3/AO/Mf/xNWKKOar/NU++X9dF9wcn93/yX/gFf7Ja/8+tv/wB+Y/8A4mj7Ja/8+tv/AN+Y/wD4mrFFHNV/mqffL+ui+4OT+7/5L/wCv9ktf+fW3/78x/8AxNH2S1/59bf/AL8x/wDxNWKKOar/ADVPvl/XRfcHJ/d/8l/4BX+yWv8Az62//fmP/wCJo+yWv/Prb/8AfmP/AOJqxRRzVf5qn3y/rovuDk/u/wDkv/AK/wBktf8An1t/+/Mf/wATR9ktf+fW3/78x/8AxNWKKOar/NU++X9dF9wcn93/AMl/4BX+yWv/AD62/wD35j/+Jo+yWv8Az62//fmP/wCJqxRRzVf5qn3y/rovuDk/u/8Akv8AwCv9ktf+fW3/AO/Mf/xNQXVrai2uCLW2OIJjhreFhxGx5VkKsPUMCCOCCKv1Xu/+PS6/695v/RbVVOVT2kNZ/HHrLuv8kJw0fu9H9ny9BLP/AI87T/r2g/8ARS1ZqtZ/8edp/wBe0H/opas1pP45f4pfmzVT0Wj2X5L/AIP9PQoooqR8/k/6/p/09CiiigOfyf8AX9P+noUUUUBz+T/r+n/T0KKKKA5/J/1/T/p6FFFFAc/k/wCv6f8AT0KKKKA5/J/1/T/p6FFFFAc/k/6/p/09Cq15/wAed3/17T/+imqzVa8/487v/r2n/wDRTVdP+JT/AMcf/SkJz0ej2f5f8P8A09Cz/wCPO0/69oP/AEUtWarWf/Hnaf8AXtB/6KWrNKfxy/xS/NmS2XovyCiiipGFfpT8AP2E/C3xX+E3hT4ieLPF/jLQdT8VRX+o2+l6Kuix2cGkLqV3a6RN/wATHSr25eW/sLeDUHczCPbdIqRqFy35v2WmX2t3+naHpkck2pa5qOn6Jp0USl5JL/V7yHTrRUUZLN59zGcAdAT2r+ofwn4dsfCHhfw54U0xdmneGtC0nQbEYx/oukWMFhAWHPztHArOSSWcliSSSf8ARL9nx4C8H+L3E3H+eeIPDuF4l4Y4YyXLctwuX4+WKpYWWf57jZYmji4SwtbD1KtXA5fk+NpSp+1dOnHMqc6lNylQlH8B8e+O834RyvIcHw/mFTLs0zTHYnEVMRRjSnVjgMvoRhUpONanVhGOIxOOoTjLlUm8JNRklzp/n7/w7R+F/wD0Ub4kf99eFv8A5n6/N/8Aac+FFj+z98ZIvhnBqN/qGk614T0nxX4R1fV3tDe6tFNc3+ma3p90bO3tLWK907U9PZ7aNIE8+xvLb70wJf8ApCr8h/8Agrd8Pjf+AfhZ8VLSGJZ/B/i278JavcorLd/2T41tI5dObzFGfJtPEOhWEceXBil1IvGMu5H9ifSo+iB4N5Z4KcU594fcB5bwxxHw7PLs4p5hldTMqmIll9HGUsLmlGpTxWNxFGph6eBxVXHVoOClJYJKFSlO1SP5D4X+LvGOK4zyzAcQZ5XzPLsxjiMG8PiYYWEFiZ0ZVMLOEqNCnONWdejDDwfM1+/1jJaP8x6K4Xwp4r/tPy9M1SQDU1G22uWwqamqjhHPCpqCgHjhbsDcuJQwPdV/hvmOXYrK8VPCYunyVIaxkrunWpttRrUZNLnpzs7OylGSlCcYVIThH+1cPiKWKpRrUZc0Xo09JQkt4TWtpK+q1TTUotxcZMooorhNwooooAKKKKACq15/x53f/XtP/wCimqzVa8/487v/AK9p/wD0U1XT/iU/8cf/AEpCez9H+QWf/Hnaf9e0H/opas1nWf8Ax52n/XtB/wCilqzSn8cv8UvzY42stXsunl6liiq9FSPTu/u/4J9X/sWeCf8AhNv2jfA4mglm0/wdHqfju/aMHbDJoduttojTNghVPiDUtMkUNjeYCFII4/oJr8r/APgmb4JEel/E74lXEDeZqOp6Z4I0i4OQrWejW/8AbGsbB0fzL/VrGF3HAewMf3lYD9TmZUVndlREUszMQqqqjLMzHACqASSSAAMmv+hT9nrwH/qd9HXKM4xFFUsfx9neb8WV3ONq0cFGpDJMqpSl/wA+ZYPKFmFCN3GKzGc9JVJpfwN9IHPP7W8QsTgqc3PD5BgMFlULP3XXnGWYYuVk3apGvjXhqnW+Gin8KOZ8MeMdA8Yf8JD/AGBei9/4RbxRq3g7Wtox9l1/RPs/9pWR5OWtzdQgk7SS3TGCfH/2s/hw/wAWP2cvi74JtoY5tUvvB2o6loIkjDlfEPh0J4h0IxEqzRSvqel20KyphlErc7SwPyN/wTW+LH/CyJ/2qvMlXffftAeIPiRYwMVEn9j/ABBEsVlKqDpF/wAUw0fykojDHG4Fv1AIBBBAIIwQRkEHqCD1Br+jOD88y3xr8Jfr+JWHqZXxtlPEuS4tYW1Si8LPGZtw9ieRTlNc3s6E21KTtUuuh+dZxgcTwXxZ9XpuaxWS4vLMbSc/iVVUcJmNO7SWilUitFsfxZW8wuIILhN6CaOKePqkib1WRDkYKSISDkEFWHHIr2Pwr4tGohNN1WVE1JFxb3TkImpIi/dkY4VL9FXLZIW6UFlxKGDH7QPw9f4UfHT4t/D3yDb2nh7x1rT6NGQFB8N69KviTw2yKOFjXRNYsoFVflUwsikha8V1MkadfsCVZbO6ZWBIZWWF2VlI5DKwDKw5BAI5Ff8APXxlwjKljs34bzin7DM8izPMMrrVIxvVwmYZdiquCxUUnZyp+3w8oVqMuVTjFfw6sKdSn/fWTZqpU8HmGElz4TH0MNiYRv7tbDYmnCtSldXSl7OopQmtYtu6cXKMvteH4cfEm4hiuLb4bfEK5t540mguLfwT4lnt54ZVDxTQTRaY0c0MqMrxSxsySIyujFSDVXUvA3jrRbOXUtb8C+NdF023MYuNS1jwpr2mafbmaVIYRPe3thBbQmaaSOGLzJV8yaSOJMu6qf6RfhFJJL8J/hhLK7SSy/DzwVJJI5LPJI/hvTGd2Y8lmYlmJ5JJNZ3xv+GNv8ZvhJ8QPhdc6g+kf8Jp4bvdItNZiRpZdF1Rgtxo+tRRLJEZpdH1WCy1KKHzEWWS1WN2CsTX951v2YWS1+Equb5P4nZ3is9rcOzzLK8tr8P5dSweJzaplv1rBYGtiP7SjOnhq2MdOhUr2UoUpupZONj8Qp/SXxEM2hhMZwzhKOBjmMcNisVDMcROtSwkcSqVfEQpfVbTqQoqdSNO9pSXLfVW/nk8B/Cb4m/FFrz/AIV54G1/xZDp0ogv77T4IINLs7ll3i1n1bUbiy00Xez5jaJdPcopDPCqspOT4x8C+NPh5q40Dx34X1fwprL263kNhrECRPdWTSyQLfWU0Ms9re2bTwzQC5tZ5ovOhliZhIjKP6VfAHgbw78NfB3h/wAD+FbKOx0Tw7p0FhaoiIsty8a5utQvXRV+0ajqV0Zr7UbtwZbq9uJp5CXkJr8Qf+Cqer3mjftDfC66tGyD8IZkuLWRmFvdw/8ACaaqTFKBna4I3QzqN8L4IypZT+Z+Nf0Csl8IPAyPHFTjHN828QMHXyShmmCjSwNLhWeJzSvCjisHgIvDLM4xwk6jpYfMMRjHHF+yVapgcJGs6dD6Tgzx1xPF3GzyOGTYXCZBVp46phcTKdeebKnhaUqlOtiLVvqn75R5qmHp0b0VL2ccRXlT9pV+PaKyNM1O01e0S9snLRk7JYnwJrWcDLW9wo+669VYfJKmJIyVJAv1/mhVpVaFWpRrU5UqtKThUpzXLOE47xkujX47rQ/o2EoTjGcJ80JJSjKNmmmrppqRYqtef8ed3/17T/8AopqWq15/x53f/XtP/wCimpU/4lP/ABx/9KQ3az1ez6eXqFn/AMedp/17Qf8Aopas1Ws/+PO0/wCvaD/0UtWaU/jl/il+bEtl6L8gprusaPI5wkas7n0VQWY/gATTq7X4aeD3+IXxH8BeBFEmzxZ4u0PR7to1LNHpct5HPrM3AYqsOjwX0rNg7QhbtXo5LlWNz7OMqyPLaLxGYZxmWCyvA0FdOtjMfiaWFw1JNKTTnWqwjdRbV9nsY4nE0cFhsRjMTP2eGwlCtisRU/590MPTlWrT/wC3KcJS+R++/wCyX4GPw+/Z7+GeizQGDUdQ0GPxTrCsCJP7U8WSyeILlJVIBWS2XUIrMoQGjW2VGyyknof2kPGh+HnwC+MfjRJDFcaB8OfFl3YyAgFNTk0e6tdKIzwT/aNxa8dW+6OSK9oiijgijhhRY4oUSKKNFCpHHGoRERRwqqoCqBwAABXmvxi+E3hf44fDzXfhj40m1uHwx4kOnDVl8P6pJo2o3EOmanZ6tDbC+ijldLaa6sYFu4guLi33wMdjtX/VDQ4RxXC/hRT4F4P9isdkPAK4W4bnWqPCUHjsvyD+y8rr16yhVlRjPE06NavW5Ks43nUaqT3/AMwJ5vSzTiyWe5z7T6vj+IP7VzNU4+1qKhiMw+tYuFKDlBTlGlOcKcHKEXaMbxW34X/8EnfFH/COfH3xL4LlkJh8afCyXyQWPzan4K1ewu4WI6OX0/WtWZj97MYI431/Q7XxJ8I/2AfgL8EviHoPxP8AA0vxBh8T+HY9VhsTqvjO61TTZrfWdMudKv7e9sJrVY7mGS2uWdFLKY7mK3nUh4Vr7br89+jH4dcZeFfhjDgvjWWWzx2X59muIy15VjZY7DLKswWFxcYyqTw2FlCssxq5k5U/ZySjKE1N87hD3/EviHJ+KeJXnOS/WvY4jAYWnivrdCOHqfW8O6tFtQjWrJw+rQwyUuZXkpLl0u/5/v8Agq78PD4f+NXgT4k2tqsVj8RfBU2h6hcKwzP4k8C3o2mRAAVebw9r2nxI7E+ZHpbKpxDhfyq1P/kG6h/143f/AKTyV/R7/wAFQfh9/wAJd+zNd+K7a2hk1L4V+K9C8Yi4Yf6RDoV1LJ4a8SJAe6fYNaS+uI+Ny6aj5zGAf5wtU/5Buo/9eN3/AOk8lf5h/TI4O/1S8duJMRSpOngeLsLl/FuD91pOpmFKWDzR83wylPOsvzGu0rOMa8FJN+/P+lfCDN/7V4JyqMpc1bKq1bKK2t3bDTjWwul21GOBxOFpq+7pytoj+xD4Pf8AJJPhb/2TnwR/6jOmV6NXnPwe/wCSSfC3/snPgj/1GdMr0av9qOG/+SdyD/sS5X/6g0D+Ncx/5GGO/wCwzE/+npn5d/tIf8FMfDPwe8f6x8Nfh/4Db4k614Vuzp3i7W7vxCvh7w3pWtRBWu/D9hLDpmr3usanp29YtWljgtbHTr0PYGe5u4bmK2/KT9rf9pO0/ak8aeCfHMPhC+8E3nh3wTP4U1XSLvVbXWrea7bXrvVo73TNRtreyeW0eG52Ol5Y2dxFKNgSVB5rfMmrXE93rfiK7uZXnubvxN4mu7maQlpJrm61/Ubi4mdjks8s0jyOSSSzEmqNf4b+LH0lPE/xTXEOR53m9CnwdmWaQxOD4YoZXlVOjltLL8Z7fLo08xjglm1avSUIrEVa+PqRxE5VG6cIeyp0v7Y4X8O+GeF3gMbgcHOWb4bCypVczqYrFSqYmdeh7PEynh3WeEhCpeTpwp0IuklFKcpc8p6ekatd6LeC7tCG3AJc2zkiC8gBz5UuPuuvWCcDfC+CMoWU+36bqVpq1ol7ZOWjY7JI3wJraYDLW9wg+7IvVWHySpiSMlScfPtaek6td6NeLd2hDbgEubZyRDeQA58qXH3XXkwTgb4X5GULKf5Q4k4bpZxSeIw6jSzGlG0Jv3YYmEdqNZ7KVtKVV/B8E702nD9Ry3MpYOSp1G5Yab1WrdJtq84K+388OvxR974vfarXn/Hnd/8AXtP/AOimqLTdStNWtEvbJy0THZJG+BNbTAZe3uFH3ZF6hh8kqYkjJU8S3n/Hnd/9e0//AKKavx90qtDE+xrU5UqtKqoVKc1yzhOMleMl0a/HdaH2CnGdNThJShKPNGUXdNNXTTQlmR9jteR/x7Qf+ilqzuHqPzrPszm0tT/07Qf+ilqzROC55av4pfn/AMP/AFvUdl6L8ifcPUfnX3n/AME7fBY8RfHPUvFs6SG0+HnhC9uoJFTdD/bfiqU6JZo7kbVcaRHr7oAd+dpA27iPgWv23/4JweCf7C+C+teM54pI7z4g+L9QuYXcYV9E8MD/AIR/TjHxlka/g1q4DZKn7R8oGCW/rv6C/AP+vH0keCJVqXtsBwd9d45x9483s3kFODyirbZcvEWKyf3n8N7r31G/5R4255/YfhznrhPkxGbqhkWG1tzPMZv63Du+bLKOP/Dbc/QmvnX4zftW/Av4Aa5ovhv4qeMJfD2s+INJuNb0uzg8P+ItaM2mW14LCS5kl0XS7+G3Bui0UcdxJHLKY5WjRljZh9FV/NL/AMFJvFknif8Aa08V6eLr7TZeBvCfgzwlaIG3R2txLp83inVIUHRXNz4jjE46+ZFg/dFf7YfSZ8X838FvDinxRw/h8pxWeY/iHLMiy6hnVHE4nAOWJoY7HYqdTD4PG5fiKjhgcuxPs+TFU4xqyhKfNH3X/F/htwlhOMuIZ5ZmFTFUsFh8uxOOxE8HUp0q9qdShh6UYVK1DEU1eviaTknSbcFJRadmv1tl/wCClH7HcEUk0vxPvVjhjeWRv+EE8ettSNSzHavhsscKCcKCT2BNfb2lapYa3pem61pVwl5pmr2Fnqmm3cYdY7qwv7eO7s7lFkVHCT28scqh0VwGAZVOQP4w5EWVHjcZSRGRh6q4KsPxBNf1T/sT+MZvHX7KvwQ1y6kSS9g8E2Xhu+KNuIu/B09z4Tl8zkkSv/YolcNzmTPIIJ/IPoq/Sc4x8auKeJeGeM8Dwxg6+XZBTzzKnw9gMywM6tOhmGHwGYxxKzDOc29qoSzDAOl7JUXDmnzud1y/WeJ/htlHB2V5dmWT1syrQr4+WBxax9fDV1GVTDzr4d0lQweFcW/q+IU3JzT9xJJpuXuXxF8G2HxE8A+NPAeqRwyWHjHwtrvhq5FxGJIkTWdMubATMpVvmt3nWeNgC6SRo6YdVI/jf1rT9Q0i213RtWRotW0T+2dD1aNxho9V0aS70vUkPTOy+tJ1Bx8wAYda/tSr+WX/AIKC/D0/Dj9pr4wWkNuYNK8ZwW/xK0fCLHFJH4s06X+2/JVeAF8V6dr7SY6tIJCAZMD439oRwd9a4c4E48oUr1MozXG8M5hUhFOTwuc4f+0MvnVfK5RpYbFZVi6UHzxiquYqLUpThy+14AZv7PMs6yKpL3cVh8NmeHTeiq4OssNiIwXWdWli6U3a75MLfZNn9Knwe/5JJ8Lf+yc+CP8A1GdMr0avOfg9/wAkk+Fv/ZOfBH/qM6ZXo1f37w3/AMk7kH/Ylyv/ANQaB+C5j/yMMd/2GYn/ANPTP4v73/kJ6z/2Hte/9PN9VerF7/yE9Z/7D2vf+nm+qvX/ADb4j/eK/wD1+q/+lyP9EofBH/DH8kFFFFYlGnpOrXmjXYu7Rg2QEubZyRBeQg5MUuPuuvWCcDfC+CMqWU+yxanZ6tpE97ZOWja3nSSJ8Ce2nELFre4UfdkXnaw+SVcSRkg4Hg9W7TVrvRjcXVqwIa2lS5t3J8m7gEbZjlAyQ6/egmUb4nwRlSVr5jiDhylm6jiKCjSzGly8k9o4iEWrUaz/AJklalVesPgl+7acPUy7Mp4NulUvPDTbvHVulJ7zguz+3D7Wso+9pL3Sz/487T/r2g/9FLVmq1n/AMedp/17Qf8Aopas1+QT+OX+KX5s+zWy9F+QV7bZ/tpftQfCvwroXhnwJ4k8H2fgnw3p1rpGm2E/gHTb280q2t12Iby8a7je9W4fdLNqEkayyXUsrXXzSbz4lSEAhlZVZWVkdHUMjoww6OjZV0cEhlIwRX3PAHiVxp4ZZrXzfgviLOOHcVjsMsBmNTJ8wxGW1sbgPbU67wtSvhpwqcirUqdaGriqtOEpRnFOEvEz7h3KOJcJDB5xgMJj6VGr9Yw8cZhqWJp0cQoSpqrGnWjKHNyTnBuylyTkoyi2mvZP+HlP7YH/AEOfgj/w3Ol//J1fG/jHxbr3j7xd4m8deKrqK+8T+L9YuNe1+8t7ZbO2uNSuljjka2so2eOzt0ihhigto2ZYo41UMetXfE3hk6WXv7BWbTHb97Fks+mu5wFP8T2TscQynJh4il4CuePr93znxX438R8swceJONuJOKMuw9d4nDYTO84xuYU8HjPZulUl7DE16sKOKhTqSpykld053hOVKpGU/gsLwvk/DuJrf2fkuW5ZiKlNUqlXA4KhhpV6POpxXtKVOEqlJzipJN2542klODSK+oPhL+2V+0L8DvBtv4A+G/ifw9p/hW01HVNUtbLWfCVjrt1Bd6zdvf6iI764uYZfs8t5LNPFAVIgMrqjFcAfL9FcvDXFfE3B2YSzbhTPs24czOeGqYOePybHYjL8XPCVp0qlXDSr4apTqSoVKlGjOdJtwlOlTk1zQi1eYZZl2bYdYXNMDhMwwyqRrLD4zD08TRVWClGFRU6sZRVSMZzjGaXMlOSTtJ3+6/8Ah5T+2B/0Ofgj/wANzpf/AMnV84/Gz46fEj9ojVtJ134sXuhatq+iaNeeH7C90Pw/a+HZTo99ci8ms7w2s05vBDc+ZNZPIR9ja6vfLB+1SV5FRX0XEHix4m8WZZWyXibj3izP8or1KNWtlubZ5j8dgqtTD1Y1qFSeHxFedOU6VWEalOTjeMldM4cBwxw5lWJhjcsyPKsBi6anGGJwmAw2HrxjUi4TjGrSpxmlOLcZK9pJtPQ+2NF/4KI/tY+HtG0nQNK8X+DIdL0PTLDR9Nil+H2mTyxWGmWsVlZxyzG9UzSJbwRq8pVTIwLlRnFaf/Dyn9sD/oc/BH/hudL/APk6vhSivWpeO/jRQpUqFHxT48pUaNOFKlShxNmsYU6dOKhThCKxNoxhFKMUtEkkjklwTwfOUpz4YyGU5ycpSllWDblKTvKTbo3bbbbfVj5HaWaed8GW5ubm7mIG1Wnu55LmdlUcIrTSuVQcIpCDhRTKKK/KG222222223dtt6ttvdt7s+nCiiikAVXu/wDj1uf+veb/ANFtViq93/x63P8A17zf+i2qofHH/FH80B9DWZH2O15H/HtB/wCilqzuHqPzqhaf8ett/wBe8P8A6LWrFfzvP45f4pfmz9Hi7xi+6X5E+4eo/OjcPUfnUFFSMnJUghtjKysjK4DI6MMMjqeHRwcMp4IryfxL4a/ssvqGnqX0tmHmxAl3012PCsSSWsnbiGU5MJIhlONjH1Gl4wQyq6spR0dQySIwwyOjZVkYcMpBBFevk+cYnJ8T7aj79Gdo4nDSbUK8E+9nyVYXbpVUm4NtNTpyqU58eNwVLG0uSfuzjd06qV5Ql+sZWSnG+q1TUlGS+fqK6/xL4aOmFtQ09WfS3b97Fyz6bI7cIerNZMTiKU8wnEUpxsauQr9lwGPw2ZYani8LPnpT0aek6c0k5UqsbvkqQurq7TTjODlCUZS+JxGHq4arKlWjyyjr3jKL2lF9Yvo+jTTSkmkUUUV2GIUUUUAFFFFABRRRQAVXu/8Aj1uf+veb/wBFtViq93/x63P/AF7zf+i2qofHH/FH80B9AWn/AB623/XvD/6LWrFULW6tRbW4N1bHEEIytxCwOI1HDK5Vh6MpII5BIqf7Xa/8/Nv/AN/o/wD4qv56nCfPL3J/E/svv6ea+8/RYSXLHVfDHquy/wA0WKKr/a7X/n5t/wDv9H/8VR9rtf8An5t/+/0f/wAVU8k/5J/+Av8Ay8195XNH+Zfev66r7yxRVf7Xa/8APzb/APf6P/4qj7Xa/wDPzb/9/o//AIqjkn/JP/wF/wCXmvvDmj/MvvX9dV95ZzwQQrKysjo4DI6MMMjqeGRgSGU8EV5Z4l8N/wBmFr/T1ZtLZv3sPLPprtjCsTy9m7HEUpyYSRFKcFGr0r7Xa/8APzb/APf6P/4qj7XaEMrXFq6spV0eWJkdGGGR1LEMrDhlIIIr1smzXGZPiVWoxnOjPljicO1JQr00+9nyVYXbpVUm4NtNSpznCfFjcJQxtLkm4xmrunUVnKEnb/wKL0Uo3SkrbSUZR8HorpvEmjW2ms19YTwvpzsPMhE0bSWEjE/Kfmy1mx4ikPMJxHIcbWrkftdr/wA/Nv8A9/o//iq/ZcDjKOY4anisK5Tp1FqnG06c1bmpVY68tSF1dXaacZQcoSjKXxdehUw1WVGqkpR1TTvGcX8M4P7UZdHve8WlJNKxRVf7Xa/8/Nv/AN/o/wD4qj7Xa/8APzb/APf6P/4quzll/LL7n/XVfeY3/r+vVfeWKKr/AGu1/wCfm3/7/R//ABVH2u1/5+bf/v8AR/8AxVHLL+WX3P8ArqvvC/8AX9eq+8sUVX+12v8Az82//f6P/wCKo+12v/Pzb/8Af6P/AOKo5Zfyy+5/11X3hf8Ar+vVfeWKr3f/AB63P/XvN/6Laj7Xa/8APzb/APf6P/4qoLq6tWtrhRc22WglAzPCoyY2AyzOFUepJAHUkCnCMuaPuv4o9H3X+aFdd1/X/Do//9k=)";
                 _export("DefaultUIService", DefaultUIService = function() {
-                    function DefaultUIService(sessionService, viewService, realityService) {
+                    function DefaultUIService(sessionService, viewportService, realityService, realityServiceProvider, viewServiceProvider) {
                         var _this = this;
                         _classCallCheck(this, DefaultUIService);
                         this.sessionService = sessionService;
-                        this.viewService = viewService;
+                        this.viewportService = viewportService;
                         this.realityService = realityService;
+                        this.realityServiceProvider = realityServiceProvider;
+                        this.viewServiceProvider = viewServiceProvider;
                         this.realityViewerItemElements = new Map();
                         this.menuItems = [];
                         this.menuOpen = false;
@@ -23883,13 +23951,9 @@
                                 _this.element.style["userSelect"] = "none";
                                 _this.element.style.webkitUserSelect = "none";
                                 _this.element.style.zIndex = "10";
-                                _this.viewService.containerElementPromise.then(function(containerElement) {
-                                    if (!_this.sessionService.manager.isClosed) {
-                                        containerElement.appendChild(_this.element);
-                                        _this.sessionService.manager.closeEvent.addEventListener(function() {
-                                            _this.element.remove();
-                                        });
-                                    }
+                                _this.viewportService.rootElement.appendChild(_this.element);
+                                _this.sessionService.manager.closeEvent.addEventListener(function() {
+                                    _this.element.remove();
                                 });
                                 var realityViewerOverlayElement = document.createElement("div");
                                 realityViewerOverlayElement.className = "argon-overlay";
@@ -23925,27 +23989,25 @@
                                 _this.realityViewerListElement.style.maxHeight = "250px";
                                 _this.realityViewerListElement.style.overflowY = "auto";
                                 _this.realityViewerSelectorElement.appendChild(_this.realityViewerListElement);
-                                _this.realityService.installedEvent.addEventListener(function(_ref) {
-                                    var uri = _ref.uri;
-                                    var viewer = _this.realityService.getViewerByURI(uri);
-                                    var session = viewer.session;
+                                _this.realityServiceProvider.installedEvent.addEventListener(function(_ref) {
+                                    var viewer = _ref.viewer;
+                                    var uri = viewer.uri;
                                     var e = document.createElement("div");
                                     e.innerText = uri;
-                                    session.connectEvent.addEventListener(function() {
+                                    viewer.connectEvent.addEventListener(function(session) {
                                         e.innerText = session.info.title || uri;
                                     });
                                     e.className = "argon-ui-list-item";
                                     _this.realityViewerItemElements.set(uri, e);
                                     _this.realityViewerListElement.appendChild(e);
                                     e.addEventListener("click", function() {
-                                        _this.realityService.request({
-                                            uri: uri
-                                        });
+                                        _this.realityService.request(uri);
                                         realityViewerOverlayElement.remove();
                                     });
                                 });
-                                _this.realityService.uninstalledEvent.addEventListener(function(_ref2) {
-                                    var uri = _ref2.uri;
+                                _this.realityServiceProvider.uninstalledEvent.addEventListener(function(_ref2) {
+                                    var viewer = _ref2.viewer;
+                                    var uri = viewer.uri;
                                     var e = _this.realityViewerItemElements.get(uri);
                                     _this.realityViewerItemElements.delete(uri);
                                     e.remove();
@@ -23979,20 +24041,18 @@
                                     _this.updateMenu();
                                     openInArgonApp();
                                 });
-                                _this.hmdMenuItem = _this._createMenuItem(vrIcon, "Toggle Immersive Display", function() {
+                                _this.hmdMenuItem = _this._createMenuItem(vrIcon, "Toggle HMD", function() {
                                     _this.menuOpen = false;
                                     _this.updateMenu();
-                                    if (_this.viewService._isHmdActive()) {
-                                        _this.viewService.requestExitHmd();
+                                    if (_this.viewServiceProvider.isPresentingHMD) {
+                                        _this.viewServiceProvider.exitPresentHMD();
                                     } else {
-                                        if (_this.viewService._isFullscreen()) {
-                                            _this.viewService.requestExitFullscreen();
+                                        if (isIOS) {
+                                            _this.viewportService.requestPresentationMode(PresentationMode.IMMERSIVE).then(function() {
+                                                return _this.viewServiceProvider.requestPresentHMD();
+                                            });
                                         } else {
-                                            if (isIOS || navigator["vrEnabled"]) {
-                                                _this.viewService.requestEnterHmd();
-                                            } else {
-                                                _this.viewService.requestEnterFullscreen();
-                                            }
+                                            _this.viewServiceProvider.requestPresentHMD();
                                         }
                                     }
                                 });
@@ -24002,16 +24062,18 @@
                                     realityViewerOverlayElement.style.backgroundColor = "rgba(0,0,0,0.3)";
                                     _this.element.appendChild(realityViewerOverlayElement);
                                 });
-                                _this.maximizeMenuItem = _this._createMenuItem(fullscreenIcon, "Toggle Maximized View", function() {
+                                _this.maximizeMenuItem = _this._createMenuItem(fullscreenIcon, "Toggle Immersive View", function() {
                                     _this.menuOpen = false;
                                     _this.updateMenu();
-                                    _this.viewService.isMaximized().then(function(maximized) {
-                                        if (maximized) _this.viewService.requestExitMaximized(); else _this.viewService.requestEnterMaximized();
-                                    });
+                                    if (_this.viewportService.presentationMode === PresentationMode.IMMERSIVE) {
+                                        _this.viewportService.requestPresentationMode(PresentationMode.PAGE);
+                                    } else {
+                                        _this.viewportService.requestPresentationMode(PresentationMode.IMMERSIVE);
+                                    }
                                 });
                                 _this.onSelect(menuButton, _this.toggleMenu.bind(_this));
                                 _this.updateMenu();
-                                _this.viewService.viewportChangeEvent.addEventListener(function() {
+                                _this.viewportService.changeEvent.addEventListener(function() {
                                     _this.updateMenu();
                                 });
                             })();
@@ -24078,7 +24140,7 @@
                         key: "updateMenu",
                         value: function updateMenu() {
                             var _this2 = this;
-                            if (this.viewService._isHmdActive()) {
+                            if (this.viewServiceProvider.isPresentingHMD) {
                                 this.element.style.display = "none";
                             } else {
                                 this.element.style.display = "block";
@@ -24086,8 +24148,11 @@
                             this.menuItems = [];
                             this.menuItems.push(null);
                             if (isIOS) this.menuItems.push(this.openInArgonMenuItem);
-                            if (!(document.documentElement.clientWidth === this.viewService.element.clientWidth && document.documentElement.clientHeight === this.viewService.element.clientHeight)) this.menuItems.push(this.maximizeMenuItem);
-                            this.menuItems.push(this.hmdMenuItem);
+                            var parentElement = this.viewportService.rootElement.parentElement;
+                            var parentWidth = parentElement ? parentElement.clientWidth : 0;
+                            var parentHeight = parentElement ? parentElement.clientHeight : 0;
+                            if (!(window.innerWidth === parentWidth && window.innerHeight === parentHeight)) this.menuItems.push(this.maximizeMenuItem);
+                            if (isIOS || navigator["vrEnabled"]) this.menuItems.push(this.hmdMenuItem);
                             if (this.realityViewerItemElements.size > 0) this.menuItems.push(this.realityMenuItem);
                             this.menuItems.push(null);
                             if (!this.menuOpen) {
@@ -24118,14 +24183,249 @@
                     } ]);
                     return DefaultUIService;
                 }());
-                _export("DefaultUIService", DefaultUIService = __decorate$11([ inject(SessionService, ViewService, RealityService) ], DefaultUIService));
+                _export("DefaultUIService", DefaultUIService = __decorate$2([ autoinject(), __metadata$2("design:paramtypes", [ typeof (_a$2 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$2 || Object, typeof (_b$2 = typeof ViewportService !== "undefined" && ViewportService) === "function" && _b$2 || Object, typeof (_c$1 = typeof RealityService !== "undefined" && RealityService) === "function" && _c$1 || Object, typeof (_d$1 = typeof RealityServiceProvider !== "undefined" && RealityServiceProvider) === "function" && _d$1 || Object, typeof (_e$1 = typeof ViewServiceProvider !== "undefined" && ViewServiceProvider) === "function" && _e$1 || Object ]) ], DefaultUIService));
+                __decorate$13 = undefined && undefined.__decorate || function(decorators, target, key, desc) {
+                    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+                    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc); else for (var i = decorators.length - 1; i >= 0; i--) {
+                        if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+                    }
+                    return c > 3 && r && Object.defineProperty(target, key, r), r;
+                };
+                __metadata$13 = undefined && undefined.__metadata || function(k, v) {
+                    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+                };
+                _export("VuforiaServiceProvider", VuforiaServiceProvider = function VuforiaServiceProvider(sessionService) {
+                    _classCallCheck(this, VuforiaServiceProvider);
+                    if (sessionService.isRealityManager) {
+                        sessionService.connectEvent.addEventListener(function(session) {
+                            session.on["ar.vuforia.isAvailable"] = function() {
+                                return Promise.resolve({
+                                    available: false
+                                });
+                            };
+                        });
+                        sessionService.connectEvent.addEventListener(function(session) {
+                            session.on["ar.vuforia.init"] = function() {
+                                return Promise.reject(new Error("Vuforia is not supported on this system"));
+                            };
+                        });
+                    }
+                });
+                _export("VuforiaServiceProvider", VuforiaServiceProvider = __decorate$13([ inject(SessionService), __metadata$13("design:paramtypes", [ typeof (_a$13 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$13 || Object ]) ], VuforiaServiceProvider));
+                _export("VuforiaService", VuforiaService = function() {
+                    function VuforiaService(sessionService) {
+                        _classCallCheck(this, VuforiaService);
+                        this.sessionService = sessionService;
+                    }
+                    _createClass(VuforiaService, [ {
+                        key: "isAvailable",
+                        value: function isAvailable() {
+                            return this.sessionService.manager.request("ar.vuforia.isAvailable").then(function(message) {
+                                return message.available;
+                            });
+                        }
+                    }, {
+                        key: "init",
+                        value: function init(options) {
+                            var _this = this;
+                            if (typeof options === "string") options = {
+                                encryptedLicenseData: options
+                            };
+                            if (!options.encryptedLicenseData || typeof options.encryptedLicenseData !== "string") throw new Error("options.encryptedLicenseData is required.");
+                            return this.sessionService.manager.request("ar.vuforia.init", options).then(function() {
+                                return new VuforiaAPI(_this.sessionService.manager);
+                            });
+                        }
+                    }, {
+                        key: "initWithUnencryptedKey",
+                        value: function initWithUnencryptedKey(options) {
+                            var _this2 = this;
+                            if (typeof options === "string") options = {
+                                key: options
+                            };
+                            return this.sessionService.manager.request("ar.vuforia.init", options).then(function() {
+                                return new VuforiaAPI(_this2.sessionService.manager);
+                            });
+                        }
+                    } ]);
+                    return VuforiaService;
+                }());
+                _export("VuforiaService", VuforiaService = __decorate$13([ inject(SessionService, VuforiaServiceProvider), __metadata$13("design:paramtypes", [ typeof (_b$13 = typeof SessionService !== "undefined" && SessionService) === "function" && _b$13 || Object ]) ], VuforiaService));
+                _export("VuforiaAPI", VuforiaAPI = function VuforiaAPI(manager) {
+                    _classCallCheck(this, VuforiaAPI);
+                    this.objectTracker = new VuforiaObjectTracker(manager);
+                });
+                _export("VuforiaTracker", VuforiaTracker = function VuforiaTracker() {
+                    _classCallCheck(this, VuforiaTracker);
+                });
+                _export("VuforiaObjectTracker", VuforiaObjectTracker = function(_VuforiaTracker) {
+                    _inherits(VuforiaObjectTracker, _VuforiaTracker);
+                    function VuforiaObjectTracker(managerSession) {
+                        _classCallCheck(this, VuforiaObjectTracker);
+                        var _this3 = _possibleConstructorReturn(this, (VuforiaObjectTracker.__proto__ || Object.getPrototypeOf(VuforiaObjectTracker)).call(this));
+                        _this3.managerSession = managerSession;
+                        _this3.dataSetLoadEvent = new Event();
+                        _this3.dataSetUnloadEvent = new Event();
+                        _this3.dataSetActivateEvent = new Event();
+                        _this3.dataSetDeactivateEvent = new Event();
+                        _this3._deprecatedDataSetInstanceMap = new Map();
+                        managerSession.on["ar.vuforia.objectTrackerLoadDataSetEvent"] = function(message) {
+                            _this3.dataSetLoadEvent.raiseEvent(message);
+                        };
+                        managerSession.on["ar.vuforia.objectTrackerUnloadDataSetEvent"] = function(message) {
+                            _this3.dataSetUnloadEvent.raiseEvent(message);
+                        };
+                        managerSession.on["ar.vuforia.objectTrackerActivateDataSetEvent"] = function(message) {
+                            var deprecatedDataSetInstance = _this3._deprecatedDataSetInstanceMap.get(message.id);
+                            if (deprecatedDataSetInstance) {
+                                deprecatedDataSetInstance._onActivate();
+                                _this3.dataSetActivateEvent.raiseEvent(deprecatedDataSetInstance);
+                            } else _this3.dataSetActivateEvent.raiseEvent(message);
+                        };
+                        managerSession.on["ar.vuforia.objectTrackerDeactivateDataSetEvent"] = function(message) {
+                            var deprecatedDataSetInstance = _this3._deprecatedDataSetInstanceMap.get(message.id);
+                            if (deprecatedDataSetInstance) {
+                                deprecatedDataSetInstance._onDeactivate();
+                                _this3.dataSetActivateEvent.raiseEvent(deprecatedDataSetInstance);
+                            } else _this3.dataSetDeactivateEvent.raiseEvent(message);
+                        };
+                        return _this3;
+                    }
+                    _createClass(VuforiaObjectTracker, [ {
+                        key: "createDataSet",
+                        value: function createDataSet(url) {
+                            var _this4 = this;
+                            if (url && window.document) {
+                                url = resolveURL(url);
+                            }
+                            return this.managerSession.request("ar.vuforia.objectTrackerCreateDataSet", {
+                                url: url
+                            }).then(function(message) {
+                                var dataSet = new DeprecatedVuforiaDataSet(message.id, _this4.managerSession);
+                                _this4._deprecatedDataSetInstanceMap.set(message.id, dataSet);
+                                return dataSet;
+                            });
+                        }
+                    }, {
+                        key: "createDataSetFromURI",
+                        value: function createDataSetFromURI(uri) {
+                            return this.managerSession.request("ar.vuforia.objectTrackerCreateDataSet", {
+                                uri: uri
+                            }).then(function(message) {
+                                return message.id;
+                            });
+                        }
+                    }, {
+                        key: "loadDataSet",
+                        value: function loadDataSet(id) {
+                            return this.managerSession.request("ar.vuforia.objectTrackerLoadDataSet", {
+                                id: id
+                            });
+                        }
+                    }, {
+                        key: "unloadDataSet",
+                        value: function unloadDataSet(id) {
+                            return this.managerSession.request("ar.vuforia.objectTrackerUnloadDataSet", {
+                                id: id
+                            });
+                        }
+                    }, {
+                        key: "activateDataSet",
+                        value: function activateDataSet(id) {
+                            id = id instanceof DeprecatedVuforiaDataSet ? id.id : id;
+                            return this.managerSession.request("ar.vuforia.objectTrackerActivateDataSet", {
+                                id: id
+                            });
+                        }
+                    }, {
+                        key: "deactivateDataSet",
+                        value: function deactivateDataSet(id) {
+                            id = id instanceof DeprecatedVuforiaDataSet ? id.id : id;
+                            return this.managerSession.request("ar.vuforia.objectTrackerDeactivateDataSet", {
+                                id: id
+                            });
+                        }
+                    } ]);
+                    return VuforiaObjectTracker;
+                }(VuforiaTracker));
+                __decorate$13([ deprecated$1("createDataSetFromURI"), __metadata$13("design:type", Function), __metadata$13("design:paramtypes", [ String ]), __metadata$13("design:returntype", Object) ], VuforiaObjectTracker.prototype, "createDataSet", null);
+                _export("DeprecatedVuforiaDataSet", DeprecatedVuforiaDataSet = function() {
+                    function DeprecatedVuforiaDataSet(id, managerSession) {
+                        _classCallCheck(this, DeprecatedVuforiaDataSet);
+                        this.id = id;
+                        this.managerSession = managerSession;
+                        this._isActive = false;
+                    }
+                    _createClass(DeprecatedVuforiaDataSet, [ {
+                        key: "_onActivate",
+                        value: function _onActivate() {
+                            this._isActive = true;
+                        }
+                    }, {
+                        key: "_onDeactivate",
+                        value: function _onDeactivate() {
+                            this._isActive = false;
+                        }
+                    }, {
+                        key: "fetch",
+                        value: function fetch() {
+                            return this.managerSession.request("ar.vuforia.dataSetFetch", {
+                                id: this.id
+                            });
+                        }
+                    }, {
+                        key: "load",
+                        value: function load() {
+                            var _this5 = this;
+                            return this.managerSession.request("ar.vuforia.dataSetLoad", {
+                                id: this.id
+                            }).then(function(trackables) {
+                                _this5._trackables = trackables;
+                                return trackables;
+                            });
+                        }
+                    }, {
+                        key: "isActive",
+                        value: function isActive() {
+                            return this._isActive;
+                        }
+                    }, {
+                        key: "getTrackables",
+                        value: function getTrackables() {
+                            return this._trackables;
+                        }
+                    } ]);
+                    return DeprecatedVuforiaDataSet;
+                }());
+                __decorate = undefined && undefined.__decorate || function(decorators, target, key, desc) {
+                    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+                    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc); else for (var i = decorators.length - 1; i >= 0; i--) {
+                        if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+                    }
+                    return c > 3 && r && Object.defineProperty(target, key, r), r;
+                };
+                __metadata = undefined && undefined.__metadata || function(k, v) {
+                    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+                };
+                _export("ArgonSystemProvider", ArgonSystemProvider = function ArgonSystemProvider(context, focus, location, visibility, reality, view, viewport, vuforia) {
+                    _classCallCheck(this, ArgonSystemProvider);
+                    this.context = context;
+                    this.focus = focus;
+                    this.location = location;
+                    this.visibility = visibility;
+                    this.reality = reality;
+                    this.view = view;
+                    this.viewport = viewport;
+                    this.vuforia = vuforia;
+                });
+                _export("ArgonSystemProvider", ArgonSystemProvider = __decorate([ autoinject(), __metadata("design:paramtypes", [ typeof (_a = typeof ContextServiceProvider !== "undefined" && ContextServiceProvider) === "function" && _a || Object, typeof (_b = typeof FocusServiceProvider !== "undefined" && FocusServiceProvider) === "function" && _b || Object, typeof (_c = typeof LocationServiceProvider !== "undefined" && LocationServiceProvider) === "function" && _c || Object, typeof (_d = typeof VisibilityServiceProvider !== "undefined" && VisibilityServiceProvider) === "function" && _d || Object, typeof (_e = typeof RealityServiceProvider !== "undefined" && RealityServiceProvider) === "function" && _e || Object, typeof (_f = typeof ViewServiceProvider !== "undefined" && ViewServiceProvider) === "function" && _f || Object, typeof (_g = typeof ViewportServiceProvider !== "undefined" && ViewportServiceProvider) === "function" && _g || Object, typeof (_h = typeof VuforiaServiceProvider !== "undefined" && VuforiaServiceProvider) === "function" && _h || Object ]) ], ArgonSystemProvider));
                 _export("ArgonSystem", ArgonSystem = function() {
-                    function ArgonSystem(containerElement, config) {
+                    function ArgonSystem(parentElement, config) {
                         var container = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : new Container();
                         _classCallCheck(this, ArgonSystem);
                         this.container = container;
                         if (!ArgonSystem.instance) ArgonSystem.instance = this;
-                        container.registerInstance(ContainerElement, containerElement || ContainerElement);
+                        container.registerInstance(ParentElement, parentElement || ParentElement);
                         container.registerInstance("config", config);
                         if (!container.hasResolver("containerElement")) container.registerInstance("containerElement", null);
                         if (Role.isRealityManager(config.role)) {
@@ -24174,19 +24474,25 @@
                             }
                         }
                     }, {
+                        key: "provider",
+                        get: function get() {
+                            this.session.ensureIsRealityManager();
+                            return this.container.get(ArgonSystemProvider);
+                        }
+                    }, {
                         key: "context",
                         get: function get() {
                             return this.container.get(ContextService);
                         }
                     }, {
-                        key: "device",
-                        get: function get() {
-                            return this.container.get(DeviceService);
-                        }
-                    }, {
                         key: "focus",
                         get: function get() {
                             return this.container.get(FocusService);
+                        }
+                    }, {
+                        key: "location",
+                        get: function get() {
+                            return this.container.get(LocationService);
                         }
                     }, {
                         key: "reality",
@@ -24202,6 +24508,16 @@
                         key: "view",
                         get: function get() {
                             return this.container.get(ViewService);
+                        }
+                    }, {
+                        key: "viewport",
+                        get: function get() {
+                            return this.container.get(ViewportService);
+                        }
+                    }, {
+                        key: "visibility",
+                        get: function get() {
+                            return this.container.get(VisibilityService);
                         }
                     }, {
                         key: "vuforia",
@@ -24237,19 +24553,33 @@
                 _export("EmptyRealityViewer", EmptyRealityViewer);
                 _export("LiveRealityViewer", LiveRealityViewer);
                 _export("HostedRealityViewer", HostedRealityViewer);
+                _export("ArgonSystemProvider", ArgonSystemProvider);
                 _export("ArgonSystem", ArgonSystem);
                 _export("init", init$1);
                 _export("initRealityViewer", initRealityViewer);
-                _export("initUnshared", initUnshared);
+                _export("AVERAGE_HUMAN_HEIGHT", AVERAGE_HUMAN_HEIGHT);
+                _export("EYE_ENTITY_ID", EYE_ENTITY_ID);
+                _export("PHYSICAL_EYE_ENTITY_ID", PHYSICAL_EYE_ENTITY_ID);
+                _export("STAGE_ENTITY_ID", STAGE_ENTITY_ID);
+                _export("PHYSICAL_STAGE_ENTITY_ID", PHYSICAL_STAGE_ENTITY_ID);
                 _export("Role", Role);
+                _export("Configuration", Configuration);
                 _export("Viewport", Viewport);
+                _export("NormalizedViewport", NormalizedViewport);
                 _export("SubviewType", SubviewType);
+                _export("SerializedEntityState", SerializedEntityState);
+                _export("SerializedSubview", SerializedSubview);
+                _export("SerializedSubviewList", SerializedSubviewList);
                 _export("PoseStatus", PoseStatus);
                 _export("ContextService", ContextService);
-                _export("DeviceService", DeviceService);
+                _export("ContextServiceProvider", ContextServiceProvider);
                 _export("FocusService", FocusService);
+                _export("FocusServiceProvider", FocusServiceProvider);
+                _export("LocationService", LocationService);
+                _export("LocationServiceProvider", LocationServiceProvider);
                 _export("RealityViewerFactory", RealityViewerFactory);
                 _export("RealityService", RealityService);
+                _export("RealityServiceProvider", RealityServiceProvider);
                 _export("version", version);
                 _export("SessionPort", SessionPort);
                 _export("SessionPortFactory", SessionPortFactory);
@@ -24260,39 +24590,44 @@
                 _export("DebugConnectService", DebugConnectService);
                 _export("WKWebViewConnectService", WKWebViewConnectService);
                 _export("DefaultUIService", DefaultUIService);
-                _export("Event", Event$$1);
-                _export("CommandQueue", CommandQueue);
                 _export("getAncestorReferenceFrames", getAncestorReferenceFrames);
                 _export("getEntityPositionInReferenceFrame", getEntityPositionInReferenceFrame);
                 _export("getEntityPosition", getEntityPosition);
                 _export("getEntityOrientationInReferenceFrame", getEntityOrientationInReferenceFrame);
                 _export("getEntityOrientation", getEntityOrientation);
-                _export("getSerializedEntityPose", getSerializedEntityPose);
+                _export("getSerializedEntityState", getSerializedEntityState);
                 _export("resolveURL", resolveURL);
                 _export("parseURL", parseURL);
                 _export("resolveElement", resolveElement);
-                _export("getWindowViewport", getWindowViewport);
-                _export("MessageChannelLike", MessageChannelLike);
-                _export("SynchronousMessageChannel", SynchronousMessageChannel);
-                _export("MessageChannelFactory", MessageChannelFactory);
                 _export("decomposePerspectiveOffCenterProjectionMatrix", decomposePerspectiveOffCenterProjectionMatrix);
                 _export("decomposePerspectiveProjectionMatrix", decomposePerspectiveProjectionMatrix);
                 _export("convertEntityReferenceFrame", convertEntityReferenceFrame);
                 _export("isIOS", isIOS);
                 _export("openInArgonApp", openInArgonApp);
                 _export("requestAnimationFrame", requestAnimationFrame$1);
-                _export("PresentationMode", PresentationMode);
-                _export("ContainerElement", ContainerElement);
+                _export("deprecated", deprecated$1);
+                _export("synthesizeEvent", synthesizeEvent);
+                _export("createEventForwarder", createEventForwarder);
+                _export("CommandQueue", CommandQueue);
+                _export("Event", Event);
+                _export("MessageChannelLike", MessageChannelLike);
+                _export("SynchronousMessageChannel", SynchronousMessageChannel);
+                _export("MessageChannelFactory", MessageChannelFactory);
+                _export("Subview", Subview);
                 _export("ViewService", ViewService);
-                _export("VuforiaInitResult", VuforiaInitResult);
-                _export("VuforiaHint", VuforiaHint);
-                _export("VuforiaServiceDelegateBase", VuforiaServiceDelegateBase);
-                _export("VuforiaServiceDelegate", VuforiaServiceDelegate);
+                _export("ViewServiceProvider", ViewServiceProvider);
+                _export("PresentationMode", PresentationMode);
+                _export("ParentElement", ParentElement);
+                _export("ViewportService", ViewportService);
+                _export("ViewportServiceProvider", ViewportServiceProvider);
+                _export("VisibilityService", VisibilityService);
+                _export("VisibilityServiceProvider", VisibilityServiceProvider);
+                _export("VuforiaServiceProvider", VuforiaServiceProvider);
                 _export("VuforiaService", VuforiaService);
                 _export("VuforiaAPI", VuforiaAPI);
                 _export("VuforiaTracker", VuforiaTracker);
                 _export("VuforiaObjectTracker", VuforiaObjectTracker);
-                _export("VuforiaDataSet", VuforiaDataSet);
+                _export("DeprecatedVuforiaDataSet", DeprecatedVuforiaDataSet);
             }
         };
     });

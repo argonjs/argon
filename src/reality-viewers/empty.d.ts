@@ -1,16 +1,15 @@
 import { SessionService } from '../session';
-import { DeviceService } from '../device';
+import { ContextService } from '../context';
 import { ViewService } from '../view';
+import { ViewportService } from '../viewport';
 import { RealityViewer } from './base';
 export declare class EmptyRealityViewer extends RealityViewer {
     private sessionService;
-    private deviceService;
+    private contextService;
     private viewService;
+    private viewportService;
     uri: string;
     type: string;
-    constructor(sessionService: SessionService, deviceService: DeviceService, viewService: ViewService, uri: string);
-    destroy(): void;
-    private _isPresenting;
-    setPresenting(foo: boolean): void;
+    constructor(sessionService: SessionService, contextService: ContextService, viewService: ViewService, viewportService: ViewportService, uri: string);
     load(): void;
 }

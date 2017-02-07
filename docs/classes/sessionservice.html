@@ -7,7 +7,6 @@
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
-	<script src="../assets/js/modernizr.js"></script>
 </head>
 <body>
 <header>
@@ -105,11 +104,12 @@
 							<h3>Accessors</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="sessionservice.html#connectevent" class="tsd-kind-icon">connect<wbr>Event</a></li>
-								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="sessionservice.html#isapplicatsion" class="tsd-kind-icon">is<wbr>Applicatsion</a></li>
-								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="sessionservice.html#ismanager" class="tsd-kind-icon">is<wbr>Manager</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-private"><a href="sessionservice.html#isapplication" class="tsd-kind-icon">is<wbr>Application</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-private"><a href="sessionservice.html#ismanager" class="tsd-kind-icon">is<wbr>Manager</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="sessionservice.html#isrealityaugmenter" class="tsd-kind-icon">is<wbr>Reality<wbr>Augmenter</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="sessionservice.html#isrealitymanager" class="tsd-kind-icon">is<wbr>Reality<wbr>Manager</a></li>
-								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="sessionservice.html#isrealityview" class="tsd-kind-icon">is<wbr>Reality<wbr>View</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-private"><a href="sessionservice.html#isrealityview" class="tsd-kind-icon">is<wbr>Reality<wbr>View</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="sessionservice.html#isrealityviewer" class="tsd-kind-icon">is<wbr>Reality<wbr>Viewer</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="sessionservice.html#managedsessions" class="tsd-kind-icon">managed<wbr>Sessions</a></li>
 							</ul>
 						</section>
@@ -121,9 +121,11 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="sessionservice.html#createmessagechannel" class="tsd-kind-icon">create<wbr>Message<wbr>Channel</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="sessionservice.html#createsessionport" class="tsd-kind-icon">create<wbr>Session<wbr>Port</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="sessionservice.html#createsynchronousmessagechannel" class="tsd-kind-icon">create<wbr>Synchronous<wbr>Message<wbr>Channel</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="sessionservice.html#ensureconnected" class="tsd-kind-icon">ensure<wbr>Connected</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="sessionservice.html#ensureisrealitymanager" class="tsd-kind-icon">ensure<wbr>IsReality<wbr>Manager</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="sessionservice.html#ensureisrealityview" class="tsd-kind-icon">ensure<wbr>IsReality<wbr>View</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="sessionservice.html#ensurenotrealityview" class="tsd-kind-icon">ensure<wbr>Not<wbr>Reality<wbr>View</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="sessionservice.html#ensureisrealityviewer" class="tsd-kind-icon">ensure<wbr>IsReality<wbr>Viewer</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="sessionservice.html#ensurenotrealityaugmenter" class="tsd-kind-icon">ensure<wbr>Not<wbr>Reality<wbr>Augmenter</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="sessionservice.html#ensurenotrealityviewer" class="tsd-kind-icon">ensure<wbr>Not<wbr>Reality<wbr>Viewer</a></li>
 							</ul>
 						</section>
 					</div>
@@ -135,19 +137,19 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Session<wbr>Service<span class="tsd-signature-symbol">(</span>configuration<span class="tsd-signature-symbol">: </span><a href="../interfaces/configuration.html" class="tsd-signature-type">Configuration</a>, connectService<span class="tsd-signature-symbol">: </span><a href="connectservice.html" class="tsd-signature-type">ConnectService</a>, sessionPortFactory<span class="tsd-signature-symbol">: </span><a href="sessionportfactory.html" class="tsd-signature-type">SessionPortFactory</a>, messageChannelFactory<span class="tsd-signature-symbol">: </span><a href="messagechannelfactory.html" class="tsd-signature-type">MessageChannelFactory</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="sessionservice.html" class="tsd-signature-type">SessionService</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Session<wbr>Service<span class="tsd-signature-symbol">(</span>configuration<span class="tsd-signature-symbol">: </span><a href="configuration.html" class="tsd-signature-type">Configuration</a>, connectService<span class="tsd-signature-symbol">: </span><a href="connectservice.html" class="tsd-signature-type">ConnectService</a>, sessionPortFactory<span class="tsd-signature-symbol">: </span><a href="sessionportfactory.html" class="tsd-signature-type">SessionPortFactory</a>, messageChannelFactory<span class="tsd-signature-symbol">: </span><a href="messagechannelfactory.html" class="tsd-signature-type">MessageChannelFactory</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="sessionservice.html" class="tsd-signature-type">SessionService</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/session.ts#L335">session.ts:335</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L355">src/session.ts:355</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>configuration: <a href="../interfaces/configuration.html" class="tsd-signature-type">Configuration</a></h5>
+									<h5>configuration: <a href="configuration.html" class="tsd-signature-type">Configuration</a></h5>
 								</li>
 								<li>
 									<h5>connectService: <a href="connectservice.html" class="tsd-signature-type">ConnectService</a></h5>
@@ -172,7 +174,7 @@
 					<div class="tsd-signature tsd-kind-icon">_connect<wbr>Event<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><a href="sessionport.html" class="tsd-signature-type">SessionPort</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;SessionPort&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/session.ts#L326">session.ts:326</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L347">src/session.ts:347</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -182,17 +184,17 @@
 					<div class="tsd-signature tsd-kind-icon">_managed<wbr>Sessions<span class="tsd-signature-symbol">:</span> <a href="sessionport.html" class="tsd-signature-type">SessionPort</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/session.ts#L335">session.ts:335</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L355">src/session.ts:355</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="configuration" class="tsd-anchor"></a>
 					<h3>configuration</h3>
-					<div class="tsd-signature tsd-kind-icon">configuration<span class="tsd-signature-symbol">:</span> <a href="../interfaces/configuration.html" class="tsd-signature-type">Configuration</a></div>
+					<div class="tsd-signature tsd-kind-icon">configuration<span class="tsd-signature-symbol">:</span> <a href="configuration.html" class="tsd-signature-type">Configuration</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/session.ts#L341">session.ts:341</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L361">src/session.ts:361</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -207,7 +209,7 @@
 					<div class="tsd-signature tsd-kind-icon">connect<wbr>Service<span class="tsd-signature-symbol">:</span> <a href="connectservice.html" class="tsd-signature-type">ConnectService</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/session.ts#L342">session.ts:342</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L362">src/session.ts:362</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -217,7 +219,7 @@
 					<div class="tsd-signature tsd-kind-icon">error<wbr>Event<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;Error&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/session.ts#L318">session.ts:318</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L339">src/session.ts:339</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -232,7 +234,7 @@
 					<div class="tsd-signature tsd-kind-icon">manager<span class="tsd-signature-symbol">:</span> <a href="sessionport.html" class="tsd-signature-type">SessionPort</a><span class="tsd-signature-symbol"> =&nbsp;this.createSessionPort(&#x27;argon:manager&#x27;)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/session.ts#L313">session.ts:313</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L334">src/session.ts:334</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -247,7 +249,7 @@
 					<div class="tsd-signature tsd-kind-icon">message<wbr>Channel<wbr>Factory<span class="tsd-signature-symbol">:</span> <a href="messagechannelfactory.html" class="tsd-signature-type">MessageChannelFactory</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/session.ts#L344">session.ts:344</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L364">src/session.ts:364</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -257,7 +259,7 @@
 					<div class="tsd-signature tsd-kind-icon">session<wbr>Port<wbr>Factory<span class="tsd-signature-symbol">:</span> <a href="sessionportfactory.html" class="tsd-signature-type">SessionPortFactory</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/session.ts#L343">session.ts:343</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L363">src/session.ts:363</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -274,7 +276,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/session.ts#L323">session.ts:323</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L344">src/session.ts:344</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -286,37 +288,41 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
-					<a name="isapplicatsion" class="tsd-anchor"></a>
-					<h3>is<wbr>Applicatsion</h3>
-					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> isApplicatsion<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-private">
+					<a name="isapplication" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> is<wbr>Application</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> isApplication<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/session.ts#L437">session.ts:437</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L481">src/session.ts:481</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-private">
 					<a name="ismanager" class="tsd-anchor"></a>
-					<h3>is<wbr>Manager</h3>
-					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> isManager<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> is<wbr>Manager</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> isManager<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/session.ts#L426">session.ts:426</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L475">src/session.ts:475</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+							<div class="tsd-comment tsd-typography">
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -330,13 +336,13 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/session.ts#L432">session.ts:432</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L460">src/session.ts:460</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Returns true if this system represents a <a href="../enums/role.html#reality_augmentor">REALITY_AUGMENTOR</a>, meaning,
-									it is running within a <a href="../enums/role.html#reality_manager">REALITY_MANAGER</a></p>
+									<p>Returns true if this system represents a [[REALITY_AUGMENTER]], meaning,
+									it is running within a [[REALITY_MANAGER]]</p>
 								</div>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -353,34 +359,53 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/session.ts#L421">session.ts:421</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L453">src/session.ts:453</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Returns true if this system represents a <a href="../enums/role.html#reality_manager">REALITY_MANAGER</a></p>
+									<p>Returns true if this system represents a [[REALITY_MANAGER]]</p>
 								</div>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-private">
 					<a name="isrealityview" class="tsd-anchor"></a>
-					<h3>is<wbr>Reality<wbr>View</h3>
-					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> is<wbr>Reality<wbr>View</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-private">
 						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> isRealityView<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/session.ts#L442">session.ts:442</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L487">src/session.ts:487</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="isrealityviewer" class="tsd-anchor"></a>
+					<h3>is<wbr>Reality<wbr>Viewer</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> isRealityViewer<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L467">src/session.ts:467</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Returns true if this system is a <a href="../enums/role.html#reality_view">REALITY_VIEW</a></p>
+									<p>Returns true if this system is a [[REALITY_VIEWER]]</p>
 								</div>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -397,12 +422,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/session.ts#L331">session.ts:331</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L352">src/session.ts:352</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Manager-only. A collection of ports for the sessions managed by this session.</p>
+									<p>Manager-only. A collection of ports for each managed session.</p>
 								</div>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="sessionport.html" class="tsd-signature-type">SessionPort</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -422,7 +447,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/session.ts#L377">session.ts:377</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L409">src/session.ts:409</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -455,12 +480,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/session.ts#L361">session.ts:361</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L393">src/session.ts:393</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Establishes a connection with the <a href="../enums/role.html#reality_manager">REALITY_MANAGER</a>.
+									<p>Establishes a connection with the [[REALITY_MANAGER]].
 									Called internally by the composition root (<a href="argonsystem.html">ArgonSystem</a>).</p>
 								</div>
 							</div>
@@ -478,7 +503,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/session.ts#L407">session.ts:407</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L439">src/session.ts:439</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -494,13 +519,13 @@
 					<a name="createsessionport" class="tsd-anchor"></a>
 					<h3>create<wbr>Session<wbr>Port</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">create<wbr>Session<wbr>Port<span class="tsd-signature-symbol">(</span>uri<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="sessionport.html" class="tsd-signature-type">SessionPort</a></li>
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Session<wbr>Port<span class="tsd-signature-symbol">(</span>uri<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="sessionport.html" class="tsd-signature-type">SessionPort</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/session.ts#L400">session.ts:400</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L432">src/session.ts:432</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -513,7 +538,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> uri: <span class="tsd-signature-type">string</span></h5>
+									<h5>uri: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="sessionport.html" class="tsd-signature-type">SessionPort</a></h4>
@@ -531,7 +556,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/session.ts#L414">session.ts:414</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L446">src/session.ts:446</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -540,6 +565,28 @@
 								</div>
 							</div>
 							<h4 class="tsd-returns-title">Returns <a href="synchronousmessagechannel.html" class="tsd-signature-type">SynchronousMessageChannel</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="ensureconnected" class="tsd-anchor"></a>
+					<h3>ensure<wbr>Connected</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">ensure<wbr>Connected<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L524">src/session.ts:524</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Throws an error if the connection to the manager is closed</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -553,12 +600,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/session.ts#L449">session.ts:449</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L492">src/session.ts:492</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Throws an error if this system is not a <a href="../enums/role.html#reality_manager">REALITY_MANAGER</a></p>
+									<p>Throws an error if this system is not a [[REALITY_MANAGER]]</p>
 								</div>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -566,21 +613,21 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="ensureisrealityview" class="tsd-anchor"></a>
-					<h3>ensure<wbr>IsReality<wbr>View</h3>
+					<a name="ensureisrealityviewer" class="tsd-anchor"></a>
+					<h3>ensure<wbr>IsReality<wbr>Viewer</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">ensure<wbr>IsReality<wbr>View<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">ensure<wbr>IsReality<wbr>Viewer<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/session.ts#L457">session.ts:457</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L500">src/session.ts:500</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Throws an error if this session is not a <a href="../enums/role.html#reality_view">REALITY_VIEW</a></p>
+									<p>Throws an error if this session is not a [[REALITY_VIEWER]]</p>
 								</div>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -588,21 +635,43 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="ensurenotrealityview" class="tsd-anchor"></a>
-					<h3>ensure<wbr>Not<wbr>Reality<wbr>View</h3>
+					<a name="ensurenotrealityaugmenter" class="tsd-anchor"></a>
+					<h3>ensure<wbr>Not<wbr>Reality<wbr>Augmenter</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">ensure<wbr>Not<wbr>Reality<wbr>View<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">ensure<wbr>Not<wbr>Reality<wbr>Augmenter<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/c183c56/src/session.ts#L465">session.ts:465</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L516">src/session.ts:516</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Throws an error if this session is a <a href="../enums/role.html#reality_view">REALITY_VIEW</a></p>
+									<p>Throws an error if this session is a [[REALITY_AUGMENTER]]</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="ensurenotrealityviewer" class="tsd-anchor"></a>
+					<h3>ensure<wbr>Not<wbr>Reality<wbr>Viewer</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">ensure<wbr>Not<wbr>Reality<wbr>Viewer<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L508">src/session.ts:508</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Throws an error if this session is a [[REALITY_VIEWER]]</p>
 								</div>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -656,10 +725,10 @@
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="sessionservice.html#connectevent" class="tsd-kind-icon">connect<wbr>Event</a>
 							</li>
-							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
-								<a href="sessionservice.html#isapplicatsion" class="tsd-kind-icon">is<wbr>Applicatsion</a>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-private">
+								<a href="sessionservice.html#isapplication" class="tsd-kind-icon">is<wbr>Application</a>
 							</li>
-							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-private">
 								<a href="sessionservice.html#ismanager" class="tsd-kind-icon">is<wbr>Manager</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
@@ -668,8 +737,11 @@
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="sessionservice.html#isrealitymanager" class="tsd-kind-icon">is<wbr>Reality<wbr>Manager</a>
 							</li>
-							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-private">
 								<a href="sessionservice.html#isrealityview" class="tsd-kind-icon">is<wbr>Reality<wbr>View</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="sessionservice.html#isrealityviewer" class="tsd-kind-icon">is<wbr>Reality<wbr>Viewer</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="sessionservice.html#managedsessions" class="tsd-kind-icon">managed<wbr>Sessions</a>
@@ -690,13 +762,19 @@
 								<a href="sessionservice.html#createsynchronousmessagechannel" class="tsd-kind-icon">create<wbr>Synchronous<wbr>Message<wbr>Channel</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="sessionservice.html#ensureconnected" class="tsd-kind-icon">ensure<wbr>Connected</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="sessionservice.html#ensureisrealitymanager" class="tsd-kind-icon">ensure<wbr>IsReality<wbr>Manager</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="sessionservice.html#ensureisrealityview" class="tsd-kind-icon">ensure<wbr>IsReality<wbr>View</a>
+								<a href="sessionservice.html#ensureisrealityviewer" class="tsd-kind-icon">ensure<wbr>IsReality<wbr>Viewer</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="sessionservice.html#ensurenotrealityview" class="tsd-kind-icon">ensure<wbr>Not<wbr>Reality<wbr>View</a>
+								<a href="sessionservice.html#ensurenotrealityaugmenter" class="tsd-kind-icon">ensure<wbr>Not<wbr>Reality<wbr>Augmenter</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="sessionservice.html#ensurenotrealityviewer" class="tsd-kind-icon">ensure<wbr>Not<wbr>Reality<wbr>Viewer</a>
 							</li>
 						</ul>
 					</li>
@@ -767,7 +845,7 @@
 	</div>
 </footer>
 <div class="container tsd-generator">
-	<p>Generated using <a href="http://typedoc.io" target="_blank">TypeDoc</a></p>
+	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
 </div>
 <div class="overlay"></div>
 <script src="../assets/js/main.js"></script>

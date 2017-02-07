@@ -1,7 +1,7 @@
 /// <reference types="cesium" />
-import { Entity, EntityCollection, Cartesian3, Cartographic, Quaternion, JulianDate, ReferenceFrame } from './cesium/cesium-imports';
-import { SerializedEntityPose, FrameState, ViewState } from './common';
-import { SessionService } from './session';
+import { Entity, EntityCollection, Cartesian3, Quaternion, JulianDate, ReferenceFrame } from './cesium/cesium-imports';
+import { SerializedEntityState, SerializedSubviewList, FrameState, Viewport } from './common';
+import { SessionService, SessionPort } from './session';
 import { Event } from './utils';
 /**
  * Describes the current pose of an entity relative to a particular reference frame
@@ -42,16 +42,14 @@ export declare enum PoseStatus {
  */
 export declare class ContextService {
     private sessionService;
+    constructor(sessionService: SessionService);
     /**
-     * An event that is raised when all remotely managed entities are are up-to-date for
-     * the current frame. It is suggested that all modifications to locally managed entities
-     * should occur within this event.
+     * An event that is raised when the next frame state is available.
      */
     frameStateEvent: Event<FrameState>;
     /**
-     * An event that is raised when all remotely managed entities are are up-to-date for
-     * the current frame. It is suggested that all modifications to locally managed entities
-     * should occur within this event.
+     * An event that is raised after managed entities have been updated for
+     * the current frame.
      */
     updateEvent: Event<ContextService>;
     /**
@@ -90,19 +88,13 @@ export declare class ContextService {
      */
     time: JulianDate;
     /**
-     * The current cartographic position (WSG84)
-     */
-    location?: Cartographic;
-    locationAccuracy?: number;
-    locationAltitudeAccuracy?: number;
-    /**
      * The collection of all entities this application is aware of.
      */
     entities: EntityCollection;
     /**
-     * An entity representing the location and orientation of the user.
+     * An alias for the 'eye' entity. To be deprecated in favor of `ViewService.eye`.
      */
-    user: Entity;
+    readonly user: Entity;
     /**
      * An entity positioned near the user, aligned with the local East-North-Up
      * coordinate system.
@@ -124,39 +116,49 @@ export declare class ContextService {
      */
     readonly serializedFrameState: FrameState;
     private _serializedFrameState;
-    private _entityPoseCache;
     private _entityPoseMap;
-    private _subscribedEntities;
     private _updatingEntities;
     private _knownEntities;
-    constructor(sessionService: SessionService);
     /**
      * Deprecated. Use timestamp property.
      * @private
      */
-    readonly systemTime: any;
+    readonly systemTime: number;
     /**
      * Deprecated. To be removed.
      * @private
      */
-    private getTime();
+    getTime(): JulianDate;
     /**
-     * Deprecated. To be removed.
+     * Deprecated. To be removed. Use the defaultReferenceFrame property.
      * @private
      */
     setDefaultReferenceFrame(origin: Entity): void;
     /**
-     * Deprecated. To be removed.
+     * Deprecated. To be removed.  Use the defaultReferenceFrame property.
      * @private
      */
     getDefaultReferenceFrame(): Entity;
     /**
-     * Adds an entity to this session's set of tracked entities.
+     * Subscribe to pose updates for an entity specified by the given id
      *
-     * @param id - The unique identifier of an entity.
-     * @returns The entity that was subscribed to.
+     * @deprecated Use [[ContextService#subscribe]]
+     * @param id - the id of the desired entity
+     * @returns A new or existing entity instance matching the given id
      */
     subscribeToEntityById(id: string): Entity;
+    /**
+     * Subscribe to pose updates for the given entity id
+     *
+     * @param id - the id of the desired entity
+     * @returns A Promise that resolves to a new or existing entity
+     * instance matching the given id, if the subscription is successful
+     */
+    subscribe(id: string | Entity): Promise<Entity>;
+    /**
+     * Unsubscribe to pose updates for the given entity id
+     */
+    unsubscribe(id: string | Entity): void;
     /**
      * Gets the current pose of an entity, relative to a given reference frame.
      *
@@ -166,16 +168,34 @@ export declare class ContextService {
      * object with the fields `position` and `orientation`, both of type
      * `Cartesian3`. Otherwise undefined.
      */
-    getEntityPose(entity: Entity, referenceFrame?: ReferenceFrame | Entity): EntityPose;
+    getEntityPose(entityOrId: Entity | string, referenceFrameOrId?: string | ReferenceFrame | Entity): EntityPose;
+    _scratchFrameState: FrameState;
+    createFrameState(time: JulianDate, viewport: Viewport, subviewList: SerializedSubviewList, eye: Entity, horizontalAccuracy?: number, verticalAccuracy?: number, headingAccuracy?: number): FrameState;
+    private _frameIndex;
     /**
-     * Process the next view state (which should come from the current reality viewer)
+     * Process the next frame state (which should come from the current reality viewer)
      */
-    processViewState(view: ViewState): void;
-    protected _update(serializedState: FrameState): void;
-    updateEntityFromSerializedPose(id: string, entityPose?: SerializedEntityPose): Entity;
-    publishEntityState(entity: Entity, referenceFrame: ReferenceFrame | Entity): void;
+    submitFrameState(frameState: FrameState): void;
+    private _update(frameState);
+    updateEntityFromSerializedPose(id: string, entityPose?: SerializedEntityState): Entity;
+    private _updateStage(state);
     private _updateLocalOrigin(state);
+}
+export declare class ContextServiceProvider {
+    private sessionService;
+    private contextService;
+    entitySubscriptionsBySubscriber: WeakMap<SessionPort, Set<string>>;
+    subscribersByEntityId: Map<string, Set<SessionPort>>;
+    subscribersChangeEvent: Event<{
+        id: string;
+        subscribers: any;
+    }>;
+    publishingReferenceFrameMap: Map<string, string | ReferenceFrame>;
+    private _entityPoseCache;
+    constructor(sessionService: SessionService, contextService: ContextService);
+    publishEntityState(idOrEntity: string | Entity, time?: JulianDate): void;
+    private _publishUpdates();
     private _sessionEntities;
-    private _sendUpdateForSession(state, session);
-    private _getSerializedEntityPose(id, time);
+    private _sendUpdateForSession(session);
+    private _getSerializedEntityState(entity, time);
 }

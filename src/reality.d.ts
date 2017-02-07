@@ -1,10 +1,9 @@
-import { DeprecatedPartialFrameState, ViewState } from './common';
 import { SessionPort, SessionService } from './session';
 import { Event } from './utils';
 import { ContextService } from './context';
-import { FocusService } from './focus';
-import { ViewService } from './view';
-import { DeviceService } from './device';
+import { FocusServiceProvider } from './focus';
+import { VisibilityServiceProvider } from './visibility';
+import { ViewportServiceProvider } from './viewport';
 import { RealityViewer } from './reality-viewers/base';
 export declare abstract class RealityViewerFactory {
     private _createEmptyReality;
@@ -13,27 +12,12 @@ export declare abstract class RealityViewerFactory {
     constructor(_createEmptyReality: any, _createLiveReality: any, _createHostedReality: any);
     createRealityViewer(uri: string): RealityViewer;
 }
-export interface RealityViewerRequestOptions {
-    uri?: string;
-    geopose?: boolean;
-}
 /**
-* A service which manages the reality view.
-* For an app developer, the RealityService instance can be used to
-* set preferences which can affect how the manager selects a reality view.
+* A service which makes requests to manage the reality viewer.
 */
 export declare class RealityService {
     private sessionService;
     private contextService;
-    private focusService;
-    private viewService;
-    private deviceService;
-    private realityViewerFactor;
-    /**
-     * Manager/Viewer-only. An event that is raised when the current reality emits the next view state.
-     */
-    readonly viewStateEvent: Event<ViewState>;
-    private _viewStateEvent;
     /**
      * An event that is raised when a reality viewer provides a session
      * for sending and receiving application commands.
@@ -45,7 +29,7 @@ export declare class RealityService {
      */
     readonly changeEvent: Event<{
         previous?: string | undefined;
-        current?: string | undefined;
+        current: string;
     }>;
     private _changeEvent;
     /**
@@ -54,63 +38,68 @@ export declare class RealityService {
     readonly current: string | undefined;
     private _current?;
     /**
-     * Manager-only. An event that is raised when a reality viewer is installed.
+     * The default Reality Viewer.
      */
-    readonly installedEvent: Event<{
-        uri: string;
-    }>;
-    private _installedEvent;
-    /**
-     * Manager-only. An event that is raised when a reality viewer is uninstalled.
-     */
-    readonly uninstalledEvent: Event<{
-        uri: string;
-    }>;
-    private _uninstalledEvent;
-    /**
-     * The default Reality Viewer
-     */
-    default?: string;
-    readonly geoposeNeeded: boolean;
-    private _geoposeNeeded;
-    private _geoposeSubscribers;
-    private _viewerByURI;
-    private _installersByURI;
-    constructor(sessionService: SessionService, contextService: ContextService, focusService: FocusService, viewService: ViewService, deviceService: DeviceService, realityViewerFactor: RealityViewerFactory);
-    /**
-     * Deprecated. Use pubishViewState.
-     * @deprecated
-     */
-    publishFrame(state: DeprecatedPartialFrameState): void;
+    default: string;
+    constructor(sessionService: SessionService, contextService: ContextService);
     /**
      * RealityViewer-only. Publish the next view state.
      */
-    publishViewState(view: ViewState): void;
     /**
      * Install the specified reality viewer
      */
     install(uri: string): Promise<void>;
-    protected _install(session: SessionPort, uri: string): void;
-    private _connectViewerWithSession(viewerSession, session);
     /**
      * Uninstall the specified reality viewer
      */
     uninstall(uri: string): Promise<void>;
-    protected _uninstall(session: SessionPort, uri: string): Promise<never>;
     /**
-     * Request that the provided reality viewer be presented. Pass `undefined` to
-     * hint that the manager should select the best available viewer.
+     * Request a reality viewer to be presented.
+     * - Pass a url to request a (custum) hosted reality viewer
+     * - [[RealityViewer.DEFAULT]] to request the system default reality viewer
+     * - [[RealityViewer.LIVE]] to request a live reality viewer
+     * - [[RealityViewer.EMPTY]] to request an empty reality viewer
      */
-    request(options: RealityViewerRequestOptions | undefined): Promise<void>;
-    protected _request(session: SessionPort, options?: RealityViewerRequestOptions): Promise<SessionPort | undefined> | undefined;
-    private _checkViewerSessionForGeoposeSupport(viewerSession);
-    private _checkGeoposeNeeded();
+    request(uri: string): Promise<void>;
     /**
-     * @private
+     * Deprecated. Use [[RealityService#request]]
+     * @deprecated
      */
     setDesired(reality: {
         uri: string;
     } | undefined): void;
-    private _setPresentingReality(uri);
+}
+export declare class RealityServiceProvider {
+    private sessionService;
+    private realityService;
+    private contextService;
+    private viewportServiceProvider;
+    private visibilityServiceProvider;
+    private focusServiceProvider;
+    private realityViewerFactory;
+    /**
+     * An event that is raised when a reality viewer is installed.
+     */
+    installedEvent: Event<{
+        viewer: RealityViewer;
+    }>;
+    /**
+     * An event that is raised when a reality viewer is uninstalled.
+     */
+    uninstalledEvent: Event<{
+        viewer: RealityViewer;
+    }>;
+    readonly presentingRealityViewer: RealityViewer | undefined;
+    private _presentingRealityViewer;
+    private _viewerByURI;
+    private _installersByURI;
+    constructor(sessionService: SessionService, realityService: RealityService, contextService: ContextService, viewportServiceProvider: ViewportServiceProvider, visibilityServiceProvider: VisibilityServiceProvider, focusServiceProvider: FocusServiceProvider, realityViewerFactory: RealityViewerFactory);
+    private _handleInstall(session, uri);
+    private _connectViewerWithSession(viewerSession, session);
+    protected _handleUninstall(session: SessionPort, uri: string): Promise<never>;
+    protected _handleRequest(session: SessionPort, options: {
+        uri: string;
+    }): Promise<void>;
+    private _setPresentingRealityViewer(viewer);
     getViewerByURI(uri: string): RealityViewer | undefined;
 }

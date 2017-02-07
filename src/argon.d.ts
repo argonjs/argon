@@ -4,13 +4,15 @@ import * as Cesium from './cesium/cesium-imports';
 import './webvr';
 import { SessionService } from './session';
 import { Configuration } from './common';
-import { ContextService } from './context';
-import { DeviceService } from './device';
-import { FocusService } from './focus';
-import { RealityService } from './reality';
 import { Event } from './utils';
-import { ViewService } from './view';
-import { VuforiaService } from './vuforia';
+import { ContextService, ContextServiceProvider } from './context';
+import { FocusService, FocusServiceProvider } from './focus';
+import { LocationService, LocationServiceProvider } from './location';
+import { RealityService, RealityServiceProvider } from './reality';
+import { ViewService, ViewServiceProvider } from './view';
+import { ViewportService, ViewportServiceProvider } from './viewport';
+import { VisibilityService, VisibilityServiceProvider } from './visibility';
+import { VuforiaService, VuforiaServiceProvider } from './vuforia';
 import { RealityViewer } from './reality-viewers/base';
 import { EmptyRealityViewer } from './reality-viewers/empty';
 import { LiveRealityViewer } from './reality-viewers/live';
@@ -18,15 +20,28 @@ import { HostedRealityViewer } from './reality-viewers/hosted';
 export { DI, Cesium };
 export * from './common';
 export * from './context';
-export * from './device';
 export * from './focus';
+export * from './location';
 export * from './reality';
 export * from './session';
 export * from './ui';
 export * from './utils';
 export * from './view';
+export * from './viewport';
+export * from './visibility';
 export * from './vuforia';
 export { RealityViewer, EmptyRealityViewer, LiveRealityViewer, HostedRealityViewer };
+export declare class ArgonSystemProvider {
+    context: ContextServiceProvider;
+    focus: FocusServiceProvider;
+    location: LocationServiceProvider;
+    visibility: VisibilityServiceProvider;
+    reality: RealityServiceProvider;
+    view: ViewServiceProvider;
+    viewport: ViewportServiceProvider;
+    vuforia: VuforiaServiceProvider;
+    constructor(context: ContextServiceProvider, focus: FocusServiceProvider, location: LocationServiceProvider, visibility: VisibilityServiceProvider, reality: RealityServiceProvider, view: ViewServiceProvider, viewport: ViewportServiceProvider, vuforia: VuforiaServiceProvider);
+}
 /**
  * A composition root which instantiates the object graph based on a provided configuration.
  * You generally want to create a new ArgonSystem via the provided [[init]] or [[initReality]] functions:
@@ -40,13 +55,16 @@ export declare class ArgonSystem {
      * The ArgonSystem instance which shares a view provided by a manager
      */
     static instance?: ArgonSystem;
-    constructor(containerElement: string | HTMLDivElement | null | undefined, config: Configuration, container?: DI.Container);
+    constructor(parentElement: string | HTMLDivElement | null | undefined, config: Configuration, container?: DI.Container);
+    readonly provider: ArgonSystemProvider;
     readonly context: ContextService;
-    readonly device: DeviceService;
     readonly focus: FocusService;
+    readonly location: LocationService;
     readonly reality: RealityService;
     readonly session: SessionService;
     readonly view: ViewService;
+    readonly viewport: ViewportService;
+    readonly visibility: VisibilityService;
     readonly vuforia: VuforiaService;
     readonly updateEvent: Event<any>;
     readonly renderEvent: Event<any>;
@@ -61,13 +79,9 @@ export declare class ArgonSystem {
  * If we are not running within a [[REALITY_MANAGER]],
  * this function will create an ArgonSystem which has the [[REALITY_MANAGER]] role.
  */
-export declare function init(containerElement?: string | HTMLDivElement | null, configuration?: Configuration, dependencyInjectionContainer?: DI.Container): ArgonSystem;
+export declare function init(configuration?: Configuration, dependencyInjectionContainer?: DI.Container): ArgonSystem;
+export declare function init(parentElement?: string | HTMLDivElement | null, configuration?: Configuration, dependencyInjectionContainer?: DI.Container): ArgonSystem;
 /**
  * Initialize an [[ArgonSystem]] with the [[REALITY_VIEWER]] role
  */
 export declare function initRealityViewer(configuration?: Configuration, dependencyInjectionContainer?: DI.Container): ArgonSystem;
-/**
- * Not yet implemented.
- * @private
- */
-export declare function initUnshared(containerElement: string | HTMLElement, configuration?: Configuration, dependencyInjectionContainer?: DI.Container): ArgonSystem;
