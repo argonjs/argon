@@ -45,7 +45,7 @@ export declare class ViewService {
     getSubviews(): Subview[];
     getSubviewEntity(index: number): Entity;
     /**
-     * Request an animation frame cal\\\\\\\\\\\\\]]]]]]]]]]]\\\\lback.
+     * Request an animation frame callback for the current view.
      */
     requestAnimationFrame(callback: (now: JulianDate) => void): number;
 }

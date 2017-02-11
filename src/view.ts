@@ -187,7 +187,7 @@ export class ViewService {
     }
 
     /**
-     * Request an animation frame cal\\\\\\\\\\\\\]]]]]]]]]]]\\\\lback.
+     * Request an animation frame callback for the current view. 
      */
     public requestAnimationFrame(callback:(now:JulianDate)=>void) {
         const onFrame = () => {
