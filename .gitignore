@@ -4,3 +4,4 @@ jspm_packages
 .tmp
 src/**/*.js
 src/**/*.js.map
+npm-debug.log
