@@ -18,7 +18,6 @@ export declare class ViewportService {
     private sessionService;
     private contextService;
     private focusService;
-    element: HTMLElement;
     /**
      * UI events that occur within this view. To handle an event (and prevent it from
      * being forwarded to another layer) call event.stopImmediatePropagation().
@@ -49,9 +48,13 @@ export declare class ViewportService {
      * Automatically publish the viewport of the element during PresentationMode.EMBEDDED
      */
     autoPublishEmbeddedMode: boolean;
+    /**
+     * The DOM element associated with this viewport
+     */
+    element: HTMLElement;
     private _currentViewport;
     private _currentViewportJSON;
-    constructor(sessionService: SessionService, contextService: ContextService, focusService: FocusService, element: HTMLElement);
+    constructor(sessionService: SessionService, contextService: ContextService, focusService: FocusService, elementOrSelector?: Element | string | null);
     /**
      * Get the current viewport
      */
