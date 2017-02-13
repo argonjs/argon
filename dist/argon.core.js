@@ -16693,7 +16693,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 return id;
             });
 
-            _export('version', version = "1.1.2");
+            _export('version', version = "1.1.3");
 
             __decorate$1 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
                 var c = arguments.length,

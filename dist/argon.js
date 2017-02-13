@@ -20713,7 +20713,7 @@
                     lastTime = currTime + timeToCall;
                     return id;
                 });
-                _export("version", version = "1.1.2");
+                _export("version", version = "1.1.3");
                 __decorate$1 = undefined && undefined.__decorate || function(decorators, target, key, desc) {
                     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
                     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc); else for (var i = decorators.length - 1; i >= 0; i--) {
