@@ -207,7 +207,8 @@
     "typedoc": "typedoc --tsconfig tsconfig.build.json --out docs --mode file --gaID UA-63191442-2 --name argon.js --readme src/README.md --target ES6 --module commonjs --moduleResolution node --experimentalDecorators --includeDeclarations --excludeNotExported --excludeExternals --ignoreCompilerErrors src",
     "postinstall": "npm install types/cesium types/mobile-detect",
     "tsc": "tsc",
-    "version": "[[ -z $(git status --porcelain) ]] && npm run tsc && npm run build && git add -A dist && git commit -m 'Update build'",
+    "preversion": "[[ -z $(git status --porcelain) ]]",
+    "version": "npm run tsc && npm run build && git add -A dist && git commit -m 'Update build'",
     "postversion": "git push && git push --tags"
   },
   "dependencies": {
