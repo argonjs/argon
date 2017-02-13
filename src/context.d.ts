@@ -4,13 +4,26 @@ import { SerializedEntityState, SerializedSubviewList, FrameState, Viewport } fr
 import { SessionService, SessionPort } from './session';
 import { Event } from './utils';
 /**
- * Describes the current pose of an entity relative to a particular reference frame
+ * Tracks the pose of an entity relative to a particular reference frame.
+ *
+ * The `update` method must be called in order to update the position / orientation / poseStatus.
  */
-export interface EntityPose {
+export declare class EntityPose {
+    context: ContextService;
+    constructor(context: ContextService, entityOrId: Entity | string, referenceFrameId?: Entity | ReferenceFrame | string);
+    private _entity;
+    private _referenceFrame;
+    readonly entity: Entity;
+    readonly referenceFrame: Entity | ReferenceFrame;
+    status: PoseStatus;
+    /**
+     * alias for status
+     */
+    readonly poseStatus: PoseStatus;
     position: Cartesian3;
     orientation: Quaternion;
-    referenceFrame: Entity | ReferenceFrame;
-    poseStatus: PoseStatus;
+    time: JulianDate;
+    update(time?: JulianDate): void;
 }
 /**
 * A bitmask that provides metadata about the pose of an EntityPose.
@@ -160,13 +173,20 @@ export declare class ContextService {
      */
     unsubscribe(id: string | Entity): void;
     /**
+     * Create a new EntityPose instance to track the pose of a given entity
+     * relative to a given reference frame. If no reference frame is specified,
+     * then the pose is based on the context's defaultReferenceFrame.
+     *
+     * @param entity - the entity to track
+     * @param referenceFrameOrId - the reference frame to use
+     */
+    createEntityPose(entityOrId: Entity | string, referenceFrameOrId?: string | ReferenceFrame | Entity): EntityPose;
+    /**
      * Gets the current pose of an entity, relative to a given reference frame.
      *
+     * @deprecated
      * @param entity - The entity whose state is to be queried.
      * @param referenceFrame - The intended reference frame. Defaults to `this.defaultReferenceFrame`.
-     * @returns If the position and orientation exist for the given entity, an
-     * object with the fields `position` and `orientation`, both of type
-     * `Cartesian3`. Otherwise undefined.
      */
     getEntityPose(entityOrId: Entity | string, referenceFrameOrId?: string | ReferenceFrame | Entity): EntityPose;
     _scratchFrameState: FrameState;

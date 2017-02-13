@@ -1,6 +1,6 @@
 import { autoinject } from 'aurelia-dependency-injection'
 import { ViewServiceProvider } from './view'
-import { ViewportService, PresentationMode } from './viewport'
+import { ViewportService, ViewportMode } from './viewport'
 import { SessionService } from './session'
 import { RealityService, RealityServiceProvider } from './reality'
 import * as utils from './utils'
@@ -103,10 +103,14 @@ export class DefaultUIService {
             this.element.style.position = 'absolute';
             this.element.style.bottom = '0';
             this.element.style.right = '0';
+            this.element.style.width = '100%';
+            this.element.style.height = '100%';
             this.element.style['userSelect'] = 'none';
             this.element.style.webkitUserSelect = 'none';
             this.element.style.zIndex = '10';
-            this.viewportService.rootElement.appendChild(this.element!);
+            this.element.style.pointerEvents = 'none';
+            this.element.style.overflow = 'hidden';
+            this.viewportService.element.appendChild(this.element!);
             this.sessionService.manager.closeEvent.addEventListener(()=>{
                 this.element!.remove();
             })
@@ -117,6 +121,7 @@ export class DefaultUIService {
             realityViewerOverlayElement.style.height = '100%';
             realityViewerOverlayElement.style.display = 'flex';
             realityViewerOverlayElement.style.alignItems = 'center';
+            realityViewerOverlayElement.style.pointerEvents = 'auto';
             
             realityViewerOverlayElement.addEventListener('click', (e)=> {
                 if (e.target === realityViewerOverlayElement) {
@@ -221,13 +226,7 @@ export class DefaultUIService {
                 if (this.viewServiceProvider.isPresentingHMD) {
                     this.viewServiceProvider.exitPresentHMD();
                 } else {
-                    if (utils.isIOS) {
-                        this.viewportService.requestPresentationMode(PresentationMode.IMMERSIVE).then(()=>{
-                            return this.viewServiceProvider.requestPresentHMD();
-                        })
-                    } else {
-                        this.viewServiceProvider.requestPresentHMD();
-                    }
+                    this.viewServiceProvider.requestPresentHMD();
                 }
             });
 
@@ -241,10 +240,10 @@ export class DefaultUIService {
             this.maximizeMenuItem = this._createMenuItem(fullscreenIcon, 'Toggle Immersive View', ()=>{
                 this.menuOpen = false;
                 this.updateMenu();
-                if (this.viewportService.presentationMode === PresentationMode.IMMERSIVE) {
-                    this.viewportService.requestPresentationMode(PresentationMode.PAGE);
+                if (this.viewportService.mode === ViewportMode.IMMERSIVE) {
+                    this.viewportService.desiredMode = ViewportMode.PAGE;
                 } else {
-                    this.viewportService.requestPresentationMode(PresentationMode.IMMERSIVE);
+                    this.viewportService.desiredMode = ViewportMode.IMMERSIVE;
                 }
             });
 
@@ -323,7 +322,7 @@ export class DefaultUIService {
         this.menuItems.push(null);
         if (utils.isIOS) this.menuItems.push(this.openInArgonMenuItem);
 
-        const parentElement = this.viewportService.rootElement.parentElement;
+        const parentElement = this.viewportService.element.parentElement;
         const parentWidth = parentElement ? parentElement.clientWidth : 0;
         const parentHeight = parentElement ? parentElement.clientHeight : 0;
 

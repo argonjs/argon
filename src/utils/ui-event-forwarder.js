@@ -26,7 +26,17 @@ export default function createEventForwarder(viewportService, callback) {
     };
     const uievent = {};
     const handleEvent = (e) => {
-        if (e.target === viewportService.element || e.target.parentElement === viewportService.element) {
+        const target = e.target instanceof HTMLElement ? e.target : undefined;
+        const width = target && target.clientWidth;
+        const height = target && target.clientHeight;
+        // if the target element is the view element or an element of similar size,
+        // attempt to forward the event (webvr-polyfill makes the canvas 10px larger
+        // in each dimension due to an issue with the iOS safari browser, which is why
+        // forward the event for any target that matches the viewport size up to 15px 
+        // larger in either dimension)
+        if (e.target === viewportService.element ||
+            (Math.abs(width - viewportService.element.clientWidth) < 15 &&
+                Math.abs(height - viewportService.element.clientHeight) < 15)) {
             const boundingRect = viewportService.element.getBoundingClientRect();
             if (viewportService.uiEvent.numberOfListeners > 0) {
                 forwardEvent = false;

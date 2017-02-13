@@ -50,18 +50,13 @@ userLocation.add(axisHelper);
 axisHelper.position.y = -50;
 var perspectiveProjection = new Argon.Cesium.PerspectiveFrustum();
 perspectiveProjection.fov = Math.PI / 2;
-function update(time) {
-    app.view.requestAnimationFrame(update);
-    const suggestedViewState = app.view.suggestedViewState;
-    if (!suggestedViewState)
-        return;
-    const frameState = app.context.createFrameState(time, suggestedViewState.viewport, suggestedViewState.subviews, app.view.eye);
+app.view.suggestedViewStateEvent.addEventListener((suggestedViewState) => {
+    const frameState = app.context.createFrameState(suggestedViewState.time, suggestedViewState.viewport, suggestedViewState.subviews, app.view.eye);
     app.context.submitFrameState(frameState);
-}
-app.view.requestAnimationFrame(update);
+});
 app.updateEvent.addEventListener(() => {
     const userPose = app.context.getEntityPose(app.context.user);
-    if (userPose.poseStatus & Argon.PoseStatus.KNOWN) {
+    if (userPose.status & Argon.PoseStatus.KNOWN) {
         user.position.copy(userPose.position);
         user.quaternion.copy(userPose.orientation);
         userLocation.position.copy(userPose.position);

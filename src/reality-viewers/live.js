@@ -94,23 +94,15 @@ let LiveRealityViewer = class LiveRealityViewer extends RealityViewer {
                 });
                 const viewService = this.viewService;
                 let lastFrameTime = -1;
-                let update = (time) => {
-                    if (session.isConnected)
-                        viewService.requestAnimationFrame(update);
-                    else
-                        return;
-                    const suggestedViewState = viewService.suggestedViewState;
-                    if (!suggestedViewState)
-                        return;
+                viewService.suggestedViewStateEvent.addEventListener((suggestedViewState) => {
                     if (videoElement.currentTime != lastFrameTime) {
                         lastFrameTime = videoElement.currentTime;
                         // const videoWidth = videoElement.videoWidth;
                         // const videoHeight = videoElement.videoHeight;
-                        const frameState = this.contextService.createFrameState(time, suggestedViewState.viewport, suggestedViewState.subviews, viewService.eye);
+                        const frameState = this.contextService.createFrameState(suggestedViewState.time, suggestedViewState.viewport, suggestedViewState.subviews, viewService.eye);
                         session.send('ar.reality.frameState', frameState);
                     }
-                };
-                viewService.requestAnimationFrame(update);
+                });
             }
         });
     }

@@ -4,25 +4,26 @@ import { SessionService, SessionPort } from './session'
 import { ContextService } from './context'
 import { 
     Event,
-    resolveElement, 
     isIOS,
     createEventForwarder,
-    synthesizeEvent
+    synthesizeEvent,
+    deprecated
 } from './utils'
 import { FocusService, FocusServiceProvider } from './focus'
 import { VisibilityServiceProvider } from './visibility'
 
-export const enum PresentationMode {
-    PAGE,
+export const enum ViewportMode {
+    EMBEDDED = 0,
+    PAGE = 0, // alias for EMBEDDED
     IMMERSIVE
 }
 
-export const ParentElement = '#argon';
+export abstract class ViewElement {};
 
 /**
  * Manages the view state
  */
-@inject(SessionService, ContextService, FocusService, Optional.of(ParentElement))
+@inject(SessionService, ContextService, FocusService, Optional.of(ViewElement))
 export class ViewportService {
     
     /**
@@ -34,35 +35,36 @@ export class ViewportService {
     /**
      * An event that is raised when the viewport has changed
      */
-    public changeEvent = new Event<void>();
+    public changeEvent = new Event<Viewport>();
 
     /**
-     * An event that is raised when the presentation mode has changed
+     * An event that is raised when the viewport mode has changed
      */
-    public presentationModeChangeEvent = new Event<PresentationMode>();
+    public modeChangeEvent = new Event<ViewportMode>();
 
     /**
-     * The current presentation mode
+     * The current viewport mode
      */
-    public get presentationMode() { return this._presentationMode }
-    private _presentationMode = PresentationMode.PAGE;
+    public get mode() { return this._mode }
+    private _mode = ViewportMode.EMBEDDED;
+
+    @deprecated('mode')
+    public get presentationMode() { return this.mode }
 
     /**
-     * The root HTMLDivElement element for this view.
-     * This value is undefined in non-DOM environments.
+     * Automatically layout the element to match the immersive viewport during PresentationMode.IMMERSIVE
      */
-    public rootElement: HTMLDivElement;
+    public autoLayoutImmersiveMode = true;
 
     /**
-     * An HTMLDivElement which represents the viewport.
-     * This value is undefined in non-DOM environments.
+     * Automatically publish the viewport of the element during PresentationMode.EMBEDDED
      */
-    public element: HTMLDivElement;
+    public autoPublishEmbeddedMode = true;
 
     /**
-     * Automatically watch and publish the viewport during PresentationMode.EMBEDDED
+     * The DOM element associated with this viewport
      */
-    public autoPublishEmbeddedViewport = true;
+    public element:HTMLElement;
 
     private _currentViewport: Viewport;
     private _currentViewportJSON: string;
@@ -71,52 +73,39 @@ export class ViewportService {
         private sessionService: SessionService,
         private contextService: ContextService,
         private focusService: FocusService,
-        parentElementOrSelector?: string|HTMLElement) {
+        elementOrSelector?: Element|string|null) {
 
         if (typeof document !== 'undefined' && document.createElement) {
-            this.rootElement = document.createElement('div');
-            this.rootElement.classList.add('argon-view');
 
-            const viewportElement = this.element = document.createElement('div');
-            viewportElement.classList.add('argon-viewport');
-            this.rootElement.appendChild(viewportElement);
+            let element = elementOrSelector;
+            if (!element || typeof element === 'string') {
+                const selector = element;
+                element = selector ? <Element>document.querySelector(selector) : undefined;
+                if (!element && !selector) {
+                    element = document.querySelector('#argon');
+                    if (!element) {
+                        element = document.createElement('div');
+                        element.id = 'argon';
+                        document.body.appendChild(element);
+                    }
+                } else if (!element) {
+                    throw new Error('Unable to find element with selector: ' + selector);
+                }
+            }
+
+            this.element = <HTMLElement>element;
+            element.classList.add('argon-view');
 
             // prevent pinch-zoom of the page in ios 10.
             if (isIOS) {
-                viewportElement.addEventListener('touchmove', (event) => {
+                const touchMoveListener = (event) => {
                     if (event.touches.length > 1)
                         event.preventDefault();
-                }, true);
-            }
-
-            const insertRootIntoParentElement = (parentElement:HTMLElement) => {
-                if (this.sessionService.manager.isClosed) return;
-                parentElement.insertBefore(this.rootElement, parentElement.firstChild);
+                }
+                this.element.addEventListener('touchmove', touchMoveListener, true);
                 this.sessionService.manager.closeEvent.addEventListener(()=>{
-                    this.rootElement.remove();
+                    this.element.removeEventListener('touchmove', touchMoveListener)
                 });
-            }
-            
-            // first check for the specificied element synchronously, then
-            // if synchronous check fails, wait for document to load, then insert
-            if (parentElementOrSelector && parentElementOrSelector instanceof HTMLElement) {
-                insertRootIntoParentElement(parentElementOrSelector);
-            } else if (parentElementOrSelector === `#argon`) {
-                // first check synchronously
-                let parentElement = <HTMLDivElement>document.querySelector(`#argon`);
-                if (parentElement) {
-                    insertRootIntoParentElement(parentElement);
-                } else {
-                    resolveArgonElement().then(insertRootIntoParentElement);
-                }
-            } else if (parentElementOrSelector) {
-                // first check synchronously
-                let parentElement = <HTMLDivElement>document.querySelector(`${parentElementOrSelector}`);
-                if (parentElement) {
-                    insertRootIntoParentElement(parentElement);
-                } else {
-                    resolveElement(parentElementOrSelector).then(insertRootIntoParentElement);
-                }
             }
 
             this.focusService.focusEvent.addEventListener(() => {
@@ -131,14 +120,12 @@ export class ViewportService {
                 document.documentElement.classList.add('argon-no-focus');
             });
 
-            this.presentationModeChangeEvent.addEventListener((mode)=>{
+            this.modeChangeEvent.addEventListener((mode)=>{
                 switch (mode) {
-                    case PresentationMode.PAGE: 
-                        this.rootElement.classList.remove('argon-maximize');
+                    case ViewportMode.EMBEDDED:
                         document.documentElement.classList.remove('argon-immersive');
                         break;
-                    case PresentationMode.IMMERSIVE: 
-                        this.rootElement.classList.add('argon-maximize');
+                    case ViewportMode.IMMERSIVE:
                         document.documentElement.classList.add('argon-immersive');
                         break;
                 }
@@ -155,21 +142,27 @@ export class ViewportService {
             }
         }
 
-        sessionService.manager.on['ar.viewport.presentationMode'] = 
-            ({mode}:{mode:PresentationMode}) => {
-                this._updatePresentationMode(mode);
+        sessionService.manager.on['ar.viewport.mode'] = 
+            ({mode}:{mode:ViewportMode}) => {
+                this._updateViewportMode(mode);
             }
 
         this.contextService.frameStateEvent.addEventListener((state) => {
             this._updateViewport(state.viewport);
         });
 
-        // older version of argon-app manager only property supported immersive mode. 
+        // if we are not the manager, we must start in immersive mode
+        if (!sessionService.isRealityManager)
+            this._updateViewportMode(ViewportMode.IMMERSIVE);
+
+        // if we are loaded in an older manager which does not support embedded mode,
+        // then switch to immersive mode
         sessionService.manager.connectEvent.addEventListener(()=>{
-            if (sessionService.manager.version[0] === 0) {
-                this._updatePresentationMode(PresentationMode.IMMERSIVE);
+            if (sessionService.manager.version[0] === 0 ||
+                !sessionService.isRealityManager) {
+                this._updateViewportMode(ViewportMode.IMMERSIVE);
             }
-        })
+        });
     }
 
     /**
@@ -179,21 +172,28 @@ export class ViewportService {
         return this.contextService.serializedFrameState.viewport;
     }
 
-    /**
-     * Request a presentation mode
-     * - [[PresentationMode.PAGE]] : present the entire document
-     * - [[PresentationMode.IMMERSIVE]] : present only the argon.js view
-     */
-    public requestPresentationMode(mode:PresentationMode) : Promise<void> {
-        return this.sessionService.manager.request('ar.viewport.requestPresentationMode', {mode});
+    @deprecated('desiredMode')
+    public requestPresentationMode(mode:ViewportMode) : Promise<void> {
+        return this.sessionService.manager.request('ar.viewport.desiredMode', {mode});
     }
 
-    private _updatePresentationMode(mode:PresentationMode) {
-        const currentMode = this.presentationMode;
+    private _desiredMode:ViewportMode = this.mode;
+
+    public set desiredMode(mode:ViewportMode) {
+        this._desiredMode = mode;
+        if (this.sessionService.manager.version[0] > 0)
+            this.sessionService.manager.send('ar.viewport.desiredMode', {mode});
+    }
+
+    public get desiredMode() {
+        return this._desiredMode;
+    }
+
+    private _updateViewportMode(mode:ViewportMode) {
+        const currentMode = this.mode;
         if (currentMode !== mode) {
-            this._presentationMode = mode;
-            this.presentationModeChangeEvent.raiseEvent(mode);
-            this.changeEvent.raiseEvent(undefined);
+            this._mode = mode;
+            this.modeChangeEvent.raiseEvent(mode);
         }
     }
 
@@ -215,7 +215,10 @@ export class ViewportService {
         if (!this._currentViewportJSON || this._currentViewportJSON !== viewportJSON) {
             this._currentViewportJSON = viewportJSON;
 
-            if (this.element && !this.sessionService.isRealityManager) {
+            if (this.element && 
+                !this.sessionService.isRealityManager && 
+                this.autoLayoutImmersiveMode && 
+                this.mode === ViewportMode.IMMERSIVE) {
                 requestAnimationFrame(() => {
                     this.element.style.position = 'fixed';
                     this.element.style.left = viewport.x + 'px';
@@ -225,7 +228,7 @@ export class ViewportService {
                 })
             }
 
-            this.changeEvent.raiseEvent(undefined);
+            this.changeEvent.raiseEvent(this._currentViewport);
         }
     }
 
@@ -235,8 +238,8 @@ export class ViewportService {
 
     private _watchEmbeddedViewport() {
         const publish = () => {
-            if (this.element && this.autoPublishEmbeddedViewport) {
-                const parentElement = this.rootElement.parentElement;
+            if (this.element && this.autoPublishEmbeddedMode) {
+                const parentElement = this.element.parentElement;
                 const rect = parentElement && parentElement.getBoundingClientRect();
                 rect && this.publishEmbeddedViewport({
                     x: rect.left,
@@ -258,15 +261,15 @@ export class ViewportService {
 }
 
 
-
-
 @autoinject()
 export class ViewportServiceProvider {
+
+    public sessionViewportMode = new WeakMap<SessionPort, ViewportMode>();
 
     /**
      * The embedded viewports for each managed session.
      */
-    public embeddedViewports = new WeakMap<SessionPort, Viewport>();
+    public sessionEmbeddedViewport = new WeakMap<SessionPort, Viewport>();
 
     /**
      * A UI event being forwarded from a managed session 
@@ -282,40 +285,49 @@ export class ViewportServiceProvider {
         sessionService.ensureIsRealityManager();
 
         sessionService.connectEvent.addEventListener((session) => {
+
+            this.sessionViewportMode.set(session, 
+                session === this.sessionService.manager ? 
+                    this.viewportService.desiredMode : 
+                    ViewportMode.IMMERSIVE
+            );
             
             // forward ui events to the visible reality viewer
             session.on['ar.viewport.forwardUIEvent'] = (uievent:UIEvent) => {
                 this.forwardedUIEvent.raiseEvent(uievent);
             }
             
-            session.on['ar.viewport.requestPresentationMode'] = ({mode}:{mode:PresentationMode})=> {
-                return this._handleRequestPresentationMode(session, mode);
+            session.on['ar.viewport.desiredMode'] = ({mode}:{mode:ViewportMode})=> {
+                this.sessionViewportMode.set(session, mode);
+                this._publishViewportModes();
             }
 
             session.on['ar.viewport.embeddedViewport'] = (viewport: Viewport) => {
-                this.embeddedViewports.set(session, viewport);
+                this.sessionEmbeddedViewport.set(session, viewport);
             }
+
+            this._publishViewportModes();
             
         });
+
+        focusServiceProvider.sessionFocusEvent.addEventListener(()=>{
+            this._publishViewportModes();
+        })
     }
 
     public sendUIEventToSession(uievent:UIEvent, session:SessionPort) {
         session.send('ar.viewport.uievent', uievent);
     }
 
-    private _handleRequestPresentationMode(session, mode) {
-        this._ensurePersmission(session);
-        if (this.viewportService.presentationMode !== mode) {
-            this.sessionService.manager.send('ar.viewport.presentationMode', {mode})
-            for (session of this.sessionService.managedSessions) {
-                session.send('ar.viewport.presentationMode', {mode});
-            }
+    private _publishViewportModes() {
+        this.sessionService.manager.send('ar.viewport.mode', {
+            mode: this.sessionViewportMode.get(this.sessionService.manager)
+        });
+        for (const session of this.sessionService.managedSessions) {
+            const mode = (session === this.focusServiceProvider.session) ?
+                this.sessionViewportMode.get(session) : ViewportMode.IMMERSIVE;
+            session.send('ar.viewport.mode', {mode});
         }
-    }
-
-    protected _ensurePersmission(session:SessionPort) {
-        if (session !== this.sessionService.manager && session !== this.focusServiceProvider.session)
-            throw new Error('Application must have focus');
     }
 }
 
@@ -332,18 +344,6 @@ if (typeof document !== 'undefined' && document.createElement) {
     if (!argonMetaTag) argonMetaTag = document.createElement('meta');
     argonMetaTag.name = 'argon'
     document.head.appendChild(argonMetaTag);
-
-    let argonElementPromise;
-
-    var resolveArgonElement = () => {
-        if (argonElementPromise) return argonElementPromise; 
-        return argonElementPromise = resolveElement('#argon').catch(()=>{
-            const argonElement = document.createElement('div');
-            argonElement.id = 'argon';
-            document.body.appendChild(argonElement);
-            return argonElement;
-        });
-    }
 
     const style = document.createElement("style");
     style.type = 'text/css';
@@ -362,63 +362,30 @@ if (typeof document !== 'undefined' && document.createElement) {
         }
     `, sheet.cssRules.length);
     sheet.insertRule(`
-        .argon-view, .argon-view ~ * {
-            width: 100%;
-            height: 100%;
-        }
-    `, sheet.cssRules.length);
-    sheet.insertRule(`
-        .argon-view > * {
-            position: absolute;
-            overflow: hidden;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
+        .argon-view {
             -webkit-tap-highlight-color: transparent;
             -webkit-user-select: none;
             user-select: none;
         }
     `, sheet.cssRules.length);
     sheet.insertRule(`
-        .argon-view > * > * {
-            pointer-events: auto;
-            -webkit-tap-highlight-color: initial;
-            -webkit-user-select: initial;
-            user-select: initial;
-        }
-    `, sheet.cssRules.length);
-    sheet.insertRule(`
-        .argon-viewport {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            pointer-events: auto;
-        }
-    `, sheet.cssRules.length);
-    sheet.insertRule(`
-        .argon-viewport > * {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-    `, sheet.cssRules.length);
-    sheet.insertRule(`
-        .argon-viewport > * > * {
-            pointer-events: auto;
-        }
-    `, sheet.cssRules.length);
-    sheet.insertRule(`
-        .argon-maximize, .argon-maximize ~ * {
-            pointer-events: none;
+        .argon-immersive .argon-view {
             position: fixed !important;
             width: 100% !important;
             height: 100% !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
             left: 0;
             bottom: 0;
             margin: 0;
             border: 0;
             padding: 0;
+            visibility: visible;
+        }
+    `, sheet.cssRules.length);
+    sheet.insertRule(`
+        .argon-immersive body {
+            visibility: hidden;
         }
     `, sheet.cssRules.length);
     sheet.insertRule(`

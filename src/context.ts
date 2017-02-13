@@ -1,5 +1,6 @@
 import { autoinject } from 'aurelia-dependency-injection'
 import {
+    ReferenceEntity,
     Entity,
     EntityCollection,
     ConstantPositionProperty,
@@ -29,14 +30,100 @@ import {
 import { SessionService, SessionPort } from './session'
 import { Event, getSerializedEntityState, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame, deprecated } from './utils'
 
+
 /**
- * Describes the current pose of an entity relative to a particular reference frame
+ * Tracks the pose of an entity relative to a particular reference frame. 
+ * 
+ * The `update` method must be called in order to update the position / orientation / poseStatus. 
  */
-export interface EntityPose {
-    position: Cartesian3
-    orientation: Quaternion,
-    referenceFrame: Entity|ReferenceFrame,
-    poseStatus: PoseStatus
+export class EntityPose {
+    constructor(
+        public context:ContextService, 
+        entityOrId:Entity|string, 
+        referenceFrameId?:Entity|ReferenceFrame|string
+    ){
+        if (typeof entityOrId === 'string') {
+            let entity:Entity|ReferenceEntity|undefined = this.context.entities.getById(entityOrId);
+            if (!entity) entity = <Entity><any> new ReferenceEntity(context.entities, entityOrId);
+            this._entity = entity;
+        } else {
+            this._entity = entityOrId;
+        }
+        
+        if (typeof referenceFrameId === 'string') {
+            let referenceFrame:Entity|ReferenceEntity|ReferenceFrame|undefined = this.context.entities.getById(referenceFrameId);
+            if (!defined(referenceFrame)) referenceFrame = <Entity><any> new ReferenceEntity(context.entities, referenceFrameId);
+            this._referenceFrame = referenceFrame;
+        } else {
+            this._referenceFrame = referenceFrameId;
+        }
+    }
+
+    private _entity:Entity;
+    private _referenceFrame:Entity|ReferenceFrame|undefined;
+
+    get entity() { return this._entity }
+
+    get referenceFrame() {
+        if (!defined(this._referenceFrame))
+            return this.context.defaultReferenceFrame;
+        return this._referenceFrame;
+    }
+
+    status:PoseStatus = 0;
+
+    /**
+     * alias for status
+     */
+    get poseStatus() { return this.status };
+
+    position = new Cartesian3;
+    orientation = new Quaternion;
+    time = new JulianDate(0,0)
+
+    update(time=this.context.time) {
+
+        JulianDate.clone(time, this.time);
+
+        const entity = this.entity;
+        const referenceFrame = this.referenceFrame;
+
+        if (!entity || !defined(referenceFrame)) {
+            this.status = 0;
+            return;
+        }
+        
+        let position = getEntityPositionInReferenceFrame(
+            entity,
+            time,
+            referenceFrame,
+            this.position
+        );
+
+        let orientation = getEntityOrientationInReferenceFrame(
+            entity,
+            time,
+            referenceFrame,
+            this.orientation
+        );
+
+        const hasPose = position && orientation;
+
+        let poseStatus: PoseStatus = 0;
+        const previousStatus = this.status;
+
+        if (hasPose) {
+            poseStatus |= PoseStatus.KNOWN;
+        }
+
+        if (hasPose && !(previousStatus & PoseStatus.KNOWN)) {
+            poseStatus |= PoseStatus.FOUND;
+        } else if (!hasPose && previousStatus & PoseStatus.KNOWN) {
+            poseStatus |= PoseStatus.LOST;
+        }
+
+        this.status = poseStatus;
+    }
 }
 
 /**
@@ -311,71 +398,34 @@ export class ContextService {
     }
 
     /**
+     * Create a new EntityPose instance to track the pose of a given entity
+     * relative to a given reference frame. If no reference frame is specified,
+     * then the pose is based on the context's defaultReferenceFrame.
+     * 
+     * @param entity - the entity to track
+     * @param referenceFrameOrId - the reference frame to use
+     */
+    public createEntityPose(entityOrId: Entity|string, referenceFrameOrId?: string | ReferenceFrame | Entity) {            
+        return new EntityPose(this, entityOrId, referenceFrameOrId);
+    }
+
+    /**
      * Gets the current pose of an entity, relative to a given reference frame.
      *
+     * @deprecated
      * @param entity - The entity whose state is to be queried.
      * @param referenceFrame - The intended reference frame. Defaults to `this.defaultReferenceFrame`.
-     * @returns If the position and orientation exist for the given entity, an
-     * object with the fields `position` and `orientation`, both of type
-     * `Cartesian3`. Otherwise undefined.
      */
-    public getEntityPose(entityOrId: Entity|string, referenceFrameOrId: string | ReferenceFrame | Entity = this.defaultReferenceFrame): EntityPose {
-        const time = this.time;
-
-        let entity = entityOrId;
-        if (typeof entity === 'string') 
-            entity = this.entities.getById(entityOrId)!;
-        if (!entity) 
-            throw new Error('Unknown entity ' + entityOrId)
-   
-        let referenceFrame = referenceFrameOrId;
-        if (typeof referenceFrame === 'string') 
-            referenceFrame = this.entities.getById(referenceFrameOrId)!;
-        if (!defined(referenceFrame))
-            throw new Error('Unknown entity ' + referenceFrameOrId)
-
-        const key = entity.id + '@' + _stringFromReferenceFrame(referenceFrame);
+    @deprecated('createEntityPose')
+    public getEntityPose(entityOrId: Entity|string, referenceFrameOrId: string | ReferenceFrame | Entity=this.defaultReferenceFrame): EntityPose {
+        const key = _stringFromReferenceFrame(entityOrId) + '@' + _stringFromReferenceFrame(referenceFrameOrId);
+        
         let entityPose = this._entityPoseMap.get(key);
-
         if (!entityPose) {
-            entityPose = {
-                position: new Cartesian3,
-                orientation: new Quaternion,
-                referenceFrame: referenceFrame,
-                poseStatus: 0
-            }
+            entityPose = this.createEntityPose(entityOrId, referenceFrameOrId);
             this._entityPoseMap.set(key, entityPose);
         }
-
-        const position = getEntityPositionInReferenceFrame(
-            entity,
-            time,
-            referenceFrame,
-            entityPose.position
-        );
-        const orientation = getEntityOrientationInReferenceFrame(
-            entity,
-            time,
-            referenceFrame,
-            entityPose.orientation
-        );
-
-        const hasPose = position && orientation;
-
-        let poseStatus: PoseStatus = 0;
-        const previousStatus = entityPose.poseStatus;
-
-        if (hasPose) {
-            poseStatus |= PoseStatus.KNOWN;
-        }
-
-        if (hasPose && !(previousStatus & PoseStatus.KNOWN)) {
-            poseStatus |= PoseStatus.FOUND;
-        } else if (!hasPose && previousStatus & PoseStatus.KNOWN) {
-            poseStatus |= PoseStatus.LOST;
-        }
-
-        entityPose.poseStatus = poseStatus;
+        entityPose.update();
 
         return entityPose;
     }

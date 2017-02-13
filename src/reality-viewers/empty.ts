@@ -1,7 +1,6 @@
 
 import { inject } from 'aurelia-dependency-injection'
 import { 
-    JulianDate, 
     CameraEventAggregator,
     CameraEventType,
     ConstantPositionProperty,
@@ -15,10 +14,11 @@ import {
     PerspectiveFrustum,
     CesiumMath
 } from '../cesium/cesium-imports'
-import { Role, SerializedSubviewList, PHYSICAL_STAGE_ENTITY_ID } from '../common'
+import { Role, SerializedSubviewList } from '../common'
 import { SessionService } from '../session'
 import { getEntityOrientation, decomposePerspectiveProjectionMatrix, getEntityOrientationInReferenceFrame } from '../utils'
-import { ContextService } from '../context'
+import { ContextService, PoseStatus } from '../context'
+import { LocationService } from '../location'
 import { ViewService } from '../view'
 import { ViewportService } from '../viewport'
 import { RealityViewer } from './base'
@@ -33,7 +33,7 @@ interface PinchMovement {
     angleAndHeight: Movement;
 }
 
-@inject(SessionService, ContextService, ViewService, ViewportService)
+@inject(SessionService, ContextService, LocationService, ViewService, ViewportService)
 export class EmptyRealityViewer extends RealityViewer {
 
     public type = 'empty';
@@ -41,6 +41,7 @@ export class EmptyRealityViewer extends RealityViewer {
     constructor(
         private sessionService: SessionService,
         private contextService: ContextService,
+        private locationService: LocationService,
         private viewService: ViewService,
         private viewportService: ViewportService,
         public uri:string) {
@@ -58,7 +59,7 @@ export class EmptyRealityViewer extends RealityViewer {
         internalSession.on['ar.visibility.state'] = () => { };
         internalSession.on['ar.focus.state'] = () => { };
         internalSession.on['ar.viewport.uievent'] = () => { };
-        internalSession.on['ar.viewport.presentationMode'] = () => { };
+        internalSession.on['ar.viewport.mode'] = () => { };
         internalSession.on['ar.view.suggestedViewState'] = () => { };
         internalSession.on['ar.context.update'] = () => { };
         internalSession.on['ar.reality.connect'] = () => { };
@@ -82,9 +83,9 @@ export class EmptyRealityViewer extends RealityViewer {
                     return 'moveForward';
                 case 'S'.charCodeAt(0):
                     return 'moveBackward';
-                case 'R'.charCodeAt(0):
+                case 'E'.charCodeAt(0):
                     return 'moveUp';
-                case 'F'.charCodeAt(0):
+                case 'R'.charCodeAt(0):
                     return 'moveDown';
                 case 'D'.charCodeAt(0):
                     return 'moveRight';
@@ -124,23 +125,24 @@ export class EmptyRealityViewer extends RealityViewer {
             // const pitchQuat = new Quaternion;
             const positionScratchCartesian = new Cartesian3;
             const movementScratchCartesian = new Cartesian3;
-            const eyeOrientation = new Quaternion;
             const orientationMatrix = new Matrix3;
             const up = new Cartesian3(0,0,1);
             const right = new Cartesian3(1,0,0);
             const forward = new Cartesian3(0,-1,0);
             const scratchFrustum = new PerspectiveFrustum();
 
+            const physicalStage = this.locationService.physicalStage;
+            const physicalEye = this.viewService.physicalEye;
+
             const AVERAGE_HUMAN_HEIGHT = 1.77;
-            const NEGATIVE_UNIT_Y = new Cartesian3(0,-1,0);
+            const NEGATIVE_UNIT_Z = new Cartesian3(0,0,-1);
             const X_90ROT = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, CesiumMath.PI_OVER_TWO);
 
             const virtualEyePositionProperty = new ConstantPositionProperty(
                 new Cartesian3(0, 0, AVERAGE_HUMAN_HEIGHT), 
-                this.contextService.entities.getById(PHYSICAL_STAGE_ENTITY_ID)
+                physicalStage
             );
             const virtualEyeOrientationProperty = new ConstantProperty(X_90ROT);
-            Matrix3.fromQuaternion(eyeOrientation, orientationMatrix);
 
             const virtualEye = new Entity({
                 position: virtualEyePositionProperty,
@@ -151,17 +153,16 @@ export class EmptyRealityViewer extends RealityViewer {
 
             const subviews:SerializedSubviewList = [];
 
-            let update = (time: JulianDate) => {
-                if (internalSession.isConnected) viewService.requestAnimationFrame(update);
-                else return;
+            const physicalEyeRelativeToStagePose = this.contextService.createEntityPose(physicalEye, physicalStage);
+
+            let remove = viewService.suggestedViewStateEvent.addEventListener((suggestedViewState)=>{
+                
+                if (internalSession.isClosed) return remove();
 
                 if (!this.isPresenting) {
                     aggregator.reset();
                     return;
                 }
-
-                const suggestedViewState = this.viewService.suggestedViewState;
-                if (!suggestedViewState) return;
 
                 SerializedSubviewList.clone(suggestedViewState.subviews, subviews);
                 
@@ -189,30 +190,34 @@ export class EmptyRealityViewer extends RealityViewer {
                     });
                 }
 
-                const physicalStage = this.contextService.entities.getById(PHYSICAL_STAGE_ENTITY_ID)!;
-                const orientation = getEntityOrientation(this.viewService.physicalEye, time, physicalStage, scratchQuaternion);
+                const time = suggestedViewState.time;
+
+                let orientation = getEntityOrientation(physicalEye, time, physicalStage, scratchQuaternion);
+
+                physicalEyeRelativeToStagePose.update(time);
                 
-                // provide controls if the device does not have a pose
-                if (!orientation && !suggestedViewState.strict) {
+                // provide controls if the device does not have a physical pose
+                if (!(physicalEyeRelativeToStagePose.status & PoseStatus.KNOWN)) {
+                    
+                    orientation = getEntityOrientationInReferenceFrame(virtualEye, time, physicalStage, scratchQuaternion)!;
                     
                     if (aggregator.isMoving(CameraEventType.LEFT_DRAG)) {
                         const dragMovement = aggregator.getMovement(CameraEventType.LEFT_DRAG);
-                        const currentOrientation = getEntityOrientationInReferenceFrame(virtualEye, time, physicalStage, eyeOrientation);
 
-                        if (currentOrientation) {
+                        if (orientation) {
                             // const dragPitch = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, frustum.fov * (dragMovement.endPosition.y - dragMovement.startPosition.y) / app.view.getViewport().height, scratchQuaternionDragPitch);
                             const dragYaw = Quaternion.fromAxisAngle(Cartesian3.UNIT_Y, scratchFrustum.fov * (dragMovement.endPosition.x - dragMovement.startPosition.x) / suggestedViewState.viewport.width, scratchQuaternionDragYaw);
                             // const drag = Quaternion.multiply(dragPitch, dragYaw, dragYaw);
 
-                            const newOrientation = Quaternion.multiply(currentOrientation, dragYaw, dragYaw);
-                            (<any>virtualEye.orientation).setValue(newOrientation);
-
-                            Matrix3.fromQuaternion(newOrientation, orientationMatrix);
-                            Matrix3.multiplyByVector(orientationMatrix, Cartesian3.UNIT_Z, up);
-                            Matrix3.multiplyByVector(orientationMatrix, Cartesian3.UNIT_X, right);
-                            Matrix3.multiplyByVector(orientationMatrix, NEGATIVE_UNIT_Y, forward);
+                            orientation = Quaternion.multiply(orientation, dragYaw, dragYaw);
+                            (<any>virtualEye.orientation).setValue(orientation);
                         }
                     }
+
+                    Matrix3.fromQuaternion(orientation, orientationMatrix);
+                    Matrix3.multiplyByVector(orientationMatrix, Cartesian3.UNIT_Y, up);
+                    Matrix3.multiplyByVector(orientationMatrix, Cartesian3.UNIT_X, right);
+                    Matrix3.multiplyByVector(orientationMatrix, NEGATIVE_UNIT_Z, forward);
 
                     const position = virtualEyePositionProperty.getValueInReferenceFrame(time, physicalStage, positionScratchCartesian);
                     
@@ -243,8 +248,12 @@ export class EmptyRealityViewer extends RealityViewer {
                     }
 
                     virtualEyePositionProperty.setValue(position, physicalStage);
-                } else {
-                    virtualEyeOrientationProperty.setValue(orientation)
+
+                } else if (physicalEyeRelativeToStagePose.status & PoseStatus.FOUND) {
+
+                    virtualEyePositionProperty.setValue(Cartesian3.ZERO, physicalEye);
+                    virtualEyeOrientationProperty.setValue(Quaternion.IDENTITY)
+                    
                 }
 
                 aggregator.reset();
@@ -257,9 +266,7 @@ export class EmptyRealityViewer extends RealityViewer {
                 );
 
                 internalSession.send('ar.reality.frameState', frameState);
-            }
-
-            viewService.requestAnimationFrame(update);
+            });
         });
 
         // Only connect after the caller is able to attach connectEvent handlers

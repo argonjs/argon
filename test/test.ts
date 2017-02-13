@@ -95,6 +95,7 @@ describe('RealityService', () => {
             const realityService:Argon.RealityService = container.get(Argon.RealityService);
             sessionService = container.get(Argon.SessionService);
             container.get(Argon.RealityServiceProvider);
+            container.get(Argon.ViewServiceProvider);
 
             sessionService.connect();
             realityService.request('reality:unsupported').catch((error)=>{
@@ -447,7 +448,7 @@ describe('Context', () => {
             const entity = new Argon.Cesium.Entity;
             let removeListener = context.updateEvent.addEventListener(()=>{
                 const state = context.getEntityPose(entity);
-                expect(state.poseStatus & Argon.PoseStatus.KNOWN).to.equal(0);
+                expect(state.status & Argon.PoseStatus.KNOWN).to.equal(0);
                 removeListener();
                 done();
             })
@@ -460,8 +461,8 @@ describe('Context', () => {
             });
             let removeListener = context.updateEvent.addEventListener(()=>{
                 const state = context.getEntityPose(entity);
-                expect(state.poseStatus & Argon.PoseStatus.FOUND).to.be.ok;
-                expect(state.poseStatus & Argon.PoseStatus.KNOWN).to.be.ok;
+                expect(state.status & Argon.PoseStatus.FOUND).to.be.ok;
+                expect(state.status & Argon.PoseStatus.KNOWN).to.be.ok;
                 removeListener();
                 done();
             })
@@ -476,15 +477,15 @@ describe('Context', () => {
             let removeListener = context.updateEvent.addEventListener(()=>{
                 const state = context.getEntityPose(entity);
                 if (!found) {
-                    expect(state.poseStatus & Argon.PoseStatus.FOUND).to.be.ok;
-                    expect(state.poseStatus & Argon.PoseStatus.KNOWN).to.be.ok;
-                    expect(state.poseStatus & Argon.PoseStatus.LOST).to.not.be.ok;
+                    expect(state.status & Argon.PoseStatus.FOUND).to.be.ok;
+                    expect(state.status & Argon.PoseStatus.KNOWN).to.be.ok;
+                    expect(state.status & Argon.PoseStatus.LOST).to.not.be.ok;
                     (<Argon.Cesium.ConstantPositionProperty>entity.position).setValue(undefined);
                     found = true;
                 } else {
-                    expect(state.poseStatus & Argon.PoseStatus.LOST).to.be.ok;
-                    expect(state.poseStatus & Argon.PoseStatus.FOUND).to.not.be.ok;
-                    expect(state.poseStatus & Argon.PoseStatus.KNOWN).to.not.be.ok;
+                    expect(state.status & Argon.PoseStatus.LOST).to.be.ok;
+                    expect(state.status & Argon.PoseStatus.FOUND).to.not.be.ok;
+                    expect(state.status & Argon.PoseStatus.KNOWN).to.not.be.ok;
                     removeListener();
                     done();
                 }
