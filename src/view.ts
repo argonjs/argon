@@ -26,7 +26,7 @@ import {
     Viewport, 
     SubviewType, 
     SerializedSubviewList, 
-    AVERAGE_HUMAN_HEIGHT,
+    DEFAULT_EYE_HEIGHT,
     STAGE_ENTITY_ID, 
     PHYSICAL_STAGE_ENTITY_ID,
     EYE_ENTITY_ID,
@@ -534,7 +534,7 @@ function updatePhysicalEyePoseFromDeviceOrientation(contextService:ContextServic
             );
         
         (physicalEye.position as ConstantPositionProperty).setValue(
-            Cartesian3.fromElements(0,0,AVERAGE_HUMAN_HEIGHT, scratchCartesian), 
+            Cartesian3.fromElements(0,0,DEFAULT_EYE_HEIGHT, scratchCartesian), 
             physicalStage
         );
 

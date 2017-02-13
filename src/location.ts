@@ -13,7 +13,7 @@ import {autoinject} from 'aurelia-dependency-injection';
 import {ContextService, ContextServiceProvider} from './context'
 import {SessionService, SessionPort} from './session'
 import {
-    AVERAGE_HUMAN_HEIGHT,
+    DEFAULT_EYE_HEIGHT,
     STAGE_ENTITY_ID,
     PHYSICAL_STAGE_ENTITY_ID
 } from './common'
@@ -200,7 +200,7 @@ export class LocationServiceProvider {
 
         if (defined(longitude) && defined(latitude)) {
             // TODO: fallback on https://cesiumjs.org/Cesium/Build/Documentation/sampleTerrain.html for height
-            const height = defined(altitude) ? altitude - AVERAGE_HUMAN_HEIGHT : 0;
+            const height = defined(altitude) ? altitude - DEFAULT_EYE_HEIGHT : 0;
 
             const fixedPosition = Cartesian3.fromDegrees(longitude, latitude, height, undefined, scratchCartesian3);
             const enuOrientation = Transforms.headingPitchRollQuaternion(fixedPosition, 0,0,0, undefined, scratchQuaternion);

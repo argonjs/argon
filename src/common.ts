@@ -1,6 +1,9 @@
 import { Matrix4, JulianDate, Cartesian3, Cartographic, Quaternion, CesiumMath } from './cesium/cesium-imports'
 
-export const AVERAGE_HUMAN_HEIGHT = 1.77;
+/**
+ * Default distance from a user's eyes to the floor
+ */
+export const DEFAULT_EYE_HEIGHT = 1.6;
 
 export const EYE_ENTITY_ID = 'ar.eye'
 export const PHYSICAL_EYE_ENTITY_ID = 'ar.physical-eye' 
