@@ -4,9 +4,10 @@ import { SessionService, SessionPort } from '../session'
 import { ViewService } from '../view'
 import { ViewportService } from '../viewport'
 import { ContextService } from '../context'
+import { LocationService } from '../location'
 import { RealityViewer } from './base'
 
-@inject(SessionService, ViewportService, ViewService, ContextService)
+@inject(SessionService, ViewportService, ViewService, ContextService, LocationService)
 export class LiveRealityViewer extends RealityViewer {
 
     public videoElement: HTMLVideoElement;
@@ -23,6 +24,7 @@ export class LiveRealityViewer extends RealityViewer {
         private viewportService: ViewportService,
         private viewService: ViewService,
         private contextService: ContextService,
+        private locationService: LocationService,
         public uri:string) {
         super(uri);
 
@@ -73,17 +75,19 @@ export class LiveRealityViewer extends RealityViewer {
         }
     }
 
-    protected setupInternalSession(session:SessionPort) {
-        session.on['ar.device.state'] = () => { };
-        session.on['ar.visibility.state'] = () => { };
-        session.on['ar.focus.state'] = () => { };
-        session.on['ar.viewport.mode'] = () => { };
-        session.on['ar.viewport.uievent'] = () => { };
-        session.on['ar.view.suggestedViewState'] = () => { };
-        session.on['ar.context.update'] = () => { };
-        session.on['ar.reality.connect'] = () => { };
+    protected setupInternalSession(internalSession:SessionPort) {
+        internalSession.on['ar.device.state'] = () => { };
+        internalSession.on['ar.visibility.state'] = () => { };
+        internalSession.on['ar.focus.state'] = () => { };
+        internalSession.on['ar.viewport.mode'] = () => { };
+        internalSession.on['ar.viewport.uievent'] = () => { };
+        internalSession.on['ar.view.suggestedViewState'] = () => { };
+        internalSession.on['ar.context.update'] = () => { };
+        internalSession.on['ar.reality.connect'] = () => { };
 
-        session.connectEvent.addEventListener(() => {
+        const physicalStage = this.locationService.physicalStage;
+
+        internalSession.connectEvent.addEventListener(() => {
             if (this.videoElement) {
                 const videoElement = this.videoElement!;
                 const mediaDevices = navigator.mediaDevices;
@@ -96,14 +100,14 @@ export class LiveRealityViewer extends RealityViewer {
                             t.stop();
                         }
                     }
-                    if (session.isConnected) {
+                    if (internalSession.isConnected) {
                         videoElement.src = window.URL.createObjectURL(videoStream);
-                        session.closeEvent.addEventListener(stopVideoStream)
+                        internalSession.closeEvent.addEventListener(stopVideoStream)
                     } else {
                         stopVideoStream();
                     }
                 }).catch((error: DOMException) => {
-                    session.errorEvent.raiseEvent(error);  
+                    internalSession.errorEvent.raiseEvent(error);  
                 });
 
                 const viewService = this.viewService;
@@ -111,7 +115,13 @@ export class LiveRealityViewer extends RealityViewer {
 
                 let remove = viewService.suggestedViewStateEvent.addEventListener((suggestedViewState)=>{
 
-                    if (session.isClosed) remove();
+                    if (internalSession.isClosed) remove();
+
+                    if (suggestedViewState.geoposeDesired) {
+                        this.contextService.subscribe(physicalStage.id, internalSession);
+                    } else {
+                        this.contextService.unsubscribe(physicalStage.id, internalSession);
+                    }
 
                     if (videoElement.currentTime != lastFrameTime) {
                         lastFrameTime = videoElement.currentTime;
@@ -126,7 +136,7 @@ export class LiveRealityViewer extends RealityViewer {
                             viewService.eye
                         );
                         
-                        session.send('ar.reality.frameState', frameState);
+                        internalSession.send('ar.reality.frameState', frameState);
                     }
 
                 });

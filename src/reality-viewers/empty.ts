@@ -14,9 +14,9 @@ import {
     PerspectiveFrustum,
     CesiumMath
 } from '../cesium/cesium-imports'
-import { Role, SerializedSubviewList } from '../common'
+import { Role, SerializedSubviewList, DEFAULT_EYE_HEIGHT } from '../common'
 import { SessionService } from '../session'
-import { getEntityOrientation, decomposePerspectiveProjectionMatrix, getEntityOrientationInReferenceFrame } from '../utils'
+import { decomposePerspectiveProjectionMatrix, getEntityOrientationInReferenceFrame } from '../utils'
 import { ContextService, PoseStatus } from '../context'
 import { LocationService } from '../location'
 import { ViewService } from '../view'
@@ -33,7 +33,7 @@ interface PinchMovement {
     angleAndHeight: Movement;
 }
 
-@inject(SessionService, ContextService, LocationService, ViewService, ViewportService)
+@inject(SessionService, ContextService, ViewService, ViewportService, LocationService)
 export class EmptyRealityViewer extends RealityViewer {
 
     public type = 'empty';
@@ -41,9 +41,9 @@ export class EmptyRealityViewer extends RealityViewer {
     constructor(
         private sessionService: SessionService,
         private contextService: ContextService,
-        private locationService: LocationService,
         private viewService: ViewService,
         private viewportService: ViewportService,
+        private locationService: LocationService,
         public uri:string) {
         super(uri);
     }
@@ -134,12 +134,11 @@ export class EmptyRealityViewer extends RealityViewer {
             const physicalStage = this.locationService.physicalStage;
             const physicalEye = this.viewService.physicalEye;
 
-            const AVERAGE_HUMAN_HEIGHT = 1.77;
             const NEGATIVE_UNIT_Z = new Cartesian3(0,0,-1);
             const X_90ROT = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, CesiumMath.PI_OVER_TWO);
 
             const virtualEyePositionProperty = new ConstantPositionProperty(
-                new Cartesian3(0, 0, AVERAGE_HUMAN_HEIGHT), 
+                new Cartesian3(0, 0, DEFAULT_EYE_HEIGHT), 
                 physicalStage
             );
             const virtualEyeOrientationProperty = new ConstantProperty(X_90ROT);
@@ -162,6 +161,12 @@ export class EmptyRealityViewer extends RealityViewer {
                 if (!this.isPresenting) {
                     aggregator.reset();
                     return;
+                }
+
+                if (suggestedViewState.geoposeDesired) {
+                    this.contextService.subscribe(physicalStage.id, internalSession);
+                } else {
+                    this.contextService.unsubscribe(physicalStage.id, internalSession);
                 }
 
                 SerializedSubviewList.clone(suggestedViewState.subviews, subviews);
@@ -192,14 +197,12 @@ export class EmptyRealityViewer extends RealityViewer {
 
                 const time = suggestedViewState.time;
 
-                let orientation = getEntityOrientation(physicalEye, time, physicalStage, scratchQuaternion);
-
                 physicalEyeRelativeToStagePose.update(time);
                 
                 // provide controls if the device does not have a physical pose
                 if (!(physicalEyeRelativeToStagePose.status & PoseStatus.KNOWN)) {
                     
-                    orientation = getEntityOrientationInReferenceFrame(virtualEye, time, physicalStage, scratchQuaternion)!;
+                    let orientation = getEntityOrientationInReferenceFrame(virtualEye, time, physicalStage, scratchQuaternion)!;
                     
                     if (aggregator.isMoving(CameraEventType.LEFT_DRAG)) {
                         const dragMovement = aggregator.getMovement(CameraEventType.LEFT_DRAG);

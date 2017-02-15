@@ -18,7 +18,8 @@ import {
 import { SessionService } from './session'
 import { ViewportService, ViewportMode } from './viewport'
 import { 
-    LocationService
+    LocationService,
+    LocationServiceProvider
 } from './location'
 import { 
     Role, 
@@ -64,6 +65,7 @@ export interface ViewState {
     time: JulianDate,
     viewport: Viewport,
     subviews: SerializedSubviewList, 
+    geoposeDesired: boolean, 
     strict: boolean
 };
 
@@ -205,7 +207,8 @@ export class ViewServiceProvider {
         private contextServiceProvider: ContextServiceProvider,
         private viewService: ViewService,
         private viewportService:ViewportService,
-        private locationService:LocationService
+        private locationService:LocationService,
+        private locationServiceProvider:LocationServiceProvider
     ) {
             
         this.contextServiceProvider.publishingReferenceFrameMap.set(this.viewService.eye.id, STAGE_ENTITY_ID);
@@ -294,6 +297,7 @@ export class ViewServiceProvider {
         this.onUpdate();
         const viewState = this.viewService.suggestedViewState!
         viewState.time = JulianDate.clone(this.clock.currentTime, viewState.time);
+        viewState.geoposeDesired = this.locationServiceProvider.geoposeDesired;
 
         // publish the the physical eye entity and the view state.
         this.contextServiceProvider.publishEntityState(this.viewService.physicalEye);

@@ -16,7 +16,7 @@ import {
     defined
 } from './cesium/cesium-imports'
 import { 
-    AVERAGE_HUMAN_HEIGHT,
+    DEFAULT_EYE_HEIGHT,
     SerializedEntityState, 
     SerializedSubviewList, 
     SerializedEntityStateMap,
@@ -378,13 +378,12 @@ export class ContextService {
     /**
      * Subscribe to pose updates for the given entity id
      * 
-     * @param id - the id of the desired entity
      * @returns A Promise that resolves to a new or existing entity 
      * instance matching the given id, if the subscription is successful
      */
-    public subscribe(id: string|Entity) : Promise<Entity> {
+    public subscribe(id: string|Entity, session=this.sessionService.manager) : Promise<Entity> {
         id = (<Entity>id).id || id;
-        return this.sessionService.manager.request('ar.context.subscribe', {id}).then(()=>{
+        return session.request('ar.context.subscribe', {id}).then(()=>{
             return this.entities.getOrCreateEntity(id);
         });
     }
@@ -392,9 +391,9 @@ export class ContextService {
     /**
      * Unsubscribe to pose updates for the given entity id
      */
-    public unsubscribe(id: string|Entity) : void {
+    public unsubscribe(id: string|Entity, session=this.sessionService.manager) : void {
         id = (<Entity>id).id || id;
-        this.sessionService.manager.send('ar.context.unsubscribe', {id});
+        session.send('ar.context.unsubscribe', {id});
     }
 
     /**
@@ -582,7 +581,7 @@ export class ContextService {
         }
 
         if (!physicalEyeStageOffset) {
-            physicalEyeStageOffset = Cartesian3.fromElements(0,0, AVERAGE_HUMAN_HEIGHT, scratchCartesian);
+            physicalEyeStageOffset = Cartesian3.fromElements(0,0, DEFAULT_EYE_HEIGHT, scratchCartesian);
         }
 
         const eyePositionFixed = getEntityPositionInReferenceFrame(

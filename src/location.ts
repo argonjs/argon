@@ -130,7 +130,7 @@ export class LocationService {
 export class LocationServiceProvider {
 
     private _currentGeolocationOptions?:GeolocationOptions;
-    private _targetGeolocationOptions:GeolocationOptions;
+    private _targetGeolocationOptions:GeolocationOptions = {};
     private _sessionGeolocationOptions = new Map<SessionPort, GeolocationOptions>();
     
     constructor(
@@ -152,6 +152,12 @@ export class LocationServiceProvider {
 
         this.contextServiceProvider.publishingReferenceFrameMap.set(locationService.stage.id, ReferenceFrame.FIXED)
         this.contextServiceProvider.publishingReferenceFrameMap.set(locationService.physicalStage.id, ReferenceFrame.FIXED)
+    }
+
+    public get geoposeDesired() {
+        const geoposeSubscribers = this.contextServiceProvider.subscribersByEntityId.get(this.locationService.stage.id);
+        if (geoposeSubscribers && geoposeSubscribers.size > 0) return true;
+        return false;
     }
 
     private _checkPhysicalStageSubscribers() {
