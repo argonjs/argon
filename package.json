@@ -41,13 +41,10 @@
     "peerDependencies": {
       "assert": "npm:jspm-nodelibs-assert@^0.2.0",
       "aurelia-metadata": "npm:aurelia-metadata@^1.0.0",
-<<<<<<< HEAD
       "aurelia-pal": "npm:aurelia-pal@^1.0.0",
       "net": "npm:jspm-nodelibs-net@^0.2.0",
-      "os": "npm:jspm-nodelibs-os@^0.2.0"
-=======
+      "os": "npm:jspm-nodelibs-os@^0.2.0",
       "aurelia-pal": "npm:aurelia-pal@^1.0.0"
->>>>>>> b2935729304bfe564be76b9c64654b4bf3ec5250
     },
     "overrides": {
       "npm:aurelia-dependency-injection@1.2.0": {
