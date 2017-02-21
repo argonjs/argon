@@ -55,8 +55,8 @@ export declare class ArgonSystem {
      * The ArgonSystem instance which shares a view provided by a manager
      */
     static instance?: ArgonSystem;
-    constructor(parentElement: string | HTMLDivElement | null | undefined, config: Configuration, container?: DI.Container);
-    readonly provider: ArgonSystemProvider;
+    constructor(elementOrSelector: string | Element | null | undefined, config: Configuration, container?: DI.Container);
+    readonly provider: ArgonSystemProvider | undefined;
     readonly context: ContextService;
     readonly focus: FocusService;
     readonly location: LocationService;
@@ -80,8 +80,12 @@ export declare class ArgonSystem {
  * this function will create an ArgonSystem which has the [[REALITY_MANAGER]] role.
  */
 export declare function init(configuration?: Configuration, dependencyInjectionContainer?: DI.Container): ArgonSystem;
-export declare function init(parentElement?: string | HTMLDivElement | null, configuration?: Configuration, dependencyInjectionContainer?: DI.Container): ArgonSystem;
+export declare function init(element?: string | HTMLDivElement | null, configuration?: Configuration, dependencyInjectionContainer?: DI.Container): ArgonSystem;
 /**
  * Initialize an [[ArgonSystem]] with the [[REALITY_VIEWER]] role
  */
 export declare function initRealityViewer(configuration?: Configuration, dependencyInjectionContainer?: DI.Container): ArgonSystem;
+/**
+ * @private
+ */
+export declare const initReality: typeof initRealityViewer;

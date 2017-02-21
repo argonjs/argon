@@ -4,11 +4,13 @@ import { ContextService } from './context';
 import { Event } from './utils';
 import { FocusService, FocusServiceProvider } from './focus';
 import { VisibilityServiceProvider } from './visibility';
-export declare const enum PresentationMode {
+export declare const enum ViewportMode {
+    EMBEDDED = 0,
     PAGE = 0,
     IMMERSIVE = 1,
 }
-export declare const ParentElement = "#argon";
+export declare abstract class ViewElement {
+}
 /**
  * Manages the view state
  */
@@ -27,44 +29,40 @@ export declare class ViewportService {
     /**
      * An event that is raised when the viewport has changed
      */
-    changeEvent: Event<void>;
+    changeEvent: Event<Viewport>;
     /**
-     * An event that is raised when the presentation mode has changed
+     * An event that is raised when the viewport mode has changed
      */
-    presentationModeChangeEvent: Event<PresentationMode>;
+    modeChangeEvent: Event<ViewportMode>;
     /**
-     * The current presentation mode
+     * The current viewport mode
      */
-    readonly presentationMode: PresentationMode;
-    private _presentationMode;
+    readonly mode: ViewportMode;
+    private _mode;
+    readonly presentationMode: ViewportMode;
     /**
-     * The root HTMLDivElement element for this view.
-     * This value is undefined in non-DOM environments.
+     * Automatically layout the element to match the immersive viewport during PresentationMode.IMMERSIVE
      */
-    rootElement: HTMLDivElement;
+    autoLayoutImmersiveMode: boolean;
     /**
-     * An HTMLDivElement which represents the viewport.
-     * This value is undefined in non-DOM environments.
+     * Automatically publish the viewport of the element during PresentationMode.EMBEDDED
      */
-    element: HTMLDivElement;
+    autoPublishEmbeddedMode: boolean;
     /**
-     * Automatically watch and publish the viewport during PresentationMode.EMBEDDED
+     * The DOM element associated with this viewport
      */
-    autoPublishEmbeddedViewport: boolean;
+    element: HTMLElement;
     private _currentViewport;
     private _currentViewportJSON;
-    constructor(sessionService: SessionService, contextService: ContextService, focusService: FocusService, parentElementOrSelector?: string | HTMLElement);
+    constructor(sessionService: SessionService, contextService: ContextService, focusService: FocusService, elementOrSelector?: Element | string | null);
     /**
      * Get the current viewport
      */
     readonly current: Viewport;
-    /**
-     * Request a presentation mode
-     * - [[PresentationMode.PAGE]] : present the entire document
-     * - [[PresentationMode.IMMERSIVE]] : present only the argon.js view
-     */
-    requestPresentationMode(mode: PresentationMode): Promise<void>;
-    private _updatePresentationMode(mode);
+    requestPresentationMode(mode: ViewportMode): Promise<void>;
+    private _desiredMode;
+    desiredMode: ViewportMode;
+    private _updateViewportMode(mode);
     /**
      * Publish the viewport being used in [[PresentationMode.EMBEDDED]]
      * so that other apps can use the same viewport
@@ -78,16 +76,16 @@ export declare class ViewportServiceProvider {
     private sessionService;
     private viewportService;
     private focusServiceProvider;
+    sessionViewportMode: WeakMap<SessionPort, ViewportMode>;
     /**
      * The embedded viewports for each managed session.
      */
-    embeddedViewports: WeakMap<SessionPort, Viewport>;
+    sessionEmbeddedViewport: WeakMap<SessionPort, Viewport>;
     /**
      * A UI event being forwarded from a managed session
      */
     forwardedUIEvent: Event<UIEvent>;
     constructor(sessionService: SessionService, viewportService: ViewportService, focusServiceProvider: FocusServiceProvider, visibilityServiceProvider: VisibilityServiceProvider);
     sendUIEventToSession(uievent: UIEvent, session: SessionPort): void;
-    private _handleRequestPresentationMode(session, mode);
-    protected _ensurePersmission(session: SessionPort): void;
+    private _publishViewportModes();
 }

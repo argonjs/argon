@@ -14255,7 +14255,7 @@ define("5f", ["1d", "2d", "16", "5", "7", "2e", "57", "5c", "5d", "d", "24", "36
 $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', '14', '15', '18', '1c', '20', '19', '16', '5', '7', '2e', '1a', '1b', '8', '3b', '3e', '2c', '2f', '17', 'd', '23', '24', '30', '31', '32', '1f', '27', '25', '37', '1e', '38', '39', '3a', 'e', 'f', '26', '55', '5f', '@empty'], function (_export, _context) {
     "use strict";
 
-    var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, Clock, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, createGuid, cesium_Source_Core_defaultValue_js, defined, cesium_Source_Core_DeveloperError_js, cesium_Source_Core_Ellipsoid_js, Entity, EntityCollection, CesiumEvent, cesium_Source_Core_ExtrapolationType_js, FeatureDetection, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, cesium_Source_DataSources_ReferenceEntity_js, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, _createClass, _classCallCheck, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, aureliaDependencyInjection, after, cesiumImports, _possibleConstructorReturn, _inherits, AVERAGE_HUMAN_HEIGHT, EYE_ENTITY_ID, PHYSICAL_EYE_ENTITY_ID, STAGE_ENTITY_ID, PHYSICAL_STAGE_ENTITY_ID, Role, Configuration, Viewport, NormalizedViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, synthesizeEvent, cloneTouch, cloneTouches, getEntityPosition, getEntityOrientation, _scratchFramesArray, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, lastTime, requestAnimationFrame$1, version, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, WKWebViewConnectService, _a$1, _b$1, _defineProperty, __decorate$5, __metadata$5, PoseStatus, scratchCartesian$2, scratchCartesian2, scratchQuaternion$1, scratchOriginCartesian, scratchFrustum$1, scratchMatrix3$1, scratchMatrix4$1, ContextService, ContextServiceProvider, _a$5, _b$5, _c$4, _d$4, _e$4, _f$3, __decorate$6, __metadata$6, FocusService, FocusServiceProvider, _a$6, _b$6, __decorate$7, __metadata$7, VisibilityService, VisibilityServiceProvider, _a$7, _b$7, __decorate$4, __metadata$4, PresentationMode, ParentElement, ViewportService, ViewportServiceProvider, resolveArgonElement, _a$4, _b$4, _c$3, _d$3, _e$3, _f$2, __decorate$8, __metadata$8, scratchCartesian3, scratchQuaternion$2, LocationService, LocationServiceProvider, _a$8, _b$8, _c$5, _d$5, __decorate$3, __metadata$3, Subview, scratchCartesian$1, scratchQuaternion, scratchQuaternion2, scratchMatrix3, scratchMatrix4, scratchFrustum, IDENTITY_SUBVIEW_POSE, currentVRDisplay, ViewService, ViewServiceProvider, deviceOrientationListener, deviceOrientation, deviceOrientationHeadingAccuracy, clock, scratchTime, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, _h$1, _j, RealityViewer, __decorate$10, __metadata$10, EmptyRealityViewer, _a$10, _b$10, _c$7, _d$7, _get$1, __decorate$11, __metadata$11, LiveRealityViewer, _a$11, _b$11, _c$8, _d$8, __decorate$12, __metadata$12, HostedRealityViewer, _a$12, _b$12, __decorate$9, __metadata$9, RealityViewerFactory, RealityService, RealityServiceProvider, _a$9, _b$9, _c$6, _d$6, _e$5, _f$4, _g$2, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __decorate$13, __metadata$13, VuforiaServiceProvider, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$13, _b$13, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, _a, _b, _c, _d, _e, _f, _g, _h;
+    var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, Clock, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, createGuid, cesium_Source_Core_defaultValue_js, defined, cesium_Source_Core_DeveloperError_js, cesium_Source_Core_Ellipsoid_js, Entity, EntityCollection, CesiumEvent, cesium_Source_Core_ExtrapolationType_js, FeatureDetection, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, ReferenceEntity, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, _createClass, _classCallCheck, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, aureliaDependencyInjection, after, cesiumImports, _possibleConstructorReturn, _inherits, AVERAGE_HUMAN_HEIGHT, EYE_ENTITY_ID, PHYSICAL_EYE_ENTITY_ID, STAGE_ENTITY_ID, PHYSICAL_STAGE_ENTITY_ID, Role, Configuration, Viewport, NormalizedViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, synthesizeEvent, cloneTouch, cloneTouches, getEntityPosition, getEntityOrientation, _scratchFramesArray, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, lastTime, requestAnimationFrame$1, version, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, WKWebViewConnectService, _a$1, _b$1, _defineProperty, __decorate$5, __metadata$5, EntityPose, PoseStatus, scratchCartesian$2, scratchCartesian2, scratchQuaternion$1, scratchOriginCartesian, scratchFrustum$1, scratchMatrix3$1, scratchMatrix4$1, ContextService, ContextServiceProvider, _a$5, _b$5, _c$4, _d$4, _e$4, _f$3, __decorate$6, __metadata$6, FocusService, FocusServiceProvider, _a$6, _b$6, __decorate$7, __metadata$7, VisibilityService, VisibilityServiceProvider, _a$7, _b$7, __decorate$4, __metadata$4, ViewportMode, ViewElement, ViewportService, ViewportServiceProvider, viewportMetaTag, argonMetaTag, style, sheet, _a$4, _b$4, _c$3, _d$3, _e$3, _f$2, __decorate$8, __metadata$8, scratchCartesian3, scratchQuaternion$2, LocationService, LocationServiceProvider, _a$8, _b$8, _c$5, _d$5, __decorate$3, __metadata$3, Subview, scratchCartesian$1, scratchQuaternion, scratchQuaternion2, scratchMatrix3, scratchMatrix4, scratchFrustum, IDENTITY_SUBVIEW_POSE, currentVRDisplay, ViewService, ViewServiceProvider, deviceOrientationListener, deviceOrientation, deviceOrientationHeadingAccuracy, scratchTime, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, _h$1, _j, RealityViewer, __decorate$10, __metadata$10, EmptyRealityViewer, _a$10, _b$10, _c$7, _d$7, _e$6, _get$1, __decorate$11, __metadata$11, LiveRealityViewer, _a$11, _b$11, _c$8, _d$8, __decorate$12, __metadata$12, HostedRealityViewer, _a$12, _b$12, __decorate$9, __metadata$9, RealityViewerFactory, RealityService, RealityServiceProvider, _a$9, _b$9, _c$6, _d$6, _e$5, _f$4, _g$3, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __decorate$13, __metadata$13, VuforiaServiceProvider, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$13, _b$13, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, initReality, _a, _b, _c, _d, _e, _f, _g, _h;
 
     function alwaysValid() {
         return true;
@@ -14783,7 +14783,15 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
         };
         var uievent = {};
         var handleEvent = function handleEvent(e) {
-            if (e.target === viewportService.element || e.target.parentElement === viewportService.element) {
+            var target = e.target instanceof HTMLElement ? e.target : undefined;
+            var width = target && target.clientWidth;
+            var height = target && target.clientHeight;
+            // if the target element is the view element or an element of similar size,
+            // attempt to forward the event (webvr-polyfill makes the canvas 10px larger
+            // in each dimension due to an issue with the iOS safari browser, which is why
+            // forward the event for any target that matches the viewport size up to 15px 
+            // larger in either dimension)
+            if (e.target === viewportService.element || Math.abs(width - viewportService.element.clientWidth) < 15 && Math.abs(height - viewportService.element.clientHeight) < 15) {
                 var boundingRect = viewportService.element.getBoundingClientRect();
                 if (viewportService.uiEvent.numberOfListeners > 0) {
                     _forwardEvent = false;
@@ -15193,41 +15201,23 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
         }
     }
 
-    // Enforce monotonically increasing time, and deal with 
-    // clock drift by either slowing down or speeding up,
-    // while never going backwards
-    function tick() {
-        var secondsBeforeTick = clock.currentTime.secondsOfDay;
-        clock.tick();
-        var secondsAfterTick = clock.currentTime.secondsOfDay;
-        var now = JulianDate.now(scratchTime);
-        var secondsDrift = JulianDate.secondsDifference(clock.currentTime, now);
-        if (secondsDrift > 0.033) {
-            var halfTimeStep = (secondsAfterTick - secondsBeforeTick) / 2;
-            clock.currentTime.secondsOfDay -= halfTimeStep;
-        } else if (secondsDrift < 0.5) {
-            JulianDate.clone(now, clock.currentTime);
-        }
-    }
-
-    function init$1(parentElementOrConfig, configurationOrDIContainer, dependencyInjectionContainer) {
+    function init$1(elementOrConfig, configurationOrDIContainer, dependencyInjectionContainer) {
         if (ArgonSystem.instance) throw new Error('A shared ArgonSystem instance already exists');
-        var parentElement = void 0;
+        var element = void 0;
         var configuration = void 0;
         if (configurationOrDIContainer instanceof Container) {
-            parentElement = ParentElement;
-            configuration = parentElementOrConfig;
+            configuration = elementOrConfig;
             dependencyInjectionContainer = configurationOrDIContainer;
         } else {
-            parentElement = parentElementOrConfig;
+            element = elementOrConfig;
             configuration = configurationOrDIContainer;
         }
         // see if it is the old parameter interface
-        if (parentElement && (parentElement['configuration'] || parentElement['container'])) {
-            var deprecatedParameters = parentElement;
+        if (element && (element['configuration'] || element['container'])) {
+            var deprecatedParameters = element;
             if (!configuration && deprecatedParameters['configuration']) configuration = deprecatedParameters['configuration'];
             if (!configuration && deprecatedParameters['container']) dependencyInjectionContainer = deprecatedParameters['container'];
-            parentElement = undefined;
+            element = undefined;
         }
         var role = void 0;
         if (typeof HTMLElement === 'undefined') {
@@ -15240,7 +15230,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
         if (!configuration) configuration = {};
         configuration.role = role;
         if (!dependencyInjectionContainer) dependencyInjectionContainer = new Container();
-        return new ArgonSystem(parentElement || null, configuration, dependencyInjectionContainer);
+        return new ArgonSystem(element || null, configuration, dependencyInjectionContainer);
     }
     /**
      * Initialize an [[ArgonSystem]] with the [[REALITY_VIEWER]] role
@@ -15258,6 +15248,9 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
         configuration.protocols.push('ar.uievent');
         return new ArgonSystem(null, configuration, dependencyInjectionContainer);
     }
+    /**
+     * @private
+     */
     return {
         setters: [function (_) {}, function (_2) {
             AggregateError = _2.AggregateError;
@@ -15333,7 +15326,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
         }, function (_23) {
             Quaternion = _23.default;
         }, function (_24) {
-            cesium_Source_DataSources_ReferenceEntity_js = _24.default;
+            ReferenceEntity = _24.default;
         }, function (_e4) {
             ReferenceFrame = _e4.default;
         }, function (_25) {
@@ -16100,7 +16093,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 PositionProperty: cesium_Source_DataSources_PositionProperty_js,
                 Property: cesium_Source_DataSources_Property_js,
                 Quaternion: Quaternion,
-                ReferenceEntity: cesium_Source_DataSources_ReferenceEntity_js,
+                ReferenceEntity: ReferenceEntity,
                 ReferenceFrame: ReferenceFrame,
                 ReferenceProperty: cesium_Source_DataSources_ReferenceProperty_js,
                 SampledPositionProperty: SampledPositionProperty,
@@ -16700,7 +16693,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 return id;
             });
 
-            _export('version', version = "1.1.1");
+            _export('version', version = "1.1.3");
 
             __decorate$1 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
                 var c = arguments.length,
@@ -17409,6 +17402,83 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
             };
 
+            _export('EntityPose', EntityPose = function () {
+                function EntityPose(context, entityOrId, referenceFrameId) {
+                    _classCallCheck(this, EntityPose);
+
+                    this.context = context;
+                    this.status = 0;
+                    this.position = new Cartesian3();
+                    this.orientation = new Quaternion();
+                    this.time = new JulianDate(0, 0);
+                    if (typeof entityOrId === 'string') {
+                        var entity = this.context.entities.getById(entityOrId);
+                        if (!entity) entity = new ReferenceEntity(context.entities, entityOrId);
+                        this._entity = entity;
+                    } else {
+                        this._entity = entityOrId;
+                    }
+                    if (typeof referenceFrameId === 'string') {
+                        var referenceFrame = this.context.entities.getById(referenceFrameId);
+                        if (!defined(referenceFrame)) referenceFrame = new ReferenceEntity(context.entities, referenceFrameId);
+                        this._referenceFrame = referenceFrame;
+                    } else {
+                        this._referenceFrame = referenceFrameId;
+                    }
+                }
+
+                _createClass(EntityPose, [{
+                    key: "update",
+                    value: function update() {
+                        var time = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.context.time;
+
+                        JulianDate.clone(time, this.time);
+                        var entity = this.entity;
+                        var referenceFrame = this.referenceFrame;
+                        if (!entity || !defined(referenceFrame)) {
+                            this.status = 0;
+                            return;
+                        }
+                        var position = getEntityPositionInReferenceFrame(entity, time, referenceFrame, this.position);
+                        var orientation = getEntityOrientationInReferenceFrame(entity, time, referenceFrame, this.orientation);
+                        var hasPose = position && orientation;
+                        var poseStatus = 0;
+                        var previousStatus = this.status;
+                        if (hasPose) {
+                            poseStatus |= PoseStatus.KNOWN;
+                        }
+                        if (hasPose && !(previousStatus & PoseStatus.KNOWN)) {
+                            poseStatus |= PoseStatus.FOUND;
+                        } else if (!hasPose && previousStatus & PoseStatus.KNOWN) {
+                            poseStatus |= PoseStatus.LOST;
+                        }
+                        this.status = poseStatus;
+                    }
+                }, {
+                    key: "entity",
+                    get: function get() {
+                        return this._entity;
+                    }
+                }, {
+                    key: "referenceFrame",
+                    get: function get() {
+                        if (!defined(this._referenceFrame)) return this.context.defaultReferenceFrame;
+                        return this._referenceFrame;
+                    }
+                    /**
+                     * alias for status
+                     */
+
+                }, {
+                    key: "poseStatus",
+                    get: function get() {
+                        return this.status;
+                    }
+                }]);
+
+                return EntityPose;
+            }());
+
             (function (PoseStatus) {
                 PoseStatus[PoseStatus["KNOWN"] = 1] = "KNOWN";
                 PoseStatus[PoseStatus["FOUND"] = 2] = "FOUND";
@@ -17658,13 +17728,25 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                         this.sessionService.manager.send('ar.context.unsubscribe', { id: id });
                     }
                     /**
+                     * Create a new EntityPose instance to track the pose of a given entity
+                     * relative to a given reference frame. If no reference frame is specified,
+                     * then the pose is based on the context's defaultReferenceFrame.
+                     *
+                     * @param entity - the entity to track
+                     * @param referenceFrameOrId - the reference frame to use
+                     */
+
+                }, {
+                    key: "createEntityPose",
+                    value: function createEntityPose(entityOrId, referenceFrameOrId) {
+                        return new EntityPose(this, entityOrId, referenceFrameOrId);
+                    }
+                    /**
                      * Gets the current pose of an entity, relative to a given reference frame.
                      *
+                     * @deprecated
                      * @param entity - The entity whose state is to be queried.
                      * @param referenceFrame - The intended reference frame. Defaults to `this.defaultReferenceFrame`.
-                     * @returns If the position and orientation exist for the given entity, an
-                     * object with the fields `position` and `orientation`, both of type
-                     * `Cartesian3`. Otherwise undefined.
                      */
 
                 }, {
@@ -17672,38 +17754,13 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     value: function getEntityPose(entityOrId) {
                         var referenceFrameOrId = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.defaultReferenceFrame;
 
-                        var time = this.time;
-                        var entity = entityOrId;
-                        if (typeof entity === 'string') entity = this.entities.getById(entityOrId);
-                        if (!entity) throw new Error('Unknown entity ' + entityOrId);
-                        var referenceFrame = referenceFrameOrId;
-                        if (typeof referenceFrame === 'string') referenceFrame = this.entities.getById(referenceFrameOrId);
-                        if (!defined(referenceFrame)) throw new Error('Unknown entity ' + referenceFrameOrId);
-                        var key = entity.id + '@' + _stringFromReferenceFrame(referenceFrame);
+                        var key = _stringFromReferenceFrame(entityOrId) + '@' + _stringFromReferenceFrame(referenceFrameOrId);
                         var entityPose = this._entityPoseMap.get(key);
                         if (!entityPose) {
-                            entityPose = {
-                                position: new Cartesian3(),
-                                orientation: new Quaternion(),
-                                referenceFrame: referenceFrame,
-                                poseStatus: 0
-                            };
+                            entityPose = this.createEntityPose(entityOrId, referenceFrameOrId);
                             this._entityPoseMap.set(key, entityPose);
                         }
-                        var position = getEntityPositionInReferenceFrame(entity, time, referenceFrame, entityPose.position);
-                        var orientation = getEntityOrientationInReferenceFrame(entity, time, referenceFrame, entityPose.orientation);
-                        var hasPose = position && orientation;
-                        var poseStatus = 0;
-                        var previousStatus = entityPose.poseStatus;
-                        if (hasPose) {
-                            poseStatus |= PoseStatus.KNOWN;
-                        }
-                        if (hasPose && !(previousStatus & PoseStatus.KNOWN)) {
-                            poseStatus |= PoseStatus.FOUND;
-                        } else if (!hasPose && previousStatus & PoseStatus.KNOWN) {
-                            poseStatus |= PoseStatus.LOST;
-                        }
-                        entityPose.poseStatus = poseStatus;
+                        entityPose.update();
                         return entityPose;
                     }
                 }, {
@@ -17950,6 +18007,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
             __decorate$5([deprecated$1('defaultReferenceFrame'), __metadata$5("design:type", Function), __metadata$5("design:paramtypes", [typeof (_b$5 = typeof Entity !== "undefined" && Entity) === "function" && _b$5 || Object]), __metadata$5("design:returntype", void 0)], ContextService.prototype, "setDefaultReferenceFrame", null);
             __decorate$5([deprecated$1('defaultReferenceFrame'), __metadata$5("design:type", Function), __metadata$5("design:paramtypes", []), __metadata$5("design:returntype", typeof (_c$4 = typeof Entity !== "undefined" && Entity) === "function" && _c$4 || Object)], ContextService.prototype, "getDefaultReferenceFrame", null);
             __decorate$5([deprecated$1('subscribe'), __metadata$5("design:type", Function), __metadata$5("design:paramtypes", [String]), __metadata$5("design:returntype", typeof (_d$4 = typeof Entity !== "undefined" && Entity) === "function" && _d$4 || Object)], ContextService.prototype, "subscribeToEntityById", null);
+            __decorate$5([deprecated$1('createEntityPose'), __metadata$5("design:type", Function), __metadata$5("design:paramtypes", [Object, Object]), __metadata$5("design:returntype", EntityPose)], ContextService.prototype, "getEntityPose", null);
             _export('ContextService', ContextService = __decorate$5([autoinject(), __metadata$5("design:paramtypes", [typeof (_e$4 = typeof SessionService !== "undefined" && SessionService) === "function" && _e$4 || Object])], ContextService));
             _export('ContextServiceProvider', ContextServiceProvider = function () {
                 function ContextServiceProvider(sessionService, contextService) {
@@ -18355,15 +18413,18 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
             };
 
-            (function (PresentationMode) {
-                PresentationMode[PresentationMode["PAGE"] = 0] = "PAGE";
-                PresentationMode[PresentationMode["IMMERSIVE"] = 1] = "IMMERSIVE";
-            })(PresentationMode || _export('PresentationMode', PresentationMode = {}));
+            (function (ViewportMode) {
+                ViewportMode[ViewportMode["EMBEDDED"] = 0] = "EMBEDDED";
+                ViewportMode[ViewportMode["PAGE"] = 0] = "PAGE";
+                ViewportMode[ViewportMode["IMMERSIVE"] = 1] = "IMMERSIVE";
+            })(ViewportMode || _export('ViewportMode', ViewportMode = {}));
 
-            _export('ParentElement', ParentElement = '#argon');
+            _export('ViewElement', ViewElement = function ViewElement() {
+                _classCallCheck(this, ViewElement);
+            });
 
             _export('ViewportService', ViewportService = function () {
-                function ViewportService(sessionService, contextService, focusService, parentElementOrSelector) {
+                function ViewportService(sessionService, contextService, focusService, elementOrSelector) {
                     var _this = this;
 
                     _classCallCheck(this, ViewportService);
@@ -18381,53 +18442,48 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                      */
                     this.changeEvent = new Event();
                     /**
-                     * An event that is raised when the presentation mode has changed
+                     * An event that is raised when the viewport mode has changed
                      */
-                    this.presentationModeChangeEvent = new Event();
-                    this._presentationMode = PresentationMode.PAGE;
+                    this.modeChangeEvent = new Event();
+                    this._mode = ViewportMode.EMBEDDED;
                     /**
-                     * Automatically watch and publish the viewport during PresentationMode.EMBEDDED
+                     * Automatically layout the element to match the immersive viewport during PresentationMode.IMMERSIVE
                      */
-                    this.autoPublishEmbeddedViewport = true;
+                    this.autoLayoutImmersiveMode = true;
+                    /**
+                     * Automatically publish the viewport of the element during PresentationMode.EMBEDDED
+                     */
+                    this.autoPublishEmbeddedMode = true;
+                    this._desiredMode = this.mode;
                     if (typeof document !== 'undefined' && document.createElement) {
-                        this.rootElement = document.createElement('div');
-                        this.rootElement.classList.add('argon-view');
-                        var viewportElement = this.element = document.createElement('div');
-                        viewportElement.classList.add('argon-viewport');
-                        this.rootElement.appendChild(viewportElement);
+                        var element = elementOrSelector;
+                        if (!element || typeof element === 'string') {
+                            var selector = element;
+                            element = selector ? document.querySelector(selector) : undefined;
+                            if (!element && !selector) {
+                                element = document.querySelector('#argon');
+                                if (!element) {
+                                    element = document.createElement('div');
+                                    element.id = 'argon';
+                                    document.body.appendChild(element);
+                                }
+                            } else if (!element) {
+                                throw new Error('Unable to find element with selector: ' + selector);
+                            }
+                        }
+                        this.element = element;
+                        element.classList.add('argon-view');
                         // prevent pinch-zoom of the page in ios 10.
                         if (isIOS) {
-                            viewportElement.addEventListener('touchmove', function (event) {
-                                if (event.touches.length > 1) event.preventDefault();
-                            }, true);
-                        }
-                        var insertRootIntoParentElement = function insertRootIntoParentElement(parentElement) {
-                            if (_this.sessionService.manager.isClosed) return;
-                            parentElement.insertBefore(_this.rootElement, parentElement.firstChild);
-                            _this.sessionService.manager.closeEvent.addEventListener(function () {
-                                _this.rootElement.remove();
-                            });
-                        };
-                        // first check for the specificied element synchronously, then
-                        // if synchronous check fails, wait for document to load, then insert
-                        if (parentElementOrSelector && parentElementOrSelector instanceof HTMLElement) {
-                            insertRootIntoParentElement(parentElementOrSelector);
-                        } else if (parentElementOrSelector === "#argon") {
-                            // first check synchronously
-                            var parentElement = document.querySelector("#argon");
-                            if (parentElement) {
-                                insertRootIntoParentElement(parentElement);
-                            } else {
-                                resolveArgonElement().then(insertRootIntoParentElement);
-                            }
-                        } else if (parentElementOrSelector) {
-                            // first check synchronously
-                            var _parentElement = document.querySelector("" + parentElementOrSelector);
-                            if (_parentElement) {
-                                insertRootIntoParentElement(_parentElement);
-                            } else {
-                                resolveElement(parentElementOrSelector).then(insertRootIntoParentElement);
-                            }
+                            (function () {
+                                var touchMoveListener = function touchMoveListener(event) {
+                                    if (event.touches.length > 1) event.preventDefault();
+                                };
+                                _this.element.addEventListener('touchmove', touchMoveListener, true);
+                                _this.sessionService.manager.closeEvent.addEventListener(function () {
+                                    _this.element.removeEventListener('touchmove', touchMoveListener);
+                                });
+                            })();
                         }
                         this.focusService.focusEvent.addEventListener(function () {
                             document.documentElement.classList.remove('argon-no-focus');
@@ -18439,14 +18495,12 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                             document.documentElement.classList.add('argon-blur');
                             document.documentElement.classList.add('argon-no-focus');
                         });
-                        this.presentationModeChangeEvent.addEventListener(function (mode) {
+                        this.modeChangeEvent.addEventListener(function (mode) {
                             switch (mode) {
-                                case PresentationMode.PAGE:
-                                    _this.rootElement.classList.remove('argon-maximize');
+                                case ViewportMode.EMBEDDED:
                                     document.documentElement.classList.remove('argon-immersive');
                                     break;
-                                case PresentationMode.IMMERSIVE:
-                                    _this.rootElement.classList.add('argon-maximize');
+                                case ViewportMode.IMMERSIVE:
                                     document.documentElement.classList.add('argon-immersive');
                                     break;
                             }
@@ -18459,44 +18513,40 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                             this._watchEmbeddedViewport();
                         }
                     }
-                    sessionService.manager.on['ar.viewport.presentationMode'] = function (_ref) {
+                    sessionService.manager.on['ar.viewport.mode'] = function (_ref) {
                         var mode = _ref.mode;
 
-                        _this._updatePresentationMode(mode);
+                        _this._updateViewportMode(mode);
                     };
                     this.contextService.frameStateEvent.addEventListener(function (state) {
                         _this._updateViewport(state.viewport);
                     });
-                    // older version of argon-app manager only property supported immersive mode. 
+                    // if we are not the manager, we must start in immersive mode
+                    if (!sessionService.isRealityManager) this._updateViewportMode(ViewportMode.IMMERSIVE);
+                    // if we are loaded in an older manager which does not support embedded mode,
+                    // then switch to immersive mode
                     sessionService.manager.connectEvent.addEventListener(function () {
-                        if (sessionService.manager.version[0] === 0) {
-                            _this._updatePresentationMode(PresentationMode.IMMERSIVE);
+                        if (sessionService.manager.version[0] === 0 || !sessionService.isRealityManager) {
+                            _this._updateViewportMode(ViewportMode.IMMERSIVE);
                         }
                     });
                 }
                 /**
-                 * The current presentation mode
+                 * The current viewport mode
                  */
 
                 _createClass(ViewportService, [{
                     key: "requestPresentationMode",
-
-                    /**
-                     * Request a presentation mode
-                     * - [[PresentationMode.PAGE]] : present the entire document
-                     * - [[PresentationMode.IMMERSIVE]] : present only the argon.js view
-                     */
                     value: function requestPresentationMode(mode) {
-                        return this.sessionService.manager.request('ar.viewport.requestPresentationMode', { mode: mode });
+                        return this.sessionService.manager.request('ar.viewport.desiredMode', { mode: mode });
                     }
                 }, {
-                    key: "_updatePresentationMode",
-                    value: function _updatePresentationMode(mode) {
-                        var currentMode = this.presentationMode;
+                    key: "_updateViewportMode",
+                    value: function _updateViewportMode(mode) {
+                        var currentMode = this.mode;
                         if (currentMode !== mode) {
-                            this._presentationMode = mode;
-                            this.presentationModeChangeEvent.raiseEvent(mode);
-                            this.changeEvent.raiseEvent(undefined);
+                            this._mode = mode;
+                            this.modeChangeEvent.raiseEvent(mode);
                         }
                     }
                     /**
@@ -18521,7 +18571,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                         this._currentViewport = Viewport.clone(viewport, this._currentViewport);
                         if (!this._currentViewportJSON || this._currentViewportJSON !== viewportJSON) {
                             this._currentViewportJSON = viewportJSON;
-                            if (this.element && !this.sessionService.isRealityManager) {
+                            if (this.element && !this.sessionService.isRealityManager && this.autoLayoutImmersiveMode && this.mode === ViewportMode.IMMERSIVE) {
                                 requestAnimationFrame(function () {
                                     _this2.element.style.position = 'fixed';
                                     _this2.element.style.left = viewport.x + 'px';
@@ -18530,7 +18580,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                                     _this2.element.style.height = viewport.height + 'px';
                                 });
                             }
-                            this.changeEvent.raiseEvent(undefined);
+                            this.changeEvent.raiseEvent(this._currentViewport);
                         }
                     }
                 }, {
@@ -18544,8 +18594,8 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                         var _this3 = this;
 
                         var publish = function publish() {
-                            if (_this3.element && _this3.autoPublishEmbeddedViewport) {
-                                var parentElement = _this3.rootElement.parentElement;
+                            if (_this3.element && _this3.autoPublishEmbeddedMode) {
+                                var parentElement = _this3.element.parentElement;
                                 var rect = parentElement && parentElement.getBoundingClientRect();
                                 rect && _this3.publishEmbeddedViewport({
                                     x: rect.left,
@@ -18563,9 +18613,14 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                         });
                     }
                 }, {
+                    key: "mode",
+                    get: function get() {
+                        return this._mode;
+                    }
+                }, {
                     key: "presentationMode",
                     get: function get() {
-                        return this._presentationMode;
+                        return this.mode;
                     }
                     /**
                      * Get the current viewport
@@ -18576,12 +18631,23 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     get: function get() {
                         return this.contextService.serializedFrameState.viewport;
                     }
+                }, {
+                    key: "desiredMode",
+                    set: function set(mode) {
+                        this._desiredMode = mode;
+                        if (this.sessionService.manager.version[0] > 0) this.sessionService.manager.send('ar.viewport.desiredMode', { mode: mode });
+                    },
+                    get: function get() {
+                        return this._desiredMode;
+                    }
                 }]);
 
                 return ViewportService;
             }());
 
-            _export('ViewportService', ViewportService = __decorate$4([inject(SessionService, ContextService, FocusService, Optional.of(ParentElement)), __metadata$4("design:paramtypes", [typeof (_a$4 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$4 || Object, typeof (_b$4 = typeof ContextService !== "undefined" && ContextService) === "function" && _b$4 || Object, typeof (_c$3 = typeof FocusService !== "undefined" && FocusService) === "function" && _c$3 || Object, Object])], ViewportService));
+            __decorate$4([deprecated$1('mode'), __metadata$4("design:type", Object), __metadata$4("design:paramtypes", [])], ViewportService.prototype, "presentationMode", null);
+            __decorate$4([deprecated$1('desiredMode'), __metadata$4("design:type", Function), __metadata$4("design:paramtypes", [Number]), __metadata$4("design:returntype", Object)], ViewportService.prototype, "requestPresentationMode", null);
+            _export('ViewportService', ViewportService = __decorate$4([inject(SessionService, ContextService, FocusService, Optional.of(ViewElement)), __metadata$4("design:paramtypes", [typeof (_a$4 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$4 || Object, typeof (_b$4 = typeof ContextService !== "undefined" && ContextService) === "function" && _b$4 || Object, typeof (_c$3 = typeof FocusService !== "undefined" && FocusService) === "function" && _c$3 || Object, Object])], ViewportService));
 
             _export('ViewportServiceProvider', ViewportServiceProvider = function () {
                 function ViewportServiceProvider(sessionService, viewportService, focusServiceProvider, visibilityServiceProvider) {
@@ -18592,28 +18658,35 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     this.sessionService = sessionService;
                     this.viewportService = viewportService;
                     this.focusServiceProvider = focusServiceProvider;
+                    this.sessionViewportMode = new WeakMap();
                     /**
                      * The embedded viewports for each managed session.
                      */
-                    this.embeddedViewports = new WeakMap();
+                    this.sessionEmbeddedViewport = new WeakMap();
                     /**
                      * A UI event being forwarded from a managed session
                      */
                     this.forwardedUIEvent = new Event();
                     sessionService.ensureIsRealityManager();
                     sessionService.connectEvent.addEventListener(function (session) {
+                        _this4.sessionViewportMode.set(session, session === _this4.sessionService.manager ? _this4.viewportService.desiredMode : ViewportMode.IMMERSIVE);
                         // forward ui events to the visible reality viewer
                         session.on['ar.viewport.forwardUIEvent'] = function (uievent) {
                             _this4.forwardedUIEvent.raiseEvent(uievent);
                         };
-                        session.on['ar.viewport.requestPresentationMode'] = function (_ref2) {
+                        session.on['ar.viewport.desiredMode'] = function (_ref2) {
                             var mode = _ref2.mode;
 
-                            return _this4._handleRequestPresentationMode(session, mode);
+                            _this4.sessionViewportMode.set(session, mode);
+                            _this4._publishViewportModes();
                         };
                         session.on['ar.viewport.embeddedViewport'] = function (viewport) {
-                            _this4.embeddedViewports.set(session, viewport);
+                            _this4.sessionEmbeddedViewport.set(session, viewport);
                         };
+                        _this4._publishViewportModes();
+                    });
+                    focusServiceProvider.sessionFocusEvent.addEventListener(function () {
+                        _this4._publishViewportModes();
                     });
                 }
 
@@ -18623,41 +18696,36 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                         session.send('ar.viewport.uievent', uievent);
                     }
                 }, {
-                    key: "_handleRequestPresentationMode",
-                    value: function _handleRequestPresentationMode(session, mode) {
-                        this._ensurePersmission(session);
-                        if (this.viewportService.presentationMode !== mode) {
-                            this.sessionService.manager.send('ar.viewport.presentationMode', { mode: mode });
-                            var _iteratorNormalCompletion = true;
-                            var _didIteratorError = false;
-                            var _iteratorError = undefined;
+                    key: "_publishViewportModes",
+                    value: function _publishViewportModes() {
+                        this.sessionService.manager.send('ar.viewport.mode', {
+                            mode: this.sessionViewportMode.get(this.sessionService.manager)
+                        });
+                        var _iteratorNormalCompletion = true;
+                        var _didIteratorError = false;
+                        var _iteratorError = undefined;
 
+                        try {
+                            for (var _iterator = this.sessionService.managedSessions[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                                var session = _step.value;
+
+                                var mode = session === this.focusServiceProvider.session ? this.sessionViewportMode.get(session) : ViewportMode.IMMERSIVE;
+                                session.send('ar.viewport.mode', { mode: mode });
+                            }
+                        } catch (err) {
+                            _didIteratorError = true;
+                            _iteratorError = err;
+                        } finally {
                             try {
-                                for (var _iterator = this.sessionService.managedSessions[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                                    session = _step.value;
-
-                                    session.send('ar.viewport.presentationMode', { mode: mode });
+                                if (!_iteratorNormalCompletion && _iterator.return) {
+                                    _iterator.return();
                                 }
-                            } catch (err) {
-                                _didIteratorError = true;
-                                _iteratorError = err;
                             } finally {
-                                try {
-                                    if (!_iteratorNormalCompletion && _iterator.return) {
-                                        _iterator.return();
-                                    }
-                                } finally {
-                                    if (_didIteratorError) {
-                                        throw _iteratorError;
-                                    }
+                                if (_didIteratorError) {
+                                    throw _iteratorError;
                                 }
                             }
                         }
-                    }
-                }, {
-                    key: "_ensurePersmission",
-                    value: function _ensurePersmission(session) {
-                        if (session !== this.sessionService.manager && session !== this.focusServiceProvider.session) throw new Error('Application must have focus');
                     }
                 }]);
 
@@ -18667,43 +18735,28 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
             _export('ViewportServiceProvider', ViewportServiceProvider = __decorate$4([autoinject(), __metadata$4("design:paramtypes", [typeof (_d$3 = typeof SessionService !== "undefined" && SessionService) === "function" && _d$3 || Object, ViewportService, typeof (_e$3 = typeof FocusServiceProvider !== "undefined" && FocusServiceProvider) === "function" && _e$3 || Object, typeof (_f$2 = typeof VisibilityServiceProvider !== "undefined" && VisibilityServiceProvider) === "function" && _f$2 || Object])], ViewportServiceProvider));
             // setup our DOM environment
             if (typeof document !== 'undefined' && document.createElement) {
+                viewportMetaTag = document.querySelector('meta[name=viewport]');
 
-                (function () {
-                    var viewportMetaTag = document.querySelector('meta[name=viewport]');
-                    if (!viewportMetaTag) viewportMetaTag = document.createElement('meta');
-                    viewportMetaTag.name = 'viewport';
-                    viewportMetaTag.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0';
-                    document.head.appendChild(viewportMetaTag);
-                    var argonMetaTag = document.querySelector('meta[name=argon]');
-                    if (!argonMetaTag) argonMetaTag = document.createElement('meta');
-                    argonMetaTag.name = 'argon';
-                    document.head.appendChild(argonMetaTag);
-                    var argonElementPromise = void 0;
+                if (!viewportMetaTag) viewportMetaTag = document.createElement('meta');
+                viewportMetaTag.name = 'viewport';
+                viewportMetaTag.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0';
+                document.head.appendChild(viewportMetaTag);
+                argonMetaTag = document.querySelector('meta[name=argon]');
 
-                    resolveArgonElement = function resolveArgonElement() {
-                        if (argonElementPromise) return argonElementPromise;
-                        return argonElementPromise = resolveElement('#argon').catch(function () {
-                            var argonElement = document.createElement('div');
-                            argonElement.id = 'argon';
-                            document.body.appendChild(argonElement);
-                            return argonElement;
-                        });
-                    };
+                if (!argonMetaTag) argonMetaTag = document.createElement('meta');
+                argonMetaTag.name = 'argon';
+                document.head.appendChild(argonMetaTag);
+                style = document.createElement("style");
 
-                    var style = document.createElement("style");
-                    style.type = 'text/css';
-                    document.head.insertBefore(style, document.head.firstChild);
-                    var sheet = style.sheet;
-                    sheet.insertRule("\n        #argon {\n            position: fixed;\n            width: 100%;\n            height: 100%;\n            left: 0;\n            bottom: 0;\n            margin: 0;\n            border: 0;\n            padding: 0;\n        }\n    ", sheet.cssRules.length);
-                    sheet.insertRule("\n        .argon-view, .argon-view ~ * {\n            width: 100%;\n            height: 100%;\n        }\n    ", sheet.cssRules.length);
-                    sheet.insertRule("\n        .argon-view > * {\n            position: absolute;\n            overflow: hidden;\n            width: 100%;\n            height: 100%;\n            pointer-events: none;\n            -webkit-tap-highlight-color: transparent;\n            -webkit-user-select: none;\n            user-select: none;\n        }\n    ", sheet.cssRules.length);
-                    sheet.insertRule("\n        .argon-view > * > * {\n            pointer-events: auto;\n            -webkit-tap-highlight-color: initial;\n            -webkit-user-select: initial;\n            user-select: initial;\n        }\n    ", sheet.cssRules.length);
-                    sheet.insertRule("\n        .argon-viewport {\n            position: absolute;\n            width: 100%;\n            height: 100%;\n            pointer-events: auto;\n        }\n    ", sheet.cssRules.length);
-                    sheet.insertRule("\n        .argon-viewport > * {\n            position: absolute;\n            width: 100%;\n            height: 100%;\n            pointer-events: none;\n        }\n    ", sheet.cssRules.length);
-                    sheet.insertRule("\n        .argon-viewport > * > * {\n            pointer-events: auto;\n        }\n    ", sheet.cssRules.length);
-                    sheet.insertRule("\n        .argon-maximize, .argon-maximize ~ * {\n            pointer-events: none;\n            position: fixed !important;\n            width: 100% !important;\n            height: 100% !important;\n            left: 0;\n            bottom: 0;\n            margin: 0;\n            border: 0;\n            padding: 0;\n        }\n    ", sheet.cssRules.length);
-                    sheet.insertRule("\n        .argon-interactive {\n            pointer-events: auto;\n        }\n    ", sheet.cssRules.length);
-                })();
+                style.type = 'text/css';
+                document.head.insertBefore(style, document.head.firstChild);
+                sheet = style.sheet;
+
+                sheet.insertRule("\n        #argon {\n            position: fixed;\n            width: 100%;\n            height: 100%;\n            left: 0;\n            bottom: 0;\n            margin: 0;\n            border: 0;\n            padding: 0;\n        }\n    ", sheet.cssRules.length);
+                sheet.insertRule("\n        .argon-view {\n            -webkit-tap-highlight-color: transparent;\n            -webkit-user-select: none;\n            user-select: none;\n        }\n    ", sheet.cssRules.length);
+                sheet.insertRule("\n        .argon-immersive .argon-view {\n            position: fixed !important;\n            width: 100% !important;\n            height: 100% !important;\n            max-width: 100% !important;\n            max-height: 100% !important;\n            left: 0;\n            bottom: 0;\n            margin: 0;\n            border: 0;\n            padding: 0;\n            visibility: visible;\n        }\n    ", sheet.cssRules.length);
+                sheet.insertRule("\n        .argon-immersive body {\n            visibility: hidden;\n        }\n    ", sheet.cssRules.length);
+                sheet.insertRule("\n        .argon-interactive {\n            pointer-events: auto;\n        }\n    ", sheet.cssRules.length);
             }
 
             __decorate$8 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
@@ -19001,6 +19054,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     this.sessionService = sessionService;
                     this.contextService = contextService;
                     this.viewportService = viewportService;
+                    this.suggestedViewStateEvent = new Event();
                     this._subviews = [];
                     this._frustums = [];
                     /**
@@ -19023,6 +19077,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     }));
                     this.sessionService.manager.on['ar.view.suggestedViewState'] = function (viewState) {
                         _this.suggestedViewState = viewState;
+                        _this.suggestedViewStateEvent.raiseEvent(viewState);
                     };
                     this.contextService.frameStateEvent.addEventListener(function (state) {
                         _this._processFrameState(state);
@@ -19111,37 +19166,6 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                         }
                         return subviewEntity;
                     }
-                    /**
-                     * Request an animation frame cal\\\\\\\\\\\\\]]]]]]]]]]]\\\\lback.
-                     */
-
-                }, {
-                    key: "requestAnimationFrame",
-                    value: function (_requestAnimationFrame) {
-                        function requestAnimationFrame$$1(_x) {
-                            return _requestAnimationFrame.apply(this, arguments);
-                        }
-
-                        requestAnimationFrame$$1.toString = function () {
-                            return _requestAnimationFrame.toString();
-                        };
-
-                        return requestAnimationFrame$$1;
-                    }(function (callback) {
-                        var _this2 = this;
-
-                        var onFrame = function onFrame() {
-                            tick();
-                            if (_this2.suggestedViewState) {
-                                callback(clock.currentTime);
-                            } else _this2.requestAnimationFrame(callback);
-                        };
-                        if (currentVRDisplay) {
-                            return currentVRDisplay.requestAnimationFrame(onFrame);
-                        } else {
-                            return requestAnimationFrame(onFrame);
-                        }
-                    })
                 }, {
                     key: "eyeHeadingAccuracy",
                     get: function get() {
@@ -19167,7 +19191,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
 
             _export('ViewServiceProvider', ViewServiceProvider = function () {
                 function ViewServiceProvider(sessionService, contextService, contextServiceProvider, viewService, viewportService, locationService) {
-                    var _this3 = this;
+                    var _this2 = this;
 
                     _classCallCheck(this, ViewServiceProvider);
 
@@ -19177,16 +19201,17 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     this.viewService = viewService;
                     this.viewportService = viewportService;
                     this.locationService = locationService;
+                    this.clock = new Clock();
                     this.autoSubmitFrame = true;
                     this.contextServiceProvider.publishingReferenceFrameMap.set(this.viewService.eye.id, STAGE_ENTITY_ID);
                     this.contextServiceProvider.publishingReferenceFrameMap.set(this.viewService.physicalEye.id, PHYSICAL_STAGE_ENTITY_ID);
-                    var onAnimationFrame = function onAnimationFrame() {
-                        if (!_this3.sessionService.manager.isClosed) _this3.viewService.requestAnimationFrame(onAnimationFrame);
-                        _this3.update();
+                    var onAnimationFrame = function onAnimationFrame(timstamp) {
+                        if (!_this2.sessionService.manager.isClosed) _this2.requestAnimationFrame(onAnimationFrame);
+                        _this2.update();
                     };
-                    this.viewService.requestAnimationFrame(onAnimationFrame);
+                    this.requestAnimationFrame(onAnimationFrame);
                     this.contextService.postRenderEvent.addEventListener(function () {
-                        if (_this3.autoSubmitFrame && currentVRDisplay && currentVRDisplay.isPresenting) {
+                        if (_this2.autoSubmitFrame && currentVRDisplay && currentVRDisplay.isPresenting) {
                             currentVRDisplay.submitFrame();
                         }
                     });
@@ -19205,7 +19230,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                                 for (var _iterator2 = layers[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
                                     var layer = _step2.value;
 
-                                    if (layer.source && _this3.viewportService.element.contains(layer.source)) {
+                                    if (layer.source && _this2.viewportService.element.contains(layer.source)) {
                                         isThisView = true;
                                         break;
                                     }
@@ -19231,39 +19256,82 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                                     if (vrDisplay.displayName.match(/Cardboard/g)) {
                                         currentCanvas = vrDisplay.getLayers()[0].source;
                                         if (currentCanvas) currentCanvas.classList.add('argon-interactive');
-                                        previousPresentationMode = _this3.viewportService.presentationMode;
-                                        _this3.viewportService.requestPresentationMode(PresentationMode.IMMERSIVE);
+                                        previousPresentationMode = _this2.viewportService.mode;
+                                        _this2.viewportService.desiredMode = ViewportMode.IMMERSIVE;
                                     }
                                 } else {
                                     currentVRDisplay = undefined;
                                     if (currentCanvas && vrDisplay.displayName.match(/Cardboard/g)) {
                                         currentCanvas.classList.remove('argon-interactive');
                                         currentCanvas = undefined;
-                                        _this3.viewportService.requestPresentationMode(previousPresentationMode);
+                                        _this2.viewportService.desiredMode = previousPresentationMode;
                                     }
                                 }
                             }
                         }
-                        _this3.viewportService.presentationModeChangeEvent.addEventListener(function (mode) {
-                            if (mode === PresentationMode.PAGE) _this3.exitPresentHMD();
+                        _this2.viewportService.modeChangeEvent.addEventListener(function (mode) {
+                            if (mode === ViewportMode.PAGE) _this2.exitPresentHMD();
                         });
                     };
                     window.addEventListener('vrdisplaypresentchange', handleVRDisplayPresentChange);
                     this.update();
                 }
+                /**
+                 * Request an animation frame callback for the current view.
+                 */
 
                 _createClass(ViewServiceProvider, [{
+                    key: "requestAnimationFrame",
+                    value: function (_requestAnimationFrame) {
+                        function requestAnimationFrame$$1(_x) {
+                            return _requestAnimationFrame.apply(this, arguments);
+                        }
+
+                        requestAnimationFrame$$1.toString = function () {
+                            return _requestAnimationFrame.toString();
+                        };
+
+                        return requestAnimationFrame$$1;
+                    }(function (callback) {
+                        if (currentVRDisplay) {
+                            return currentVRDisplay.requestAnimationFrame(callback);
+                        } else {
+                            return requestAnimationFrame(callback);
+                        }
+                    })
+                }, {
+                    key: "cancelAnimationFrame",
+                    value: function (_cancelAnimationFrame) {
+                        function cancelAnimationFrame(_x2) {
+                            return _cancelAnimationFrame.apply(this, arguments);
+                        }
+
+                        cancelAnimationFrame.toString = function () {
+                            return _cancelAnimationFrame.toString();
+                        };
+
+                        return cancelAnimationFrame;
+                    }(function (id) {
+                        if (currentVRDisplay) {
+                            return currentVRDisplay.cancelAnimationFrame(id);
+                        } else {
+                            return cancelAnimationFrame(id);
+                        }
+                    })
+                }, {
                     key: "update",
                     value: function update() {
-                        var _this4 = this;
-
+                        this.tick();
                         // update view state and physical eye entities
                         this.onUpdate();
-                        // publish the view state and the physical eye entities.
+                        var viewState = this.viewService.suggestedViewState;
+                        viewState.time = JulianDate.clone(this.clock.currentTime, viewState.time);
+                        // publish the the physical eye entity and the view state.
                         this.contextServiceProvider.publishEntityState(this.viewService.physicalEye);
                         this.sessionService.managedSessions.forEach(function (s) {
-                            if (Role.isRealityViewer(s.info.role)) s.send('ar.view.suggestedViewState', _this4.viewService.suggestedViewState);
+                            if (Role.isRealityViewer(s.info.role)) s.send('ar.view.suggestedViewState', viewState);
                         });
+                        this.viewService.suggestedViewStateEvent.raiseEvent(viewState);
                     }
                 }, {
                     key: "onUpdate",
@@ -19277,12 +19345,12 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 }, {
                     key: "requestPresentHMD",
                     value: function requestPresentHMD() {
-                        var _this5 = this;
+                        var _this3 = this;
 
                         if (typeof navigator !== 'undefined' && navigator.getVRDisplays) {
                             var requestPresent = function requestPresent(vrDisplay) {
                                 currentVRDisplay = vrDisplay;
-                                var element = _this5.viewportService.element;
+                                var element = _this3.viewportService.element;
                                 var layers = [];
                                 layers[0] = { source: element.querySelector('canvas') || element.lastElementChild };
                                 return vrDisplay.requestPresent(layers).catch(function (e) {
@@ -19310,6 +19378,26 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                         }
                         return Promise.resolve();
                     }
+                    // Enforce monotonically increasing time, and deal with 
+                    // clock drift by either slowing down or speeding up,
+                    // while never going backwards
+
+                }, {
+                    key: "tick",
+                    value: function tick() {
+                        var clock = this.clock;
+                        var secondsBeforeTick = clock.currentTime.secondsOfDay;
+                        clock.tick();
+                        var secondsAfterTick = clock.currentTime.secondsOfDay;
+                        var now = JulianDate.now(scratchTime);
+                        var secondsDrift = JulianDate.secondsDifference(clock.currentTime, now);
+                        if (secondsDrift > 0.033) {
+                            var halfTimeStep = (secondsAfterTick - secondsBeforeTick) / 2;
+                            clock.currentTime.secondsOfDay -= halfTimeStep;
+                        } else if (secondsDrift < 0.5) {
+                            JulianDate.clone(now, clock.currentTime);
+                        }
+                    }
                 }, {
                     key: "_updateViewSingular",
                     value: function _updateViewSingular() {
@@ -19317,8 +19405,8 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                         var viewport = suggestedViewState.viewport = suggestedViewState.viewport || {};
                         viewport.x = 0;
                         viewport.y = 0;
-                        viewport.width = this.viewportService.rootElement.clientWidth;
-                        viewport.height = this.viewportService.rootElement.clientHeight;
+                        viewport.width = this.viewportService.element.clientWidth;
+                        viewport.height = this.viewportService.element.clientHeight;
                         var subviews = suggestedViewState.subviews = suggestedViewState.subviews || [];
                         subviews.length = 1;
                         var subview = subviews[0] = subviews[0] || {};
@@ -19343,8 +19431,8 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                         var viewport = suggestedViewState.viewport = suggestedViewState.viewport || {};
                         viewport.x = 0;
                         viewport.y = 0;
-                        viewport.width = this.viewportService.rootElement.clientWidth;
-                        viewport.height = this.viewportService.rootElement.clientHeight;
+                        viewport.width = this.viewportService.element.clientWidth;
+                        viewport.height = this.viewportService.element.clientHeight;
                         var vrFrameData = this._vrFrameData = this._vrFrameData || new VRFrameData();
                         if (!vrDisplay['getFrameData'](vrFrameData)) return this.viewService.suggestedViewState;
                         var layers = vrDisplay.getLayers();
@@ -19410,7 +19498,6 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
             deviceOrientationListener = void 0;
             deviceOrientation = void 0;
             deviceOrientationHeadingAccuracy = void 0;
-            clock = new Clock();
             scratchTime = new JulianDate(0, 0);
 
             _export('RealityViewer', RealityViewer = function () {
@@ -19492,13 +19579,14 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
             _export('EmptyRealityViewer', EmptyRealityViewer = function (_RealityViewer) {
                 _inherits(EmptyRealityViewer, _RealityViewer);
 
-                function EmptyRealityViewer(sessionService, contextService, viewService, viewportService, uri) {
+                function EmptyRealityViewer(sessionService, contextService, locationService, viewService, viewportService, uri) {
                     _classCallCheck(this, EmptyRealityViewer);
 
                     var _this = _possibleConstructorReturn(this, (EmptyRealityViewer.__proto__ || Object.getPrototypeOf(EmptyRealityViewer)).call(this, uri));
 
                     _this.sessionService = sessionService;
                     _this.contextService = contextService;
+                    _this.locationService = locationService;
                     _this.viewService = viewService;
                     _this.viewportService = viewportService;
                     _this.uri = uri;
@@ -19520,7 +19608,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                         internalSession.on['ar.visibility.state'] = function () {};
                         internalSession.on['ar.focus.state'] = function () {};
                         internalSession.on['ar.viewport.uievent'] = function () {};
-                        internalSession.on['ar.viewport.presentationMode'] = function () {};
+                        internalSession.on['ar.viewport.mode'] = function () {};
                         internalSession.on['ar.view.suggestedViewState'] = function () {};
                         internalSession.on['ar.context.update'] = function () {};
                         internalSession.on['ar.reality.connect'] = function () {};
@@ -19540,9 +19628,9 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                                         return 'moveForward';
                                     case 'S'.charCodeAt(0):
                                         return 'moveBackward';
-                                    case 'R'.charCodeAt(0):
+                                    case 'E'.charCodeAt(0):
                                         return 'moveUp';
-                                    case 'F'.charCodeAt(0):
+                                    case 'R'.charCodeAt(0):
                                         return 'moveDown';
                                     case 'D'.charCodeAt(0):
                                         return 'moveRight';
@@ -19576,32 +19664,31 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                             // const pitchQuat = new Quaternion;
                             var positionScratchCartesian = new Cartesian3();
                             var movementScratchCartesian = new Cartesian3();
-                            var eyeOrientation = new Quaternion();
                             var orientationMatrix = new Matrix3();
                             var up = new Cartesian3(0, 0, 1);
                             var right = new Cartesian3(1, 0, 0);
                             var forward = new Cartesian3(0, -1, 0);
                             var scratchFrustum = new PerspectiveFrustum();
+                            var physicalStage = _this2.locationService.physicalStage;
+                            var physicalEye = _this2.viewService.physicalEye;
                             var AVERAGE_HUMAN_HEIGHT$$1 = 1.77;
-                            var NEGATIVE_UNIT_Y = new Cartesian3(0, -1, 0);
+                            var NEGATIVE_UNIT_Z = new Cartesian3(0, 0, -1);
                             var X_90ROT = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, CesiumMath.PI_OVER_TWO);
-                            var virtualEyePositionProperty = new ConstantPositionProperty(new Cartesian3(0, 0, AVERAGE_HUMAN_HEIGHT$$1), _this2.contextService.entities.getById(PHYSICAL_STAGE_ENTITY_ID));
+                            var virtualEyePositionProperty = new ConstantPositionProperty(new Cartesian3(0, 0, AVERAGE_HUMAN_HEIGHT$$1), physicalStage);
                             var virtualEyeOrientationProperty = new ConstantProperty(X_90ROT);
-                            Matrix3.fromQuaternion(eyeOrientation, orientationMatrix);
                             var virtualEye = new Entity({
                                 position: virtualEyePositionProperty,
                                 orientation: virtualEyeOrientationProperty
                             });
                             var viewService = _this2.viewService;
                             var subviews = [];
-                            var update = function update(time) {
-                                if (internalSession.isConnected) viewService.requestAnimationFrame(update);else return;
+                            var physicalEyeRelativeToStagePose = _this2.contextService.createEntityPose(physicalEye, physicalStage);
+                            var remove = viewService.suggestedViewStateEvent.addEventListener(function (suggestedViewState) {
+                                if (internalSession.isClosed) return remove();
                                 if (!_this2.isPresenting) {
                                     aggregator.reset();
                                     return;
                                 }
-                                var suggestedViewState = _this2.viewService.suggestedViewState;
-                                if (!suggestedViewState) return;
                                 SerializedSubviewList.clone(suggestedViewState.subviews, subviews);
                                 // provide fov controls
                                 if (!suggestedViewState.strict) {
@@ -19623,25 +19710,26 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                                         Matrix4.clone(scratchFrustum.projectionMatrix, s.projectionMatrix);
                                     });
                                 }
-                                var physicalStage = _this2.contextService.entities.getById(PHYSICAL_STAGE_ENTITY_ID);
-                                var orientation = getEntityOrientation(_this2.viewService.physicalEye, time, physicalStage, scratchQuaternion);
-                                // provide controls if the device does not have a pose
-                                if (!orientation && !suggestedViewState.strict) {
+                                var time = suggestedViewState.time;
+                                var orientation = getEntityOrientation(physicalEye, time, physicalStage, scratchQuaternion);
+                                physicalEyeRelativeToStagePose.update(time);
+                                // provide controls if the device does not have a physical pose
+                                if (!(physicalEyeRelativeToStagePose.status & PoseStatus.KNOWN)) {
+                                    orientation = getEntityOrientationInReferenceFrame(virtualEye, time, physicalStage, scratchQuaternion);
                                     if (aggregator.isMoving(CameraEventType.LEFT_DRAG)) {
                                         var dragMovement = aggregator.getMovement(CameraEventType.LEFT_DRAG);
-                                        var currentOrientation = getEntityOrientationInReferenceFrame(virtualEye, time, physicalStage, eyeOrientation);
-                                        if (currentOrientation) {
+                                        if (orientation) {
                                             // const dragPitch = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, frustum.fov * (dragMovement.endPosition.y - dragMovement.startPosition.y) / app.view.getViewport().height, scratchQuaternionDragPitch);
                                             var dragYaw = Quaternion.fromAxisAngle(Cartesian3.UNIT_Y, scratchFrustum.fov * (dragMovement.endPosition.x - dragMovement.startPosition.x) / suggestedViewState.viewport.width, scratchQuaternionDragYaw);
                                             // const drag = Quaternion.multiply(dragPitch, dragYaw, dragYaw);
-                                            var newOrientation = Quaternion.multiply(currentOrientation, dragYaw, dragYaw);
-                                            virtualEye.orientation.setValue(newOrientation);
-                                            Matrix3.fromQuaternion(newOrientation, orientationMatrix);
-                                            Matrix3.multiplyByVector(orientationMatrix, Cartesian3.UNIT_Z, up);
-                                            Matrix3.multiplyByVector(orientationMatrix, Cartesian3.UNIT_X, right);
-                                            Matrix3.multiplyByVector(orientationMatrix, NEGATIVE_UNIT_Y, forward);
+                                            orientation = Quaternion.multiply(orientation, dragYaw, dragYaw);
+                                            virtualEye.orientation.setValue(orientation);
                                         }
                                     }
+                                    Matrix3.fromQuaternion(orientation, orientationMatrix);
+                                    Matrix3.multiplyByVector(orientationMatrix, Cartesian3.UNIT_Y, up);
+                                    Matrix3.multiplyByVector(orientationMatrix, Cartesian3.UNIT_X, right);
+                                    Matrix3.multiplyByVector(orientationMatrix, NEGATIVE_UNIT_Z, forward);
                                     var position = virtualEyePositionProperty.getValueInReferenceFrame(time, physicalStage, positionScratchCartesian);
                                     var moveRate = 0.02;
                                     if (flags.moveForward) {
@@ -19669,14 +19757,14 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                                         Cartesian3.add(position, movementScratchCartesian, position);
                                     }
                                     virtualEyePositionProperty.setValue(position, physicalStage);
-                                } else {
-                                    virtualEyeOrientationProperty.setValue(orientation);
+                                } else if (physicalEyeRelativeToStagePose.status & PoseStatus.FOUND) {
+                                    virtualEyePositionProperty.setValue(Cartesian3.ZERO, physicalEye);
+                                    virtualEyeOrientationProperty.setValue(Quaternion.IDENTITY);
                                 }
                                 aggregator.reset();
                                 var frameState = _this2.contextService.createFrameState(time, suggestedViewState.viewport, subviews, virtualEye);
                                 internalSession.send('ar.reality.frameState', frameState);
-                            };
-                            viewService.requestAnimationFrame(update);
+                            });
                         });
                         // Only connect after the caller is able to attach connectEvent handlers
                         Promise.resolve().then(function () {
@@ -19690,7 +19778,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 return EmptyRealityViewer;
             }(RealityViewer));
 
-            _export('EmptyRealityViewer', EmptyRealityViewer = __decorate$10([inject(SessionService, ContextService, ViewService, ViewportService), __metadata$10("design:paramtypes", [typeof (_a$10 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$10 || Object, typeof (_b$10 = typeof ContextService !== "undefined" && ContextService) === "function" && _b$10 || Object, typeof (_c$7 = typeof ViewService !== "undefined" && ViewService) === "function" && _c$7 || Object, typeof (_d$7 = typeof ViewportService !== "undefined" && ViewportService) === "function" && _d$7 || Object, String])], EmptyRealityViewer));
+            _export('EmptyRealityViewer', EmptyRealityViewer = __decorate$10([inject(SessionService, ContextService, LocationService, ViewService, ViewportService), __metadata$10("design:paramtypes", [typeof (_a$10 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$10 || Object, typeof (_b$10 = typeof ContextService !== "undefined" && ContextService) === "function" && _b$10 || Object, typeof (_c$7 = typeof LocationService !== "undefined" && LocationService) === "function" && _c$7 || Object, typeof (_d$7 = typeof ViewService !== "undefined" && ViewService) === "function" && _d$7 || Object, typeof (_e$6 = typeof ViewportService !== "undefined" && ViewportService) === "function" && _e$6 || Object, String])], EmptyRealityViewer));
 
             _get$1 = function get(object, property, receiver) {
                 if (object === null) object = Function.prototype;
@@ -19794,7 +19882,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                         session.on['ar.device.state'] = function () {};
                         session.on['ar.visibility.state'] = function () {};
                         session.on['ar.focus.state'] = function () {};
-                        session.on['ar.viewport.presentationMode'] = function () {};
+                        session.on['ar.viewport.mode'] = function () {};
                         session.on['ar.viewport.uievent'] = function () {};
                         session.on['ar.view.suggestedViewState'] = function () {};
                         session.on['ar.context.update'] = function () {};
@@ -19843,19 +19931,16 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                                     });
                                     var viewService = _this2.viewService;
                                     var lastFrameTime = -1;
-                                    var update = function update(time) {
-                                        if (session.isConnected) viewService.requestAnimationFrame(update);else return;
-                                        var suggestedViewState = viewService.suggestedViewState;
-                                        if (!suggestedViewState) return;
+                                    var remove = viewService.suggestedViewStateEvent.addEventListener(function (suggestedViewState) {
+                                        if (session.isClosed) remove();
                                         if (videoElement.currentTime != lastFrameTime) {
                                             lastFrameTime = videoElement.currentTime;
                                             // const videoWidth = videoElement.videoWidth;
                                             // const videoHeight = videoElement.videoHeight;
-                                            var frameState = _this2.contextService.createFrameState(time, suggestedViewState.viewport, suggestedViewState.subviews, viewService.eye);
+                                            var frameState = _this2.contextService.createFrameState(suggestedViewState.time, suggestedViewState.viewport, suggestedViewState.subviews, viewService.eye);
                                             session.send('ar.reality.frameState', frameState);
                                         }
-                                    };
-                                    viewService.requestAnimationFrame(update);
+                                    });
                                 })();
                             }
                         });
@@ -20429,7 +20514,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 return RealityServiceProvider;
             }());
 
-            _export('RealityServiceProvider', RealityServiceProvider = __decorate$9([autoinject, __metadata$9("design:paramtypes", [typeof (_c$6 = typeof SessionService !== "undefined" && SessionService) === "function" && _c$6 || Object, RealityService, typeof (_d$6 = typeof ContextService !== "undefined" && ContextService) === "function" && _d$6 || Object, typeof (_e$5 = typeof ViewportServiceProvider !== "undefined" && ViewportServiceProvider) === "function" && _e$5 || Object, typeof (_f$4 = typeof VisibilityServiceProvider !== "undefined" && VisibilityServiceProvider) === "function" && _f$4 || Object, typeof (_g$2 = typeof FocusServiceProvider !== "undefined" && FocusServiceProvider) === "function" && _g$2 || Object, RealityViewerFactory])], RealityServiceProvider));
+            _export('RealityServiceProvider', RealityServiceProvider = __decorate$9([autoinject, __metadata$9("design:paramtypes", [typeof (_c$6 = typeof SessionService !== "undefined" && SessionService) === "function" && _c$6 || Object, RealityService, typeof (_d$6 = typeof ContextService !== "undefined" && ContextService) === "function" && _d$6 || Object, typeof (_e$5 = typeof ViewportServiceProvider !== "undefined" && ViewportServiceProvider) === "function" && _e$5 || Object, typeof (_f$4 = typeof VisibilityServiceProvider !== "undefined" && VisibilityServiceProvider) === "function" && _f$4 || Object, typeof (_g$3 = typeof FocusServiceProvider !== "undefined" && FocusServiceProvider) === "function" && _g$3 || Object, RealityViewerFactory])], RealityServiceProvider));
 
             __decorate$2 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
                 var c = arguments.length,
@@ -20482,10 +20567,14 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                             _this.element.style.position = 'absolute';
                             _this.element.style.bottom = '0';
                             _this.element.style.right = '0';
+                            _this.element.style.width = '100%';
+                            _this.element.style.height = '100%';
                             _this.element.style['userSelect'] = 'none';
                             _this.element.style.webkitUserSelect = 'none';
                             _this.element.style.zIndex = '10';
-                            _this.viewportService.rootElement.appendChild(_this.element);
+                            _this.element.style.pointerEvents = 'none';
+                            _this.element.style.overflow = 'hidden';
+                            _this.viewportService.element.appendChild(_this.element);
                             _this.sessionService.manager.closeEvent.addEventListener(function () {
                                 _this.element.remove();
                             });
@@ -20495,6 +20584,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                             realityViewerOverlayElement.style.height = '100%';
                             realityViewerOverlayElement.style.display = 'flex';
                             realityViewerOverlayElement.style.alignItems = 'center';
+                            realityViewerOverlayElement.style.pointerEvents = 'auto';
                             realityViewerOverlayElement.addEventListener('click', function (e) {
                                 if (e.target === realityViewerOverlayElement) {
                                     realityViewerOverlayElement.remove();
@@ -20590,13 +20680,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                                 if (_this.viewServiceProvider.isPresentingHMD) {
                                     _this.viewServiceProvider.exitPresentHMD();
                                 } else {
-                                    if (isIOS) {
-                                        _this.viewportService.requestPresentationMode(PresentationMode.IMMERSIVE).then(function () {
-                                            return _this.viewServiceProvider.requestPresentHMD();
-                                        });
-                                    } else {
-                                        _this.viewServiceProvider.requestPresentHMD();
-                                    }
+                                    _this.viewServiceProvider.requestPresentHMD();
                                 }
                             });
                             _this.realityMenuItem = _this._createMenuItem(eyeIcon, 'Select Reality Viewer...', function () {
@@ -20608,10 +20692,10 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                             _this.maximizeMenuItem = _this._createMenuItem(fullscreenIcon, 'Toggle Immersive View', function () {
                                 _this.menuOpen = false;
                                 _this.updateMenu();
-                                if (_this.viewportService.presentationMode === PresentationMode.IMMERSIVE) {
-                                    _this.viewportService.requestPresentationMode(PresentationMode.PAGE);
+                                if (_this.viewportService.mode === ViewportMode.IMMERSIVE) {
+                                    _this.viewportService.desiredMode = ViewportMode.PAGE;
                                 } else {
-                                    _this.viewportService.requestPresentationMode(PresentationMode.IMMERSIVE);
+                                    _this.viewportService.desiredMode = ViewportMode.IMMERSIVE;
                                 }
                             });
                             _this.onSelect(menuButton, _this.toggleMenu.bind(_this));
@@ -20693,7 +20777,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                         this.menuItems = [];
                         this.menuItems.push(null);
                         if (isIOS) this.menuItems.push(this.openInArgonMenuItem);
-                        var parentElement = this.viewportService.rootElement.parentElement;
+                        var parentElement = this.viewportService.element.parentElement;
                         var parentWidth = parentElement ? parentElement.clientWidth : 0;
                         var parentHeight = parentElement ? parentElement.clientHeight : 0;
                         if (!(window.innerWidth === parentWidth && window.innerHeight === parentHeight)) this.menuItems.push(this.maximizeMenuItem);
@@ -20804,6 +20888,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     /**
                      * Initialize vuforia with an unecrypted key.
                      * It's a bad idea to publish your unencrypted vuforia key on the internet.
+                     * @private
                      */
 
                 }, {
@@ -21034,16 +21119,15 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
              */
 
             _export('ArgonSystem', ArgonSystem = function () {
-                function ArgonSystem(parentElement, config) {
+                function ArgonSystem(elementOrSelector, config) {
                     var container = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : new Container();
 
                     _classCallCheck(this, ArgonSystem);
 
                     this.container = container;
                     if (!ArgonSystem.instance) ArgonSystem.instance = this;
-                    container.registerInstance(ParentElement, parentElement || ParentElement);
+                    if (elementOrSelector) container.registerInstance(ViewElement, elementOrSelector);
                     container.registerInstance('config', config);
-                    if (!container.hasResolver('containerElement')) container.registerInstance('containerElement', null);
                     if (Role.isRealityManager(config.role)) {
                         container.registerSingleton(ConnectService, LoopbackConnectService);
                         if (typeof document !== 'undefined') {
@@ -21097,8 +21181,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 }, {
                     key: "provider",
                     get: function get() {
-                        this.session.ensureIsRealityManager();
-                        return this.container.get(ArgonSystemProvider);
+                        if (this.session.isRealityManager) return this.container.get(ArgonSystemProvider);
                     }
                 }, {
                     key: "context",
@@ -21172,6 +21255,8 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 return ArgonSystem;
             }());
 
+            _export('initReality', initReality = initRealityViewer);
+
             _export('DI', aureliaDependencyInjection);
 
             _export('Cesium', cesiumImports);
@@ -21191,6 +21276,8 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
             _export('init', init$1);
 
             _export('initRealityViewer', initRealityViewer);
+
+            _export('initReality', initReality);
 
             _export('AVERAGE_HUMAN_HEIGHT', AVERAGE_HUMAN_HEIGHT);
 
@@ -21217,6 +21304,8 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
             _export('SerializedSubview', SerializedSubview);
 
             _export('SerializedSubviewList', SerializedSubviewList);
+
+            _export('EntityPose', EntityPose);
 
             _export('PoseStatus', PoseStatus);
 
@@ -21310,9 +21399,9 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
 
             _export('ViewServiceProvider', ViewServiceProvider);
 
-            _export('PresentationMode', PresentationMode);
+            _export('ViewportMode', ViewportMode);
 
-            _export('ParentElement', ParentElement);
+            _export('ViewElement', ViewElement);
 
             _export('ViewportService', ViewportService);
 

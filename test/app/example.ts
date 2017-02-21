@@ -8,11 +8,6 @@ window['Argon'] = Argon;
 
 export const app = Argon.init();
 
-// app.reality.setDesired({
-//     title: 'My Custom Reality',
-//     uri: Argon.resolveURL('custom_reality.html')
-// })
-
 export const scene = new THREE.Scene();
 export const camera = new THREE.PerspectiveCamera();
 export const user = new THREE.Object3D();
@@ -26,7 +21,7 @@ const renderer = new THREE.WebGLRenderer({
     logarithmicDepthBuffer: true
 });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-app.viewport.rootElement.appendChild(renderer.domElement);
+app.viewport.element.appendChild(renderer.domElement);
 
 // app.context.setDefaultReferenceFrame(app.context.localOriginEastUpSouth);
 app.context.setDefaultReferenceFrame(app.context.localOriginEastNorthUp);
@@ -135,14 +130,14 @@ kDYZIbq+RqPwaZhg0hXpT5Fwz97y4Z5NyjAu44kiYAK2Du0Vyi1e0PMtW2ja4ZH0
             app.context.updateEvent.addEventListener(() => {
                 const stonesPose = app.context.getEntityPose(stonesEntity);
 
-                if (stonesPose.poseStatus & Argon.PoseStatus.KNOWN) {
+                if (stonesPose.status & Argon.PoseStatus.KNOWN) {
                     stonesObject.position.copy(stonesPose.position);
                     stonesObject.quaternion.copy(stonesPose.orientation);
                 }
                 
-                if (stonesPose.poseStatus & Argon.PoseStatus.FOUND) {
+                if (stonesPose.status & Argon.PoseStatus.FOUND) {
                     stonesObject.add(box);
-                } else if (stonesPose.poseStatus & Argon.PoseStatus.LOST) {
+                } else if (stonesPose.status & Argon.PoseStatus.LOST) {
                     stonesObject.remove(box);
                 }
             })
@@ -155,7 +150,7 @@ kDYZIbq+RqPwaZhg0hXpT5Fwz97y4Z5NyjAu44kiYAK2Du0Vyi1e0PMtW2ja4ZH0
 app.updateEvent.addEventListener(() => {
     const userPose = app.context.getEntityPose(app.context.user);
 
-    if (userPose.poseStatus & Argon.PoseStatus.KNOWN) {
+    if (userPose.status & Argon.PoseStatus.KNOWN) {
         user.position.copy(userPose.position);
         user.quaternion.copy(userPose.orientation);
         userLocation.position.copy(userPose.position);

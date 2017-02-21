@@ -53,6 +53,7 @@ export class VuforiaService {
     /**
      * Initialize vuforia with an unecrypted key.
      * It's a bad idea to publish your unencrypted vuforia key on the internet.
+     * @private
      */
     public initWithUnencryptedKey(options: string|{key:string}) : Promise<VuforiaAPI> {        
         if (typeof options === 'string') options = {key:options};

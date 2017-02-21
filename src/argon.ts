@@ -21,7 +21,7 @@ import { FocusService, FocusServiceProvider } from './focus'
 import { LocationService, LocationServiceProvider } from './location'
 import { RealityService, RealityServiceProvider } from './reality'
 import { ViewService, ViewServiceProvider } from './view'
-import { ViewportService, ViewportServiceProvider, ParentElement } from './viewport'
+import { ViewportService, ViewportServiceProvider, ViewElement } from './viewport'
 import { VisibilityService, VisibilityServiceProvider } from './visibility'
 import { VuforiaService, VuforiaServiceProvider } from './vuforia'
 
@@ -79,16 +79,13 @@ export class ArgonSystem {
     static instance?: ArgonSystem;
 
     constructor(
-        parentElement:string|HTMLDivElement|null|undefined, 
+        elementOrSelector:string|Element|null|undefined, 
         config: Configuration,
         public container: DI.Container = new DI.Container) {
         if (!ArgonSystem.instance) ArgonSystem.instance = this;
 
-        container.registerInstance(ParentElement, parentElement || ParentElement);
+        if (elementOrSelector) container.registerInstance(ViewElement, elementOrSelector);
         container.registerInstance('config', config);
-
-        if (!container.hasResolver('containerElement'))
-            container.registerInstance('containerElement', null);
 
         if (Role.isRealityManager(config.role)) {
             container.registerSingleton(
@@ -126,9 +123,9 @@ export class ArgonSystem {
         this.session.connect();
     }
     
-    public get provider() : ArgonSystemProvider {
-        this.session.ensureIsRealityManager();
-        return this.container.get(ArgonSystemProvider);
+    public get provider() : ArgonSystemProvider|undefined {
+        if (this.session.isRealityManager)
+            return this.container.get(ArgonSystemProvider);
     }
 
     public get context(): ContextService {
@@ -203,33 +200,32 @@ export class ArgonSystem {
  * this function will create an ArgonSystem which has the [[REALITY_MANAGER]] role.
  */
 export function init(configuration?: Configuration, dependencyInjectionContainer?:DI.Container) : ArgonSystem;
-export function init(parentElement?: string|HTMLDivElement|null, configuration?: Configuration, dependencyInjectionContainer?:DI.Container) : ArgonSystem;
+export function init(element?: string|HTMLDivElement|null, configuration?: Configuration, dependencyInjectionContainer?:DI.Container) : ArgonSystem;
 export function init(
-        parentElementOrConfig?: any,
+        elementOrConfig?: any,
         configurationOrDIContainer?: any,
         dependencyInjectionContainer?:DI.Container
     ) : ArgonSystem {
     if (ArgonSystem.instance) throw new Error('A shared ArgonSystem instance already exists');
 
-    let parentElement:string|HTMLDivElement|undefined;
+    let element:string|HTMLDivElement|undefined;
     let configuration:Configuration|undefined;
     if (configurationOrDIContainer instanceof DI.Container) {
-        parentElement = ParentElement;
-        configuration = parentElementOrConfig;
+        configuration = elementOrConfig;
         dependencyInjectionContainer = configurationOrDIContainer;
     } else {
-        parentElement = parentElementOrConfig;
+        element = elementOrConfig;
         configuration = configurationOrDIContainer;
     }
 
     // see if it is the old parameter interface
-    if (parentElement && (parentElement['configuration'] || parentElement['container'])) {
-        const deprecatedParameters = parentElement;
+    if (element && (element['configuration'] || element['container'])) {
+        const deprecatedParameters = element;
         if (!configuration && deprecatedParameters['configuration'])
             configuration = deprecatedParameters['configuration'];
         if (!configuration && deprecatedParameters['container']) 
             dependencyInjectionContainer = deprecatedParameters['container'];
-        parentElement = undefined;
+        element = undefined;
     }
     
     let role: Role;
@@ -247,7 +243,7 @@ export function init(
 
     if (!dependencyInjectionContainer) dependencyInjectionContainer = new DI.Container();
 
-    return new ArgonSystem(parentElement || null, configuration, dependencyInjectionContainer);
+    return new ArgonSystem(element || null, configuration, dependencyInjectionContainer);
 }
 
 /**
@@ -267,6 +263,11 @@ export function initRealityViewer(
     configuration.protocols.push('ar.uievent')
     return new ArgonSystem(null, configuration, dependencyInjectionContainer);
 }
+
+/**
+ * @private
+ */
+export const initReality = initRealityViewer;
 
 /**
  * Not yet implemented.

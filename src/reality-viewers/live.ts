@@ -1,5 +1,4 @@
 import { inject } from 'aurelia-dependency-injection'
-import { JulianDate } from '../cesium/cesium-imports'
 import { Role } from '../common'
 import { SessionService, SessionPort } from '../session'
 import { ViewService } from '../view'
@@ -78,7 +77,7 @@ export class LiveRealityViewer extends RealityViewer {
         session.on['ar.device.state'] = () => { };
         session.on['ar.visibility.state'] = () => { };
         session.on['ar.focus.state'] = () => { };
-        session.on['ar.viewport.presentationMode'] = () => { };
+        session.on['ar.viewport.mode'] = () => { };
         session.on['ar.viewport.uievent'] = () => { };
         session.on['ar.view.suggestedViewState'] = () => { };
         session.on['ar.context.update'] = () => { };
@@ -110,13 +109,9 @@ export class LiveRealityViewer extends RealityViewer {
                 const viewService = this.viewService;
                 let lastFrameTime = -1;
 
-                let update = (time: JulianDate) => {
-                    if (session.isConnected) 
-                        viewService.requestAnimationFrame(update);
-                    else return;
+                let remove = viewService.suggestedViewStateEvent.addEventListener((suggestedViewState)=>{
 
-                    const suggestedViewState = viewService.suggestedViewState;
-                    if (!suggestedViewState) return;
+                    if (session.isClosed) remove();
 
                     if (videoElement.currentTime != lastFrameTime) {
                         lastFrameTime = videoElement.currentTime;
@@ -125,7 +120,7 @@ export class LiveRealityViewer extends RealityViewer {
                         // const videoHeight = videoElement.videoHeight;
 
                         const frameState = this.contextService.createFrameState(
-                            time,
+                            suggestedViewState.time,
                             suggestedViewState.viewport,
                             suggestedViewState.subviews,
                             viewService.eye
@@ -133,9 +128,8 @@ export class LiveRealityViewer extends RealityViewer {
                         
                         session.send('ar.reality.frameState', frameState);
                     }
-                };
 
-                viewService.requestAnimationFrame(update);
+                });
             }
         });
     }

@@ -16,7 +16,7 @@ import {
     defined
 } from './cesium/cesium-imports'
 import { SessionService } from './session'
-import { ViewportService, PresentationMode } from './viewport'
+import { ViewportService, ViewportMode } from './viewport'
 import { 
     LocationService
 } from './location'
@@ -34,6 +34,7 @@ import {
 } from './common'
 import { EntityPose, ContextService, ContextServiceProvider } from './context'
 import {
+    Event,
     deprecated,
     // getAncestorReferenceFrames,
     // getEntityPositionInReferenceFrame,
@@ -60,6 +61,7 @@ const scratchMatrix4 = new Matrix4;
 const scratchFrustum = new PerspectiveFrustum();
 
 export interface ViewState {
+    time: JulianDate,
     viewport: Viewport,
     subviews: SerializedSubviewList, 
     strict: boolean
@@ -72,6 +74,8 @@ let currentVRDisplay:any;
 @autoinject
 export class ViewService {
 
+    public suggestedViewStateEvent = new Event<ViewState>();
+
     private _subviews: Subview[] = [];
     private _frustums: PerspectiveFrustum[] = [];
 
@@ -83,6 +87,7 @@ export class ViewService {
     ) {
         this.sessionService.manager.on['ar.view.suggestedViewState'] = (viewState:ViewState) => {
             this.suggestedViewState = viewState;
+            this.suggestedViewStateEvent.raiseEvent(viewState);
         };
 
         this.contextService.frameStateEvent.addEventListener((state) => {
@@ -185,27 +190,12 @@ export class ViewService {
         }
         return subviewEntity;
     }
-
-    /**
-     * Request an animation frame cal\\\\\\\\\\\\\]]]]]]]]]]]\\\\lback.
-     */
-    public requestAnimationFrame(callback:(now:JulianDate)=>void) {
-        const onFrame = () => {
-            tick();
-            if (this.suggestedViewState) {
-                callback(clock.currentTime);
-            } else this.requestAnimationFrame(callback);
-        }
-        if (currentVRDisplay) {
-            return (currentVRDisplay as VRDisplay).requestAnimationFrame(onFrame);
-        } else {
-            return requestAnimationFrame(onFrame);
-        }
-    }
 }
 
 @autoinject
 export class ViewServiceProvider {
+
+    public clock = new Clock();
 
     public autoSubmitFrame = true;
 
@@ -221,12 +211,12 @@ export class ViewServiceProvider {
         this.contextServiceProvider.publishingReferenceFrameMap.set(this.viewService.eye.id, STAGE_ENTITY_ID);
         this.contextServiceProvider.publishingReferenceFrameMap.set(this.viewService.physicalEye.id, PHYSICAL_STAGE_ENTITY_ID);
 
-        const onAnimationFrame = () => {
+        const onAnimationFrame = (timstamp:number) => {
             if (!this.sessionService.manager.isClosed) 
-                this.viewService.requestAnimationFrame(onAnimationFrame);
+                this.requestAnimationFrame(onAnimationFrame);
             this.update();
         }
-        this.viewService.requestAnimationFrame(onAnimationFrame);
+        this.requestAnimationFrame(onAnimationFrame);
 
         this.contextService.postRenderEvent.addEventListener(()=>{
             if (this.autoSubmitFrame && currentVRDisplay && currentVRDisplay.isPresenting) {
@@ -235,7 +225,7 @@ export class ViewServiceProvider {
         });
 
         let currentCanvas:HTMLElement|undefined;
-        let previousPresentationMode:PresentationMode;
+        let previousPresentationMode:ViewportMode;
 
         const handleVRDisplayPresentChange = (e) => {
             const vrDisplay:VRDisplay|undefined = e.display || e.detail.vrdisplay || e.detail.display;
@@ -254,22 +244,22 @@ export class ViewServiceProvider {
                         if (vrDisplay.displayName.match(/Cardboard/g)) {
                             currentCanvas = vrDisplay.getLayers()[0].source;
                             if (currentCanvas) currentCanvas.classList.add('argon-interactive');
-                            previousPresentationMode = this.viewportService.presentationMode;
-                            this.viewportService.requestPresentationMode(PresentationMode.IMMERSIVE);
+                            previousPresentationMode = this.viewportService.mode;
+                            this.viewportService.desiredMode = ViewportMode.IMMERSIVE;
                         }
                     } else {
                         currentVRDisplay = undefined;
                         if (currentCanvas && vrDisplay.displayName.match(/Cardboard/g)) {
                             currentCanvas.classList.remove('argon-interactive');
                             currentCanvas = undefined;
-                            this.viewportService.requestPresentationMode(previousPresentationMode);
+                            this.viewportService.desiredMode = previousPresentationMode;
                         }
                     }
                 }
             }
 
-            this.viewportService.presentationModeChangeEvent.addEventListener((mode)=>{
-                if (mode === PresentationMode.PAGE) 
+            this.viewportService.modeChangeEvent.addEventListener((mode)=>{
+                if (mode === ViewportMode.PAGE) 
                     this.exitPresentHMD();
             });
         }
@@ -278,16 +268,40 @@ export class ViewServiceProvider {
         this.update();
     }
 
+    /**
+     * Request an animation frame callback for the current view. 
+     */
+    public requestAnimationFrame(callback:(timestamp:number)=>void) {
+        if (currentVRDisplay) {
+            return (currentVRDisplay as VRDisplay).requestAnimationFrame(callback);
+        } else {
+            return requestAnimationFrame(callback);
+        }
+    }
+
+    public cancelAnimationFrame(id:number) {
+        if (currentVRDisplay) {
+            return (currentVRDisplay as VRDisplay).cancelAnimationFrame(id);
+        } else {
+            return cancelAnimationFrame(id);
+        }
+    }
+
     public update() {
+        this.tick();
+
         // update view state and physical eye entities
         this.onUpdate();
+        const viewState = this.viewService.suggestedViewState!
+        viewState.time = JulianDate.clone(this.clock.currentTime, viewState.time);
 
-        // publish the view state and the physical eye entities.
+        // publish the the physical eye entity and the view state.
         this.contextServiceProvider.publishEntityState(this.viewService.physicalEye);
         this.sessionService.managedSessions.forEach((s)=>{
             if (Role.isRealityViewer(s.info.role))
-                s.send('ar.view.suggestedViewState', this.viewService.suggestedViewState);
+                s.send('ar.view.suggestedViewState', viewState);
         });
+        this.viewService.suggestedViewStateEvent.raiseEvent(viewState);
     }
 
     protected onUpdate() {
@@ -308,7 +322,7 @@ export class ViewServiceProvider {
             const requestPresent = (vrDisplay:VRDisplay) => {
                 currentVRDisplay = vrDisplay;
                 const element = this.viewportService.element;
-                const layers:VRLayer[] = [];
+                const layers:VRLayer&{}[] = [];
                 layers[0] = {source:element.querySelector('canvas') || <HTMLCanvasElement>element.lastElementChild};
                 return vrDisplay.requestPresent(layers).catch((e)=>{
                     currentVRDisplay = undefined;
@@ -335,14 +349,32 @@ export class ViewServiceProvider {
         return Promise.resolve();
     }
 
+    // Enforce monotonically increasing time, and deal with 
+    // clock drift by either slowing down or speeding up,
+    // while never going backwards
+    private tick() {
+        const clock = this.clock;
+        const secondsBeforeTick = clock.currentTime.secondsOfDay; 
+        clock.tick();
+        const secondsAfterTick = clock.currentTime.secondsOfDay;
+        const now = JulianDate.now(scratchTime);
+        const secondsDrift = JulianDate.secondsDifference(clock.currentTime, now);
+        if (secondsDrift > 0.033) {
+            const halfTimeStep = (secondsAfterTick - secondsBeforeTick) / 2;
+            clock.currentTime.secondsOfDay -= halfTimeStep;
+        } else if (secondsDrift < 0.5) {
+            JulianDate.clone(now, clock.currentTime);
+        }
+    }
+
     private _updateViewSingular() {
         const suggestedViewState = this.viewService.suggestedViewState = 
             this.viewService.suggestedViewState || <ViewState>{};
         const viewport = suggestedViewState.viewport = suggestedViewState.viewport || <Viewport>{};
         viewport.x = 0;
         viewport.y = 0;
-        viewport.width = this.viewportService.rootElement.clientWidth;
-        viewport.height = this.viewportService.rootElement.clientHeight;
+        viewport.width = this.viewportService.element.clientWidth;
+        viewport.height = this.viewportService.element.clientHeight;
 
         const subviews = suggestedViewState.subviews = suggestedViewState.subviews || [];
         subviews.length = 1;
@@ -374,8 +406,8 @@ export class ViewServiceProvider {
         const viewport = suggestedViewState.viewport = suggestedViewState.viewport || <Viewport>{};
         viewport.x = 0;
         viewport.y = 0;
-        viewport.width = this.viewportService.rootElement.clientWidth;
-        viewport.height = this.viewportService.rootElement.clientHeight;
+        viewport.width = this.viewportService.element.clientWidth;
+        viewport.height = this.viewportService.element.clientHeight;
 
         const vrFrameData : VRFrameData = this._vrFrameData = 
             this._vrFrameData || new VRFrameData();
@@ -595,26 +627,7 @@ function ensureOrientationUpdates(this:void) : void {
     }
 }
 
-
-const clock = new Clock();
 const scratchTime = new JulianDate(0,0);
-
-// Enforce monotonically increasing time, and deal with 
-// clock drift by either slowing down or speeding up,
-// while never going backwards
-function tick() {
-    const secondsBeforeTick = clock.currentTime.secondsOfDay; 
-    clock.tick();
-    const secondsAfterTick = clock.currentTime.secondsOfDay;
-    const now = JulianDate.now(scratchTime);
-    const secondsDrift = JulianDate.secondsDifference(clock.currentTime, now);
-    if (secondsDrift > 0.033) {
-        const halfTimeStep = (secondsAfterTick - secondsBeforeTick) / 2;
-        clock.currentTime.secondsOfDay -= halfTimeStep;
-    } else if (secondsDrift < 0.5) {
-        JulianDate.clone(now, clock.currentTime);
-    }
-}
 
 declare class VRFrameData {
     timestamp:number;

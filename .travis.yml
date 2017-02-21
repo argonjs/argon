@@ -1,7 +1,10 @@
 language: node_js
+before_script:
+  - browser-sync  start --server --no-open --directory --startPath index.html --files src/** --port 4444 &
+  - sleep 2
 node_js:
   - "6"
   - "6.1"
   - "5.11"
-  - "0.6"
-  - "iojs"
+addons:
+  sauce_connect: true
