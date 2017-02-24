@@ -2,10 +2,10 @@
 import { inject } from 'aurelia-dependency-injection'
 import { createGuid } from '../cesium/cesium-imports'
 import { SessionService } from '../session'
-import { ViewportService } from '../viewport'
+import { ViewService } from '../view'
 import { RealityViewer } from './base'
 
-@inject(SessionService, ViewportService)
+@inject(SessionService, ViewService)
 export class HostedRealityViewer extends RealityViewer {
 
     public type = 'hosted';
@@ -14,7 +14,7 @@ export class HostedRealityViewer extends RealityViewer {
 
     constructor(
         private sessionService: SessionService,
-        private viewportService: ViewportService,
+        private viewService: ViewService,
         public uri:string) {
         super(uri);
 
@@ -25,13 +25,15 @@ export class HostedRealityViewer extends RealityViewer {
             iframeElement.width = '100%';
             iframeElement.height = '100%';
             iframeElement.style.position = 'absolute';
-            iframeElement.style.display = 'none';
-            const viewElement = this.viewportService.element;
+            iframeElement.style.opacity = '0';
+            iframeElement.style.pointerEvents = 'none';
+            iframeElement.style.zIndex = "-100";
+            const viewElement = this.viewService.element;
             viewElement.insertBefore(iframeElement!, viewElement.firstChild);
 
             this.presentChangeEvent.addEventListener(()=>{
-                this.iframeElement.style.display = this.isPresenting ? 'initial' : 'none';
-            })
+                this.iframeElement.style.opacity = this.isPresenting ? '1' : '0';
+            });
         }
     }
 
@@ -46,6 +48,7 @@ export class HostedRealityViewer extends RealityViewer {
         if (typeof document !== 'undefined' && document.createElement) {
             const session = this.sessionService.addManagedSessionPort(this.uri);
             session.connectEvent.addEventListener(()=>{
+                if (this.sessionService.manager.isClosed) return;
                 this.connectEvent.raiseEvent(session);
             });
 

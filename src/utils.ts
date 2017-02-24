@@ -113,7 +113,7 @@ const _scratchFramesArray = [];
  * serialized according to the furthest ancestor frame that resolves to a valid pose.
  * @return An EntityPose object with orientation, position and referenceFrame.
  */
-export function getSerializedEntityState(entity: Entity, time: JulianDate, frame?: ReferenceFrame | Entity): SerializedEntityState | undefined {
+export function getSerializedEntityState(entity: Entity, time: JulianDate, frame?: ReferenceFrame | Entity, result?:SerializedEntityState|null): SerializedEntityState | null {
     let frames:(ReferenceFrame|Entity|undefined)[]|undefined = undefined;
     
     if (!defined(frame)) {
@@ -121,29 +121,28 @@ export function getSerializedEntityState(entity: Entity, time: JulianDate, frame
         frame = frames[0];
     }
 
-    if (!defined(frame)) return undefined;
+    if (!defined(frame)) return null;
 
-    const p = getEntityPositionInReferenceFrame(entity, time, frame, <Cartesian3>{});
-    if (!p && !frames) return undefined;
-    const o = getEntityOrientationInReferenceFrame(entity, time, frame, <Quaternion>{});
-    if (!o && !frames) return undefined;
+    const p = getEntityPositionInReferenceFrame(entity, time, frame, result && result.p || {} as Cartesian3);
+    if (!p && !frames) return null;
+    const o = getEntityOrientationInReferenceFrame(entity, time, frame, result && result.o || {} as Quaternion);
+    if (!o && !frames) return null;
 
     if (p && o) {
-        return {
-            p,
-            o,
-            r: typeof frame === 'number' ? frame : frame.id,
-            meta: typeof frame !== 'number' ? frame['meta'] : undefined
-        };
+        result = result || <SerializedEntityState> {};
+        result.p = p;
+        result.o = o;
+        result.r = typeof frame === 'number' ? frame : frame.id,
+        result.meta = entity['meta'];
+        return result;
     } else if (frames) {
         for (let i=1; i<frames.length; i++) {
             frame = frames[i];
-            if (!defined(frame)) return undefined;
-            const result = getSerializedEntityState(entity, time, frame);
-            if (result) return result;
+            if (!defined(frame)) return null;
+            return getSerializedEntityState(entity, time, frame, result);
         }
     }
-    return undefined;
+    return null;
 }
 
 

@@ -1,13 +1,13 @@
 import { SessionService } from '../session';
-import { ViewportService } from '../viewport';
+import { ViewService } from '../view';
 import { RealityViewer } from './base';
 export declare class HostedRealityViewer extends RealityViewer {
     private sessionService;
-    private viewportService;
+    private viewService;
     uri: string;
     type: string;
     iframeElement: HTMLIFrameElement;
-    constructor(sessionService: SessionService, viewportService: ViewportService, uri: string);
+    constructor(sessionService: SessionService, viewService: ViewService, uri: string);
     destroy(): void;
     load(): void;
 }

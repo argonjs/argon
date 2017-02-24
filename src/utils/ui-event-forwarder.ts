@@ -1,5 +1,5 @@
 import { FeatureDetection } from '../cesium/cesium-imports'
-import { ViewportService } from '../viewport'
+import { ViewService } from '../view'
 
 const cloneTouch = (touch:Touch, boundingRect:ClientRect) => {
     return {
@@ -21,7 +21,7 @@ const cloneTouches = (touches:TouchList, boundingRect:ClientRect) => {
     return touchList;
 }
 
-export default function createEventForwarder(this:void, viewportService:ViewportService, callback:(uievent:UIEvent)=>void) {
+export default function createEventForwarder(this:void, viewportService:ViewService, callback:(uievent:UIEvent)=>void) {
 
     let forwardEvent = false;
 

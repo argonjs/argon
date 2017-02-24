@@ -2,12 +2,11 @@ import { inject } from 'aurelia-dependency-injection'
 import { Role } from '../common'
 import { SessionService, SessionPort } from '../session'
 import { ViewService } from '../view'
-import { ViewportService } from '../viewport'
 import { ContextService } from '../context'
-import { LocationService } from '../location'
+import { DeviceService, SuggestedFrameState } from '../device'
 import { RealityViewer } from './base'
 
-@inject(SessionService, ViewportService, ViewService, ContextService, LocationService)
+@inject(SessionService, ViewService, ContextService, DeviceService)
 export class LiveRealityViewer extends RealityViewer {
 
     public videoElement: HTMLVideoElement;
@@ -21,10 +20,8 @@ export class LiveRealityViewer extends RealityViewer {
 
     constructor(
         private sessionService: SessionService,
-        private viewportService: ViewportService,
         private viewService: ViewService,
-        private contextService: ContextService,
-        private locationService: LocationService,
+        private deviceService: DeviceService,
         public uri:string) {
         super(uri);
 
@@ -43,8 +40,9 @@ export class LiveRealityViewer extends RealityViewer {
             this.videoElement.controls = false;
             this.videoElement.autoplay = true;
             this.videoElement.style.display = 'none';
+            this.videoElement.style.zIndex = "-100";
 
-            const viewElement = this.viewportService.element;
+            const viewElement = this.viewService.element;
             viewElement.insertBefore(this.settingsIframe, viewElement.firstChild);
             viewElement.insertBefore(this.videoElement, viewElement.firstChild);
 
@@ -76,18 +74,9 @@ export class LiveRealityViewer extends RealityViewer {
     }
 
     protected setupInternalSession(internalSession:SessionPort) {
-        internalSession.on['ar.device.state'] = () => { };
-        internalSession.on['ar.visibility.state'] = () => { };
-        internalSession.on['ar.focus.state'] = () => { };
-        internalSession.on['ar.viewport.mode'] = () => { };
-        internalSession.on['ar.viewport.uievent'] = () => { };
-        internalSession.on['ar.view.suggestedViewState'] = () => { };
-        internalSession.on['ar.context.update'] = () => { };
-        internalSession.on['ar.reality.connect'] = () => { };
-
-        const physicalStage = this.locationService.physicalStage;
 
         internalSession.connectEvent.addEventListener(() => {
+
             if (this.videoElement) {
                 const videoElement = this.videoElement!;
                 const mediaDevices = navigator.mediaDevices;
@@ -110,17 +99,17 @@ export class LiveRealityViewer extends RealityViewer {
                     internalSession.errorEvent.raiseEvent(error);  
                 });
 
-                const viewService = this.viewService;
+                // const viewService = this.viewService;
                 let lastFrameTime = -1;
 
-                let remove = viewService.suggestedViewStateEvent.addEventListener((suggestedViewState)=>{
+                const handleFrameState = (suggestedFrameState:SuggestedFrameState) => {
 
-                    if (internalSession.isClosed) remove();
+                    this.deviceService.requestFrameState().then(handleFrameState);
 
-                    if (suggestedViewState.geoposeDesired) {
-                        this.contextService.subscribe(physicalStage.id, internalSession);
+                    if (suggestedFrameState.geolocationDesired) {
+                        this.deviceService.subscribeGeolocation(suggestedFrameState.geolocationOptions, internalSession);
                     } else {
-                        this.contextService.unsubscribe(physicalStage.id, internalSession);
+                        this.deviceService.unsubscribeGeolocation(internalSession);
                     }
 
                     if (videoElement.currentTime != lastFrameTime) {
@@ -129,17 +118,19 @@ export class LiveRealityViewer extends RealityViewer {
                         // const videoWidth = videoElement.videoWidth;
                         // const videoHeight = videoElement.videoHeight;
 
-                        const frameState = this.contextService.createFrameState(
-                            suggestedViewState.time,
-                            suggestedViewState.viewport,
-                            suggestedViewState.subviews,
-                            viewService.eye
+                        const frameState = this.deviceService.createFrameState(
+                            suggestedFrameState.time,
+                            suggestedFrameState.viewport,
+                            suggestedFrameState.subviews,
+                            this.deviceService.user
                         );
                         
                         internalSession.send('ar.reality.frameState', frameState);
                     }
 
-                });
+                };
+
+                this.deviceService.requestFrameState().then(handleFrameState);
             }
         });
     }
@@ -151,10 +142,12 @@ export class LiveRealityViewer extends RealityViewer {
         });
 
         const internalSession = this.sessionService.createSessionPort(this.uri);
+        internalSession.suppressErrorOnUnknownTopic = true;
         this.setupInternalSession(internalSession);
         
         // Only connect after the caller is able to attach connectEvent handlers
         Promise.resolve().then(()=>{
+            if (this.sessionService.manager.isClosed) return;
             const messageChannel = this.sessionService.createSynchronousMessageChannel();
             session.open(messageChannel.port1, this.sessionService.configuration);
             internalSession.open(messageChannel.port2, { role: Role.REALITY_VIEWER, title: 'Live' });

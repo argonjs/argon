@@ -2,7 +2,14 @@
 import * as chai from 'chai'
 import * as Argon from '../src/argon'
 
+if (typeof window !== 'undefined') window['Argon'] = Argon;
+
 const expect = chai.expect;
+
+if (typeof global !== 'undefined' && typeof performance === 'undefined') {
+    global['performance'] = Date;
+    global['MessageChannel'] = Argon.MessageChannelLike;
+}
 
 afterEach(() => {
     if (Argon.ArgonSystem.instance)
@@ -22,22 +29,22 @@ describe('Argon', () => {
 
     describe('new ArgonSystem()', () => {
         it('should create an ArgonSystem with Role=Role.MANAGER', () => {
-            const manager = new Argon.ArgonSystem(null, { role: Argon.Role.REALITY_MANAGER });
+            const manager = Argon.init(null, { role: Argon.Role.REALITY_MANAGER });
             expect(manager).to.be.an.instanceOf(Argon.ArgonSystem);
             expect(manager.session.configuration.role).to.equal(Argon.Role.REALITY_MANAGER);
         });
-        it('should create an ArgonSystem with Role=Role.APPLICATION', () => {
-            const app = new Argon.ArgonSystem(null, { role: Argon.Role.REALITY_AUGMENTER });
+        it('should create an ArgonSystem with Role=Role.REALITY_AUGMENTER', () => {
+            const app = Argon.init(null, { role: Argon.Role.REALITY_AUGMENTER });
             expect(app).to.be.an.instanceOf(Argon.ArgonSystem);
             expect(app.session.configuration.role).to.equal(Argon.Role.REALITY_AUGMENTER);
         });
         it('should create an ArgonSystem with Role=Role.REALITY_VIEW', () => {
-            const app = new Argon.ArgonSystem(null, { role: Argon.Role.REALITY_VIEWER });
+            const app = Argon.init(null, { role: Argon.Role.REALITY_VIEWER });
             expect(app).to.be.an.instanceOf(Argon.ArgonSystem);
             expect(app.session.configuration.role).to.equal(Argon.Role.REALITY_VIEWER);
         });
         it('should raise a focus event when Role=Role.MANAGER', (done) => {
-            const manager = new Argon.ArgonSystem(null, { role: Argon.Role.REALITY_MANAGER });
+            const manager = Argon.init(null, { role: Argon.Role.REALITY_MANAGER });
             expect(manager).to.be.an.instanceOf(Argon.ArgonSystem);
             expect(manager.session.configuration.role).to.equal(Argon.Role.REALITY_MANAGER);
             
@@ -62,13 +69,12 @@ describe('RealityService', () => {
 
         it('the default reality should be used when no reality has been requested', (done) => {
             const container = new Argon.DI.Container();
-            container.registerInstance('config', {role: Argon.Role.REALITY_MANAGER});
+            container.registerInstance(Argon.Configuration, {role: Argon.Role.REALITY_MANAGER});
             container.registerSingleton(Argon.ConnectService, Argon.LoopbackConnectService);
             const realityService:Argon.RealityService = container.get(Argon.RealityService);
             const contextService:Argon.ContextService = container.get(Argon.ContextService);
             sessionService = container.get(Argon.SessionService);
-            container.get(Argon.RealityServiceProvider);
-            container.get(Argon.ViewServiceProvider);
+            container.get(Argon.ArgonSystemProvider);
             
             realityService.default = Argon.RealityViewer.EMPTY;
             
@@ -90,12 +96,11 @@ describe('RealityService', () => {
 
         it('should raise an error for unsupported realities', (done) => {
             const container = new Argon.DI.Container();
-            container.registerInstance('config', {role: Argon.Role.REALITY_MANAGER});
+            container.registerInstance(Argon.Configuration, {role: Argon.Role.REALITY_MANAGER});
             container.registerSingleton(Argon.ConnectService, Argon.LoopbackConnectService);
             const realityService:Argon.RealityService = container.get(Argon.RealityService);
             sessionService = container.get(Argon.SessionService);
-            container.get(Argon.RealityServiceProvider);
-            container.get(Argon.ViewServiceProvider);
+            container.get(Argon.ArgonSystemProvider);
 
             sessionService.connect();
             realityService.request('reality:unsupported').catch((error)=>{
@@ -433,7 +438,8 @@ describe('Context', () => {
             expect(context).to.be.instanceof(Argon.ContextService);
         })
         it('should emit update events with default reality', (done) => {
-            const {context} = createSystem();
+            const {context, reality} = createSystem();
+            expect(reality.default).to.equal(Argon.RealityViewer.EMPTY);
             let removeListener = context.updateEvent.addEventListener(() => {
                 // expect(Argon.RealityViewer.getType(context.serializedFrameState!.reality)).to.equal('empty');
                 removeListener();

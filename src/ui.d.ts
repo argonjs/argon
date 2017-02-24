@@ -1,16 +1,16 @@
-import { ViewServiceProvider } from './view';
-import { ViewportService } from './viewport';
+import { DeviceService } from './device';
 import { SessionService } from './session';
+import { ViewService } from './view';
 import { RealityService, RealityServiceProvider } from './reality';
 /**
  * Provides a default UI
  */
 export declare class DefaultUIService {
     private sessionService;
-    private viewportService;
+    private viewService;
     private realityService;
     private realityServiceProvider;
-    private viewServiceProvider;
+    private deviceService;
     private element?;
     private realityViewerSelectorElement;
     private realityViewerListElement;
@@ -22,7 +22,7 @@ export declare class DefaultUIService {
     private hmdMenuItem;
     private realityMenuItem;
     private maximizeMenuItem;
-    constructor(sessionService: SessionService, viewportService: ViewportService, realityService: RealityService, realityServiceProvider: RealityServiceProvider, viewServiceProvider: ViewServiceProvider);
+    constructor(sessionService: SessionService, viewService: ViewService, realityService: RealityService, realityServiceProvider: RealityServiceProvider, deviceService: DeviceService);
     private _createMenuItem(icon, hint, onSelect?);
     private onSelect(element, cb);
     private toggleMenu();

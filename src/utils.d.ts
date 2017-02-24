@@ -48,7 +48,7 @@ export declare const getEntityOrientation: typeof getEntityOrientationInReferenc
  * serialized according to the furthest ancestor frame that resolves to a valid pose.
  * @return An EntityPose object with orientation, position and referenceFrame.
  */
-export declare function getSerializedEntityState(entity: Entity, time: JulianDate, frame?: ReferenceFrame | Entity): SerializedEntityState | undefined;
+export declare function getSerializedEntityState(entity: Entity, time: JulianDate, frame?: ReferenceFrame | Entity, result?: SerializedEntityState | null): SerializedEntityState | null;
 /**
  * If urlParser does not have a value, throw error message "resolveURL requires DOM api".
  * If inURL is undefined, throw error message "expected inURL".

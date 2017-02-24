@@ -54,6 +54,10 @@ export declare class SessionPort {
      */
     info: Configuration;
     /**
+     * If true, don't raise an error when receiving a message for an unknown topic
+     */
+    suppressErrorOnUnknownTopic: boolean;
+    /**
      * The version of argon.js which is used by the connecting session.
      * This property is an empty array until the session connects.
      */

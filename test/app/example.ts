@@ -21,7 +21,7 @@ const renderer = new THREE.WebGLRenderer({
     logarithmicDepthBuffer: true
 });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-app.viewport.element.appendChild(renderer.domElement);
+app.view.element.appendChild(renderer.domElement);
 
 // app.context.setDefaultReferenceFrame(app.context.localOriginEastUpSouth);
 app.context.setDefaultReferenceFrame(app.context.localOriginEastNorthUp);
@@ -158,10 +158,10 @@ app.updateEvent.addEventListener(() => {
 })
     
 app.renderEvent.addEventListener(() => {
-    const viewport = app.viewport.current;
+    const viewport = app.view.viewport;
     renderer.setSize(viewport.width, viewport.height);
     
-    for (let subview of app.view.getSubviews()) {
+    for (let subview of app.view.subviews) {
         camera.position.copy(subview.pose.position);
         camera.quaternion.copy(subview.pose.orientation);
         camera.projectionMatrix.fromArray(subview.frustum.projectionMatrix);

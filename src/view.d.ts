@@ -1,12 +1,11 @@
 /// <reference types="cesium" />
-import { Container } from 'aurelia-dependency-injection';
-import { Clock, Entity, PerspectiveFrustum, JulianDate } from './cesium/cesium-imports';
-import { SessionService } from './session';
-import { ViewportService } from './viewport';
-import { LocationService } from './location';
-import { Viewport, SubviewType, SerializedSubviewList } from './common';
-import { EntityPose, ContextService, ContextServiceProvider } from './context';
+import { Viewport, SubviewType } from './common';
+import { SessionService, SessionPort } from './session';
+import { ContextService, EntityPose } from './context';
+import { PerspectiveFrustum } from './cesium/cesium-imports';
 import { Event } from './utils';
+import { FocusService, FocusServiceProvider } from './focus';
+import { VisibilityServiceProvider } from './visibility';
 /**
  * The rendering paramters for a particular subview
  */
@@ -17,59 +16,109 @@ export declare class Subview {
     pose: EntityPose;
     viewport: Viewport;
 }
-export interface ViewState {
-    time: JulianDate;
-    viewport: Viewport;
-    subviews: SerializedSubviewList;
-    strict: boolean;
+export declare const enum ViewportMode {
+    EMBEDDED = 0,
+    PAGE = 0,
+    IMMERSIVE = 1,
 }
+export declare abstract class ViewElement {
+}
+/**
+ * Manages the view state
+ */
 export declare class ViewService {
     private sessionService;
     private contextService;
-    private viewportService;
-    suggestedViewStateEvent: Event<ViewState>;
+    private focusService;
+    /**
+     * UI events that occur within this view. To handle an event (and prevent it from
+     * being forwarded to another layer) call event.stopImmediatePropagation().
+     */
+    uiEvent: Event<{
+        event: UIEvent | MouseEvent | PointerEvent | WheelEvent | TouchEvent;
+        forwardEvent: () => void;
+    }>;
+    /**
+     * An event that is raised when the viewport has changed
+     */
+    viewportChangeEvent: Event<Viewport>;
+    /**
+     * An event that is raised when the viewport mode has changed
+     */
+    viewportModeChangeEvent: Event<ViewportMode>;
+    /**
+     * The current viewport mode
+     */
+    readonly viewportMode: ViewportMode;
+    private _mode;
+    protected readonly presentationMode: ViewportMode;
+    /**
+     * The current viewport
+     */
+    readonly viewport: {
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+    };
+    private _viewport;
+    getViewport(): {
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+    };
+    /**
+     * Automatically layout the element to match the immersive viewport during PresentationMode.IMMERSIVE
+     */
+    autoLayoutImmersiveMode: boolean;
+    /**
+     * Automatically publish the viewport of the element during PresentationMode.EMBEDDED
+     */
+    autoPublishEmbeddedMode: boolean;
+    /**
+     * The DOM element associated with this viewport
+     */
+    element: HTMLElement;
+    constructor(sessionService: SessionService, contextService: ContextService, focusService: FocusService, elementOrSelector?: Element | string | null);
+    private _currentViewportJSON;
     private _subviews;
-    private _frustums;
-    constructor(sessionService: SessionService, contextService: ContextService, viewportService: ViewportService, container: Container);
-    private _processFrameState(state);
-    /**
-     * An entity representing the pose of the viewer.
-     */
-    eye: Entity;
-    readonly eyeHeadingAccuracy: number | undefined;
-    /**
-     * An entity representing the physical pose of the viewer.
-     */
-    physicalEye: Entity;
-    suggestedViewState?: ViewState;
-    readonly element: HTMLElement;
-    getViewport(): Viewport;
+    private _subviewPose;
+    private _subviewFrustum;
     readonly subviews: Subview[];
-    getSubviews(): Subview[];
-    getSubviewEntity(index: number): Entity;
+    /**
+     * @private
+     */
+    protected getSubviews(): Subview[];
+    private _IDENTITY_SUBVIEW_POSE;
+    private _processFrameState(state);
+    requestPresentationMode(mode: ViewportMode): Promise<void>;
+    private _desiredViewportMode;
+    desiredViewportMode: ViewportMode;
+    private _updateViewportMode(mode);
+    /**
+     * Publish the viewport being used in [[PresentationMode.EMBEDDED]]
+     * so that other apps can use the same viewport
+     */
+    publishEmbeddedViewport(viewport?: Viewport): void;
+    private _updateViewport(viewport);
+    sendUIEventToSession(uievent: UIEvent, session?: SessionPort): void;
+    private _watchEmbeddedViewport();
 }
 export declare class ViewServiceProvider {
     private sessionService;
-    private contextService;
-    private contextServiceProvider;
-    private viewService;
     private viewportService;
-    private locationService;
-    clock: Clock;
-    autoSubmitFrame: boolean;
-    constructor(sessionService: SessionService, contextService: ContextService, contextServiceProvider: ContextServiceProvider, viewService: ViewService, viewportService: ViewportService, locationService: LocationService);
+    private focusServiceProvider;
+    sessionViewportMode: WeakMap<SessionPort, ViewportMode>;
     /**
-     * Request an animation frame callback for the current view.
+     * The embedded viewports for each managed session.
      */
-    requestAnimationFrame(callback: (timestamp: number) => void): number;
-    cancelAnimationFrame(id: number): void;
-    update(): void;
-    protected onUpdate(): void;
-    readonly isPresentingHMD: boolean;
-    requestPresentHMD(): Promise<void>;
-    exitPresentHMD(): Promise<void>;
-    private tick();
-    private _updateViewSingular();
-    private _vrFrameData?;
-    private _updateViewFromWebVR(vrDisplay);
+    sessionEmbeddedViewport: WeakMap<SessionPort, Viewport>;
+    /**
+     * A UI event being forwarded from a managed session
+     */
+    forwardedUIEvent: Event<UIEvent>;
+    constructor(sessionService: SessionService, viewportService: ViewService, focusServiceProvider: FocusServiceProvider, visibilityServiceProvider: VisibilityServiceProvider);
+    sendUIEventToSession(uievent: UIEvent, session: SessionPort): void;
+    private _publishViewportModes();
 }

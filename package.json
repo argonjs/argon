@@ -24,6 +24,7 @@
       "constants": "npm:jspm-nodelibs-constants@^0.2.0",
       "crypto": "npm:jspm-nodelibs-crypto@^0.2.0",
       "css": "github:systemjs/plugin-css@^0.1.19",
+      "diff": "npm:diff@^3.2.0",
       "events": "npm:jspm-nodelibs-events@^0.2.0",
       "fs": "npm:jspm-nodelibs-fs@^0.2.0",
       "mocha": "npm:mocha@^3.2.0",
@@ -166,7 +167,6 @@
           "glob": "@empty",
           "mkdirp": "@empty",
           "jade": "@empty",
-          "diff": "@empty",
           "supports-color": "@empty",
           "path": "@node/path",
           "fs": "@node/fs",
@@ -199,10 +199,10 @@
     "format": "tsfmt -r",
     "build:browser": "jspm build src/argon.ts .tmp/argon-build.js --format umd --global-name Argon --skip-source-maps && derequire .tmp/argon-build.js > dist/argon.js",
     "build:core": "jspm build src/argon.ts .tmp/argon-build.js --node --format umd --global-name Argon --skip-source-maps && derequire .tmp/argon-build.js > dist/argon.core.js",
-    "prebuild": "npm run build:core && npm run build:browser && uglifyjs dist/argon.js -b -o dist/argon.js",
+    "prebuild": "npm run build:core && npm run build:browser",
     "build": "uglifyjs dist/argon.js -m -c warnings=false -o dist/argon.min.js",
     "browser-sync": "browser-sync  start --server --directory --startPath \"index.html\" --files \"src/**\"",
-    "test": "npm run browser-sync",
+    "test": "jspm run test/runner.js",
     "static": "static -p 3000",
     "typedoc": "typedoc --tsconfig tsconfig.build.json --out docs --mode file --gaID UA-63191442-2 --name argon.js --readme src/README.md --target ES6 --module commonjs --moduleResolution node --experimentalDecorators --includeDeclarations --excludeNotExported --excludeExternals --ignoreCompilerErrors src",
     "postinstall": "npm install types/cesium types/mobile-detect",
@@ -227,6 +227,6 @@
     "typedoc": "^0.5.5",
     "typescript": "^2.1.4",
     "typescript-formatter": "^2.3.0",
-    "uglify-js": "^2.7.3"
+    "uglify-js": "^2.7.5"
   }
 }

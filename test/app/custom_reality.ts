@@ -20,7 +20,7 @@ const renderer = new THREE.WebGLRenderer({
     logarithmicDepthBuffer: true
 });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-app.viewport.element.appendChild(renderer.domElement);
+app.view.element.appendChild(renderer.domElement);
 
 // app.context.defaultReferenceFrame = app.context.localOriginEastUpSouth;
 app.context.defaultReferenceFrame = app.context.localOriginEastNorthUp;
@@ -75,15 +75,17 @@ axisHelper.position.y = -50;
 var perspectiveProjection = new Argon.Cesium.PerspectiveFrustum();
 perspectiveProjection.fov = Math.PI / 2;
 
-app.view.suggestedViewStateEvent.addEventListener((suggestedViewState) => {
-    const frameState = app.context.createFrameState(
-        suggestedViewState.time,
-        suggestedViewState.viewport,
-        suggestedViewState.subviews,
-        app.view.eye
+const processFrameState = (suggestedFrameState:Argon.SuggestedFrameState) => {
+    app.device.requestFrameState().then(processFrameState);
+    const frameState = app.device.createFrameState(
+        suggestedFrameState.time,
+        suggestedFrameState.viewport,
+        suggestedFrameState.subviews,
+        app.context.user
     );
     app.context.submitFrameState(frameState);
-});
+}
+app.device.requestFrameState().then(processFrameState);
 
 app.updateEvent.addEventListener(() => {
     const userPose = app.context.getEntityPose(app.context.user);
@@ -95,10 +97,10 @@ app.updateEvent.addEventListener(() => {
 })
     
 app.renderEvent.addEventListener(() => {
-    const viewport = app.viewport.current;
+    const viewport = app.view.viewport;
     renderer.setSize(viewport.width, viewport.height);
     
-    for (let subview of app.view.getSubviews()) {
+    for (let subview of app.view.subviews) {
         camera.position.copy(subview.pose.position);
         camera.quaternion.copy(subview.pose.orientation);
         camera.projectionMatrix.fromArray(subview.frustum.projectionMatrix);

@@ -3,17 +3,12 @@ import { Matrix4, JulianDate, Cartesian3, Cartographic, Quaternion, CesiumMath }
 /**
  * Default distance from a user's eyes to the floor
  */
-export const DEFAULT_EYE_HEIGHT = 1.6;
-
-export const EYE_ENTITY_ID = 'ar.eye'
-export const PHYSICAL_EYE_ENTITY_ID = 'ar.physical-eye' 
-export const STAGE_ENTITY_ID = 'ar.stage'
-export const PHYSICAL_STAGE_ENTITY_ID = 'ar.physical-stage' 
+export const AVERAGE_EYE_HEIGHT = 1.6;
 
 /**
  * Describes the role of an [[ArgonSystem]]
  */
-enum Role {
+export enum Role {
 
     /**
      * A system with this role is responsible for augmenting an arbitrary view of reality,
@@ -55,7 +50,7 @@ enum Role {
     REALITY_VIEW = "RealityView" as any,
 }
 
-namespace Role {
+export namespace Role {
     export function isRealityViewer(r?:Role) {
         return r === Role.REALITY_VIEWER || r === Role.REALITY_VIEW;
     }
@@ -66,8 +61,6 @@ namespace Role {
         return r === Role.REALITY_MANAGER || r === Role.MANAGER;
     }
 }
-
-export { Role }
 
 /**
  * Configuration options for an [[ArgonSystem]] 
@@ -172,8 +165,8 @@ export interface SerializedEntityState {
 }
 
 export namespace SerializedEntityState {
-    export function clone(state?:SerializedEntityState, result?:SerializedEntityState) {
-        if (!state) return undefined;
+    export function clone(state?:SerializedEntityState, result?:SerializedEntityState|null) {
+        if (!state) return null;
         result = result || <SerializedEntityState><any>{};
         result.p = Cartesian3.clone(state.p, result.p);
         result.o = Quaternion.clone(state.o, result.o);
@@ -187,7 +180,7 @@ export namespace SerializedEntityState {
  * A map of entity ids and their associated poses.
  */
 export interface SerializedEntityStateMap {
-    [id: string]: SerializedEntityState | undefined
+    [id: string]: SerializedEntityState | null
 }
 
 /**
@@ -206,7 +199,7 @@ export interface SerializedSubview {
     /**
      * The pose for this subview (relative to the primary pose)
      */
-    pose?: SerializedEntityState, // if undefined, identity is assumed
+    pose: SerializedEntityState|null|undefined, // if undefined, identity is assumed
 }
 
 
@@ -355,5 +348,9 @@ export interface FrameState {
     reality?: string,
     index?: number,
     entities: SerializedEntityStateMap,
-    sendTime?: { dayNumber: number, secondsOfDay: number }, // the time this state was sent
+    sendTime?: JulianDate, // the time this state was sent
+}
+
+export interface GeolocationOptions {
+    enableHighAccuracy?: boolean;
 }

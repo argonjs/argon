@@ -11,12 +11,13 @@ import { Event, deprecated, decomposePerspectiveProjectionMatrix } from './utils
 import { ContextService } from './context'
 import { FocusServiceProvider } from './focus'
 import { VisibilityServiceProvider } from './visibility'
-import { ViewportServiceProvider } from './viewport'
 
 import { RealityViewer } from './reality-viewers/base'
 import { EmptyRealityViewer } from './reality-viewers/empty'
 import { LiveRealityViewer } from './reality-viewers/live'
 import { HostedRealityViewer } from './reality-viewers/hosted'
+
+import {ViewServiceProvider} from './view'
 
 @inject(Factory.of(EmptyRealityViewer), Factory.of(LiveRealityViewer), Factory.of(HostedRealityViewer))
 export abstract class RealityViewerFactory {
@@ -229,7 +230,7 @@ export class RealityServiceProvider {
         private sessionService:SessionService,
         private realityService:RealityService,
         private contextService:ContextService,
-        private viewportServiceProvider:ViewportServiceProvider,
+        private viewServiceProvider:ViewServiceProvider,
         private visibilityServiceProvider:VisibilityServiceProvider,
         private focusServiceProvider: FocusServiceProvider,
         private realityViewerFactory:RealityViewerFactory,
@@ -277,9 +278,9 @@ export class RealityServiceProvider {
             }
         });
         
-        this.viewportServiceProvider.forwardedUIEvent.addEventListener((uievent)=>{
+        this.viewServiceProvider.forwardedUIEvent.addEventListener((uievent)=>{
             const session = this._presentingRealityViewer && this._presentingRealityViewer.session;
-            if (session) viewportServiceProvider.sendUIEventToSession(uievent, session);
+            if (session) this.viewServiceProvider.sendUIEventToSession(uievent, session);
         });
     }
 

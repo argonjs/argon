@@ -1,4 +1,4 @@
-import Mocha from 'mocha';
+var Mocha = require('mocha')
 
 var runner = new Mocha({
   ui: 'bdd',
@@ -8,6 +8,13 @@ var runner = new Mocha({
 
 // set up the global variables
 runner['suite'].emit('pre-require', typeof window != 'undefined' ? window : global, 'global-mocha-context', runner);
+
+SystemJS.config({
+  typescriptOptions: {
+    module: "system",
+    target: "es5"
+  }
+});
 
 SystemJS.import('./test/test.ts!').then(function(tests) {
   return new Promise((resolve, reject) => {

@@ -18,10 +18,9 @@ import { Event } from './utils'
 
 import { ContextService, ContextServiceProvider } from './context'
 import { FocusService, FocusServiceProvider } from './focus'
-import { LocationService, LocationServiceProvider } from './location'
+import { DeviceService, DeviceServiceProvider, DOMDeviceServiceProvider } from './device'
 import { RealityService, RealityServiceProvider } from './reality'
-import { ViewService, ViewServiceProvider } from './view'
-import { ViewportService, ViewportServiceProvider, ViewElement } from './viewport'
+import { ViewService, ViewServiceProvider, ViewElement } from './view'
 import { VisibilityService, VisibilityServiceProvider } from './visibility'
 import { VuforiaService, VuforiaServiceProvider } from './vuforia'
 
@@ -34,13 +33,12 @@ export { DI, Cesium }
 export * from './common'
 export * from './context'
 export * from './focus'
-export * from './location'
+export * from './device'
 export * from './reality'
 export * from './session'
 export * from './ui'
 export * from './utils'
 export * from './view'
-export * from './viewport'
 export * from './visibility'
 export * from './vuforia'
 export {
@@ -55,11 +53,10 @@ export class ArgonSystemProvider {
     constructor(
         public context:ContextServiceProvider,
         public focus:FocusServiceProvider,
-        public location:LocationServiceProvider,
+        public device:DeviceServiceProvider,
         public visibility:VisibilityServiceProvider,
         public reality:RealityServiceProvider, 
         public view:ViewServiceProvider,
-        public viewport:ViewportServiceProvider,
         public vuforia:VuforiaServiceProvider
     ) {}
 }
@@ -71,6 +68,7 @@ export class ArgonSystemProvider {
  * var app = Argon.init(); // app is an instance of ArgonSystem
  * ```
  */
+@DI.autoinject
 export class ArgonSystem {
 
     /**
@@ -79,89 +77,28 @@ export class ArgonSystem {
     static instance?: ArgonSystem;
 
     constructor(
-        elementOrSelector:string|Element|null|undefined, 
-        config: Configuration,
-        public container: DI.Container = new DI.Container) {
+        public container: DI.Container,
+        public context: ContextService,
+        public device: DeviceService,
+        public focus: FocusService,
+        public reality: RealityService,
+        public session: SessionService,
+        public view: ViewService,
+        public visibility: VisibilityService,
+        public vuforia: VuforiaService
+    ) {
         if (!ArgonSystem.instance) ArgonSystem.instance = this;
 
-        if (elementOrSelector) container.registerInstance(ViewElement, elementOrSelector);
-        container.registerInstance('config', config);
-
-        if (Role.isRealityManager(config.role)) {
-            container.registerSingleton(
-                ConnectService,
-                LoopbackConnectService
-            );
-
-            if (typeof document !== 'undefined') {
-                container.get(DefaultUIService);
-            }
-
-            this.reality.default = RealityViewer.EMPTY;
-        } else if (WKWebViewConnectService.isAvailable()) {
-            container.registerSingleton(
-                ConnectService,
-                WKWebViewConnectService
-            )
-        } else if (DOMConnectService.isAvailable()) {
-            container.registerSingleton(
-                ConnectService,
-                DOMConnectService
-            )
-        } else if (DebugConnectService.isAvailable()) {
-            container.registerSingleton(
-                ConnectService,
-                DebugConnectService
-            );
-        }
-
-        // ensure the entire object graph is instantiated before connecting to the manager. 
-        for (const key of Object.getOwnPropertyNames(ArgonSystem.prototype)) {
-            this[key];
-        }
+        if (this.container.hasResolver(ArgonSystemProvider)) 
+            this._provider = this.container.get(ArgonSystemProvider);
 
         this.session.connect();
     }
-    
-    public get provider() : ArgonSystemProvider|undefined {
-        if (this.session.isRealityManager)
-            return this.container.get(ArgonSystemProvider);
-    }
 
-    public get context(): ContextService {
-        return this.container.get(ContextService);
-    }
-
-    public get focus(): FocusService {
-        return this.container.get(FocusService);
-    }
-
-    public get location() : LocationService {
-        return this.container.get(LocationService);
-    }
-
-    public get reality(): RealityService {
-        return this.container.get(RealityService);
-    }
-
-    public get session(): SessionService {
-        return this.container.get(SessionService);
-    }
-
-    public get view(): ViewService {
-        return this.container.get(ViewService);
-    }
-
-    public get viewport(): ViewportService {
-        return this.container.get(ViewportService);
-    }
-
-    public get visibility(): VisibilityService {
-        return this.container.get(VisibilityService);
-    }
-
-    public get vuforia(): VuforiaService {
-        return this.container.get(VuforiaService);
+    public _provider:ArgonSystemProvider;
+    public get provider() {
+        this.session.ensureIsRealityManager();
+        return this._provider;
     }
 
     // events
@@ -190,7 +127,73 @@ export class ArgonSystem {
     }
 }
 
+export class ArgonConfigurationManager {
 
+    static configure(configurationManager:ArgonConfigurationManager) {
+        configurationManager.standardConfiguration();
+    }
+
+    constructor(
+        public configuration:Configuration, 
+        public container:DI.Container = new DI.Container
+    ) {
+        container.registerInstance(Configuration, configuration);
+        
+        if (Role.isRealityManager(configuration.role)) 
+            container.registerSingleton(ArgonSystemProvider);
+
+        ArgonConfigurationManager.configure(this);
+    }
+    
+    standardConfiguration() {
+        this.defaultConnect();
+        this.defaultDevice();
+        this.defaultUI();
+    }
+
+    defaultConnect() {
+        const container = this.container;
+        const configuration = this.configuration;
+
+        if (Role.isRealityManager(configuration.role)) {
+            container.registerSingleton(
+                ConnectService,
+                LoopbackConnectService
+            );
+        } else if (WKWebViewConnectService.isAvailable()) {
+            container.registerSingleton(
+                ConnectService,
+                WKWebViewConnectService
+            )
+        } else if (DOMConnectService.isAvailable()) {
+            container.registerSingleton(
+                ConnectService,
+                DOMConnectService
+            )
+        } else if (DebugConnectService.isAvailable()) {
+            container.registerSingleton(
+                ConnectService,
+                DebugConnectService
+            );
+        }
+    }
+
+    defaultDevice() {
+        if (DOMDeviceServiceProvider.isAvailable()) {
+            this.container.registerSingleton(DeviceServiceProvider, DOMDeviceServiceProvider);
+        }
+    }
+
+    defaultUI() {
+        if (Role.isRealityManager(this.configuration.role)) {
+            if (typeof document !== 'undefined') {
+                this.container.get(DefaultUIService);
+            }
+        }
+    }
+
+    
+}
 
 /**
  * Create an ArgonSystem instance. 
@@ -223,27 +226,29 @@ export function init(
         const deprecatedParameters = element;
         if (!configuration && deprecatedParameters['configuration'])
             configuration = deprecatedParameters['configuration'];
-        if (!configuration && deprecatedParameters['container']) 
+        if (!configuration && deprecatedParameters['container'])
             dependencyInjectionContainer = deprecatedParameters['container'];
         element = undefined;
     }
-    
-    let role: Role;
-    if (typeof HTMLElement === 'undefined') {
-        role = Role.REALITY_MANAGER
-    } else if (navigator.userAgent.indexOf('Argon') > 0 || window.top !== window) {
-        role = Role.APPLICATION // TODO: switch to below after several argon-app releases
-        // role = Role.REALITY_AUGMENTER
-    } else {
-        role = Role.REALITY_MANAGER
-    }
-    
+
     if (!configuration) configuration = {};
-    configuration.role = role;
+    if (!configuration.role) {
+        let role: Role;
+        if (typeof HTMLElement === 'undefined') {
+            role = Role.REALITY_MANAGER
+        } else if (navigator.userAgent.indexOf('Argon') > 0 || window.top !== window) {
+            role = Role.APPLICATION // TODO: switch to below after several argon-app releases
+            // role = Role.REALITY_AUGMENTER
+        } else {
+            role = Role.REALITY_MANAGER
+        }
+        configuration.role = role;
+    }
 
     if (!dependencyInjectionContainer) dependencyInjectionContainer = new DI.Container();
+    dependencyInjectionContainer.registerInstance(ViewElement, element || null);
 
-    return new ArgonSystem(element || null, configuration, dependencyInjectionContainer);
+    return new ArgonConfigurationManager(configuration, dependencyInjectionContainer).container.get(ArgonSystem);
 }
 
 /**
@@ -252,7 +257,7 @@ export function init(
 export function initRealityViewer(
         configuration:Configuration = {},
         dependencyInjectionContainer:DI.Container = new DI.Container
-    ) {
+    ) : ArgonSystem {
     if (ArgonSystem.instance) throw new Error('A shared ArgonSystem instance already exists');
 
     configuration.role = Role.REALITY_VIEW; // TODO: switch to below after several argon-app releases
@@ -261,23 +266,10 @@ export function initRealityViewer(
     configuration['reality.supportsControlPort'] = true; // backwards compat for above
     configuration.protocols = configuration.protocols || [];
     configuration.protocols.push('ar.uievent')
-    return new ArgonSystem(null, configuration, dependencyInjectionContainer);
+    return new ArgonConfigurationManager(configuration, dependencyInjectionContainer).container.get(ArgonSystem);
 }
 
 /**
  * @private
  */
 export const initReality = initRealityViewer;
-
-/**
- * Not yet implemented.
- * @private
- */
-// export function initRealityManager(
-//         containerElement: string|HTMLElement,
-//         configuration:Configuration = {},
-//         dependencyInjectionContainer:DI.Container = new DI.Container
-//     ) {
-//     configuration.role = Role.REALITY_MANAGER;
-//     return new ArgonSystem(null, configuration, dependencyInjectionContainer);
-// }

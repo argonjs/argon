@@ -1,5 +1,5 @@
 import { createGuid } from './cesium/cesium-imports';
-import { inject } from 'aurelia-dependency-injection';
+import { autoinject } from 'aurelia-dependency-injection';
 import { Role, Configuration } from './common'
 import { 
     deprecated,
@@ -80,6 +80,11 @@ export class SessionPort {
      * Describes the configuration of the connected session. 
      */
     public info: Configuration;
+
+    /**
+     * If true, don't raise an error when receiving a message for an unknown topic
+     */
+    public suppressErrorOnUnknownTopic = false;
 
     /**
      * The version of argon.js which is used by the connecting session.
@@ -202,7 +207,7 @@ export class SessionPort {
                     else if (typeof error.message === 'string') errorMessage = error.message;
                     this.send(topic + ':reject:' + id, { reason: errorMessage })
                 })
-            } else {
+            } else if (!this.suppressErrorOnUnknownTopic) {
                 const errorMessage = 'Unable to handle message for topic ' + topic + ' (' + this.uri + ')';
                 if (expectsResponse) {
                     this.send(topic + ':reject:' + id, { reason: errorMessage });
@@ -325,7 +330,7 @@ export abstract class ConnectService {
 /**
  * A service for managing connections to other ArgonSystem instances
  */
-@inject('config', ConnectService, SessionPortFactory, MessageChannelFactory)
+@autoinject
 export class SessionService {
 
     /**
