@@ -21871,7 +21871,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 return id;
             });
 
-            _export('version', version = "1.1.3");
+            _export('version', version = "1.1.4");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
