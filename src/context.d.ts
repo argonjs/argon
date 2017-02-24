@@ -218,11 +218,18 @@ export declare class ContextService {
      * Process the next frame state (which should come from the current reality viewer)
      */
     submitFrameState(frameState: FrameState): void;
+    private _getEntityPositionInReferenceFrame;
+    private _scratchMatrix3;
+    private _scratchMatrix4;
+    private _updateBackwardsCompatability(frameState);
     private _update(frameState);
     updateEntityFromSerializedState(id: string, entityState: SerializedEntityState | null): Entity;
     getSubviewEntity(index: number): Entity;
     subscribeGeolocation(options?: GeolocationOptions): Promise<void>;
     unsubscribeGeolocation(): void;
+    readonly geoHeadingAccuracy: number | undefined;
+    readonly geoHorizontalAccuracy: number | undefined;
+    readonly geoVerticalAccuracy: number | undefined;
 }
 export declare class ContextServiceProvider {
     private sessionService;

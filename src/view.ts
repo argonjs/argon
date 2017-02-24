@@ -174,10 +174,6 @@ export class ViewService {
                 this._updateViewportMode(mode);
             }
 
-        this.contextService.frameStateEvent.addEventListener((state) => {
-            this._updateViewport(state.viewport);
-        });
-
         // if we are not the manager, we must start in immersive mode
         if (!sessionService.isRealityManager)
             this._updateViewportMode(ViewportMode.IMMERSIVE);
@@ -219,7 +215,7 @@ export class ViewService {
     private _IDENTITY_SUBVIEW_POSE = {p:Cartesian3.ZERO, o:Quaternion.IDENTITY, r:this.contextService.user.id};
 
     private _processFrameState(state:FrameState) {
-        this._viewport = Viewport.clone(state.viewport, this._viewport);
+        this._updateViewport(state.viewport);
 
         const serializedSubviewList = state.subviews;
         const subviews: Subview[] = this._subviews;
@@ -263,8 +259,10 @@ export class ViewService {
 
     public set desiredViewportMode(mode:ViewportMode) {
         this._desiredViewportMode = mode;
-        if (this.sessionService.manager.version[0] > 0)
-            this.sessionService.manager.send('ar.view.desiredViewportMode', {mode});
+        this.sessionService.manager.whenConnected().then(()=>{
+            if (this.sessionService.manager.version[0] > 0)
+                this.sessionService.manager.send('ar.view.desiredViewportMode', {mode});
+        })
     }
 
     public get desiredViewportMode() {
@@ -294,6 +292,8 @@ export class ViewService {
 
         if (!this._currentViewportJSON || this._currentViewportJSON !== viewportJSON) {
             this._currentViewportJSON = viewportJSON;
+
+            this._viewport = Viewport.clone(viewport, this._viewport);
 
             if (this.element && 
                 !this.sessionService.isRealityManager && 

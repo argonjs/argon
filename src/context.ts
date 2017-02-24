@@ -9,11 +9,13 @@ import {
     // Transforms,
     Cartesian3,
     Quaternion,
-    // Matrix3,
+    Matrix3,
     Matrix4,
+    CesiumMath,
     JulianDate,
     ReferenceFrame,
     PerspectiveFrustum,
+    Transforms,
     defined
 } from './cesium/cesium-imports'
 import {
@@ -176,10 +178,10 @@ export class ContextService {
                 scratchFrustum.far = 10000000;
                 for (const s of state.subviews) {
                     const frustum = s['frustum'];
-                    scratchFrustum.xOffset = frustum.xOffset;
-                    scratchFrustum.yOffset = frustum.yOffset;
-                    scratchFrustum.fov = frustum.fov;
-                    scratchFrustum.aspectRatio = frustum.aspectRatio;
+                    scratchFrustum.xOffset = frustum.xOffset || 0;
+                    scratchFrustum.yOffset = frustum.yOffset || 0;
+                    scratchFrustum.fov = frustum.fov || CesiumMath.PI_OVER_THREE;
+                    scratchFrustum.aspectRatio = frustum.aspectRatio || 1;
                     s.projectionMatrix = Matrix4.clone(scratchFrustum.projectionMatrix, s.projectionMatrix);
                 }
             }
@@ -187,10 +189,13 @@ export class ContextService {
                 state.entities![this.user.id] = state['view'].pose;
             }
             // end backwards-compat
+
             this._update(state);
         }
 
-        this._scratchFrustum.fov = Math.PI/3;
+        this._scratchFrustum.near = 0.01;
+        this._scratchFrustum.far = 10000000;
+        this._scratchFrustum.fov = CesiumMath.PI_OVER_THREE;
         this._scratchFrustum.aspectRatio = 1;
 
         this._serializedFrameState = {
@@ -499,35 +504,64 @@ export class ContextService {
         this._update(frameState);
     }
 
+    private _getEntityPositionInReferenceFrame = getEntityPositionInReferenceFrame;
+    private _scratchMatrix3 = new Matrix3;
+    private _scratchMatrix4 = new Matrix4;
+
+    // All of the following work is only necessary when running in an old manager (version === 0)
+    private _updateBackwardsCompatability(frameState:FrameState) {
+        this._knownEntities.clear();
+
+        // update the entities the manager knows about
+        for (const id in frameState.entities) {
+            this.updateEntityFromSerializedState(id, frameState.entities[id]);
+            this._updatingEntities.add(id);
+            this._knownEntities.add(id);
+        }
+
+        // if the mangager didn't send us an update for a particular entity,
+        // assume the manager no longer knows about it
+        for (const id of <string[]><any>this._updatingEntities) {
+            if (!this._knownEntities.has(id)) {
+                let entity = this.entities.getById(id);
+                if (entity) {
+                    entity.position = undefined;
+                    entity.orientation = undefined;
+                }
+                this._updatingEntities.delete(id);
+            }
+        }
+
+        // If running within an older manager, we have to provide the 
+        // context with a local origin ourselves.
+        const localOrigin = this.localOrigin;
+        const userPositionFixed = this._getEntityPositionInReferenceFrame(
+            this.user,
+            frameState.time,
+            ReferenceFrame.FIXED,
+            this._scratchCartesian
+        );
+        if (userPositionFixed) {
+            const enuToFixedFrameTransform = Transforms.eastNorthUpToFixedFrame(userPositionFixed, undefined, this._scratchMatrix4);
+            const enuRotationMatrix = Matrix4.getRotation(enuToFixedFrameTransform, this._scratchMatrix3);
+            const enuOrientation = Quaternion.fromRotationMatrix(enuRotationMatrix);
+
+
+            if (!localOrigin.position) localOrigin.position = new ConstantPositionProperty();
+            if (!localOrigin.orientation) localOrigin.orientation = new ConstantProperty();
+            (localOrigin.position as ConstantPositionProperty).setValue(userPositionFixed, ReferenceFrame.FIXED);
+            (localOrigin.orientation as ConstantProperty).setValue(enuOrientation);
+        } else {
+            localOrigin.position = undefined;
+            localOrigin.orientation = undefined;
+        }
+    }
+
     // TODO: This function is called a lot. Potential for optimization. 
     private _update(frameState: FrameState) {
 
-        // TODO: remove this block after v1.4, since we are passing null values down now for
-        // subscribed entities that have an unknown pose
-        if (this.sessionService.manager.version[0] === 0) {
-
-            this._knownEntities.clear();
-
-            // update the entities the manager knows about
-            for (const id in frameState.entities) {
-                this.updateEntityFromSerializedState(id, frameState.entities[id]);
-                this._updatingEntities.add(id);
-                this._knownEntities.add(id);
-            }
-
-            // if the mangager didn't send us an update for a particular entity,
-            // assume the manager no longer knows about it
-            for (const id of <string[]><any>this._updatingEntities) {
-                if (!this._knownEntities.has(id)) {
-                    let entity = this.entities.getById(id);
-                    if (entity) {
-                        entity.position = undefined;
-                        entity.orientation = undefined;
-                    }
-                    this._updatingEntities.delete(id);
-                }
-            }
-
+        if (this.sessionService.manager.isConnected && this.sessionService.manager.version[0] === 0) {
+            this._updateBackwardsCompatability(frameState);
         } else {
             for (const id in frameState.entities) {
                 this.updateEntityFromSerializedState(id, frameState.entities[id]);
@@ -604,9 +638,11 @@ export class ContextService {
     }
 
     subscribeGeolocation(options?:GeolocationOptions) : Promise<void> {
-        if (this.sessionService.manager.version[0] > 0) 
-            this.sessionService.manager.send('ar.context.setGeolocationOptions', {options});
-        return this.subscribe(this.localOrigin.id).then(()=>{});
+        return this.sessionService.manager.whenConnected().then(()=>{
+            if (this.sessionService.manager.version[0] > 0) 
+                this.sessionService.manager.send('ar.context.setGeolocationOptions', {options});
+            return this.subscribe(this.localOrigin.id).then(()=>{});
+        })
     }
 
     unsubscribeGeolocation() : void {
@@ -751,7 +787,7 @@ export class ContextServiceProvider {
         state.entities = sessionEntities;
         state.time = state.time;
         state.sendTime = JulianDate.now(state.sendTime);
-        if (session.info.version) session.send('ar.context.update', state);
+        session.send('ar.context.update', state);
         state.entities = parentEntities;
     }
 

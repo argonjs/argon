@@ -14245,7 +14245,7 @@ define("5f", ["1d", "2d", "16", "5", "7", "2e", "57", "5c", "5d", "d", "24", "36
 $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', '14', '15', '18', '1c', '20', '19', '16', '5', '7', '2e', '1a', '1b', '8', '3b', '3e', '2c', '2f', '17', 'd', '23', '24', '30', '31', '32', '1f', '27', '25', '37', '1e', '38', '39', '3a', 'e', 'f', '26', '55', '5f', '@empty'], function (_export, _context) {
     "use strict";
 
-    var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, cesium_Source_Core_Clock_js, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, createGuid, cesium_Source_Core_defaultValue_js, defined, cesium_Source_Core_DeveloperError_js, cesium_Source_Core_Ellipsoid_js, Entity, EntityCollection, CesiumEvent, cesium_Source_Core_ExtrapolationType_js, FeatureDetection, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, ReferenceEntity, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, DI, after, cesiumImports, __extends$1, AVERAGE_EYE_HEIGHT, Role, Configuration, Viewport, NormalizedViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, synthesizeEvent, cloneTouch, cloneTouches, getEntityPosition, getEntityOrientation, _scratchFramesArray, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, lastTime, requestAnimationFrame$1, version, __extends, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, WKWebViewConnectService, _a$1, _b$1, __decorate$4, __metadata$4, EntityPose, PoseStatus, ContextService, ContextServiceProvider, _a$4, _b$4, _c$3, _d$3, _e$3, _f$2, __decorate$6, __metadata$6, FocusService, FocusServiceProvider, _a$6, _b$6, __decorate$7, __metadata$7, VisibilityService, VisibilityServiceProvider, _a$7, _b$7, __decorate$5, __metadata$5, Subview, ViewportMode, ViewElement, ViewService, ViewServiceProvider, viewportMetaTag, argonMetaTag, style, sheet, _a$5, _b$5, _c$4, _d$4, _e$4, _f$3, __extends$2, __decorate$3, __metadata$3, SuggestedFrameState, DeviceService, currentVRDisplay, DeviceServiceProvider, DOMDeviceServiceProvider, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, RealityViewer, __extends$3, __decorate$9, __metadata$9, EmptyRealityViewer, _a$9, _b$9, _c$6, _d$6, __extends$4, __decorate$10, __metadata$10, LiveRealityViewer, _a$10, _b$10, _c$7, __extends$5, __decorate$11, __metadata$11, HostedRealityViewer, _a$11, _b$11, __decorate$8, __metadata$8, RealityViewerFactory, RealityService, RealityServiceProvider, _a$8, _b$8, _c$5, _d$5, _e$5, _f$4, _g$2, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __extends$6, __decorate$12, __metadata$12, VuforiaServiceProvider, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$12, _b$12, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, ArgonConfigurationManager, initReality, _a, _b, _c, _d, _e, _f, _g, ArgonSystem_1, _h, _j, _k, _l, _m, _o, _p, _q, _r;
+    var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, cesium_Source_Core_Clock_js, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, createGuid, cesium_Source_Core_defaultValue_js, defined, cesium_Source_Core_DeveloperError_js, cesium_Source_Core_Ellipsoid_js, Entity, EntityCollection, CesiumEvent, cesium_Source_Core_ExtrapolationType_js, FeatureDetection, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, ReferenceEntity, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, DI, after, cesiumImports, __extends$1, AVERAGE_EYE_HEIGHT, Role, Configuration, Viewport, NormalizedViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, synthesizeEvent, cloneTouch, cloneTouches, getEntityPosition, getEntityOrientation, _scratchFramesArray, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, lastTime, requestAnimationFrame$1, version, __extends, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, WKWebViewConnectService, _a$1, _b$1, __decorate$4, __metadata$4, EntityPose, PoseStatus, ContextService, ContextServiceProvider, _a$4, _b$4, _c$3, _d$3, _e$3, _f$2, __decorate$6, __metadata$6, FocusService, FocusServiceProvider, _a$6, _b$6, __decorate$7, __metadata$7, VisibilityService, VisibilityServiceProvider, _a$7, _b$7, __decorate$5, __metadata$5, Subview, ViewportMode, ViewElement, ViewService, ViewServiceProvider, viewportMetaTag, argonMetaTag, style, sheet, _a$5, _b$5, _c$4, _d$4, _e$4, _f$3, __extends$2, __decorate$3, __metadata$3, SuggestedFrameState, DeviceService, currentVRDisplay, DeviceServiceProvider, DOMDeviceServiceProvider, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, RealityViewer, __extends$3, __decorate$9, __metadata$9, EmptyRealityViewer, _a$9, _b$9, _c$6, _d$6, __extends$4, __decorate$10, __metadata$10, LiveRealityViewer, _a$10, _b$10, _c$7, __extends$5, __decorate$11, __metadata$11, HostedRealityViewer, _a$11, _b$11, __decorate$8, __metadata$8, RealityViewerFactory, RealityService, RealityServiceProvider, _a$8, _b$8, _c$5, _d$5, _e$5, _f$4, _g$3, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __extends$6, __decorate$12, __metadata$12, VuforiaServiceProvider, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$12, _b$12, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, ArgonConfigurationManager, initReality, _a, _b, _c, _d, _e, _f, _g, ArgonSystem_1, _h, _j, _k, _l, _m, _o, _p, _q, _r;
 
     function alwaysValid() {
         return true;
@@ -16336,19 +16336,15 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                      * If true, don't raise an error when receiving a message for an unknown topic
                      */
                     this.suppressErrorOnUnknownTopic = false;
-                    /**
-                     * The version of argon.js which is used by the connecting session.
-                     * This property is an empty array until the session connects.
-                     */
-                    this.version = [];
+                    this._version = [];
                     this._isOpened = false;
                     this._isConnected = false;
                     this._isClosed = false;
                     this.on[SessionPort.OPEN] = function (info) {
                         if (!info) throw new Error("Session did not provide a configuration (" + _this.uri + ")");
                         if (_this._isConnected) throw new Error("Session has already connected! (" + _this.uri + ")");
-                        _this.info = info;
-                        _this.version = _this.info.version || [0];
+                        _this._info = info;
+                        _this._version = info.version || [0];
                         _this._isConnected = true;
                         _this._connectEvent.raiseEvent(undefined);
                     };
@@ -16380,6 +16376,33 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     configurable: true
                 });
 
+                Object.defineProperty(SessionPort.prototype, "info", {
+                    /**
+                     * Describes the configuration of the connected session.
+                     */
+                    get: function () {
+                        if (!this.isConnected) {
+                            throw new Error('info is not available until the session is connected.');
+                        }
+                        return this._info;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(SessionPort.prototype, "version", {
+                    /**
+                     * The version of argon.js which is used by the connecting session.
+                     * This property is an empty array until the session connects.
+                     */
+                    get: function () {
+                        if (!this.isConnected) {
+                            throw new Error('version is not available until the session is connected.');
+                        }
+                        return this._version;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 /**
                  * Check if a protocol is supported by this session.
                  */
@@ -16411,6 +16434,16 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                         supported = true;
                     }
                     return supported;
+                };
+                SessionPort.prototype.whenConnected = function () {
+                    var _this = this;
+                    return new Promise(function (resolve, reject) {
+                        if (_this.isConnected) resolve();
+                        var remove = _this.connectEvent.addEventListener(function () {
+                            remove();
+                            resolve();
+                        });
+                    });
                 };
                 /**
                  * Establish a connection to another [[SessionPort]] via the provided [[MessagePort]] instance.
@@ -17121,6 +17154,9 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     this._scratchQuaternion = new Quaternion();
                     this._scratchFrustum = new PerspectiveFrustum();
                     this._frameIndex = -1;
+                    this._getEntityPositionInReferenceFrame = getEntityPositionInReferenceFrame;
+                    this._scratchMatrix3 = new Matrix3();
+                    this._scratchMatrix4 = new Matrix4();
                     this.sessionService.manager.on['ar.context.update'] = function (state) {
                         var scratchFrustum = _this._scratchFrustum;
                         // backwards-compat
@@ -17137,10 +17173,10 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                             for (var _i = 0, _a = state.subviews; _i < _a.length; _i++) {
                                 var s = _a[_i];
                                 var frustum = s['frustum'];
-                                scratchFrustum.xOffset = frustum.xOffset;
-                                scratchFrustum.yOffset = frustum.yOffset;
-                                scratchFrustum.fov = frustum.fov;
-                                scratchFrustum.aspectRatio = frustum.aspectRatio;
+                                scratchFrustum.xOffset = frustum.xOffset || 0;
+                                scratchFrustum.yOffset = frustum.yOffset || 0;
+                                scratchFrustum.fov = frustum.fov || CesiumMath.PI_OVER_THREE;
+                                scratchFrustum.aspectRatio = frustum.aspectRatio || 1;
                                 s.projectionMatrix = Matrix4.clone(scratchFrustum.projectionMatrix, s.projectionMatrix);
                             }
                         }
@@ -17150,7 +17186,9 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                         // end backwards-compat
                         _this._update(state);
                     };
-                    this._scratchFrustum.fov = Math.PI / 3;
+                    this._scratchFrustum.near = 0.01;
+                    this._scratchFrustum.far = 10000000;
+                    this._scratchFrustum.fov = CesiumMath.PI_OVER_THREE;
                     this._scratchFrustum.aspectRatio = 1;
                     this._serializedFrameState = {
                         reality: undefined,
@@ -17316,31 +17354,49 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     frameState.index = ++this._frameIndex;
                     this._update(frameState);
                 };
+                // All of the following work is only necessary when running in an old manager (version === 0)
+                ContextService.prototype._updateBackwardsCompatability = function (frameState) {
+                    this._knownEntities.clear();
+                    // update the entities the manager knows about
+                    for (var id in frameState.entities) {
+                        this.updateEntityFromSerializedState(id, frameState.entities[id]);
+                        this._updatingEntities.add(id);
+                        this._knownEntities.add(id);
+                    }
+                    // if the mangager didn't send us an update for a particular entity,
+                    // assume the manager no longer knows about it
+                    for (var _i = 0, _a = this._updatingEntities; _i < _a.length; _i++) {
+                        var id = _a[_i];
+                        if (!this._knownEntities.has(id)) {
+                            var entity = this.entities.getById(id);
+                            if (entity) {
+                                entity.position = undefined;
+                                entity.orientation = undefined;
+                            }
+                            this._updatingEntities.delete(id);
+                        }
+                    }
+                    // If running within an older manager, we have to provide the 
+                    // context with a local origin ourselves.
+                    var localOrigin = this.localOrigin;
+                    var userPositionFixed = this._getEntityPositionInReferenceFrame(this.user, frameState.time, ReferenceFrame.FIXED, this._scratchCartesian);
+                    if (userPositionFixed) {
+                        var enuToFixedFrameTransform = Transforms.eastNorthUpToFixedFrame(userPositionFixed, undefined, this._scratchMatrix4);
+                        var enuRotationMatrix = Matrix4.getRotation(enuToFixedFrameTransform, this._scratchMatrix3);
+                        var enuOrientation = Quaternion.fromRotationMatrix(enuRotationMatrix);
+                        if (!localOrigin.position) localOrigin.position = new ConstantPositionProperty();
+                        if (!localOrigin.orientation) localOrigin.orientation = new ConstantProperty();
+                        localOrigin.position.setValue(userPositionFixed, ReferenceFrame.FIXED);
+                        localOrigin.orientation.setValue(enuOrientation);
+                    } else {
+                        localOrigin.position = undefined;
+                        localOrigin.orientation = undefined;
+                    }
+                };
                 // TODO: This function is called a lot. Potential for optimization. 
                 ContextService.prototype._update = function (frameState) {
-                    // TODO: remove this block after v1.4, since we are passing null values down now for
-                    // subscribed entities that have an unknown pose
-                    if (this.sessionService.manager.version[0] === 0) {
-                        this._knownEntities.clear();
-                        // update the entities the manager knows about
-                        for (var id in frameState.entities) {
-                            this.updateEntityFromSerializedState(id, frameState.entities[id]);
-                            this._updatingEntities.add(id);
-                            this._knownEntities.add(id);
-                        }
-                        // if the mangager didn't send us an update for a particular entity,
-                        // assume the manager no longer knows about it
-                        for (var _i = 0, _a = this._updatingEntities; _i < _a.length; _i++) {
-                            var id = _a[_i];
-                            if (!this._knownEntities.has(id)) {
-                                var entity = this.entities.getById(id);
-                                if (entity) {
-                                    entity.position = undefined;
-                                    entity.orientation = undefined;
-                                }
-                                this._updatingEntities.delete(id);
-                            }
-                        }
+                    if (this.sessionService.manager.isConnected && this.sessionService.manager.version[0] === 0) {
+                        this._updateBackwardsCompatability(frameState);
                     } else {
                         for (var id in frameState.entities) {
                             this.updateEntityFromSerializedState(id, frameState.entities[id]);
@@ -17400,8 +17456,11 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     return subviewEntity;
                 };
                 ContextService.prototype.subscribeGeolocation = function (options) {
-                    if (this.sessionService.manager.version[0] > 0) this.sessionService.manager.send('ar.context.setGeolocationOptions', { options: options });
-                    return this.subscribe(this.localOrigin.id).then(function () {});
+                    var _this = this;
+                    return this.sessionService.manager.whenConnected().then(function () {
+                        if (_this.sessionService.manager.version[0] > 0) _this.sessionService.manager.send('ar.context.setGeolocationOptions', { options: options });
+                        return _this.subscribe(_this.localOrigin.id).then(function () {});
+                    });
                 };
                 ContextService.prototype.unsubscribeGeolocation = function () {
                     this.unsubscribe(this.localOrigin.id);
@@ -17537,7 +17596,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     state.entities = sessionEntities;
                     state.time = state.time;
                     state.sendTime = JulianDate.now(state.sendTime);
-                    if (session.info.version) session.send('ar.context.update', state);
+                    session.send('ar.context.update', state);
                     state.entities = parentEntities;
                 };
                 ContextServiceProvider.prototype._getCachedSerializedEntityState = function (entity, time) {
@@ -17877,9 +17936,6 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                         var mode = _a.mode;
                         _this._updateViewportMode(mode);
                     };
-                    this.contextService.frameStateEvent.addEventListener(function (state) {
-                        _this._updateViewport(state.viewport);
-                    });
                     // if we are not the manager, we must start in immersive mode
                     if (!sessionService.isRealityManager) this._updateViewportMode(ViewportMode.IMMERSIVE);
                     // if we are loaded in an older manager which does not support embedded mode,
@@ -17939,7 +17995,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     return this.subviews;
                 };
                 ViewService.prototype._processFrameState = function (state) {
-                    this._viewport = Viewport.clone(state.viewport, this._viewport);
+                    this._updateViewport(state.viewport);
                     var serializedSubviewList = state.subviews;
                     var subviews = this._subviews;
                     subviews.length = serializedSubviewList.length;
@@ -17973,8 +18029,11 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                         return this._desiredViewportMode;
                     },
                     set: function (mode) {
+                        var _this = this;
                         this._desiredViewportMode = mode;
-                        if (this.sessionService.manager.version[0] > 0) this.sessionService.manager.send('ar.view.desiredViewportMode', { mode: mode });
+                        this.sessionService.manager.whenConnected().then(function () {
+                            if (_this.sessionService.manager.version[0] > 0) _this.sessionService.manager.send('ar.view.desiredViewportMode', { mode: mode });
+                        });
                     },
                     enumerable: true,
                     configurable: true
@@ -17999,6 +18058,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     var viewportJSON = JSON.stringify(viewport);
                     if (!this._currentViewportJSON || this._currentViewportJSON !== viewportJSON) {
                         this._currentViewportJSON = viewportJSON;
+                        this._viewport = Viewport.clone(viewport, this._viewport);
                         if (this.element && !this.sessionService.isRealityManager && this.autoLayoutImmersiveMode && this.viewportMode === ViewportMode.IMMERSIVE) {
                             requestAnimationFrame(function () {
                                 _this.element.style.position = 'fixed';
@@ -18163,10 +18223,11 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
             }());
 
             _export('DeviceService', DeviceService = function () {
-                function DeviceService(sessionService, contextService) {
+                function DeviceService(sessionService, contextService, viewService) {
                     var _this = this;
                     this.sessionService = sessionService;
                     this.contextService = contextService;
+                    this.viewService = viewService;
                     /**
                      * An entity representing the local origin, defining an
                      * East-North-Up coordinate system.
@@ -18197,8 +18258,6 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     }));
                     this._getEntityPositionInReferenceFrame = getEntityPositionInReferenceFrame;
                     this._scratchCartesian = new Cartesian3();
-                    this._scratchMatrix3 = new Matrix3();
-                    this._scratchMatrix4 = new Matrix4();
                     this._defaultFrameState = new SuggestedFrameState();
                     this._scratchFrameState = {
                         time: {},
@@ -18234,24 +18293,6 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                             user.position.setValue(Cartesian3.ZERO, _this.user);
                             user.orientation.setValue(Quaternion.IDENTITY);
                         }
-                        // If running within an older manager, we have to provide the 
-                        // context with a local origin ourselves.
-                        if (_this.sessionService.manager.version[0] === 0) {
-                            var localOrigin = _this.localOrigin;
-                            var userPositionFixed = _this._getEntityPositionInReferenceFrame(_this.user, state.time, ReferenceFrame.FIXED, _this._scratchCartesian);
-                            if (userPositionFixed) {
-                                var enuToFixedFrameTransform = Transforms.eastNorthUpToFixedFrame(userPositionFixed, undefined, _this._scratchMatrix4);
-                                var enuRotationMatrix = Matrix4.getRotation(enuToFixedFrameTransform, _this._scratchMatrix3);
-                                var enuOrientation = Quaternion.fromRotationMatrix(enuRotationMatrix);
-                                if (!localOrigin.position) localOrigin.position = new ConstantPositionProperty();
-                                if (!localOrigin.orientation) localOrigin.orientation = new ConstantProperty();
-                                localOrigin.position.setValue(userPositionFixed, ReferenceFrame.FIXED);
-                                localOrigin.orientation.setValue(enuOrientation);
-                            } else {
-                                localOrigin.position = undefined;
-                                localOrigin.orientation = undefined;
-                            }
-                        }
                     });
                     this._onNextFrameState = this._onNextFrameState.bind(this);
                 }
@@ -18278,9 +18319,27 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 });
                 DeviceService.prototype._onNextFrameState = function (suggestedFrameState) {
                     if (!suggestedFrameState) {
+                        var contextSerializedFrameState = this.contextService.serializedFrameState;
+                        if (contextSerializedFrameState.viewport.width === 0 || contextSerializedFrameState.viewport.height === 0) {
+                            var width = this.viewService.element.clientWidth;
+                            var height = this.viewService.element.clientHeight;
+                            contextSerializedFrameState.viewport.width = width;
+                            contextSerializedFrameState.viewport.height = height;
+                            contextSerializedFrameState.subviews[0].viewport.width = width;
+                            contextSerializedFrameState.subviews[0].viewport.height = height;
+                        }
+                        var deviceStage = this.stage;
+                        var deviceLocalOrigin = this.localOrigin;
+                        var position = Cartesian3.fromElements(0, 0, -AVERAGE_EYE_HEIGHT, this._scratchCartesian);
+                        deviceStage.position = deviceStage.position || new ConstantPositionProperty();
+                        deviceStage.orientation = deviceStage.orientation || new ConstantProperty();
+                        deviceStage.position.setValue(position, deviceLocalOrigin);
+                        deviceStage.orientation.setValue(Quaternion.IDENTITY);
                         suggestedFrameState = this._defaultFrameState;
+                        suggestedFrameState.viewport = Viewport.clone(contextSerializedFrameState.viewport, suggestedFrameState.viewport);
+                        suggestedFrameState.subviews = SerializedSubviewList.clone(contextSerializedFrameState.subviews, suggestedFrameState.subviews);
                         suggestedFrameState.time = JulianDate.now(suggestedFrameState.time);
-                        return suggestedFrameState;
+                        suggestedFrameState.strict = true;
                     }
                     var entities = suggestedFrameState.entities;
                     var contextService = this.contextService;
@@ -18486,7 +18545,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 return DeviceService;
             }());
 
-            _export('DeviceService', DeviceService = __decorate$3([autoinject(), __metadata$3("design:paramtypes", [typeof (_a$3 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$3 || Object, typeof (_b$3 = typeof ContextService !== "undefined" && ContextService) === "function" && _b$3 || Object])], DeviceService));
+            _export('DeviceService', DeviceService = __decorate$3([autoinject(), __metadata$3("design:paramtypes", [typeof (_a$3 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$3 || Object, typeof (_b$3 = typeof ContextService !== "undefined" && ContextService) === "function" && _b$3 || Object, typeof (_c$2 = typeof ViewService !== "undefined" && ViewService) === "function" && _c$2 || Object])], DeviceService));
 
             _export('DeviceServiceProvider', DeviceServiceProvider = function () {
                 function DeviceServiceProvider(sessionService, deviceService, contextService, viewService, contextServiceProvider) {
@@ -18710,7 +18769,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 return DeviceServiceProvider;
             }());
 
-            _export('DeviceServiceProvider', DeviceServiceProvider = __decorate$3([autoinject(), __metadata$3("design:paramtypes", [typeof (_c$2 = typeof SessionService !== "undefined" && SessionService) === "function" && _c$2 || Object, DeviceService, typeof (_d$2 = typeof ContextService !== "undefined" && ContextService) === "function" && _d$2 || Object, typeof (_e$2 = typeof ViewService !== "undefined" && ViewService) === "function" && _e$2 || Object, typeof (_f$1 = typeof ContextServiceProvider !== "undefined" && ContextServiceProvider) === "function" && _f$1 || Object])], DeviceServiceProvider));
+            _export('DeviceServiceProvider', DeviceServiceProvider = __decorate$3([autoinject(), __metadata$3("design:paramtypes", [typeof (_d$2 = typeof SessionService !== "undefined" && SessionService) === "function" && _d$2 || Object, DeviceService, typeof (_e$2 = typeof ContextService !== "undefined" && ContextService) === "function" && _e$2 || Object, typeof (_f$1 = typeof ViewService !== "undefined" && ViewService) === "function" && _f$1 || Object, typeof (_g$1 = typeof ContextServiceProvider !== "undefined" && ContextServiceProvider) === "function" && _g$1 || Object])], DeviceServiceProvider));
 
             _export('DOMDeviceServiceProvider', DOMDeviceServiceProvider = function (_super) {
                 __extends$2(DOMDeviceServiceProvider, _super);
@@ -19465,6 +19524,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
             */
 
             _export('RealityService', RealityService = function () {
+                // private _scratchFrustum = new PerspectiveFrustum();
                 function RealityService(sessionService, contextService) {
                     var _this = this;
                     this.sessionService = sessionService;
@@ -19505,23 +19565,14 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     this.contextService.frameStateEvent.addEventListener(function (frameState) {
                         if (sessionService.isRealityViewer && sessionService.manager.isConnected) {
                             // backwards compatability
-                            if (sessionService.manager.version[0] === 0) {
-                                var view = frameState['view'] = frameState['view'] || {};
-                                view.pose = frameState.entities['ar.eye'];
-                                view.viewport = frameState.viewport;
-                                view.subviews = frameState.subviews;
-                                for (var i_1 = 0; i_1 < view.subviews.length; i_1++) {
-                                    var s = view.subviews[i_1];
-                                    s['frustum'] = decomposePerspectiveProjectionMatrix(s.projectionMatrix, s['frustum'] || {});
-                                }
-                                delete frameState.entities['ar.eye'];
-                                delete frameState.viewport;
-                                delete frameState.subviews;
+                            if (sessionService.manager.isConnected && sessionService.manager.version[0] === 0) {
+                                var eye = frameState['eye'] = frameState['eye'] || {};
+                                eye.pose = frameState.entities['ar.user'];
+                                eye.viewport = Viewport.clone(frameState.subviews[0].viewport, eye.viewport);
+                                delete frameState.entities['ar.user'];
                                 // throttle for 30fps
                                 i++ % 2 === 0 && sessionService.manager.send('ar.reality.frameState', frameState);
-                                frameState.entities['ar.eye'] = view.pose;
-                                frameState.viewport = view.viewport;
-                                frameState.subviews = view.subviews;
+                                frameState.entities['ar.user'] = eye.pose;
                             } else {
                                 sessionService.manager.send('ar.reality.frameState', frameState);
                             }
@@ -19581,15 +19632,21 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                  * Install the specified reality viewer
                  */
                 RealityService.prototype.install = function (uri) {
-                    if (this.sessionService.manager.version[0] >= 1 !== true) return Promise.reject(new Error('Not supported'));
-                    return this.sessionService.manager.request('ar.reality.install', { uri: uri });
+                    var _this = this;
+                    return this.sessionService.manager.whenConnected().then(function () {
+                        if (_this.sessionService.manager.version[0] >= 1 !== true) return Promise.reject(new Error('Not supported'));
+                        return _this.sessionService.manager.request('ar.reality.install', { uri: uri });
+                    });
                 };
                 /**
                  * Uninstall the specified reality viewer
                  */
                 RealityService.prototype.uninstall = function (uri) {
-                    if (this.sessionService.manager.version[0] >= 1 !== true) return Promise.reject(new Error('Not supported'));
-                    return this.sessionService.manager.request('ar.reality.uninstall', { uri: uri });
+                    var _this = this;
+                    return this.sessionService.manager.whenConnected().then(function () {
+                        if (_this.sessionService.manager.version[0] >= 1 !== true) return Promise.reject(new Error('Not supported'));
+                        return _this.sessionService.manager.request('ar.reality.uninstall', { uri: uri });
+                    });
                 };
                 /**
                  * Request a reality viewer to be presented.
@@ -19599,8 +19656,11 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                  * - [[RealityViewer.EMPTY]] to request an empty reality viewer
                  */
                 RealityService.prototype.request = function (uri) {
-                    if (this.sessionService.manager.version[0] >= 1 !== true) return this.sessionService.manager.request('ar.reality.desired', { reality: { uri: uri } });
-                    return this.sessionService.manager.request('ar.reality.request', { uri: uri });
+                    var _this = this;
+                    return this.sessionService.manager.whenConnected().then(function () {
+                        if (_this.sessionService.manager.version[0] >= 1 !== true) return _this.sessionService.manager.request('ar.reality.desired', { reality: { uri: uri } });
+                        return _this.sessionService.manager.request('ar.reality.request', { uri: uri });
+                    });
                 };
                 /**
                  * Deprecated. Use [[RealityService#request]]
@@ -19802,7 +19862,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 return RealityServiceProvider;
             }());
 
-            _export('RealityServiceProvider', RealityServiceProvider = __decorate$8([autoinject, __metadata$8("design:paramtypes", [typeof (_c$5 = typeof SessionService !== "undefined" && SessionService) === "function" && _c$5 || Object, RealityService, typeof (_d$5 = typeof ContextService !== "undefined" && ContextService) === "function" && _d$5 || Object, typeof (_e$5 = typeof ViewServiceProvider !== "undefined" && ViewServiceProvider) === "function" && _e$5 || Object, typeof (_f$4 = typeof VisibilityServiceProvider !== "undefined" && VisibilityServiceProvider) === "function" && _f$4 || Object, typeof (_g$2 = typeof FocusServiceProvider !== "undefined" && FocusServiceProvider) === "function" && _g$2 || Object, RealityViewerFactory])], RealityServiceProvider));
+            _export('RealityServiceProvider', RealityServiceProvider = __decorate$8([autoinject, __metadata$8("design:paramtypes", [typeof (_c$5 = typeof SessionService !== "undefined" && SessionService) === "function" && _c$5 || Object, RealityService, typeof (_d$5 = typeof ContextService !== "undefined" && ContextService) === "function" && _d$5 || Object, typeof (_e$5 = typeof ViewServiceProvider !== "undefined" && ViewServiceProvider) === "function" && _e$5 || Object, typeof (_f$4 = typeof VisibilityServiceProvider !== "undefined" && VisibilityServiceProvider) === "function" && _f$4 || Object, typeof (_g$3 = typeof FocusServiceProvider !== "undefined" && FocusServiceProvider) === "function" && _g$3 || Object, RealityViewerFactory])], RealityServiceProvider));
 
             __decorate$2 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
                 var c = arguments.length,

@@ -77,20 +77,32 @@ export class SessionPort {
     public messagePort: MessagePortLike;
 
     /**
-     * Describes the configuration of the connected session. 
-     */
-    public info: Configuration;
-
-    /**
      * If true, don't raise an error when receiving a message for an unknown topic
      */
     public suppressErrorOnUnknownTopic = false;
 
     /**
+     * Describes the configuration of the connected session. 
+     */
+    public get info() {
+        if (!this.isConnected) {
+            throw new Error('info is not available until the session is connected.');
+        }
+        return this._info;
+    }
+    private _info: Configuration;
+
+    /**
      * The version of argon.js which is used by the connecting session.
      * This property is an empty array until the session connects.
      */
-    public version: number[] = [];
+    public get version() {
+        if (!this.isConnected) {
+            throw new Error('version is not available until the session is connected.');
+        }
+        return this._version;
+    }
+    private _version: number[] = [];
 
     public static OPEN = 'ar.session.open';
     public static CLOSE = 'ar.session.close';
@@ -105,8 +117,8 @@ export class SessionPort {
         this.on[SessionPort.OPEN] = (info: Configuration) => {
             if (!info) throw new Error(`Session did not provide a configuration (${this.uri})`);
             if (this._isConnected) throw new Error(`Session has already connected! (${this.uri})`);
-            this.info = info;
-            this.version = this.info.version || [0];
+            this._info = info;
+            this._version = info.version || [0];
             this._isConnected = true;
             this._connectEvent.raiseEvent(undefined);
         }
@@ -162,6 +174,16 @@ export class SessionPort {
             supported = true;
         }
         return supported;
+    }
+    
+    public whenConnected() : Promise<void> {
+        return new Promise<void>((resolve, reject)=>{
+            if (this.isConnected) resolve();
+            let remove = this.connectEvent.addEventListener(()=>{
+                remove();
+                resolve();
+            })
+        });
     }
 
     /**

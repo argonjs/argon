@@ -1,13 +1,15 @@
 import { autoinject, inject, Factory } from 'aurelia-dependency-injection'
 import {
-    createGuid
+    createGuid,
+    // PerspectiveFrustum
 } from './cesium/cesium-imports'
 import {
     Role,
-    FrameState
+    FrameState,
+    Viewport
 } from './common'
 import { SessionPort, SessionService } from './session'
-import { Event, deprecated, decomposePerspectiveProjectionMatrix } from './utils'
+import { Event, deprecated } from './utils'
 import { ContextService } from './context'
 import { FocusServiceProvider } from './focus'
 import { VisibilityServiceProvider } from './visibility'
@@ -75,6 +77,8 @@ export class RealityService {
      */
     public default = RealityViewer.EMPTY;
 
+    // private _scratchFrustum = new PerspectiveFrustum();
+
     constructor(
         private sessionService: SessionService,
         private contextService: ContextService
@@ -117,31 +121,18 @@ export class RealityService {
 
         this.contextService.frameStateEvent.addEventListener((frameState)=>{
             if (sessionService.isRealityViewer && sessionService.manager.isConnected) {
-                
                 // backwards compatability
-                if (sessionService.manager.version[0] === 0) {
-                    const view = frameState['view'] = frameState['view'] || {};
-                    view.pose = frameState.entities['ar.eye'];
-                    view.viewport = frameState.viewport;
-                    view.subviews = frameState.subviews;
-                    for (let i=0; i < view.subviews.length; i++) {
-                        const s = view.subviews[i];
-                        s['frustum'] = decomposePerspectiveProjectionMatrix(s.projectionMatrix, <any>s['frustum'] || {})
-                    }
-                    delete frameState.entities['ar.eye'];
-                    delete frameState.viewport;
-                    delete frameState.subviews;
-
+                if (sessionService.manager.isConnected && sessionService.manager.version[0] === 0) {
+                    const eye = frameState['eye'] = frameState['eye'] || {};
+                    eye.pose = frameState.entities['ar.user'];
+                    eye.viewport = Viewport.clone(frameState.subviews[0].viewport, eye.viewport);
+                    delete frameState.entities['ar.user'];
                     // throttle for 30fps
                     i++ % 2 === 0 && sessionService.manager.send('ar.reality.frameState', frameState);
-
-                    frameState.entities['ar.eye'] = view.pose;
-                    frameState.viewport = view.viewport;
-                    frameState.subviews = view.subviews;
-                    // delete frameState['view'];
+                    frameState.entities['ar.user'] = eye.pose;
                 } else {
                     sessionService.manager.send('ar.reality.frameState', frameState);
-                }
+                }   
             }
             
             const current = frameState.reality!;
@@ -169,18 +160,22 @@ export class RealityService {
      * Install the specified reality viewer
      */
     public install(uri: string) : Promise<void> {
-        if (this.sessionService.manager.version[0] >= 1 !== true)
-            return Promise.reject(new Error('Not supported'))
-        return this.sessionService.manager.request('ar.reality.install', {uri});
+        return this.sessionService.manager.whenConnected().then(()=>{
+            if (this.sessionService.manager.version[0] >= 1 !== true)
+                return Promise.reject(new Error('Not supported'))
+            return this.sessionService.manager.request('ar.reality.install', {uri});
+        });
     }
     
     /**
      * Uninstall the specified reality viewer
      */
     public uninstall(uri: string): Promise<void> {
-        if (this.sessionService.manager.version[0] >= 1 !== true)
-            return Promise.reject(new Error('Not supported'))
-        return this.sessionService.manager.request('ar.reality.uninstall', {uri});
+        return this.sessionService.manager.whenConnected().then(()=>{
+            if (this.sessionService.manager.version[0] >= 1 !== true)
+                return Promise.reject(new Error('Not supported'))
+            return this.sessionService.manager.request('ar.reality.uninstall', {uri});
+        });
     }
 
     /**
@@ -191,9 +186,11 @@ export class RealityService {
      * - [[RealityViewer.EMPTY]] to request an empty reality viewer
      */
     public request(uri:string): Promise<void> {
-        if (this.sessionService.manager.version[0] >= 1 !== true)
-            return this.sessionService.manager.request('ar.reality.desired', {reality:{uri}});
-        return this.sessionService.manager.request('ar.reality.request', {uri});
+        return this.sessionService.manager.whenConnected().then(()=>{
+            if (this.sessionService.manager.version[0] >= 1 !== true)
+                return this.sessionService.manager.request('ar.reality.desired', {reality:{uri}});
+            return this.sessionService.manager.request('ar.reality.request', {uri});
+        });
     }
 
     /**

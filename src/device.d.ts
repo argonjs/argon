@@ -36,8 +36,6 @@ export declare class DeviceService {
     readonly geoVerticalAccuracy: number | undefined;
     private _getEntityPositionInReferenceFrame;
     private _scratchCartesian;
-    private _scratchMatrix3;
-    private _scratchMatrix4;
     constructor(sessionService: SessionService, contextService: ContextService);
     private _defaultFrameState;
     private _onNextFrameState(suggestedFrameState?);
