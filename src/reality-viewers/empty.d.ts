@@ -10,6 +10,8 @@ export declare class EmptyRealityViewer extends RealityViewer {
     private deviceService;
     uri: string;
     type: string;
+    private _aggregator;
+    private _moveFlags;
     constructor(sessionService: SessionService, contextService: ContextService, viewService: ViewService, deviceService: DeviceService, uri: string);
     load(): void;
 }
