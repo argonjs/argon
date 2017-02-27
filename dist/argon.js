@@ -20243,7 +20243,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
         };
     }
 
-    function createEventForwarder(viewportService, callback) {
+    function createEventForwarder$$1(viewService, callback) {
         var forwardEvent = false;
         var eventData = {
             event: UIEvent = undefined,
@@ -20256,23 +20256,34 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
             var target = e.target instanceof HTMLElement ? e.target : undefined;
             var width = target && target.clientWidth;
             var height = target && target.clientHeight;
+            // contain our events within the view element
+            e.stopPropagation();
+            // prevent undesired default actions over the view element
+            if (e.type === 'wheel' || isIOS && e.type === 'touchmove' && e.touches.length === 2) e.preventDefault();
             // if the target element is the view element or an element of similar size,
             // attempt to forward the event (webvr-polyfill makes the canvas 10px larger
             // in each dimension due to an issue with the iOS safari browser, which is why
             // we forward the event for any target that matches the viewport size up to 15px 
             // larger in either dimension)
-            if (e.target === viewportService.element || Math.abs(width - viewportService.element.clientWidth) < 15 && Math.abs(height - viewportService.element.clientHeight) < 15) {
-                var boundingRect = viewportService.element.getBoundingClientRect();
-                if (viewportService.uiEvent.numberOfListeners > 0) {
+            if (e.target === viewService.element || Math.abs(width - viewService.element.clientWidth) < 15 && Math.abs(height - viewService.element.clientHeight) < 15) {
+                // If we have a uievent listener attached, then make sure the
+                // app explictily asks for events to be forwarded. Otherwise,
+                // automatically forward the uievents 
+                if (viewService.uiEvent.numberOfListeners > 0) {
                     forwardEvent = false;
                     eventData.event = e;
-                    viewportService.uiEvent.raiseEvent(eventData);
+                    viewService.uiEvent.raiseEvent(eventData);
                     if (!forwardEvent) {
-                        e.stopPropagation();
+                        // if the app doesn't want to forward the event, 
+                        // stop the event propogation immediately so that even a locally-running 
+                        // reality viewer cannot process the event
+                        e.stopImmediatePropagation();
                         return;
                     }
                 }
+                // prevent undesired synthetic click
                 if (e.type === 'touchstart') e.preventDefault();
+                var boundingRect = viewService.element.getBoundingClientRect();
                 var touches = cloneTouches(e.touches, boundingRect);
                 var changedTouches = cloneTouches(e.changedTouches, boundingRect);
                 var targetTouches = cloneTouches(e.targetTouches, boundingRect);
@@ -20319,8 +20330,6 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 uievent.tiltY = e.tiltY;
                 uievent.isPrimary = e.isPrimary;
                 callback(uievent);
-            } else {
-                e.stopImmediatePropagation();
             }
         };
         var forwardedEvent = ['wheel', 'click', 'dblclick', 'contextmenu'];
@@ -20330,7 +20339,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
         forwardedEvent.push('mouseenter', 'mouseleave', 'mousedown', 'mousemove', 'mouseup', 'touchstart', 'touchend', 'touchmove', 'touchcancel');
         // }
         forwardedEvent.forEach(function (type) {
-            viewportService.element.addEventListener(type, handleEvent, false);
+            viewService.element.addEventListener(type, handleEvent, false);
         });
     }
 
@@ -21872,7 +21881,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 return id;
             });
 
-            _export('version', version = "1.1.6");
+            _export('version', version = "1.1.7");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -23507,7 +23516,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                         });
                         this.sessionService.manager.on['ar.view.uievent'] = synthesizeEvent;
                         if (!this.sessionService.isRealityViewer) {
-                            createEventForwarder(this, function (event) {
+                            createEventForwarder$$1(this, function (event) {
                                 if (_this.sessionService.manager.isConnected && _this.sessionService.manager.version[0] >= 1) _this.sessionService.manager.send('ar.view.forwardUIEvent', event);
                             });
                             this._watchEmbeddedViewport();
@@ -23901,14 +23910,12 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 DeviceService.prototype._onNextFrameState = function (suggestedFrameState) {
                     if (!suggestedFrameState) {
                         var contextSerializedFrameState = this.contextService.serializedFrameState;
-                        if (contextSerializedFrameState.viewport.width === 0 || contextSerializedFrameState.viewport.height === 0) {
-                            var width = this.viewService.element.clientWidth;
-                            var height = this.viewService.element.clientHeight;
-                            contextSerializedFrameState.viewport.width = width;
-                            contextSerializedFrameState.viewport.height = height;
-                            contextSerializedFrameState.subviews[0].viewport.width = width;
-                            contextSerializedFrameState.subviews[0].viewport.height = height;
-                        }
+                        var width = this.viewService.element.clientWidth;
+                        var height = this.viewService.element.clientHeight;
+                        contextSerializedFrameState.viewport.width = width;
+                        contextSerializedFrameState.viewport.height = height;
+                        contextSerializedFrameState.subviews[0].viewport.width = width;
+                        contextSerializedFrameState.subviews[0].viewport.height = height;
                         var deviceStage = this.stage;
                         var deviceLocalOrigin = this.localOrigin;
                         var position = Cartesian3.fromElements(0, 0, -AVERAGE_EYE_HEIGHT, this._scratchCartesian);
@@ -24600,6 +24607,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     configurable: true
                 });
                 RealityViewer.prototype.destroy = function () {
+                    this.setPresenting(false);
                     if (this.session) {
                         this.session.close();
                     }
@@ -24655,6 +24663,63 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     _this.deviceService = deviceService;
                     _this.uri = uri;
                     _this.type = 'empty';
+                    _this._moveFlags = {
+                        moveForward: false,
+                        moveBackward: false,
+                        moveUp: false,
+                        moveDown: false,
+                        moveLeft: false,
+                        moveRight: false
+                    };
+                    function getFlagForKeyCode(keyCode) {
+                        switch (keyCode) {
+                            case 'W'.charCodeAt(0):
+                                return 'moveForward';
+                            case 'S'.charCodeAt(0):
+                                return 'moveBackward';
+                            case 'E'.charCodeAt(0):
+                                return 'moveUp';
+                            case 'R'.charCodeAt(0):
+                                return 'moveDown';
+                            case 'D'.charCodeAt(0):
+                                return 'moveRight';
+                            case 'A'.charCodeAt(0):
+                                return 'moveLeft';
+                            default:
+                                return undefined;
+                        }
+                    }
+                    var keydownListener = function (e) {
+                        var flagName = getFlagForKeyCode(e.keyCode);
+                        if (typeof flagName !== 'undefined') {
+                            _this._moveFlags[flagName] = true;
+                        }
+                    };
+                    var keyupListener = function (e) {
+                        var flagName = getFlagForKeyCode(e.keyCode);
+                        if (typeof flagName !== 'undefined') {
+                            _this._moveFlags[flagName] = false;
+                        }
+                    };
+                    if (typeof document !== 'undefined') {
+                        _this.presentChangeEvent.addEventListener(function () {
+                            if (_this.isPresenting) {
+                                if (!_this._aggregator && _this.viewService.element) {
+                                    _this._aggregator = new CameraEventAggregator(_this.viewService.element);
+                                    document.addEventListener('keydown', keydownListener, false);
+                                    document && document.addEventListener('keyup', keyupListener, false);
+                                }
+                            } else {
+                                _this._aggregator && _this._aggregator.destroy();
+                                _this._aggregator = undefined;
+                                document && document.removeEventListener('keydown', keydownListener);
+                                document && document.removeEventListener('keyup', keyupListener);
+                                for (var k in _this._moveFlags) {
+                                    _this._moveFlags[k] = false;
+                                }
+                            }
+                        });
+                    }
                     return _this;
                 }
                 EmptyRealityViewer.prototype.load = function () {
@@ -24666,54 +24731,6 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     var internalSession = this.sessionService.createSessionPort(this.uri);
                     internalSession.suppressErrorOnUnknownTopic = true;
                     internalSession.connectEvent.addEventListener(function () {
-                        var aggregator = _this.viewService.element ? new CameraEventAggregator(_this.viewService.element) : undefined;
-                        var flags = {
-                            moveForward: false,
-                            moveBackward: false,
-                            moveUp: false,
-                            moveDown: false,
-                            moveLeft: false,
-                            moveRight: false
-                        };
-                        function getFlagForKeyCode(keyCode) {
-                            switch (keyCode) {
-                                case 'W'.charCodeAt(0):
-                                    return 'moveForward';
-                                case 'S'.charCodeAt(0):
-                                    return 'moveBackward';
-                                case 'E'.charCodeAt(0):
-                                    return 'moveUp';
-                                case 'R'.charCodeAt(0):
-                                    return 'moveDown';
-                                case 'D'.charCodeAt(0):
-                                    return 'moveRight';
-                                case 'A'.charCodeAt(0):
-                                    return 'moveLeft';
-                                default:
-                                    return undefined;
-                            }
-                        }
-                        var keydownListener = function (e) {
-                            var flagName = getFlagForKeyCode(e.keyCode);
-                            if (typeof flagName !== 'undefined') {
-                                flags[flagName] = true;
-                            }
-                        };
-                        var keyupListener = function (e) {
-                            var flagName = getFlagForKeyCode(e.keyCode);
-                            if (typeof flagName !== 'undefined') {
-                                flags[flagName] = false;
-                            }
-                        };
-                        if (typeof document !== 'undefined') {
-                            document.addEventListener('keydown', keydownListener, false);
-                            document && document.addEventListener('keyup', keyupListener, false);
-                            internalSession.closeEvent.addEventListener(function () {
-                                aggregator && aggregator.destroy();
-                                document && document.removeEventListener('keydown', keydownListener);
-                                document && document.removeEventListener('keyup', keyupListener);
-                            });
-                        }
                         var scratchQuaternion = new Quaternion();
                         var scratchQuaternionDragYaw = new Quaternion();
                         // const pitchQuat = new Quaternion;
@@ -24739,6 +24756,8 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                         var handleFrameState = function (suggestedFrameState) {
                             if (internalSession.isClosed) return;
                             _this.deviceService.requestFrameState().then(handleFrameState);
+                            var aggregator = _this._aggregator;
+                            var flags = _this._moveFlags;
                             if (!_this.isPresenting) {
                                 aggregator && aggregator.reset();
                                 return;
@@ -26209,7 +26228,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
 
             _export('synthesizeEvent', synthesizeEvent);
 
-            _export('createEventForwarder', createEventForwarder);
+            _export('createEventForwarder', createEventForwarder$$1);
 
             _export('CommandQueue', CommandQueue);
 
