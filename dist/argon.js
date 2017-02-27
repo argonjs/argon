@@ -19803,7 +19803,7 @@ $__System.registerDynamic('78', ['62', '77'], true, function ($__require, export
 $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', '14', '15', '18', '1c', '20', '19', '16', '5', '7', '2e', '1a', '1b', '8', '3b', '3e', '2c', '2f', '17', 'd', '23', '24', '30', '31', '32', '1f', '27', '25', '37', '1e', '38', '39', '3a', 'e', 'f', '26', '55', '5f', '61', '78'], function (_export, _context) {
     "use strict";
 
-    var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, cesium_Source_Core_Clock_js, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, createGuid, cesium_Source_Core_defaultValue_js, defined, cesium_Source_Core_DeveloperError_js, cesium_Source_Core_Ellipsoid_js, Entity, EntityCollection, CesiumEvent, cesium_Source_Core_ExtrapolationType_js, FeatureDetection, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, ReferenceEntity, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, CardboardUI, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, DI, after, cesiumImports, kButtonWidthDp, kTouchSlopFactor, __extends$1, AVERAGE_EYE_HEIGHT, Role, Configuration, Viewport, NormalizedViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, synthesizeEvent, cloneTouch, cloneTouches, getEntityPosition, getEntityOrientation, _scratchFramesArray, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, lastTime, requestAnimationFrame$1, version, __extends, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, WKWebViewConnectService, _a$1, _b$1, __decorate$4, __metadata$4, EntityPose, PoseStatus, ContextService, ContextServiceProvider, _a$4, _b$4, _c$3, _d$3, _e$3, _f$2, __decorate$6, __metadata$6, FocusService, FocusServiceProvider, _a$6, _b$6, __decorate$7, __metadata$7, VisibilityService, VisibilityServiceProvider, _a$7, _b$7, __decorate$5, __metadata$5, Subview, ViewportMode, ViewElement, ViewService, ViewServiceProvider, viewportMetaTag, argonMetaTag, style, sheet, _a$5, _b$5, _c$4, _d$4, _e$4, _f$3, __extends$2, __decorate$3, __metadata$3, SuggestedFrameState, DeviceService, currentVRDisplay, DeviceServiceProvider, DOMDeviceServiceProvider, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, RealityViewer, __extends$3, __decorate$9, __metadata$9, EmptyRealityViewer, _a$9, _b$9, _c$6, _d$6, __extends$4, __decorate$10, __metadata$10, LiveRealityViewer, _a$10, _b$10, _c$7, __extends$5, __decorate$11, __metadata$11, HostedRealityViewer, _a$11, _b$11, __decorate$8, __metadata$8, RealityViewerFactory, RealityService, RealityServiceProvider, _a$8, _b$8, _c$5, _d$5, _e$5, _f$4, _g$3, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __extends$6, __decorate$12, __metadata$12, VuforiaServiceProvider, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$12, _b$12, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, ArgonConfigurationManager, initReality, _a, _b, _c, _d, _e, _f, _g, ArgonSystem_1, _h, _j, _k, _l, _m, _o, _p, _q, _r;
+    var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, cesium_Source_Core_Clock_js, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, createGuid, cesium_Source_Core_defaultValue_js, defined, cesium_Source_Core_DeveloperError_js, cesium_Source_Core_Ellipsoid_js, Entity, EntityCollection, CesiumEvent, cesium_Source_Core_ExtrapolationType_js, cesium_Source_Core_FeatureDetection_js, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, ReferenceEntity, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, CardboardUI, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, DI, after, cesiumImports, kButtonWidthDp, kTouchSlopFactor, __extends$1, AVERAGE_EYE_HEIGHT, Role, Configuration, Viewport, NormalizedViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, synthesizeEvent, cloneTouch, cloneTouches, getEntityPosition, getEntityOrientation, _scratchFramesArray, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, lastTime, requestAnimationFrame$1, version, __extends, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, WKWebViewConnectService, _a$1, _b$1, __decorate$4, __metadata$4, EntityPose, PoseStatus, ContextService, ContextServiceProvider, _a$4, _b$4, _c$3, _d$3, _e$3, _f$2, __decorate$6, __metadata$6, FocusService, FocusServiceProvider, _a$6, _b$6, __decorate$7, __metadata$7, VisibilityService, VisibilityServiceProvider, _a$7, _b$7, __decorate$5, __metadata$5, Subview, ViewportMode, ViewElement, ViewService, ViewServiceProvider, viewportMetaTag, argonMetaTag, style, sheet, _a$5, _b$5, _c$4, _d$4, _e$4, _f$3, __extends$2, __decorate$3, __metadata$3, SuggestedFrameState, DeviceService, currentVRDisplay, DeviceServiceProvider, DOMDeviceServiceProvider, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, RealityViewer, __extends$3, __decorate$9, __metadata$9, EmptyRealityViewer, _a$9, _b$9, _c$6, _d$6, __extends$4, __decorate$10, __metadata$10, LiveRealityViewer, _a$10, _b$10, _c$7, __extends$5, __decorate$11, __metadata$11, HostedRealityViewer, _a$11, _b$11, __decorate$8, __metadata$8, RealityViewerFactory, RealityService, RealityServiceProvider, _a$8, _b$8, _c$5, _d$5, _e$5, _f$4, _g$3, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __extends$6, __decorate$12, __metadata$12, VuforiaServiceProvider, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$12, _b$12, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, ArgonConfigurationManager, initReality, _a, _b, _c, _d, _e, _f, _g, ArgonSystem_1, _h, _j, _k, _l, _m, _o, _p, _q, _r;
 
     function alwaysValid() {
         return true;
@@ -20097,7 +20097,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
             uievent.bubbles = false;
             var el = target;
             do {
-                el.dispatchEvent(new MouseEvent('pointerenter', uievent));
+                el.dispatchEvent(new PointerEvent('pointerenter', uievent));
                 el = el['parentElement'];
             } while (el);
             uievent.bubbles = bubbles;
@@ -20111,7 +20111,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
             uievent.bubbles = false;
             var el = target;
             do {
-                el.dispatchEvent(new MouseEvent('pointerleave', uievent));
+                el.dispatchEvent(new PointerEvent('pointerleave', uievent));
                 el = el['parentElement'];
             } while (el);
         };
@@ -20259,7 +20259,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
             // if the target element is the view element or an element of similar size,
             // attempt to forward the event (webvr-polyfill makes the canvas 10px larger
             // in each dimension due to an issue with the iOS safari browser, which is why
-            // forward the event for any target that matches the viewport size up to 15px 
+            // we forward the event for any target that matches the viewport size up to 15px 
             // larger in either dimension)
             if (e.target === viewportService.element || Math.abs(width - viewportService.element.clientWidth) < 15 && Math.abs(height - viewportService.element.clientHeight) < 15) {
                 var boundingRect = viewportService.element.getBoundingClientRect();
@@ -20267,14 +20267,12 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     forwardEvent = false;
                     eventData.event = e;
                     viewportService.uiEvent.raiseEvent(eventData);
-                    // allow the containing element to receive the current event 
-                    // for local reality viewers
                     if (!forwardEvent) {
-                        e.stopImmediatePropagation();
+                        e.stopPropagation();
                         return;
                     }
                 }
-                e.preventDefault();
+                if (e.type === 'touchstart') e.preventDefault();
                 var touches = cloneTouches(e.touches, boundingRect);
                 var changedTouches = cloneTouches(e.changedTouches, boundingRect);
                 var targetTouches = cloneTouches(e.targetTouches, boundingRect);
@@ -20285,6 +20283,8 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 uievent.cancelable = e.cancelable;
                 uievent.which = e.which;
                 uievent.detail = e.detail;
+                uievent.composed = e['composed'];
+                uievent.timeStamp = e.timeStamp;
                 // Mouse Event
                 uievent.altKey = e.altKey;
                 uievent.ctrlKey = e.ctrlKey;
@@ -20311,6 +20311,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 uievent.targetTouches = targetTouches;
                 // Pointer Events
                 uievent.pointerId = e.pointerId;
+                uievent.pointerType = e.pointerType;
                 uievent.width = e.width;
                 uievent.height = e.height;
                 uievent.pressure = e.pressure;
@@ -20323,11 +20324,11 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
             }
         };
         var forwardedEvent = ['wheel', 'click', 'dblclick', 'contextmenu'];
-        if (FeatureDetection.supportsPointerEvents()) {
-            forwardedEvent.push('pointerenter', 'pointerleave', 'pointerdown', 'pointermove', 'pointerup', 'pointercancel');
-        } else {
-            forwardedEvent.push('mouseenter', 'mouseleave', 'mousedown', 'mousemove', 'mouseup', 'touchstart', 'touchend', 'touchmove', 'touchcancel');
-        }
+        // if (FeatureDetection.supportsPointerEvents()) {
+        forwardedEvent.push('pointerenter', 'pointerleave', 'pointerdown', 'pointermove', 'pointerup', 'pointercancel');
+        // } else {
+        forwardedEvent.push('mouseenter', 'mouseleave', 'mousedown', 'mousemove', 'mouseup', 'touchstart', 'touchend', 'touchmove', 'touchcancel');
+        // }
         forwardedEvent.forEach(function (type) {
             viewportService.element.addEventListener(type, handleEvent, false);
         });
@@ -20699,7 +20700,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
         }, function (_b3) {
             cesium_Source_Core_ExtrapolationType_js = _b3.default;
         }, function (_e3) {
-            FeatureDetection = _e3.default;
+            cesium_Source_Core_FeatureDetection_js = _e3.default;
         }, function (_c3) {
             cesium_Source_Core_GeographicProjection_js = _c3.default;
         }, function (_f2) {
@@ -21332,7 +21333,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 EntityCollection: EntityCollection,
                 Event: CesiumEvent,
                 ExtrapolationType: cesium_Source_Core_ExtrapolationType_js,
-                FeatureDetection: FeatureDetection,
+                FeatureDetection: cesium_Source_Core_FeatureDetection_js,
                 GeographicProjection: cesium_Source_Core_GeographicProjection_js,
                 HermitePolynomialApproximation: cesium_Source_Core_HermitePolynomialApproximation_js,
                 JulianDate: JulianDate,
@@ -21871,7 +21872,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 return id;
             });
 
-            _export('version', version = "1.1.4");
+            _export('version', version = "1.1.5");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
