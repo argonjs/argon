@@ -179,7 +179,7 @@ export class SessionPort {
     public whenConnected() : Promise<void> {
         return new Promise<void>((resolve, reject)=>{
             if (this.isConnected) resolve();
-            let remove = this.connectEvent.addEventListener(()=>{
+            let remove = this._connectEvent.addEventListener(()=>{
                 remove();
                 resolve();
             })
