@@ -50,18 +50,20 @@ export declare class SessionPort {
      */
     messagePort: MessagePortLike;
     /**
-     * Describes the configuration of the connected session.
-     */
-    info: Configuration;
-    /**
      * If true, don't raise an error when receiving a message for an unknown topic
      */
     suppressErrorOnUnknownTopic: boolean;
     /**
+     * Describes the configuration of the connected session.
+     */
+    readonly info: Configuration;
+    private _info;
+    /**
      * The version of argon.js which is used by the connecting session.
      * This property is an empty array until the session connects.
      */
-    version: number[];
+    readonly version: number[];
+    private _version;
     static OPEN: string;
     static CLOSE: string;
     static ERROR: string;
@@ -73,6 +75,7 @@ export declare class SessionPort {
      * Check if a protocol is supported by this session.
      */
     supportsProtocol(name: string, versions?: number | number[]): boolean;
+    whenConnected(): Promise<void>;
     /**
      * Establish a connection to another [[SessionPort]] via the provided [[MessagePort]] instance.
      * @param messagePort the message port to post and receive messages.

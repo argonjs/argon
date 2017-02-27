@@ -17,6 +17,7 @@ export declare class SuggestedFrameState {
 export declare class DeviceService {
     private sessionService;
     private contextService;
+    private viewService;
     suggestedFrameState?: SuggestedFrameState;
     /**
      * An entity representing the local origin, defining an
@@ -36,7 +37,7 @@ export declare class DeviceService {
     readonly geoVerticalAccuracy: number | undefined;
     private _getEntityPositionInReferenceFrame;
     private _scratchCartesian;
-    constructor(sessionService: SessionService, contextService: ContextService);
+    constructor(sessionService: SessionService, contextService: ContextService, viewService: ViewService);
     private _defaultFrameState;
     private _onNextFrameState(suggestedFrameState?);
     /**
