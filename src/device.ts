@@ -369,7 +369,7 @@ export class DeviceService {
 
         const screenOrientationDegrees = (screen['orientation'] && screen['orientation'].angle) || window.orientation || 0;
 
-        const displayOrientation = 
+        const screenOrientation = 
             Quaternion.fromAxisAngle(
                 Cartesian3.UNIT_Z, 
                 - screenOrientationDegrees * CesiumMath.RADIANS_PER_DEGREE, 
@@ -387,7 +387,7 @@ export class DeviceService {
         (deviceUser.orientation as ConstantProperty).setValue(
             Quaternion.multiply(
                 deviceOrientation, 
-                displayOrientation, 
+                screenOrientation, 
                 this._scratchQuaternion
             )
         );
