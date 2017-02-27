@@ -58,7 +58,7 @@ function getEventSynthesizier() {
         (<any>uievent).bubbles = false;
         let el = target;
         do { 
-            el.dispatchEvent(new MouseEvent('pointerenter',uievent));
+            el.dispatchEvent(new PointerEvent('pointerenter',uievent));
             el = el['parentElement'];
         } while (el)
         (<any>uievent).bubbles = bubbles;
@@ -73,7 +73,7 @@ function getEventSynthesizier() {
         (<any>uievent).bubbles = false;
         let el = target;
         do { 
-            el.dispatchEvent(new MouseEvent('pointerleave',uievent));
+            el.dispatchEvent(new PointerEvent('pointerleave',uievent));
             el = el['parentElement'];
         } while (el)
     }
