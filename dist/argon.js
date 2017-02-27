@@ -21872,7 +21872,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 return id;
             });
 
-            _export('version', version = "1.1.5");
+            _export('version', version = "1.1.6");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -22020,7 +22020,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     var _this = this;
                     return new Promise(function (resolve, reject) {
                         if (_this.isConnected) resolve();
-                        var remove = _this.connectEvent.addEventListener(function () {
+                        var remove = _this._connectEvent.addEventListener(function () {
                             remove();
                             resolve();
                         });
