@@ -37,6 +37,16 @@ export class EmptyRealityViewer extends RealityViewer {
 
     public type = 'empty';
 
+    private _aggregator:CameraEventAggregator|undefined;
+    private _moveFlags = {
+        moveForward : false,
+        moveBackward : false,
+        moveUp : false,
+        moveDown : false,
+        moveLeft : false,
+        moveRight : false
+    }
+
     constructor(
         private sessionService: SessionService,
         private contextService: ContextService,
@@ -44,6 +54,59 @@ export class EmptyRealityViewer extends RealityViewer {
         private deviceService: DeviceService,
         public uri:string) {
         super(uri);
+
+        function getFlagForKeyCode(keyCode) {
+            switch (keyCode) {
+            case 'W'.charCodeAt(0):
+                return 'moveForward';
+            case 'S'.charCodeAt(0):
+                return 'moveBackward';
+            case 'E'.charCodeAt(0):
+                return 'moveUp';
+            case 'R'.charCodeAt(0):
+                return 'moveDown';
+            case 'D'.charCodeAt(0):
+                return 'moveRight';
+            case 'A'.charCodeAt(0):
+                return 'moveLeft';
+            default:
+                return undefined;
+            }
+        }
+        
+        const keydownListener = (e) => {
+            var flagName = getFlagForKeyCode(e.keyCode);
+            if (typeof flagName !== 'undefined') {
+                this._moveFlags[flagName] = true;
+            }
+        }
+
+        const keyupListener = (e) => {
+            var flagName = getFlagForKeyCode(e.keyCode);
+            if (typeof flagName !== 'undefined') {
+                this._moveFlags[flagName] = false;
+            }
+        }
+
+        if (typeof document !== 'undefined') {
+            this.presentChangeEvent.addEventListener(()=>{
+                if (this.isPresenting) {
+                    if (!this._aggregator && this.viewService.element) {
+                        this._aggregator = new CameraEventAggregator(<any>this.viewService.element);
+                        document.addEventListener('keydown', keydownListener, false);
+                        document && document.addEventListener('keyup', keyupListener, false);
+                    }
+                } else {
+                    this._aggregator && this._aggregator.destroy();
+                    this._aggregator = undefined;
+                    document && document.removeEventListener('keydown', keydownListener);
+                    document && document.removeEventListener('keyup', keyupListener);
+                    for (const k in this._moveFlags) {
+                        this._moveFlags[k] = false;
+                    }
+                }
+            });
+        }
     }
 
     public load(): void {
@@ -56,61 +119,6 @@ export class EmptyRealityViewer extends RealityViewer {
         internalSession.suppressErrorOnUnknownTopic = true;
 
         internalSession.connectEvent.addEventListener(() => {
-
-            const aggregator = this.viewService.element ? new CameraEventAggregator(<any>this.viewService.element) : undefined;
-
-            var flags = {
-                moveForward : false,
-                moveBackward : false,
-                moveUp : false,
-                moveDown : false,
-                moveLeft : false,
-                moveRight : false
-            };
-
-            function getFlagForKeyCode(keyCode) {
-                switch (keyCode) {
-                case 'W'.charCodeAt(0):
-                    return 'moveForward';
-                case 'S'.charCodeAt(0):
-                    return 'moveBackward';
-                case 'E'.charCodeAt(0):
-                    return 'moveUp';
-                case 'R'.charCodeAt(0):
-                    return 'moveDown';
-                case 'D'.charCodeAt(0):
-                    return 'moveRight';
-                case 'A'.charCodeAt(0):
-                    return 'moveLeft';
-                default:
-                    return undefined;
-                }
-            }
-            
-            const keydownListener = function(e) {
-                var flagName = getFlagForKeyCode(e.keyCode);
-                if (typeof flagName !== 'undefined') {
-                    flags[flagName] = true;
-                }
-            }
-
-            const keyupListener = function(e) {
-                var flagName = getFlagForKeyCode(e.keyCode);
-                if (typeof flagName !== 'undefined') {
-                    flags[flagName] = false;
-                }
-            }
-
-            if (typeof document !== 'undefined') {
-                document.addEventListener('keydown', keydownListener, false);
-                document && document.addEventListener('keyup', keyupListener, false);
-
-                internalSession.closeEvent.addEventListener(()=>{
-                    aggregator && aggregator.destroy();
-                    document && document.removeEventListener('keydown', keydownListener);
-                    document && document.removeEventListener('keyup', keyupListener);
-                });
-            }
 
             const scratchQuaternion = new Quaternion;
             const scratchQuaternionDragYaw = new Quaternion;
@@ -148,6 +156,9 @@ export class EmptyRealityViewer extends RealityViewer {
                 if (internalSession.isClosed) return;
 
                 this.deviceService.requestFrameState().then(handleFrameState);
+                
+                const aggregator = this._aggregator;
+                const flags = this._moveFlags;
 
                 if (!this.isPresenting) {
                     aggregator && aggregator.reset();
