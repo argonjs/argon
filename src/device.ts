@@ -149,15 +149,13 @@ export class DeviceService {
     private _onNextFrameState(suggestedFrameState?:SuggestedFrameState) {
         if (!suggestedFrameState) { // for backwards compatability with manager v0
             const contextSerializedFrameState = this.contextService.serializedFrameState;
-            if (contextSerializedFrameState.viewport.width === 0 || contextSerializedFrameState.viewport.height === 0) {
-                const width = this.viewService.element.clientWidth;
-                const height = this.viewService.element.clientHeight;
-                contextSerializedFrameState.viewport.width = width;
-                contextSerializedFrameState.viewport.height = height;
-                contextSerializedFrameState.subviews[0].viewport.width = width;
-                contextSerializedFrameState.subviews[0].viewport.height = height;
-            }
-
+            const width = this.viewService.element.clientWidth;
+            const height = this.viewService.element.clientHeight;
+            contextSerializedFrameState.viewport.width = width;
+            contextSerializedFrameState.viewport.height = height;
+            contextSerializedFrameState.subviews[0].viewport.width = width;
+            contextSerializedFrameState.subviews[0].viewport.height = height;
+        
             const deviceStage = this.stage;
             const deviceLocalOrigin = this.localOrigin;
             const position = Cartesian3.fromElements(0, 0, -AVERAGE_EYE_HEIGHT, this._scratchCartesian); 
