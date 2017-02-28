@@ -26,7 +26,7 @@ describe('Argon', () => {
             expect(app.vuforia).to.exist;
         });
     })
-
+/*
     describe('new ArgonSystem()', () => {
         it('should create an ArgonSystem with Role=Role.MANAGER', () => {
             const manager = Argon.init(null, { role: Argon.Role.REALITY_MANAGER });
@@ -601,5 +601,5 @@ describe('Utils', () => {
             expect(CesiumMath.equalsEpsilon(frustum.yOffset, result.yOffset, CesiumMath.EPSILON10)).to.be.true;
         });
     })
-
+*/
 })
