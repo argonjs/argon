@@ -1,4 +1,7 @@
 var Mocha = require('mocha')
+// global.SystemJS = require('systemjs')
+// require('../jspm.config')
+// require('../jspm.browser')
 
 var runner = new Mocha({
   ui: 'bdd',
