@@ -14245,7 +14245,7 @@ define("5f", ["1d", "2d", "16", "5", "7", "2e", "57", "5c", "5d", "d", "24", "36
 $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', '14', '15', '18', '1c', '20', '19', '16', '5', '7', '2e', '1a', '1b', '8', '3b', '3e', '2c', '2f', '17', 'd', '23', '24', '30', '31', '32', '1f', '27', '25', '37', '1e', '38', '39', '3a', 'e', 'f', '26', '55', '5f', '@empty'], function (_export, _context) {
     "use strict";
 
-    var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, cesium_Source_Core_Clock_js, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, createGuid, cesium_Source_Core_defaultValue_js, defined, cesium_Source_Core_DeveloperError_js, cesium_Source_Core_Ellipsoid_js, Entity, EntityCollection, CesiumEvent, cesium_Source_Core_ExtrapolationType_js, cesium_Source_Core_FeatureDetection_js, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, ReferenceEntity, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, DI, after, cesiumImports, __extends$1, AVERAGE_EYE_HEIGHT, Role, Configuration, Viewport, NormalizedViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, synthesizeEvent, cloneTouch, cloneTouches, getEntityPosition, getEntityOrientation, _scratchFramesArray, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, lastTime, requestAnimationFrame$1, version, __extends, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, WKWebViewConnectService, _a$1, _b$1, __decorate$4, __metadata$4, EntityPose, PoseStatus, ContextService, ContextServiceProvider, _a$4, _b$4, _c$3, _d$3, _e$3, _f$2, __decorate$6, __metadata$6, FocusService, FocusServiceProvider, _a$6, _b$6, __decorate$7, __metadata$7, VisibilityService, VisibilityServiceProvider, _a$7, _b$7, __decorate$5, __metadata$5, Subview, ViewportMode, ViewElement, ViewService, ViewServiceProvider, viewportMetaTag, argonMetaTag, style, sheet, _a$5, _b$5, _c$4, _d$4, _e$4, _f$3, __extends$2, __decorate$3, __metadata$3, SuggestedFrameState, DeviceService, currentVRDisplay, DeviceServiceProvider, DOMDeviceServiceProvider, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, RealityViewer, __extends$3, __decorate$9, __metadata$9, EmptyRealityViewer, _a$9, _b$9, _c$6, _d$6, __extends$4, __decorate$10, __metadata$10, LiveRealityViewer, _a$10, _b$10, _c$7, __extends$5, __decorate$11, __metadata$11, HostedRealityViewer, _a$11, _b$11, __decorate$8, __metadata$8, RealityViewerFactory, RealityService, RealityServiceProvider, _a$8, _b$8, _c$5, _d$5, _e$5, _f$4, _g$3, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __extends$6, __decorate$12, __metadata$12, VuforiaServiceProvider, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$12, _b$12, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, ArgonConfigurationManager, initReality, _a, _b, _c, _d, _e, _f, _g, ArgonSystem_1, _h, _j, _k, _l, _m, _o, _p, _q, _r;
+    var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, cesium_Source_Core_Clock_js, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, createGuid, cesium_Source_Core_defaultValue_js, defined, cesium_Source_Core_DeveloperError_js, cesium_Source_Core_Ellipsoid_js, Entity, EntityCollection, CesiumEvent, cesium_Source_Core_ExtrapolationType_js, cesium_Source_Core_FeatureDetection_js, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, ReferenceEntity, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, DI, after, cesiumImports, __extends$1, AVERAGE_EYE_HEIGHT, Role, Configuration, Viewport, NormalizedViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, synthesizeEvent, cloneTouch, cloneTouches, getEntityPosition, getEntityOrientation, _scratchFramesArray, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, lastTime, requestAnimationFrame$1, version, __extends, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, WKWebViewConnectService, _a$1, _b$1, __decorate$4, __metadata$4, EntityPose, PoseStatus, ContextService, ContextServiceProvider, _a$4, _b$4, _c$3, _d$3, _e$3, _f$2, __decorate$6, __metadata$6, FocusService, FocusServiceProvider, _a$6, _b$6, __decorate$7, __metadata$7, VisibilityService, VisibilityServiceProvider, _a$7, _b$7, __decorate$5, __metadata$5, Subview, ViewportMode, ViewElement, ViewService, ViewServiceProvider, viewportMetaTag, argonMetaTag, style, sheet, _a$5, _b$5, _c$4, _d$4, _e$4, _f$3, __extends$2, __decorate$3, __metadata$3, SuggestedFrameState, DeviceService, currentVRDisplay, DeviceServiceProvider, DOMDeviceServiceProvider, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, RealityViewer, __extends$3, __decorate$9, __metadata$9, EmptyRealityViewer, _a$9, _b$9, _c$6, _d$6, __extends$4, __decorate$10, __metadata$10, LiveRealityViewer, _a$10, _b$10, _c$7, __extends$5, __decorate$11, __metadata$11, HostedRealityViewer, _a$11, _b$11, __decorate$8, __metadata$8, RealityViewerFactory, RealityService, RealityServiceProvider, _a$8, _b$8, _c$5, _d$5, _e$5, _f$4, _g$2, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __extends$6, __decorate$12, __metadata$12, VuforiaServiceProvider, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$12, _b$12, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, ArgonConfigurationManager, initReality, _a, _b, _c, _d, _e, _f, _g, ArgonSystem_1, _h, _j, _k, _l, _m, _o, _p, _q, _r;
 
     function alwaysValid() {
         return true;
@@ -14707,7 +14707,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
             // in each dimension due to an issue with the iOS safari browser, which is why
             // we forward the event for any target that matches the viewport size up to 15px 
             // larger in either dimension)
-            if (e.target === viewService.element || Math.abs(width - viewService.element.clientWidth) < 15 && Math.abs(height - viewService.element.clientHeight) < 15) {
+            if (e.target === viewService.element || width && Math.abs(width - viewService.element.clientWidth) < 15 && height && Math.abs(height - viewService.element.clientHeight) < 15) {
                 // If we have a uievent listener attached, then make sure the
                 // app explictily asks for events to be forwarded. Otherwise,
                 // automatically forward the uievents 
@@ -16943,10 +16943,23 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
             _export('EntityPose', EntityPose = function () {
                 function EntityPose(context, entityOrId, referenceFrameId) {
                     this.context = context;
+                    /**
+                     * The status of this pose, as a bitmask.
+                     *
+                     * If the current pose is known, then the KNOWN bit is 1.
+                     * If the current pose is not known, then the KNOWN bit is 0.
+                     *
+                     * If the previous pose was known and the current pose is unknown,
+                     * then the LOST bit is 1.
+                     * If the previous pose was unknown and the current pose status is known,
+                     * then the FOUND bit is 1.
+                     * In all other cases, both the LOST bit and the FOUND bit are 0.
+                     */
                     this.status = 0;
                     this.position = new Cartesian3();
                     this.orientation = new Quaternion();
                     this.time = new JulianDate(0, 0);
+                    this._previousStatus = 0;
                     if (typeof entityOrId === 'string') {
                         var entity = this.context.entities.getById(entityOrId);
                         if (!entity) entity = new ReferenceEntity(context.entities, entityOrId);
@@ -16993,26 +17006,26 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                         time = this.context.time;
                     }
                     JulianDate.clone(time, this.time);
+                    if (!JulianDate.equals(this._previousTime, time)) {
+                        this._previousStatus = this.status;
+                        this._previousTime = JulianDate.clone(time, this._previousTime);
+                    }
                     var entity = this.entity;
                     var referenceFrame = this.referenceFrame;
-                    if (!entity || !defined(referenceFrame)) {
-                        this.status = 0;
-                        return;
-                    }
                     var position = getEntityPositionInReferenceFrame(entity, time, referenceFrame, this.position);
                     var orientation = getEntityOrientationInReferenceFrame(entity, time, referenceFrame, this.orientation);
                     var hasPose = position && orientation;
-                    var poseStatus = 0;
-                    var previousStatus = this.status;
+                    var currentStatus = 0;
+                    var previousStatus = this._previousStatus;
                     if (hasPose) {
-                        poseStatus |= PoseStatus.KNOWN;
+                        currentStatus |= PoseStatus.KNOWN;
                     }
                     if (hasPose && !(previousStatus & PoseStatus.KNOWN)) {
-                        poseStatus |= PoseStatus.FOUND;
+                        currentStatus |= PoseStatus.FOUND;
                     } else if (!hasPose && previousStatus & PoseStatus.KNOWN) {
-                        poseStatus |= PoseStatus.LOST;
+                        currentStatus |= PoseStatus.LOST;
                     }
-                    this.status = poseStatus;
+                    this.status = currentStatus;
                 };
                 return EntityPose;
             }());
@@ -17504,7 +17517,6 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
             __decorate$4([deprecated$1('defaultReferenceFrame'), __metadata$4("design:type", Function), __metadata$4("design:paramtypes", [typeof (_b$4 = typeof Entity !== "undefined" && Entity) === "function" && _b$4 || Object]), __metadata$4("design:returntype", void 0)], ContextService.prototype, "setDefaultReferenceFrame", null);
             __decorate$4([deprecated$1('defaultReferenceFrame'), __metadata$4("design:type", Function), __metadata$4("design:paramtypes", []), __metadata$4("design:returntype", typeof (_c$3 = typeof Entity !== "undefined" && Entity) === "function" && _c$3 || Object)], ContextService.prototype, "getDefaultReferenceFrame", null);
             __decorate$4([deprecated$1('subscribe'), __metadata$4("design:type", Function), __metadata$4("design:paramtypes", [String]), __metadata$4("design:returntype", typeof (_d$3 = typeof Entity !== "undefined" && Entity) === "function" && _d$3 || Object)], ContextService.prototype, "subscribeToEntityById", null);
-            __decorate$4([deprecated$1('createEntityPose'), __metadata$4("design:type", Function), __metadata$4("design:paramtypes", [Object, Object]), __metadata$4("design:returntype", EntityPose)], ContextService.prototype, "getEntityPose", null);
             _export('ContextService', ContextService = __decorate$4([autoinject(), __metadata$4("design:paramtypes", [typeof (_e$3 = typeof SessionService !== "undefined" && SessionService) === "function" && _e$3 || Object])], ContextService));
             _export('ContextServiceProvider', ContextServiceProvider = function () {
                 function ContextServiceProvider(sessionService, contextService) {
@@ -18057,7 +18069,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 };
                 /**
                  * Publish the viewport being used in [[PresentationMode.EMBEDDED]]
-                 * so that other apps can use the same viewport
+                 * so that the manager knows what our embedded viewport is
                  */
                 ViewService.prototype.publishEmbeddedViewport = function (viewport) {
                     if (this.sessionService.manager.isConnected && this.sessionService.manager.version[0] >= 1) this.sessionService.manager.send('ar.view.embeddedViewport', { viewport: viewport });
@@ -18487,11 +18499,11 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                         return;
                     }
                     var screenOrientationDegrees = screen['orientation'] && screen['orientation'].angle || window.orientation || 0;
-                    var displayOrientation = Quaternion.fromAxisAngle(Cartesian3.UNIT_Z, -screenOrientationDegrees * CesiumMath.RADIANS_PER_DEGREE, this._scratchQuaternion);
+                    var screenOrientation = Quaternion.fromAxisAngle(Cartesian3.UNIT_Z, -screenOrientationDegrees * CesiumMath.RADIANS_PER_DEGREE, this._scratchQuaternion);
                     if (!deviceUser.position) deviceUser.position = new ConstantPositionProperty();
                     if (!deviceUser.orientation) deviceUser.orientation = new ConstantProperty();
                     deviceUser.position.setValue(Cartesian3.ZERO, deviceLocalOrigin);
-                    deviceUser.orientation.setValue(Quaternion.multiply(deviceOrientation, displayOrientation, this._scratchQuaternion));
+                    deviceUser.orientation.setValue(Quaternion.multiply(deviceOrientation, screenOrientation, this._scratchQuaternion));
                     deviceUser['meta'] = deviceUser['meta'] || {};
                     deviceUser['meta'].geoHeadingAccuracy = this._deviceOrientationHeadingAccuracy;
                 };
@@ -18522,7 +18534,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                                 alphaOffset -= headingDrift;
                             }
                         }
-                        if (!defined(alphaOffset)) return;
+                        if (!defined(alphaOffset) || !defined(e.alpha) || !defined(e.beta) || !defined(e.gamma)) return;
                         var alpha = CesiumMath.RADIANS_PER_DEGREE * (e.alpha + alphaOffset || -webkitCompassHeading || 0);
                         var beta = CesiumMath.RADIANS_PER_DEGREE * e.beta;
                         var gamma = CesiumMath.RADIANS_PER_DEGREE * e.gamma;
@@ -19882,7 +19894,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 return RealityServiceProvider;
             }());
 
-            _export('RealityServiceProvider', RealityServiceProvider = __decorate$8([autoinject, __metadata$8("design:paramtypes", [typeof (_c$5 = typeof SessionService !== "undefined" && SessionService) === "function" && _c$5 || Object, RealityService, typeof (_d$5 = typeof ContextService !== "undefined" && ContextService) === "function" && _d$5 || Object, typeof (_e$5 = typeof ViewServiceProvider !== "undefined" && ViewServiceProvider) === "function" && _e$5 || Object, typeof (_f$4 = typeof VisibilityServiceProvider !== "undefined" && VisibilityServiceProvider) === "function" && _f$4 || Object, typeof (_g$3 = typeof FocusServiceProvider !== "undefined" && FocusServiceProvider) === "function" && _g$3 || Object, RealityViewerFactory])], RealityServiceProvider));
+            _export('RealityServiceProvider', RealityServiceProvider = __decorate$8([autoinject, __metadata$8("design:paramtypes", [typeof (_c$5 = typeof SessionService !== "undefined" && SessionService) === "function" && _c$5 || Object, RealityService, typeof (_d$5 = typeof ContextService !== "undefined" && ContextService) === "function" && _d$5 || Object, typeof (_e$5 = typeof ViewServiceProvider !== "undefined" && ViewServiceProvider) === "function" && _e$5 || Object, typeof (_f$4 = typeof VisibilityServiceProvider !== "undefined" && VisibilityServiceProvider) === "function" && _f$4 || Object, typeof (_g$2 = typeof FocusServiceProvider !== "undefined" && FocusServiceProvider) === "function" && _g$2 || Object, RealityViewerFactory])], RealityServiceProvider));
 
             __decorate$2 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
                 var c = arguments.length,
