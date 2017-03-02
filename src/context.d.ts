@@ -15,6 +15,18 @@ export declare class EntityPose {
     private _referenceFrame;
     readonly entity: Entity;
     readonly referenceFrame: Entity | ReferenceFrame;
+    /**
+     * The status of this pose, as a bitmask.
+     *
+     * If the current pose is known, then the KNOWN bit is 1.
+     * If the current pose is not known, then the KNOWN bit is 0.
+     *
+     * If the previous pose was known and the current pose is unknown,
+     * then the LOST bit is 1.
+     * If the previous pose was unknown and the current pose status is known,
+     * then the FOUND bit is 1.
+     * In all other cases, both the LOST bit and the FOUND bit are 0.
+     */
     status: PoseStatus;
     /**
      * alias for status
@@ -23,6 +35,8 @@ export declare class EntityPose {
     position: Cartesian3;
     orientation: Quaternion;
     time: JulianDate;
+    private _previousTime;
+    private _previousStatus;
     update(time?: JulianDate): void;
 }
 /**

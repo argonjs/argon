@@ -98,7 +98,7 @@ export declare class ViewService {
     private _updateViewportMode(mode);
     /**
      * Publish the viewport being used in [[PresentationMode.EMBEDDED]]
-     * so that other apps can use the same viewport
+     * so that the manager knows what our embedded viewport is
      */
     publishEmbeddedViewport(viewport?: Viewport): void;
     private _updateViewport(viewport);

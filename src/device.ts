@@ -437,7 +437,11 @@ export class DeviceService {
                 }
             }
 
-            if (!defined(alphaOffset)) return;
+            if (!defined(alphaOffset) || 
+                !defined(e.alpha) || 
+                !defined(e.beta) || 
+                !defined(e.gamma)) 
+                return;
 
             const alpha = CesiumMath.RADIANS_PER_DEGREE * (e.alpha + alphaOffset || -webkitCompassHeading || 0);
             const beta = CesiumMath.RADIANS_PER_DEGREE * e.beta;
