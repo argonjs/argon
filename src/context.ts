@@ -71,6 +71,18 @@ export class EntityPose {
         return this._referenceFrame;
     }
 
+    /**
+     * The status of this pose, as a bitmask.
+     * 
+     * If the current pose is known, then the KNOWN bit is 1.
+     * If the current pose is not known, then the KNOWN bit is 0. 
+     * 
+     * If the previous pose was known and the current pose is unknown, 
+     * then the LOST bit is 1. 
+     * If the previous pose was unknown and the current pose status is known, 
+     * then the FOUND bit is 1.
+     * In all other cases, both the LOST bit and the FOUND bit are 0. 
+     */
     status:PoseStatus = 0;
 
     /**
@@ -82,17 +94,21 @@ export class EntityPose {
     orientation = new Quaternion;
     time = new JulianDate(0,0)
 
+    
+    private _previousTime:JulianDate;
+    private _previousStatus:PoseStatus = 0;
+
     update(time=this.context.time) {
 
         JulianDate.clone(time, this.time);
 
+        if (!JulianDate.equals(this._previousTime, time)) {
+            this._previousStatus = this.status;
+            this._previousTime = JulianDate.clone(time, this._previousTime)
+        }
+
         const entity = this.entity;
         const referenceFrame = this.referenceFrame;
-
-        if (!entity || !defined(referenceFrame)) {
-            this.status = 0;
-            return;
-        }
         
         let position = getEntityPositionInReferenceFrame(
             entity,
@@ -110,20 +126,20 @@ export class EntityPose {
 
         const hasPose = position && orientation;
 
-        let poseStatus: PoseStatus = 0;
-        const previousStatus = this.status;
+        let currentStatus: PoseStatus = 0;
+        const previousStatus = this._previousStatus;
 
         if (hasPose) {
-            poseStatus |= PoseStatus.KNOWN;
+            currentStatus |= PoseStatus.KNOWN;
         }
 
         if (hasPose && !(previousStatus & PoseStatus.KNOWN)) {
-            poseStatus |= PoseStatus.FOUND;
+            currentStatus |= PoseStatus.FOUND;
         } else if (!hasPose && previousStatus & PoseStatus.KNOWN) {
-            poseStatus |= PoseStatus.LOST;
+            currentStatus |= PoseStatus.LOST;
         }
 
-        this.status = poseStatus;
+        this.status = currentStatus;
     }
 }
 
@@ -480,7 +496,6 @@ export class ContextService {
      * @param entity - The entity whose state is to be queried.
      * @param referenceFrame - The intended reference frame. Defaults to `this.defaultReferenceFrame`.
      */
-    @deprecated('createEntityPose')
     public getEntityPose(entityOrId: Entity|string, referenceFrameOrId: string | ReferenceFrame | Entity=this.defaultReferenceFrame): EntityPose {
         const key = _stringFromReferenceFrame(entityOrId) + '@' + _stringFromReferenceFrame(referenceFrameOrId);
         
