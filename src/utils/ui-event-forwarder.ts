@@ -52,8 +52,8 @@ export default function createEventForwarder(this:void, viewService:ViewService,
         // we forward the event for any target that matches the viewport size up to 15px 
         // larger in either dimension)
         if (e.target === viewService.element ||
-            (Math.abs(width - viewService.element.clientWidth) < 15 &&
-            Math.abs(height - viewService.element.clientHeight) < 15)) {
+            (width && Math.abs(width - viewService.element.clientWidth) < 15 &&
+            height && Math.abs(height - viewService.element.clientHeight) < 15)) {
 
             // If we have a uievent listener attached, then make sure the
             // app explictily asks for events to be forwarded. Otherwise,
