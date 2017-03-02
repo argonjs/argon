@@ -36,6 +36,7 @@
       "stream": "npm:jspm-nodelibs-stream@^0.2.0",
       "string_decoder": "npm:jspm-nodelibs-string_decoder@^0.2.0",
       "ts": "github:frankwallis/plugin-typescript@^5.3.3",
+      "typescript": "npm:typescript@^2.2.1",
       "util": "npm:jspm-nodelibs-util@^0.2.0",
       "vm": "npm:jspm-nodelibs-vm@^0.2.0"
     },
@@ -192,6 +193,20 @@
         "dependencies": {
           "source-map-support": "*"
         }
+      },
+      "npm:typescript@2.2.1": {
+        "browser": {},
+        "map": {
+          "buffer": "@empty",
+          "child_process": "@empty",
+          "fs": "@empty",
+          "path": "@empty",
+          "process": "@empty",
+          "readline": "@empty"
+        },
+        "dependencies": {
+          "source-map-support": "*"
+        }
       }
     }
   },
@@ -224,8 +239,8 @@
     "jspm": "^0.17.0-beta.29",
     "node-static": "^0.7.7",
     "tsconfig-glob": "^0.2.1",
-    "typedoc": "^0.5.5",
-    "typescript": "^2.1.4",
+    "typedoc": "^0.5.7",
+    "typescript": "^2.2.1",
     "typescript-formatter": "^2.3.0",
     "uglify-js": "^2.7.5"
   }
