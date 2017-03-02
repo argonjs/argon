@@ -91,16 +91,17 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="sessionport.html#_connectevent" class="tsd-kind-icon">_connect<wbr>Event</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="sessionport.html#_info" class="tsd-kind-icon">_info</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="sessionport.html#_isclosed" class="tsd-kind-icon">_is<wbr>Closed</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="sessionport.html#_isconnected" class="tsd-kind-icon">_is<wbr>Connected</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="sessionport.html#_isopened" class="tsd-kind-icon">_is<wbr>Opened</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="sessionport.html#_version" class="tsd-kind-icon">_version</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="sessionport.html#closeevent" class="tsd-kind-icon">close<wbr>Event</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="sessionport.html#errorevent" class="tsd-kind-icon">error<wbr>Event</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="sessionport.html#info" class="tsd-kind-icon">info</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="sessionport.html#messageport" class="tsd-kind-icon">message<wbr>Port</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="sessionport.html#on" class="tsd-kind-icon">on</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="sessionport.html#suppresserroronunknowntopic" class="tsd-kind-icon">suppress<wbr>Error<wbr>OnUnknown<wbr>Topic</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="sessionport.html#uri" class="tsd-kind-icon">uri</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="sessionport.html#version" class="tsd-kind-icon">version</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="sessionport.html#close" class="tsd-kind-icon">CLOSE</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="sessionport.html#error" class="tsd-kind-icon">ERROR</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="sessionport.html#open" class="tsd-kind-icon">OPEN</a></li>
@@ -110,8 +111,10 @@
 							<h3>Accessors</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="sessionport.html#connectevent" class="tsd-kind-icon">connect<wbr>Event</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="sessionport.html#info" class="tsd-kind-icon">info</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="sessionport.html#isclosed" class="tsd-kind-icon">is<wbr>Closed</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="sessionport.html#isconnected" class="tsd-kind-icon">is<wbr>Connected</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="sessionport.html#version" class="tsd-kind-icon">version</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -123,6 +126,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="sessionport.html#send" class="tsd-kind-icon">send</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="sessionport.html#senderror" class="tsd-kind-icon">send<wbr>Error</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="sessionport.html#supportsprotocol" class="tsd-kind-icon">supports<wbr>Protocol</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="sessionport.html#whenconnected" class="tsd-kind-icon">when<wbr>Connected</a></li>
 							</ul>
 						</section>
 					</div>
@@ -140,7 +144,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L96">src/session.ts:96</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/session.ts#L113">src/session.ts:113</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -162,7 +166,17 @@
 					<div class="tsd-signature tsd-kind-icon">_connect<wbr>Event<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;undefined&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L57">src/session.ts:57</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/session.ts#L57">src/session.ts:57</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="_info" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _info</h3>
+					<div class="tsd-signature tsd-kind-icon">_info<span class="tsd-signature-symbol">:</span> <a href="configuration.html" class="tsd-signature-type">Configuration</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/session.ts#L93">src/session.ts:93</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -172,7 +186,7 @@
 					<div class="tsd-signature tsd-kind-icon">_is<wbr>Closed<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L96">src/session.ts:96</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/session.ts#L113">src/session.ts:113</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -182,7 +196,7 @@
 					<div class="tsd-signature tsd-kind-icon">_is<wbr>Connected<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L95">src/session.ts:95</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/session.ts#L112">src/session.ts:112</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -192,7 +206,17 @@
 					<div class="tsd-signature tsd-kind-icon">_is<wbr>Opened<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L94">src/session.ts:94</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/session.ts#L111">src/session.ts:111</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="_version" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _version</h3>
+					<div class="tsd-signature tsd-kind-icon">_version<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/session.ts#L105">src/session.ts:105</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -202,7 +226,7 @@
 					<div class="tsd-signature tsd-kind-icon">close<wbr>Event<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;undefined&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L62">src/session.ts:62</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/session.ts#L62">src/session.ts:62</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -217,7 +241,7 @@
 					<div class="tsd-signature tsd-kind-icon">error<wbr>Event<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;Error&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L67">src/session.ts:67</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/session.ts#L67">src/session.ts:67</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -227,27 +251,12 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="info" class="tsd-anchor"></a>
-					<h3>info</h3>
-					<div class="tsd-signature tsd-kind-icon">info<span class="tsd-signature-symbol">:</span> <a href="configuration.html" class="tsd-signature-type">Configuration</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L82">src/session.ts:82</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Describes the configuration of the connected session.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="messageport" class="tsd-anchor"></a>
 					<h3>message<wbr>Port</h3>
 					<div class="tsd-signature tsd-kind-icon">message<wbr>Port<span class="tsd-signature-symbol">:</span> <a href="../interfaces/messageportlike.html" class="tsd-signature-type">MessagePortLike</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L77">src/session.ts:77</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/session.ts#L77">src/session.ts:77</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -262,7 +271,7 @@
 					<div class="tsd-signature tsd-kind-icon">on<span class="tsd-signature-symbol">:</span> <a href="../interfaces/messagehandlermap.html" class="tsd-signature-type">MessageHandlerMap</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L72">src/session.ts:72</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/session.ts#L72">src/session.ts:72</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -272,30 +281,29 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="suppresserroronunknowntopic" class="tsd-anchor"></a>
+					<h3>suppress<wbr>Error<wbr>OnUnknown<wbr>Topic</h3>
+					<div class="tsd-signature tsd-kind-icon">suppress<wbr>Error<wbr>OnUnknown<wbr>Topic<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/session.ts#L82">src/session.ts:82</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>If true, don&#39;t raise an error when receiving a message for an unknown topic</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="uri" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagOptional">Optional</span> uri</h3>
 					<div class="tsd-signature tsd-kind-icon">uri<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L98">src/session.ts:98</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/session.ts#L115">src/session.ts:115</a></li>
 						</ul>
 					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="version" class="tsd-anchor"></a>
-					<h3>version</h3>
-					<div class="tsd-signature tsd-kind-icon">version<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L88">src/session.ts:88</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The version of argon.js which is used by the connecting session.
-							This property is an empty array until the session connects.</p>
-						</div>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
 					<a name="close" class="tsd-anchor"></a>
@@ -303,7 +311,7 @@
 					<div class="tsd-signature tsd-kind-icon">CLOSE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;ar.session.close&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L91">src/session.ts:91</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/session.ts#L108">src/session.ts:108</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -313,7 +321,7 @@
 					<div class="tsd-signature tsd-kind-icon">ERROR<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;ar.session.error&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L92">src/session.ts:92</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/session.ts#L109">src/session.ts:109</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -323,7 +331,7 @@
 					<div class="tsd-signature tsd-kind-icon">OPEN<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;ar.session.open&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L90">src/session.ts:90</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/session.ts#L107">src/session.ts:107</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -340,7 +348,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L52">src/session.ts:52</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/session.ts#L52">src/session.ts:52</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -354,6 +362,28 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="info" class="tsd-anchor"></a>
+					<h3>info</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> info<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="configuration.html" class="tsd-signature-type">Configuration</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/session.ts#L87">src/session.ts:87</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Describes the configuration of the connected session.</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <a href="configuration.html" class="tsd-signature-type">Configuration</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
 					<a name="isclosed" class="tsd-anchor"></a>
 					<h3>is<wbr>Closed</h3>
 					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
@@ -363,7 +393,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L300">src/session.ts:300</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/session.ts#L327">src/session.ts:327</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -380,10 +410,33 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L296">src/session.ts:296</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/session.ts#L323">src/session.ts:323</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="version" class="tsd-anchor"></a>
+					<h3>version</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> version<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/session.ts#L99">src/session.ts:99</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The version of argon.js which is used by the connecting session.
+									This property is an empty array until the session connects.</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -400,7 +453,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L284">src/session.ts:284</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/session.ts#L311">src/session.ts:311</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -422,7 +475,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L167">src/session.ts:167</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/session.ts#L194">src/session.ts:194</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -459,7 +512,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L257">src/session.ts:257</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/session.ts#L284">src/session.ts:284</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -498,7 +551,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L224">src/session.ts:224</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/session.ts#L251">src/session.ts:251</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -537,7 +590,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L239">src/session.ts:239</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/session.ts#L266">src/session.ts:266</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -567,7 +620,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/session.ts#L132">src/session.ts:132</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/session.ts#L149">src/session.ts:149</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -585,6 +638,23 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="whenconnected" class="tsd-anchor"></a>
+					<h3>when<wbr>Connected</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">when<wbr>Connected<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/session.ts#L179">src/session.ts:179</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -612,6 +682,9 @@
 								<a href="sessionport.html#_connectevent" class="tsd-kind-icon">_connect<wbr>Event</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="sessionport.html#_info" class="tsd-kind-icon">_info</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="sessionport.html#_isclosed" class="tsd-kind-icon">_is<wbr>Closed</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
@@ -620,14 +693,14 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="sessionport.html#_isopened" class="tsd-kind-icon">_is<wbr>Opened</a>
 							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="sessionport.html#_version" class="tsd-kind-icon">_version</a>
+							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="sessionport.html#closeevent" class="tsd-kind-icon">close<wbr>Event</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="sessionport.html#errorevent" class="tsd-kind-icon">error<wbr>Event</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="sessionport.html#info" class="tsd-kind-icon">info</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="sessionport.html#messageport" class="tsd-kind-icon">message<wbr>Port</a>
@@ -636,10 +709,10 @@
 								<a href="sessionport.html#on" class="tsd-kind-icon">on</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="sessionport.html#uri" class="tsd-kind-icon">uri</a>
+								<a href="sessionport.html#suppresserroronunknowntopic" class="tsd-kind-icon">suppress<wbr>Error<wbr>OnUnknown<wbr>Topic</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="sessionport.html#version" class="tsd-kind-icon">version</a>
+								<a href="sessionport.html#uri" class="tsd-kind-icon">uri</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
 								<a href="sessionport.html#close" class="tsd-kind-icon">CLOSE</a>
@@ -654,10 +727,16 @@
 								<a href="sessionport.html#connectevent" class="tsd-kind-icon">connect<wbr>Event</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="sessionport.html#info" class="tsd-kind-icon">info</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="sessionport.html#isclosed" class="tsd-kind-icon">is<wbr>Closed</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="sessionport.html#isconnected" class="tsd-kind-icon">is<wbr>Connected</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="sessionport.html#version" class="tsd-kind-icon">version</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="sessionport.html#close-1" class="tsd-kind-icon">close</a>
@@ -676,6 +755,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="sessionport.html#supportsprotocol" class="tsd-kind-icon">supports<wbr>Protocol</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="sessionport.html#whenconnected" class="tsd-kind-icon">when<wbr>Connected</a>
 							</li>
 						</ul>
 					</li>

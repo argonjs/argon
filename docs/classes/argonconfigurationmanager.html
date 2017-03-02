@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>FocusService | argon.js</title>
+	<title>ArgonConfigurationManager | argon.js</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -52,28 +52,21 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="focusservice.html">FocusService</a>
+					<a href="argonconfigurationmanager.html">ArgonConfigurationManager</a>
 				</li>
 			</ul>
-			<h1>Class FocusService</h1>
+			<h1>Class ArgonConfigurationManager</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>Access focus state</p>
-					</div>
-				</div>
-			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">FocusService</span>
+						<span class="target">ArgonConfigurationManager</span>
 					</li>
 				</ul>
 			</section>
@@ -84,21 +77,24 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="focusservice.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="argonconfigurationmanager.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="focusservice.html#_hasfocus" class="tsd-kind-icon">_has<wbr>Focus</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="focusservice.html#blurevent" class="tsd-kind-icon">blur<wbr>Event</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="focusservice.html#focusevent" class="tsd-kind-icon">focus<wbr>Event</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="argonconfigurationmanager.html#configuration" class="tsd-kind-icon">configuration</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="argonconfigurationmanager.html#container" class="tsd-kind-icon">container</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
-							<h3>Accessors</h3>
+							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="focusservice.html#hasfocus" class="tsd-kind-icon">has<wbr>Focus</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="argonconfigurationmanager.html#defaultconnect" class="tsd-kind-icon">default<wbr>Connect</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="argonconfigurationmanager.html#defaultdevice" class="tsd-kind-icon">default<wbr>Device</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="argonconfigurationmanager.html#defaultui" class="tsd-kind-icon">defaultUI</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="argonconfigurationmanager.html#standardconfiguration" class="tsd-kind-icon">standard<wbr>Configuration</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="argonconfigurationmanager.html#configure" class="tsd-kind-icon">configure</a></li>
 							</ul>
 						</section>
 					</div>
@@ -110,90 +106,142 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Focus<wbr>Service<span class="tsd-signature-symbol">(</span>sessionService<span class="tsd-signature-symbol">: </span><a href="sessionservice.html" class="tsd-signature-type">SessionService</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="focusservice.html" class="tsd-signature-type">FocusService</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Argon<wbr>Configuration<wbr>Manager<span class="tsd-signature-symbol">(</span>configuration<span class="tsd-signature-symbol">: </span><a href="configuration.html" class="tsd-signature-type">Configuration</a>, container<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Container</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="argonconfigurationmanager.html" class="tsd-signature-type">ArgonConfigurationManager</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/focus.ts#L25">src/focus.ts:25</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L134">src/argon.ts:134</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>sessionService: <a href="sessionservice.html" class="tsd-signature-type">SessionService</a></h5>
+									<h5>configuration: <a href="configuration.html" class="tsd-signature-type">Configuration</a></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> container: <span class="tsd-signature-type">Container</span><span class="tsd-signature-symbol"> =&nbsp;new DI.Container</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="focusservice.html" class="tsd-signature-type">FocusService</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="argonconfigurationmanager.html" class="tsd-signature-type">ArgonConfigurationManager</a></h4>
 						</li>
 					</ul>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="_hasfocus" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _has<wbr>Focus</h3>
-					<div class="tsd-signature tsd-kind-icon">_has<wbr>Focus<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="configuration" class="tsd-anchor"></a>
+					<h3>configuration</h3>
+					<div class="tsd-signature tsd-kind-icon">configuration<span class="tsd-signature-symbol">:</span> <a href="configuration.html" class="tsd-signature-type">Configuration</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/focus.ts#L25">src/focus.ts:25</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L137">src/argon.ts:137</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="blurevent" class="tsd-anchor"></a>
-					<h3>blur<wbr>Event</h3>
-					<div class="tsd-signature tsd-kind-icon">blur<wbr>Event<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;void&gt;()</span></div>
+					<a name="container" class="tsd-anchor"></a>
+					<h3>container</h3>
+					<div class="tsd-signature tsd-kind-icon">container<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Container</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/focus.ts#L19">src/focus.ts:19</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L138">src/argon.ts:138</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>An event that is raised when this app has lost focus</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="focusevent" class="tsd-anchor"></a>
-					<h3>focus<wbr>Event</h3>
-					<div class="tsd-signature tsd-kind-icon">focus<wbr>Event<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;void&gt;()</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/focus.ts#L14">src/focus.ts:14</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>An event that is raised when this app has gained focus</p>
-						</div>
-					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Accessors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
-					<a name="hasfocus" class="tsd-anchor"></a>
-					<h3>has<wbr>Focus</h3>
-					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> hasFocus<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="defaultconnect" class="tsd-anchor"></a>
+					<h3>default<wbr>Connect</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">default<wbr>Connect<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/focus.ts#L24">src/focus.ts:24</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L154">src/argon.ts:154</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>True if this app has focus</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="defaultdevice" class="tsd-anchor"></a>
+					<h3>default<wbr>Device</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">default<wbr>Device<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L181">src/argon.ts:181</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="defaultui" class="tsd-anchor"></a>
+					<h3>defaultUI</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">defaultUI<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L187">src/argon.ts:187</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="standardconfiguration" class="tsd-anchor"></a>
+					<h3>standard<wbr>Configuration</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">standard<wbr>Configuration<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L148">src/argon.ts:148</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="configure" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> configure</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">configure<span class="tsd-signature-symbol">(</span>configurationManager<span class="tsd-signature-symbol">: </span><a href="argonconfigurationmanager.html" class="tsd-signature-type">ArgonConfigurationManager</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L132">src/argon.ts:132</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>configurationManager: <a href="argonconfigurationmanager.html" class="tsd-signature-type">ArgonConfigurationManager</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -212,22 +260,31 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class">
-						<a href="focusservice.html" class="tsd-kind-icon">Focus<wbr>Service</a>
+						<a href="argonconfigurationmanager.html" class="tsd-kind-icon">Argon<wbr>Configuration<wbr>Manager</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="focusservice.html#constructor" class="tsd-kind-icon">constructor</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="focusservice.html#_hasfocus" class="tsd-kind-icon">_has<wbr>Focus</a>
+								<a href="argonconfigurationmanager.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="focusservice.html#blurevent" class="tsd-kind-icon">blur<wbr>Event</a>
+								<a href="argonconfigurationmanager.html#configuration" class="tsd-kind-icon">configuration</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="focusservice.html#focusevent" class="tsd-kind-icon">focus<wbr>Event</a>
+								<a href="argonconfigurationmanager.html#container" class="tsd-kind-icon">container</a>
 							</li>
-							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
-								<a href="focusservice.html#hasfocus" class="tsd-kind-icon">has<wbr>Focus</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="argonconfigurationmanager.html#defaultconnect" class="tsd-kind-icon">default<wbr>Connect</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="argonconfigurationmanager.html#defaultdevice" class="tsd-kind-icon">default<wbr>Device</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="argonconfigurationmanager.html#defaultui" class="tsd-kind-icon">defaultUI</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="argonconfigurationmanager.html#standardconfiguration" class="tsd-kind-icon">standard<wbr>Configuration</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="argonconfigurationmanager.html#configure" class="tsd-kind-icon">configure</a>
 							</li>
 						</ul>
 					</li>
