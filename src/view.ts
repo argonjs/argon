@@ -279,7 +279,7 @@ export class ViewService {
 
     /**
      * Publish the viewport being used in [[PresentationMode.EMBEDDED]] 
-     * so that other apps can use the same viewport
+     * so that the manager knows what our embedded viewport is
      */
     public publishEmbeddedViewport(viewport?: Viewport) {
         if (this.sessionService.manager.isConnected && this.sessionService.manager.version[0] >= 1) 
