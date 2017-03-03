@@ -6,6 +6,16 @@ import { Matrix4, JulianDate, Cartesian3, Cartographic, Quaternion, CesiumMath }
 export const AVERAGE_EYE_HEIGHT = 1.6;
 
 /**
+ * Default near plane
+ */
+export const DEFAULT_NEAR_PLANE = 0.01;
+
+/**
+ * Default far plane
+ */
+export const DEFAULT_FAR_PLANE = 10000;
+
+/**
  * Describes the role of an [[ArgonSystem]]
  */
 export enum Role {

@@ -20,6 +20,8 @@ import {SessionService, SessionPort} from './session'
 
 import {
     AVERAGE_EYE_HEIGHT,
+    DEFAULT_NEAR_PLANE,
+    DEFAULT_FAR_PLANE,
     Viewport,
     SerializedSubviewList,
     SerializedEntityStateMap,
@@ -51,9 +53,9 @@ export class SuggestedFrameState {
         pose: null,
         viewport: {x:0, y:0, width: 0, height:0},
         projectionMatrix: (
-            this._scratchFrustum.near = 0.01,
-            this._scratchFrustum.far = 500000000,
-            this._scratchFrustum.fov = Math.PI / 3, 
+            this._scratchFrustum.near = DEFAULT_NEAR_PLANE,
+            this._scratchFrustum.far = DEFAULT_FAR_PLANE,
+            this._scratchFrustum.fov = CesiumMath.PI_OVER_THREE, 
             this._scratchFrustum.aspectRatio = 1, 
             Matrix4.clone(this._scratchFrustum.projectionMatrix)
         )
@@ -633,9 +635,9 @@ export class DeviceServiceProvider {
 
         const aspect = viewport.width / viewport.height;
         const frustum = this._scratchFrustum;
-        frustum.near = 0.01;
-        frustum.far = 500000000;
-        frustum.fov = Math.PI / 3;
+        frustum.near = DEFAULT_NEAR_PLANE;
+        frustum.far = DEFAULT_FAR_PLANE;
+        frustum.fov = CesiumMath.PI_OVER_THREE;
         frustum.aspectRatio = isFinite(aspect) && aspect !== 0 ? aspect : 1;
         subview.projectionMatrix = Matrix4.clone(frustum.projectionMatrix, subview.projectionMatrix);
     }

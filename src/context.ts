@@ -19,6 +19,8 @@ import {
     defined
 } from './cesium/cesium-imports'
 import {
+    DEFAULT_NEAR_PLANE,
+    DEFAULT_FAR_PLANE,
     SerializedEntityState, 
     // SerializedSubviewList, 
     SerializedEntityStateMap,
@@ -190,8 +192,8 @@ export class ContextService {
             }
             if (!state.subviews && state['view'] && state['view'].subviews) {
                 state.subviews = state['view'].subviews;
-                scratchFrustum.near = 0.01;
-                scratchFrustum.far = 10000000;
+                scratchFrustum.near = DEFAULT_NEAR_PLANE;
+                scratchFrustum.far = DEFAULT_FAR_PLANE;
                 for (const s of state.subviews) {
                     const frustum = s['frustum'];
                     scratchFrustum.xOffset = frustum.xOffset || 0;
@@ -209,8 +211,8 @@ export class ContextService {
             this._update(state);
         }
 
-        this._scratchFrustum.near = 0.01;
-        this._scratchFrustum.far = 10000000;
+        this._scratchFrustum.near = DEFAULT_NEAR_PLANE;
+        this._scratchFrustum.far = DEFAULT_FAR_PLANE;
         this._scratchFrustum.fov = CesiumMath.PI_OVER_THREE;
         this._scratchFrustum.aspectRatio = 1;
 
