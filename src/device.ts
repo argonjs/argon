@@ -503,7 +503,7 @@ export class DeviceServiceProvider {
                 this._handleSetGeolocationOptions(session, options);
             }
 
-            session.on['ar.device.reqeustPresentHMD'] = () => {
+            session.on['ar.device.requestPresentHMD'] = () => {
                 return this.onRequestPresentHMD(session).then(()=>{
                     this.setPresentingHMD(true);
                 })
