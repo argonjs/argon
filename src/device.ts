@@ -179,7 +179,7 @@ export class DeviceService {
             contextService.updateEntityFromSerializedState(id, entities[id]);
         }
 
-        if (entities[this.user.id])
+        if (!entities[this.user.id])
             this._updateDeviceUserPoseFromDeviceOrientation();
         
         return suggestedFrameState;
