@@ -1,16 +1,15 @@
-System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './common', './focus', './session', './utils'], function(exports_1, context_1) {
+System.register(["aurelia-dependency-injection", "./cesium/cesium-imports", "./common", "./focus", "./session", "./utils"], function (exports_1, context_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
         else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
-    var aurelia_dependency_injection_1, cesium_imports_1, common_1, focus_1, session_1, utils_1;
-    var RealityLoader, RealityZoomState, RealityService;
+    var __moduleName = context_1 && context_1.id;
+    var aurelia_dependency_injection_1, cesium_imports_1, common_1, focus_1, session_1, utils_1, RealityLoader, RealityZoomState, RealityService;
     return {
-        setters:[
+        setters: [
             function (aurelia_dependency_injection_1_1) {
                 aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
             },
@@ -28,8 +27,9 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
             },
             function (utils_1_1) {
                 utils_1 = utils_1_1;
-            }],
-        execute: function() {
+            }
+        ],
+        execute: function () {
             /**
              * Abstract class for a reality setup handler
              */
@@ -46,11 +46,6 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                 RealityZoomState[RealityZoomState["END"] = 3] = "END";
             })(RealityZoomState || (RealityZoomState = {}));
             exports_1("RealityZoomState", RealityZoomState);
-            /**
-            * A service which manages the reality view.
-            * For an app developer, the RealityService instance can be used to
-            * set preferences which can affect how the manager selects a reality view.
-            */
             RealityService = (function () {
                 function RealityService(sessionService, focusService) {
                     var _this = this;
@@ -478,12 +473,12 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                         throw new Error('Unable to setup unsupported reality type: ' + reality.uri);
                     loader.load(reality, callback);
                 };
-                RealityService = __decorate([
-                    aurelia_dependency_injection_1.inject(session_1.SessionService, focus_1.FocusService)
-                ], RealityService);
                 return RealityService;
             }());
+            RealityService = __decorate([
+                aurelia_dependency_injection_1.inject(session_1.SessionService, focus_1.FocusService)
+            ], RealityService);
             exports_1("RealityService", RealityService);
         }
-    }
+    };
 });

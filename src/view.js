@@ -1,16 +1,15 @@
-System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './session', './context', './utils', './focus', './reality'], function(exports_1, context_1) {
+System.register(["aurelia-dependency-injection", "./cesium/cesium-imports", "./session", "./context", "./utils", "./focus", "./reality"], function (exports_1, context_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
         else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
-    var aurelia_dependency_injection_1, cesium_imports_1, session_1, context_2, utils_1, focus_1, reality_1;
-    var argonContainer, argonContainerPromise, ViewService, PinchZoomService;
+    var __moduleName = context_1 && context_1.id;
+    var aurelia_dependency_injection_1, cesium_imports_1, session_1, context_2, utils_1, focus_1, reality_1, ViewService, PinchZoomService;
     return {
-        setters:[
+        setters: [
             function (aurelia_dependency_injection_1_1) {
                 aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
             },
@@ -31,8 +30,9 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
             },
             function (reality_1_1) {
                 reality_1 = reality_1_1;
-            }],
-        execute: function() {
+            }
+        ],
+        execute: function () {
             // setup our DOM environment
             if (typeof document !== 'undefined' && document.createElement) {
                 var viewportMetaTag = document.querySelector('meta[name=viewport]');
@@ -46,7 +46,8 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                     argonMetaTag = document.createElement('meta');
                 argonMetaTag.name = 'argon';
                 document.head.appendChild(argonMetaTag);
-                argonContainerPromise = new Promise(function (resolve) {
+                var argonContainer;
+                var argonContainerPromise = new Promise(function (resolve) {
                     var resolveArgonContainer = function () {
                         var container = document.querySelector('#argon');
                         if (!container)
@@ -71,9 +72,6 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                 sheet.insertRule("\n        #argon {\n            position: fixed;\n            left: 0px;\n            bottom: 0px;\n            width: 100%;\n            height: 100%;\n            margin: 0;\n            border: 0;\n            padding: 0;\n        }\n    ", 0);
                 sheet.insertRule("\n        .argon-view > * {\n            position: absolute;\n            pointer-events: none;\n        }\n    ", 1);
             }
-            /**
-             * Manages the view state
-             */
             ViewService = (function () {
                 function ViewService(containerElement, sessionService, focusService, contextService) {
                     var _this = this;
@@ -235,11 +233,11 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                         this.viewportChangeEvent.raiseEvent({ previous: previousViewport });
                     }
                 };
-                ViewService = __decorate([
-                    aurelia_dependency_injection_1.inject('containerElement', session_1.SessionService, focus_1.FocusService, context_2.ContextService)
-                ], ViewService);
                 return ViewService;
             }());
+            ViewService = __decorate([
+                aurelia_dependency_injection_1.inject('containerElement', session_1.SessionService, focus_1.FocusService, context_2.ContextService)
+            ], ViewService);
             exports_1("ViewService", ViewService);
             PinchZoomService = (function () {
                 function PinchZoomService(viewService, realityService, contextService, sessionService) {
@@ -341,12 +339,12 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                         });
                     }
                 }
-                PinchZoomService = __decorate([
-                    aurelia_dependency_injection_1.inject(ViewService, reality_1.RealityService, context_2.ContextService, session_1.SessionService)
-                ], PinchZoomService);
                 return PinchZoomService;
             }());
+            PinchZoomService = __decorate([
+                aurelia_dependency_injection_1.inject(ViewService, reality_1.RealityService, context_2.ContextService, session_1.SessionService)
+            ], PinchZoomService);
             exports_1("PinchZoomService", PinchZoomService);
         }
-    }
+    };
 });

@@ -1,8 +1,6 @@
-System.register(['cesium/Source/Core/Event', './cesium/cesium-imports'], function(exports_1, context_1) {
+System.register(["cesium/Source/Core/Event", "./cesium/cesium-imports"], function (exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var Event_1, cesium_imports_1;
-    var Event, CommandQueue, getEntityPosition, getEntityOrientation, urlParser, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation;
     /**
      * Get array of ancestor reference frames of a Cesium Entity.
      * @param frame A Cesium Entity to get ancestor reference frames.
@@ -207,15 +205,17 @@ System.register(['cesium/Source/Core/Event', './cesium/cesium-imports'], functio
         return true;
     }
     exports_1("convertEntityReferenceFrame", convertEntityReferenceFrame);
+    var Event_1, cesium_imports_1, Event, CommandQueue, getEntityPosition, getEntityOrientation, urlParser, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation;
     return {
-        setters:[
+        setters: [
             function (Event_1_1) {
                 Event_1 = Event_1_1;
             },
             function (cesium_imports_1_1) {
                 cesium_imports_1 = cesium_imports_1_1;
-            }],
-        execute: function() {
+            }
+        ],
+        execute: function () {
             /**
              * Provides the ability raise and subscribe to an event.
              */
@@ -504,5 +504,5 @@ System.register(['cesium/Source/Core/Event', './cesium/cesium-imports'], functio
             scratchCartesian = new cesium_imports_1.Cartesian3;
             scratchOrientation = new cesium_imports_1.Quaternion;
         }
-    }
+    };
 });

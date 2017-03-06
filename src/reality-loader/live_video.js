@@ -1,6 +1,5 @@
-System.register(['aurelia-dependency-injection', '../common', '../session', '../reality', '../vuforia'], function(exports_1, context_1) {
+System.register(["aurelia-dependency-injection", "../common", "../session", "../reality", "../vuforia"], function (exports_1, context_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var __extends = (this && this.__extends) || function (d, b) {
         for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
         function __() { this.constructor = d; }
@@ -12,10 +11,10 @@ System.register(['aurelia-dependency-injection', '../common', '../session', '../
         else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
-    var aurelia_dependency_injection_1, common_1, session_1, reality_1, vuforia_1;
-    var LiveVideoRealityLoader;
+    var __moduleName = context_1 && context_1.id;
+    var aurelia_dependency_injection_1, common_1, session_1, reality_1, vuforia_1, LiveVideoRealityLoader;
     return {
-        setters:[
+        setters: [
             function (aurelia_dependency_injection_1_1) {
                 aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
             },
@@ -30,15 +29,17 @@ System.register(['aurelia-dependency-injection', '../common', '../session', '../
             },
             function (vuforia_1_1) {
                 vuforia_1 = vuforia_1_1;
-            }],
-        execute: function() {
+            }
+        ],
+        execute: function () {
             LiveVideoRealityLoader = (function (_super) {
                 __extends(LiveVideoRealityLoader, _super);
                 function LiveVideoRealityLoader(sessionService, vuforiaDelegate) {
-                    _super.call(this);
-                    this.sessionService = sessionService;
-                    this.vuforiaDelegate = vuforiaDelegate;
-                    this.type = 'live-video';
+                    var _this = _super.call(this) || this;
+                    _this.sessionService = sessionService;
+                    _this.vuforiaDelegate = vuforiaDelegate;
+                    _this.type = 'live-video';
+                    return _this;
                 }
                 LiveVideoRealityLoader.prototype.load = function (reality, callback) {
                     var _this = this;
@@ -63,12 +64,12 @@ System.register(['aurelia-dependency-injection', '../common', '../session', '../
                     realitySession.open(messageChannel.port1, this.sessionService.configuration);
                     remoteRealitySession.open(messageChannel.port2, { role: common_1.Role.REALITY_VIEW });
                 };
-                LiveVideoRealityLoader = __decorate([
-                    aurelia_dependency_injection_1.inject(session_1.SessionService, vuforia_1.VuforiaServiceDelegate)
-                ], LiveVideoRealityLoader);
                 return LiveVideoRealityLoader;
             }(reality_1.RealityLoader));
+            LiveVideoRealityLoader = __decorate([
+                aurelia_dependency_injection_1.inject(session_1.SessionService, vuforia_1.VuforiaServiceDelegate)
+            ], LiveVideoRealityLoader);
             exports_1("LiveVideoRealityLoader", LiveVideoRealityLoader);
         }
-    }
+    };
 });

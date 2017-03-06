@@ -1,10 +1,10 @@
-System.register([], function(exports_1, context_1) {
+System.register([], function (exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var Role, SubviewType, RealityView;
     return {
-        setters:[],
-        execute: function() {
+        setters: [],
+        execute: function () {
             /**
              * Describes the role of an [[ArgonSystem]]
              */
@@ -76,14 +76,14 @@ System.register([], function(exports_1, context_1) {
                     }
                     return 'hosted';
                 };
-                RealityView.EMPTY = {
-                    uri: 'reality:empty',
-                    title: 'Reality',
-                    providedReferenceFrames: ['FIXED']
-                };
                 return RealityView;
             }());
+            RealityView.EMPTY = {
+                uri: 'reality:empty',
+                title: 'Reality',
+                providedReferenceFrames: ['FIXED']
+            };
             exports_1("RealityView", RealityView);
         }
-    }
+    };
 });

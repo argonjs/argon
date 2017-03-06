@@ -1,10 +1,8 @@
 // Add functionality for keeping a moving window of samples per SampledProperty,
 // so that the data doesn't accumulate indefinitely
-System.register(['./cesium-imports'], function(exports_1, context_1) {
+System.register(["./cesium-imports"], function (exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var cesium_imports_1;
-    var after;
     function removeBeforeDate(property, time) {
         var times = property._times;
         var index = ~cesium_imports_1.binarySearch(times, time, cesium_imports_1.JulianDate.compare);
@@ -25,12 +23,15 @@ System.register(['./cesium-imports'], function(exports_1, context_1) {
             property._updateTableLength = true;
         }
     }
+    var cesium_imports_1, after;
     return {
-        setters:[
+        setters: [
             function (cesium_imports_1_1) {
                 cesium_imports_1 = cesium_imports_1_1;
-            }],
-        execute: function() {
+            }
+        ],
+        execute: function () {// Add functionality for keeping a moving window of samples per SampledProperty,
+            // so that the data doesn't accumulate indefinitely
             after = function (fn, after) {
                 return function () {
                     var result = fn.apply(this, arguments);
@@ -63,5 +64,5 @@ System.register(['./cesium-imports'], function(exports_1, context_1) {
                 removeOldSamples(this._property, this.maxNumSamples);
             });
         }
-    }
+    };
 });

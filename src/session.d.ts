@@ -24,7 +24,7 @@ export interface ErrorMessage {
  * Provides two-way communication between two [[SessionPort]] instances.
  */
 export declare class SessionPort {
-    uri?: string;
+    uri: string;
     /**
      * An event which fires when a connection has been
      * established to the other [[SessionPort]].

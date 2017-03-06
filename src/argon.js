@@ -1,8 +1,6 @@
-System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/cesium-imports', 'urijs', './session', './common', './context', './device', './focus', './reality', './timer', './view', './vuforia', './reality-loader/empty', './reality-loader/live_video', './reality-loader/hosted', './utils'], function(exports_1, context_1) {
+System.register(["aurelia-polyfills", "aurelia-dependency-injection", "./cesium/cesium-imports", "urijs", "./session", "./common", "./context", "./device", "./focus", "./reality", "./timer", "./view", "./vuforia", "./reality-loader/empty", "./reality-loader/live_video", "./reality-loader/hosted", "./utils"], function (exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var DI, Cesium, URI, session_1, common_1, context_2, device_1, focus_1, reality_1, timer_1, view_1, vuforia_1, empty_1, live_video_1, hosted_1;
-    var ArgonSystem;
     /**
      * Create an ArgonSystem instance.
      * If we are running within a [[REALITY_MANAGER]],
@@ -56,28 +54,31 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
         return new ArgonSystem(config, container);
     }
     exports_1("initLocal", initLocal);
+    var DI, Cesium, URI, session_1, common_1, context_2, device_1, focus_1, reality_1, timer_1, view_1, vuforia_1, empty_1, live_video_1, hosted_1, ArgonSystem;
     var exportedNames_1 = {
-        'ArgonSystem': true,
-        'init': true,
-        'initReality': true,
-        'initLocal': true,
-        'DI': true,
-        'Cesium': true,
-        'URI': true,
-        'EmptyRealityLoader': true,
-        'LiveVideoRealityLoader': true,
-        'HostedRealityLoader': true
+        "DI": true,
+        "Cesium": true,
+        "URI": true,
+        "EmptyRealityLoader": true,
+        "LiveVideoRealityLoader": true,
+        "HostedRealityLoader": true,
+        "ArgonSystem": true,
+        "init": true,
+        "initReality": true,
+        "initLocal": true
     };
     function exportStar_1(m) {
         var exports = {};
-        for(var n in m) {
-            if (n !== "default"&& !exportedNames_1.hasOwnProperty(n)) exports[n] = m[n];
+        for (var n in m) {
+            if (n !== "default" && !exportedNames_1.hasOwnProperty(n))
+                exports[n] = m[n];
         }
         exports_1(exports);
     }
     return {
-        setters:[
-            function (_1) {},
+        setters: [
+            function (_1) {
+            },
             function (DI_1) {
                 DI = DI_1;
             },
@@ -134,8 +135,9 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
             },
             function (utils_1_1) {
                 exportStar_1(utils_1_1);
-            }],
-        execute: function() {
+            }
+        ],
+        execute: function () {
             exports_1("DI", DI);
             exports_1("Cesium", Cesium);
             exports_1("URI", URI);
@@ -277,5 +279,5 @@ System.register(['aurelia-polyfills', 'aurelia-dependency-injection', './cesium/
             }());
             exports_1("ArgonSystem", ArgonSystem);
         }
-    }
+    };
 });

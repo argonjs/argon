@@ -1,6 +1,5 @@
-System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './common', './utils'], function(exports_1, context_1) {
+System.register(["./cesium/cesium-imports", "aurelia-dependency-injection", "./common", "./utils"], function (exports_1, context_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var __extends = (this && this.__extends) || function (d, b) {
         for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
         function __() { this.constructor = d; }
@@ -12,10 +11,10 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
         else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
-    var cesium_imports_1, aurelia_dependency_injection_1, common_1, utils_1;
-    var SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, WKWebViewConnectService;
+    var __moduleName = context_1 && context_1.id;
+    var cesium_imports_1, aurelia_dependency_injection_1, common_1, utils_1, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, WKWebViewConnectService;
     return {
-        setters:[
+        setters: [
             function (cesium_imports_1_1) {
                 cesium_imports_1 = cesium_imports_1_1;
             },
@@ -27,8 +26,9 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
             },
             function (utils_1_1) {
                 utils_1 = utils_1_1;
-            }],
-        execute: function() {
+            }
+        ],
+        execute: function () {
             ;
             /**
              * Provides two-way communication between two [[SessionPort]] instances.
@@ -278,11 +278,11 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                     enumerable: true,
                     configurable: true
                 });
-                SessionPort.OPEN = 'ar.session.open';
-                SessionPort.CLOSE = 'ar.session.close';
-                SessionPort.ERROR = 'ar.session.error';
                 return SessionPort;
             }());
+            SessionPort.OPEN = 'ar.session.open';
+            SessionPort.CLOSE = 'ar.session.close';
+            SessionPort.ERROR = 'ar.session.error';
             exports_1("SessionPort", SessionPort);
             /**
              * A factory for creating [[SessionPort]] instances.
@@ -305,9 +305,6 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                 return ConnectService;
             }());
             exports_1("ConnectService", ConnectService);
-            /**
-             * A service for managing connections to other ArgonSystem instances
-             */
             SessionService = (function () {
                 function SessionService(
                     /**
@@ -489,11 +486,11 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
                     if (this.isRealityView)
                         throw new Error('An non-permitted API was accessed from a reality-view.');
                 };
-                SessionService = __decorate([
-                    aurelia_dependency_injection_1.inject('config', ConnectService, SessionPortFactory, utils_1.MessageChannelFactory)
-                ], SessionService);
                 return SessionService;
             }());
+            SessionService = __decorate([
+                aurelia_dependency_injection_1.inject('config', ConnectService, SessionPortFactory, utils_1.MessageChannelFactory)
+            ], SessionService);
             exports_1("SessionService", SessionService);
             /**
              * Connect the current [[ArgonSystem]] to itself as the [[REALITY_MANAGER]].
@@ -501,7 +498,7 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
             LoopbackConnectService = (function (_super) {
                 __extends(LoopbackConnectService, _super);
                 function LoopbackConnectService() {
-                    _super.apply(this, arguments);
+                    return _super.apply(this, arguments) || this;
                 }
                 /**
                  * Create a loopback connection.
@@ -527,7 +524,7 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
             DOMConnectService = (function (_super) {
                 __extends(DOMConnectService, _super);
                 function DOMConnectService() {
-                    _super.apply(this, arguments);
+                    return _super.apply(this, arguments) || this;
                 }
                 /**
                   * Check whether this connect method is available or not.
@@ -552,7 +549,7 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
             DebugConnectService = (function (_super) {
                 __extends(DebugConnectService, _super);
                 function DebugConnectService() {
-                    _super.apply(this, arguments);
+                    return _super.apply(this, arguments) || this;
                 }
                 /**
                  * Check whether this connect method is available or not.
@@ -577,7 +574,7 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
             WKWebViewConnectService = (function (_super) {
                 __extends(WKWebViewConnectService, _super);
                 function WKWebViewConnectService() {
-                    _super.apply(this, arguments);
+                    return _super.apply(this, arguments) || this;
                 }
                 /**
                  * Check whether this connect method is available or not.
@@ -604,5 +601,5 @@ System.register(['./cesium/cesium-imports', 'aurelia-dependency-injection', './c
             }(ConnectService));
             exports_1("WKWebViewConnectService", WKWebViewConnectService);
         }
-    }
+    };
 });

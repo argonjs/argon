@@ -1,8 +1,6 @@
-System.register(['./cesium/cesium-imports'], function(exports_1, context_1) {
+System.register(["./cesium/cesium-imports"], function (exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var cesium_imports_1;
-    var TimerService, lastTime;
     function requestAnimationFramePoly(callback) {
         var currTime = Date.now();
         var timeToCall = Math.max(0, 16 - (currTime - lastTime));
@@ -10,12 +8,14 @@ System.register(['./cesium/cesium-imports'], function(exports_1, context_1) {
         lastTime = currTime + timeToCall;
         return id;
     }
+    var cesium_imports_1, TimerService, lastTime;
     return {
-        setters:[
+        setters: [
             function (cesium_imports_1_1) {
                 cesium_imports_1 = cesium_imports_1_1;
-            }],
-        execute: function() {
+            }
+        ],
+        execute: function () {
             /**
              * Provides timer service
              */
@@ -54,5 +54,5 @@ System.register(['./cesium/cesium-imports'], function(exports_1, context_1) {
             exports_1("TimerService", TimerService);
             lastTime = 0;
         }
-    }
+    };
 });

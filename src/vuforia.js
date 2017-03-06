@@ -1,6 +1,5 @@
-System.register(['aurelia-dependency-injection', './focus', './session', './utils'], function(exports_1, context_1) {
+System.register(["aurelia-dependency-injection", "./focus", "./session", "./utils"], function (exports_1, context_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var __extends = (this && this.__extends) || function (d, b) {
         for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
         function __() { this.constructor = d; }
@@ -12,10 +11,10 @@ System.register(['aurelia-dependency-injection', './focus', './session', './util
         else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
-    var aurelia_dependency_injection_1, focus_1, session_1, utils_1;
-    var VuforiaInitResult, VuforiaServiceDelegateBase, VuforiaServiceDelegate, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, VuforiaDataSet;
+    var __moduleName = context_1 && context_1.id;
+    var aurelia_dependency_injection_1, focus_1, session_1, utils_1, VuforiaInitResult, VuforiaServiceDelegateBase, VuforiaServiceDelegate, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, VuforiaDataSet;
     return {
-        setters:[
+        setters: [
             function (aurelia_dependency_injection_1_1) {
                 aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
             },
@@ -27,8 +26,9 @@ System.register(['aurelia-dependency-injection', './focus', './session', './util
             },
             function (utils_1_1) {
                 utils_1 = utils_1_1;
-            }],
-        execute: function() {
+            }
+        ],
+        execute: function () {
             /**
              * The set of possible error codes that can be returned from vuforia's
              * initialization function.
@@ -73,7 +73,7 @@ System.register(['aurelia-dependency-injection', './focus', './session', './util
             VuforiaServiceDelegate = (function (_super) {
                 __extends(VuforiaServiceDelegate, _super);
                 function VuforiaServiceDelegate() {
-                    _super.apply(this, arguments);
+                    return _super.apply(this, arguments) || this;
                 }
                 VuforiaServiceDelegate.prototype.isAvailable = function () { return false; };
                 VuforiaServiceDelegate.prototype.setHint = function (hint, value) { return true; };
@@ -92,10 +92,6 @@ System.register(['aurelia-dependency-injection', './focus', './session', './util
                 return VuforiaServiceDelegate;
             }(VuforiaServiceDelegateBase));
             exports_1("VuforiaServiceDelegate", VuforiaServiceDelegate);
-            /**
-             * Mediates requests to the Vuforia API. Handles the following requests:
-             * // TODO
-             */
             VuforiaService = (function () {
                 function VuforiaService(sessionService, focusService, delegate) {
                     var _this = this;
@@ -406,11 +402,11 @@ System.register(['aurelia-dependency-injection', './focus', './session', './util
                     //     throw new Error(errors.join('\n'));
                     // }
                 };
-                VuforiaService = __decorate([
-                    aurelia_dependency_injection_1.inject(session_1.SessionService, focus_1.FocusService, VuforiaServiceDelegate)
-                ], VuforiaService);
                 return VuforiaService;
             }());
+            VuforiaService = __decorate([
+                aurelia_dependency_injection_1.inject(session_1.SessionService, focus_1.FocusService, VuforiaServiceDelegate)
+            ], VuforiaService);
             exports_1("VuforiaService", VuforiaService);
             VuforiaAPI = (function () {
                 function VuforiaAPI(manager) {
@@ -431,12 +427,11 @@ System.register(['aurelia-dependency-injection', './focus', './session', './util
             VuforiaObjectTracker = (function (_super) {
                 __extends(VuforiaObjectTracker, _super);
                 function VuforiaObjectTracker(manager) {
-                    var _this = this;
-                    _super.call(this);
-                    this.manager = manager;
-                    this._dataSetMap = new Map();
-                    this.dataSetActivateEvent = new utils_1.Event();
-                    this.dataSetDeactivateEvent = new utils_1.Event();
+                    var _this = _super.call(this) || this;
+                    _this.manager = manager;
+                    _this._dataSetMap = new Map();
+                    _this.dataSetActivateEvent = new utils_1.Event();
+                    _this.dataSetDeactivateEvent = new utils_1.Event();
                     manager.on['ar.vuforia.objectTrackerActivateDataSetEvent'] = function (_a) {
                         var id = _a.id;
                         var dataSet = _this._dataSetMap.get(id);
@@ -449,6 +444,7 @@ System.register(['aurelia-dependency-injection', './focus', './session', './util
                         dataSet._onDeactivate();
                         _this.dataSetDeactivateEvent.raiseEvent(dataSet);
                     };
+                    return _this;
                 }
                 VuforiaObjectTracker.prototype.createDataSet = function (url) {
                     var _this = this;
@@ -505,5 +501,5 @@ System.register(['aurelia-dependency-injection', './focus', './session', './util
             }());
             exports_1("VuforiaDataSet", VuforiaDataSet);
         }
-    }
+    };
 });

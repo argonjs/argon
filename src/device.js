@@ -1,16 +1,15 @@
-System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './context', 'mobile-detect'], function(exports_1, context_1) {
+System.register(["aurelia-dependency-injection", "./cesium/cesium-imports", "./context", "mobile-detect"], function (exports_1, context_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
         else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
-    var aurelia_dependency_injection_1, cesium_imports_1, context_2, mobile_detect_1;
-    var DeviceService;
+    var __moduleName = context_1 && context_1.id;
+    var aurelia_dependency_injection_1, cesium_imports_1, context_2, mobile_detect_1, DeviceService;
     return {
-        setters:[
+        setters: [
             function (aurelia_dependency_injection_1_1) {
                 aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
             },
@@ -22,11 +21,9 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
             },
             function (mobile_detect_1_1) {
                 mobile_detect_1 = mobile_detect_1_1;
-            }],
-        execute: function() {
-            /**
-            * Provides pose state for the device.
-            */
+            }
+        ],
+        execute: function () {
             DeviceService = (function () {
                 /**
                 * Initialize the DeviceService
@@ -202,12 +199,12 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './c
                     }, 2000);
                     this.onUpdate();
                 };
-                DeviceService = __decorate([
-                    aurelia_dependency_injection_1.inject(context_2.ContextService)
-                ], DeviceService);
                 return DeviceService;
             }());
+            DeviceService = __decorate([
+                aurelia_dependency_injection_1.inject(context_2.ContextService)
+            ], DeviceService);
             exports_1("DeviceService", DeviceService);
         }
-    }
+    };
 });

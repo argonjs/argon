@@ -1,22 +1,22 @@
-System.register(['chai', '../src/argon'], function(exports_1, context_1) {
+System.register(["chai", "../src/argon"], function (exports_1, context_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var __extends = (this && this.__extends) || function (d, b) {
         for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
-    var chai, Argon;
-    var expect;
+    var __moduleName = context_1 && context_1.id;
+    var chai, Argon, expect;
     return {
-        setters:[
+        setters: [
             function (chai_1) {
                 chai = chai_1;
             },
             function (Argon_1) {
                 Argon = Argon_1;
-            }],
-        execute: function() {
+            }
+        ],
+        execute: function () {
             expect = chai.expect;
             describe('Argon', function () {
                 afterEach(function () {
@@ -496,7 +496,7 @@ System.register(['chai', '../src/argon'], function(exports_1, context_1) {
                 var MockVuforiaServiceDelegateBase = (function (_super) {
                     __extends(MockVuforiaServiceDelegateBase, _super);
                     function MockVuforiaServiceDelegateBase() {
-                        _super.apply(this, arguments);
+                        return _super.apply(this, arguments) || this;
                     }
                     MockVuforiaServiceDelegateBase.prototype.isAvailable = function () {
                         return true;
@@ -561,7 +561,7 @@ System.register(['chai', '../src/argon'], function(exports_1, context_1) {
                         var MockVuforiaServiceDelegate = (function (_super) {
                             __extends(MockVuforiaServiceDelegate, _super);
                             function MockVuforiaServiceDelegate() {
-                                _super.apply(this, arguments);
+                                return _super.apply(this, arguments) || this;
                             }
                             MockVuforiaServiceDelegate.prototype.init = function (options) {
                                 done();
@@ -706,5 +706,5 @@ System.register(['chai', '../src/argon'], function(exports_1, context_1) {
                 });
             });
         }
-    }
+    };
 });

@@ -1,20 +1,19 @@
-System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './session', './reality', './utils'], function(exports_1, context_1) {
+System.register(["aurelia-dependency-injection", "./cesium/cesium-imports", "./session", "./reality", "./utils"], function (exports_1, context_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
         else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
-    var aurelia_dependency_injection_1, cesium_imports_1, session_1, reality_1, utils_1;
-    var PoseStatus, scratchCartesian3, scratchQuaternion, scratchOriginCartesian3, ContextService;
+    var __moduleName = context_1 && context_1.id;
     function _stringFromReferenceFrame(referenceFrame) {
         var rf = referenceFrame;
         return cesium_imports_1.defined(rf.id) ? rf.id : '' + rf;
     }
+    var aurelia_dependency_injection_1, cesium_imports_1, session_1, reality_1, utils_1, PoseStatus, scratchCartesian3, scratchQuaternion, scratchOriginCartesian3, ContextService;
     return {
-        setters:[
+        setters: [
             function (aurelia_dependency_injection_1_1) {
                 aurelia_dependency_injection_1 = aurelia_dependency_injection_1_1;
             },
@@ -29,8 +28,9 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
             },
             function (utils_1_1) {
                 utils_1 = utils_1_1;
-            }],
-        execute: function() {
+            }
+        ],
+        execute: function () {
             /**
             * A bitmask that provides metadata about the pose of an EntityPose.
             *   KNOWN - the pose of the entity state is defined.
@@ -46,23 +46,6 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
             scratchCartesian3 = new cesium_imports_1.Cartesian3(0, 0);
             scratchQuaternion = new cesium_imports_1.Quaternion(0, 0);
             scratchOriginCartesian3 = new cesium_imports_1.Cartesian3(0, 0);
-            /**
-             * Provides a means of querying the current state of reality.
-             *
-             * This class adds the following message handlers to any sessions
-             * managed by the session service:
-             *
-             *  * `ar.context.subscribe` - Subscribes the session to updates from an
-             *    entity with the provided id.
-             *    * Parameters:
-             *      * id: string - The id of an entity the session wishes to recieve
-             *        updates on.
-             *
-             * This service sends the following messages to managed sessions
-             *
-             *  * `ar.context.update` - Indicates to this context that the session wants
-             *    to be focused on.
-             */
             ContextService = (function () {
                 function ContextService(sessionService, realityService) {
                     var _this = this;
@@ -424,12 +407,12 @@ System.register(['aurelia-dependency-injection', './cesium/cesium-imports', './s
                     }
                     poseMap[id] = this._entityPoseCache[id];
                 };
-                ContextService = __decorate([
-                    aurelia_dependency_injection_1.inject(session_1.SessionService, reality_1.RealityService)
-                ], ContextService);
                 return ContextService;
             }());
+            ContextService = __decorate([
+                aurelia_dependency_injection_1.inject(session_1.SessionService, reality_1.RealityService)
+            ], ContextService);
             exports_1("ContextService", ContextService);
         }
-    }
+    };
 });
