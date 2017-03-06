@@ -12,7 +12,7 @@ System.register(["./cesium/cesium-imports", "aurelia-dependency-injection", "./c
         return c > 3 && r && Object.defineProperty(target, key, r), r;
     };
     var __moduleName = context_1 && context_1.id;
-    var cesium_imports_1, aurelia_dependency_injection_1, common_1, utils_1, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, WKWebViewConnectService;
+    var cesium_imports_1, aurelia_dependency_injection_1, common_1, utils_1, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, WKWebViewConnectService, AndroidWebViewConnectService;
     return {
         setters: [
             function (cesium_imports_1_1) {
@@ -600,6 +600,38 @@ System.register(["./cesium/cesium-imports", "aurelia-dependency-injection", "./c
                 return WKWebViewConnectService;
             }(ConnectService));
             exports_1("WKWebViewConnectService", WKWebViewConnectService);
+            /**
+             * A service which connects this system to the [[REALITY_MANAGER]] via an Android WebView javascript interface.
+             */
+            AndroidWebViewConnectService = (function (_super) {
+                __extends(AndroidWebViewConnectService, _super);
+                function AndroidWebViewConnectService() {
+                    return _super.apply(this, arguments) || this;
+                }
+                /**
+                 * Check whether this connect method is available or not.
+                 */
+                AndroidWebViewConnectService.isAvailable = function () {
+                    return typeof window !== 'undefined' &&
+                        window["__argon_android__"];
+                };
+                /**
+                 * Connect to the manager.
+                 */
+                AndroidWebViewConnectService.prototype.connect = function (sessionService) {
+                    var messageChannel = sessionService.createSynchronousMessageChannel();
+                    messageChannel.port2.onmessage = function (event) {
+                        window["__argon_android__"].emit("argon", JSON.stringify(event.data));
+                    };
+                    window['__ARGON_PORT__'] = messageChannel.port2;
+                    sessionService.manager.open(messageChannel.port1, sessionService.configuration);
+                    window.addEventListener("beforeunload", function () {
+                        sessionService.manager.close();
+                    });
+                };
+                return AndroidWebViewConnectService;
+            }(ConnectService));
+            exports_1("AndroidWebViewConnectService", AndroidWebViewConnectService);
         }
     };
 });

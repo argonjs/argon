@@ -9,7 +9,8 @@ import {
     LoopbackConnectService,
     DOMConnectService,
     DebugConnectService,
-    WKWebViewConnectService
+    WKWebViewConnectService,
+    AndroidWebViewConnectService
 } from './session'
 
 import { Configuration, Role, RealityView } from './common'
@@ -72,6 +73,11 @@ export class ArgonSystem {
             container.registerSingleton(
                 ConnectService,
                 WKWebViewConnectService
+            )
+        } else if (AndroidWebViewConnectService.isAvailable()) {
+            container.registerSingleton(
+                ConnectService,
+                AndroidWebViewConnectService
             )
         } else if (DOMConnectService.isAvailable()) {
             container.registerSingleton(

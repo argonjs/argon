@@ -258,3 +258,16 @@ export declare class WKWebViewConnectService extends ConnectService {
      */
     connect(sessionService: SessionService): void;
 }
+/**
+ * A service which connects this system to the [[REALITY_MANAGER]] via an Android WebView javascript interface.
+ */
+export declare class AndroidWebViewConnectService extends ConnectService {
+    /**
+     * Check whether this connect method is available or not.
+     */
+    static isAvailable(): boolean;
+    /**
+     * Connect to the manager.
+     */
+    connect(sessionService: SessionService): void;
+}

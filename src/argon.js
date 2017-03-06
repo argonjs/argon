@@ -167,6 +167,9 @@ System.register(["aurelia-polyfills", "aurelia-dependency-injection", "./cesium/
                     else if (session_1.WKWebViewConnectService.isAvailable()) {
                         container.registerSingleton(session_1.ConnectService, session_1.WKWebViewConnectService);
                     }
+                    else if (session_1.AndroidWebViewConnectService.isAvailable()) {
+                        container.registerSingleton(session_1.ConnectService, session_1.AndroidWebViewConnectService);
+                    }
                     else if (session_1.DOMConnectService.isAvailable()) {
                         container.registerSingleton(session_1.ConnectService, session_1.DOMConnectService);
                     }

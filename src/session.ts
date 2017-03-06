@@ -568,3 +568,32 @@ export class WKWebViewConnectService extends ConnectService {
         })
     }
 }
+
+/**
+ * A service which connects this system to the [[REALITY_MANAGER]] via an Android WebView javascript interface.
+ */
+export class AndroidWebViewConnectService extends ConnectService {
+
+    /**
+     * Check whether this connect method is available or not.
+     */
+    public static isAvailable(): boolean {
+        return typeof window !== 'undefined' &&
+            window["__argon_android__"];
+    }
+
+    /**
+     * Connect to the manager.
+     */
+    connect(sessionService: SessionService) {
+        const messageChannel = sessionService.createSynchronousMessageChannel();
+        messageChannel.port2.onmessage = (event) => {
+            window["__argon_android__"].emit("argon", JSON.stringify(event.data));
+        }
+        window['__ARGON_PORT__'] = messageChannel.port2;
+        sessionService.manager.open(messageChannel.port1, sessionService.configuration);
+        window.addEventListener("beforeunload", function() {
+            sessionService.manager.close();
+        })
+    }
+}
