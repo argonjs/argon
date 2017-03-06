@@ -5,6 +5,7 @@ import { Matrix4 } from './cesium/cesium-imports';
  */
 export interface Configuration {
     role?: Role;
+    name?: string;
     protocols?: string[];
     userData?: any;
     'app.disablePinchZoom'?: boolean;
