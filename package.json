@@ -202,7 +202,7 @@
     "prebuild": "npm run build:core && npm run build:browser",
     "build": "uglifyjs dist/argon.js -m -c warnings=false -o dist/argon.min.js",
     "browser-sync": "browser-sync  start --server --directory --startPath \"index.html\" --files \"src/**\"",
-    "test": "node ./node_modules/jspm/jspm.js run test/runner.js",
+    "test": "node --max_old_space_size=4096 ./node_modules/jspm/jspm.js run test/runner.js",
     "static": "static -p 3000",
     "typedoc": "typedoc --tsconfig tsconfig.build.json --out docs --mode file --gaID UA-63191442-2 --name argon.js --readme src/README.md --target ES6 --module commonjs --moduleResolution node --experimentalDecorators --includeDeclarations --excludeNotExported --excludeExternals --ignoreCompilerErrors src",
     "postinstall": "npm install types/cesium types/mobile-detect",
