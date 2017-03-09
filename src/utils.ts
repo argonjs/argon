@@ -312,10 +312,10 @@ export function openInArgonApp() {
 
 // requestAnimationFrame / cancelAnimationFrame polyfills
 
-var lastTime = 0;
-    (typeof window !== 'undefined' && window.requestAnimationFrame) ? 
+var lastTime = 0; 
 
 const rAF = 
+    (typeof window !== 'undefined' && window.requestAnimationFrame) ?
     window.requestAnimationFrame.bind(window) : (callback) => {
     var currTime = performance.now();
     var timeToCall = Math.max(0, 16 - (currTime - lastTime));
