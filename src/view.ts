@@ -1,5 +1,5 @@
 import { autoinject, inject, Optional } from 'aurelia-dependency-injection'
-import { Viewport, FrameState, SubviewType } from './common'
+import { Viewport, ContextFrameState, SubviewType } from './common'
 import { SessionService, SessionPort } from './session'
 import { ContextService, EntityPose } from './context'
 
@@ -214,7 +214,7 @@ export class ViewService {
 
     private _IDENTITY_SUBVIEW_POSE = {p:Cartesian3.ZERO, o:Quaternion.IDENTITY, r:this.contextService.user.id};
 
-    private _processFrameState(state:FrameState) {
+    private _processFrameState(state:ContextFrameState) {
         this._updateViewport(state.viewport);
 
         const serializedSubviewList = state.subviews;
@@ -406,7 +406,8 @@ export class ViewServiceProvider {
         for (const session of this.sessionService.managedSessions) {
             const mode = (session === this.focusServiceProvider.session) ?
                 this.sessionViewportMode.get(session) : ViewportMode.IMMERSIVE;
-            session.send('ar.view.viewportMode', {mode});
+            if (session.version[0] > 0)
+                session.send('ar.view.viewportMode', {mode});
         }
     }
 }

@@ -3,7 +3,7 @@ import { Role } from '../common'
 import { SessionService, SessionPort } from '../session'
 import { ViewService } from '../view'
 import { ContextService } from '../context'
-import { DeviceService, SuggestedFrameState } from '../device'
+import { DeviceService } from '../device'
 import { RealityViewer } from './base'
 
 @inject(SessionService, ViewService, ContextService, DeviceService)
@@ -102,12 +102,10 @@ export class LiveRealityViewer extends RealityViewer {
                 // const viewService = this.viewService;
                 let lastFrameTime = -1;
 
-                const handleFrameState = (suggestedFrameState:SuggestedFrameState) => {
+                const remove =this.deviceService.frameStateEvent.addEventListener((frameState)=>{
 
-                    this.deviceService.requestFrameState().then(handleFrameState);
-
-                    if (suggestedFrameState.geolocationDesired) {
-                        this.deviceService.subscribeGeolocation(suggestedFrameState.geolocationOptions, internalSession);
+                    if (frameState.geolocationDesired) {
+                        this.deviceService.subscribeGeolocation(frameState.geolocationOptions, internalSession);
                     } else {
                         this.deviceService.unsubscribeGeolocation(internalSession);
                     }
@@ -118,19 +116,21 @@ export class LiveRealityViewer extends RealityViewer {
                         // const videoWidth = videoElement.videoWidth;
                         // const videoHeight = videoElement.videoHeight;
 
-                        const frameState = this.deviceService.createFrameState(
-                            suggestedFrameState.time,
-                            suggestedFrameState.viewport,
-                            suggestedFrameState.subviews,
+                        const contextFrameState = this.deviceService.createContextFrameState(
+                            frameState.time,
+                            frameState.viewport,
+                            frameState.subviews,
                             this.deviceService.user
                         );
                         
-                        internalSession.send('ar.reality.frameState', frameState);
+                        internalSession.send('ar.reality.frameState', contextFrameState);
                     }
 
-                };
+                });
 
-                this.deviceService.requestFrameState().then(handleFrameState);
+                internalSession.closeEvent.addEventListener(()=>{
+                    remove();
+                })
             }
         });
     }

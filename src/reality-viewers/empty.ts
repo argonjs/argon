@@ -18,7 +18,7 @@ import { Role, SerializedSubviewList } from '../common'
 import { SessionService } from '../session'
 import { decomposePerspectiveProjectionMatrix, getEntityOrientationInReferenceFrame } from '../utils'
 import { ContextService, PoseStatus } from '../context'
-import { DeviceService, SuggestedFrameState } from '../device'
+import { DeviceService } from '../device'
 import { ViewService } from '../view'
 import { RealityViewer } from './base'
 
@@ -92,6 +92,7 @@ export class EmptyRealityViewer extends RealityViewer {
             this.presentChangeEvent.addEventListener(()=>{
                 if (this.isPresenting) {
                     if (!this._aggregator && this.viewService.element) {
+                        this.viewService.element['disableRootEvents'] = true; 
                         this._aggregator = new CameraEventAggregator(<any>this.viewService.element);
                         document.addEventListener('keydown', keydownListener, false);
                         document && document.addEventListener('keyup', keyupListener, false);
@@ -152,10 +153,8 @@ export class EmptyRealityViewer extends RealityViewer {
 
             const deviceUserPose = this.contextService.createEntityPose(deviceUser, deviceLocalOrigin);
 
-            const handleFrameState = (suggestedFrameState:SuggestedFrameState) => {
+            const remove = this.deviceService.frameStateEvent.addEventListener((frameState) => {
                 if (internalSession.isClosed) return;
-
-                this.deviceService.requestFrameState().then(handleFrameState);
                 
                 const aggregator = this._aggregator;
                 const flags = this._moveFlags;
@@ -165,16 +164,16 @@ export class EmptyRealityViewer extends RealityViewer {
                     return;
                 }
 
-                if (suggestedFrameState.geolocationDesired) {
-                    this.deviceService.subscribeGeolocation(suggestedFrameState.geolocationOptions, internalSession);
+                if (frameState.geolocationDesired) {
+                    this.deviceService.subscribeGeolocation(frameState.geolocationOptions, internalSession);
                 } else {
                     this.deviceService.unsubscribeGeolocation(internalSession);
                 }
 
-                SerializedSubviewList.clone(suggestedFrameState.subviews, subviews);
+                SerializedSubviewList.clone(frameState.subviews, subviews);
                 
                 // provide fov controls
-                if (!suggestedFrameState.strict) {                    
+                if (!frameState.strict) {                    
                     decomposePerspectiveProjectionMatrix(subviews[0].projectionMatrix, scratchFrustum);
                     scratchFrustum.fov = this.viewService.subviews[0].frustum.fov;
 
@@ -197,7 +196,7 @@ export class EmptyRealityViewer extends RealityViewer {
                     });
                 }
 
-                const time = suggestedFrameState.time;
+                const time = frameState.time;
 
                 deviceUserPose.update(time);
                 
@@ -211,7 +210,7 @@ export class EmptyRealityViewer extends RealityViewer {
 
                         if (orientation) {
                             // const dragPitch = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, frustum.fov * (dragMovement.endPosition.y - dragMovement.startPosition.y) / app.view.getViewport().height, scratchQuaternionDragPitch);
-                            const dragYaw = Quaternion.fromAxisAngle(Cartesian3.UNIT_Y, scratchFrustum.fov * (dragMovement.endPosition.x - dragMovement.startPosition.x) / suggestedFrameState.viewport.width, scratchQuaternionDragYaw);
+                            const dragYaw = Quaternion.fromAxisAngle(Cartesian3.UNIT_Y, scratchFrustum.fov * (dragMovement.endPosition.x - dragMovement.startPosition.x) / frameState.viewport.width, scratchQuaternionDragYaw);
                             // const drag = Quaternion.multiply(dragPitch, dragYaw, dragYaw);
 
                             orientation = Quaternion.multiply(orientation, dragYaw, dragYaw);
@@ -263,17 +262,20 @@ export class EmptyRealityViewer extends RealityViewer {
 
                 aggregator && aggregator.reset();
 
-                const frameState = this.deviceService.createFrameState(
+                const contextFrameState = this.deviceService.createContextFrameState(
                     time,
-                    suggestedFrameState.viewport,
+                    frameState.viewport,
                     subviews,
                     virtualUser
                 );
 
-                internalSession.send('ar.reality.frameState', frameState);
-            }
+                internalSession.send('ar.reality.frameState', contextFrameState);
+            });
 
-            this.deviceService.requestFrameState().then(handleFrameState)
+            internalSession.closeEvent.addEventListener(()=>{
+                remove();
+            });
+
         });
 
         // Only connect after the caller is able to attach connectEvent handlers

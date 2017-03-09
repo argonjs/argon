@@ -351,7 +351,7 @@ export interface DeprecatedPartialFrameState {
 /**
  * Describes a complete frame state which is sent to child sessions
  */
-export interface FrameState {
+export interface ContextFrameState {
     time: JulianDate,
     viewport: Viewport,
     subviews: SerializedSubviewList,

@@ -5,6 +5,14 @@ import { Matrix4, JulianDate, Cartesian3, Cartographic, Quaternion } from './ces
  */
 export declare const AVERAGE_EYE_HEIGHT = 1.6;
 /**
+ * Default near plane
+ */
+export declare const DEFAULT_NEAR_PLANE = 0.01;
+/**
+ * Default far plane
+ */
+export declare const DEFAULT_FAR_PLANE = 10000;
+/**
  * Describes the role of an [[ArgonSystem]]
  */
 export declare enum Role {
@@ -190,7 +198,7 @@ export interface DeprecatedPartialFrameState {
 /**
  * Describes a complete frame state which is sent to child sessions
  */
-export interface FrameState {
+export interface ContextFrameState {
     time: JulianDate;
     viewport: Viewport;
     subviews: SerializedSubviewList;

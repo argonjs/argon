@@ -25,13 +25,13 @@ import {
     // SerializedSubviewList, 
     SerializedEntityStateMap,
     SubviewType,
-    FrameState,
+    ContextFrameState,
     // Viewport, 
     Role,
     GeolocationOptions
 } from './common'
 import { SessionService, SessionPort } from './session'
-import { Event, getSerializedEntityState, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame, deprecated } from './utils'
+import { Event, getSerializedEntityState, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame, deprecated, decomposePerspectiveProjectionMatrix } from './utils'
 
 
 /**
@@ -180,7 +180,7 @@ export class ContextService {
     constructor(
         private sessionService: SessionService
     ) {
-        this.sessionService.manager.on['ar.context.update'] = (state: FrameState) => {
+        this.sessionService.manager.on['ar.context.update'] = (state: ContextFrameState) => {
             const scratchFrustum = this._scratchFrustum;
 
             // backwards-compat
@@ -235,7 +235,7 @@ export class ContextService {
     /**
      * An event that is raised when the next frame state is available.
      */
-    public frameStateEvent = new Event<FrameState>();
+    public frameStateEvent = new Event<ContextFrameState>();
 
     /**
      * An event that is raised after managed entities have been updated for 
@@ -373,6 +373,14 @@ export class ContextService {
         position: new ConstantPositionProperty(Cartesian3.ZERO, this.stage),
         orientation: new ConstantProperty(Quaternion.IDENTITY)
     }));
+    
+    /**
+     * An entity representing the pose of the display (not taking into account screen rotation)
+     */
+    public display: Entity = this.entities.add(new Entity({
+        id: 'ar.display',
+        name: 'Display'
+    }));
 
     /**
      * The serialized frame state for this frame
@@ -382,7 +390,7 @@ export class ContextService {
     }
 
     // the current serialized frame state
-    private _serializedFrameState: FrameState;
+    private _serializedFrameState: ContextFrameState;
 
     private _entityPoseMap = new Map<string, EntityPose | undefined>();
     private _updatingEntities = new Set<string>();
@@ -516,7 +524,7 @@ export class ContextService {
     /**
      * Process the next frame state (which should come from the current reality viewer)
      */
-    public submitFrameState(frameState: FrameState) {
+    public submitFrameState(frameState: ContextFrameState) {
         frameState.index = ++this._frameIndex;
         this._update(frameState);
     }
@@ -526,7 +534,7 @@ export class ContextService {
     private _scratchMatrix4 = new Matrix4;
 
     // All of the following work is only necessary when running in an old manager (version === 0)
-    private _updateBackwardsCompatability(frameState:FrameState) {
+    private _updateBackwardsCompatability(frameState:ContextFrameState) {
         this._knownEntities.clear();
 
         // update the entities the manager knows about
@@ -575,7 +583,7 @@ export class ContextService {
     }
 
     // TODO: This function is called a lot. Potential for optimization. 
-    private _update(frameState: FrameState) {
+    private _update(frameState: ContextFrameState) {
 
         if (this.sessionService.manager.isConnected && this.sessionService.manager.version[0] === 0) {
             this._updateBackwardsCompatability(frameState);
@@ -708,8 +716,6 @@ export class ContextServiceProvider {
     ) {
         const localOriginId = this.contextService.localOriginEastNorthUp.id;
         this.publishingReferenceFrameMap.set(localOriginId, ReferenceFrame.FIXED);
-        this.publishingReferenceFrameMap.set(this.contextService.stage.id, localOriginId);
-        this.publishingReferenceFrameMap.set(this.contextService.user.id, localOriginId);
 
         sessionService.connectEvent.addEventListener((session) => {
             const subscriptions = {};
@@ -774,7 +780,9 @@ export class ContextServiceProvider {
 
     private _sessionEntities:SerializedEntityStateMap = {};
 
-    private _sendUpdateForSession(state:FrameState, session: SessionPort) {
+    private _temp:any = {};
+
+    private _sendUpdateForSession(state:ContextFrameState, session: SessionPort) {
         const sessionEntities = this._sessionEntities;
 
         // clear session entities
@@ -794,7 +802,8 @@ export class ContextServiceProvider {
         sessionEntities[this.contextService.ground.id] = this._getCachedSerializedEntityState(this.contextService.ground, state.time);
 
         // get subscribed entities for the session
-        for (const id of <string[]><any>this.entitySubscriptionsBySubscriber.get(session)) {
+        const subscriptions = this.entitySubscriptionsBySubscriber.get(session)!;
+        for (const id in subscriptions) {
             const entity = this.contextService.entities.getById(id);
             sessionEntities[id] = this._getCachedSerializedEntityState(entity, state.time);
         }
@@ -842,7 +851,7 @@ export class ContextServiceProvider {
             const referenceFrameId = this.publishingReferenceFrameMap.get(id);
             const referenceFrame = defined(referenceFrameId) && typeof referenceFrameId === 'string' ? 
                 this.contextService.entities.getById(referenceFrameId) :
-                referenceFrameId;
+                defined(referenceFrameId) ? referenceFrameId : this.contextService.localOrigin;
             this._entityPoseCache[id] = this._getSerializedEntityState(entity, time, referenceFrame);
         }
 
