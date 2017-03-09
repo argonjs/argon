@@ -882,7 +882,7 @@ export class ContextServiceProvider {
     }
 
     public get geolocationDesired() {
-        const contextGeoposeSubscribers = this.subscribersByEntityId.get(this.contextService.stage.id);
+        const contextGeoposeSubscribers = this.subscribersByEntityId.get(this.contextService.localOrigin.id);
         if (contextGeoposeSubscribers && contextGeoposeSubscribers.size > 0) 
             return true;
         return false;
