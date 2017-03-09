@@ -309,17 +309,31 @@ export function openInArgonApp() {
     }
 }
 
+
+// requestAnimationFrame / cancelAnimationFrame polyfills
+
 var lastTime = 0;
-export const requestAnimationFrame = 
     (typeof window !== 'undefined' && window.requestAnimationFrame) ? 
+
+const rAF = 
     window.requestAnimationFrame.bind(window) : (callback) => {
     var currTime = performance.now();
     var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-    var id = setTimeout(function() { callback(currTime + timeToCall); },
+    var id = <number><any>setTimeout(function() { callback(currTime + timeToCall); },
         timeToCall);
     lastTime = currTime + timeToCall;
     return id;
 }
+
+const cAF = 
+    (typeof window !== 'undefined') ? 
+    window.cancelAnimationFrame.bind(window) : clearTimeout;
+
+export {
+    rAF as requestAnimationFrame,
+    cAF as cancelAnimationFrame
+};
+
 
 
 export function deprecated(alternative?: string) : MethodDecorator {
