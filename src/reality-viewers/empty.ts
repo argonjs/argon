@@ -281,7 +281,7 @@ export class EmptyRealityViewer extends RealityViewer {
             if (this.sessionService.manager.isClosed) return;
             const messageChannel = this.sessionService.createSynchronousMessageChannel();
             session.open(messageChannel.port1, this.sessionService.configuration);
-            internalSession.open(messageChannel.port2, { role: Role.REALITY_VIEWER, uri: this.uri, title: 'Empty' });
+            internalSession.open(messageChannel.port2, { role: Role.REALITY_VIEWER, uri: this.uri, title: 'Empty', version: this.sessionService.configuration.version });
         });
     }
 }

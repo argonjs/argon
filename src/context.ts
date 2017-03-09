@@ -804,7 +804,32 @@ export class ContextServiceProvider {
         state.entities = sessionEntities;
         state.time = state.time;
         state.sendTime = JulianDate.now(state.sendTime);
-        session.send('ar.context.update', state);
+
+        if (session.version[0] === 0) { // backwards compatability with older viewers / augmenters
+
+            for (const s of state.subviews) {
+                s['frustum'] = s['frustum'] || decomposePerspectiveProjectionMatrix(s.projectionMatrix, <any>{});
+            }
+
+            const view = this._temp;
+            view.viewport = state.viewport;
+            view.subviews = state.subviews;
+            view.pose = state.entities['ar.user'];
+            
+            delete state.subviews;
+            delete state.viewport;
+            delete state.entities['ar.user'];
+            state['view'] = view;
+
+            session.send('ar.context.update', state);
+
+            delete state['view'];
+            state.viewport = view.viewport;
+            state.subviews = view.subviews;
+        } else {
+            session.send('ar.context.update', state);
+        }
+
         state.entities = parentEntities;
     }
 

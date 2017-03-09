@@ -150,7 +150,7 @@ export class LiveRealityViewer extends RealityViewer {
             if (this.sessionService.manager.isClosed) return;
             const messageChannel = this.sessionService.createSynchronousMessageChannel();
             session.open(messageChannel.port1, this.sessionService.configuration);
-            internalSession.open(messageChannel.port2, { role: Role.REALITY_VIEWER, title: 'Live' });
+            internalSession.open(messageChannel.port2, { role: Role.REALITY_VIEWER, title: 'Live', uri: this.uri, version: this.sessionService.configuration.version });
         })
     }
 
