@@ -17696,7 +17696,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 };
                 Object.defineProperty(ContextServiceProvider.prototype, "geolocationDesired", {
                     get: function () {
-                        var contextGeoposeSubscribers = this.subscribersByEntityId.get(this.contextService.stage.id);
+                        var contextGeoposeSubscribers = this.subscribersByEntityId.get(this.contextService.localOrigin.id);
                         if (contextGeoposeSubscribers && contextGeoposeSubscribers.size > 0) return true;
                         return false;
                     },
