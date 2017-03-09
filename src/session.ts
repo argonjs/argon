@@ -1,4 +1,4 @@
-import { createGuid } from './cesium/cesium-imports';
+import { createGuid, defined } from './cesium/cesium-imports';
 import { autoinject } from 'aurelia-dependency-injection';
 import { Role, Configuration } from './common'
 import { 
@@ -97,12 +97,12 @@ export class SessionPort {
      * This property is an empty array until the session connects.
      */
     public get version() {
-        if (!this.isConnected) {
-            throw new Error('version is not available until the session is connected.');
+        if (!defined(this._version)) {
+            throw new Error('version is not available until the session is opened.');
         }
         return this._version;
     }
-    private _version: number[] = [];
+    private _version: number[];
 
     public static OPEN = 'ar.session.open';
     public static CLOSE = 'ar.session.close';
