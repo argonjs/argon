@@ -1,6 +1,6 @@
 /// <reference types="cesium" />
 import { Entity, EntityCollection, Cartographic, Cartesian3, Quaternion, JulianDate, ReferenceFrame } from './cesium/cesium-imports';
-import { SerializedEntityState, SerializedEntityStateMap, FrameState, GeolocationOptions } from './common';
+import { SerializedEntityState, SerializedEntityStateMap, ContextFrameState, GeolocationOptions } from './common';
 import { SessionService, SessionPort } from './session';
 import { Event } from './utils';
 /**
@@ -73,7 +73,7 @@ export declare class ContextService {
     /**
      * An event that is raised when the next frame state is available.
      */
-    frameStateEvent: Event<FrameState>;
+    frameStateEvent: Event<ContextFrameState>;
     /**
      * An event that is raised after managed entities have been updated for
      * the current frame.
@@ -157,9 +157,13 @@ export declare class ContextService {
      */
     ground: Entity;
     /**
+     * An entity representing the pose of the display (not taking into account screen rotation)
+     */
+    display: Entity;
+    /**
      * The serialized frame state for this frame
      */
-    readonly serializedFrameState: FrameState;
+    readonly serializedFrameState: ContextFrameState;
     private _serializedFrameState;
     private _entityPoseMap;
     private _updatingEntities;
@@ -231,7 +235,7 @@ export declare class ContextService {
     /**
      * Process the next frame state (which should come from the current reality viewer)
      */
-    submitFrameState(frameState: FrameState): void;
+    submitFrameState(frameState: ContextFrameState): void;
     private _getEntityPositionInReferenceFrame;
     private _scratchMatrix3;
     private _scratchMatrix4;
@@ -264,6 +268,7 @@ export declare class ContextServiceProvider {
     fillEntityStateMapForSession(session: SessionPort, time: JulianDate, entities: SerializedEntityStateMap): void;
     private _publishUpdates();
     private _sessionEntities;
+    private _temp;
     private _sendUpdateForSession(state, session);
     private _getCachedSerializedEntityState(entity, time);
     desiredGeolocationOptions: GeolocationOptions;

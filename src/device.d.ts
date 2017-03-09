@@ -1,126 +1,87 @@
 /// <reference types="cesium" />
-import { Entity, JulianDate } from './cesium/cesium-imports';
+import { Entity, Cartesian3, Quaternion, JulianDate, PerspectiveFrustum } from './cesium/cesium-imports';
 import { ContextService, ContextServiceProvider } from './context';
 import { SessionService, SessionPort } from './session';
-import { Viewport, SerializedSubviewList, SerializedEntityStateMap, FrameState, GeolocationOptions } from './common';
+import { Viewport, SerializedSubviewList, SerializedEntityStateMap, ContextFrameState, GeolocationOptions } from './common';
+import { Event } from './utils';
 import { ViewService } from './view';
-export declare class SuggestedFrameState {
-    private _scratchFrustum;
-    time: JulianDate;
-    viewport: Viewport;
-    subviews: SerializedSubviewList;
+export declare class DeviceState {
+    viewport?: Viewport;
+    subviews?: SerializedSubviewList;
     entities: SerializedEntityStateMap;
+    suggestedUserHeight: number;
     geolocationDesired: boolean;
     geolocationOptions: GeolocationOptions;
+    isPresentingHMD: boolean;
     strict: boolean;
 }
+export declare class DeviceFrameState extends DeviceState {
+    private _scratchFrustum;
+    screenOrientationDegrees: number;
+    time: JulianDate;
+    viewport: {
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+    };
+    subviews: SerializedSubviewList;
+}
 export declare class DeviceService {
-    private sessionService;
-    private contextService;
-    private viewService;
-    suggestedFrameState?: SuggestedFrameState;
+    protected sessionService: SessionService;
+    protected contextService: ContextService;
+    protected viewService: ViewService;
+    autoSubmitFrame: boolean;
+    deviceState: DeviceState;
+    frameState: DeviceFrameState;
+    frameStateEvent: Event<DeviceFrameState>;
     /**
      * An entity representing the local origin, defining an
      * East-North-Up coordinate system.
      */
     localOrigin: Entity;
     /**
+     * An entity representing the physical pose of the user
+     */
+    user: Entity;
+    /**
      * An entity representing the physical floor-level plane below the user
      */
     stage: Entity;
     /**
-     * An entity representing the physical pose of the user
+     * An entity representing the pose of the display (not taking into account screen rotation)
      */
-    user: Entity;
+    display: Entity;
     readonly geoHeadingAccuracy: number | undefined;
     readonly geoHorizontalAccuracy: number | undefined;
     readonly geoVerticalAccuracy: number | undefined;
     private _getEntityPositionInReferenceFrame;
-    private _scratchCartesian;
-    constructor(sessionService: SessionService, contextService: ContextService, viewService: ViewService);
-    private _defaultFrameState;
-    private _onNextFrameState(suggestedFrameState?);
-    /**
-     * Request the next (suggested) frame state. Before the returned promise is resolved,
-     * the device user entity (as well as any other subscribed entities)
-     * will be updated to reflect the latest pose data. The device-user entity
-     * is the only entity which is automatically updated when calling this function;
-     * Any other data must be explicitly subscribed to in order to receive an updated pose.
-     */
-    requestFrameState(): Promise<SuggestedFrameState>;
-    private _scratchFrameState;
-    private _getSerializedEntityState;
-    private _deviceLocalOriginRelativeToDeviceUserPose;
-    private _scratchLocalOrigin;
-    createFrameState(time: JulianDate, viewport: Viewport, subviewList: SerializedSubviewList, user: Entity, localOrigin?: Entity): FrameState;
-    getSubviewEntity(index: number): Entity;
-    subscribeGeolocation(options?: GeolocationOptions, session?: SessionPort): Promise<void>;
-    unsubscribeGeolocation(session?: SessionPort): void;
-    private _isPresentingHMD;
-    readonly isPresentingHMD: boolean;
-    requestPresentHMD(): Promise<void>;
-    exitPresentHMD(): Promise<void>;
-    private _scratchQuaternion;
-    private _scratchQuaternion2;
-    private _deviceOrientationListener;
-    private _deviceOrientation;
-    private _deviceOrientationHeadingAccuracy;
-    private _updateDeviceUserPoseFromDeviceOrientation();
-    private _tryOrientationUpdates();
-}
-export declare class DeviceServiceProvider {
-    protected sessionService: SessionService;
-    protected deviceService: DeviceService;
-    protected contextService: ContextService;
-    protected viewService: ViewService;
-    protected contextServiceProvider: ContextServiceProvider;
-    private _getSerializedEntityState;
-    constructor(sessionService: SessionService, deviceService: DeviceService, contextService: ContextService, viewService: ViewService, contextServiceProvider: ContextServiceProvider);
-    private _isPresentingHMD;
-    protected setPresentingHMD(state: boolean): void;
-    protected onRequestFrameState(session: SessionPort): Promise<SuggestedFrameState>;
-    protected onRequestPresentHMD(session: SessionPort): Promise<void>;
-    onExitPresentHMD(session: SessionPort): Promise<void>;
-    private _suggestedFrameState;
-    private _getEntityPositionInReferenceFrame;
     private _getEntityOrientationInReferenceFrame;
-    private _scratchCartesianUpdate;
-    private _scratchQuaternionUpdate;
-    update(): SuggestedFrameState;
-    defaultUserHeightHandheld: number;
-    defaultUserHeightHMD: number;
-    readonly defaultUserHeight: number;
-    private _scratchFrustum;
-    protected onUpdate(frameState: SuggestedFrameState): void;
-    private _currentGeolocationOptions?;
-    private _targetGeolocationOptions;
-    private _sessionGeolocationOptions;
-    private _checkDeviceGeolocationSubscribers();
-    private _handleSetGeolocationOptions(session, options);
-    private _updateTargetGeolocationOptions();
-    private _scratchCartesianLocalOrigin;
-    private _scratchQuaternionLocalOrigin;
-    protected configureLocalOrigin(longitude?: number, latitude?: number, altitude?: number, geoHorizontalAccuracy?: number, geoVerticalAccuracy?: number): void;
-    private _scratchStagePosition;
-    protected updateStageDefault(): void;
-    private _geolocationWatchId?;
+    protected _scratchCartesian: Cartesian3;
+    protected _scratchFrustum: PerspectiveFrustum;
+    constructor(sessionService: SessionService, contextService: ContextService, viewService: ViewService);
+    private _onDeviceState(deviceState);
+    private _updating;
+    private _updateFrameState;
+    private _updateDisplayPose();
+    getScreenOrientationDegrees(): any;
     /**
-     * Overridable. Should call setGeolocation when new geolocation is available
+     * Request an animation frame callback for the current view.
      */
-    protected onStartGeolocationUpdates(options: GeolocationOptions): Promise<void>;
+    requestAnimationFrame: (callback: (timestamp: number) => void) => number;
+    cancelAnimationFrame: (id: number) => void;
     /**
-     * Overridable.
+     * Start emmitting frameState events
      */
-    protected onStopGeolocationUpdates(): void;
-}
-export declare class DOMDeviceServiceProvider extends DeviceServiceProvider {
-    autoSubmitFrame: boolean;
-    static isAvailable(): boolean;
-    constructor(sessionService: SessionService, deviceService: DeviceService, contextService: ContextService, viewService: ViewService, contextServiceProvider: ContextServiceProvider);
-    protected onRequestFrameState(session: SessionPort): Promise<SuggestedFrameState>;
-    protected onUpdate(suggestedFrameState: SuggestedFrameState): void;
+    startUpdates(): void;
+    /**
+     * Stop emitting frameState events
+     */
+    stopUpdates(): void;
+    protected onUpdateFrameState(): void;
+    private _updateStageDefault();
+    private _updateDefault();
     private _vrFrameData?;
-    private _scratchCartesian;
     private _scratchQuaternion;
     private _scratchQuaternion2;
     private _scratchMatrix3;
@@ -134,12 +95,62 @@ export declare class DOMDeviceServiceProvider extends DeviceServiceProvider {
      * Rotate the standing space around +Y
      */
     configureStandingSpaceHeadingOffset(headingOffset?: number): void;
-    private _updateFrameStateFromWebVR(suggestedFrameState);
+    private _updateForWebVR();
+    private _scratchFrameState;
+    private _getSerializedEntityState;
+    private _getAncestorReferenceFrames;
+    private _deviceLocalOriginRelativeToDeviceUserPose;
+    private _scratchLocalOrigin;
+    createContextFrameState(time: JulianDate, viewport: Viewport, subviewList: SerializedSubviewList, user: Entity, entityOptions?: {
+        localOrigin?: Entity;
+        ground?: Entity;
+    }): ContextFrameState;
+    getSubviewEntity(index: number): Entity;
+    subscribeGeolocation(options?: GeolocationOptions, session?: SessionPort): Promise<void>;
+    unsubscribeGeolocation(session?: SessionPort): void;
+    readonly isPresentingHMD: boolean;
+    requestPresentHMD(): Promise<void>;
+    exitPresentHMD(): Promise<void>;
+    private _deviceOrientationListener;
+    private _deviceOrientation;
+    private _deviceOrientationHeadingAccuracy;
+    private _updateUserDefault();
+    private _tryOrientationUpdates();
+    private _setupVRPresentChangeHandler();
+}
+export declare class DeviceServiceProvider {
+    protected sessionService: SessionService;
+    protected deviceService: DeviceService;
+    protected contextService: ContextService;
+    protected viewService: ViewService;
+    protected contextServiceProvider: ContextServiceProvider;
+    private _subscribers;
+    constructor(sessionService: SessionService, deviceService: DeviceService, contextService: ContextService, viewService: ViewService, contextServiceProvider: ContextServiceProvider);
+    protected handleRequestPresentHMD(session: SessionPort): Promise<void>;
+    protected handleExitPresentHMD(session: SessionPort): Promise<void>;
+    publishDeviceState(): void;
+    defaultUserHeight: number;
+    readonly suggestedUserHeight: number;
+    protected onUpdateDeviceState(deviceState: DeviceState): void;
+    private _currentGeolocationOptions?;
+    private _targetGeolocationOptions;
+    private _sessionGeolocationOptions;
+    private _checkDeviceGeolocationSubscribers();
+    private _handleSetGeolocationOptions(session, options);
+    private _updateTargetGeolocationOptions();
+    protected _scratchCartesianLocalOrigin: Cartesian3;
+    protected _scratchQuaternionLocalOrigin: Quaternion;
+    protected _scratchFrustum: PerspectiveFrustum;
+    protected configureLocalOrigin(longitude?: number, latitude?: number, altitude?: number, geoHorizontalAccuracy?: number, geoVerticalAccuracy?: number): void;
+    private _scratchStagePosition;
+    protected updateStageDefault(): void;
+    private _geolocationWatchId?;
     /**
-     * Request an animation frame callback for the current view.
+     * Overridable. Should call setGeolocation when new geolocation is available
      */
-    requestAnimationFrame(callback: (timestamp: number) => void): any;
-    cancelAnimationFrame(id: number): void;
-    onRequestPresentHMD(session: SessionPort): Promise<void>;
-    onExitPresentHMD(session: SessionPort): Promise<void>;
+    protected onStartGeolocationUpdates(options: GeolocationOptions): Promise<void>;
+    /**
+     * Overridable.
+     */
+    protected onStopGeolocationUpdates(): void;
 }

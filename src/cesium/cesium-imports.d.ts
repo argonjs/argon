@@ -11,7 +11,6 @@ export { default as ClockStep } from 'cesium/Source/Core/ClockStep';
 export { default as CompositeEntityCollection } from 'cesium/Source/DataSources/CompositeEntityCollection';
 export { default as ConstantPositionProperty } from 'cesium/Source/DataSources/ConstantPositionProperty';
 export { default as ConstantProperty } from 'cesium/Source/DataSources/ConstantProperty';
-export { default as createGuid } from 'cesium/Source/Core/createGuid';
 export { default as defaultValue } from 'cesium/Source/Core/defaultValue';
 export { default as defined } from 'cesium/Source/Core/defined';
 export { default as DeveloperError } from 'cesium/Source/Core/DeveloperError';
@@ -43,4 +42,5 @@ export { default as ScreenSpaceEventType } from 'cesium/Source/Core/ScreenSpaceE
 export { default as Transforms } from 'cesium/Source/Core/Transforms';
 export { default as Simon1994PlanetaryPositions } from 'cesium/Source/Core/Simon1994PlanetaryPositions';
 export { default as PolylinePipeline } from 'cesium/Source/Core/PolylinePipeline';
+export declare function createGuid(): string;
 import './cesium-extensions';

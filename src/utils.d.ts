@@ -89,5 +89,7 @@ export declare function decomposePerspectiveProjectionMatrix(mat: Matrix4, resul
 export declare function convertEntityReferenceFrame(entity: Entity, time: JulianDate, frame: ReferenceFrame | Entity): boolean;
 export declare const isIOS: boolean;
 export declare function openInArgonApp(): void;
-export declare const requestAnimationFrame: any;
+declare const rAF: any;
+declare const cAF: any;
+export { rAF as requestAnimationFrame, cAF as cancelAnimationFrame };
 export declare function deprecated(alternative?: string): MethodDecorator;
