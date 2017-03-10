@@ -211,6 +211,10 @@ export class ContextService {
             this._update(state);
         }
 
+        this.localOrigin.definitionChanged.addEventListener(()=>{
+            this._localOriginChanged = true;
+        });
+
         this._scratchFrustum.near = DEFAULT_NEAR_PLANE;
         this._scratchFrustum.far = DEFAULT_FAR_PLANE;
         this._scratchFrustum.fov = CesiumMath.PI_OVER_THREE;
@@ -258,6 +262,7 @@ export class ContextService {
      * An event that fires when the local origin changes.
      */
     public localOriginChangeEvent = new Event<void>();
+    private _localOriginChanged = false;
 
     /**
      * A monotonically increasing value (in milliseconds) for the current frame state.
@@ -609,6 +614,10 @@ export class ContextService {
         this.frameStateEvent.raiseEvent(frameState);
 
         // raise events for the user to update and render the scene
+        if (this._localOriginChanged) {
+            this._localOriginChanged = false;
+            this.localOriginChangeEvent.raiseEvent(undefined);
+        }
         this.updateEvent.raiseEvent(this);
         this.renderEvent.raiseEvent(this);
         this.postRenderEvent.raiseEvent(this);
