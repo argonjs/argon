@@ -987,12 +987,6 @@ export class DeviceServiceProvider {
         return Promise.resolve();
     }
 
-    // private _deviceState = new DeviceState;
-    // private _getEntityPositionInReferenceFrame = getEntityPositionInReferenceFrame;
-    // private _getEntityOrientationInReferenceFrame = getEntityOrientationInReferenceFrame;
-    // private _scratchCartesianUpdate = new Cartesian3;
-    // private _scratchQuaternionUpdate = new Quaternion;
-
     public publishDeviceState() {
         const deviceState = this.deviceService.deviceState;
         
@@ -1001,33 +995,6 @@ export class DeviceServiceProvider {
         deviceState.suggestedUserHeight = this.suggestedUserHeight;
 
         this.onUpdateDeviceState(this.deviceService.deviceState);
-
-        // const deviceService = this.deviceService;
-        // const deviceLocalOrigin = deviceService.localOrigin;
-        // const deviceUser = deviceService.user;
-        // const deviceStage = this.deviceService.stage;
-        
-        // const deviceStagePosition = this._getEntityPositionInReferenceFrame(deviceStage, time, deviceLocalOrigin, this._scratchCartesianUpdate);
-        // const deviceStageOrientation = this._getEntityOrientationInReferenceFrame(deviceStage, time, deviceLocalOrigin, this._scratchQuaternionUpdate);
-        
-        // const contextStage = this.contextService.stage;
-        // const contextLocalOrigin = this.contextService.localOrigin;
-        // contextStage.position = <ConstantPositionProperty> contextStage.position || new ConstantPositionProperty();
-        // contextStage.orientation =  <ConstantProperty> contextStage.orientation || new ConstantProperty();
-        // (contextStage.position as ConstantPositionProperty).setValue(deviceStagePosition, contextLocalOrigin);
-        // (contextStage.orientation as ConstantProperty).setValue(deviceStageOrientation);
-
-        // const stageState = this._getSerializedEntityState(
-        //     deviceStage,
-        //     time,
-        //     deviceLocalOrigin
-        // );
-
-        // const subviews = frameState.subviews;
-        // for (let i=0; i < frameState.subviews.length; i++) {
-        //     const subviewEntity = this.deviceService.getSubviewEntity(i);
-        //     subviews[i].pose = getSerializedEntityState(subviewEntity, time, deviceUser, subviews[i].pose)
-        // }
 
         // send device state to each subscribed session 
         const time = JulianDate.now();
