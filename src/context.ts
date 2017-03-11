@@ -211,8 +211,20 @@ export class ContextService {
             this._update(state);
         }
 
-        this.localOrigin.definitionChanged.addEventListener(()=>{
-            this._localOriginChanged = true;
+        this.localOrigin.definitionChanged.addEventListener((localOrigin, property)=>{
+            if (property === 'position' || property === 'orientation') {
+                if (localOrigin.position) {
+                    localOrigin.position.definitionChanged.addEventListener(()=>{
+                        this._localOriginChanged = true;
+                    });
+                }
+                if (localOrigin.orientation) {
+                    localOrigin.orientation.definitionChanged.addEventListener(()=>{
+                        this._localOriginChanged = true;
+                    });
+                }
+                this._localOriginChanged = true;
+            }
         });
 
         this._scratchFrustum.near = DEFAULT_NEAR_PLANE;
@@ -302,9 +314,7 @@ export class ContextService {
      */
     public localOrigin: Entity = this.entities.add(new Entity({
         id: 'ar.localOrigin',
-        name: 'Local Origin (ENU)',
-        position: new ConstantPositionProperty(undefined, undefined),
-        orientation: new ConstantProperty(Quaternion.IDENTITY)
+        name: 'Local Origin (ENU)'
     }));
 
      /**
@@ -461,7 +471,7 @@ export class ContextService {
      * instance matching the given id, if the subscription is successful
      */
     public subscribe(id: string|Entity, session=this.sessionService.manager) : Promise<Entity> {
-        id = (<Entity>id).id || id;
+        id = (<Entity>id).id || <string>id;
         return session.request('ar.context.subscribe', {id}).then(()=>{
             return this.entities.getOrCreateEntity(id);
         });
