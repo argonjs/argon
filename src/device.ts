@@ -436,11 +436,13 @@ export class DeviceService {
         const rightSubview = subviews[1] = subviews[1] || {};
         leftSubview.type = SubviewType.LEFTEYE;
         rightSubview.type = SubviewType.RIGHTEYE;
+
         const leftViewport = leftSubview.viewport = leftSubview.viewport || <Viewport>{};
         leftViewport.x = leftBounds[0] * viewport.width;
         leftViewport.y = leftBounds[1] * viewport.height;
         leftViewport.width = leftBounds[2] * viewport.width;
         leftViewport.height = leftBounds[3] * viewport.height;
+
         const rightViewport = rightSubview.viewport = rightSubview.viewport || <Viewport>{};
         rightViewport.x = rightBounds[0] * viewport.width;
         rightViewport.y = rightBounds[1] * viewport.height;
@@ -550,6 +552,15 @@ export class DeviceService {
         orientation: new ConstantProperty(undefined)
     });
 
+    /**
+     * Generate a frame state for the ContextService.
+     * 
+     * @param time 
+     * @param viewport 
+     * @param subviewList 
+     * @param user 
+     * @param entityOptions 
+     */
     public createContextFrameState(
         time:JulianDate,
         viewport:Viewport,
@@ -558,11 +569,14 @@ export class DeviceService {
         entityOptions?: {localOrigin?:Entity, ground?:Entity}
     ) : ContextFrameState {
 
+        // TODO: In certain cases (webvr?), we may want to disallow the reality from specifiying a custom user entity, 
+        // and simply allow it to specify a custom stage in which the user can move about?
+
         for (const s of subviewList) {
             if (!isFinite(s.projectionMatrix[0]))
                 throw new Error('Invalid projection matrix (contains non-finite values)');
         }
-
+        
         let localOrigin = entityOptions && entityOptions.localOrigin;
         let ground = entityOptions && entityOptions.ground;
 
@@ -614,41 +628,38 @@ export class DeviceService {
         }
 
         const contextService = this.contextService;
-        const contextLocalOrigin = contextService.localOrigin;
-        const contextUser = contextService.user;
-
-        contextLocalOrigin.position = contextLocalOrigin.position || new ConstantPositionProperty();
-        contextLocalOrigin.orientation = contextLocalOrigin.orientation || new ConstantProperty();
-        contextUser.position = contextUser.position || new ConstantPositionProperty();
-        contextUser.orientation = contextUser.orientation || new ConstantProperty();
-        contextUser['meta'] = user['meta'];
-
-        (contextLocalOrigin.position as ConstantPositionProperty).setValue(Cartesian3.ZERO, localOrigin);
-        (contextLocalOrigin.orientation as ConstantProperty).setValue(Quaternion.IDENTITY);
-        (contextUser.position as ConstantPositionProperty).setValue(Cartesian3.ZERO, user);
-        (contextUser.orientation as ConstantProperty).setValue(Quaternion.IDENTITY);
 
         const frameState:ContextFrameState = this._scratchFrameState;
         frameState.time = JulianDate.clone(time, frameState.time);
         frameState.viewport = Viewport.clone(viewport, frameState.viewport);
         frameState.subviews = SerializedSubviewList.clone(subviewList, frameState.subviews);
 
+        // compute state for context entities, changing the reference frame to the context local origin
+        const deviceLocalOrigin = this.localOrigin;
+        const contextLocalOriginId = contextService.localOrigin.id;
         const getEntityState = this._getSerializedEntityState;
-        const contextLocalOriginRootFrame = this._getAncestorReferenceFrames(contextLocalOrigin)[0];
-        frameState.entities[contextLocalOrigin.id] = getEntityState(contextLocalOrigin, time, contextLocalOriginRootFrame);
-        frameState.entities[contextUser.id] = getEntityState(contextUser, time, contextLocalOrigin);
 
-        // update remaining context entities, changing the reference frame to the context local origin
+        // local origin
+        const localOriginRootFrame = this._getAncestorReferenceFrames(localOrigin)[0];
+        frameState.entities[contextService.localOrigin.id] = getEntityState(localOrigin, time, localOriginRootFrame);
+
+        // user
+        const userState = frameState.entities[contextService.user.id] = getEntityState(user, time, localOrigin);
+        if (!userState) throw new Error('User pose is required (in relation to local origin)');
+        userState.r = contextLocalOriginId;
 
         // display
-        const contextDisplayState = frameState.entities[contextService.display.id] = getEntityState(this.display, time, localOrigin);
-        if (contextDisplayState) contextDisplayState.r = contextLocalOrigin.id;
+        const contextDisplayState = frameState.entities[contextService.display.id] = getEntityState(this.display, time, deviceLocalOrigin);
+        if (contextDisplayState) contextDisplayState.r = contextLocalOriginId;
+
         // stage
-        const contextStageState = frameState.entities[contextService.stage.id] = getEntityState(this.stage, time, localOrigin);
-        if (contextStageState) contextStageState.r = contextLocalOrigin.id;
+        const contextStageState = frameState.entities[contextService.stage.id] = getEntityState(this.stage, time, deviceLocalOrigin);
+        if (contextStageState) contextStageState.r = contextLocalOriginId;
+
         // ground
-        const contextGroundState = frameState.entities[contextService.ground.id] = ground ? getEntityState(ground, time, localOrigin) : contextStageState;
-        if (contextGroundState) contextGroundState.r = contextLocalOrigin.id;
+        const contextGroundState = frameState.entities[contextService.ground.id] = ground ? 
+            getEntityState(ground, time, localOrigin) : getEntityState(this.stage, time, deviceLocalOrigin);
+        if (contextGroundState) contextGroundState.r = contextLocalOriginId;
 
         return frameState;
     }
@@ -928,7 +939,7 @@ export class DeviceServiceProvider {
         });
 
         this.contextServiceProvider.subscribersChangeEvent.addEventListener(({id})=>{
-            if (this.deviceService.localOrigin.id === id)
+            if (this.deviceService.localOrigin.id === id || this.contextService.localOrigin.id === id)
                 this._checkDeviceGeolocationSubscribers();
         });
     }
@@ -972,7 +983,6 @@ export class DeviceServiceProvider {
                 return navigator.getVRDisplays()
                     .then(displays => displays[0])
                     .then(requestPresent)
-                    .then(this.publishDeviceState.bind(this));
             }
         }
         throw new Error('No HMD available');
@@ -1013,8 +1023,71 @@ export class DeviceServiceProvider {
         return this.deviceService.isPresentingHMD ? this.defaultUserHeight : this.defaultUserHeight/2;
     }
 
+    private _vrFrameData?:any;
+
     protected onUpdateDeviceState(deviceState:DeviceState) {
 
+        const vrDisplay = currentVRDisplay;
+        if (!vrDisplay) {
+            deviceState.viewport = undefined;
+            deviceState.subviews = undefined;
+            deviceState.strict = false;
+            return;
+        }
+
+        // Since the WebVR polyfill only manages state within one browser window,
+        // we will just pass down the viewport/subview configuration in the device state.
+        // In managed sessions with real WebVR implementations, the WebVR API is used directly in the DeviceService
+        // (this is not really useful within an iframe, since real webVR implementations currently do not support
+        // a way to composite content from different iframes, however once WebVR is decoupled from the DOM and can run
+        // in a worker, the DeviceService should be able to leverage the WebVR API as needed within each frame)
+
+        const vrFrameData : VRFrameData = this._vrFrameData = 
+            this._vrFrameData || new VRFrameData();
+        if (!vrDisplay['getFrameData'](vrFrameData)) {
+            setTimeout(()=>this.publishDeviceState(), 500);
+            return;
+        }
+
+        const element = this.viewService.element;
+        const viewport = deviceState.viewport = deviceState.viewport || <Viewport>{};
+        viewport.x = 0;
+        viewport.y = 0;
+        viewport.width = element && element.clientWidth || 0;
+        viewport.height = element && element.clientHeight || 0;
+
+        const layers = vrDisplay.getLayers();
+        const leftBounds = layers[0].leftBounds!;
+        const rightBounds = layers[0].rightBounds!;
+        
+        const subviews = deviceState.subviews = deviceState.subviews || [];
+        subviews.length = 2;
+
+        const leftSubview = subviews[0] = subviews[0] || {};
+        const rightSubview = subviews[1] = subviews[1] || {};
+        leftSubview.type = SubviewType.LEFTEYE;
+        rightSubview.type = SubviewType.RIGHTEYE;
+
+        const leftViewport = leftSubview.viewport = leftSubview.viewport || <Viewport>{};
+        leftViewport.x = leftBounds[0] * viewport.width;
+        leftViewport.y = leftBounds[1] * viewport.height;
+        leftViewport.width = leftBounds[2] * viewport.width;
+        leftViewport.height = leftBounds[3] * viewport.height;
+
+        const rightViewport = rightSubview.viewport = rightSubview.viewport || <Viewport>{};
+        rightViewport.x = rightBounds[0] * viewport.width;
+        rightViewport.y = rightBounds[1] * viewport.height;
+        rightViewport.width = rightBounds[2] * viewport.width;
+        rightViewport.height = rightBounds[3] * viewport.height;
+
+        leftSubview.projectionMatrix = Matrix4.clone(
+            <any>vrFrameData.leftProjectionMatrix, 
+            leftSubview.projectionMatrix
+        );
+        rightSubview.projectionMatrix = Matrix4.clone(
+            <any>vrFrameData.rightProjectionMatrix, 
+            rightSubview.projectionMatrix
+        );
     }
 
     private _currentGeolocationOptions?:GeolocationOptions;
