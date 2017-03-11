@@ -1117,26 +1117,22 @@ export class DeviceServiceProvider {
     /**
      * Overridable. Should call setGeolocation when new geolocation is available 
      */
-    protected onStartGeolocationUpdates(options:GeolocationOptions) : Promise<void> {
+    protected onStartGeolocationUpdates(options:GeolocationOptions) : void {
         if (typeof navigator == 'undefined' || !navigator.geolocation)
             throw new Error('Unable to start geolocation updates');
-        return new Promise<void>((resolve, reject) => {
-            if (!defined(this._geolocationWatchId)) {
-                let didResolve = false;
-                this._geolocationWatchId = navigator.geolocation.watchPosition((pos) => {
-                    if (!didResolve) resolve(), didResolve = true;
-                    this.configureLocalOrigin(
-                        pos.coords.longitude, 
-                        pos.coords.latitude, 
-                        pos.coords.altitude || 0, 
-                        (pos.coords.accuracy > 0) ? pos.coords.accuracy : undefined,
-                        pos.coords.altitudeAccuracy || undefined
-                    );
-                }, reject, options);
-            } else {
-                resolve();
-            };
-        });
+        if (!defined(this._geolocationWatchId)) {
+            this._geolocationWatchId = navigator.geolocation.watchPosition((pos) => {
+                this.configureLocalOrigin(
+                    pos.coords.longitude, 
+                    pos.coords.latitude, 
+                    pos.coords.altitude || 0, 
+                    (pos.coords.accuracy > 0) ? pos.coords.accuracy : undefined,
+                    pos.coords.altitudeAccuracy || undefined
+                );
+            }, (e)=>{
+                console.warn('Unable to start geolocation updates: ' + e.message);
+            }, options);
+        }
     }
 
     /**
