@@ -741,6 +741,8 @@ export class ContextServiceProvider {
             this.entitySubscriptionsBySubscriber.set(session, subscriptions);
 
             session.on['ar.context.subscribe'] = ({id}:{id:string}) => {
+                if (subscriptions[id]) return;
+
                 const subscribers = this.subscribersByEntityId.get(id) || new Set<SessionPort>();
                 this.subscribersByEntityId.set(id, subscribers);
                 subscribers.add(session);
@@ -754,6 +756,8 @@ export class ContextServiceProvider {
             }
 
             session.on['ar.context.unsubscribe'] = ({id}:{id:string}) => {
+                if (!subscriptions[id]) return;
+
                 const subscribers = this.subscribersByEntityId.get(id);
                 subscribers && subscribers.delete(session);
                 delete subscriptions[id];

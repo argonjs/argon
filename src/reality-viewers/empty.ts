@@ -153,6 +153,8 @@ export class EmptyRealityViewer extends RealityViewer {
 
             const deviceUserPose = this.contextService.createEntityPose(deviceUser, deviceLocalOrigin);
 
+            let subscribedGeolocation = false;
+
             const remove = this.deviceService.frameStateEvent.addEventListener((frameState) => {
                 if (internalSession.isClosed) return;
                 
@@ -165,9 +167,15 @@ export class EmptyRealityViewer extends RealityViewer {
                 }
 
                 if (frameState.geolocationDesired) {
-                    this.deviceService.subscribeGeolocation(frameState.geolocationOptions, internalSession);
+                    if (!subscribedGeolocation) {
+                        subscribedGeolocation = true;
+                        this.deviceService.subscribeGeolocation(frameState.geolocationOptions, internalSession);
+                    }
                 } else {
-                    this.deviceService.unsubscribeGeolocation(internalSession);
+                    if (subscribedGeolocation) {
+                        subscribedGeolocation = false;
+                        this.deviceService.unsubscribeGeolocation(internalSession);
+                    }
                 }
 
                 SerializedSubviewList.clone(frameState.subviews, subviews);
