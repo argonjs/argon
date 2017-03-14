@@ -390,7 +390,6 @@ export class RealityServiceProvider {
 
         session.closeEvent.addEventListener(() => {
             viewerSession.send(CLOSE_SESSION_KEY);
-            viewerSession.close();
         })
     }
 
