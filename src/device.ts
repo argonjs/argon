@@ -645,8 +645,11 @@ export class DeviceService {
 
         // user
         const userState = frameState.entities[contextService.user.id] = getEntityState(user, time, localOrigin);
-        if (!userState) throw new Error('User pose is required (in relation to local origin)');
-        userState.r = contextLocalOriginId;
+        if (userState) {
+            userState.r = contextLocalOriginId;
+        } else {
+            console.warn('User pose is required (in relation to local origin)');
+        }
 
         // display
         const contextDisplayState = frameState.entities[contextService.display.id] = getEntityState(this.display, time, deviceLocalOrigin);
