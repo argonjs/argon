@@ -282,7 +282,8 @@ export class ViewService {
      * so that the manager knows what our embedded viewport is
      */
     public publishEmbeddedViewport(viewport?: Viewport) {
-        if (this.sessionService.manager.isConnected && this.sessionService.manager.version[0] >= 1) 
+        if (this.sessionService.manager.isConnected && 
+            this.sessionService.manager.version[0] >= 1) 
             this.sessionService.manager.send('ar.view.embeddedViewport', {viewport});
     }
 
@@ -316,17 +317,32 @@ export class ViewService {
         if (session && session.isConnected) session.send('ar.view.uievent', uievent);
     }
 
+    private _embeddedViewport = new Viewport; 
+
     private _watchEmbeddedViewport() {
         const publish = () => {
             if (this.element && this.autoPublishEmbeddedMode) {
                 const parentElement = this.element.parentElement;
                 const rect = parentElement && parentElement.getBoundingClientRect();
-                rect && this.publishEmbeddedViewport({
-                    x: rect.left,
-                    y: window.innerHeight - rect.bottom,
-                    width: rect.width,
-                    height: rect.height
-                });
+                if (rect) {
+                    const x = rect.left;
+                    const y = window.innerHeight - rect.bottom;
+                    const width = rect.width;
+                    const height = rect.height;
+
+                    const embeddedViewport = this._embeddedViewport;
+
+                    if (embeddedViewport.x !== x || 
+                        embeddedViewport.y !== y || 
+                        embeddedViewport.width !== width ||
+                        embeddedViewport.height !== height) {
+                            embeddedViewport.x = x;
+                            embeddedViewport.y = y;
+                            embeddedViewport.width = width;
+                            embeddedViewport.height = height;
+                            this.publishEmbeddedViewport(this._embeddedViewport);
+                    }
+                }
             }
         }
 
