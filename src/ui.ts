@@ -326,10 +326,10 @@ export class DefaultUIService {
         const parentWidth = parentElement ? parentElement.clientWidth : 0;
         const parentHeight = parentElement ? parentElement.clientHeight : 0;
 
-        if (!(window.innerWidth === parentWidth &&                
+        if (!(window.innerWidth === parentWidth &&
             window.innerHeight === parentHeight))
             this.menuItems.push(this.maximizeMenuItem);
-        if (utils.isIOS || navigator['vrEnabled'])
+        if (utils.isIOS || 'getVRDisplays' in navigator)
             this.menuItems.push(this.hmdMenuItem);
         if (this.realityViewerItemElements.size > 0)
             this.menuItems.push(this.realityMenuItem);
