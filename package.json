@@ -223,7 +223,7 @@
     "postinstall": "npm install types/cesium types/mobile-detect",
     "tsc": "tsc",
     "preversion": "[[ -z $(git status --porcelain) ]]",
-    "version": "npm run tsc && npm run build && git add -u && git commit -m 'Update build'",
+    "version": "npm run tsc && npm run build",
     "postversion": "git push && git push --tags"
   },
   "dependencies": {
