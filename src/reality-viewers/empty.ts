@@ -7,7 +7,6 @@ import {
     ConstantProperty,
     Cartesian2,
     Cartesian3,
-    Entity,
     Quaternion,
     Matrix3,
     Matrix4,
@@ -16,7 +15,7 @@ import {
 } from '../cesium/cesium-imports'
 import { Role, SerializedSubviewList } from '../common'
 import { SessionService } from '../session'
-import { decomposePerspectiveProjectionMatrix, getEntityOrientationInReferenceFrame } from '../utils'
+import { decomposePerspectiveProjectionMatrix, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame } from '../utils'
 import { ContextService, PoseStatus } from '../context'
 import { DeviceService } from '../device'
 import { ViewService } from '../view'
@@ -132,26 +131,15 @@ export class EmptyRealityViewer extends RealityViewer {
             const forward = new Cartesian3(0,-1,0);
             const scratchFrustum = new PerspectiveFrustum();
 
-            const deviceLocalOrigin = this.deviceService.localOrigin;
+            const deviceStage = this.deviceService.stage;
             const deviceUser = this.deviceService.user;
 
             const NEGATIVE_UNIT_Z = new Cartesian3(0,0,-1);
             const X_90ROT = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, CesiumMath.PI_OVER_TWO);
 
-            const virtualUserPositionProperty = new ConstantPositionProperty(
-                Cartesian3.ZERO, 
-                deviceLocalOrigin
-            );
-            const virtualUserOrientationProperty = new ConstantProperty(X_90ROT);
-
-            const virtualUser = new Entity({
-                position: virtualUserPositionProperty,
-                orientation: virtualUserOrientationProperty
-            });
-
             const subviews:SerializedSubviewList = [];
 
-            const deviceUserPose = this.contextService.createEntityPose(deviceUser, deviceLocalOrigin);
+            const deviceUserPose = this.contextService.createEntityPose(deviceUser, deviceStage);
 
             let subscribedGeolocation = false;
 
@@ -207,11 +195,21 @@ export class EmptyRealityViewer extends RealityViewer {
                 const time = frameState.time;
 
                 deviceUserPose.update(time);
+
+                const overrideUser = !(deviceUserPose.status & PoseStatus.KNOWN);
                 
                 // provide controls if the device does not have a physical pose
-                if (!(deviceUserPose.status & PoseStatus.KNOWN)) {
+                if (overrideUser) {
                     
-                    let orientation = getEntityOrientationInReferenceFrame(virtualUser, time, deviceLocalOrigin, scratchQuaternion)!;
+                    const contextUser = this.contextService.user;
+                    const contextStage = this.contextService.stage;
+
+                    const position = 
+                        getEntityPositionInReferenceFrame(contextUser, time, contextStage, positionScratchCartesian) || 
+                        Cartesian3.clone(Cartesian3.ZERO, positionScratchCartesian);
+
+                    let orientation = getEntityOrientationInReferenceFrame(contextUser, time, contextStage, scratchQuaternion) ||
+                        Quaternion.clone(X_90ROT, scratchQuaternion);
                     
                     if (aggregator && aggregator.isMoving(CameraEventType.LEFT_DRAG)) {
                         const dragMovement = aggregator.getMovement(CameraEventType.LEFT_DRAG);
@@ -222,7 +220,7 @@ export class EmptyRealityViewer extends RealityViewer {
                             // const drag = Quaternion.multiply(dragPitch, dragYaw, dragYaw);
 
                             orientation = Quaternion.multiply(orientation, dragYaw, dragYaw);
-                            (<any>virtualUser.orientation).setValue(orientation);
+                            (<any>contextUser.orientation).setValue(orientation);
                         }
                     }
 
@@ -230,8 +228,6 @@ export class EmptyRealityViewer extends RealityViewer {
                     Matrix3.multiplyByVector(orientationMatrix, Cartesian3.UNIT_Y, up);
                     Matrix3.multiplyByVector(orientationMatrix, Cartesian3.UNIT_X, right);
                     Matrix3.multiplyByVector(orientationMatrix, NEGATIVE_UNIT_Z, forward);
-
-                    const position = virtualUserPositionProperty.getValueInReferenceFrame(time, deviceLocalOrigin, positionScratchCartesian);
                     
                     var moveRate = 0.02;
                     if (flags.moveForward) {
@@ -259,13 +255,8 @@ export class EmptyRealityViewer extends RealityViewer {
                         Cartesian3.add(position, movementScratchCartesian, position);
                     }
 
-                    virtualUserPositionProperty.setValue(position, deviceLocalOrigin);
-
-                } else if (deviceUserPose.status & PoseStatus.FOUND) {
-
-                    virtualUserPositionProperty.setValue(Cartesian3.ZERO, deviceUser);
-                    virtualUserOrientationProperty.setValue(Quaternion.IDENTITY)
-                    
+                    (contextUser.position as ConstantPositionProperty).setValue(position, contextStage);
+                    (contextUser.orientation as ConstantProperty).setValue(orientation);
                 }
 
                 aggregator && aggregator.reset();
@@ -274,7 +265,7 @@ export class EmptyRealityViewer extends RealityViewer {
                     time,
                     frameState.viewport,
                     subviews,
-                    virtualUser
+                    {overrideUser}
                 );
 
                 internalSession.send('ar.reality.frameState', contextFrameState);

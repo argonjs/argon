@@ -119,8 +119,7 @@ export class LiveRealityViewer extends RealityViewer {
                         const contextFrameState = this.deviceService.createContextFrameState(
                             frameState.time,
                             frameState.viewport,
-                            frameState.subviews,
-                            this.deviceService.user
+                            frameState.subviews
                         );
                         
                         internalSession.send('ar.reality.frameState', contextFrameState);

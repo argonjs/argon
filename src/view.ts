@@ -212,7 +212,7 @@ export class ViewService {
         return this.subviews;
     }
 
-    private _IDENTITY_SUBVIEW_POSE = {p:Cartesian3.ZERO, o:Quaternion.IDENTITY, r:this.contextService.user.id};
+    private _IDENTITY_SUBVIEW_POSE = {p:Cartesian3.ZERO, o:Quaternion.IDENTITY, r:this.contextService.view.id};
 
     private _processFrameState(state:ContextFrameState) {
         this._updateViewport(state.viewport);
