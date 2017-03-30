@@ -92,6 +92,7 @@ export declare class ContextService {
      * An event that fires when the local origin changes.
      */
     localOriginChangeEvent: Event<void>;
+    private _localOriginChanged;
     /**
      * A monotonically increasing value (in milliseconds) for the current frame state.
      * This value is useful only for doing accurate *timing*, not for determining
@@ -121,13 +122,16 @@ export declare class ContextService {
     /**
     * An entity representing the local origin, which is oriented
     * East-North-Up if geolocation is known, otherwise an arbitrary
-    * frame with +Z up
+    * frame with +Z up. The local origin changes infrequently and stays
+    * near the user, making it useful as the root of a rendering scenegraph.
+    *
+    * Any time the local origin changes, the localOriginChange event is raised.
     */
     localOrigin: Entity;
     /**
     * Alias for `localOrigin`. An entity representing the local origin,
     * which is oriented East-North-Up if geolocation is known,
-    * otherwise an arbitrary frame with +Z up
+    * otherwise an arbitrary frame with +Z up.
     */
     localOriginEastNorthUp: Entity;
     /**
@@ -142,24 +146,39 @@ export declare class ContextService {
      */
     defaultReferenceFrame: Entity;
     /**
-     * An entity representing the user.
+     * An entity representing the physical floor beneath the user,
+     * where +X is east, +Y is north, and +Z is up (if geolocation is known).
+     */
+    stage: Entity;
+    /**
+     * Alias for `stage`. An entity representing the stage,
+     * which is oriented East-North-Up if geolocation is known,
+     * otherwise an arbitrary frame with +Z up.
+     */
+    stageEastNorthUp: Entity;
+    /**
+     * An entity representing the same origin as `stageEastNorthUp`,
+     * but rotated 90deg around X-axis to create an East-Up-South coordinate system,
+     * such that +Y is up.
+     */
+    stageEastUpSouth: Entity;
+    /**
+     * An entity representing the user,
+     * where +X is right, +Y is up, and -Z is the direction the user is facing
      */
     user: Entity;
+    /**
+     * An entity representing the rendering view,
+     * where +X is right, +Y is up, and -z is the direction of the view
+     */
+    view: Entity;
     readonly geoposeHeadingAccuracy: number | undefined;
     readonly geoposeHorizontalAccuracy: number | undefined;
     readonly geoposeVerticalAccuracy: number | undefined;
     /**
-     * An entity representing the physical floor-level plane below the user
+     * An entity representing the floor beneath the user
      */
-    stage: Entity;
-    /**
-     * An entity representing a ground-level plane below the user
-     */
-    ground: Entity;
-    /**
-     * An entity representing the pose of the display (not taking into account screen rotation)
-     */
-    display: Entity;
+    floor: Entity;
     /**
      * The serialized frame state for this frame
      */
@@ -236,11 +255,12 @@ export declare class ContextService {
      * Process the next frame state (which should come from the current reality viewer)
      */
     submitFrameState(frameState: ContextFrameState): void;
-    private _getEntityPositionInReferenceFrame;
-    private _scratchMatrix3;
-    private _scratchMatrix4;
     private _updateBackwardsCompatability(frameState);
     private _update(frameState);
+    private _getReachableAncestorReferenceFrames;
+    private _scratchArray;
+    private _localOriginPose;
+    private _updateLocalOrigin(frameState);
     updateEntityFromSerializedState(id: string, entityState: SerializedEntityState | null): Entity;
     getSubviewEntity(index: number): Entity;
     subscribeGeolocation(options?: GeolocationOptions): Promise<void>;
@@ -248,6 +268,7 @@ export declare class ContextService {
     readonly geoHeadingAccuracy: number | undefined;
     readonly geoHorizontalAccuracy: number | undefined;
     readonly geoVerticalAccuracy: number | undefined;
+    private _stringFromReferenceFrame(referenceFrame);
 }
 export declare class ContextServiceProvider {
     private sessionService;

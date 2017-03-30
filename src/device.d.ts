@@ -36,34 +36,26 @@ export declare class DeviceService {
     frameState: DeviceFrameState;
     frameStateEvent: Event<DeviceFrameState>;
     /**
-     * An entity representing the local origin, defining an
-     * East-North-Up coordinate system.
-     */
-    localOrigin: Entity;
-    /**
-     * An entity representing the physical pose of the user
-     */
-    user: Entity;
-    /**
-     * An entity representing the physical floor-level plane below the user
+     * An entity representing the physical floor-level plane below the user,
+     * where +X is east, +Y is North, and +Z is up (if geolocation is known)
      */
     stage: Entity;
     /**
-     * An entity representing the pose of the display (not taking into account screen rotation)
+     * An entity representing the physical pose of the user,
+     * where +X is right, +Y is up, and -Z is forward
      */
-    display: Entity;
+    user: Entity;
     readonly geoHeadingAccuracy: number | undefined;
     readonly geoHorizontalAccuracy: number | undefined;
     readonly geoVerticalAccuracy: number | undefined;
     private _getEntityPositionInReferenceFrame;
-    private _getEntityOrientationInReferenceFrame;
     protected _scratchCartesian: Cartesian3;
+    protected _scratchCartesian2: Cartesian3;
     protected _scratchFrustum: PerspectiveFrustum;
     constructor(sessionService: SessionService, contextService: ContextService, viewService: ViewService);
     private _onDeviceState(deviceState);
     private _updating;
     private _updateFrameState;
-    private _updateDisplayPose();
     getScreenOrientationDegrees(): any;
     /**
      * Request an animation frame callback for the current view.
@@ -79,31 +71,34 @@ export declare class DeviceService {
      */
     stopUpdates(): void;
     protected onUpdateFrameState(): void;
-    private _updateStageDefault();
     private _updateDefault();
     private _vrFrameData?;
     private _scratchQuaternion;
     private _scratchQuaternion2;
     private _scratchMatrix3;
     private _scratchMatrix4;
-    private _localOriginEUS;
+    private _stageEUS;
     /**
-     * Defines a +Y coordinate system positioned at the local origin, by default.
+     * Defines the webvr standing space, positioned at the stage (EUS) frame by default.
      */
-    standingSpace: Entity;
-    /**
-     * Rotate the standing space around +Y
-     */
-    configureStandingSpaceHeadingOffset(headingOffset?: number): void;
+    vrStandingSpace: Entity;
     private _updateForWebVR();
     private _scratchFrameState;
     private _getSerializedEntityState;
-    private _getAncestorReferenceFrames;
-    private _deviceLocalOriginRelativeToDeviceUserPose;
-    private _scratchLocalOrigin;
-    createContextFrameState(time: JulianDate, viewport: Viewport, subviewList: SerializedSubviewList, user: Entity, entityOptions?: {
-        localOrigin?: Entity;
-        ground?: Entity;
+    /**
+     * Generate a frame state for the ContextService.
+     *
+     * @param time
+     * @param viewport
+     * @param subviewList
+     * @param user
+     * @param entityOptions
+     */
+    createContextFrameState(time: JulianDate, viewport: Viewport, subviewList: SerializedSubviewList, options?: {
+        overrideStage?: boolean;
+        overrideUser?: boolean;
+        overrideView?: boolean;
+        floorOffset?: number;
     }): ContextFrameState;
     getSubviewEntity(index: number): Entity;
     subscribeGeolocation(options?: GeolocationOptions, session?: SessionPort): Promise<void>;
@@ -131,6 +126,7 @@ export declare class DeviceServiceProvider {
     publishDeviceState(): void;
     defaultUserHeight: number;
     readonly suggestedUserHeight: number;
+    private _vrFrameData?;
     protected onUpdateDeviceState(deviceState: DeviceState): void;
     private _currentGeolocationOptions?;
     private _targetGeolocationOptions;
@@ -141,14 +137,12 @@ export declare class DeviceServiceProvider {
     protected _scratchCartesianLocalOrigin: Cartesian3;
     protected _scratchQuaternionLocalOrigin: Quaternion;
     protected _scratchFrustum: PerspectiveFrustum;
-    protected configureLocalOrigin(longitude?: number, latitude?: number, altitude?: number, geoHorizontalAccuracy?: number, geoVerticalAccuracy?: number): void;
-    private _scratchStagePosition;
-    protected updateStageDefault(): void;
+    protected configureStage(longitude?: number, latitude?: number, altitude?: number, geoHorizontalAccuracy?: number, geoVerticalAccuracy?: number): void;
     private _geolocationWatchId?;
     /**
      * Overridable. Should call setGeolocation when new geolocation is available
      */
-    protected onStartGeolocationUpdates(options: GeolocationOptions): Promise<void>;
+    protected onStartGeolocationUpdates(options: GeolocationOptions): void;
     /**
      * Overridable.
      */

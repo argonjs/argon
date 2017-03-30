@@ -103,6 +103,7 @@ export declare class ViewService {
     publishEmbeddedViewport(viewport?: Viewport): void;
     private _updateViewport(viewport);
     sendUIEventToSession(uievent: UIEvent, session?: SessionPort): void;
+    private _embeddedViewport;
     private _watchEmbeddedViewport();
 }
 export declare class ViewServiceProvider {
