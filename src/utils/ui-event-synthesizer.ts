@@ -164,6 +164,15 @@ function getEventSynthesizier() {
                         uievent.ctrlKey, uievent.altKey, uievent.shiftKey, uievent.metaKey,
                         touches, targetTouches, changedTouches, 1.0, 0.0
                     );
+                } else if ('TouchEvent' in window && TouchEvent.length > 0) {
+                    // Chrome: must use TouchEvent constructor.
+                    evt = new (<any>TouchEvent)(uievent.type, {
+                        cancelable: uievent.cancelable,
+                        bubbles: uievent.bubbles,
+                        touches: touches,
+                        targetTouches: targetTouches,
+                        changedTouches: changedTouches
+                    });
                 } else {
                     evt.initUIEvent(uievent.type, uievent.bubbles, uievent.cancelable, uievent.view, uievent.detail);
                     (<any>evt).touches = touches;

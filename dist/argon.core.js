@@ -14632,6 +14632,15 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     // Safari, Firefox: must use initTouchEvent.
                     if (typeof evt['initTouchEvent'] === "function") {
                         evt['initTouchEvent'](uievent.type, uievent.bubbles, uievent.cancelable, uievent.view, uievent.detail, uievent.screenX, uievent.screenY, uievent.clientX, uievent.clientY, uievent.ctrlKey, uievent.altKey, uievent.shiftKey, uievent.metaKey, touches, targetTouches, changedTouches, 1.0, 0.0);
+                    } else if ('TouchEvent' in window && TouchEvent.length > 0) {
+                        // Chrome: must use TouchEvent constructor.
+                        evt = new TouchEvent(uievent.type, {
+                            cancelable: uievent.cancelable,
+                            bubbles: uievent.bubbles,
+                            touches: touches,
+                            targetTouches: targetTouches,
+                            changedTouches: changedTouches
+                        });
                     } else {
                         evt.initUIEvent(uievent.type, uievent.bubbles, uievent.cancelable, uievent.view, uievent.detail);
                         evt.touches = touches;
