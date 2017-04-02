@@ -24195,7 +24195,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     }
                 };
                 DeviceService.prototype.getScreenOrientationDegrees = function () {
-                    return typeof window !== 'undefined' ? screen['orientation'] && screen['orientation'].angle || -window.orientation || 0 : 0;
+                    return typeof window !== 'undefined' ? screen['orientation'] && -screen['orientation'].angle || -window.orientation || 0 : 0;
                 };
                 /**
                  * Start emmitting frameState events

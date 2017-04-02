@@ -255,7 +255,7 @@ export class DeviceService {
     };
 
     public getScreenOrientationDegrees() {
-        return typeof window !== 'undefined' ? (screen['orientation'] && screen['orientation'].angle) || -window.orientation || 0 : 0;
+        return typeof window !== 'undefined' ? (screen['orientation'] && -screen['orientation'].angle) || -window.orientation || 0 : 0;
     }
 
     /**
