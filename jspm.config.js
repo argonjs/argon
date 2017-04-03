@@ -5,11 +5,9 @@ SystemJS.config({
         'typeCheck': false,
         'autoDetectModule': true
     },
-    '.': {
-        'meta': {
-            '*.json': {
-                'loader': 'json'
-            }
+    meta: {
+        '*.json': {
+            'loader': 'json'
         }
     },
     packages: {
