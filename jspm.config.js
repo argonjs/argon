@@ -5,12 +5,11 @@ SystemJS.config({
         'typeCheck': false,
         'autoDetectModule': true
     },
-    meta: {
-        '*.json': {
-            'loader': 'json'
-        },
-        '*.ts': {
-            'loader': 'ts'
+    '.': {
+        'meta': {
+            '*.json': {
+                'loader': 'json'
+            }
         }
     },
     packages: {
