@@ -20190,6 +20190,15 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     // Safari, Firefox: must use initTouchEvent.
                     if (typeof evt['initTouchEvent'] === "function") {
                         evt['initTouchEvent'](uievent.type, uievent.bubbles, uievent.cancelable, uievent.view, uievent.detail, uievent.screenX, uievent.screenY, uievent.clientX, uievent.clientY, uievent.ctrlKey, uievent.altKey, uievent.shiftKey, uievent.metaKey, touches, targetTouches, changedTouches, 1.0, 0.0);
+                    } else if ('TouchEvent' in window && TouchEvent.length > 0) {
+                        // Chrome: must use TouchEvent constructor.
+                        evt = new TouchEvent(uievent.type, {
+                            cancelable: uievent.cancelable,
+                            bubbles: uievent.bubbles,
+                            touches: touches,
+                            targetTouches: targetTouches,
+                            changedTouches: changedTouches
+                        });
                     } else {
                         evt.initUIEvent(uievent.type, uievent.bubbles, uievent.cancelable, uievent.view, uievent.detail);
                         evt.touches = touches;
@@ -21931,7 +21940,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
 
             _export('cancelAnimationFrame', cAF = typeof window !== 'undefined' ? window.cancelAnimationFrame.bind(window) : clearTimeout);
 
-            _export('version', version = "1.1.10");
+            _export('version', version = "1.1.11");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -24195,7 +24204,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     }
                 };
                 DeviceService.prototype.getScreenOrientationDegrees = function () {
-                    return typeof window !== 'undefined' ? screen['orientation'] && screen['orientation'].angle || -window.orientation || 0 : 0;
+                    return typeof window !== 'undefined' ? screen['orientation'] && -screen['orientation'].angle || -window.orientation || 0 : 0;
                 };
                 /**
                  * Start emmitting frameState events
