@@ -16360,7 +16360,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
 
             _export('cancelAnimationFrame', cAF = typeof window !== 'undefined' ? window.cancelAnimationFrame.bind(window) : clearTimeout);
 
-            _export('version', version = "1.1.11");
+            _export('version', version = "1.1.12");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -17823,7 +17823,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 };
                 Object.defineProperty(ContextServiceProvider.prototype, "geolocationDesired", {
                     get: function () {
-                        var contextGeoposeSubscribers = this.subscribersByEntityId.get(this.contextService.localOrigin.id);
+                        var contextGeoposeSubscribers = this.subscribersByEntityId.get(this.contextService.stage.id);
                         if (contextGeoposeSubscribers && contextGeoposeSubscribers.size > 0) return true;
                         return false;
                     },

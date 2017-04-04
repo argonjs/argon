@@ -56,7 +56,7 @@ export declare class DeviceService {
     private _onDeviceState(deviceState);
     private _updating;
     private _updateFrameState;
-    getScreenOrientationDegrees(): any;
+    getScreenOrientationDegrees(): number;
     /**
      * Request an animation frame callback for the current view.
      */
