@@ -324,15 +324,15 @@ export function convertEntityReferenceFrame(entity:Entity, time:JulianDate, fram
 export const isIOS = typeof navigator !== 'undefined' &&  typeof window !== 'undefined' &&
     /iPad|iPhone|iPod/.test(navigator.userAgent) && !window['MSStream'];
 
+export function installArgonApp() {
+    if (isIOS) {
+        window.location.href = "https://itunes.apple.com/us/app/argon4/id1089308600?mt=8";
+    }
+}
+
 export function openInArgonApp() {
     if (isIOS) {
-        // var now = Date.now();
-        // setTimeout(function () {
-        //     if (Date.now() - now > 1000) return;
-        //     window.location.href = "https://itunes.apple.com/us/app/argon4/id1089308600";
-        // }, 25);
-        const protocol = window.location.protocol;
-        window.location.protocol = protocol === 'https:' ? 'argon4s' : 'argon4';
+        window.location.href = `argon4://open?url=${encodeURIComponent(window.location.href)}`;
     }
 }
 
