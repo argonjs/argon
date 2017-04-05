@@ -350,9 +350,18 @@ export class ViewService {
             if (!this.focusService.hasFocus) publish();
         }, 500);
 
-        this.contextService.frameStateEvent.addEventListener(()=>{
-            if (this.focusService.hasFocus) publish();
-        });
+        // this.contextService.renderEvent.addEventListener(()=>{
+        //     if (this.focusService.hasFocus) publish();
+        // });
+
+        if (typeof window !== 'undefined' && window.addEventListener) {
+            window.addEventListener('orientationchange', publish);
+            window.addEventListener('scroll', publish);
+            this.sessionService.manager.closeEvent.addEventListener(()=>{
+                window.removeEventListener('orientationchange', publish);
+                window.removeEventListener('scroll', publish);
+            })
+        }
     }
 }
 
