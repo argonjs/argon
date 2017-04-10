@@ -1,5 +1,7 @@
 # argon.js
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/argonjs/argon.svg)](https://greenkeeper.io/)
+
 An open-standards augmented reality platform for the web
 
 *This software was created as part of a research project at the 
