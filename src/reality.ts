@@ -1,22 +1,28 @@
 import { autoinject, inject, Factory } from 'aurelia-dependency-injection'
 import {
-    createGuid
+    createGuid,
+    PerspectiveFrustum,
+    Matrix4
 } from './cesium/cesium-imports'
 import {
     Role,
-    FrameState
+    ContextFrameState,
+    Viewport,
+    SerializedSubviewList
 } from './common'
 import { SessionPort, SessionService } from './session'
 import { Event, deprecated, decomposePerspectiveProjectionMatrix } from './utils'
 import { ContextService } from './context'
 import { FocusServiceProvider } from './focus'
 import { VisibilityServiceProvider } from './visibility'
-import { ViewportServiceProvider } from './viewport'
 
 import { RealityViewer } from './reality-viewers/base'
 import { EmptyRealityViewer } from './reality-viewers/empty'
 import { LiveRealityViewer } from './reality-viewers/live'
 import { HostedRealityViewer } from './reality-viewers/hosted'
+
+import {ViewServiceProvider} from './view'
+import {DeviceService} from './device'
 
 @inject(Factory.of(EmptyRealityViewer), Factory.of(LiveRealityViewer), Factory.of(HostedRealityViewer))
 export abstract class RealityViewerFactory {
@@ -74,6 +80,8 @@ export class RealityService {
      */
     public default = RealityViewer.EMPTY;
 
+    // private _scratchFrustum = new PerspectiveFrustum();
+
     constructor(
         private sessionService: SessionService,
         private contextService: ContextService
@@ -116,36 +124,24 @@ export class RealityService {
 
         this.contextService.frameStateEvent.addEventListener((frameState)=>{
             if (sessionService.isRealityViewer && sessionService.manager.isConnected) {
-                
                 // backwards compatability
-                if (sessionService.manager.version[0] === 0) {
-                    const view = frameState['view'] = frameState['view'] || {};
-                    view.pose = frameState.entities['ar.eye'];
-                    view.viewport = frameState.viewport;
-                    view.subviews = frameState.subviews;
-                    for (let i=0; i < view.subviews.length; i++) {
-                        const s = view.subviews[i];
-                        s['frustum'] = decomposePerspectiveProjectionMatrix(s.projectionMatrix, <any>s['frustum'] || {})
-                    }
-                    delete frameState.entities['ar.eye'];
-                    delete frameState.viewport;
-                    delete frameState.subviews;
-
+                if (sessionService.manager.isConnected && sessionService.manager.version[0] === 0) {
+                    const eye = frameState['eye'] = frameState['eye'] || {};
+                    eye.pose = frameState.entities['ar.user'];
+                    eye.viewport = Viewport.clone(frameState.subviews[0].viewport, eye.viewport);
+                    delete frameState.entities['ar.user'];
                     // throttle for 30fps
                     i++ % 2 === 0 && sessionService.manager.send('ar.reality.frameState', frameState);
-
-                    frameState.entities['ar.eye'] = view.pose;
-                    frameState.viewport = view.viewport;
-                    frameState.subviews = view.subviews;
-                    // delete frameState['view'];
+                    frameState.entities['ar.user'] = eye.pose;
                 } else {
                     sessionService.manager.send('ar.reality.frameState', frameState);
-                }
+                }   
             }
             
             const current = frameState.reality!;
             const previous = this._current;
             if (previous !== current) {
+                this._current = current;
                 this.changeEvent.raiseEvent({ previous, current });
             }
         });
@@ -168,18 +164,22 @@ export class RealityService {
      * Install the specified reality viewer
      */
     public install(uri: string) : Promise<void> {
-        if (this.sessionService.manager.version[0] >= 1 !== true)
-            return Promise.reject(new Error('Not supported'))
-        return this.sessionService.manager.request('ar.reality.install', {uri});
+        return this.sessionService.manager.whenConnected().then(()=>{
+            if (this.sessionService.manager.version[0] >= 1 !== true)
+                return Promise.reject(new Error('Not supported'))
+            return this.sessionService.manager.request('ar.reality.install', {uri});
+        });
     }
     
     /**
      * Uninstall the specified reality viewer
      */
     public uninstall(uri: string): Promise<void> {
-        if (this.sessionService.manager.version[0] >= 1 !== true)
-            return Promise.reject(new Error('Not supported'))
-        return this.sessionService.manager.request('ar.reality.uninstall', {uri});
+        return this.sessionService.manager.whenConnected().then(()=>{
+            if (this.sessionService.manager.version[0] >= 1 !== true)
+                return Promise.reject(new Error('Not supported'))
+            return this.sessionService.manager.request('ar.reality.uninstall', {uri});
+        });
     }
 
     /**
@@ -190,9 +190,11 @@ export class RealityService {
      * - [[RealityViewer.EMPTY]] to request an empty reality viewer
      */
     public request(uri:string): Promise<void> {
-        if (this.sessionService.manager.version[0] >= 1 !== true)
-            return this.sessionService.manager.request('ar.reality.desired', {reality:{uri}});
-        return this.sessionService.manager.request('ar.reality.request', {uri});
+        return this.sessionService.manager.whenConnected().then(()=>{
+            if (this.sessionService.manager.version[0] >= 1 !== true)
+                return this.sessionService.manager.request('ar.reality.desired', {reality:{uri}});
+            return this.sessionService.manager.request('ar.reality.request', {uri});
+        });
     }
 
     /**
@@ -229,7 +231,8 @@ export class RealityServiceProvider {
         private sessionService:SessionService,
         private realityService:RealityService,
         private contextService:ContextService,
-        private viewportServiceProvider:ViewportServiceProvider,
+        private deviceService:DeviceService,
+        private viewServiceProvider:ViewServiceProvider,
         private visibilityServiceProvider:VisibilityServiceProvider,
         private focusServiceProvider: FocusServiceProvider,
         private realityViewerFactory:RealityViewerFactory,
@@ -277,11 +280,13 @@ export class RealityServiceProvider {
             }
         });
         
-        this.viewportServiceProvider.forwardedUIEvent.addEventListener((uievent)=>{
+        this.viewServiceProvider.forwardedUIEvent.addEventListener((uievent)=>{
             const session = this._presentingRealityViewer && this._presentingRealityViewer.session;
-            if (session) viewportServiceProvider.sendUIEventToSession(uievent, session);
+            if (session) this.viewServiceProvider.sendUIEventToSession(uievent, session);
         });
     }
+
+    private _scratchFrustum = new PerspectiveFrustum;
 
     private _handleInstall(session:SessionPort, uri:string) {
         let installers = this._installersByURI.get(uri);
@@ -304,8 +309,25 @@ export class RealityServiceProvider {
                     throw new Error('The application "' + viewerSession.uri + '" does not support being loaded as a reality viewer');
                 }
 
-                viewerSession.on['ar.reality.frameState'] = (frame: FrameState) => {
+                viewerSession.on['ar.reality.frameState'] = (frame: ContextFrameState) => {
                     if (this._presentingRealityViewer === viewer) {
+                        if (viewerSession.version[0] === 0) { // backwards compatability
+                            const deviceState = this.deviceService.frameState;
+                            if (!deviceState) return;
+                            frame.viewport = Viewport.clone(deviceState.viewport, frame.viewport);
+                            frame.subviews = SerializedSubviewList.clone(deviceState.subviews, frame.subviews);
+                            const eye = frame['eye'];
+                            const eyePose = eye.pose;
+                            const eyeFov = eye.fov;
+                            frame.entities = frame.entities || {};
+                            frame.entities['ar.user'] = eyePose;
+                            for (const s of frame.subviews) {
+                                const f:PerspectiveFrustum = decomposePerspectiveProjectionMatrix(s.projectionMatrix, s['frustum'] || {});
+                                f.fov = eyeFov;
+                                this._scratchFrustum.clone(f);
+                                s.projectionMatrix = Matrix4.clone(this._scratchFrustum.projectionMatrix, s.projectionMatrix);
+                            }
+                        }
                         frame.reality = viewer.uri;
                         this.contextService.submitFrameState(frame);
                     }
@@ -368,7 +390,6 @@ export class RealityServiceProvider {
 
         session.closeEvent.addEventListener(() => {
             viewerSession.send(CLOSE_SESSION_KEY);
-            viewerSession.close();
         })
     }
 

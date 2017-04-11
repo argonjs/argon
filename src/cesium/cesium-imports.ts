@@ -12,7 +12,6 @@ export { default as ClockStep } from 'cesium/Source/Core/ClockStep'
 export { default as CompositeEntityCollection } from 'cesium/Source/DataSources/CompositeEntityCollection'
 export { default as ConstantPositionProperty } from 'cesium/Source/DataSources/ConstantPositionProperty'
 export { default as ConstantProperty } from 'cesium/Source/DataSources/ConstantProperty'
-export { default as createGuid } from 'cesium/Source/Core/createGuid'
 // export {default as CzmlDataSource} from 'cesium/Source/DataSources/CzmlDataSource'
 export { default as defaultValue } from 'cesium/Source/Core/defaultValue'
 export { default as defined } from 'cesium/Source/Core/defined'
@@ -47,5 +46,19 @@ export { default as Transforms } from 'cesium/Source/Core/Transforms'
 
 export { default as Simon1994PlanetaryPositions } from 'cesium/Source/Core/Simon1994PlanetaryPositions'
 export { default as PolylinePipeline } from 'cesium/Source/Core/PolylinePipeline'
+
+
+const lut:string[] = []; for (var i=0; i<256; i++) { lut[i] = (i<16?'0':'')+(i).toString(16); }
+
+export function createGuid() { // from http://www.chengxuyuans.com/qa/javascript/88231.html
+  var d0 = Math.random()*0xffffffff|0;
+  var d1 = Math.random()*0xffffffff|0;
+  var d2 = Math.random()*0xffffffff|0;
+  var d3 = Math.random()*0xffffffff|0;
+  return lut[d0&0xff]+lut[d0>>8&0xff]+lut[d0>>16&0xff]+lut[d0>>24&0xff]+'-'+
+    lut[d1&0xff]+lut[d1>>8&0xff]+'-'+lut[d1>>16&0x0f|0x40]+lut[d1>>24&0xff]+'-'+
+    lut[d2&0x3f|0x80]+lut[d2>>8&0xff]+'-'+lut[d2>>16&0xff]+lut[d2>>24&0xff]+
+    lut[d3&0xff]+lut[d3>>8&0xff]+lut[d3>>16&0xff]+lut[d3>>24&0xff];
+}
 
 import './cesium-extensions'

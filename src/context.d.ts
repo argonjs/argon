@@ -1,10 +1,10 @@
 /// <reference types="cesium" />
-import { Entity, EntityCollection, Cartesian3, Quaternion, JulianDate, ReferenceFrame } from './cesium/cesium-imports';
-import { SerializedEntityState, SerializedSubviewList, FrameState, Viewport } from './common';
+import { Entity, EntityCollection, Cartographic, Cartesian3, Quaternion, JulianDate, ReferenceFrame } from './cesium/cesium-imports';
+import { SerializedEntityState, SerializedEntityStateMap, ContextFrameState, GeolocationOptions } from './common';
 import { SessionService, SessionPort } from './session';
 import { Event } from './utils';
 /**
- * Tracks the pose of an entity relative to a particular reference frame.
+ * Represents the pose of an entity relative to a particular reference frame.
  *
  * The `update` method must be called in order to update the position / orientation / poseStatus.
  */
@@ -15,6 +15,18 @@ export declare class EntityPose {
     private _referenceFrame;
     readonly entity: Entity;
     readonly referenceFrame: Entity | ReferenceFrame;
+    /**
+     * The status of this pose, as a bitmask.
+     *
+     * If the current pose is known, then the KNOWN bit is 1.
+     * If the current pose is not known, then the KNOWN bit is 0.
+     *
+     * If the previous pose was known and the current pose is unknown,
+     * then the LOST bit is 1.
+     * If the previous pose was unknown and the current pose status is known,
+     * then the FOUND bit is 1.
+     * In all other cases, both the LOST bit and the FOUND bit are 0.
+     */
     status: PoseStatus;
     /**
      * alias for status
@@ -23,6 +35,8 @@ export declare class EntityPose {
     position: Cartesian3;
     orientation: Quaternion;
     time: JulianDate;
+    private _previousTime;
+    private _previousStatus;
     update(time?: JulianDate): void;
 }
 /**
@@ -59,7 +73,7 @@ export declare class ContextService {
     /**
      * An event that is raised when the next frame state is available.
      */
-    frameStateEvent: Event<FrameState>;
+    frameStateEvent: Event<ContextFrameState>;
     /**
      * An event that is raised after managed entities have been updated for
      * the current frame.
@@ -78,6 +92,7 @@ export declare class ContextService {
      * An event that fires when the local origin changes.
      */
     localOriginChangeEvent: Event<void>;
+    private _localOriginChanged;
     /**
      * A monotonically increasing value (in milliseconds) for the current frame state.
      * This value is useful only for doing accurate *timing*, not for determining
@@ -105,18 +120,24 @@ export declare class ContextService {
      */
     entities: EntityCollection;
     /**
-     * An alias for the 'eye' entity. To be deprecated in favor of `ViewService.eye`.
-     */
-    readonly user: Entity;
+    * An entity representing the local origin, which is oriented
+    * East-North-Up if geolocation is known, otherwise an arbitrary
+    * frame with +Z up. The local origin changes infrequently and stays
+    * near the user, making it useful as the root of a rendering scenegraph.
+    *
+    * Any time the local origin changes, the localOriginChange event is raised.
+    */
+    localOrigin: Entity;
     /**
-     * An entity positioned near the user, aligned with the local East-North-Up
-     * coordinate system.
-     */
+    * Alias for `localOrigin`. An entity representing the local origin,
+    * which is oriented East-North-Up if geolocation is known,
+    * otherwise an arbitrary frame with +Z up.
+    */
     localOriginEastNorthUp: Entity;
     /**
-     * An entity positioned near the user, aligned with the East-Up-South
-     * coordinate system. This useful for converting to the Y-Up convention
-     * used in some libraries, such as three.js.
+     * An entity representing the same origin as `localOriginEastNorthUp`, but rotated
+     * 90deg around X-axis to create an East-Up-South coordinate system.
+     * Useful for maintaining a scene-graph where +Y is up.
      */
     localOriginEastUpSouth: Entity;
     /**
@@ -125,13 +146,50 @@ export declare class ContextService {
      */
     defaultReferenceFrame: Entity;
     /**
+     * An entity representing the physical floor beneath the user,
+     * where +X is east, +Y is north, and +Z is up (if geolocation is known).
+     */
+    stage: Entity;
+    /**
+     * Alias for `stage`. An entity representing the stage,
+     * which is oriented East-North-Up if geolocation is known,
+     * otherwise an arbitrary frame with +Z up.
+     */
+    stageEastNorthUp: Entity;
+    /**
+     * An entity representing the same origin as `stageEastNorthUp`,
+     * but rotated 90deg around X-axis to create an East-Up-South coordinate system,
+     * such that +Y is up.
+     */
+    stageEastUpSouth: Entity;
+    /**
+     * An entity representing the user,
+     * where +X is right, +Y is up, and -Z is the direction the user is facing
+     */
+    user: Entity;
+    /**
+     * An entity representing the rendering view,
+     * where +X is right, +Y is up, and -z is the direction of the view
+     */
+    view: Entity;
+    readonly geoposeHeadingAccuracy: number | undefined;
+    readonly geoposeHorizontalAccuracy: number | undefined;
+    readonly geoposeVerticalAccuracy: number | undefined;
+    /**
+     * An entity representing the floor beneath the user
+     */
+    floor: Entity;
+    /**
      * The serialized frame state for this frame
      */
-    readonly serializedFrameState: FrameState;
+    readonly serializedFrameState: ContextFrameState;
     private _serializedFrameState;
     private _entityPoseMap;
     private _updatingEntities;
     private _knownEntities;
+    private _scratchCartesian;
+    private _scratchQuaternion;
+    private _scratchFrustum;
     /**
      * Deprecated. Use timestamp property.
      * @private
@@ -163,17 +221,20 @@ export declare class ContextService {
     /**
      * Subscribe to pose updates for the given entity id
      *
-     * @param id - the id of the desired entity
      * @returns A Promise that resolves to a new or existing entity
      * instance matching the given id, if the subscription is successful
      */
-    subscribe(id: string | Entity): Promise<Entity>;
+    subscribe(id: string | Entity, session?: SessionPort): Promise<Entity>;
     /**
      * Unsubscribe to pose updates for the given entity id
      */
-    unsubscribe(id: string | Entity): void;
+    unsubscribe(id: string | Entity, session?: SessionPort): void;
     /**
-     * Create a new EntityPose instance to track the pose of a given entity
+     * Get the cartographic position of an Entity
+     */
+    getEntityCartographic(entity?: Entity, cartographic?: Cartographic): Cartographic | undefined;
+    /**
+     * Create a new EntityPose instance to represent the pose of an entity
      * relative to a given reference frame. If no reference frame is specified,
      * then the pose is based on the context's defaultReferenceFrame.
      *
@@ -189,33 +250,51 @@ export declare class ContextService {
      * @param referenceFrame - The intended reference frame. Defaults to `this.defaultReferenceFrame`.
      */
     getEntityPose(entityOrId: Entity | string, referenceFrameOrId?: string | ReferenceFrame | Entity): EntityPose;
-    _scratchFrameState: FrameState;
-    createFrameState(time: JulianDate, viewport: Viewport, subviewList: SerializedSubviewList, eye: Entity, horizontalAccuracy?: number, verticalAccuracy?: number, headingAccuracy?: number): FrameState;
     private _frameIndex;
     /**
      * Process the next frame state (which should come from the current reality viewer)
      */
-    submitFrameState(frameState: FrameState): void;
+    submitFrameState(frameState: ContextFrameState): void;
+    private _updateBackwardsCompatability(frameState);
     private _update(frameState);
-    updateEntityFromSerializedPose(id: string, entityPose?: SerializedEntityState): Entity;
-    private _updateStage(state);
-    private _updateLocalOrigin(state);
+    private _getReachableAncestorReferenceFrames;
+    private _scratchArray;
+    private _localOriginPose;
+    private _updateLocalOrigin(frameState);
+    updateEntityFromSerializedState(id: string, entityState: SerializedEntityState | null): Entity;
+    getSubviewEntity(index: number): Entity;
+    subscribeGeolocation(options?: GeolocationOptions): Promise<void>;
+    unsubscribeGeolocation(): void;
+    readonly geoHeadingAccuracy: number | undefined;
+    readonly geoHorizontalAccuracy: number | undefined;
+    readonly geoVerticalAccuracy: number | undefined;
+    private _stringFromReferenceFrame(referenceFrame);
 }
 export declare class ContextServiceProvider {
     private sessionService;
     private contextService;
-    entitySubscriptionsBySubscriber: WeakMap<SessionPort, Set<string>>;
+    entitySubscriptionsBySubscriber: WeakMap<SessionPort, {
+        [subcription: string]: any;
+    }>;
     subscribersByEntityId: Map<string, Set<SessionPort>>;
     subscribersChangeEvent: Event<{
         id: string;
         subscribers: any;
     }>;
     publishingReferenceFrameMap: Map<string, string | ReferenceFrame>;
+    private _cacheTime;
     private _entityPoseCache;
+    private _getSerializedEntityState;
     constructor(sessionService: SessionService, contextService: ContextService);
-    publishEntityState(idOrEntity: string | Entity, time?: JulianDate): void;
+    fillEntityStateMapForSession(session: SessionPort, time: JulianDate, entities: SerializedEntityStateMap): void;
     private _publishUpdates();
     private _sessionEntities;
-    private _sendUpdateForSession(session);
-    private _getSerializedEntityState(entity, time);
+    private _temp;
+    private _sendUpdateForSession(state, session);
+    private _getCachedSerializedEntityState(entity, time);
+    desiredGeolocationOptions: GeolocationOptions;
+    sessionGeolocationOptions: Map<SessionPort, GeolocationOptions | undefined>;
+    private _handleSetGeolocationOptions(session, options?);
+    private _updateDesiredGeolocationOptions();
+    readonly geolocationDesired: boolean;
 }

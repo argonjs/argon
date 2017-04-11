@@ -7,10 +7,9 @@ import { Configuration } from './common';
 import { Event } from './utils';
 import { ContextService, ContextServiceProvider } from './context';
 import { FocusService, FocusServiceProvider } from './focus';
-import { LocationService, LocationServiceProvider } from './location';
+import { DeviceService, DeviceServiceProvider } from './device';
 import { RealityService, RealityServiceProvider } from './reality';
 import { ViewService, ViewServiceProvider } from './view';
-import { ViewportService, ViewportServiceProvider } from './viewport';
 import { VisibilityService, VisibilityServiceProvider } from './visibility';
 import { VuforiaService, VuforiaServiceProvider } from './vuforia';
 import { RealityViewer } from './reality-viewers/base';
@@ -21,26 +20,24 @@ export { DI, Cesium };
 export * from './common';
 export * from './context';
 export * from './focus';
-export * from './location';
+export * from './device';
 export * from './reality';
 export * from './session';
 export * from './ui';
 export * from './utils';
 export * from './view';
-export * from './viewport';
 export * from './visibility';
 export * from './vuforia';
 export { RealityViewer, EmptyRealityViewer, LiveRealityViewer, HostedRealityViewer };
 export declare class ArgonSystemProvider {
     context: ContextServiceProvider;
     focus: FocusServiceProvider;
-    location: LocationServiceProvider;
+    device: DeviceServiceProvider;
     visibility: VisibilityServiceProvider;
     reality: RealityServiceProvider;
     view: ViewServiceProvider;
-    viewport: ViewportServiceProvider;
     vuforia: VuforiaServiceProvider;
-    constructor(context: ContextServiceProvider, focus: FocusServiceProvider, location: LocationServiceProvider, visibility: VisibilityServiceProvider, reality: RealityServiceProvider, view: ViewServiceProvider, viewport: ViewportServiceProvider, vuforia: VuforiaServiceProvider);
+    constructor(context: ContextServiceProvider, focus: FocusServiceProvider, device: DeviceServiceProvider, visibility: VisibilityServiceProvider, reality: RealityServiceProvider, view: ViewServiceProvider, vuforia: VuforiaServiceProvider);
 }
 /**
  * A composition root which instantiates the object graph based on a provided configuration.
@@ -51,26 +48,35 @@ export declare class ArgonSystemProvider {
  */
 export declare class ArgonSystem {
     container: DI.Container;
+    context: ContextService;
+    device: DeviceService;
+    focus: FocusService;
+    reality: RealityService;
+    session: SessionService;
+    view: ViewService;
+    visibility: VisibilityService;
+    vuforia: VuforiaService;
     /**
      * The ArgonSystem instance which shares a view provided by a manager
      */
     static instance?: ArgonSystem;
-    constructor(elementOrSelector: string | Element | null | undefined, config: Configuration, container?: DI.Container);
-    readonly provider: ArgonSystemProvider | undefined;
-    readonly context: ContextService;
-    readonly focus: FocusService;
-    readonly location: LocationService;
-    readonly reality: RealityService;
-    readonly session: SessionService;
-    readonly view: ViewService;
-    readonly viewport: ViewportService;
-    readonly visibility: VisibilityService;
-    readonly vuforia: VuforiaService;
+    constructor(container: DI.Container, context: ContextService, device: DeviceService, focus: FocusService, reality: RealityService, session: SessionService, view: ViewService, visibility: VisibilityService, vuforia: VuforiaService);
+    _provider: ArgonSystemProvider;
+    readonly provider: ArgonSystemProvider;
     readonly updateEvent: Event<any>;
     readonly renderEvent: Event<any>;
     readonly focusEvent: Event<void>;
     readonly blurEvent: Event<void>;
     destroy(): void;
+}
+export declare class ArgonConfigurationManager {
+    configuration: Configuration;
+    container: DI.Container;
+    static configure(configurationManager: ArgonConfigurationManager): void;
+    constructor(configuration: Configuration, container?: DI.Container);
+    standardConfiguration(): void;
+    defaultConnect(): void;
+    defaultUI(): void;
 }
 /**
  * Create an ArgonSystem instance.

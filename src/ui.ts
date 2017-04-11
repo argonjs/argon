@@ -1,7 +1,7 @@
 import { autoinject } from 'aurelia-dependency-injection'
-import { ViewServiceProvider } from './view'
-import { ViewportService, ViewportMode } from './viewport'
+import { DeviceService } from './device'
 import { SessionService } from './session'
+import { ViewService, ViewportMode } from './view'
 import { RealityService, RealityServiceProvider } from './reality'
 import * as utils from './utils'
 
@@ -38,10 +38,10 @@ export class DefaultUIService {
 
     constructor(
         private sessionService:SessionService,
-        private viewportService: ViewportService,
+        private viewService: ViewService,
         private realityService:RealityService,
         private realityServiceProvider:RealityServiceProvider,
-        private viewServiceProvider:ViewServiceProvider) {
+        private deviceService:DeviceService) {
         const config = this.sessionService.configuration.defaultUI || {};
         
         if (document && !config.disable) {
@@ -110,7 +110,7 @@ export class DefaultUIService {
             this.element.style.zIndex = '10';
             this.element.style.pointerEvents = 'none';
             this.element.style.overflow = 'hidden';
-            this.viewportService.element.appendChild(this.element!);
+            this.viewService.element.appendChild(this.element!);
             this.sessionService.manager.closeEvent.addEventListener(()=>{
                 this.element!.remove();
             })
@@ -214,19 +214,27 @@ export class DefaultUIService {
             menuButton.style.pointerEvents = 'auto';
             menuButton.style.zIndex = '-1';
 
-            this.openInArgonMenuItem = this._createMenuItem(openIcon, 'Open in Argon', ()=>{
+            this.openInArgonMenuItem = this._createMenuItem(openIcon, 'Open in Argon');
+
+            this.openInArgonMenuItem.addEventListener('touchstart', ()=>{
+                utils.openInArgonApp();
+            });
+            
+            this.openInArgonMenuItem.addEventListener('touchend', ()=>{
+                if (confirm('Oops, it looks like you are still here! You may not have the Argon Browser installed. Would you like to install it now?')) {
+                    utils.installArgonApp();
+                }
                 this.menuOpen = false;
                 this.updateMenu();
-                utils.openInArgonApp();
             });
 
             this.hmdMenuItem = this._createMenuItem(vrIcon, 'Toggle HMD', ()=>{
                 this.menuOpen = false;
                 this.updateMenu();
-                if (this.viewServiceProvider.isPresentingHMD) {
-                    this.viewServiceProvider.exitPresentHMD();
+                if (this.deviceService.isPresentingHMD) {
+                    this.deviceService.exitPresentHMD();
                 } else {
-                    this.viewServiceProvider.requestPresentHMD();
+                    this.deviceService.requestPresentHMD();
                 }
             });
 
@@ -240,10 +248,10 @@ export class DefaultUIService {
             this.maximizeMenuItem = this._createMenuItem(fullscreenIcon, 'Toggle Immersive View', ()=>{
                 this.menuOpen = false;
                 this.updateMenu();
-                if (this.viewportService.mode === ViewportMode.IMMERSIVE) {
-                    this.viewportService.desiredMode = ViewportMode.PAGE;
+                if (this.viewService.viewportMode === ViewportMode.IMMERSIVE) {
+                    this.viewService.desiredViewportMode = ViewportMode.EMBEDDED;
                 } else {
-                    this.viewportService.desiredMode = ViewportMode.IMMERSIVE;
+                    this.viewService.desiredViewportMode = ViewportMode.IMMERSIVE;
                 }
             });
 
@@ -251,9 +259,13 @@ export class DefaultUIService {
 
             this.updateMenu();
 
-            this.viewportService.changeEvent.addEventListener(()=>{
+            this.viewService.viewportChangeEvent.addEventListener(()=>{
                 this.updateMenu();
             });
+
+            this.viewService.viewportModeChangeEvent.addEventListener(()=>{
+                this.updateMenu();
+            })
         }
     }
 
@@ -311,8 +323,14 @@ export class DefaultUIService {
         this.updateMenu();
     }
 
+    private _hideMenuItem(e:HTMLElement) {
+        e.style.transform = 'scale(0.2)';
+        e.style.opacity = '0';
+        e.style.pointerEvents = 'none';
+    }
+
     public updateMenu() {
-        if (this.viewServiceProvider.isPresentingHMD) {
+        if (this.deviceService.isPresentingHMD) {
             this.element!.style.display = 'none';
         } else {
             this.element!.style.display = 'block';
@@ -321,26 +339,31 @@ export class DefaultUIService {
         this.menuItems = [];
         this.menuItems.push(null);
         if (utils.isIOS) this.menuItems.push(this.openInArgonMenuItem);
+        else this._hideMenuItem(this.openInArgonMenuItem);
 
-        const parentElement = this.viewportService.element.parentElement;
+        const parentElement = this.viewService.element.parentElement;
         const parentWidth = parentElement ? parentElement.clientWidth : 0;
         const parentHeight = parentElement ? parentElement.clientHeight : 0;
 
-        if (!(window.innerWidth === parentWidth &&                
+        if (!(window.innerWidth === parentWidth &&
             window.innerHeight === parentHeight))
             this.menuItems.push(this.maximizeMenuItem);
-        if (utils.isIOS || navigator['vrEnabled'])
+        else this._hideMenuItem(this.maximizeMenuItem);
+
+        if (utils.isIOS || 'getVRDisplays' in navigator)
             this.menuItems.push(this.hmdMenuItem);
+        else this._hideMenuItem(this.hmdMenuItem);
+        
         if (this.realityViewerItemElements.size > 0)
             this.menuItems.push(this.realityMenuItem);
+        else this._hideMenuItem(this.realityMenuItem);
+
         this.menuItems.push(null);
 
         if (!this.menuOpen) {
             this.menuItems.forEach((e, i)=>{
                 if (!e) return;
-                e.style.transform = 'scale(0.2)';
-                e.style.opacity = '0';
-                e.style.pointerEvents = 'none';
+                this._hideMenuItem(e);
             });
             this.menuBackgroundElement.style.transform = 'scale(0.1)'
         } else {

@@ -58,7 +58,7 @@ function getEventSynthesizier() {
         (<any>uievent).bubbles = false;
         let el = target;
         do { 
-            el.dispatchEvent(new MouseEvent('pointerenter',uievent));
+            el.dispatchEvent(new PointerEvent('pointerenter',uievent));
             el = el['parentElement'];
         } while (el)
         (<any>uievent).bubbles = bubbles;
@@ -73,7 +73,7 @@ function getEventSynthesizier() {
         (<any>uievent).bubbles = false;
         let el = target;
         do { 
-            el.dispatchEvent(new MouseEvent('pointerleave',uievent));
+            el.dispatchEvent(new PointerEvent('pointerleave',uievent));
             el = el['parentElement'];
         } while (el)
     }
@@ -145,9 +145,17 @@ function getEventSynthesizier() {
                 target = touchTargets[uievent.changedTouches[0].identifier];
 
                 var evt = document.createEvent('TouchEvent');
-                const touches = document.createTouchList.apply(document, deserializeTouches(<any>uievent.touches, target, uievent));
-                const targetTouches = document.createTouchList.apply(document, deserializeTouches(<any>uievent.targetTouches, target, uievent));
-                const changedTouches = document.createTouchList.apply(document, deserializeTouches(<any>uievent.changedTouches, target, uievent));
+                
+                let touches = deserializeTouches(<any>uievent.touches, target, uievent);
+                let targetTouches = deserializeTouches(<any>uievent.targetTouches, target, uievent);
+                let changedTouches = deserializeTouches(<any>uievent.changedTouches, target, uievent);
+
+                if (document.createTouchList) {
+                    touches = document.createTouchList.apply(document, touches);
+                    targetTouches = document.createTouchList.apply(document, targetTouches);
+                    changedTouches = document.createTouchList.apply(document, changedTouches);
+                }
+                
                 // Safari, Firefox: must use initTouchEvent.
                 if (typeof evt['initTouchEvent'] === "function") {
                     evt['initTouchEvent'](
@@ -156,6 +164,15 @@ function getEventSynthesizier() {
                         uievent.ctrlKey, uievent.altKey, uievent.shiftKey, uievent.metaKey,
                         touches, targetTouches, changedTouches, 1.0, 0.0
                     );
+                } else if ('TouchEvent' in window && TouchEvent.length > 0) {
+                    // Chrome: must use TouchEvent constructor.
+                    evt = new (<any>TouchEvent)(uievent.type, {
+                        cancelable: uievent.cancelable,
+                        bubbles: uievent.bubbles,
+                        touches: touches,
+                        targetTouches: targetTouches,
+                        changedTouches: changedTouches
+                    });
                 } else {
                     evt.initUIEvent(uievent.type, uievent.bubbles, uievent.cancelable, uievent.view, uievent.detail);
                     (<any>evt).touches = touches;

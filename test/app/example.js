@@ -2,45 +2,45 @@
 // import * as Argon from '../dist/src/argon'
 import * as Argon from '../../src/argon';
 window['Argon'] = Argon;
-export const app = Argon.init();
-export const scene = new THREE.Scene();
-export const camera = new THREE.PerspectiveCamera();
-export const user = new THREE.Object3D();
-export const userLocation = new THREE.Object3D;
+export var app = Argon.init();
+export var scene = new THREE.Scene();
+export var camera = new THREE.PerspectiveCamera();
+export var user = new THREE.Object3D();
+export var userLocation = new THREE.Object3D;
 scene.add(camera);
 scene.add(user);
 scene.add(userLocation);
-const renderer = new THREE.WebGLRenderer({
+var renderer = new THREE.WebGLRenderer({
     alpha: true,
     logarithmicDepthBuffer: true
 });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-app.viewport.element.appendChild(renderer.domElement);
+app.view.element.appendChild(renderer.domElement);
 // app.context.setDefaultReferenceFrame(app.context.localOriginEastUpSouth);
 app.context.setDefaultReferenceFrame(app.context.localOriginEastNorthUp);
-const geometry = new THREE.SphereGeometry(30, 32, 32);
-let mat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-export const posXSphere = new THREE.Mesh(geometry, mat);
+var geometry = new THREE.SphereGeometry(30, 32, 32);
+var mat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+export var posXSphere = new THREE.Mesh(geometry, mat);
 posXSphere.position.x = 200;
 userLocation.add(posXSphere);
 mat = new THREE.MeshBasicMaterial({ color: 0xffaaaa });
-export const negXSphere = new THREE.Mesh(geometry, mat);
+export var negXSphere = new THREE.Mesh(geometry, mat);
 negXSphere.position.x = -200;
 userLocation.add(negXSphere);
 mat = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-export const posYSphere = new THREE.Mesh(geometry, mat);
+export var posYSphere = new THREE.Mesh(geometry, mat);
 posYSphere.position.y = 200;
 userLocation.add(posYSphere);
 mat = new THREE.MeshBasicMaterial({ color: 0xaaffaa });
-export const negYSphere = new THREE.Mesh(geometry, mat);
+export var negYSphere = new THREE.Mesh(geometry, mat);
 negYSphere.position.y = -200;
 userLocation.add(negYSphere);
 mat = new THREE.MeshBasicMaterial({ color: 0x0000ff });
-export const posZSphere = new THREE.Mesh(geometry, mat);
+export var posZSphere = new THREE.Mesh(geometry, mat);
 posZSphere.position.z = 200;
 userLocation.add(posZSphere);
 mat = new THREE.MeshBasicMaterial({ color: 0xaaaaff });
-export const negZSphere = new THREE.Mesh(geometry, mat);
+export var negZSphere = new THREE.Mesh(geometry, mat);
 negZSphere.position.z = -200;
 userLocation.add(negZSphere);
 var axisHelper = new THREE.AxisHelper(10);
@@ -54,50 +54,24 @@ axisHelper.position.y = -50;
 // var textMesh = new THREE.Mesh( text, new THREE.MeshBasicMaterial( { color: 0xff0000 } ) ) ;
 // scene.add(textMesh);
 app.vuforia.init({
-    encryptedLicenseData: `-----BEGIN PGP MESSAGE-----
-Comment: GPGTools - https://gpgtools.org
-
-hQIMA1AUQCNdm8lhAQ/+Kam6naTGpo6C2EkYOWTKVmeLa6lD4epaRrH3ZnhOHm5z
-dpFmTehxe+A/J/7/68EvEGDPfuV4cqHTXNuvlAvY1K625/i8EfNrx+nPL0umap5E
-WaYRnLNF6MlC1Pu8aLY8c8vd/ZA9h2Zk8P4t0C/uOayJBZk0BhKRlOgCJbjOd7/X
-EMPOD3XtFUP8T13Kpqb/A8cyIRTOowm8yaj4PajUCAlOWSYKYRcXM5yg/5t7XTdi
-3iURgidFbWowbnqyFmOKxAxqRBoXPGYEDmK8IgOgYmR7C5pVAmWDK8ZcsTn2YC0T
-JhYUSQvRA2CszK9UMEoOh2rqE8RHZY4MuVPm1QNC1j4yP1FSDZvfcJdOTbTeBCci
-6ATCARma+roA3xtbzPVWhjc8DGtlRIJqj0+cRjK8RMzIMbBPGlTZihgt7W0sifa/
-m38zAlE4Be5Omg+kJ76kyXph+SIj0gqBl5rG34O4n4KgCBooipjWnAfzwKJknBiX
-74ex99LZf/VfijCjDKkUpiyrHHOkWHFDeolWTZVmj3D6HBqUaCMGp3ObQ0AGA+tt
-/BuRohIHk1zvST66FzBoFx2+fctZm7c+VItAoyW/+IVuulFCsoQdE59fF81MaMan
-Rw1MNC6d1uemIZI/xp+ilxbpeloypyrWa6ZLzlScOv7//C5bowZgjmxCfbY7SYHS
-6QFyUllcKIYGoVOMX30ZrdaQMU8177nnMik8Ivr5zkgu9FsKkwi0MH4XTP4Jp8zk
-eR4f+bzZmxitTLYoaJFnkmxdzyHTsIXgOOtndTh18+uSgvEz+oewrvawQCTXJKXw
-BwYk7wAvMlFywMM/B+H4kvBOThqG7je2S3UitW1walSwq+P8p/v2UzIxy+yGTzlz
-0eKmfbx2b2+6r76hDVRt0XiAuVKXq8Erndx20VkRZj3MBOgus3XmvbCgORn0w5F/
-2sg6kkNDrAI7aUq83EFMuDr3A6ABbt3C6cEPEB1sLhsqhnLTvkHTr6J7Br+wI+2f
-elT3x15oPUAjnDQR7kC77cmZ8U5o/R2nYOlPzDSyX34cV3z176hqssQa3l/ebh+4
-uuMHiecut/s2FVACrizVtEI+Z9I73iURwD9DrdRuJKYMdKoYDqoM43VdIZfNc3Ec
-j7SKC/LSpOJL8YQlLoKLtdAjCYrYhDgycAKKpTw9Kv6wbSQ3qxOEUMrxK2I30NaA
-9tuzf15WZ+TathGTIL7VqLKS4UPK57zvrdqneB6Xlj4CABMIL3ZmgGuJPr8WSJSu
-xMTXBowqC4eNuwUGtQtsy+7xYkxOLs/NVn2nNNb6NlEaZX0QUhqgW+t5j3d4SRry
-kDYZIbq+RqPwaZhg0hXpT5Fwz97y4Z5NyjAu44kiYAK2Du0Vyi1e0PMtW2ja4ZH0
-=d+oG
------END PGP MESSAGE-----`
-}).then((api) => {
-    api.objectTracker.createDataSetFromURI('dataset/StonesAndChips.xml').then((id) => {
-        api.objectTracker.loadDataSet(id).then((trackables) => {
-            const stonesEntity = app.context.subscribeToEntityById(trackables['stones'].id);
-            const stonesObject = new THREE.Object3D;
+    encryptedLicenseData: "-----BEGIN PGP MESSAGE-----\nComment: GPGTools - https://gpgtools.org\n\nhQIMA1AUQCNdm8lhAQ/+Kam6naTGpo6C2EkYOWTKVmeLa6lD4epaRrH3ZnhOHm5z\ndpFmTehxe+A/J/7/68EvEGDPfuV4cqHTXNuvlAvY1K625/i8EfNrx+nPL0umap5E\nWaYRnLNF6MlC1Pu8aLY8c8vd/ZA9h2Zk8P4t0C/uOayJBZk0BhKRlOgCJbjOd7/X\nEMPOD3XtFUP8T13Kpqb/A8cyIRTOowm8yaj4PajUCAlOWSYKYRcXM5yg/5t7XTdi\n3iURgidFbWowbnqyFmOKxAxqRBoXPGYEDmK8IgOgYmR7C5pVAmWDK8ZcsTn2YC0T\nJhYUSQvRA2CszK9UMEoOh2rqE8RHZY4MuVPm1QNC1j4yP1FSDZvfcJdOTbTeBCci\n6ATCARma+roA3xtbzPVWhjc8DGtlRIJqj0+cRjK8RMzIMbBPGlTZihgt7W0sifa/\nm38zAlE4Be5Omg+kJ76kyXph+SIj0gqBl5rG34O4n4KgCBooipjWnAfzwKJknBiX\n74ex99LZf/VfijCjDKkUpiyrHHOkWHFDeolWTZVmj3D6HBqUaCMGp3ObQ0AGA+tt\n/BuRohIHk1zvST66FzBoFx2+fctZm7c+VItAoyW/+IVuulFCsoQdE59fF81MaMan\nRw1MNC6d1uemIZI/xp+ilxbpeloypyrWa6ZLzlScOv7//C5bowZgjmxCfbY7SYHS\n6QFyUllcKIYGoVOMX30ZrdaQMU8177nnMik8Ivr5zkgu9FsKkwi0MH4XTP4Jp8zk\neR4f+bzZmxitTLYoaJFnkmxdzyHTsIXgOOtndTh18+uSgvEz+oewrvawQCTXJKXw\nBwYk7wAvMlFywMM/B+H4kvBOThqG7je2S3UitW1walSwq+P8p/v2UzIxy+yGTzlz\n0eKmfbx2b2+6r76hDVRt0XiAuVKXq8Erndx20VkRZj3MBOgus3XmvbCgORn0w5F/\n2sg6kkNDrAI7aUq83EFMuDr3A6ABbt3C6cEPEB1sLhsqhnLTvkHTr6J7Br+wI+2f\nelT3x15oPUAjnDQR7kC77cmZ8U5o/R2nYOlPzDSyX34cV3z176hqssQa3l/ebh+4\nuuMHiecut/s2FVACrizVtEI+Z9I73iURwD9DrdRuJKYMdKoYDqoM43VdIZfNc3Ec\nj7SKC/LSpOJL8YQlLoKLtdAjCYrYhDgycAKKpTw9Kv6wbSQ3qxOEUMrxK2I30NaA\n9tuzf15WZ+TathGTIL7VqLKS4UPK57zvrdqneB6Xlj4CABMIL3ZmgGuJPr8WSJSu\nxMTXBowqC4eNuwUGtQtsy+7xYkxOLs/NVn2nNNb6NlEaZX0QUhqgW+t5j3d4SRry\nkDYZIbq+RqPwaZhg0hXpT5Fwz97y4Z5NyjAu44kiYAK2Du0Vyi1e0PMtW2ja4ZH0\n=d+oG\n-----END PGP MESSAGE-----"
+}).then(function (api) {
+    api.objectTracker.createDataSetFromURI('dataset/StonesAndChips.xml').then(function (id) {
+        api.objectTracker.loadDataSet(id).then(function (trackables) {
+            var stonesEntity = app.context.subscribeToEntityById(trackables['stones'].id);
+            var stonesObject = new THREE.Object3D;
             scene.add(stonesObject);
             var boxGeometry = new THREE.BoxGeometry(50, 50, 50);
             var material = new THREE.MeshNormalMaterial();
             material.side = THREE.DoubleSide;
-            const box = new THREE.Mesh(boxGeometry, material);
+            var box = new THREE.Mesh(boxGeometry, material);
             box.position.z = 25;
             box.position.y = 50;
             var axisHelper = new THREE.AxisHelper(10);
             box.add(axisHelper);
             console.log('Subscribes to stones trackable with id ' + trackables['stones'].id);
-            app.context.updateEvent.addEventListener(() => {
-                const stonesPose = app.context.getEntityPose(stonesEntity);
+            app.context.updateEvent.addEventListener(function () {
+                var stonesPose = app.context.getEntityPose(stonesEntity);
                 if (stonesPose.status & Argon.PoseStatus.KNOWN) {
                     stonesObject.position.copy(stonesPose.position);
                     stonesObject.quaternion.copy(stonesPose.orientation);
@@ -113,22 +87,23 @@ kDYZIbq+RqPwaZhg0hXpT5Fwz97y4Z5NyjAu44kiYAK2Du0Vyi1e0PMtW2ja4ZH0
         api.objectTracker.activateDataSet(id);
     });
 });
-app.updateEvent.addEventListener(() => {
-    const userPose = app.context.getEntityPose(app.context.user);
+app.updateEvent.addEventListener(function () {
+    var userPose = app.context.getEntityPose(app.context.user);
     if (userPose.status & Argon.PoseStatus.KNOWN) {
         user.position.copy(userPose.position);
         user.quaternion.copy(userPose.orientation);
         userLocation.position.copy(userPose.position);
     }
 });
-app.renderEvent.addEventListener(() => {
-    const viewport = app.viewport.current;
+app.renderEvent.addEventListener(function () {
+    var viewport = app.view.viewport;
     renderer.setSize(viewport.width, viewport.height);
-    for (let subview of app.view.getSubviews()) {
+    for (var _i = 0, _a = app.view.subviews; _i < _a.length; _i++) {
+        var subview = _a[_i];
         camera.position.copy(subview.pose.position);
         camera.quaternion.copy(subview.pose.orientation);
         camera.projectionMatrix.fromArray(subview.frustum.projectionMatrix);
-        let { x, y, width, height } = subview.viewport;
+        var _b = subview.viewport, x = _b.x, y = _b.y, width = _b.width, height = _b.height;
         renderer.setViewport(x, y, width, height);
         renderer.setScissor(x, y, width, height);
         renderer.setScissorTest(true);

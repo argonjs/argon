@@ -3,8 +3,9 @@ import { Event } from './utils';
 import { ContextService } from './context';
 import { FocusServiceProvider } from './focus';
 import { VisibilityServiceProvider } from './visibility';
-import { ViewportServiceProvider } from './viewport';
 import { RealityViewer } from './reality-viewers/base';
+import { ViewServiceProvider } from './view';
+import { DeviceService } from './device';
 export declare abstract class RealityViewerFactory {
     private _createEmptyReality;
     private _createLiveReality;
@@ -73,7 +74,8 @@ export declare class RealityServiceProvider {
     private sessionService;
     private realityService;
     private contextService;
-    private viewportServiceProvider;
+    private deviceService;
+    private viewServiceProvider;
     private visibilityServiceProvider;
     private focusServiceProvider;
     private realityViewerFactory;
@@ -93,7 +95,8 @@ export declare class RealityServiceProvider {
     private _presentingRealityViewer;
     private _viewerByURI;
     private _installersByURI;
-    constructor(sessionService: SessionService, realityService: RealityService, contextService: ContextService, viewportServiceProvider: ViewportServiceProvider, visibilityServiceProvider: VisibilityServiceProvider, focusServiceProvider: FocusServiceProvider, realityViewerFactory: RealityViewerFactory);
+    constructor(sessionService: SessionService, realityService: RealityService, contextService: ContextService, deviceService: DeviceService, viewServiceProvider: ViewServiceProvider, visibilityServiceProvider: VisibilityServiceProvider, focusServiceProvider: FocusServiceProvider, realityViewerFactory: RealityViewerFactory);
+    private _scratchFrustum;
     private _handleInstall(session, uri);
     private _connectViewerWithSession(viewerSession, session);
     protected _handleUninstall(session: SessionPort, uri: string): Promise<never>;

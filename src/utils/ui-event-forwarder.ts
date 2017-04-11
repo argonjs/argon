@@ -1,5 +1,6 @@
-import { FeatureDetection } from '../cesium/cesium-imports'
-import { ViewportService } from '../viewport'
+// import { FeatureDetection } from '../cesium/cesium-imports'
+import { ViewService } from '../view'
+import { isIOS } from '../utils'
 
 const cloneTouch = (touch:Touch, boundingRect:ClientRect) => {
     return {
@@ -21,7 +22,7 @@ const cloneTouches = (touches:TouchList, boundingRect:ClientRect) => {
     return touchList;
 }
 
-export default function createEventForwarder(this:void, viewportService:ViewportService, callback:(uievent:UIEvent)=>void) {
+export default function createEventForwarder(this:void, viewService:ViewService, callback:(uievent:UIEvent)=>void) {
 
     let forwardEvent = false;
 
@@ -37,31 +38,44 @@ export default function createEventForwarder(this:void, viewportService:Viewport
         const width = target && target.clientWidth;
         const height = target && target.clientHeight;
 
+        // prevent undesired default actions over the view element
+        if (e.type === 'wheel' || 
+            isIOS && e.type === 'touchmove' && e.touches.length === 2) 
+            e.preventDefault();
+
+        // contain our events within the view element
+        e.stopPropagation();
+
         // if the target element is the view element or an element of similar size,
         // attempt to forward the event (webvr-polyfill makes the canvas 10px larger
         // in each dimension due to an issue with the iOS safari browser, which is why
-        // forward the event for any target that matches the viewport size up to 15px 
+        // we forward the event for any target that matches the viewport size up to 15px 
         // larger in either dimension)
-        if (e.target === viewportService.element ||
-            (Math.abs(width - viewportService.element.clientWidth) < 15 &&
-            Math.abs(height - viewportService.element.clientHeight) < 15)) {
+        if (e.target === viewService.element ||
+            (width && Math.abs(width - viewService.element.clientWidth) < 15 &&
+            height && Math.abs(height - viewService.element.clientHeight) < 15)) {
 
-            const boundingRect = viewportService.element.getBoundingClientRect();
-
-            if (viewportService.uiEvent.numberOfListeners > 0) {
+            // If we have a uievent listener attached, then make sure the
+            // app explictily asks for events to be forwarded. Otherwise,
+            // automatically forward the uievents 
+            if (viewService.uiEvent.numberOfListeners > 0) {
                 forwardEvent = false;
                 eventData.event = e;
-                viewportService.uiEvent.raiseEvent(eventData);
-                    // allow the containing element to receive the current event 
-                    // for local reality viewers
+                viewService.uiEvent.raiseEvent(eventData);
                 if (!forwardEvent) {
+                    // if the app doesn't want to forward the event, 
+                    // stop the event propogation immediately so that even a locally-running 
+                    // reality viewer cannot process the event
                     e.stopImmediatePropagation();
                     return;
                 }
             }
+                
+            // prevent undesired synthetic click
+            if (e.type === 'touchstart') 
+                e.preventDefault();
 
-            e.preventDefault();
-
+            const boundingRect = viewService.element.getBoundingClientRect();
             const touches = cloneTouches(e.touches, boundingRect);
             const changedTouches = cloneTouches(e.changedTouches, boundingRect);
             const targetTouches = cloneTouches(e.targetTouches, boundingRect);
@@ -73,6 +87,8 @@ export default function createEventForwarder(this:void, viewportService:Viewport
             uievent.cancelable = e.cancelable;
             uievent.which = e.which; 
             uievent.detail = e.detail;
+            uievent.composed = e['composed'];
+            uievent.timeStamp = e.timeStamp;
 
             // Mouse Event
             uievent.altKey = e.altKey;
@@ -103,6 +119,7 @@ export default function createEventForwarder(this:void, viewportService:Viewport
             
             // Pointer Events
             uievent.pointerId = e.pointerId;
+            uievent.pointerType = e.pointerType;
             uievent.width = e.width;
             uievent.height = e.height;
             uievent.pressure = e.pressure;
@@ -112,6 +129,7 @@ export default function createEventForwarder(this:void, viewportService:Viewport
 
             callback(uievent);
         } else {
+            // if this event is not forwardable, stop propogation immediately
             e.stopImmediatePropagation();
         }
     };
@@ -123,7 +141,7 @@ export default function createEventForwarder(this:void, viewportService:Viewport
         ,'contextmenu'
     ];
 
-    if (FeatureDetection.supportsPointerEvents()) {
+    // if (FeatureDetection.supportsPointerEvents()) {
         forwardedEvent.push(
             'pointerenter'
             ,'pointerleave'
@@ -132,7 +150,7 @@ export default function createEventForwarder(this:void, viewportService:Viewport
             ,'pointerup'
             ,'pointercancel'
         );
-    } else {
+    // } else {
         forwardedEvent.push(
             'mouseenter'
             ,'mouseleave'
@@ -144,9 +162,9 @@ export default function createEventForwarder(this:void, viewportService:Viewport
             ,'touchmove'
             ,'touchcancel'
         );
-    }
+    // }
 
     forwardedEvent.forEach((type)=>{
-        viewportService.element.addEventListener(type, handleEvent, false);
+        viewService.element.addEventListener(type, handleEvent, false);
     });
 }

@@ -50,14 +50,20 @@ export declare class SessionPort {
      */
     messagePort: MessagePortLike;
     /**
+     * If true, don't raise an error when receiving a message for an unknown topic
+     */
+    suppressErrorOnUnknownTopic: boolean;
+    /**
      * Describes the configuration of the connected session.
      */
-    info: Configuration;
+    readonly info: Configuration;
+    private _info;
     /**
      * The version of argon.js which is used by the connecting session.
      * This property is an empty array until the session connects.
      */
-    version: number[];
+    readonly version: number[];
+    private _version;
     static OPEN: string;
     static CLOSE: string;
     static ERROR: string;
@@ -69,6 +75,7 @@ export declare class SessionPort {
      * Check if a protocol is supported by this session.
      */
     supportsProtocol(name: string, versions?: number | number[]): boolean;
+    whenConnected(): Promise<void>;
     /**
      * Establish a connection to another [[SessionPort]] via the provided [[MessagePort]] instance.
      * @param messagePort the message port to post and receive messages.
@@ -269,6 +276,19 @@ export declare class DebugConnectService extends ConnectService {
  * A service which connects this system to the [[REALITY_MANAGER]] via a WKWebview message handler.
  */
 export declare class WKWebViewConnectService extends ConnectService {
+    /**
+     * Check whether this connect method is available or not.
+     */
+    static isAvailable(): boolean;
+    /**
+     * Connect to the manager.
+     */
+    connect(sessionService: SessionService): void;
+}
+/**
+ * A service which connects this system to the [[REALITY_MANAGER]] via an Android WebView javascript interface.
+ */
+export declare class AndroidWebViewConnectService extends ConnectService {
     /**
      * Check whether this connect method is available or not.
      */

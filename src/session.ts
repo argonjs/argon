@@ -1,5 +1,5 @@
-import { createGuid } from './cesium/cesium-imports';
-import { inject } from 'aurelia-dependency-injection';
+import { createGuid, defined } from './cesium/cesium-imports';
+import { autoinject } from 'aurelia-dependency-injection';
 import { Role, Configuration } from './common'
 import { 
     deprecated,
@@ -77,15 +77,32 @@ export class SessionPort {
     public messagePort: MessagePortLike;
 
     /**
+     * If true, don't raise an error when receiving a message for an unknown topic
+     */
+    public suppressErrorOnUnknownTopic = false;
+
+    /**
      * Describes the configuration of the connected session. 
      */
-    public info: Configuration;
+    public get info() {
+        if (!this.isConnected) {
+            throw new Error('info is not available until the session is connected.');
+        }
+        return this._info;
+    }
+    private _info: Configuration;
 
     /**
      * The version of argon.js which is used by the connecting session.
      * This property is an empty array until the session connects.
      */
-    public version: number[] = [];
+    public get version() {
+        if (!defined(this._version)) {
+            throw new Error('version is not available until the session is opened.');
+        }
+        return this._version;
+    }
+    private _version: number[];
 
     public static OPEN = 'ar.session.open';
     public static CLOSE = 'ar.session.close';
@@ -100,8 +117,8 @@ export class SessionPort {
         this.on[SessionPort.OPEN] = (info: Configuration) => {
             if (!info) throw new Error(`Session did not provide a configuration (${this.uri})`);
             if (this._isConnected) throw new Error(`Session has already connected! (${this.uri})`);
-            this.info = info;
-            this.version = this.info.version || [0];
+            this._info = info;
+            this._version = info.version || [0];
             this._isConnected = true;
             this._connectEvent.raiseEvent(undefined);
         }
@@ -158,6 +175,16 @@ export class SessionPort {
         }
         return supported;
     }
+    
+    public whenConnected() : Promise<void> {
+        return new Promise<void>((resolve, reject)=>{
+            if (this.isConnected) resolve();
+            let remove = this._connectEvent.addEventListener(()=>{
+                remove();
+                resolve();
+            })
+        });
+    }
 
     /**
      * Establish a connection to another [[SessionPort]] via the provided [[MessagePort]] instance.
@@ -202,7 +229,7 @@ export class SessionPort {
                     else if (typeof error.message === 'string') errorMessage = error.message;
                     this.send(topic + ':reject:' + id, { reason: errorMessage })
                 })
-            } else {
+            } else if (!this.suppressErrorOnUnknownTopic) {
                 const errorMessage = 'Unable to handle message for topic ' + topic + ' (' + this.uri + ')';
                 if (expectsResponse) {
                     this.send(topic + ':reject:' + id, { reason: errorMessage });
@@ -325,7 +352,7 @@ export abstract class ConnectService {
 /**
  * A service for managing connections to other ArgonSystem instances
  */
-@inject('config', ConnectService, SessionPortFactory, MessageChannelFactory)
+@autoinject
 export class SessionService {
 
     /**
@@ -629,4 +656,33 @@ function extractVersion(versionString) {
         parts[i] = parseInt(parts[i], 10);
     }
     return parts;
+}
+
+/**
+ * A service which connects this system to the [[REALITY_MANAGER]] via an Android WebView javascript interface.
+ */
+export class AndroidWebViewConnectService extends ConnectService {
+
+    /**
+     * Check whether this connect method is available or not.
+     */
+    public static isAvailable(): boolean {
+        return typeof window !== 'undefined' &&
+            window["__argon_android__"];
+    }
+
+    /**
+     * Connect to the manager.
+     */
+    connect(sessionService: SessionService) {
+        const messageChannel = sessionService.createSynchronousMessageChannel();
+        messageChannel.port2.onmessage = (event) => {
+            window["__argon_android__"].emit("argon", JSON.stringify(event.data));
+        }
+        window['__ARGON_PORT__'] = messageChannel.port2;
+        sessionService.manager.open(messageChannel.port1, sessionService.configuration);
+        window.addEventListener("beforeunload", function() {
+            sessionService.manager.close();
+        })
+    }
 }

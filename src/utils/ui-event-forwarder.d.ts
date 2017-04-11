@@ -1,2 +1,2 @@
-import { ViewportService } from '../viewport';
-export default function createEventForwarder(this: void, viewportService: ViewportService, callback: (uievent: UIEvent) => void): void;
+import { ViewService } from '../view';
+export default function createEventForwarder(this: void, viewService: ViewService, callback: (uievent: UIEvent) => void): void;

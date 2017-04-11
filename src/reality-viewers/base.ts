@@ -35,6 +35,7 @@ export abstract class RealityViewer {
     }
 
     public destroy() {
+        this.setPresenting(false);
         if (this.session) {
             this.session.close();
         }

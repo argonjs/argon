@@ -1,6 +1,6 @@
 {
   "name": "@argonjs/argon",
-  "version": "1.1.3",
+  "version": "1.1.12",
   "main": "dist/argon.core.js",
   "browser": "dist/argon.js",
   "typings": "index.d.ts",
@@ -24,6 +24,7 @@
       "constants": "npm:jspm-nodelibs-constants@^0.2.0",
       "crypto": "npm:jspm-nodelibs-crypto@^0.2.0",
       "css": "github:systemjs/plugin-css@^0.1.19",
+      "diff": "npm:diff@^3.2.0",
       "events": "npm:jspm-nodelibs-events@^0.2.0",
       "fs": "npm:jspm-nodelibs-fs@^0.2.0",
       "mocha": "npm:mocha@^3.2.0",
@@ -35,6 +36,7 @@
       "stream": "npm:jspm-nodelibs-stream@^0.2.0",
       "string_decoder": "npm:jspm-nodelibs-string_decoder@^0.2.0",
       "ts": "github:frankwallis/plugin-typescript@^5.3.3",
+      "typescript": "npm:typescript@^2.2.1",
       "util": "npm:jspm-nodelibs-util@^0.2.0",
       "vm": "npm:jspm-nodelibs-vm@^0.2.0"
     },
@@ -164,7 +166,6 @@
           "glob": "@empty",
           "mkdirp": "@empty",
           "jade": "@empty",
-          "diff": "@empty",
           "supports-color": "@empty",
           "path": "@node/path",
           "fs": "@node/fs",
@@ -190,6 +191,20 @@
         "dependencies": {
           "source-map-support": "*"
         }
+      },
+      "npm:typescript@2.2.1": {
+        "browser": {},
+        "map": {
+          "buffer": "@empty",
+          "child_process": "@empty",
+          "fs": "@empty",
+          "path": "@empty",
+          "process": "@empty",
+          "readline": "@empty"
+        },
+        "dependencies": {
+          "source-map-support": "*"
+        }
       }
     }
   },
@@ -197,16 +212,16 @@
     "format": "tsfmt -r",
     "build:browser": "jspm build src/argon.ts .tmp/argon-build.js --format umd --global-name Argon --skip-source-maps && derequire .tmp/argon-build.js > dist/argon.js",
     "build:core": "jspm build src/argon.ts .tmp/argon-build.js --node --format umd --global-name Argon --skip-source-maps && derequire .tmp/argon-build.js > dist/argon.core.js",
-    "prebuild": "npm run build:core && npm run build:browser && uglifyjs dist/argon.js -b -o dist/argon.js",
+    "prebuild": "npm run build:core && npm run build:browser",
     "build": "uglifyjs dist/argon.js -m -c warnings=false -o dist/argon.min.js",
     "browser-sync": "browser-sync  start --server --directory --startPath \"index.html\" --files \"src/**\"",
-    "test": "npm run browser-sync",
+    "test": "jspm run test/runner.js",
     "static": "static -p 3000",
     "typedoc": "typedoc --tsconfig tsconfig.build.json --out docs --mode file --gaID UA-63191442-2 --name argon.js --readme src/README.md --target ES6 --module commonjs --moduleResolution node --experimentalDecorators --includeDeclarations --excludeNotExported --excludeExternals --ignoreCompilerErrors src",
     "postinstall": "npm install types/cesium types/mobile-detect",
     "tsc": "tsc",
     "preversion": "[[ -z $(git status --porcelain) ]]",
-    "version": "npm run tsc && npm run build && git add -A dist && git commit -m 'Update build'",
+    "version": "npm run tsc && npm run build && git add -u",
     "postversion": "git push && git push --tags"
   },
   "dependencies": {
@@ -219,12 +234,12 @@
     "@types/webvr-api": "0.0.30",
     "browser-sync": "^2.11.0",
     "derequire": "^2.0.3",
-    "jspm": "^0.17.0-beta.29",
+    "jspm": "0.17.0-beta.32",
     "node-static": "^0.7.7",
     "tsconfig-glob": "^0.2.1",
-    "typedoc": "^0.5.5",
-    "typescript": "^2.1.4",
+    "typedoc": "^0.5.7",
+    "typescript": "^2.2.1",
     "typescript-formatter": "^2.3.0",
-    "uglify-js": "^2.7.3"
+    "uglify-js": "^2.7.5"
   }
 }

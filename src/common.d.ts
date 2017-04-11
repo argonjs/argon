@@ -1,14 +1,21 @@
 /// <reference types="cesium" />
 import { Matrix4, JulianDate, Cartesian3, Cartographic, Quaternion } from './cesium/cesium-imports';
-export declare const AVERAGE_HUMAN_HEIGHT = 1.77;
-export declare const EYE_ENTITY_ID = "ar.eye";
-export declare const PHYSICAL_EYE_ENTITY_ID = "ar.physical-eye";
-export declare const STAGE_ENTITY_ID = "ar.stage";
-export declare const PHYSICAL_STAGE_ENTITY_ID = "ar.physical-stage";
+/**
+ * Default distance from a user's eyes to the floor
+ */
+export declare const AVERAGE_EYE_HEIGHT = 1.6;
+/**
+ * Default near plane
+ */
+export declare const DEFAULT_NEAR_PLANE = 0.01;
+/**
+ * Default far plane
+ */
+export declare const DEFAULT_FAR_PLANE = 10000;
 /**
  * Describes the role of an [[ArgonSystem]]
  */
-declare enum Role {
+export declare enum Role {
     /**
      * A system with this role is responsible for augmenting an arbitrary view of reality,
      * generally by overlaying computer generated graphics. A reality augmentor may also,
@@ -43,12 +50,11 @@ declare enum Role {
      */
     REALITY_VIEW,
 }
-declare namespace Role {
+export declare namespace Role {
     function isRealityViewer(r?: Role): boolean;
     function isRealityAugmenter(r?: Role): boolean;
     function isRealityManager(r?: Role): boolean;
 }
-export { Role };
 /**
  * Configuration options for an [[ArgonSystem]]
  */
@@ -103,13 +109,13 @@ export interface SerializedEntityState {
     meta?: any;
 }
 export declare namespace SerializedEntityState {
-    function clone(state?: SerializedEntityState, result?: SerializedEntityState): SerializedEntityState | undefined;
+    function clone(state?: SerializedEntityState, result?: SerializedEntityState | null): SerializedEntityState | null;
 }
 /**
  * A map of entity ids and their associated poses.
  */
 export interface SerializedEntityStateMap {
-    [id: string]: SerializedEntityState | undefined;
+    [id: string]: SerializedEntityState | null;
 }
 /**
  * The serialized rendering parameters for a particular subview
@@ -127,7 +133,7 @@ export interface SerializedSubview {
     /**
      * The pose for this subview (relative to the primary pose)
      */
-    pose?: SerializedEntityState;
+    pose: SerializedEntityState | null | undefined;
 }
 /**
  * The serialized rendering parameters for a particular subview
@@ -192,15 +198,15 @@ export interface DeprecatedPartialFrameState {
 /**
  * Describes a complete frame state which is sent to child sessions
  */
-export interface FrameState {
+export interface ContextFrameState {
     time: JulianDate;
     viewport: Viewport;
     subviews: SerializedSubviewList;
     reality?: string;
     index?: number;
     entities: SerializedEntityStateMap;
-    sendTime?: {
-        dayNumber: number;
-        secondsOfDay: number;
-    };
+    sendTime?: JulianDate;
+}
+export interface GeolocationOptions {
+    enableHighAccuracy?: boolean;
 }
