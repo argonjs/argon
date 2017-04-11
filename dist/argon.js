@@ -19938,6 +19938,193 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
         return function (target) {
             metadata.define(metadata.registration, value, target);
         };
+<<<<<<< HEAD
+        function InstallWebVRSpecShim() {
+            if ("VRDisplay" in window && !("VRFrameData" in window)) {
+                window.VRFrameData = VRFrameData;
+                if (!("depthNear" in window.VRDisplay.prototype)) {
+                    window.VRDisplay.prototype.depthNear = .01;
+                }
+                if (!("depthFar" in window.VRDisplay.prototype)) {
+                    window.VRDisplay.prototype.depthFar = 1e4;
+                }
+                window.VRDisplay.prototype.getFrameData = function(frameData) {
+                    return Util.frameDataFromPose(frameData, this.getPose(), this);
+                };
+            }
+        }
+        module.exports.WebVRPolyfill = WebVRPolyfill;
+        return module.exports;
+    });
+    $__System.registerDynamic("78", [ "62", "77" ], true, function($__require, exports, module) {
+        var define, global = this || self, GLOBAL = global;
+        var Util = $__require("62");
+        var WebVRPolyfill = $__require("77").WebVRPolyfill;
+        window.WebVRConfig = Util.extend({
+            FORCE_ENABLE_VR: false,
+            K_FILTER: .98,
+            PREDICTION_TIME_S: .04,
+            TOUCH_PANNER_DISABLED: true,
+            CARDBOARD_UI_DISABLED: false,
+            ROTATE_INSTRUCTIONS_DISABLED: false,
+            YAW_ONLY: false,
+            MOUSE_KEYBOARD_CONTROLS_DISABLED: false,
+            DEFER_INITIALIZATION: false,
+            ENABLE_DEPRECATED_API: false,
+            BUFFER_SCALE: .5,
+            DIRTY_SUBMIT_FRAME_BINDINGS: false
+        }, window.WebVRConfig);
+        if (!window.WebVRConfig.DEFER_INITIALIZATION) {
+            new WebVRPolyfill();
+        } else {
+            window.InitializeWebVRPolyfill = function() {
+                new WebVRPolyfill();
+            };
+        }
+        return module.exports;
+    });
+<<<<<<< HEAD
+    $__System.register("1", [ "2", "3", "3d", "4", "9", "10", "a", "1d", "35", "2d", "14", "15", "18", "1c", "20", "19", "16", "5", "7", "2e", "1a", "1b", "8", "3b", "2c", "2f", "17", "d", "23", "24", "30", "31", "32", "1f", "27", "25", "37", "1e", "38", "39", "3a", "e", "f", "26", "55", "5f", "61", "78" ], function(_export, _context) {
+=======
+    $__System.register("1", [ "2", "3", "3d", "4", "9", "10", "a", "1d", "35", "2d", "14", "15", "18", "1c", "20", "19", "16", "5", "7", "2e", "1a", "1b", "8", "3b", "3e", "2c", "2f", "17", "d", "23", "24", "30", "31", "32", "1f", "27", "25", "37", "1e", "38", "39", "3a", "e", "f", "26", "55", "5f", "61", "78" ], function(_export, _context) {
+>>>>>>> b2935729304bfe564be76b9c64654b4bf3ec5250
+        "use strict";
+        var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, Clock, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, createGuid, cesium_Source_Core_defaultValue_js, defined, cesium_Source_Core_DeveloperError_js, cesium_Source_Core_Ellipsoid_js, Entity, EntityCollection, CesiumEvent, cesium_Source_Core_ExtrapolationType_js, FeatureDetection, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, ReferenceEntity, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, CardboardUI, _createClass, _classCallCheck, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, aureliaDependencyInjection, after, cesiumImports, kButtonWidthDp, kTouchSlopFactor, _possibleConstructorReturn, _inherits, AVERAGE_HUMAN_HEIGHT, EYE_ENTITY_ID, PHYSICAL_EYE_ENTITY_ID, STAGE_ENTITY_ID, PHYSICAL_STAGE_ENTITY_ID, Role, Configuration, Viewport, NormalizedViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, synthesizeEvent, cloneTouch, cloneTouches, getEntityPosition, getEntityOrientation, _scratchFramesArray, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, lastTime, requestAnimationFrame$1, version, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, WKWebViewConnectService, _a$1, _b$1, _defineProperty, __decorate$5, __metadata$5, EntityPose, PoseStatus, scratchCartesian$2, scratchCartesian2, scratchQuaternion$1, scratchOriginCartesian, scratchFrustum$1, scratchMatrix3$1, scratchMatrix4$1, ContextService, ContextServiceProvider, _a$5, _b$5, _c$4, _d$4, _e$4, _f$3, __decorate$6, __metadata$6, FocusService, FocusServiceProvider, _a$6, _b$6, __decorate$7, __metadata$7, VisibilityService, VisibilityServiceProvider, _a$7, _b$7, __decorate$4, __metadata$4, ViewportMode, ViewElement, ViewportService, ViewportServiceProvider, viewportMetaTag, argonMetaTag, style, sheet, _a$4, _b$4, _c$3, _d$3, _e$3, _f$2, __decorate$8, __metadata$8, scratchCartesian3, scratchQuaternion$2, LocationService, LocationServiceProvider, _a$8, _b$8, _c$5, _d$5, __decorate$3, __metadata$3, Subview, scratchCartesian$1, scratchQuaternion, scratchQuaternion2, scratchMatrix3, scratchMatrix4, scratchFrustum, IDENTITY_SUBVIEW_POSE, currentVRDisplay, ViewService, ViewServiceProvider, deviceOrientationListener, deviceOrientation, deviceOrientationHeadingAccuracy, scratchTime, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, _h$1, _j, RealityViewer, __decorate$10, __metadata$10, EmptyRealityViewer, _a$10, _b$10, _c$7, _d$7, _e$6, _get$1, __decorate$11, __metadata$11, LiveRealityViewer, _a$11, _b$11, _c$8, _d$8, __decorate$12, __metadata$12, HostedRealityViewer, _a$12, _b$12, __decorate$9, __metadata$9, RealityViewerFactory, RealityService, RealityServiceProvider, _a$9, _b$9, _c$6, _d$6, _e$5, _f$4, _g$3, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __decorate$13, __metadata$13, VuforiaServiceProvider, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$13, _b$13, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, initReality, _a, _b, _c, _d, _e, _f, _g, _h;
+        function alwaysValid() {
+            return true;
+        }
+        function noCompose() {}
+        function ensureProtocolOptions(options) {
+            if (options === undefined) {
+                options = {};
+            } else if (typeof options === "function") {
+                options = {
+                    validate: options
+                };
+            }
+            if (!options.validate) {
+                options.validate = alwaysValid;
+            }
+            if (!options.compose) {
+                options.compose = noCompose;
+            }
+            return options;
+        }
+        function createProtocolValidator(validate) {
+            return function(target) {
+                var result = validate(target);
+                return result === true;
+            };
+        }
+        function createProtocolAsserter(name, validate) {
+            return function(target) {
+                var result = validate(target);
+                if (result !== true) {
+                    throw new Error(result || name + " was not correctly implemented.");
+                }
+            };
+        }
+        function protocol(name, options) {
+            options = ensureProtocolOptions(options);
+            var result = function result(target) {
+                var resolvedTarget = typeof target === "function" ? target.prototype : target;
+                options.compose(resolvedTarget);
+                result.assert(resolvedTarget);
+                Object.defineProperty(resolvedTarget, "protocol:" + name, {
+                    enumerable: false,
+                    configurable: false,
+                    writable: false,
+                    value: true
+                });
+            };
+            result.validate = createProtocolValidator(options.validate);
+            result.assert = createProtocolAsserter(name, options.validate);
+            return result;
+        }
+        function getDecoratorDependencies(target, name) {
+            var dependencies = target.inject;
+            if (typeof dependencies === "function") {
+                throw new Error("Decorator " + name + ' cannot be used with "inject()".  Please use an array instead.');
+            }
+            if (!dependencies) {
+                dependencies = metadata.getOwn(metadata.paramTypes, target).slice();
+                target.inject = dependencies;
+            }
+            return dependencies;
+        }
+        function lazy(keyValue) {
+            return function(target, key, index) {
+                var params = getDecoratorDependencies(target, "lazy");
+                params[index] = Lazy.of(keyValue);
+            };
+        }
+        function all(keyValue) {
+            return function(target, key, index) {
+                var params = getDecoratorDependencies(target, "all");
+                params[index] = All.of(keyValue);
+            };
+        }
+        function optional() {
+            var checkParentOrTarget = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+            var deco = function deco(checkParent) {
+                return function(target, key, index) {
+                    var params = getDecoratorDependencies(target, "optional");
+                    params[index] = Optional.of(params[index], checkParent);
+                };
+            };
+            if (typeof checkParentOrTarget === "boolean") {
+                return deco(checkParentOrTarget);
+            }
+            return deco(true);
+        }
+        function parent(target, key, index) {
+            var params = getDecoratorDependencies(target, "parent");
+            params[index] = Parent.of(params[index]);
+        }
+        function factory(keyValue, asValue) {
+            return function(target, key, index) {
+                var params = getDecoratorDependencies(target, "factory");
+                var factory = Factory.of(keyValue);
+                params[index] = asValue ? factory.as(asValue) : factory;
+            };
+        }
+        function newInstance(asKeyOrTarget) {
+            for (var _len4 = arguments.length, dynamicDependencies = Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
+                dynamicDependencies[_key4 - 1] = arguments[_key4];
+            }
+            var deco = function deco(asKey) {
+                return function(target, key, index) {
+                    var params = getDecoratorDependencies(target, "newInstance");
+                    params[index] = NewInstance.of.apply(NewInstance, [ params[index] ].concat(dynamicDependencies));
+                    if (!!asKey) {
+                        params[index].as(asKey);
+                    }
+                };
+            };
+            if (arguments.length >= 1) {
+                return deco(asKeyOrTarget);
+            }
+            return deco();
+        }
+        function invoker(value) {
+            return function(target) {
+                metadata.define(metadata.invoker, value, target);
+            };
+        }
+        function invokeAsFactory(potentialTarget) {
+            var deco = function deco(target) {
+                metadata.define(metadata.invoker, FactoryInvoker.instance, target);
+            };
+            return potentialTarget ? deco(potentialTarget) : deco;
+        }
+        function registration(value) {
+            return function(target) {
+                metadata.define(metadata.registration, value, target);
+            };
+        }
+        function transient(key) {
+            return registration(new TransientRegistration(key));
+=======
     }
     function transient(key) {
         return registration(new TransientRegistration(key));
@@ -19950,6 +20137,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
     function validateKey(key) {
         if (key === null || key === undefined) {
             throw new Error('key/value cannot be null or undefined. Are you trying to inject/register something that doesn\'t exist with DI?');
+>>>>>>> 3f502bd51b18ae8ab5a02086bbe092b49ead99ad
         }
     }
 
@@ -20691,6 +20879,185 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
         if (configuration === void 0) {
             configuration = {};
         }
+<<<<<<< HEAD
+        return {
+            setters: [ function(_) {}, function(_2) {
+                AggregateError = _2.AggregateError;
+                PLATFORM = _2.PLATFORM;
+<<<<<<< HEAD
+            }, function(_d) {
+                binarySearch = _d.default;
+=======
+            }, function(_d2) {
+                binarySearch = _d2.default;
+>>>>>>> b2935729304bfe564be76b9c64654b4bf3ec5250
+            }, function(_3) {
+                cesium_Source_DataSources_CallbackProperty_js = _3.default;
+            }, function(_4) {
+                CameraEventAggregator = _4.default;
+            }, function(_5) {
+                CameraEventType = _5.default;
+<<<<<<< HEAD
+            }, function(_a) {
+                cesium_Source_Core_Cartesian2_js = _a.default;
+            }, function(_d2) {
+                Cartesian3 = _d2.default;
+            }, function(_6) {
+                cesium_Source_Core_Cartesian4_js = _6.default;
+            }, function(_d3) {
+                Cartographic = _d3.default;
+=======
+            }, function(_a2) {
+                cesium_Source_Core_Cartesian2_js = _a2.default;
+            }, function(_d3) {
+                Cartesian3 = _d3.default;
+            }, function(_6) {
+                cesium_Source_Core_Cartesian4_js = _6.default;
+            }, function(_d4) {
+                Cartographic = _d4.default;
+>>>>>>> b2935729304bfe564be76b9c64654b4bf3ec5250
+            }, function(_7) {
+                Clock = _7.default;
+            }, function(_8) {
+                cesium_Source_Core_ClockStep_js = _8.default;
+            }, function(_9) {
+                cesium_Source_DataSources_CompositeEntityCollection_js = _9.default;
+<<<<<<< HEAD
+            }, function(_c) {
+                ConstantPositionProperty = _c.default;
+=======
+            }, function(_c2) {
+                ConstantPositionProperty = _c2.default;
+>>>>>>> b2935729304bfe564be76b9c64654b4bf3ec5250
+            }, function(_10) {
+                ConstantProperty = _10.default;
+            }, function(_11) {
+                createGuid = _11.default;
+            }, function(_12) {
+                cesium_Source_Core_defaultValue_js = _12.default;
+            }, function(_13) {
+                defined = _13.default;
+            }, function(_14) {
+                cesium_Source_Core_DeveloperError_js = _14.default;
+<<<<<<< HEAD
+            }, function(_e) {
+                cesium_Source_Core_Ellipsoid_js = _e.default;
+            }, function(_a2) {
+                Entity = _a2.default;
+            }, function(_b) {
+                EntityCollection = _b.default;
+            }, function(_15) {
+                CesiumEvent = _15.default;
+            }, function(_b2) {
+                cesium_Source_Core_ExtrapolationType_js = _b2.default;
+            }, function(_c2) {
+                cesium_Source_Core_GeographicProjection_js = _c2.default;
+            }, function(_f) {
+                cesium_Source_Core_HermitePolynomialApproximation_js = _f.default;
+            }, function(_16) {
+                JulianDate = _16.default;
+            }, function(_d4) {
+                CesiumMath = _d4.default;
+=======
+            }, function(_e2) {
+                cesium_Source_Core_Ellipsoid_js = _e2.default;
+            }, function(_a3) {
+                Entity = _a3.default;
+            }, function(_b2) {
+                EntityCollection = _b2.default;
+            }, function(_15) {
+                CesiumEvent = _15.default;
+            }, function(_b3) {
+                cesium_Source_Core_ExtrapolationType_js = _b3.default;
+            }, function(_e3) {
+                FeatureDetection = _e3.default;
+            }, function(_c3) {
+                cesium_Source_Core_GeographicProjection_js = _c3.default;
+            }, function(_f2) {
+                cesium_Source_Core_HermitePolynomialApproximation_js = _f2.default;
+            }, function(_16) {
+                JulianDate = _16.default;
+            }, function(_d5) {
+                CesiumMath = _d5.default;
+>>>>>>> b2935729304bfe564be76b9c64654b4bf3ec5250
+            }, function(_17) {
+                Matrix3 = _17.default;
+            }, function(_18) {
+                Matrix4 = _18.default;
+            }, function(_19) {
+                OrientationProperty = _19.default;
+            }, function(_20) {
+                PerspectiveFrustum = _20.default;
+            }, function(_21) {
+                PerspectiveOffCenterFrustum = _21.default;
+<<<<<<< HEAD
+            }, function(_f2) {
+                cesium_Source_DataSources_PositionProperty_js = _f2.default;
+=======
+            }, function(_f3) {
+                cesium_Source_DataSources_PositionProperty_js = _f3.default;
+>>>>>>> b2935729304bfe564be76b9c64654b4bf3ec5250
+            }, function(_22) {
+                cesium_Source_DataSources_Property_js = _22.default;
+            }, function(_23) {
+                Quaternion = _23.default;
+            }, function(_24) {
+<<<<<<< HEAD
+                cesium_Source_DataSources_ReferenceEntity_js = _24.default;
+<<<<<<< HEAD
+            }, function(_e2) {
+                ReferenceFrame = _e2.default;
+=======
+=======
+                ReferenceEntity = _24.default;
+>>>>>>> 25dfdaaebaa09a3fd816d51071755691ee27306a
+            }, function(_e4) {
+                ReferenceFrame = _e4.default;
+>>>>>>> b2935729304bfe564be76b9c64654b4bf3ec5250
+            }, function(_25) {
+                cesium_Source_DataSources_ReferenceProperty_js = _25.default;
+            }, function(_26) {
+                SampledPositionProperty = _26.default;
+<<<<<<< HEAD
+            }, function(_a3) {
+                SampledProperty = _a3.default;
+            }, function(_e3) {
+                cesium_Source_Core_ScreenSpaceEventHandler_js = _e3.default;
+            }, function(_f3) {
+                cesium_Source_Core_ScreenSpaceEventType_js = _f3.default;
+=======
+            }, function(_a4) {
+                SampledProperty = _a4.default;
+            }, function(_e5) {
+                cesium_Source_Core_ScreenSpaceEventHandler_js = _e5.default;
+            }, function(_f4) {
+                cesium_Source_Core_ScreenSpaceEventType_js = _f4.default;
+>>>>>>> b2935729304bfe564be76b9c64654b4bf3ec5250
+            }, function(_27) {
+                Transforms = _27.default;
+            }, function(_28) {
+                cesium_Source_Core_Simon1994PlanetaryPositions_js = _28.default;
+<<<<<<< HEAD
+            }, function(_f4) {
+                cesium_Source_Core_PolylinePipeline_js = _f4.default;
+=======
+            }, function(_f5) {
+                cesium_Source_Core_PolylinePipeline_js = _f5.default;
+>>>>>>> b2935729304bfe564be76b9c64654b4bf3ec5250
+            }, function(_29) {
+                CardboardUI = _29.default;
+            }, function(_30) {} ],
+            execute: function() {
+                _createClass = function() {
+                    function defineProperties(target, props) {
+                        for (var i = 0; i < props.length; i++) {
+                            var descriptor = props[i];
+                            descriptor.enumerable = descriptor.enumerable || false;
+                            descriptor.configurable = true;
+                            if ("value" in descriptor) descriptor.writable = true;
+                            Object.defineProperty(target, descriptor.key, descriptor);
+                        }
+=======
         if (dependencyInjectionContainer === void 0) {
             dependencyInjectionContainer = new Container();
         }
@@ -20826,6 +21193,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 get: function get(metadataKey, target, targetKey) {
                     if (!target) {
                         return undefined;
+>>>>>>> 3f502bd51b18ae8ab5a02086bbe092b49ead99ad
                     }
                     var result = metadata.getOwn(metadataKey, target, targetKey);
                     return result === undefined ? metadata.get(metadataKey, Object.getPrototypeOf(target), targetKey) : result;
@@ -23479,6 +23847,41 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                         setTimeout(function () {
                             if (!_this._session && _this.sessionService.manager.isConnected) _this.session = _this.sessionService.manager;
                         });
+<<<<<<< HEAD
+                    }
+<<<<<<< HEAD
+                    _createClass(ViewService, [ {
+                        key: "getSubviews",
+                        value: function getSubviews(referenceFrame) {
+                            var _this2 = this;
+                            this._update();
+                            var subviews = this._subviews;
+                            var viewState = this.contextService.serializedFrameState.view;
+                            subviews.length = viewState.subviews.length;
+                            viewState.subviews.forEach(function(serializedSubview, index) {
+                                var id = "ar.view_" + index;
+                                var subviewEntity = _this2.contextService.entities.getById(id);
+                                var subview = subviews[index] = subviews[index] || {};
+                                subview.index = index;
+                                subview.type = serializedSubview.type;
+                                subview.pose = _this2.contextService.getEntityPose(subviewEntity, referenceFrame);
+                                subview.viewport = serializedSubview.viewport || {
+                                    x: 0,
+                                    y: 0,
+                                    width: viewState.viewport.width,
+                                    height: viewState.viewport.height
+                                };
+                                subview.frustum = _this2._frustums[index] = _this2._frustums[index] || new PerspectiveFrustum();
+                                decomposePerspectiveProjectionMatrix(serializedSubview.projectionMatrix, subview.frustum);
+                                subview["projectionMatrix"] = subview.frustum.projectionMatrix;
+=======
+                    _createClass(ViewportService, [ {
+                        key: "requestPresentationMode",
+                        value: function requestPresentationMode(mode) {
+                            return this.sessionService.manager.request("ar.viewport.desiredMode", {
+                                mode: mode
+>>>>>>> b2935729304bfe564be76b9c64654b4bf3ec5250
+=======
                     });
                 }
                 Object.defineProperty(FocusServiceProvider.prototype, "session", {
@@ -23495,6 +23898,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                             this.sessionFocusEvent.raiseEvent({
                                 previous: previousFocussedSession,
                                 current: session
+>>>>>>> 3f502bd51b18ae8ab5a02086bbe092b49ead99ad
                             });
                         }
                     },
