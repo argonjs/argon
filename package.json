@@ -4,7 +4,7 @@
   "main": "dist/argon.core.js",
   "browser": "dist/argon.js",
   "typings": "index.d.ts",
-  "license": "Apache",
+  "license": "Apache-2.0",
   "repository" : {
     "type" : "git",
     "url" : "https://github.com/argonjs/argon"
