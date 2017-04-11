@@ -4,6 +4,11 @@
   "main": "dist/argon.core.js",
   "browser": "dist/argon.js",
   "typings": "index.d.ts",
+  "license": "Apache",
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/argonjs/argon"
+  }
   "jspm": {
     "format": "esm",
     "jspmPackage": true,
