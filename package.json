@@ -8,7 +8,7 @@
   "repository" : {
     "type" : "git",
     "url" : "https://github.com/argonjs/argon"
-  }
+  },
   "jspm": {
     "format": "esm",
     "jspmPackage": true,
