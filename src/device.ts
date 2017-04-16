@@ -376,19 +376,25 @@ export class DeviceService {
         orientation: new ConstantProperty(Quaternion.IDENTITY)
     });
 
+	private _defaultLeftBounds = [ 0.0, 0.0, 0.5, 1.0 ];
+	private _defaultRightBounds = [ 0.5, 0.0, 0.5, 1.0 ];
+
     private _updateForWebVR() {
         
         const frameState = this.frameState;
 
         const vrDisplay:VRDisplay = currentVRDisplay;
 
-        const element = this.viewService.element;
+        // const element = this.viewService.element;
+       
+        var leftEye = vrDisplay.getEyeParameters("left");
+        var rightEye = vrDisplay.getEyeParameters("right");
         
         const viewport = frameState.viewport;
         viewport.x = 0;
         viewport.y = 0;
-        viewport.width = element && element.clientWidth || 0;
-        viewport.height = element && element.clientHeight || 0;
+        viewport.width = Math.max(leftEye.renderWidth, rightEye.renderWidth) * 2;
+        viewport.height = Math.max(leftEye.renderHeight, rightEye.renderHeight);
 
         const vrFrameData : VRFrameData = this._vrFrameData = 
             this._vrFrameData || new VRFrameData();
@@ -396,8 +402,17 @@ export class DeviceService {
             return this.frameState;
 
         const layers = vrDisplay.getLayers();
-        const leftBounds = layers[0].leftBounds!;
-        const rightBounds = layers[0].rightBounds!;
+        let leftBounds = layers[0].leftBounds;
+        let rightBounds = layers[0].rightBounds;
+
+        if ( layers.length ) {
+            var layer = layers[ 0 ]!;
+            leftBounds = layer.leftBounds && layer.leftBounds.length === 4 ? layer.leftBounds : this._defaultLeftBounds;
+            rightBounds = layer.rightBounds && layer.rightBounds.length === 4 ? layer.rightBounds : this._defaultRightBounds;
+        } else {
+            leftBounds = this._defaultLeftBounds;
+            rightBounds = this._defaultRightBounds;
+        }
         
         const subviews = frameState.subviews = frameState.subviews || [];
         subviews.length = 2;
