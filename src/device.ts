@@ -447,6 +447,8 @@ export class DeviceService {
         const standingUserOrientation = sittingUserOrientation ? 
             Quaternion.multiply(sittingToStandingQuaternion, sittingUserOrientation, this._scratchQuaternion) : undefined;
 
+        if (!user.position) user.position = new ConstantPositionProperty();
+        if (!user.orientation) user.orientation = new ConstantProperty();
         (user.position as ConstantPositionProperty).setValue(standingUserPosition, standingSpace);
         (user.orientation as ConstantProperty).setValue(standingUserOrientation);
 
