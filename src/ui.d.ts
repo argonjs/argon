@@ -26,5 +26,6 @@ export declare class DefaultUIService {
     private _createMenuItem(icon, hint, onSelect?);
     private onSelect(element, cb);
     private toggleMenu();
+    private _hideMenuItem(e);
     updateMenu(): void;
 }
