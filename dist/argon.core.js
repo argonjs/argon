@@ -18527,6 +18527,8 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                         position: new ConstantPositionProperty(Cartesian3.ZERO, this._stageEUS),
                         orientation: new ConstantProperty(Quaternion.IDENTITY)
                     });
+                    this._defaultLeftBounds = [0.0, 0.0, 0.5, 1.0];
+                    this._defaultRightBounds = [0.5, 0.0, 0.5, 1.0];
                     this._scratchFrameState = {
                         time: {},
                         entities: {},
@@ -18705,17 +18707,27 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 DeviceService.prototype._updateForWebVR = function () {
                     var frameState = this.frameState;
                     var vrDisplay = currentVRDisplay;
-                    var element = this.viewService.element;
+                    // const element = this.viewService.element;
+                    var leftEye = vrDisplay.getEyeParameters("left");
+                    var rightEye = vrDisplay.getEyeParameters("right");
                     var viewport = frameState.viewport;
                     viewport.x = 0;
                     viewport.y = 0;
-                    viewport.width = element && element.clientWidth || 0;
-                    viewport.height = element && element.clientHeight || 0;
+                    viewport.width = Math.max(leftEye.renderWidth, rightEye.renderWidth) * 2;
+                    viewport.height = Math.max(leftEye.renderHeight, rightEye.renderHeight);
                     var vrFrameData = this._vrFrameData = this._vrFrameData || new VRFrameData();
                     if (!vrDisplay['getFrameData'](vrFrameData)) return this.frameState;
                     var layers = vrDisplay.getLayers();
                     var leftBounds = layers[0].leftBounds;
                     var rightBounds = layers[0].rightBounds;
+                    if (layers.length) {
+                        var layer = layers[0];
+                        leftBounds = layer.leftBounds && layer.leftBounds.length === 4 ? layer.leftBounds : this._defaultLeftBounds;
+                        rightBounds = layer.rightBounds && layer.rightBounds.length === 4 ? layer.rightBounds : this._defaultRightBounds;
+                    } else {
+                        leftBounds = this._defaultLeftBounds;
+                        rightBounds = this._defaultRightBounds;
+                    }
                     var subviews = frameState.subviews = frameState.subviews || [];
                     subviews.length = 2;
                     var leftSubview = subviews[0] = subviews[0] || {};
@@ -18750,20 +18762,20 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     if (standingUserPosition && standingUserOrientation) {
                         var leftEyeSittingSpaceTransform = Matrix4.inverseTransformation(vrFrameData.leftViewMatrix, this._scratchMatrix4);
                         var leftEyeStandingSpaceTransform = Matrix4.multiplyTransformation(sittingToStandingTransform, leftEyeSittingSpaceTransform, this._scratchMatrix4);
-                        var leftEye = this.getSubviewEntity(0);
+                        var leftEye_1 = this.getSubviewEntity(0);
                         var leftEyePosition = Matrix4.getTranslation(leftEyeStandingSpaceTransform, this._scratchCartesian);
                         var leftEyeRotation = Matrix4.getRotation(leftEyeStandingSpaceTransform, this._scratchMatrix3);
                         var leftEyeOrientation = Quaternion.fromRotationMatrix(leftEyeRotation, this._scratchQuaternion);
-                        leftEye.position.setValue(leftEyePosition, standingSpace);
-                        leftEye.orientation.setValue(leftEyeOrientation);
+                        leftEye_1.position.setValue(leftEyePosition, standingSpace);
+                        leftEye_1.orientation.setValue(leftEyeOrientation);
                         var rightEyeSittingSpaceTransform = Matrix4.inverseTransformation(vrFrameData.rightViewMatrix, this._scratchMatrix4);
                         var rightEyeStandingSpaceTransform = Matrix4.multiplyTransformation(sittingToStandingTransform, rightEyeSittingSpaceTransform, this._scratchMatrix4);
-                        var rightEye = this.getSubviewEntity(1);
+                        var rightEye_1 = this.getSubviewEntity(1);
                         var rightEyePosition = Matrix4.getTranslation(rightEyeStandingSpaceTransform, this._scratchCartesian);
                         var rightEyeRotation = Matrix4.getRotation(rightEyeStandingSpaceTransform, this._scratchMatrix3);
                         var rightEyeOrientation = Quaternion.fromRotationMatrix(rightEyeRotation, this._scratchQuaternion);
-                        rightEye.position.setValue(rightEyePosition, standingSpace);
-                        rightEye.orientation.setValue(rightEyeOrientation);
+                        rightEye_1.position.setValue(rightEyePosition, standingSpace);
+                        rightEye_1.orientation.setValue(rightEyeOrientation);
                     }
                     if (vrDisplay.displayName.match(/polyfill/g)) {
                         // The polyfill does not support reporting an absolute orientation (yet), 
@@ -19115,55 +19127,68 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     enumerable: true,
                     configurable: true
                 });
+                // private _vrFrameData?:any;
                 DeviceServiceProvider.prototype.onUpdateDeviceState = function (deviceState) {
-                    var _this = this;
-                    var vrDisplay = currentVRDisplay;
-                    if (!vrDisplay) {
-                        deviceState.viewport = undefined;
-                        deviceState.subviews = undefined;
-                        deviceState.strict = false;
-                        return;
-                    }
+                    // const vrDisplay = currentVRDisplay;
+                    // if (!vrDisplay) {
+                    deviceState.viewport = undefined;
+                    deviceState.subviews = undefined;
+                    deviceState.strict = false;
+                    //     return;
+                    // }
                     // Since the WebVR polyfill only manages state within one browser window,
                     // we will just pass down the viewport/subview configuration in the device state.
                     // In managed sessions with real WebVR implementations, the WebVR API is used directly in the DeviceService
                     // (this is not really useful within an iframe, since real webVR implementations currently do not support
                     // a way to composite content from different iframes, however once WebVR is decoupled from the DOM and can run
                     // in a worker, the DeviceService should be able to leverage the WebVR API as needed within each frame)
-                    var vrFrameData = this._vrFrameData = this._vrFrameData || new VRFrameData();
-                    if (!vrDisplay['getFrameData'](vrFrameData)) {
-                        setTimeout(function () {
-                            return _this.publishDeviceState();
-                        }, 500);
-                        return;
-                    }
-                    var element = this.viewService.element;
-                    var viewport = deviceState.viewport = deviceState.viewport || {};
-                    viewport.x = 0;
-                    viewport.y = 0;
-                    viewport.width = element && element.clientWidth || 0;
-                    viewport.height = element && element.clientHeight || 0;
-                    var layers = vrDisplay.getLayers();
-                    var leftBounds = layers[0].leftBounds;
-                    var rightBounds = layers[0].rightBounds;
-                    var subviews = deviceState.subviews = deviceState.subviews || [];
-                    subviews.length = 2;
-                    var leftSubview = subviews[0] = subviews[0] || {};
-                    var rightSubview = subviews[1] = subviews[1] || {};
-                    leftSubview.type = SubviewType.LEFTEYE;
-                    rightSubview.type = SubviewType.RIGHTEYE;
-                    var leftViewport = leftSubview.viewport = leftSubview.viewport || {};
-                    leftViewport.x = leftBounds[0] * viewport.width;
-                    leftViewport.y = leftBounds[1] * viewport.height;
-                    leftViewport.width = leftBounds[2] * viewport.width;
-                    leftViewport.height = leftBounds[3] * viewport.height;
-                    var rightViewport = rightSubview.viewport = rightSubview.viewport || {};
-                    rightViewport.x = rightBounds[0] * viewport.width;
-                    rightViewport.y = rightBounds[1] * viewport.height;
-                    rightViewport.width = rightBounds[2] * viewport.width;
-                    rightViewport.height = rightBounds[3] * viewport.height;
-                    leftSubview.projectionMatrix = Matrix4.clone(vrFrameData.leftProjectionMatrix, leftSubview.projectionMatrix);
-                    rightSubview.projectionMatrix = Matrix4.clone(vrFrameData.rightProjectionMatrix, rightSubview.projectionMatrix);
+                    // const vrFrameData : VRFrameData = this._vrFrameData = 
+                    //     this._vrFrameData || new VRFrameData();
+                    // if (!vrDisplay['getFrameData'](vrFrameData)) {
+                    //     setTimeout(()=>this.publishDeviceState(), 500);
+                    //     return;
+                    // }
+                    // const element = this.viewService.element;
+                    // const viewport = deviceState.viewport = deviceState.viewport || <Viewport>{};
+                    // viewport.x = 0;
+                    // viewport.y = 0;
+                    // viewport.width = element && element.clientWidth || 0;
+                    // viewport.height = element && element.clientHeight || 0;
+                    // const layers = vrDisplay.getLayers();
+                    // let leftBounds = layers[0].leftBounds!;
+                    // let rightBounds = layers[0].rightBounds!;
+                    // if ( layers.length ) {
+                    //     var layer = layers[ 0 ]!;
+                    //     leftBounds = layer.leftBounds && layer.leftBounds.length === 4 ? layer.leftBounds : this._defaultLeftBounds;
+                    //     rightBounds = layer.rightBounds && layer.rightBounds.length === 4 ? layer.rightBounds : this._defaultRightBounds;
+                    // } else {
+                    //     leftBounds = this._defaultLeftBounds;
+                    //     rightBounds = this._defaultRightBounds;
+                    // }
+                    // const subviews = deviceState.subviews = deviceState.subviews || [];
+                    // subviews.length = 2;
+                    // const leftSubview = subviews[0] = subviews[0] || {};
+                    // const rightSubview = subviews[1] = subviews[1] || {};
+                    // leftSubview.type = SubviewType.LEFTEYE;
+                    // rightSubview.type = SubviewType.RIGHTEYE;
+                    // const leftViewport = leftSubview.viewport = leftSubview.viewport || <Viewport>{};
+                    // leftViewport.x = leftBounds[0] * viewport.width;
+                    // leftViewport.y = leftBounds[1] * viewport.height;
+                    // leftViewport.width = leftBounds[2] * viewport.width;
+                    // leftViewport.height = leftBounds[3] * viewport.height;
+                    // const rightViewport = rightSubview.viewport = rightSubview.viewport || <Viewport>{};
+                    // rightViewport.x = rightBounds[0] * viewport.width;
+                    // rightViewport.y = rightBounds[1] * viewport.height;
+                    // rightViewport.width = rightBounds[2] * viewport.width;
+                    // rightViewport.height = rightBounds[3] * viewport.height;
+                    // leftSubview.projectionMatrix = Matrix4.clone(
+                    //     <any>vrFrameData.leftProjectionMatrix, 
+                    //     leftSubview.projectionMatrix
+                    // );
+                    // rightSubview.projectionMatrix = Matrix4.clone(
+                    //     <any>vrFrameData.rightProjectionMatrix, 
+                    //     rightSubview.projectionMatrix
+                    // );
                 };
                 DeviceServiceProvider.prototype._checkDeviceGeolocationSubscribers = function () {
                     var subscribers = this.contextServiceProvider.subscribersByEntityId.get(this.deviceService.stage.id);
