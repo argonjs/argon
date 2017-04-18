@@ -1,9 +1,14 @@
 {
   "name": "@argonjs/argon",
-  "version": "1.1.7",
+  "version": "1.1.13",
   "main": "dist/argon.core.js",
   "browser": "dist/argon.js",
   "typings": "index.d.ts",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/argonjs/argon"
+  },
   "jspm": {
     "format": "esm",
     "jspmPackage": true,
@@ -36,6 +41,7 @@
       "stream": "npm:jspm-nodelibs-stream@^0.2.0",
       "string_decoder": "npm:jspm-nodelibs-string_decoder@^0.2.0",
       "ts": "github:frankwallis/plugin-typescript@^5.3.3",
+      "typescript": "npm:typescript@^2.2.1",
       "util": "npm:jspm-nodelibs-util@^0.2.0",
       "vm": "npm:jspm-nodelibs-vm@^0.2.0"
     },
@@ -192,6 +198,20 @@
         "dependencies": {
           "source-map-support": "*"
         }
+      },
+      "npm:typescript@2.2.1": {
+        "browser": {},
+        "map": {
+          "buffer": "@empty",
+          "child_process": "@empty",
+          "fs": "@empty",
+          "path": "@empty",
+          "process": "@empty",
+          "readline": "@empty"
+        },
+        "dependencies": {
+          "source-map-support": "*"
+        }
       }
     }
   },
@@ -208,7 +228,7 @@
     "postinstall": "npm install types/cesium types/mobile-detect",
     "tsc": "tsc",
     "preversion": "[[ -z $(git status --porcelain) ]]",
-    "version": "npm run tsc && npm run build && git add -u && git commit -m 'Update build'",
+    "version": "npm run tsc && npm run build && git add -u",
     "postversion": "git push && git push --tags"
   },
   "dependencies": {
@@ -221,12 +241,12 @@
     "@types/webvr-api": "0.0.30",
     "browser-sync": "^2.11.0",
     "derequire": "^2.0.3",
-    "jspm": "^0.17.0-beta.29",
+    "jspm": "0.17.0-beta.32",
     "node-static": "^0.7.7",
     "systemjs": "^0.20.9",
     "tsconfig-glob": "^0.2.1",
-    "typedoc": "^0.5.5",
-    "typescript": "^2.1.4",
+    "typedoc": "^0.5.7",
+    "typescript": "^2.2.1",
     "typescript-formatter": "^2.3.0",
     "uglify-js": "^2.7.5"
   }

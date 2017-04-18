@@ -83,23 +83,35 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="contextserviceprovider.html#_cachetime" class="tsd-kind-icon">_cache<wbr>Time</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="contextserviceprovider.html#_entityposecache" class="tsd-kind-icon">_entity<wbr>Pose<wbr>Cache</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="contextserviceprovider.html#_getserializedentitystate" class="tsd-kind-icon">_get<wbr>Serialized<wbr>Entity<wbr>State</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="contextserviceprovider.html#_sessionentities" class="tsd-kind-icon">_session<wbr>Entities</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="contextserviceprovider.html#contextservice" class="tsd-kind-icon">context<wbr>Service</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="contextserviceprovider.html#desiredgeolocationoptions" class="tsd-kind-icon">desired<wbr>Geolocation<wbr>Options</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="contextserviceprovider.html#entitysubscriptionsbysubscriber" class="tsd-kind-icon">entity<wbr>Subscriptions<wbr>BySubscriber</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="contextserviceprovider.html#publishingreferenceframemap" class="tsd-kind-icon">publishing<wbr>Reference<wbr>Frame<wbr>Map</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="contextserviceprovider.html#sessiongeolocationoptions" class="tsd-kind-icon">session<wbr>Geolocation<wbr>Options</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="contextserviceprovider.html#sessionservice" class="tsd-kind-icon">session<wbr>Service</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="contextserviceprovider.html#subscribersbyentityid" class="tsd-kind-icon">subscribers<wbr>ByEntity<wbr>Id</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="contextserviceprovider.html#subscriberschangeevent" class="tsd-kind-icon">subscribers<wbr>Change<wbr>Event</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
+							<h3>Accessors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="contextserviceprovider.html#geolocationdesired" class="tsd-kind-icon">geolocation<wbr>Desired</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="contextserviceprovider.html#_getserializedentitystate" class="tsd-kind-icon">_get<wbr>Serialized<wbr>Entity<wbr>State</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="contextserviceprovider.html#_getcachedserializedentitystate" class="tsd-kind-icon">_get<wbr>Cached<wbr>Serialized<wbr>Entity<wbr>State</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="contextserviceprovider.html#_handlesetgeolocationoptions" class="tsd-kind-icon">_handle<wbr>Set<wbr>Geolocation<wbr>Options</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="contextserviceprovider.html#_publishupdates" class="tsd-kind-icon">_publish<wbr>Updates</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="contextserviceprovider.html#_sendupdateforsession" class="tsd-kind-icon">_send<wbr>Update<wbr>For<wbr>Session</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="contextserviceprovider.html#publishentitystate" class="tsd-kind-icon">publish<wbr>Entity<wbr>State</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="contextserviceprovider.html#_updatedesiredgeolocationoptions" class="tsd-kind-icon">_update<wbr>Desired<wbr>Geolocation<wbr>Options</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="contextserviceprovider.html#fillentitystatemapforsession" class="tsd-kind-icon">fill<wbr>Entity<wbr>State<wbr>Map<wbr>For<wbr>Session</a></li>
 							</ul>
 						</section>
 					</div>
@@ -117,7 +129,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/context.ts#L628">src/context.ts:628</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L701">src/context.ts:701</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -137,12 +149,32 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="_cachetime" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _cache<wbr>Time</h3>
+					<div class="tsd-signature tsd-kind-icon">_cache<wbr>Time<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">JulianDate</span><span class="tsd-signature-symbol"> =&nbsp;new JulianDate(0,0)</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L699">src/context.ts:699</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="_entityposecache" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _entity<wbr>Pose<wbr>Cache</h3>
 					<div class="tsd-signature tsd-kind-icon">_entity<wbr>Pose<wbr>Cache<span class="tsd-signature-symbol">:</span> <a href="../interfaces/serializedentitystatemap.html" class="tsd-signature-type">SerializedEntityStateMap</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/context.ts#L628">src/context.ts:628</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L700">src/context.ts:700</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="_getserializedentitystate" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _get<wbr>Serialized<wbr>Entity<wbr>State</h3>
+					<div class="tsd-signature tsd-kind-icon">_get<wbr>Serialized<wbr>Entity<wbr>State<span class="tsd-signature-symbol">:</span> <a href="../globals.html#getserializedentitystate" class="tsd-signature-type">getSerializedEntityState</a><span class="tsd-signature-symbol"> =&nbsp;getSerializedEntityState</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L701">src/context.ts:701</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -152,7 +184,7 @@
 					<div class="tsd-signature tsd-kind-icon">_session<wbr>Entities<span class="tsd-signature-symbol">:</span> <a href="../interfaces/serializedentitystatemap.html" class="tsd-signature-type">SerializedEntityStateMap</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/context.ts#L709">src/context.ts:709</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L773">src/context.ts:773</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -162,27 +194,47 @@
 					<div class="tsd-signature tsd-kind-icon">context<wbr>Service<span class="tsd-signature-symbol">:</span> <a href="contextservice.html" class="tsd-signature-type">ContextService</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/context.ts#L632">src/context.ts:632</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L705">src/context.ts:705</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="desiredgeolocationoptions" class="tsd-anchor"></a>
+					<h3>desired<wbr>Geolocation<wbr>Options</h3>
+					<div class="tsd-signature tsd-kind-icon">desired<wbr>Geolocation<wbr>Options<span class="tsd-signature-symbol">:</span> <a href="../interfaces/geolocationoptions.html" class="tsd-signature-type">GeolocationOptions</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L825">src/context.ts:825</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="entitysubscriptionsbysubscriber" class="tsd-anchor"></a>
 					<h3>entity<wbr>Subscriptions<wbr>BySubscriber</h3>
-					<div class="tsd-signature tsd-kind-icon">entity<wbr>Subscriptions<wbr>BySubscriber<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">WeakMap</span><span class="tsd-signature-symbol">&lt;</span><a href="sessionport.html" class="tsd-signature-type">SessionPort</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Set</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new WeakMap&lt;SessionPort, Set&lt;string&gt;&gt;()</span></div>
+					<div class="tsd-signature tsd-kind-icon">entity<wbr>Subscriptions<wbr>BySubscriber<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">WeakMap</span><span class="tsd-signature-symbol">&lt;</span><a href="sessionport.html" class="tsd-signature-type">SessionPort</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new WeakMap&lt;SessionPort, {[subcription:string]:any}&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/context.ts#L622">src/context.ts:622</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L693">src/context.ts:693</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="publishingreferenceframemap" class="tsd-anchor"></a>
 					<h3>publishing<wbr>Reference<wbr>Frame<wbr>Map</h3>
-					<div class="tsd-signature tsd-kind-icon">publishing<wbr>Reference<wbr>Frame<wbr>Map<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Map&lt;string, string|ReferenceFrame&gt;()</span></div>
+					<div class="tsd-signature tsd-kind-icon">publishing<wbr>Reference<wbr>Frame<wbr>Map<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ReferenceFrame</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Map&lt;string, string|ReferenceFrame&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/context.ts#L626">src/context.ts:626</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L697">src/context.ts:697</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="sessiongeolocationoptions" class="tsd-anchor"></a>
+					<h3>session<wbr>Geolocation<wbr>Options</h3>
+					<div class="tsd-signature tsd-kind-icon">session<wbr>Geolocation<wbr>Options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><a href="sessionport.html" class="tsd-signature-type">SessionPort</a><span class="tsd-signature-symbol">, </span><a href="../interfaces/geolocationoptions.html" class="tsd-signature-type">GeolocationOptions</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Map&lt;SessionPort, GeolocationOptions|undefined&gt;()</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L826">src/context.ts:826</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -192,7 +244,7 @@
 					<div class="tsd-signature tsd-kind-icon">session<wbr>Service<span class="tsd-signature-symbol">:</span> <a href="sessionservice.html" class="tsd-signature-type">SessionService</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/context.ts#L631">src/context.ts:631</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L704">src/context.ts:704</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -202,7 +254,7 @@
 					<div class="tsd-signature tsd-kind-icon">subscribers<wbr>ByEntity<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Set</span><span class="tsd-signature-symbol">&lt;</span><a href="sessionport.html" class="tsd-signature-type">SessionPort</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Map&lt;string, Set&lt;SessionPort&gt;&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/context.ts#L623">src/context.ts:623</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L694">src/context.ts:694</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -212,24 +264,44 @@
 					<div class="tsd-signature tsd-kind-icon">subscribers<wbr>Change<wbr>Event<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;{id:string, subscribers}&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/context.ts#L624">src/context.ts:624</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L695">src/context.ts:695</a></li>
 						</ul>
 					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
-					<a name="_getserializedentitystate" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _get<wbr>Serialized<wbr>Entity<wbr>State</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">_get<wbr>Serialized<wbr>Entity<wbr>State<span class="tsd-signature-symbol">(</span>entity<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Entity</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span>, time<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">JulianDate</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../modules/serializedentitystate.html" class="tsd-signature-type">SerializedEntityState</a></li>
+				<h2>Accessors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="geolocationdesired" class="tsd-anchor"></a>
+					<h3>geolocation<wbr>Desired</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> geolocationDesired<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/context.ts#L742">src/context.ts:742</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L848">src/context.ts:848</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="_getcachedserializedentitystate" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _get<wbr>Cached<wbr>Serialized<wbr>Entity<wbr>State</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">_get<wbr>Cached<wbr>Serialized<wbr>Entity<wbr>State<span class="tsd-signature-symbol">(</span>entity<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Entity</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span>, time<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">JulianDate</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../modules/serializedentitystate.html" class="tsd-signature-type">SerializedEntityState</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L809">src/context.ts:809</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -246,6 +318,32 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="_handlesetgeolocationoptions" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _handle<wbr>Set<wbr>Geolocation<wbr>Options</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">_handle<wbr>Set<wbr>Geolocation<wbr>Options<span class="tsd-signature-symbol">(</span>session<span class="tsd-signature-symbol">: </span><a href="sessionport.html" class="tsd-signature-type">SessionPort</a>, options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/geolocationoptions.html" class="tsd-signature-type">GeolocationOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L828">src/context.ts:828</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>session: <a href="sessionport.html" class="tsd-signature-type">SessionPort</a></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> options: <a href="../interfaces/geolocationoptions.html" class="tsd-signature-type">GeolocationOptions</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
 					<a name="_publishupdates" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _publish<wbr>Updates</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
@@ -255,7 +353,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/context.ts#L701">src/context.ts:701</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L764">src/context.ts:764</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -266,17 +364,20 @@
 					<a name="_sendupdateforsession" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _send<wbr>Update<wbr>For<wbr>Session</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">_send<wbr>Update<wbr>For<wbr>Session<span class="tsd-signature-symbol">(</span>session<span class="tsd-signature-symbol">: </span><a href="sessionport.html" class="tsd-signature-type">SessionPort</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">_send<wbr>Update<wbr>For<wbr>Session<span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><a href="../interfaces/framestate.html" class="tsd-signature-type">FrameState</a>, session<span class="tsd-signature-symbol">: </span><a href="sessionport.html" class="tsd-signature-type">SessionPort</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/context.ts#L711">src/context.ts:711</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L775">src/context.ts:775</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
+								<li>
+									<h5>state: <a href="../interfaces/framestate.html" class="tsd-signature-type">FrameState</a></h5>
+								</li>
 								<li>
 									<h5>session: <a href="sessionport.html" class="tsd-signature-type">SessionPort</a></h5>
 								</li>
@@ -285,26 +386,46 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="publishentitystate" class="tsd-anchor"></a>
-					<h3>publish<wbr>Entity<wbr>State</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">publish<wbr>Entity<wbr>State<span class="tsd-signature-symbol">(</span>idOrEntity<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Entity</span>, time<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="_updatedesiredgeolocationoptions" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _update<wbr>Desired<wbr>Geolocation<wbr>Options</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">_update<wbr>Desired<wbr>Geolocation<wbr>Options<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/context.ts#L673">src/context.ts:673</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L837">src/context.ts:837</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="fillentitystatemapforsession" class="tsd-anchor"></a>
+					<h3>fill<wbr>Entity<wbr>State<wbr>Map<wbr>For<wbr>Session</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">fill<wbr>Entity<wbr>State<wbr>Map<wbr>For<wbr>Session<span class="tsd-signature-symbol">(</span>session<span class="tsd-signature-symbol">: </span><a href="sessionport.html" class="tsd-signature-type">SessionPort</a>, time<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">JulianDate</span>, entities<span class="tsd-signature-symbol">: </span><a href="../interfaces/serializedentitystatemap.html" class="tsd-signature-type">SerializedEntityStateMap</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L755">src/context.ts:755</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>idOrEntity: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Entity</span></h5>
+									<h5>session: <a href="sessionport.html" class="tsd-signature-type">SessionPort</a></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> time: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;this.contextService.time</span></h5>
+									<h5>time: <span class="tsd-signature-type">JulianDate</span></h5>
+								</li>
+								<li>
+									<h5>entities: <a href="../interfaces/serializedentitystatemap.html" class="tsd-signature-type">SerializedEntityStateMap</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -332,7 +453,13 @@
 								<a href="contextserviceprovider.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="contextserviceprovider.html#_cachetime" class="tsd-kind-icon">_cache<wbr>Time</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="contextserviceprovider.html#_entityposecache" class="tsd-kind-icon">_entity<wbr>Pose<wbr>Cache</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="contextserviceprovider.html#_getserializedentitystate" class="tsd-kind-icon">_get<wbr>Serialized<wbr>Entity<wbr>State</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="contextserviceprovider.html#_sessionentities" class="tsd-kind-icon">_session<wbr>Entities</a>
@@ -341,10 +468,16 @@
 								<a href="contextserviceprovider.html#contextservice" class="tsd-kind-icon">context<wbr>Service</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="contextserviceprovider.html#desiredgeolocationoptions" class="tsd-kind-icon">desired<wbr>Geolocation<wbr>Options</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="contextserviceprovider.html#entitysubscriptionsbysubscriber" class="tsd-kind-icon">entity<wbr>Subscriptions<wbr>BySubscriber</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="contextserviceprovider.html#publishingreferenceframemap" class="tsd-kind-icon">publishing<wbr>Reference<wbr>Frame<wbr>Map</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="contextserviceprovider.html#sessiongeolocationoptions" class="tsd-kind-icon">session<wbr>Geolocation<wbr>Options</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="contextserviceprovider.html#sessionservice" class="tsd-kind-icon">session<wbr>Service</a>
@@ -355,8 +488,14 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="contextserviceprovider.html#subscriberschangeevent" class="tsd-kind-icon">subscribers<wbr>Change<wbr>Event</a>
 							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="contextserviceprovider.html#geolocationdesired" class="tsd-kind-icon">geolocation<wbr>Desired</a>
+							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
-								<a href="contextserviceprovider.html#_getserializedentitystate" class="tsd-kind-icon">_get<wbr>Serialized<wbr>Entity<wbr>State</a>
+								<a href="contextserviceprovider.html#_getcachedserializedentitystate" class="tsd-kind-icon">_get<wbr>Cached<wbr>Serialized<wbr>Entity<wbr>State</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="contextserviceprovider.html#_handlesetgeolocationoptions" class="tsd-kind-icon">_handle<wbr>Set<wbr>Geolocation<wbr>Options</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
 								<a href="contextserviceprovider.html#_publishupdates" class="tsd-kind-icon">_publish<wbr>Updates</a>
@@ -364,8 +503,11 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
 								<a href="contextserviceprovider.html#_sendupdateforsession" class="tsd-kind-icon">_send<wbr>Update<wbr>For<wbr>Session</a>
 							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="contextserviceprovider.html#_updatedesiredgeolocationoptions" class="tsd-kind-icon">_update<wbr>Desired<wbr>Geolocation<wbr>Options</a>
+							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="contextserviceprovider.html#publishentitystate" class="tsd-kind-icon">publish<wbr>Entity<wbr>State</a>
+								<a href="contextserviceprovider.html#fillentitystatemapforsession" class="tsd-kind-icon">fill<wbr>Entity<wbr>State<wbr>Map<wbr>For<wbr>Session</a>
 							</li>
 						</ul>
 					</li>

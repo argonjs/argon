@@ -76,7 +76,6 @@ export declare class ArgonConfigurationManager {
     constructor(configuration: Configuration, container?: DI.Container);
     standardConfiguration(): void;
     defaultConnect(): void;
-    defaultDevice(): void;
     defaultUI(): void;
 }
 /**

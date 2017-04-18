@@ -23,20 +23,48 @@ export {default as createEventForwarder} from './utils/ui-event-forwarder';
 
 /**
  * Get array of ancestor reference frames of a Cesium Entity, ordered from 
- * farthest ancestor to the passed frame.
+ * farthest ancestor to the passed frame, excluding the passed frame.
  * @param frame A Cesium Entity to get ancestor reference frames.
  * @param frames An array of reference frames of the Cesium Entity.
  */
 export function getAncestorReferenceFrames(frame: Entity, result=[]) {
     const frames: Array<Entity | ReferenceFrame> = result;
     frames.length = 0;
-    frames.unshift(frame);
     let f: Entity | ReferenceFrame | undefined = frame;
     do {
         let position: PositionProperty | undefined = (f as Entity).position;
         f = position && position.referenceFrame;
         if (defined(f)) frames.unshift(f);
     } while (defined(f)) 
+    return frames
+}
+
+
+var scratchAncestorCartesian = new Cartesian3;
+var scratchAncestorQuaternion = new Quaternion;
+/**
+ * Get array of ancestor reference frames of a Cesium Entity, ordered from 
+ * farthest ancestor which has a valid pose to the passed frame, excluding the passed frame.
+ * @param frame A Cesium Entity to get ancestor reference frames.
+ * @param frames An array of reference frames of the Cesium Entity.
+ */
+export function getReachableAncestorReferenceFrames(frame: Entity, time:JulianDate, result=[]) {
+    const frames: Array<Entity | ReferenceFrame> = result;
+    frames.length = 0;
+    let f: Entity | ReferenceFrame | undefined = frame;
+    let isValid = false;
+    do {
+        const position: PositionProperty | undefined = (f as Entity).position;
+        const orientation = f && (f as Entity).orientation;
+
+        f = position && position.referenceFrame;
+        const hasParentFrame = defined(f);
+
+        const pValue = hasParentFrame && position && position.getValueInReferenceFrame(time, f!, scratchAncestorCartesian);
+        const oValue = hasParentFrame && pValue && orientation && orientation.getValue(time, scratchAncestorQuaternion);
+        isValid = pValue && oValue;
+        if (isValid) frames.unshift(f!);
+    } while (isValid) 
     return frames
 }
 
@@ -103,6 +131,7 @@ export const getEntityOrientation = getEntityOrientationInReferenceFrame;
 //     }
 
 const _scratchFramesArray = [];
+const _entityStateCache:{[key:string]:SerializedEntityState} = {};
 
 /**
  * Create a SerializedEntityPose from a source entity. 
@@ -113,35 +142,33 @@ const _scratchFramesArray = [];
  * serialized according to the furthest ancestor frame that resolves to a valid pose.
  * @return An EntityPose object with orientation, position and referenceFrame.
  */
-export function getSerializedEntityState(entity: Entity, time: JulianDate, frame?: ReferenceFrame | Entity, result?:SerializedEntityState|null): SerializedEntityState | null {
+export function getSerializedEntityState(entity: Entity, time: JulianDate, frame?: ReferenceFrame | Entity): SerializedEntityState | null {
     let frames:(ReferenceFrame|Entity|undefined)[]|undefined = undefined;
     
     if (!defined(frame)) {
-        frames = getAncestorReferenceFrames(entity, _scratchFramesArray);
+        frames = getReachableAncestorReferenceFrames(entity, time, _scratchFramesArray);
         frame = frames[0];
     }
 
     if (!defined(frame)) return null;
 
-    const p = getEntityPositionInReferenceFrame(entity, time, frame, result && result.p || {} as Cartesian3);
-    if (!p && !frames) return null;
-    const o = getEntityOrientationInReferenceFrame(entity, time, frame, result && result.o || {} as Quaternion);
-    if (!o && !frames) return null;
+    const key = entity.id + '@' + ((frame as Entity).id ? (frame as Entity).id : frame);
+    let result = _entityStateCache[key];
+    if (!result) result = <SerializedEntityState> {}, _entityStateCache[key] = result;
+
+    const p = getEntityPositionInReferenceFrame(entity, time, frame, result.p || {} as Cartesian3);
+    if (!p) return null;
+    const o = getEntityOrientationInReferenceFrame(entity, time, frame, result.o || {} as Quaternion);
+    if (!o) return null;
 
     if (p && o) {
-        result = result || <SerializedEntityState> {};
         result.p = p;
         result.o = o;
         result.r = typeof frame === 'number' ? frame : frame.id,
         result.meta = entity['meta'];
         return result;
-    } else if (frames) {
-        for (let i=1; i<frames.length; i++) {
-            frame = frames[i];
-            if (!defined(frame)) return null;
-            return getSerializedEntityState(entity, time, frame, result);
-        }
     }
+    
     return null;
 }
 
@@ -297,29 +324,43 @@ export function convertEntityReferenceFrame(entity:Entity, time:JulianDate, fram
 export const isIOS = typeof navigator !== 'undefined' &&  typeof window !== 'undefined' &&
     /iPad|iPhone|iPod/.test(navigator.userAgent) && !window['MSStream'];
 
-export function openInArgonApp() {
+export function installArgonApp() {
     if (isIOS) {
-        // var now = Date.now();
-        // setTimeout(function () {
-        //     if (Date.now() - now > 1000) return;
-        //     window.location.href = "https://itunes.apple.com/us/app/argon4/id1089308600";
-        // }, 25);
-        const protocol = window.location.protocol;
-        window.location.protocol = protocol === 'https:' ? 'argon4s' : 'argon4';
+        window.location.href = "https://itunes.apple.com/us/app/argon4/id1089308600?mt=8";
     }
 }
 
-var lastTime = 0;
-export const requestAnimationFrame = 
-    (typeof window !== 'undefined' && window.requestAnimationFrame) ? 
+export function openInArgonApp() {
+    if (isIOS) {
+        window.location.href = `argon4://open?url=${encodeURIComponent(window.location.href)}`;
+    }
+}
+
+
+// requestAnimationFrame / cancelAnimationFrame polyfills
+
+var lastTime = 0; 
+
+const rAF = 
+    (typeof window !== 'undefined' && window.requestAnimationFrame) ?
     window.requestAnimationFrame.bind(window) : (callback) => {
     var currTime = performance.now();
     var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-    var id = setTimeout(function() { callback(currTime + timeToCall); },
+    var id = <number><any>setTimeout(function() { callback(currTime + timeToCall); },
         timeToCall);
     lastTime = currTime + timeToCall;
     return id;
 }
+
+const cAF = 
+    (typeof window !== 'undefined') ? 
+    window.cancelAnimationFrame.bind(window) : clearTimeout;
+
+export {
+    rAF as requestAnimationFrame,
+    cAF as cancelAnimationFrame
+};
+
 
 
 export function deprecated(alternative?: string) : MethodDecorator {

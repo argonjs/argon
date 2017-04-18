@@ -9,7 +9,8 @@ import {
     LoopbackConnectService,
     DOMConnectService,
     DebugConnectService,
-    WKWebViewConnectService
+    WKWebViewConnectService,
+    AndroidWebViewConnectService
 } from './session'
 
 import { Configuration, Role } from './common'
@@ -18,7 +19,7 @@ import { Event } from './utils'
 
 import { ContextService, ContextServiceProvider } from './context'
 import { FocusService, FocusServiceProvider } from './focus'
-import { DeviceService, DeviceServiceProvider, DOMDeviceServiceProvider } from './device'
+import { DeviceService, DeviceServiceProvider } from './device'
 import { RealityService, RealityServiceProvider } from './reality'
 import { ViewService, ViewServiceProvider, ViewElement } from './view'
 import { VisibilityService, VisibilityServiceProvider } from './visibility'
@@ -147,7 +148,6 @@ export class ArgonConfigurationManager {
     
     standardConfiguration() {
         this.defaultConnect();
-        this.defaultDevice();
         this.defaultUI();
     }
 
@@ -165,6 +165,11 @@ export class ArgonConfigurationManager {
                 ConnectService,
                 WKWebViewConnectService
             )
+        } else if (AndroidWebViewConnectService.isAvailable()) {
+            container.registerSingleton(
+                ConnectService,
+                AndroidWebViewConnectService
+            )
         } else if (DOMConnectService.isAvailable()) {
             container.registerSingleton(
                 ConnectService,
@@ -175,12 +180,6 @@ export class ArgonConfigurationManager {
                 ConnectService,
                 DebugConnectService
             );
-        }
-    }
-
-    defaultDevice() {
-        if (DOMDeviceServiceProvider.isAvailable()) {
-            this.container.registerSingleton(DeviceServiceProvider, DOMDeviceServiceProvider);
         }
     }
 

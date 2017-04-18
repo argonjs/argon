@@ -38,13 +38,13 @@ export default function createEventForwarder(this:void, viewService:ViewService,
         const width = target && target.clientWidth;
         const height = target && target.clientHeight;
 
-        // contain our events within the view element
-        e.stopPropagation();
-
         // prevent undesired default actions over the view element
         if (e.type === 'wheel' || 
             isIOS && e.type === 'touchmove' && e.touches.length === 2) 
             e.preventDefault();
+
+        // contain our events within the view element
+        e.stopPropagation();
 
         // if the target element is the view element or an element of similar size,
         // attempt to forward the event (webvr-polyfill makes the canvas 10px larger
@@ -52,8 +52,8 @@ export default function createEventForwarder(this:void, viewService:ViewService,
         // we forward the event for any target that matches the viewport size up to 15px 
         // larger in either dimension)
         if (e.target === viewService.element ||
-            (Math.abs(width - viewService.element.clientWidth) < 15 &&
-            Math.abs(height - viewService.element.clientHeight) < 15)) {
+            (width && Math.abs(width - viewService.element.clientWidth) < 15 &&
+            height && Math.abs(height - viewService.element.clientHeight) < 15)) {
 
             // If we have a uievent listener attached, then make sure the
             // app explictily asks for events to be forwarded. Otherwise,
@@ -128,6 +128,9 @@ export default function createEventForwarder(this:void, viewService:ViewService,
             uievent.isPrimary = e.isPrimary;
 
             callback(uievent);
+        } else {
+            // if this event is not forwardable, stop propogation immediately
+            e.stopImmediatePropagation();
         }
     };
 

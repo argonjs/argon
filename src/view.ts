@@ -1,5 +1,5 @@
 import { autoinject, inject, Optional } from 'aurelia-dependency-injection'
-import { Viewport, FrameState, SubviewType } from './common'
+import { Viewport, ContextFrameState, SubviewType } from './common'
 import { SessionService, SessionPort } from './session'
 import { ContextService, EntityPose } from './context'
 
@@ -212,9 +212,9 @@ export class ViewService {
         return this.subviews;
     }
 
-    private _IDENTITY_SUBVIEW_POSE = {p:Cartesian3.ZERO, o:Quaternion.IDENTITY, r:this.contextService.user.id};
+    private _IDENTITY_SUBVIEW_POSE = {p:Cartesian3.ZERO, o:Quaternion.IDENTITY, r:this.contextService.view.id};
 
-    private _processFrameState(state:FrameState) {
+    private _processFrameState(state:ContextFrameState) {
         this._updateViewport(state.viewport);
 
         const serializedSubviewList = state.subviews;
@@ -279,10 +279,11 @@ export class ViewService {
 
     /**
      * Publish the viewport being used in [[PresentationMode.EMBEDDED]] 
-     * so that other apps can use the same viewport
+     * so that the manager knows what our embedded viewport is
      */
     public publishEmbeddedViewport(viewport?: Viewport) {
-        if (this.sessionService.manager.isConnected && this.sessionService.manager.version[0] >= 1) 
+        if (this.sessionService.manager.isConnected && 
+            this.sessionService.manager.version[0] >= 1) 
             this.sessionService.manager.send('ar.view.embeddedViewport', {viewport});
     }
 
@@ -316,17 +317,32 @@ export class ViewService {
         if (session && session.isConnected) session.send('ar.view.uievent', uievent);
     }
 
+    private _embeddedViewport = new Viewport; 
+
     private _watchEmbeddedViewport() {
         const publish = () => {
             if (this.element && this.autoPublishEmbeddedMode) {
                 const parentElement = this.element.parentElement;
                 const rect = parentElement && parentElement.getBoundingClientRect();
-                rect && this.publishEmbeddedViewport({
-                    x: rect.left,
-                    y: window.innerHeight - rect.bottom,
-                    width: rect.width,
-                    height: rect.height
-                });
+                if (rect) {
+                    const x = rect.left;
+                    const y = window.innerHeight - rect.bottom;
+                    const width = rect.width;
+                    const height = rect.height;
+
+                    const embeddedViewport = this._embeddedViewport;
+
+                    if (embeddedViewport.x !== x || 
+                        embeddedViewport.y !== y || 
+                        embeddedViewport.width !== width ||
+                        embeddedViewport.height !== height) {
+                            embeddedViewport.x = x;
+                            embeddedViewport.y = y;
+                            embeddedViewport.width = width;
+                            embeddedViewport.height = height;
+                            this.publishEmbeddedViewport(this._embeddedViewport);
+                    }
+                }
             }
         }
 
@@ -334,9 +350,18 @@ export class ViewService {
             if (!this.focusService.hasFocus) publish();
         }, 500);
 
-        this.contextService.frameStateEvent.addEventListener(()=>{
-            if (this.focusService.hasFocus) publish();
-        });
+        // this.contextService.renderEvent.addEventListener(()=>{
+        //     if (this.focusService.hasFocus) publish();
+        // });
+
+        if (typeof window !== 'undefined' && window.addEventListener) {
+            window.addEventListener('orientationchange', publish);
+            window.addEventListener('scroll', publish);
+            this.sessionService.manager.closeEvent.addEventListener(()=>{
+                window.removeEventListener('orientationchange', publish);
+                window.removeEventListener('scroll', publish);
+            })
+        }
     }
 }
 
@@ -406,7 +431,8 @@ export class ViewServiceProvider {
         for (const session of this.sessionService.managedSessions) {
             const mode = (session === this.focusServiceProvider.session) ?
                 this.sessionViewportMode.get(session) : ViewportMode.IMMERSIVE;
-            session.send('ar.view.viewportMode', {mode});
+            if (session.version[0] > 0)
+                session.send('ar.view.viewportMode', {mode});
         }
     }
 }

@@ -70,8 +70,8 @@
 				<p>There are essentially 3 types of systems that are defined by the <em>argon.js</em> framework:</p>
 				<ul>
 					<li><strong>[[REALITY_AUGMENTOR]]</strong> - a system that is responsible for <em>augmenting</em> a view of reality. </li>
-					<li><strong>[[REALITY_VIEW]]</strong> - a system that is responsible for <em>presenting</em> a view of reality</li>
-					<li><strong>[[REALITY_MANAGER]]</strong> - a system that is responsible for <em>blending</em> a particular <strong>Reality View</strong> with
+					<li><strong><a href="enums/role.html#reality_view">REALITY_VIEW</a></strong> - a system that is responsible for <em>presenting</em> a view of reality</li>
+					<li><strong><a href="enums/role.html#reality_manager">REALITY_MANAGER</a></strong> - a system that is responsible for <em>blending</em> a particular <strong>Reality View</strong> with
 					one or more <strong>Reality Augmentors</strong></li>
 				</ul>
 				<p>Traditionally, Augmented Reality (AR) apps have had to take on all three of these roles
@@ -160,16 +160,22 @@
 						<a href="enums/posestatus.html" class="tsd-kind-icon">Pose<wbr>Status</a>
 					</li>
 					<li class=" tsd-kind-enum">
-						<a href="enums/presentationmode.html" class="tsd-kind-icon">Presentation<wbr>Mode</a>
+						<a href="enums/role.html" class="tsd-kind-icon">Role</a>
 					</li>
 					<li class=" tsd-kind-enum">
 						<a href="enums/subviewtype.html" class="tsd-kind-icon">Subview<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-enum">
+						<a href="enums/viewportmode.html" class="tsd-kind-icon">Viewport<wbr>Mode</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/argonconfigurationmanager.html" class="tsd-kind-icon">Argon<wbr>Configuration<wbr>Manager</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/argonsystem.html" class="tsd-kind-icon">Argon<wbr>System</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/argonsystemproviders.html" class="tsd-kind-icon">Argon<wbr>System<wbr>Providers</a>
+						<a href="classes/argonsystemprovider.html" class="tsd-kind-icon">Argon<wbr>System<wbr>Provider</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/commandqueue.html" class="tsd-kind-icon">Command<wbr>Queue</a>
@@ -190,6 +196,9 @@
 						<a href="classes/domconnectservice.html" class="tsd-kind-icon">DOMConnect<wbr>Service</a>
 					</li>
 					<li class=" tsd-kind-class">
+						<a href="classes/domdeviceserviceprovider.html" class="tsd-kind-icon">DOMDevice<wbr>Service<wbr>Provider</a>
+					</li>
+					<li class=" tsd-kind-class">
 						<a href="classes/debugconnectservice.html" class="tsd-kind-icon">Debug<wbr>Connect<wbr>Service</a>
 					</li>
 					<li class=" tsd-kind-class">
@@ -199,7 +208,16 @@
 						<a href="classes/deprecatedvuforiadataset.html" class="tsd-kind-icon">Deprecated<wbr>Vuforia<wbr>Data<wbr>Set</a>
 					</li>
 					<li class=" tsd-kind-class">
+						<a href="classes/deviceservice.html" class="tsd-kind-icon">Device<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/deviceserviceprovider.html" class="tsd-kind-icon">Device<wbr>Service<wbr>Provider</a>
+					</li>
+					<li class=" tsd-kind-class">
 						<a href="classes/emptyrealityviewer.html" class="tsd-kind-icon">Empty<wbr>Reality<wbr>Viewer</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/entitypose.html" class="tsd-kind-icon">Entity<wbr>Pose</a>
 					</li>
 					<li class=" tsd-kind-class tsd-has-type-parameter">
 						<a href="classes/event.html" class="tsd-kind-icon">Event</a>
@@ -215,12 +233,6 @@
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/liverealityviewer.html" class="tsd-kind-icon">Live<wbr>Reality<wbr>Viewer</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/locationservice.html" class="tsd-kind-icon">Location<wbr>Service</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/locationserviceprovider.html" class="tsd-kind-icon">Location<wbr>Service<wbr>Provider</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/loopbackconnectservice.html" class="tsd-kind-icon">Loopback<wbr>Connect<wbr>Service</a>
@@ -265,7 +277,13 @@
 						<a href="classes/subview.html" class="tsd-kind-icon">Subview</a>
 					</li>
 					<li class=" tsd-kind-class">
+						<a href="classes/suggestedframestate.html" class="tsd-kind-icon">Suggested<wbr>Frame<wbr>State</a>
+					</li>
+					<li class=" tsd-kind-class">
 						<a href="classes/synchronousmessagechannel.html" class="tsd-kind-icon">Synchronous<wbr>Message<wbr>Channel</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/viewelement.html" class="tsd-kind-icon">View<wbr>Element</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/viewservice.html" class="tsd-kind-icon">View<wbr>Service</a>
@@ -275,12 +293,6 @@
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/viewport.html" class="tsd-kind-icon">Viewport</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/viewportservice.html" class="tsd-kind-icon">Viewport<wbr>Service</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/viewportserviceprovider.html" class="tsd-kind-icon">Viewport<wbr>Service<wbr>Provider</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/visibilityservice.html" class="tsd-kind-icon">Visibility<wbr>Service</a>
@@ -313,9 +325,6 @@
 						<a href="interfaces/deprecatedpartialframestate.html" class="tsd-kind-icon">Deprecated<wbr>Partial<wbr>Frame<wbr>State</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="interfaces/entitypose.html" class="tsd-kind-icon">Entity<wbr>Pose</a>
-					</li>
-					<li class=" tsd-kind-interface">
 						<a href="interfaces/errormessage.html" class="tsd-kind-icon">Error<wbr>Message</a>
 					</li>
 					<li class=" tsd-kind-interface">
@@ -343,9 +352,6 @@
 						<a href="interfaces/serializedentitystatemap.html" class="tsd-kind-icon">Serialized<wbr>Entity<wbr>State<wbr>Map</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="interfaces/viewstate.html" class="tsd-kind-icon">View<wbr>State</a>
-					</li>
-					<li class=" tsd-kind-interface">
 						<a href="interfaces/vuforiadatasetevent.html" class="tsd-kind-icon">Vuforia<wbr>Data<wbr>Set<wbr>Event</a>
 					</li>
 					<li class=" tsd-kind-interface">
@@ -364,28 +370,16 @@
 						<a href="globals.html#vuforiadatasetid" class="tsd-kind-icon">Vuforia<wbr>Data<wbr>Set<wbr>Id</a>
 					</li>
 					<li class=" tsd-kind-variable">
-						<a href="globals.html#average_human_height" class="tsd-kind-icon">AVERAGE_<wbr>HUMAN_<wbr>HEIGHT</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#eye_entity_id" class="tsd-kind-icon">EYE_<wbr>ENTITY_<wbr>ID</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#physical_eye_entity_id" class="tsd-kind-icon">PHYSICAL_<wbr>EYE_<wbr>ENTITY_<wbr>ID</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#physical_stage_entity_id" class="tsd-kind-icon">PHYSICAL_<wbr>STAGE_<wbr>ENTITY_<wbr>ID</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#parentelement" class="tsd-kind-icon">Parent<wbr>Element</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#stage_entity_id" class="tsd-kind-icon">STAGE_<wbr>ENTITY_<wbr>ID</a>
+						<a href="globals.html#average_eye_height" class="tsd-kind-icon">AVERAGE_<wbr>EYE_<wbr>HEIGHT</a>
 					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#getentityorientation" class="tsd-kind-icon">get<wbr>Entity<wbr>Orientation</a>
 					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#getentityposition" class="tsd-kind-icon">get<wbr>Entity<wbr>Position</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-private">
+						<a href="globals.html#initreality" class="tsd-kind-icon">init<wbr>Reality</a>
 					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#isios" class="tsd-kind-icon">isIOS</a>

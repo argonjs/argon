@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>PresentationMode | argon.js</title>
+	<title>ViewportMode | argon.js</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -52,10 +52,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="presentationmode.html">PresentationMode</a>
+					<a href="viewportmode.html">ViewportMode</a>
 				</li>
 			</ul>
-			<h1>Enumeration PresentationMode</h1>
+			<h1>Enumeration ViewportMode</h1>
 		</div>
 	</div>
 </header>
@@ -69,8 +69,9 @@
 						<section class="tsd-index-section ">
 							<h3>Enumeration members</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="presentationmode.html#immersive" class="tsd-kind-icon">IMMERSIVE</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="presentationmode.html#page" class="tsd-kind-icon">PAGE</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="viewportmode.html#embedded" class="tsd-kind-icon">EMBEDDED</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="viewportmode.html#immersive" class="tsd-kind-icon">IMMERSIVE</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="viewportmode.html#page" class="tsd-kind-icon">PAGE</a></li>
 							</ul>
 						</section>
 					</div>
@@ -79,22 +80,32 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Enumeration members</h2>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="embedded" class="tsd-anchor"></a>
+					<h3>EMBEDDED</h3>
+					<div class="tsd-signature tsd-kind-icon">EMBEDDED<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> =&nbsp;0</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/view.ts#L32">src/view.ts:32</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
 					<a name="immersive" class="tsd-anchor"></a>
 					<h3>IMMERSIVE</h3>
 					<div class="tsd-signature tsd-kind-icon">IMMERSIVE<span class="tsd-signature-symbol">:</span> </div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/viewport.ts#L17">src/viewport.ts:17</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/view.ts#L34">src/view.ts:34</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
 					<a name="page" class="tsd-anchor"></a>
 					<h3>PAGE</h3>
-					<div class="tsd-signature tsd-kind-icon">PAGE<span class="tsd-signature-symbol">:</span> </div>
+					<div class="tsd-signature tsd-kind-icon">PAGE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> =&nbsp;0</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/viewport.ts#L16">src/viewport.ts:16</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/view.ts#L33">src/view.ts:33</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -113,13 +124,16 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-enum">
-						<a href="presentationmode.html" class="tsd-kind-icon">Presentation<wbr>Mode</a>
+						<a href="viewportmode.html" class="tsd-kind-icon">Viewport<wbr>Mode</a>
 						<ul>
 							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="presentationmode.html#immersive" class="tsd-kind-icon">IMMERSIVE</a>
+								<a href="viewportmode.html#embedded" class="tsd-kind-icon">EMBEDDED</a>
 							</li>
 							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="presentationmode.html#page" class="tsd-kind-icon">PAGE</a>
+								<a href="viewportmode.html#immersive" class="tsd-kind-icon">IMMERSIVE</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="viewportmode.html#page" class="tsd-kind-icon">PAGE</a>
 							</li>
 						</ul>
 					</li>

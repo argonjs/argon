@@ -8,9 +8,6 @@ SystemJS.config({
     meta: {
         '*.json': {
             'loader': 'json'
-        },
-        '*.ts': {
-            'loader': 'ts'
         }
     },
     packages: {
@@ -57,7 +54,8 @@ SystemJS.config({
             'string_decoder': 'npm:jspm-nodelibs-string_decoder@0.2.0',
             'events': 'npm:jspm-nodelibs-events@0.2.0',
             'mocha': 'npm:mocha@3.2.0',
-            'diff': 'npm:diff@3.2.0'
+            'diff': 'npm:diff@3.2.0',
+            'typescript': 'npm:typescript@2.2.1'
         },
         'packages': {
             'npm:chai@3.5.0': {
@@ -112,7 +110,7 @@ SystemJS.config({
                     'create-hash': 'npm:create-hash@1.1.2',
                     'create-hmac': 'npm:create-hmac@1.1.4',
                     'inherits': 'npm:inherits@2.0.3',
-                    'elliptic': 'npm:elliptic@6.3.2',
+                    'elliptic': 'npm:elliptic@6.4.0',
                     'bn.js': 'npm:bn.js@4.11.6',
                     'parse-asn1': 'npm:parse-asn1@5.0.0',
                     'browserify-rsa': 'npm:browserify-rsa@4.0.1'
@@ -156,7 +154,7 @@ SystemJS.config({
             },
             'npm:create-ecdh@4.0.0': {
                 'map': {
-                    'elliptic': 'npm:elliptic@6.3.2',
+                    'elliptic': 'npm:elliptic@6.4.0',
                     'bn.js': 'npm:bn.js@4.11.6'
                 }
             },
@@ -198,14 +196,6 @@ SystemJS.config({
                     'buffer-xor': 'npm:buffer-xor@1.0.3'
                 }
             },
-            'npm:elliptic@6.3.2': {
-                'map': {
-                    'inherits': 'npm:inherits@2.0.3',
-                    'bn.js': 'npm:bn.js@4.11.6',
-                    'brorand': 'npm:brorand@1.0.6',
-                    'hash.js': 'npm:hash.js@1.0.3'
-                }
-            },
             'npm:parse-asn1@5.0.0': {
                 'map': {
                     'create-hash': 'npm:create-hash@1.1.2',
@@ -224,7 +214,7 @@ SystemJS.config({
             'npm:miller-rabin@4.0.0': {
                 'map': {
                     'bn.js': 'npm:bn.js@4.11.6',
-                    'brorand': 'npm:brorand@1.0.6'
+                    'brorand': 'npm:brorand@1.1.0'
                 }
             },
             'npm:hash.js@1.0.3': {
@@ -248,18 +238,7 @@ SystemJS.config({
             'npm:stream-browserify@2.0.1': {
                 'map': {
                     'inherits': 'npm:inherits@2.0.3',
-                    'readable-stream': 'npm:readable-stream@2.2.2'
-                }
-            },
-            'npm:readable-stream@2.2.2': {
-                'map': {
-                    'isarray': 'npm:isarray@1.0.0',
-                    'inherits': 'npm:inherits@2.0.3',
-                    'string_decoder': 'npm:string_decoder@0.10.31',
-                    'process-nextick-args': 'npm:process-nextick-args@1.0.7',
-                    'util-deprecate': 'npm:util-deprecate@1.0.2',
-                    'core-util-is': 'npm:core-util-is@1.0.2',
-                    'buffer-shims': 'npm:buffer-shims@1.0.0'
+                    'readable-stream': 'npm:readable-stream@2.2.3'
                 }
             },
             'npm:mocha@3.2.0': {
@@ -318,6 +297,45 @@ SystemJS.config({
             'npm:jspm-nodelibs-string_decoder@0.2.0': {
                 'map': {
                     'string_decoder-browserify': 'npm:string_decoder@0.10.31'
+                }
+            },
+            'npm:typescript@2.2.1': {
+                'map': {
+                    'source-map-support': 'npm:source-map-support@0.4.11'
+                }
+            },
+            'npm:source-map-support@0.4.11': {
+                'map': {
+                    'source-map': 'npm:source-map@0.5.6'
+                }
+            },
+            'npm:elliptic@6.4.0': {
+                'map': {
+                    'inherits': 'npm:inherits@2.0.3',
+                    'bn.js': 'npm:bn.js@4.11.6',
+                    'brorand': 'npm:brorand@1.1.0',
+                    'minimalistic-crypto-utils': 'npm:minimalistic-crypto-utils@1.0.1',
+                    'hash.js': 'npm:hash.js@1.0.3',
+                    'hmac-drbg': 'npm:hmac-drbg@1.0.0',
+                    'minimalistic-assert': 'npm:minimalistic-assert@1.0.0'
+                }
+            },
+            'npm:hmac-drbg@1.0.0': {
+                'map': {
+                    'hash.js': 'npm:hash.js@1.0.3',
+                    'minimalistic-assert': 'npm:minimalistic-assert@1.0.0',
+                    'minimalistic-crypto-utils': 'npm:minimalistic-crypto-utils@1.0.1'
+                }
+            },
+            'npm:readable-stream@2.2.3': {
+                'map': {
+                    'isarray': 'npm:isarray@1.0.0',
+                    'inherits': 'npm:inherits@2.0.3',
+                    'string_decoder': 'npm:string_decoder@0.10.31',
+                    'util-deprecate': 'npm:util-deprecate@1.0.2',
+                    'process-nextick-args': 'npm:process-nextick-args@1.0.7',
+                    'buffer-shims': 'npm:buffer-shims@1.0.0',
+                    'core-util-is': 'npm:core-util-is@1.0.2'
                 }
             }
         }

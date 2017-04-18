@@ -6,30 +6,27 @@ import {
     Cartographic,
     ConstantPositionProperty,
     ConstantProperty,
-    // Transforms,
     Cartesian3,
     Quaternion,
-    Matrix3,
     Matrix4,
     CesiumMath,
     JulianDate,
     ReferenceFrame,
     PerspectiveFrustum,
-    Transforms,
     defined
 } from './cesium/cesium-imports'
 import {
+    DEFAULT_NEAR_PLANE,
+    DEFAULT_FAR_PLANE,
     SerializedEntityState, 
-    // SerializedSubviewList, 
     SerializedEntityStateMap,
     SubviewType,
-    FrameState,
-    // Viewport, 
+    ContextFrameState,
     Role,
     GeolocationOptions
 } from './common'
 import { SessionService, SessionPort } from './session'
-import { Event, getSerializedEntityState, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame, deprecated } from './utils'
+import { Event, getReachableAncestorReferenceFrames, getSerializedEntityState, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame, deprecated, decomposePerspectiveProjectionMatrix } from './utils'
 
 
 /**
@@ -71,6 +68,18 @@ export class EntityPose {
         return this._referenceFrame;
     }
 
+    /**
+     * The status of this pose, as a bitmask.
+     * 
+     * If the current pose is known, then the KNOWN bit is 1.
+     * If the current pose is not known, then the KNOWN bit is 0. 
+     * 
+     * If the previous pose was known and the current pose is unknown, 
+     * then the LOST bit is 1. 
+     * If the previous pose was unknown and the current pose status is known, 
+     * then the FOUND bit is 1.
+     * In all other cases, both the LOST bit and the FOUND bit are 0. 
+     */
     status:PoseStatus = 0;
 
     /**
@@ -82,17 +91,21 @@ export class EntityPose {
     orientation = new Quaternion;
     time = new JulianDate(0,0)
 
+    
+    private _previousTime:JulianDate;
+    private _previousStatus:PoseStatus = 0;
+
     update(time=this.context.time) {
 
         JulianDate.clone(time, this.time);
 
+        if (!JulianDate.equals(this._previousTime, time)) {
+            this._previousStatus = this.status;
+            this._previousTime = JulianDate.clone(time, this._previousTime)
+        }
+
         const entity = this.entity;
         const referenceFrame = this.referenceFrame;
-
-        if (!entity || !defined(referenceFrame)) {
-            this.status = 0;
-            return;
-        }
         
         let position = getEntityPositionInReferenceFrame(
             entity,
@@ -110,20 +123,20 @@ export class EntityPose {
 
         const hasPose = position && orientation;
 
-        let poseStatus: PoseStatus = 0;
-        const previousStatus = this.status;
+        let currentStatus: PoseStatus = 0;
+        const previousStatus = this._previousStatus;
 
         if (hasPose) {
-            poseStatus |= PoseStatus.KNOWN;
+            currentStatus |= PoseStatus.KNOWN;
         }
 
         if (hasPose && !(previousStatus & PoseStatus.KNOWN)) {
-            poseStatus |= PoseStatus.FOUND;
+            currentStatus |= PoseStatus.FOUND;
         } else if (!hasPose && previousStatus & PoseStatus.KNOWN) {
-            poseStatus |= PoseStatus.LOST;
+            currentStatus |= PoseStatus.LOST;
         }
 
-        this.status = poseStatus;
+        this.status = currentStatus;
     }
 }
 
@@ -162,7 +175,7 @@ export class ContextService {
     constructor(
         private sessionService: SessionService
     ) {
-        this.sessionService.manager.on['ar.context.update'] = (state: FrameState) => {
+        this.sessionService.manager.on['ar.context.update'] = (state: ContextFrameState) => {
             const scratchFrustum = this._scratchFrustum;
 
             // backwards-compat
@@ -174,8 +187,8 @@ export class ContextService {
             }
             if (!state.subviews && state['view'] && state['view'].subviews) {
                 state.subviews = state['view'].subviews;
-                scratchFrustum.near = 0.01;
-                scratchFrustum.far = 10000000;
+                scratchFrustum.near = DEFAULT_NEAR_PLANE;
+                scratchFrustum.far = DEFAULT_FAR_PLANE;
                 for (const s of state.subviews) {
                     const frustum = s['frustum'];
                     scratchFrustum.xOffset = frustum.xOffset || 0;
@@ -193,8 +206,24 @@ export class ContextService {
             this._update(state);
         }
 
-        this._scratchFrustum.near = 0.01;
-        this._scratchFrustum.far = 10000000;
+        this.localOrigin.definitionChanged.addEventListener((localOrigin, property)=>{
+            if (property === 'position' || property === 'orientation') {
+                if (localOrigin.position) {
+                    localOrigin.position.definitionChanged.addEventListener(()=>{
+                        this._localOriginChanged = true;
+                    });
+                }
+                if (localOrigin.orientation) {
+                    localOrigin.orientation.definitionChanged.addEventListener(()=>{
+                        this._localOriginChanged = true;
+                    });
+                }
+                this._localOriginChanged = true;
+            }
+        });
+
+        this._scratchFrustum.near = DEFAULT_NEAR_PLANE;
+        this._scratchFrustum.far = DEFAULT_FAR_PLANE;
         this._scratchFrustum.fov = CesiumMath.PI_OVER_THREE;
         this._scratchFrustum.aspectRatio = 1;
 
@@ -210,14 +239,12 @@ export class ContextService {
                 projectionMatrix: this._scratchFrustum.projectionMatrix
             }],
         };
-
-        this._update(this._serializedFrameState);
     }
 
     /**
      * An event that is raised when the next frame state is available.
      */
-    public frameStateEvent = new Event<FrameState>();
+    public frameStateEvent = new Event<ContextFrameState>();
 
     /**
      * An event that is raised after managed entities have been updated for 
@@ -240,6 +267,7 @@ export class ContextService {
      * An event that fires when the local origin changes.
      */
     public localOriginChangeEvent = new Event<void>();
+    private _localOriginChanged = false;
 
     /**
      * A monotonically increasing value (in milliseconds) for the current frame state.
@@ -275,26 +303,24 @@ export class ContextService {
      /**
      * An entity representing the local origin, which is oriented 
      * East-North-Up if geolocation is known, otherwise an arbitrary
-     * frame with +Z up
+     * frame with +Z up. The local origin changes infrequently and stays
+     * near the user, making it useful as the root of a rendering scenegraph. 
+     * 
+     * Any time the local origin changes, the localOriginChange event is raised. 
      */
     public localOrigin: Entity = this.entities.add(new Entity({
         id: 'ar.localOrigin',
         name: 'Local Origin (ENU)',
-        position: new ConstantPositionProperty(undefined, undefined),
-        orientation: new ConstantProperty(Quaternion.IDENTITY)
+        position: new ConstantPositionProperty(undefined, ReferenceFrame.FIXED),
+        orientation: new ConstantProperty(undefined)
     }));
 
      /**
      * Alias for `localOrigin`. An entity representing the local origin, 
      * which is oriented East-North-Up if geolocation is known, 
-     * otherwise an arbitrary frame with +Z up
+     * otherwise an arbitrary frame with +Z up.
      */
-    public localOriginEastNorthUp = this.entities.add(new Entity({
-        id: 'ar.localOriginENU',
-        name: 'Local Origin (ENU)',
-        position: new ConstantPositionProperty(Cartesian3.ZERO, this.localOrigin),
-        orientation: new ConstantProperty(Quaternion.IDENTITY)
-    }));
+    public localOriginEastNorthUp = this.localOrigin;
 
     /**
      * An entity representing the same origin as `localOriginEastNorthUp`, but rotated 
@@ -315,43 +341,75 @@ export class ContextService {
     public defaultReferenceFrame = this.localOriginEastNorthUp;
 
     /**
-     * An entity representing the user. 
+     * An entity representing the physical floor beneath the user,
+     * where +X is east, +Y is north, and +Z is up (if geolocation is known).
+     */
+    public stage: Entity = this.entities.add(new Entity({
+        id: 'ar.stage',
+        name: 'Stage (ENU)',
+        position: new ConstantPositionProperty(undefined, ReferenceFrame.FIXED),
+        orientation: new ConstantProperty(undefined)
+    }));
+    
+    /**
+     * Alias for `stage`. An entity representing the stage, 
+     * which is oriented East-North-Up if geolocation is known, 
+     * otherwise an arbitrary frame with +Z up.
+     */
+    public stageEastNorthUp = this.stage;
+
+    /**
+     * An entity representing the same origin as `stageEastNorthUp`,
+     * but rotated 90deg around X-axis to create an East-Up-South coordinate system,
+     * such that +Y is up.
+     */
+    public stageEastUpSouth: Entity = this.entities.add(new Entity({
+        id: 'ar.stageEUS',
+        name: 'Stage (EUS)',
+        position: new ConstantPositionProperty(Cartesian3.ZERO, this.localOriginEastNorthUp),
+        orientation: new ConstantProperty(Quaternion.fromAxisAngle(Cartesian3.UNIT_X, Math.PI / 2))
+    }));
+
+    /**
+     * An entity representing the user,
+     * where +X is right, +Y is up, and -Z is the direction the user is facing
      */
     public user: Entity = this.entities.add(new Entity({
         id: 'ar.user',
         name: 'User',
-        position: new ConstantPositionProperty(undefined, undefined),
+        position: new ConstantPositionProperty(undefined, this.stage),
+        orientation: new ConstantProperty(undefined)
+    }));
+    
+    /**
+     * An entity representing the rendering view, 
+     * where +X is right, +Y is up, and -z is the direction of the view
+     */
+    public view: Entity = this.entities.add(new Entity({
+        id: 'ar.view',
+        name: 'View',
+        position: new ConstantPositionProperty(Cartesian3.ZERO, this.user),
         orientation: new ConstantProperty(Quaternion.IDENTITY)
     }));
 
     public get geoposeHeadingAccuracy() : number|undefined {
-        return this.localOrigin['meta'].geoposeHeadingAccuracy;
+        return this.stage['meta'].geoposeHeadingAccuracy;
     }
 
     public get geoposeHorizontalAccuracy() : number|undefined {
-        return this.localOrigin['meta'].geoposeHorizontalAccuracy;
+        return this.stage['meta'].geoposeHorizontalAccuracy;
     }
 
     public get geoposeVerticalAccuracy() : number|undefined {
-        return this.localOrigin['meta'].geoposeVerticalAccuracy;
+        return this.stage['meta'].geoposeVerticalAccuracy;
     }
 
     /**
-     * An entity representing the physical floor-level plane below the user
+     * An entity representing the floor beneath the user 
      */
-    public stage: Entity = this.entities.add(new Entity({
-        id: 'ar.stage',
-        name: 'Stage',
-        position: new ConstantPositionProperty(undefined, undefined),
-        orientation: new ConstantProperty(Quaternion.IDENTITY)
-    }));
-
-    /**
-     * An entity representing a ground-level plane below the user
-     */
-    public ground: Entity = this.entities.add(new Entity({
-        id: 'ar.ground',
-        name: 'Ground',
+    public floor: Entity = this.entities.add(new Entity({
+        id: 'ar.floor',
+        name: 'Floor',
         position: new ConstantPositionProperty(Cartesian3.ZERO, this.stage),
         orientation: new ConstantProperty(Quaternion.IDENTITY)
     }));
@@ -364,7 +422,7 @@ export class ContextService {
     }
 
     // the current serialized frame state
-    private _serializedFrameState: FrameState;
+    private _serializedFrameState: ContextFrameState;
 
     private _entityPoseMap = new Map<string, EntityPose | undefined>();
     private _updatingEntities = new Set<string>();
@@ -430,7 +488,7 @@ export class ContextService {
      * instance matching the given id, if the subscription is successful
      */
     public subscribe(id: string|Entity, session=this.sessionService.manager) : Promise<Entity> {
-        id = (<Entity>id).id || id;
+        id = (<Entity>id).id || <string>id;
         return session.request('ar.context.subscribe', {id}).then(()=>{
             return this.entities.getOrCreateEntity(id);
         });
@@ -480,9 +538,8 @@ export class ContextService {
      * @param entity - The entity whose state is to be queried.
      * @param referenceFrame - The intended reference frame. Defaults to `this.defaultReferenceFrame`.
      */
-    @deprecated('createEntityPose')
     public getEntityPose(entityOrId: Entity|string, referenceFrameOrId: string | ReferenceFrame | Entity=this.defaultReferenceFrame): EntityPose {
-        const key = _stringFromReferenceFrame(entityOrId) + '@' + _stringFromReferenceFrame(referenceFrameOrId);
+        const key = this._stringFromReferenceFrame(entityOrId) + '@' + this._stringFromReferenceFrame(referenceFrameOrId);
         
         let entityPose = this._entityPoseMap.get(key);
         if (!entityPose) {
@@ -499,17 +556,13 @@ export class ContextService {
     /**
      * Process the next frame state (which should come from the current reality viewer)
      */
-    public submitFrameState(frameState: FrameState) {
+    public submitFrameState(frameState: ContextFrameState) {
         frameState.index = ++this._frameIndex;
         this._update(frameState);
     }
 
-    private _getEntityPositionInReferenceFrame = getEntityPositionInReferenceFrame;
-    private _scratchMatrix3 = new Matrix3;
-    private _scratchMatrix4 = new Matrix4;
-
     // All of the following work is only necessary when running in an old manager (version === 0)
-    private _updateBackwardsCompatability(frameState:FrameState) {
+    private _updateBackwardsCompatability(frameState:ContextFrameState) {
         this._knownEntities.clear();
 
         // update the entities the manager knows about
@@ -525,46 +578,24 @@ export class ContextService {
             if (!this._knownEntities.has(id)) {
                 let entity = this.entities.getById(id);
                 if (entity) {
-                    entity.position = undefined;
-                    entity.orientation = undefined;
+                    if (entity.position) (entity.position as ConstantPositionProperty).setValue(undefined);
+                    if (entity.orientation) (entity.orientation as ConstantProperty).setValue(undefined);
                 }
                 this._updatingEntities.delete(id);
             }
         }
-
-        // If running within an older manager, we have to provide the 
-        // context with a local origin ourselves.
-        const localOrigin = this.localOrigin;
-        const userPositionFixed = this._getEntityPositionInReferenceFrame(
-            this.user,
-            frameState.time,
-            ReferenceFrame.FIXED,
-            this._scratchCartesian
-        );
-        if (userPositionFixed) {
-            const enuToFixedFrameTransform = Transforms.eastNorthUpToFixedFrame(userPositionFixed, undefined, this._scratchMatrix4);
-            const enuRotationMatrix = Matrix4.getRotation(enuToFixedFrameTransform, this._scratchMatrix3);
-            const enuOrientation = Quaternion.fromRotationMatrix(enuRotationMatrix);
-
-
-            if (!localOrigin.position) localOrigin.position = new ConstantPositionProperty();
-            if (!localOrigin.orientation) localOrigin.orientation = new ConstantProperty();
-            (localOrigin.position as ConstantPositionProperty).setValue(userPositionFixed, ReferenceFrame.FIXED);
-            (localOrigin.orientation as ConstantProperty).setValue(enuOrientation);
-        } else {
-            localOrigin.position = undefined;
-            localOrigin.orientation = undefined;
-        }
     }
 
     // TODO: This function is called a lot. Potential for optimization. 
-    private _update(frameState: FrameState) {
+    private _update(frameState: ContextFrameState) {
+
+        const entities = frameState.entities;
 
         if (this.sessionService.manager.isConnected && this.sessionService.manager.version[0] === 0) {
             this._updateBackwardsCompatability(frameState);
         } else {
-            for (const id in frameState.entities) {
-                this.updateEntityFromSerializedState(id, frameState.entities[id]);
+            for (const id in entities) {
+                this.updateEntityFromSerializedState(id, entities[id]);
             }
         }
 
@@ -574,27 +605,80 @@ export class ContextService {
         this.timestamp = timestamp;
         JulianDate.clone(<JulianDate>frameState.time, this.time);
 
-        // update our stage & local origin. 
-        // TODO: move both of these into the location service, handle in frameStateEvent?
+        // if (entities[this.stage.id]) {}
         // this._updateStage(frameState);
-        // this._updateLocalOrigin(frameState);
 
         // raise a frame state event (primarily for other services to hook into)
         this._serializedFrameState = frameState;
         this.frameStateEvent.raiseEvent(frameState);
 
+        // update our local origin.
+        this._updateLocalOrigin(frameState);
+
         // raise events for the user to update and render the scene
+        if (this._localOriginChanged) {
+            this._localOriginChanged = false;
+            this.localOriginChangeEvent.raiseEvent(undefined);
+        }
         this.updateEvent.raiseEvent(this);
         this.renderEvent.raiseEvent(this);
         this.postRenderEvent.raiseEvent(this);
+    }
+
+    private _getReachableAncestorReferenceFrames = getReachableAncestorReferenceFrames;
+    private _scratchArray = [];
+    private _localOriginPose = this.createEntityPose(this.localOrigin, this.stage);
+
+    private _updateLocalOrigin(frameState:ContextFrameState) {
+        const localOrigin = this.localOrigin;
+        const stage = this.stage;
+            
+        const time = frameState.time;
+        const localOriginPose = this._localOriginPose;
+        localOriginPose.update(time);
+        
+        if ((localOriginPose.status & PoseStatus.KNOWN) === 0 || 
+            Cartesian3.magnitudeSquared(localOriginPose.position) > 10000) {
+            
+            const stageFrame = this._getReachableAncestorReferenceFrames(stage, time, this._scratchArray)[0];
+            
+            if (defined(stageFrame)) {
+                
+                const stagePositionValue = stage.position!.getValueInReferenceFrame(time, stageFrame, this._scratchCartesian);
+                const stageOrientationValue = stage.orientation!.getValue(time, this._scratchQuaternion);
+                
+                if (stagePositionValue && stageOrientationValue) {
+
+                    console.log('Updating local origin to ' + JSON.stringify(stagePositionValue) + " at " + this._stringFromReferenceFrame(stageFrame));
+                    (localOrigin.position as ConstantPositionProperty).setValue(stagePositionValue, stageFrame);
+                    (localOrigin.orientation as ConstantProperty).setValue(stageOrientationValue);
+                    
+                    return;
+
+                }
+
+            }
+
+        } else {
+
+            return;
+            
+        }
+
+        (localOrigin.position as ConstantPositionProperty).setValue(Cartesian3.ZERO, stage);
+        (localOrigin.orientation as ConstantProperty).setValue(Quaternion.IDENTITY);
     }
 
     public updateEntityFromSerializedState(id:string, entityState:SerializedEntityState|null) {
         const entity = this.entities.getOrCreateEntity(id);
         
         if (!entityState) {
-            entity.position = undefined;
-            entity.orientation = undefined;
+            if (entity.position) {
+                (entity.position as ConstantPositionProperty).setValue(undefined);
+            }
+            if (entity.orientation) {
+                (entity.orientation as ConstantProperty).setValue(undefined);
+            }
             entity['meta'] = undefined;
             return entity;
         }
@@ -639,14 +723,14 @@ export class ContextService {
 
     subscribeGeolocation(options?:GeolocationOptions) : Promise<void> {
         return this.sessionService.manager.whenConnected().then(()=>{
-            if (this.sessionService.manager.version[0] > 0) 
+            if (this.sessionService.manager.version[0] > 0)
                 this.sessionService.manager.send('ar.context.setGeolocationOptions', {options});
-            return this.subscribe(this.localOrigin.id).then(()=>{});
+            return this.subscribe(this.stage.id).then(()=>{});
         })
     }
 
     unsubscribeGeolocation() : void {
-        this.unsubscribe(this.localOrigin.id);
+        this.unsubscribe(this.stage.id);
     }
 
     public get geoHeadingAccuracy() : number|undefined {
@@ -655,22 +739,20 @@ export class ContextService {
 
     public get geoHorizontalAccuracy() : number|undefined {
         return this.user['meta'] && this.user['meta'].geoHorizontalAccuracy ||
-            this.localOrigin['meta'] && this.localOrigin['meta'].geoHorizontalAccuracy;
+            this.stage['meta'] && this.stage['meta'].geoHorizontalAccuracy;
     }
     
     public get geoVerticalAccuracy() : number|undefined {
         return this.user['meta'] && this.user['meta'].geoVerticalAccuracy ||
-            this.localOrigin['meta'] && this.localOrigin['meta'].geoVerticalAccuracy;
+            this.stage['meta'] && this.stage['meta'].geoVerticalAccuracy;
+    }
+
+    private _stringFromReferenceFrame(referenceFrame: string | ReferenceFrame | Entity): string {
+        const rf = referenceFrame as Entity;
+        return defined(rf.id) ? rf.id : '' + rf;
     }
 
 }
-
-function _stringFromReferenceFrame(referenceFrame: string | ReferenceFrame | Entity): string {
-    const rf = referenceFrame as Entity;
-    return defined(rf.id) ? rf.id : '' + rf;
-}
-
-
 
 @autoinject()
 export class ContextServiceProvider {
@@ -689,16 +771,15 @@ export class ContextServiceProvider {
         private sessionService:SessionService,
         private contextService:ContextService
     ) {
-        const localOriginId = this.contextService.localOriginEastNorthUp.id;
-        this.publishingReferenceFrameMap.set(localOriginId, ReferenceFrame.FIXED);
-        this.publishingReferenceFrameMap.set(this.contextService.stage.id, localOriginId);
-        this.publishingReferenceFrameMap.set(this.contextService.user.id, localOriginId);
+        this.publishingReferenceFrameMap.set(this.contextService.stage.id, ReferenceFrame.FIXED);
 
         sessionService.connectEvent.addEventListener((session) => {
             const subscriptions = {};
             this.entitySubscriptionsBySubscriber.set(session, subscriptions);
 
             session.on['ar.context.subscribe'] = ({id}:{id:string}) => {
+                if (subscriptions[id]) return;
+
                 const subscribers = this.subscribersByEntityId.get(id) || new Set<SessionPort>();
                 this.subscribersByEntityId.set(id, subscribers);
                 subscribers.add(session);
@@ -712,6 +793,8 @@ export class ContextServiceProvider {
             }
 
             session.on['ar.context.unsubscribe'] = ({id}:{id:string}) => {
+                if (!subscriptions[id]) return;
+
                 const subscribers = this.subscribersByEntityId.get(id);
                 subscribers && subscribers.delete(session);
                 delete subscriptions[id];
@@ -757,7 +840,9 @@ export class ContextServiceProvider {
 
     private _sessionEntities:SerializedEntityStateMap = {};
 
-    private _sendUpdateForSession(state:FrameState, session: SessionPort) {
+    private _temp:any = {};
+
+    private _sendUpdateForSession(state:ContextFrameState, session: SessionPort) {
         const sessionEntities = this._sessionEntities;
 
         // clear session entities
@@ -765,29 +850,59 @@ export class ContextServiceProvider {
             delete sessionEntities[id];
         }
 
-        // reference all entities from the primary frame state (if any)
+        // reference all entities from the primary frame state
         if (state.entities) {
             for (var id in state.entities) {
                 sessionEntities[id] = state.entities[id];
             }
         }
 
-        sessionEntities[this.contextService.user.id] = this._getCachedSerializedEntityState(this.contextService.user, state.time);
-        sessionEntities[this.contextService.stage.id] = this._getCachedSerializedEntityState(this.contextService.stage, state.time);
-        sessionEntities[this.contextService.ground.id] = this._getCachedSerializedEntityState(this.contextService.ground, state.time);
-
         // get subscribed entities for the session
-        for (const id of <string[]><any>this.entitySubscriptionsBySubscriber.get(session)) {
-            const entity = this.contextService.entities.getById(id);
+        const subscriptions = this.entitySubscriptionsBySubscriber.get(session)!;
+        
+        // exclude the stage state unless it is explicitly subscribed 
+        const contextService = this.contextService;
+        const contextStageId = contextService.stage.id;
+        if (!subscriptions[contextStageId]) delete sessionEntities[contextStageId];
+        
+        // add the entity states for all subscribed entities
+        for (const id in subscriptions) {
+            const entity = contextService.entities.getById(id);
             sessionEntities[id] = this._getCachedSerializedEntityState(entity, state.time);
         }
 
-        // recycle the parent frame state object, but with the session entities
+        // recycle the frame state object, but with the session entities
         const parentEntities = state.entities;
         state.entities = sessionEntities;
         state.time = state.time;
         state.sendTime = JulianDate.now(state.sendTime);
-        session.send('ar.context.update', state);
+
+        if (session.version[0] === 0) { // backwards compatability with older viewers / augmenters
+
+            for (const s of state.subviews) {
+                s['frustum'] = s['frustum'] || decomposePerspectiveProjectionMatrix(s.projectionMatrix, <any>{});
+            }
+
+            const view = this._temp;
+            view.viewport = state.viewport;
+            view.subviews = state.subviews;
+            view.pose = state.entities['ar.user'];
+            
+            delete state.subviews;
+            delete state.viewport;
+            delete state.entities['ar.user'];
+            state['view'] = view;
+
+            session.send('ar.context.update', state);
+
+            delete state['view'];
+            state.viewport = view.viewport;
+            state.subviews = view.subviews;
+        } else {
+            session.send('ar.context.update', state);
+        }
+
+        // restore the parent entities
         state.entities = parentEntities;
     }
 
@@ -800,7 +915,7 @@ export class ContextServiceProvider {
             const referenceFrameId = this.publishingReferenceFrameMap.get(id);
             const referenceFrame = defined(referenceFrameId) && typeof referenceFrameId === 'string' ? 
                 this.contextService.entities.getById(referenceFrameId) :
-                referenceFrameId;
+                defined(referenceFrameId) ? referenceFrameId : this.contextService.stage;
             this._entityPoseCache[id] = this._getSerializedEntityState(entity, time, referenceFrame);
         }
 

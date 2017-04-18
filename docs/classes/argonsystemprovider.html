@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>MessageChannelLike | argon.js</title>
+	<title>ArgonSystemProvider | argon.js</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -52,28 +52,21 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="messagechannellike.html">MessageChannelLike</a>
+					<a href="argonsystemprovider.html">ArgonSystemProvider</a>
 				</li>
 			</ul>
-			<h1>Class MessageChannelLike</h1>
+			<h1>Class ArgonSystemProvider</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>A MessageChannel pollyfill.</p>
-					</div>
-				</div>
-			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">MessageChannelLike</span>
+						<span class="target">ArgonSystemProvider</span>
 					</li>
 				</ul>
 			</section>
@@ -84,14 +77,19 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="messagechannellike.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="argonsystemprovider.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="messagechannellike.html#port1" class="tsd-kind-icon">port1</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="messagechannellike.html#port2" class="tsd-kind-icon">port2</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="argonsystemprovider.html#context" class="tsd-kind-icon">context</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="argonsystemprovider.html#device" class="tsd-kind-icon">device</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="argonsystemprovider.html#focus" class="tsd-kind-icon">focus</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="argonsystemprovider.html#reality" class="tsd-kind-icon">reality</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="argonsystemprovider.html#view" class="tsd-kind-icon">view</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="argonsystemprovider.html#visibility" class="tsd-kind-icon">visibility</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="argonsystemprovider.html#vuforia" class="tsd-kind-icon">vuforia</a></li>
 							</ul>
 						</section>
 					</div>
@@ -103,21 +101,40 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Message<wbr>Channel<wbr>Like<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="messagechannellike.html" class="tsd-signature-type">MessageChannelLike</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Argon<wbr>System<wbr>Provider<span class="tsd-signature-symbol">(</span>context<span class="tsd-signature-symbol">: </span><a href="contextserviceprovider.html" class="tsd-signature-type">ContextServiceProvider</a>, focus<span class="tsd-signature-symbol">: </span><a href="focusserviceprovider.html" class="tsd-signature-type">FocusServiceProvider</a>, device<span class="tsd-signature-symbol">: </span><a href="deviceserviceprovider.html" class="tsd-signature-type">DeviceServiceProvider</a>, visibility<span class="tsd-signature-symbol">: </span><a href="visibilityserviceprovider.html" class="tsd-signature-type">VisibilityServiceProvider</a>, reality<span class="tsd-signature-symbol">: </span><a href="realityserviceprovider.html" class="tsd-signature-type">RealityServiceProvider</a>, view<span class="tsd-signature-symbol">: </span><a href="viewserviceprovider.html" class="tsd-signature-type">ViewServiceProvider</a>, vuforia<span class="tsd-signature-symbol">: </span><a href="vuforiaserviceprovider.html" class="tsd-signature-type">VuforiaServiceProvider</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="argonsystemprovider.html" class="tsd-signature-type">ArgonSystemProvider</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/utils/message-channel.ts#L45">src/utils/message-channel.ts:45</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L52">src/argon.ts:52</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Create a MessageChannelLike instance.</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <a href="messagechannellike.html" class="tsd-signature-type">MessageChannelLike</a></h4>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>context: <a href="contextserviceprovider.html" class="tsd-signature-type">ContextServiceProvider</a></h5>
+								</li>
+								<li>
+									<h5>focus: <a href="focusserviceprovider.html" class="tsd-signature-type">FocusServiceProvider</a></h5>
+								</li>
+								<li>
+									<h5>device: <a href="deviceserviceprovider.html" class="tsd-signature-type">DeviceServiceProvider</a></h5>
+								</li>
+								<li>
+									<h5>visibility: <a href="visibilityserviceprovider.html" class="tsd-signature-type">VisibilityServiceProvider</a></h5>
+								</li>
+								<li>
+									<h5>reality: <a href="realityserviceprovider.html" class="tsd-signature-type">RealityServiceProvider</a></h5>
+								</li>
+								<li>
+									<h5>view: <a href="viewserviceprovider.html" class="tsd-signature-type">ViewServiceProvider</a></h5>
+								</li>
+								<li>
+									<h5>vuforia: <a href="vuforiaserviceprovider.html" class="tsd-signature-type">VuforiaServiceProvider</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="argonsystemprovider.html" class="tsd-signature-type">ArgonSystemProvider</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -125,34 +142,74 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="port1" class="tsd-anchor"></a>
-					<h3>port1</h3>
-					<div class="tsd-signature tsd-kind-icon">port1<span class="tsd-signature-symbol">:</span> <a href="../interfaces/messageportlike.html" class="tsd-signature-type">MessagePortLike</a></div>
+					<a name="context" class="tsd-anchor"></a>
+					<h3>context</h3>
+					<div class="tsd-signature tsd-kind-icon">context<span class="tsd-signature-symbol">:</span> <a href="contextserviceprovider.html" class="tsd-signature-type">ContextServiceProvider</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/utils/message-channel.ts#L40">src/utils/message-channel.ts:40</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L54">src/argon.ts:54</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The first port.</p>
-						</div>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="port2" class="tsd-anchor"></a>
-					<h3>port2</h3>
-					<div class="tsd-signature tsd-kind-icon">port2<span class="tsd-signature-symbol">:</span> <a href="../interfaces/messageportlike.html" class="tsd-signature-type">MessagePortLike</a></div>
+					<a name="device" class="tsd-anchor"></a>
+					<h3>device</h3>
+					<div class="tsd-signature tsd-kind-icon">device<span class="tsd-signature-symbol">:</span> <a href="deviceserviceprovider.html" class="tsd-signature-type">DeviceServiceProvider</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/utils/message-channel.ts#L45">src/utils/message-channel.ts:45</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L56">src/argon.ts:56</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The second port.</p>
-						</div>
-					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="focus" class="tsd-anchor"></a>
+					<h3>focus</h3>
+					<div class="tsd-signature tsd-kind-icon">focus<span class="tsd-signature-symbol">:</span> <a href="focusserviceprovider.html" class="tsd-signature-type">FocusServiceProvider</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L55">src/argon.ts:55</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="reality" class="tsd-anchor"></a>
+					<h3>reality</h3>
+					<div class="tsd-signature tsd-kind-icon">reality<span class="tsd-signature-symbol">:</span> <a href="realityserviceprovider.html" class="tsd-signature-type">RealityServiceProvider</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L58">src/argon.ts:58</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="view" class="tsd-anchor"></a>
+					<h3>view</h3>
+					<div class="tsd-signature tsd-kind-icon">view<span class="tsd-signature-symbol">:</span> <a href="viewserviceprovider.html" class="tsd-signature-type">ViewServiceProvider</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L59">src/argon.ts:59</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="visibility" class="tsd-anchor"></a>
+					<h3>visibility</h3>
+					<div class="tsd-signature tsd-kind-icon">visibility<span class="tsd-signature-symbol">:</span> <a href="visibilityserviceprovider.html" class="tsd-signature-type">VisibilityServiceProvider</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L57">src/argon.ts:57</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="vuforia" class="tsd-anchor"></a>
+					<h3>vuforia</h3>
+					<div class="tsd-signature tsd-kind-icon">vuforia<span class="tsd-signature-symbol">:</span> <a href="vuforiaserviceprovider.html" class="tsd-signature-type">VuforiaServiceProvider</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L60">src/argon.ts:60</a></li>
+						</ul>
+					</aside>
 				</section>
 			</section>
 		</div>
@@ -169,16 +226,31 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class">
-						<a href="messagechannellike.html" class="tsd-kind-icon">Message<wbr>Channel<wbr>Like</a>
+						<a href="argonsystemprovider.html" class="tsd-kind-icon">Argon<wbr>System<wbr>Provider</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="messagechannellike.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="argonsystemprovider.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="messagechannellike.html#port1" class="tsd-kind-icon">port1</a>
+								<a href="argonsystemprovider.html#context" class="tsd-kind-icon">context</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="messagechannellike.html#port2" class="tsd-kind-icon">port2</a>
+								<a href="argonsystemprovider.html#device" class="tsd-kind-icon">device</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="argonsystemprovider.html#focus" class="tsd-kind-icon">focus</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="argonsystemprovider.html#reality" class="tsd-kind-icon">reality</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="argonsystemprovider.html#view" class="tsd-kind-icon">view</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="argonsystemprovider.html#visibility" class="tsd-kind-icon">visibility</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="argonsystemprovider.html#vuforia" class="tsd-kind-icon">vuforia</a>
 							</li>
 						</ul>
 					</li>

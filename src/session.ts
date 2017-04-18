@@ -1,4 +1,4 @@
-import { createGuid } from './cesium/cesium-imports';
+import { createGuid, defined } from './cesium/cesium-imports';
 import { autoinject } from 'aurelia-dependency-injection';
 import { Role, Configuration } from './common'
 import { 
@@ -97,12 +97,12 @@ export class SessionPort {
      * This property is an empty array until the session connects.
      */
     public get version() {
-        if (!this.isConnected) {
-            throw new Error('version is not available until the session is connected.');
+        if (!defined(this._version)) {
+            throw new Error('version is not available until the session is opened.');
         }
         return this._version;
     }
-    private _version: number[] = [];
+    private _version: number[];
 
     public static OPEN = 'ar.session.open';
     public static CLOSE = 'ar.session.close';
@@ -656,4 +656,33 @@ function extractVersion(versionString) {
         parts[i] = parseInt(parts[i], 10);
     }
     return parts;
+}
+
+/**
+ * A service which connects this system to the [[REALITY_MANAGER]] via an Android WebView javascript interface.
+ */
+export class AndroidWebViewConnectService extends ConnectService {
+
+    /**
+     * Check whether this connect method is available or not.
+     */
+    public static isAvailable(): boolean {
+        return typeof window !== 'undefined' &&
+            window["__argon_android__"];
+    }
+
+    /**
+     * Connect to the manager.
+     */
+    connect(sessionService: SessionService) {
+        const messageChannel = sessionService.createSynchronousMessageChannel();
+        messageChannel.port2.onmessage = (event) => {
+            window["__argon_android__"].emit("argon", JSON.stringify(event.data));
+        }
+        window['__ARGON_PORT__'] = messageChannel.port2;
+        sessionService.manager.open(messageChannel.port1, sessionService.configuration);
+        window.addEventListener("beforeunload", function() {
+            sessionService.manager.close();
+        })
+    }
 }

@@ -41,7 +41,7 @@ export class CommandQueue {
                 }
             });
         });
-        if (execute) this.execute();
+        if (execute || !this._paused) this.execute();
         return result;
     }
 

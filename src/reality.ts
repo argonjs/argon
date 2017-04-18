@@ -1,15 +1,17 @@
 import { autoinject, inject, Factory } from 'aurelia-dependency-injection'
 import {
     createGuid,
-    // PerspectiveFrustum
+    PerspectiveFrustum,
+    Matrix4
 } from './cesium/cesium-imports'
 import {
     Role,
-    FrameState,
-    Viewport
+    ContextFrameState,
+    Viewport,
+    SerializedSubviewList
 } from './common'
 import { SessionPort, SessionService } from './session'
-import { Event, deprecated } from './utils'
+import { Event, deprecated, decomposePerspectiveProjectionMatrix } from './utils'
 import { ContextService } from './context'
 import { FocusServiceProvider } from './focus'
 import { VisibilityServiceProvider } from './visibility'
@@ -20,6 +22,7 @@ import { LiveRealityViewer } from './reality-viewers/live'
 import { HostedRealityViewer } from './reality-viewers/hosted'
 
 import {ViewServiceProvider} from './view'
+import {DeviceService} from './device'
 
 @inject(Factory.of(EmptyRealityViewer), Factory.of(LiveRealityViewer), Factory.of(HostedRealityViewer))
 export abstract class RealityViewerFactory {
@@ -138,6 +141,7 @@ export class RealityService {
             const current = frameState.reality!;
             const previous = this._current;
             if (previous !== current) {
+                this._current = current;
                 this.changeEvent.raiseEvent({ previous, current });
             }
         });
@@ -227,6 +231,7 @@ export class RealityServiceProvider {
         private sessionService:SessionService,
         private realityService:RealityService,
         private contextService:ContextService,
+        private deviceService:DeviceService,
         private viewServiceProvider:ViewServiceProvider,
         private visibilityServiceProvider:VisibilityServiceProvider,
         private focusServiceProvider: FocusServiceProvider,
@@ -281,6 +286,8 @@ export class RealityServiceProvider {
         });
     }
 
+    private _scratchFrustum = new PerspectiveFrustum;
+
     private _handleInstall(session:SessionPort, uri:string) {
         let installers = this._installersByURI.get(uri);
 
@@ -302,8 +309,25 @@ export class RealityServiceProvider {
                     throw new Error('The application "' + viewerSession.uri + '" does not support being loaded as a reality viewer');
                 }
 
-                viewerSession.on['ar.reality.frameState'] = (frame: FrameState) => {
+                viewerSession.on['ar.reality.frameState'] = (frame: ContextFrameState) => {
                     if (this._presentingRealityViewer === viewer) {
+                        if (viewerSession.version[0] === 0) { // backwards compatability
+                            const deviceState = this.deviceService.frameState;
+                            if (!deviceState) return;
+                            frame.viewport = Viewport.clone(deviceState.viewport, frame.viewport);
+                            frame.subviews = SerializedSubviewList.clone(deviceState.subviews, frame.subviews);
+                            const eye = frame['eye'];
+                            const eyePose = eye.pose;
+                            const eyeFov = eye.fov;
+                            frame.entities = frame.entities || {};
+                            frame.entities['ar.user'] = eyePose;
+                            for (const s of frame.subviews) {
+                                const f:PerspectiveFrustum = decomposePerspectiveProjectionMatrix(s.projectionMatrix, s['frustum'] || {});
+                                f.fov = eyeFov;
+                                this._scratchFrustum.clone(f);
+                                s.projectionMatrix = Matrix4.clone(this._scratchFrustum.projectionMatrix, s.projectionMatrix);
+                            }
+                        }
                         frame.reality = viewer.uri;
                         this.contextService.submitFrameState(frame);
                     }
@@ -366,7 +390,6 @@ export class RealityServiceProvider {
 
         session.closeEvent.addEventListener(() => {
             viewerSession.send(CLOSE_SESSION_KEY);
-            viewerSession.close();
         })
     }
 

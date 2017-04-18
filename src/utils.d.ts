@@ -8,11 +8,18 @@ export { default as synthesizeEvent } from './utils/ui-event-synthesizer';
 export { default as createEventForwarder } from './utils/ui-event-forwarder';
 /**
  * Get array of ancestor reference frames of a Cesium Entity, ordered from
- * farthest ancestor to the passed frame.
+ * farthest ancestor to the passed frame, excluding the passed frame.
  * @param frame A Cesium Entity to get ancestor reference frames.
  * @param frames An array of reference frames of the Cesium Entity.
  */
 export declare function getAncestorReferenceFrames(frame: Entity, result?: never[]): (Entity | ReferenceFrame)[];
+/**
+ * Get array of ancestor reference frames of a Cesium Entity, ordered from
+ * farthest ancestor which has a valid pose to the passed frame, excluding the passed frame.
+ * @param frame A Cesium Entity to get ancestor reference frames.
+ * @param frames An array of reference frames of the Cesium Entity.
+ */
+export declare function getReachableAncestorReferenceFrames(frame: Entity, time: JulianDate, result?: never[]): (Entity | ReferenceFrame)[];
 /**
  * Gets the value of the Position property at the provided time and in the provided reference frame.
  * @param entity The entity to get position.
@@ -48,7 +55,7 @@ export declare const getEntityOrientation: typeof getEntityOrientationInReferenc
  * serialized according to the furthest ancestor frame that resolves to a valid pose.
  * @return An EntityPose object with orientation, position and referenceFrame.
  */
-export declare function getSerializedEntityState(entity: Entity, time: JulianDate, frame?: ReferenceFrame | Entity, result?: SerializedEntityState | null): SerializedEntityState | null;
+export declare function getSerializedEntityState(entity: Entity, time: JulianDate, frame?: ReferenceFrame | Entity): SerializedEntityState | null;
 /**
  * If urlParser does not have a value, throw error message "resolveURL requires DOM api".
  * If inURL is undefined, throw error message "expected inURL".
@@ -88,6 +95,9 @@ export declare function decomposePerspectiveProjectionMatrix(mat: Matrix4, resul
  */
 export declare function convertEntityReferenceFrame(entity: Entity, time: JulianDate, frame: ReferenceFrame | Entity): boolean;
 export declare const isIOS: boolean;
+export declare function installArgonApp(): void;
 export declare function openInArgonApp(): void;
-export declare const requestAnimationFrame: any;
+declare const rAF: any;
+declare const cAF: any;
+export { rAF as requestAnimationFrame, cAF as cancelAnimationFrame };
 export declare function deprecated(alternative?: string): MethodDecorator;

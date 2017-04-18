@@ -90,6 +90,7 @@
 						<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="defaultuiservice.html#deviceservice" class="tsd-kind-icon">device<wbr>Service</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="defaultuiservice.html#element" class="tsd-kind-icon">element</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="defaultuiservice.html#hmdmenuitem" class="tsd-kind-icon">hmd<wbr>Menu<wbr>Item</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="defaultuiservice.html#maximizemenuitem" class="tsd-kind-icon">maximize<wbr>Menu<wbr>Item</a></li>
@@ -104,8 +105,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="defaultuiservice.html#realityviewerlistelement" class="tsd-kind-icon">reality<wbr>Viewer<wbr>List<wbr>Element</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="defaultuiservice.html#realityviewerselectorelement" class="tsd-kind-icon">reality<wbr>Viewer<wbr>Selector<wbr>Element</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="defaultuiservice.html#sessionservice" class="tsd-kind-icon">session<wbr>Service</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="defaultuiservice.html#viewserviceprovider" class="tsd-kind-icon">view<wbr>Service<wbr>Provider</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="defaultuiservice.html#viewportservice" class="tsd-kind-icon">viewport<wbr>Service</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="defaultuiservice.html#viewservice" class="tsd-kind-icon">view<wbr>Service</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -126,13 +126,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>DefaultUIService<span class="tsd-signature-symbol">(</span>sessionService<span class="tsd-signature-symbol">: </span><a href="sessionservice.html" class="tsd-signature-type">SessionService</a>, viewportService<span class="tsd-signature-symbol">: </span><a href="viewportservice.html" class="tsd-signature-type">ViewportService</a>, realityService<span class="tsd-signature-symbol">: </span><a href="realityservice.html" class="tsd-signature-type">RealityService</a>, realityServiceProvider<span class="tsd-signature-symbol">: </span><a href="realityserviceprovider.html" class="tsd-signature-type">RealityServiceProvider</a>, viewServiceProvider<span class="tsd-signature-symbol">: </span><a href="viewserviceprovider.html" class="tsd-signature-type">ViewServiceProvider</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="defaultuiservice.html" class="tsd-signature-type">DefaultUIService</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>DefaultUIService<span class="tsd-signature-symbol">(</span>sessionService<span class="tsd-signature-symbol">: </span><a href="sessionservice.html" class="tsd-signature-type">SessionService</a>, viewService<span class="tsd-signature-symbol">: </span><a href="viewservice.html" class="tsd-signature-type">ViewService</a>, realityService<span class="tsd-signature-symbol">: </span><a href="realityservice.html" class="tsd-signature-type">RealityService</a>, realityServiceProvider<span class="tsd-signature-symbol">: </span><a href="realityserviceprovider.html" class="tsd-signature-type">RealityServiceProvider</a>, deviceService<span class="tsd-signature-symbol">: </span><a href="deviceservice.html" class="tsd-signature-type">DeviceService</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="defaultuiservice.html" class="tsd-signature-type">DefaultUIService</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/ui.ts#L37">src/ui.ts:37</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/ui.ts#L37">src/ui.ts:37</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -141,7 +141,7 @@
 									<h5>sessionService: <a href="sessionservice.html" class="tsd-signature-type">SessionService</a></h5>
 								</li>
 								<li>
-									<h5>viewportService: <a href="viewportservice.html" class="tsd-signature-type">ViewportService</a></h5>
+									<h5>viewService: <a href="viewservice.html" class="tsd-signature-type">ViewService</a></h5>
 								</li>
 								<li>
 									<h5>realityService: <a href="realityservice.html" class="tsd-signature-type">RealityService</a></h5>
@@ -150,7 +150,7 @@
 									<h5>realityServiceProvider: <a href="realityserviceprovider.html" class="tsd-signature-type">RealityServiceProvider</a></h5>
 								</li>
 								<li>
-									<h5>viewServiceProvider: <a href="viewserviceprovider.html" class="tsd-signature-type">ViewServiceProvider</a></h5>
+									<h5>deviceService: <a href="deviceservice.html" class="tsd-signature-type">DeviceService</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="defaultuiservice.html" class="tsd-signature-type">DefaultUIService</a></h4>
@@ -161,12 +161,22 @@
 			<section class="tsd-panel-group tsd-member-group tsd-is-private tsd-is-private-protected">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="deviceservice" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> device<wbr>Service</h3>
+					<div class="tsd-signature tsd-kind-icon">device<wbr>Service<span class="tsd-signature-symbol">:</span> <a href="deviceservice.html" class="tsd-signature-type">DeviceService</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/ui.ts#L44">src/ui.ts:44</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="element" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> <span class="tsd-flag ts-flagOptional">Optional</span> element</h3>
 					<div class="tsd-signature tsd-kind-icon">element<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">HTMLDivElement</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/ui.ts#L24">src/ui.ts:24</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/ui.ts#L24">src/ui.ts:24</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -176,7 +186,7 @@
 					<div class="tsd-signature tsd-kind-icon">hmd<wbr>Menu<wbr>Item<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">HTMLDivElement</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/ui.ts#L35">src/ui.ts:35</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/ui.ts#L35">src/ui.ts:35</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -186,7 +196,7 @@
 					<div class="tsd-signature tsd-kind-icon">maximize<wbr>Menu<wbr>Item<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">HTMLDivElement</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/ui.ts#L37">src/ui.ts:37</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/ui.ts#L37">src/ui.ts:37</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -196,7 +206,7 @@
 					<div class="tsd-signature tsd-kind-icon">menu<wbr>Background<wbr>Element<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">HTMLDivElement</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/ui.ts#L27">src/ui.ts:27</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/ui.ts#L27">src/ui.ts:27</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -206,7 +216,7 @@
 					<div class="tsd-signature tsd-kind-icon">menu<wbr>Items<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">HTMLDivElement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/ui.ts#L31">src/ui.ts:31</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/ui.ts#L31">src/ui.ts:31</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -216,7 +226,7 @@
 					<div class="tsd-signature tsd-kind-icon">menu<wbr>Open<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/ui.ts#L32">src/ui.ts:32</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/ui.ts#L32">src/ui.ts:32</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -226,7 +236,7 @@
 					<div class="tsd-signature tsd-kind-icon">open<wbr>InArgon<wbr>Menu<wbr>Item<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">HTMLDivElement</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/ui.ts#L34">src/ui.ts:34</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/ui.ts#L34">src/ui.ts:34</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -236,7 +246,7 @@
 					<div class="tsd-signature tsd-kind-icon">reality<wbr>Menu<wbr>Item<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">HTMLDivElement</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/ui.ts#L36">src/ui.ts:36</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/ui.ts#L36">src/ui.ts:36</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -246,7 +256,7 @@
 					<div class="tsd-signature tsd-kind-icon">reality<wbr>Service<span class="tsd-signature-symbol">:</span> <a href="realityservice.html" class="tsd-signature-type">RealityService</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/ui.ts#L42">src/ui.ts:42</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/ui.ts#L42">src/ui.ts:42</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -256,7 +266,7 @@
 					<div class="tsd-signature tsd-kind-icon">reality<wbr>Service<wbr>Provider<span class="tsd-signature-symbol">:</span> <a href="realityserviceprovider.html" class="tsd-signature-type">RealityServiceProvider</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/ui.ts#L43">src/ui.ts:43</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/ui.ts#L43">src/ui.ts:43</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -266,7 +276,7 @@
 					<div class="tsd-signature tsd-kind-icon">reality<wbr>Viewer<wbr>Item<wbr>Elements<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">HTMLDivElement</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Map&lt;string, HTMLDivElement&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/ui.ts#L29">src/ui.ts:29</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/ui.ts#L29">src/ui.ts:29</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -276,7 +286,7 @@
 					<div class="tsd-signature tsd-kind-icon">reality<wbr>Viewer<wbr>List<wbr>Element<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">HTMLDivElement</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/ui.ts#L26">src/ui.ts:26</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/ui.ts#L26">src/ui.ts:26</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -286,7 +296,7 @@
 					<div class="tsd-signature tsd-kind-icon">reality<wbr>Viewer<wbr>Selector<wbr>Element<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">HTMLDivElement</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/ui.ts#L25">src/ui.ts:25</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/ui.ts#L25">src/ui.ts:25</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -296,27 +306,17 @@
 					<div class="tsd-signature tsd-kind-icon">session<wbr>Service<span class="tsd-signature-symbol">:</span> <a href="sessionservice.html" class="tsd-signature-type">SessionService</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/ui.ts#L40">src/ui.ts:40</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/ui.ts#L40">src/ui.ts:40</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="viewserviceprovider" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> view<wbr>Service<wbr>Provider</h3>
-					<div class="tsd-signature tsd-kind-icon">view<wbr>Service<wbr>Provider<span class="tsd-signature-symbol">:</span> <a href="viewserviceprovider.html" class="tsd-signature-type">ViewServiceProvider</a></div>
+					<a name="viewservice" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> view<wbr>Service</h3>
+					<div class="tsd-signature tsd-kind-icon">view<wbr>Service<span class="tsd-signature-symbol">:</span> <a href="viewservice.html" class="tsd-signature-type">ViewService</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/ui.ts#L44">src/ui.ts:44</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="viewportservice" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> viewport<wbr>Service</h3>
-					<div class="tsd-signature tsd-kind-icon">viewport<wbr>Service<span class="tsd-signature-symbol">:</span> <a href="viewportservice.html" class="tsd-signature-type">ViewportService</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/ui.ts#L41">src/ui.ts:41</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/ui.ts#L41">src/ui.ts:41</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -333,7 +333,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/ui.ts#L261">src/ui.ts:261</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/ui.ts#L260">src/ui.ts:260</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -374,7 +374,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/ui.ts#L294">src/ui.ts:294</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/ui.ts#L293">src/ui.ts:293</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -412,7 +412,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/ui.ts#L306">src/ui.ts:306</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/ui.ts#L305">src/ui.ts:305</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -429,7 +429,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/38dff4b/src/ui.ts#L315">src/ui.ts:315</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/ui.ts#L314">src/ui.ts:314</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -455,6 +455,9 @@
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
 								<a href="defaultuiservice.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="defaultuiservice.html#deviceservice" class="tsd-kind-icon">device<wbr>Service</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="defaultuiservice.html#element" class="tsd-kind-icon">element</a>
@@ -499,10 +502,7 @@
 								<a href="defaultuiservice.html#sessionservice" class="tsd-kind-icon">session<wbr>Service</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="defaultuiservice.html#viewserviceprovider" class="tsd-kind-icon">view<wbr>Service<wbr>Provider</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="defaultuiservice.html#viewportservice" class="tsd-kind-icon">viewport<wbr>Service</a>
+								<a href="defaultuiservice.html#viewservice" class="tsd-kind-icon">view<wbr>Service</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
 								<a href="defaultuiservice.html#_createmenuitem" class="tsd-kind-icon">_create<wbr>Menu<wbr>Item</a>
