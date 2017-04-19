@@ -1,6 +1,6 @@
 {
   "name": "@argonjs/argon",
-  "version": "1.1.13",
+  "version": "1.1.14-0",
   "main": "dist/argon.core.js",
   "browser": "dist/argon.js",
   "typings": "index.d.ts",
@@ -230,8 +230,7 @@
     "preversion": "[[ -z $(git status --porcelain) ]]",
     "version": "npm run tsc && npm run build && git add -u",
     "postversion": "git push && git push --tags",
-
-    "begin-release":"[[ -z $(git status --porcelain) ]] && npm run tsc && npm run build && git add -u",
+    "begin-release": "[[ -z $(git status --porcelain) ]] && npm run tsc && npm run build && git add -u",
     "release:next": "npm run begin-release && standard-version -a --prerelease && npm run finish-release && npm publish --tag next",
     "release:latest": "npm run begin-release && standard-version -a && npm run finish-release && npm publish",
     "finish-release": "git push && git push --tags"

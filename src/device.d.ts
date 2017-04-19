@@ -49,6 +49,7 @@ export declare class DeviceService {
     readonly geoHorizontalAccuracy: number | undefined;
     readonly geoVerticalAccuracy: number | undefined;
     private _getEntityPositionInReferenceFrame;
+    private _getEntityOrientationInReferenceFrame;
     protected _scratchCartesian: Cartesian3;
     protected _scratchCartesian2: Cartesian3;
     protected _scratchFrustum: PerspectiveFrustum;
@@ -82,6 +83,8 @@ export declare class DeviceService {
      * Defines the webvr standing space, positioned at the stage (EUS) frame by default.
      */
     vrStandingSpace: Entity;
+    private _defaultLeftBounds;
+    private _defaultRightBounds;
     private _updateForWebVR();
     private _scratchFrameState;
     private _getSerializedEntityState;
@@ -126,7 +129,6 @@ export declare class DeviceServiceProvider {
     publishDeviceState(): void;
     defaultUserHeight: number;
     readonly suggestedUserHeight: number;
-    private _vrFrameData?;
     protected onUpdateDeviceState(deviceState: DeviceState): void;
     private _currentGeolocationOptions?;
     private _targetGeolocationOptions;
