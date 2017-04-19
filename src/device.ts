@@ -33,7 +33,7 @@ import {
 import {
     Event,
     getEntityPositionInReferenceFrame,
-    // getEntityOrientationInReferenceFrame,
+    getEntityOrientationInReferenceFrame,
     getSerializedEntityState,
     requestAnimationFrame,
     cancelAnimationFrame,
@@ -126,7 +126,7 @@ export class DeviceService {
     }
 
     private _getEntityPositionInReferenceFrame = getEntityPositionInReferenceFrame;
-    // private _getEntityOrientationInReferenceFrame = getEntityOrientationInReferenceFrame;
+    private _getEntityOrientationInReferenceFrame = getEntityOrientationInReferenceFrame;
     protected _scratchCartesian = new Cartesian3;
     protected _scratchCartesian2 = new Cartesian3;
     protected _scratchFrustum = new PerspectiveFrustum();
@@ -158,10 +158,8 @@ export class DeviceService {
             const deviceUser = this.user;
             const contextUser = contextService.user;
             if (entities[contextUser.id] === undefined) {
-                const deviceUserPosition = deviceUser.position as ConstantPositionProperty;
-                const deviceUserOrientation = deviceUser.orientation as ConstantProperty;
-                const userPositionValue = deviceUserPosition && deviceUserPosition.getValueInReferenceFrame(time, deviceStage, this._scratchCartesian);
-                const userOrientationValue = deviceUserOrientation && deviceUserOrientation.getValue(time, this._scratchQuaternion);
+                const userPositionValue = this._getEntityPositionInReferenceFrame(deviceUser, time, deviceStage, this._scratchCartesian);
+                const userOrientationValue =  this._getEntityOrientationInReferenceFrame(deviceUser, time, deviceStage, this._scratchQuaternion);
                 const contextUserPosition = contextUser.position as ConstantPositionProperty;
                 const contextUserOrientation = contextUser.orientation as ConstantProperty;
                 contextUserPosition.setValue(userPositionValue, contextStage);
@@ -218,10 +216,6 @@ export class DeviceService {
 
     private _onDeviceState(deviceState:DeviceState) {
         this.deviceState = deviceState;
-        this.frameState.suggestedUserHeight = deviceState.suggestedUserHeight;
-        this.frameState.isPresentingHMD = deviceState.isPresentingHMD;
-        this.frameState.geolocationDesired = deviceState.geolocationDesired;
-        this.frameState.geolocationOptions = deviceState.geolocationOptions;
 
         const entities = deviceState.entities;
         const contextService = this.contextService;
@@ -313,9 +307,15 @@ export class DeviceService {
     private _updateDefault() {
         this._updateUserDefault();
 
-        const frameState = this.frameState;
         const deviceState = this.deviceState;
-        
+
+        const frameState = this.frameState;
+        frameState.suggestedUserHeight = deviceState.suggestedUserHeight;
+        frameState.isPresentingHMD = deviceState.isPresentingHMD;
+        frameState.geolocationDesired = deviceState.geolocationDesired;
+        frameState.geolocationOptions = deviceState.geolocationOptions;
+        frameState.strict = deviceState.strict;
+
         const element = this.viewService.element;
         
         const viewport = frameState.viewport;
@@ -382,6 +382,7 @@ export class DeviceService {
     private _updateForWebVR() {
         
         const frameState = this.frameState;
+        frameState.strict = true;
 
         const vrDisplay:VRDisplay = currentVRDisplay;
 
@@ -934,80 +935,10 @@ export class DeviceServiceProvider {
         return this.deviceService.isPresentingHMD ? this.defaultUserHeight : this.defaultUserHeight/2;
     }
 
-    // private _vrFrameData?:any;
-
     protected onUpdateDeviceState(deviceState:DeviceState) {
-
-        // const vrDisplay = currentVRDisplay;
-        // if (!vrDisplay) {
-            deviceState.viewport = undefined;
-            deviceState.subviews = undefined;
-            deviceState.strict = false;
-        //     return;
-        // }
-
-        // Since the WebVR polyfill only manages state within one browser window,
-        // we will just pass down the viewport/subview configuration in the device state.
-        // In managed sessions with real WebVR implementations, the WebVR API is used directly in the DeviceService
-        // (this is not really useful within an iframe, since real webVR implementations currently do not support
-        // a way to composite content from different iframes, however once WebVR is decoupled from the DOM and can run
-        // in a worker, the DeviceService should be able to leverage the WebVR API as needed within each frame)
-
-        // const vrFrameData : VRFrameData = this._vrFrameData = 
-        //     this._vrFrameData || new VRFrameData();
-        // if (!vrDisplay['getFrameData'](vrFrameData)) {
-        //     setTimeout(()=>this.publishDeviceState(), 500);
-        //     return;
-        // }
-
-        // const element = this.viewService.element;
-        // const viewport = deviceState.viewport = deviceState.viewport || <Viewport>{};
-        // viewport.x = 0;
-        // viewport.y = 0;
-        // viewport.width = element && element.clientWidth || 0;
-        // viewport.height = element && element.clientHeight || 0;
-
-        // const layers = vrDisplay.getLayers();
-        // let leftBounds = layers[0].leftBounds!;
-        // let rightBounds = layers[0].rightBounds!;
-
-        // if ( layers.length ) {
-        //     var layer = layers[ 0 ]!;
-        //     leftBounds = layer.leftBounds && layer.leftBounds.length === 4 ? layer.leftBounds : this._defaultLeftBounds;
-        //     rightBounds = layer.rightBounds && layer.rightBounds.length === 4 ? layer.rightBounds : this._defaultRightBounds;
-        // } else {
-        //     leftBounds = this._defaultLeftBounds;
-        //     rightBounds = this._defaultRightBounds;
-        // }
-        
-        // const subviews = deviceState.subviews = deviceState.subviews || [];
-        // subviews.length = 2;
-
-        // const leftSubview = subviews[0] = subviews[0] || {};
-        // const rightSubview = subviews[1] = subviews[1] || {};
-        // leftSubview.type = SubviewType.LEFTEYE;
-        // rightSubview.type = SubviewType.RIGHTEYE;
-
-        // const leftViewport = leftSubview.viewport = leftSubview.viewport || <Viewport>{};
-        // leftViewport.x = leftBounds[0] * viewport.width;
-        // leftViewport.y = leftBounds[1] * viewport.height;
-        // leftViewport.width = leftBounds[2] * viewport.width;
-        // leftViewport.height = leftBounds[3] * viewport.height;
-
-        // const rightViewport = rightSubview.viewport = rightSubview.viewport || <Viewport>{};
-        // rightViewport.x = rightBounds[0] * viewport.width;
-        // rightViewport.y = rightBounds[1] * viewport.height;
-        // rightViewport.width = rightBounds[2] * viewport.width;
-        // rightViewport.height = rightBounds[3] * viewport.height;
-
-        // leftSubview.projectionMatrix = Matrix4.clone(
-        //     <any>vrFrameData.leftProjectionMatrix, 
-        //     leftSubview.projectionMatrix
-        // );
-        // rightSubview.projectionMatrix = Matrix4.clone(
-        //     <any>vrFrameData.rightProjectionMatrix, 
-        //     rightSubview.projectionMatrix
-        // );
+        deviceState.viewport = undefined;
+        deviceState.subviews = undefined;
+        deviceState.strict = false;
     }
 
     private _currentGeolocationOptions?:GeolocationOptions;
