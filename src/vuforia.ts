@@ -132,7 +132,7 @@ export class VuforiaObjectTracker extends VuforiaTracker {
      * Deprecated. Please use createDataSetFromURI instead.
      * @deprecated To be removed. 
      */
-    @deprecated('createDataSetFromURI')
+    @deprecated('createDataSetFromURL')
     public createDataSet(url?: string): Promise<DeprecatedVuforiaDataSet> {
         if (url && window.document) {
             url = resolveURL(url);
@@ -148,12 +148,18 @@ export class VuforiaObjectTracker extends VuforiaTracker {
      * Fetch a dataset from the provided url. 
      * If successfull, resolves to an id which represents the dataset. 
      */
-    public createDataSetFromURI(uri: string) : Promise<VuforiaDataSetId> {
-        return this.managerSession.request('ar.vuforia.objectTrackerCreateDataSet', { uri })
+    public createDataSetFromURL(url: string) : Promise<VuforiaDataSetId> {        
+        if (url && window.document) {
+            url = resolveURL(url);
+        }
+        return this.managerSession.request('ar.vuforia.objectTrackerCreateDataSet', { url })
             .then((message: { id: VuforiaDataSetId }) => {
                 return message.id;
             });
     }
+
+    @deprecated('createDataSetFromURL')
+    public get createDataSetFromURI() { return this.createDataSetFromURL };
 
     /**
      * Load the dataset into memory, and return a promise which
