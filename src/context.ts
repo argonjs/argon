@@ -692,8 +692,7 @@ export class ContextService {
         let entityPosition = entity.position;
         let entityOrientation = entity.orientation;
 
-        if (entityPosition instanceof ConstantPositionProperty && 
-            entityPosition.referenceFrame === referenceFrame) {
+        if (entityPosition instanceof ConstantPositionProperty) {
             entityPosition.setValue(positionValue, referenceFrame);
         } else {
             entity.position = new ConstantPositionProperty(positionValue, referenceFrame);
