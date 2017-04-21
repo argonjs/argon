@@ -32,6 +32,13 @@ export class VisibilityService {
                 else this.hideEvent.raiseEvent(undefined)
             }
         }
+
+        sessionService.manager.closeEvent.addEventListener(()=>{
+            if (this._isVisible) {
+                this._isVisible = false;
+                this.hideEvent.raiseEvent(undefined);
+            }
+        })
     }
 
 }
