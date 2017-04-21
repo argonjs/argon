@@ -214,12 +214,6 @@ export class DeviceService {
             }
         })
 
-        // if (this.sessionService.isRealityManager || this.sessionService.isRealityViewer) {
-        //     this.sessionService.manager.connectEvent.addEventListener(()=>{
-        //         this.startUpdates();
-        //     });
-        // }
-
         this.visibilityService.showEvent.addEventListener(() => this.startUpdates());
         this.visibilityService.hideEvent.addEventListener(() => this.stopUpdates());
         
@@ -228,6 +222,7 @@ export class DeviceService {
 
     private _onDeviceState(deviceState:DeviceState) {
         this.deviceState = deviceState;
+
 
         const entities = deviceState.entities;
         const contextService = this.contextService;
@@ -247,6 +242,15 @@ export class DeviceService {
         const state = this.frameState = this.frameState || {};
         const time = state.time = JulianDate.now(state.time);
         state.screenOrientationDegrees = this.getScreenOrientationDegrees();
+
+        const element = this.viewService.element;
+        const viewport = state.viewport;
+        viewport.x = 0;
+        viewport.y = 0;
+        viewport.width = element && element.clientWidth || 0;
+        viewport.height = element && element.clientHeight || 0;
+        viewport.renderHeightScaleFactor = 1;
+        viewport.renderWidthScaleFactor = 1;
         
         this.onUpdateFrameState();
 
@@ -331,17 +335,10 @@ export class DeviceService {
         frameState.geolocationDesired = deviceState.geolocationDesired;
         frameState.geolocationOptions = deviceState.geolocationOptions;
         frameState.strict = deviceState.strict;
-
-        const element = this.viewService.element;
         
         const viewport = frameState.viewport;
         if (deviceState.viewport) {
             CanvasViewport.clone(deviceState.viewport, viewport);
-        } else {
-            viewport.x = 0;
-            viewport.y = 0;
-            viewport.width = element && element.clientWidth || 0;
-            viewport.height = element && element.clientHeight || 0;
         }
 
         const subviews = frameState.subviews;
@@ -401,18 +398,11 @@ export class DeviceService {
         
         const frameState = this.frameState;
         frameState.strict = true;
-
-        const element = this.viewService.element;
        
         var leftEye = vrDisplay.getEyeParameters("left");
         var rightEye = vrDisplay.getEyeParameters("right");
         
         const viewport = frameState.viewport;
-        viewport.x = 0;
-        viewport.y = 0;
-        viewport.width = element && element.clientWidth || 0;
-        viewport.height = element && element.clientHeight || 0;
-
         viewport.renderWidthScaleFactor = 2 * Math.max(leftEye.renderWidth, rightEye.renderWidth) / viewport.width;
         viewport.renderHeightScaleFactor = Math.max(leftEye.renderHeight, rightEye.renderHeight) / viewport.height;
 
@@ -783,30 +773,20 @@ export class DeviceService {
                 const viewService = this.viewService;
                 const display:VRDisplay|undefined = e.display || e.detail.vrdisplay || e.detail.display;
                 if (display) {
-                    const layers = display.getLayers();
-                    let isThisView = vrDisplay === display;
-                    for (const layer of layers) {
-                        if (layer.source && viewService.element.contains(layer.source)) {
-                            isThisView = true;
-                            break;
+                    if (display.isPresenting) {
+                        vrDisplay = display;
+                        if (display.displayName.match(/Cardboard/g)) {
+                            currentCanvas = display.getLayers()[0].source;
+                            if (currentCanvas) currentCanvas.classList.add('argon-interactive');
+                            previousPresentationMode = viewService.viewportMode;
+                            viewService.desiredViewportMode = ViewportMode.IMMERSIVE;
                         }
-                    }
-                    if (isThisView) {
-                        if (display.isPresenting) {
-                            vrDisplay = display;
-                            if (display.displayName.match(/Cardboard/g)) {
-                                currentCanvas = display.getLayers()[0].source;
-                                if (currentCanvas) currentCanvas.classList.add('argon-interactive');
-                                previousPresentationMode = viewService.viewportMode;
-                                viewService.desiredViewportMode = ViewportMode.IMMERSIVE;
-                            }
-                        } else {
-                            vrDisplay = undefined;
-                            if (currentCanvas && display.displayName.match(/Cardboard/g)) {
-                                currentCanvas.classList.remove('argon-interactive');
-                                currentCanvas = undefined;
-                                viewService.desiredViewportMode = previousPresentationMode;
-                            }
+                    } else {
+                        vrDisplay = undefined;
+                        if (currentCanvas && display.displayName.match(/Cardboard/g)) {
+                            currentCanvas.classList.remove('argon-interactive');
+                            currentCanvas = undefined;
+                            viewService.desiredViewportMode = previousPresentationMode;
                         }
                     }
                 }
