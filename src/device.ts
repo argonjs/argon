@@ -47,6 +47,8 @@ import {
     ViewportMode
 } from './view'
 
+import { VisibilityService } from './visibility'
+
 export class DeviceState {
     viewport?:CanvasViewport;
     subviews?:SerializedSubviewList;
@@ -145,7 +147,8 @@ export class DeviceService {
     constructor(
         protected sessionService:SessionService,
         protected contextService:ContextService,
-        protected viewService:ViewService
+        protected viewService:ViewService,
+        protected visibilityService:VisibilityService
     ) {
         sessionService.manager.on['ar.device.state'] = 
             sessionService.manager.on['ar.device.frameState'] = this._onDeviceState.bind(this);
@@ -217,11 +220,9 @@ export class DeviceService {
         //     });
         // }
 
-        this.startUpdates();
-        this.sessionService.manager.closeEvent.addEventListener(()=>{
-            this.stopUpdates();
-        })
-
+        this.visibilityService.showEvent.addEventListener(() => this.startUpdates());
+        this.visibilityService.hideEvent.addEventListener(() => this.stopUpdates());
+        
         this._setupVRPresentChangeHandler();
     }
 
