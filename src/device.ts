@@ -80,6 +80,16 @@ export class DeviceFrameState extends DeviceState {
     }];
 };
 
+let vrDisplays:VRDisplay[]|undefined;
+let vrDisplay:VRDisplay|undefined;
+
+if (typeof navigator !== 'undefined' && navigator.getVRDisplays) {
+    navigator.getVRDisplays().then(displays => {
+        vrDisplays = displays;
+        vrDisplay = displays[0];
+    });
+}
+
 @autoinject()
 export class DeviceService {
 
@@ -230,6 +240,8 @@ export class DeviceService {
     private _updateFrameState = () => {
         if (!this._updating) return;
 
+        this.requestAnimationFrame(this._updateFrameState);
+
         const state = this.frameState = this.frameState || {};
         const time = state.time = JulianDate.now(state.time);
         state.screenOrientationDegrees = this.getScreenOrientationDegrees();
@@ -245,7 +257,9 @@ export class DeviceService {
 
         this.frameStateEvent.raiseEvent(state);
 
-        this.requestAnimationFrame(this._updateFrameState);
+        if (this.autoSubmitFrame && vrDisplay && vrDisplay.isPresenting) {
+            vrDisplay.submitFrame();
+        }
     };
 
     public getScreenOrientationDegrees() {
@@ -256,18 +270,18 @@ export class DeviceService {
      * Request an animation frame callback for the current view. 
      */
     public requestAnimationFrame:(callback:(timestamp:number)=>void)=>number = callback => {
-        if (currentVRDisplay) {
-            return (currentVRDisplay as VRDisplay).requestAnimationFrame(callback);
+        if (vrDisplay && this.isPresentingHMD) {
+            return vrDisplay.requestAnimationFrame(callback);
         } else {
             return requestAnimationFrame(callback);
         }
     }
 
     public cancelAnimationFrame:(id:number)=>void = id => {
-        if (currentVRDisplay) {
-            return (currentVRDisplay as VRDisplay).cancelAnimationFrame(id);
+        if (vrDisplay && this.isPresentingHMD) {
+            vrDisplay.cancelAnimationFrame(id);
         } else {
-            return cancelAnimationFrame(id);
+            cancelAnimationFrame(id);
         }
     }
 
@@ -297,7 +311,7 @@ export class DeviceService {
     }
 
     protected onUpdateFrameState() {
-        if (currentVRDisplay) {
+        if (vrDisplay && this.isPresentingHMD) {
             this._updateForWebVR();
         } else {
             this._updateDefault();
@@ -380,11 +394,11 @@ export class DeviceService {
 	private _defaultRightBounds = [ 0.5, 0.0, 0.5, 1.0 ];
 
     private _updateForWebVR() {
+
+        if (!vrDisplay) return;
         
         const frameState = this.frameState;
         frameState.strict = true;
-
-        const vrDisplay:VRDisplay = currentVRDisplay;
 
         // const element = this.viewService.element;
        
@@ -755,18 +769,12 @@ export class DeviceService {
             let currentCanvas:HTMLElement|undefined;
             let previousPresentationMode:ViewportMode;
 
-            this.contextService.postRenderEvent.addEventListener(()=>{
-                if (this.autoSubmitFrame && currentVRDisplay && currentVRDisplay.isPresenting) {
-                    currentVRDisplay.submitFrame();
-                }
-            });
-
             const handleVRDisplayPresentChange = (e) => {
                 const viewService = this.viewService;
-                const vrDisplay:VRDisplay|undefined = e.display || e.detail.vrdisplay || e.detail.display;
-                if (vrDisplay) {
-                    const layers = vrDisplay.getLayers();
-                    let isThisView = currentVRDisplay === vrDisplay;
+                const display:VRDisplay|undefined = e.display || e.detail.vrdisplay || e.detail.display;
+                if (display) {
+                    const layers = display.getLayers();
+                    let isThisView = vrDisplay === display;
                     for (const layer of layers) {
                         if (layer.source && viewService.element.contains(layer.source)) {
                             isThisView = true;
@@ -774,17 +782,17 @@ export class DeviceService {
                         }
                     }
                     if (isThisView) {
-                        if (vrDisplay.isPresenting) {
-                            currentVRDisplay = vrDisplay;
-                            if (vrDisplay.displayName.match(/Cardboard/g)) {
-                                currentCanvas = vrDisplay.getLayers()[0].source;
+                        if (display.isPresenting) {
+                            vrDisplay = display;
+                            if (display.displayName.match(/Cardboard/g)) {
+                                currentCanvas = display.getLayers()[0].source;
                                 if (currentCanvas) currentCanvas.classList.add('argon-interactive');
                                 previousPresentationMode = viewService.viewportMode;
                                 viewService.desiredViewportMode = ViewportMode.IMMERSIVE;
                             }
                         } else {
-                            currentVRDisplay = undefined;
-                            if (currentCanvas && vrDisplay.displayName.match(/Cardboard/g)) {
+                            vrDisplay = undefined;
+                            if (currentCanvas && display.displayName.match(/Cardboard/g)) {
                                 currentCanvas.classList.remove('argon-interactive');
                                 currentCanvas = undefined;
                                 viewService.desiredViewportMode = previousPresentationMode;
@@ -803,8 +811,6 @@ export class DeviceService {
     }
 
 }
-
-let currentVRDisplay:any;
 
 @autoinject()
 export class DeviceServiceProvider {
@@ -877,33 +883,19 @@ export class DeviceServiceProvider {
     }
 
     protected handleRequestPresentHMD(session:SessionPort) : Promise<void> {
-        if (typeof navigator !== 'undefined' &&
-            navigator.getVRDisplays) {
-            const requestPresent = (vrDisplay:VRDisplay) => {
-                currentVRDisplay = vrDisplay;
-                const element = this.viewService.element;
-                const layers:VRLayer&{}[] = [];
-                layers[0] = {source:element.querySelector('canvas') || <HTMLCanvasElement>element.lastElementChild};
-                return vrDisplay.requestPresent(layers).catch((e)=>{
-                    currentVRDisplay = undefined;
-                    throw e;
-                });
-            }
-            if (navigator.activeVRDisplays && navigator.activeVRDisplays.length) {
-                return requestPresent(navigator.activeVRDisplays[0]);
-            } else {
-                return navigator.getVRDisplays()
-                    .then(displays => displays[0])
-                    .then(requestPresent)
-            }
+        if (vrDisplay) {
+            const element = this.viewService.element;
+            const layers:VRLayer&{}[] = [];
+            layers[0] = {source:element.querySelector('canvas') || <HTMLCanvasElement>element.lastElementChild};
+            return vrDisplay.requestPresent(layers).catch((e)=>{
+                throw e;
+            });
         }
         throw new Error('No HMD available');
     }
     
     protected handleExitPresentHMD(session:SessionPort) : Promise<void> {
-        if (currentVRDisplay) {
-            const vrDisplay:VRDisplay = currentVRDisplay;
-            currentVRDisplay = undefined;
+        if (vrDisplay) {
             return vrDisplay.exitPresent();
         }
         return Promise.resolve();
