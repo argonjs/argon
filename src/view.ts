@@ -25,7 +25,8 @@ export class Subview {
     type: SubviewType;
     frustum: PerspectiveFrustum;
     pose: EntityPose;
-    viewport: CanvasViewport;
+    viewport: Viewport;
+    renderViewport: Viewport;
 }
 
 export const enum ViewportMode {
@@ -74,7 +75,23 @@ export class ViewService {
     public get viewport() {
         return this._viewport;
     }
-    private _viewport = new CanvasViewport;
+    private _viewport = new Viewport;
+
+    /**
+     * The width which should be used for the render buffer
+     */
+    public get renderWidth() {
+        return this._renderWidth;
+    }
+    private _renderWidth = 0;
+
+    /**
+     * The height which should be used for the render buffer
+     */
+    public get renderHeight() {
+        return this._renderHeight;
+    }
+    private _renderHeight = 0;
     
     @deprecated('viewport')
     public getViewport() {
@@ -215,7 +232,11 @@ export class ViewService {
     private _IDENTITY_SUBVIEW_POSE = {p:Cartesian3.ZERO, o:Quaternion.IDENTITY, r:this.contextService.view.id};
 
     private _processFrameState(state:ContextFrameState) {
-        this._updateViewport(state.viewport);
+
+        const renderWidthScaleFactor = state.viewport.renderWidthScaleFactor;
+        const renderHeightScaleFactor = state.viewport.renderHeightScaleFactor;
+        this._renderWidth = state.viewport.width * renderWidthScaleFactor;
+        this._renderHeight = state.viewport.height * renderHeightScaleFactor;
 
         const serializedSubviewList = state.subviews;
         const subviews: Subview[] = this._subviews;
@@ -236,6 +257,11 @@ export class ViewService {
             subview.viewport.y = serializedSubview.viewport.y;
             subview.viewport.width = serializedSubview.viewport.width;
             subview.viewport.height = serializedSubview.viewport.height;
+            subview.renderViewport = subview.renderViewport || {};
+            subview.renderViewport.x = serializedSubview.viewport.x * renderWidthScaleFactor;
+            subview.renderViewport.y = serializedSubview.viewport.y * renderHeightScaleFactor;
+            subview.renderViewport.width = serializedSubview.viewport.width * renderWidthScaleFactor;
+            subview.renderViewport.height = serializedSubview.viewport.height * renderHeightScaleFactor;
 
             subview.frustum = this._subviewFrustum[index] = 
                 this._subviewFrustum[index] || new PerspectiveFrustum();
@@ -248,6 +274,8 @@ export class ViewService {
             
             index++;
         }
+
+        this._updateViewport(state.viewport);
     }
 
     @deprecated('desiredViewportMode')
@@ -294,7 +322,7 @@ export class ViewService {
         if (!this._currentViewportJSON || this._currentViewportJSON !== viewportJSON) {
             this._currentViewportJSON = viewportJSON;
 
-            this._viewport = CanvasViewport.clone(viewport, this._viewport);
+            this._viewport = Viewport.clone(viewport, this._viewport);
 
             if (this.element && 
                 !this.sessionService.isRealityManager && 
