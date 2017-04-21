@@ -1,5 +1,5 @@
 import { autoinject, inject, Optional } from 'aurelia-dependency-injection'
-import { Viewport, ContextFrameState, SubviewType } from './common'
+import { CanvasViewport, Viewport, ContextFrameState, SubviewType } from './common'
 import { SessionService, SessionPort } from './session'
 import { ContextService, EntityPose } from './context'
 
@@ -25,7 +25,7 @@ export class Subview {
     type: SubviewType;
     frustum: PerspectiveFrustum;
     pose: EntityPose;
-    viewport: Viewport;
+    viewport: CanvasViewport;
 }
 
 export const enum ViewportMode {
@@ -52,7 +52,7 @@ export class ViewService {
     /**
      * An event that is raised when the viewport has changed
      */
-    public viewportChangeEvent = new Event<Viewport>();
+    public viewportChangeEvent = new Event<CanvasViewport>();
 
     /**
      * An event that is raised when the viewport mode has changed
@@ -74,7 +74,7 @@ export class ViewService {
     public get viewport() {
         return this._viewport;
     }
-    private _viewport = {x:0,y:0,width:0,height:0};
+    private _viewport = new CanvasViewport;
     
     @deprecated('viewport')
     public getViewport() {
@@ -288,13 +288,13 @@ export class ViewService {
     }
 
     // Updates the element, if necessary, and raise a view change event
-    private _updateViewport(viewport:Viewport) {
+    private _updateViewport(viewport:CanvasViewport) {
         const viewportJSON = JSON.stringify(viewport);
 
         if (!this._currentViewportJSON || this._currentViewportJSON !== viewportJSON) {
             this._currentViewportJSON = viewportJSON;
 
-            this._viewport = Viewport.clone(viewport, this._viewport);
+            this._viewport = CanvasViewport.clone(viewport, this._viewport);
 
             if (this.element && 
                 !this.sessionService.isRealityManager && 
@@ -407,7 +407,7 @@ export class ViewServiceProvider {
                 this._publishViewportModes();
             }
 
-            session.on['ar.view.embeddedViewport'] = (viewport: Viewport) => {
+            session.on['ar.view.embeddedViewport'] = (viewport: CanvasViewport) => {
                 this.sessionEmbeddedViewport.set(session, viewport);
             }
 

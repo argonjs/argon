@@ -22,6 +22,7 @@ import {
     AVERAGE_EYE_HEIGHT,
     DEFAULT_NEAR_PLANE,
     DEFAULT_FAR_PLANE,
+    CanvasViewport,
     Viewport,
     SerializedSubviewList,
     SerializedEntityStateMap,
@@ -47,7 +48,7 @@ import {
 } from './view'
 
 export class DeviceState {
-    viewport?:Viewport;
+    viewport?:CanvasViewport;
     subviews?:SerializedSubviewList;
     entities:SerializedEntityStateMap = {};
     suggestedUserHeight = AVERAGE_EYE_HEIGHT;
@@ -64,12 +65,12 @@ export class DeviceFrameState extends DeviceState {
 
     time = JulianDate.now();
 
-    viewport = {x:0,y:0,width:0,height:0};
+    viewport = new CanvasViewport;
 
     subviews:SerializedSubviewList = [{
         type: SubviewType.SINGULAR,
         pose: null,
-        viewport: {x:0, y:0, width: 0, height:0},
+        viewport: new Viewport,
         projectionMatrix: (
             this._scratchFrustum.near = DEFAULT_NEAR_PLANE,
             this._scratchFrustum.far = DEFAULT_FAR_PLANE,
@@ -334,7 +335,7 @@ export class DeviceService {
         
         const viewport = frameState.viewport;
         if (deviceState.viewport) {
-            Viewport.clone(deviceState.viewport, viewport);
+            CanvasViewport.clone(deviceState.viewport, viewport);
         } else {
             viewport.x = 0;
             viewport.y = 0;
@@ -400,7 +401,7 @@ export class DeviceService {
         const frameState = this.frameState;
         frameState.strict = true;
 
-        // const element = this.viewService.element;
+        const element = this.viewService.element;
        
         var leftEye = vrDisplay.getEyeParameters("left");
         var rightEye = vrDisplay.getEyeParameters("right");
@@ -408,8 +409,11 @@ export class DeviceService {
         const viewport = frameState.viewport;
         viewport.x = 0;
         viewport.y = 0;
-        viewport.width = Math.max(leftEye.renderWidth, rightEye.renderWidth) * 2;
-        viewport.height = Math.max(leftEye.renderHeight, rightEye.renderHeight);
+        viewport.width = element && element.clientWidth || 0;
+        viewport.height = element && element.clientHeight || 0;
+
+        viewport.renderWidthScaleFactor = 2 * Math.max(leftEye.renderWidth, rightEye.renderWidth) / viewport.width;
+        viewport.renderHeightScaleFactor = Math.max(leftEye.renderHeight, rightEye.renderHeight) / viewport.height;
 
         const vrFrameData : VRFrameData = this._vrFrameData = 
             this._vrFrameData || new VRFrameData();
@@ -437,13 +441,13 @@ export class DeviceService {
         leftSubview.type = SubviewType.LEFTEYE;
         rightSubview.type = SubviewType.RIGHTEYE;
 
-        const leftViewport = leftSubview.viewport = leftSubview.viewport || <Viewport>{};
+        const leftViewport = leftSubview.viewport = leftSubview.viewport || <CanvasViewport>{};
         leftViewport.x = leftBounds[0] * viewport.width;
         leftViewport.y = leftBounds[1] * viewport.height;
         leftViewport.width = leftBounds[2] * viewport.width;
         leftViewport.height = leftBounds[3] * viewport.height;
 
-        const rightViewport = rightSubview.viewport = rightSubview.viewport || <Viewport>{};
+        const rightViewport = rightSubview.viewport = rightSubview.viewport || <CanvasViewport>{};
         rightViewport.x = rightBounds[0] * viewport.width;
         rightViewport.y = rightBounds[1] * viewport.height;
         rightViewport.width = rightBounds[2] * viewport.width;
@@ -547,7 +551,7 @@ export class DeviceService {
      */
     public createContextFrameState(
         time:JulianDate,
-        viewport:Viewport,
+        viewport:CanvasViewport,
         subviewList:SerializedSubviewList,
         options?: {overrideStage?:boolean, overrideUser?:boolean, overrideView?:boolean, floorOffset?:number}
     ) : ContextFrameState {
@@ -561,7 +565,7 @@ export class DeviceService {
 
         const frameState:ContextFrameState = this._scratchFrameState;
         frameState.time = JulianDate.clone(time, frameState.time);
-        frameState.viewport = Viewport.clone(viewport, frameState.viewport);
+        frameState.viewport = CanvasViewport.clone(viewport, frameState.viewport);
         frameState.subviews = SerializedSubviewList.clone(subviewList, frameState.subviews);
 
         const contextService = this.contextService;
@@ -766,6 +770,11 @@ export class DeviceService {
     private _setupVRPresentChangeHandler() {
         if (typeof window !=='undefined' && window.addEventListener) {
 
+            this.viewService.viewportModeChangeEvent.addEventListener((mode)=>{
+                if (mode === ViewportMode.PAGE && vrDisplay && vrDisplay.displayName.match(/Cardboard/g)) 
+                    this.exitPresentHMD();
+            });
+
             let currentCanvas:HTMLElement|undefined;
             let previousPresentationMode:ViewportMode;
 
@@ -800,11 +809,6 @@ export class DeviceService {
                         }
                     }
                 }
-
-                viewService.viewportModeChangeEvent.addEventListener((mode)=>{
-                    if (mode === ViewportMode.PAGE) 
-                        this.exitPresentHMD();
-                });
             }
             window.addEventListener('vrdisplaypresentchange', handleVRDisplayPresentChange);
         }
