@@ -16,6 +16,8 @@ var renderer = new THREE.WebGLRenderer({
 });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 app.view.element.appendChild(renderer.domElement);
+renderer.domElement.style.width = '100%';
+renderer.domElement.style.height = '100%';
 // app.context.setDefaultReferenceFrame(app.context.localOriginEastUpSouth);
 app.context.setDefaultReferenceFrame(app.context.localOriginEastNorthUp);
 var geometry = new THREE.SphereGeometry(30, 32, 32);
@@ -56,7 +58,7 @@ axisHelper.position.y = -50;
 app.vuforia.init({
     encryptedLicenseData: "-----BEGIN PGP MESSAGE-----\nComment: GPGTools - https://gpgtools.org\n\nhQIMA1AUQCNdm8lhAQ/+Kam6naTGpo6C2EkYOWTKVmeLa6lD4epaRrH3ZnhOHm5z\ndpFmTehxe+A/J/7/68EvEGDPfuV4cqHTXNuvlAvY1K625/i8EfNrx+nPL0umap5E\nWaYRnLNF6MlC1Pu8aLY8c8vd/ZA9h2Zk8P4t0C/uOayJBZk0BhKRlOgCJbjOd7/X\nEMPOD3XtFUP8T13Kpqb/A8cyIRTOowm8yaj4PajUCAlOWSYKYRcXM5yg/5t7XTdi\n3iURgidFbWowbnqyFmOKxAxqRBoXPGYEDmK8IgOgYmR7C5pVAmWDK8ZcsTn2YC0T\nJhYUSQvRA2CszK9UMEoOh2rqE8RHZY4MuVPm1QNC1j4yP1FSDZvfcJdOTbTeBCci\n6ATCARma+roA3xtbzPVWhjc8DGtlRIJqj0+cRjK8RMzIMbBPGlTZihgt7W0sifa/\nm38zAlE4Be5Omg+kJ76kyXph+SIj0gqBl5rG34O4n4KgCBooipjWnAfzwKJknBiX\n74ex99LZf/VfijCjDKkUpiyrHHOkWHFDeolWTZVmj3D6HBqUaCMGp3ObQ0AGA+tt\n/BuRohIHk1zvST66FzBoFx2+fctZm7c+VItAoyW/+IVuulFCsoQdE59fF81MaMan\nRw1MNC6d1uemIZI/xp+ilxbpeloypyrWa6ZLzlScOv7//C5bowZgjmxCfbY7SYHS\n6QFyUllcKIYGoVOMX30ZrdaQMU8177nnMik8Ivr5zkgu9FsKkwi0MH4XTP4Jp8zk\neR4f+bzZmxitTLYoaJFnkmxdzyHTsIXgOOtndTh18+uSgvEz+oewrvawQCTXJKXw\nBwYk7wAvMlFywMM/B+H4kvBOThqG7je2S3UitW1walSwq+P8p/v2UzIxy+yGTzlz\n0eKmfbx2b2+6r76hDVRt0XiAuVKXq8Erndx20VkRZj3MBOgus3XmvbCgORn0w5F/\n2sg6kkNDrAI7aUq83EFMuDr3A6ABbt3C6cEPEB1sLhsqhnLTvkHTr6J7Br+wI+2f\nelT3x15oPUAjnDQR7kC77cmZ8U5o/R2nYOlPzDSyX34cV3z176hqssQa3l/ebh+4\nuuMHiecut/s2FVACrizVtEI+Z9I73iURwD9DrdRuJKYMdKoYDqoM43VdIZfNc3Ec\nj7SKC/LSpOJL8YQlLoKLtdAjCYrYhDgycAKKpTw9Kv6wbSQ3qxOEUMrxK2I30NaA\n9tuzf15WZ+TathGTIL7VqLKS4UPK57zvrdqneB6Xlj4CABMIL3ZmgGuJPr8WSJSu\nxMTXBowqC4eNuwUGtQtsy+7xYkxOLs/NVn2nNNb6NlEaZX0QUhqgW+t5j3d4SRry\nkDYZIbq+RqPwaZhg0hXpT5Fwz97y4Z5NyjAu44kiYAK2Du0Vyi1e0PMtW2ja4ZH0\n=d+oG\n-----END PGP MESSAGE-----"
 }).then(function (api) {
-    api.objectTracker.createDataSetFromURI('dataset/StonesAndChips.xml').then(function (id) {
+    api.objectTracker.createDataSetFromURL('dataset/StonesAndChips.xml').then(function (id) {
         api.objectTracker.loadDataSet(id).then(function (trackables) {
             var stonesEntity = app.context.subscribeToEntityById(trackables['stones'].id);
             var stonesObject = new THREE.Object3D;
@@ -96,18 +98,22 @@ app.updateEvent.addEventListener(function () {
     }
 });
 app.renderEvent.addEventListener(function () {
-    var viewport = app.view.viewport;
-    renderer.setSize(viewport.width, viewport.height);
+    // css renderer, if used:
+    // const viewport = app.view.viewport;
+    // cssRenderer.setSize(viewport.width, viewport.height);
+    renderer.setSize(app.view.renderWidth, app.view.renderHeight, false);
     for (var _i = 0, _a = app.view.subviews; _i < _a.length; _i++) {
         var subview = _a[_i];
         camera.position.copy(subview.pose.position);
         camera.quaternion.copy(subview.pose.orientation);
         camera.projectionMatrix.fromArray(subview.frustum.projectionMatrix);
-        var _b = subview.viewport, x = _b.x, y = _b.y, width = _b.width, height = _b.height;
+        var _b = subview.renderViewport, x = _b.x, y = _b.y, width = _b.width, height = _b.height;
         renderer.setViewport(x, y, width, height);
         renderer.setScissor(x, y, width, height);
         renderer.setScissorTest(true);
         renderer.render(scene, camera);
+        // let {x,y,width,height} = subview.viewport;
+        // cssRenderer.setViewport(x,y,width,height, subview.index)
     }
 });
 // // creating 6 divs to indicate the x y z positioning

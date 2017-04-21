@@ -2,11 +2,12 @@
 import { Entity, Cartesian3, Quaternion, JulianDate, PerspectiveFrustum } from './cesium/cesium-imports';
 import { ContextService, ContextServiceProvider } from './context';
 import { SessionService, SessionPort } from './session';
-import { Viewport, SerializedSubviewList, SerializedEntityStateMap, ContextFrameState, GeolocationOptions } from './common';
+import { CanvasViewport, SerializedSubviewList, SerializedEntityStateMap, ContextFrameState, GeolocationOptions } from './common';
 import { Event } from './utils';
 import { ViewService } from './view';
+import { VisibilityService } from './visibility';
 export declare class DeviceState {
-    viewport?: Viewport;
+    viewport?: CanvasViewport;
     subviews?: SerializedSubviewList;
     entities: SerializedEntityStateMap;
     suggestedUserHeight: number;
@@ -19,18 +20,14 @@ export declare class DeviceFrameState extends DeviceState {
     private _scratchFrustum;
     screenOrientationDegrees: number;
     time: JulianDate;
-    viewport: {
-        x: number;
-        y: number;
-        width: number;
-        height: number;
-    };
+    viewport: CanvasViewport;
     subviews: SerializedSubviewList;
 }
 export declare class DeviceService {
     protected sessionService: SessionService;
     protected contextService: ContextService;
     protected viewService: ViewService;
+    protected visibilityService: VisibilityService;
     autoSubmitFrame: boolean;
     deviceState: DeviceState;
     frameState: DeviceFrameState;
@@ -53,7 +50,7 @@ export declare class DeviceService {
     protected _scratchCartesian: Cartesian3;
     protected _scratchCartesian2: Cartesian3;
     protected _scratchFrustum: PerspectiveFrustum;
-    constructor(sessionService: SessionService, contextService: ContextService, viewService: ViewService);
+    constructor(sessionService: SessionService, contextService: ContextService, viewService: ViewService, visibilityService: VisibilityService);
     private _onDeviceState(deviceState);
     private _updating;
     private _updateFrameState;
@@ -97,7 +94,7 @@ export declare class DeviceService {
      * @param user
      * @param entityOptions
      */
-    createContextFrameState(time: JulianDate, viewport: Viewport, subviewList: SerializedSubviewList, options?: {
+    createContextFrameState(time: JulianDate, viewport: CanvasViewport, subviewList: SerializedSubviewList, options?: {
         overrideStage?: boolean;
         overrideUser?: boolean;
         overrideView?: boolean;

@@ -68,7 +68,8 @@ export declare class VuforiaObjectTracker extends VuforiaTracker {
      * Fetch a dataset from the provided url.
      * If successfull, resolves to an id which represents the dataset.
      */
-    createDataSetFromURI(uri: string): Promise<VuforiaDataSetId>;
+    createDataSetFromURL(url: string): Promise<VuforiaDataSetId>;
+    readonly createDataSetFromURI: (url: string) => Promise<string>;
     /**
      * Load the dataset into memory, and return a promise which
      * resolves to the contained trackables
