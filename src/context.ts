@@ -607,9 +607,6 @@ export class ContextService {
         this.timestamp = timestamp;
         JulianDate.clone(<JulianDate>frameState.time, this.time);
 
-        // if (entities[this.stage.id]) {}
-        // this._updateStage(frameState);
-
         // raise a frame state event (primarily for other services to hook into)
         this._serializedFrameState = frameState;
         this.frameStateEvent.raiseEvent(frameState);
