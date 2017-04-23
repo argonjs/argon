@@ -233,8 +233,8 @@ export class ViewService {
 
     private _processFrameState(state:ContextFrameState) {
 
-        const renderWidthScaleFactor = state.viewport.renderWidthScaleFactor;
-        const renderHeightScaleFactor = state.viewport.renderHeightScaleFactor;
+        const renderWidthScaleFactor = state.viewport.renderWidthScaleFactor || 1;
+        const renderHeightScaleFactor = state.viewport.renderHeightScaleFactor || 1;
         this._renderWidth = state.viewport.width * renderWidthScaleFactor;
         this._renderHeight = state.viewport.height * renderHeightScaleFactor;
 
