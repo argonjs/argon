@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.2.0-2"></a>
+# [1.2.0-2](https://github.com/argonjs/argon/compare/v1.2.0-1...v1.2.0-2) (2017-04-23)
+
+
+### Bug Fixes
+
+* **ViewService:**  default scale factors to 1 when not provided ([a8a9c0b](https://github.com/argonjs/argon/commit/a8a9c0b))
+
+
+
 <a name="1.2.0-1"></a>
 # [1.2.0-1](https://github.com/argonjs/argon/compare/v1.2.0-0...v1.2.0-1) (2017-04-21)
 
