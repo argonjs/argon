@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.2.0-3"></a>
+# [1.2.0-3](https://github.com/argonjs/argon/compare/v1.2.0-2...v1.2.0-3) (2017-04-23)
+
+
+### Bug Fixes
+
+* Ensure DeviceService & ViewService process frame states in the correct order ([5fee115](https://github.com/argonjs/argon/commit/5fee115))
+
+
+
 <a name="1.2.0-2"></a>
 # [1.2.0-2](https://github.com/argonjs/argon/compare/v1.2.0-1...v1.2.0-2) (2017-04-23)
 

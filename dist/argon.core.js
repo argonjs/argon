@@ -16363,7 +16363,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
 
             _export('cancelAnimationFrame', cAF = typeof window !== 'undefined' ? window.cancelAnimationFrame.bind(window) : clearTimeout);
 
-            _export('version', version = "1.2.0-2");
+            _export('version', version = "1.2.0-3");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -17546,8 +17546,6 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     this.deltaTime = Math.min(timestamp - this.timestamp, this.maxDeltaTime);
                     this.timestamp = timestamp;
                     JulianDate.clone(frameState.time, this.time);
-                    // if (entities[this.stage.id]) {}
-                    // this._updateStage(frameState);
                     // raise a frame state event (primarily for other services to hook into)
                     this._serializedFrameState = frameState;
                     this.frameStateEvent.raiseEvent(frameState);
@@ -18151,11 +18149,6 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                             _this._updateViewportMode(ViewportMode.IMMERSIVE);
                         }
                     });
-                    // keep the subviews up-to-date
-                    this.contextService.frameStateEvent.addEventListener(function (state) {
-                        _this._processFrameState(state);
-                    });
-                    this._processFrameState(this.contextService.serializedFrameState);
                 }
                 Object.defineProperty(ViewService.prototype, "viewportMode", {
                     /**
@@ -18220,7 +18213,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 ViewService.prototype.getSubviews = function () {
                     return this.subviews;
                 };
-                ViewService.prototype._processFrameState = function (state) {
+                ViewService.prototype._processContextFrameState = function (state) {
                     var renderWidthScaleFactor = state.viewport.renderWidthScaleFactor || 1;
                     var renderHeightScaleFactor = state.viewport.renderHeightScaleFactor || 1;
                     this._renderWidth = state.viewport.width * renderWidthScaleFactor;
@@ -18597,55 +18590,6 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     };
                     this._getSerializedEntityState = getSerializedEntityState;
                     sessionService.manager.on['ar.device.state'] = sessionService.manager.on['ar.device.frameState'] = this._onDeviceState.bind(this);
-                    contextService.frameStateEvent.addEventListener(function (state) {
-                        var time = state.time;
-                        var contextService = _this.contextService;
-                        var entities = state.entities;
-                        // stage
-                        var deviceStage = _this.stage;
-                        var contextStage = contextService.stage;
-                        if (entities[contextStage.id] === undefined) {
-                            var contextStagePosition = contextStage.position;
-                            var contextStageOrientation = contextStage.orientation;
-                            contextStagePosition.setValue(Cartesian3.ZERO, deviceStage);
-                            contextStageOrientation.setValue(Quaternion.IDENTITY);
-                        }
-                        // user
-                        var deviceUser = _this.user;
-                        var contextUser = contextService.user;
-                        if (entities[contextUser.id] === undefined) {
-                            var userPositionValue = _this._getEntityPositionInReferenceFrame(deviceUser, time, deviceStage, _this._scratchCartesian);
-                            var userOrientationValue = _this._getEntityOrientationInReferenceFrame(deviceUser, time, deviceStage, _this._scratchQuaternion);
-                            var contextUserPosition = contextUser.position;
-                            var contextUserOrientation = contextUser.orientation;
-                            contextUserPosition.setValue(userPositionValue, contextStage);
-                            contextUserOrientation.setValue(userOrientationValue);
-                        }
-                        // view
-                        var contextView = contextService.view;
-                        if (entities[contextView.id] === undefined) {
-                            var contextViewPosition = contextView.position;
-                            var contextViewOrientation = contextView.orientation;
-                            contextViewPosition.setValue(Cartesian3.ZERO, contextUser);
-                            contextViewOrientation.setValue(Quaternion.IDENTITY);
-                        }
-                        // floor
-                        if (entities[contextService.floor.id] === undefined) {
-                            var floorPosition = contextService.floor.position;
-                            floorPosition.setValue(Cartesian3.ZERO, contextStage);
-                        }
-                        // If running within an older manager, we have to set the stage based on the user pose. 
-                        if (_this.sessionService.manager.isConnected && _this.sessionService.manager.version[0] === 0) {
-                            var userPositionFixed = _this._getEntityPositionInReferenceFrame(contextUser, time, ReferenceFrame.FIXED, _this._scratchCartesian);
-                            if (userPositionFixed) {
-                                var enuToFixedFrameTransform = Transforms.eastNorthUpToFixedFrame(userPositionFixed, undefined, _this._scratchMatrix4);
-                                var enuRotationMatrix = Matrix4.getRotation(enuToFixedFrameTransform, _this._scratchMatrix3);
-                                var enuOrientation = Quaternion.fromRotationMatrix(enuRotationMatrix);
-                                contextStage.position.setValue(userPositionFixed, ReferenceFrame.FIXED);
-                                contextStage.orientation.setValue(enuOrientation);
-                            }
-                        }
-                    });
                     this.visibilityService.showEvent.addEventListener(function () {
                         return _this.startUpdates();
                     });
@@ -18675,6 +18619,55 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     enumerable: true,
                     configurable: true
                 });
+                DeviceService.prototype._processContextFrameState = function (state) {
+                    var time = state.time;
+                    var contextService = this.contextService;
+                    var entities = state.entities;
+                    // stage
+                    var deviceStage = this.stage;
+                    var contextStage = contextService.stage;
+                    if (entities[contextStage.id] === undefined) {
+                        var contextStagePosition = contextStage.position;
+                        var contextStageOrientation = contextStage.orientation;
+                        contextStagePosition.setValue(Cartesian3.ZERO, deviceStage);
+                        contextStageOrientation.setValue(Quaternion.IDENTITY);
+                    }
+                    // user
+                    var deviceUser = this.user;
+                    var contextUser = contextService.user;
+                    if (entities[contextUser.id] === undefined) {
+                        var userPositionValue = this._getEntityPositionInReferenceFrame(deviceUser, time, deviceStage, this._scratchCartesian);
+                        var userOrientationValue = this._getEntityOrientationInReferenceFrame(deviceUser, time, deviceStage, this._scratchQuaternion);
+                        var contextUserPosition = contextUser.position;
+                        var contextUserOrientation = contextUser.orientation;
+                        contextUserPosition.setValue(userPositionValue, contextStage);
+                        contextUserOrientation.setValue(userOrientationValue);
+                    }
+                    // view
+                    var contextView = contextService.view;
+                    if (entities[contextView.id] === undefined) {
+                        var contextViewPosition = contextView.position;
+                        var contextViewOrientation = contextView.orientation;
+                        contextViewPosition.setValue(Cartesian3.ZERO, contextUser);
+                        contextViewOrientation.setValue(Quaternion.IDENTITY);
+                    }
+                    // floor
+                    if (entities[contextService.floor.id] === undefined) {
+                        var floorPosition = contextService.floor.position;
+                        floorPosition.setValue(Cartesian3.ZERO, contextStage);
+                    }
+                    // If running within an older manager, we have to set the stage based on the user pose. 
+                    if (this.sessionService.manager.isConnected && this.sessionService.manager.version[0] === 0) {
+                        var userPositionFixed = this._getEntityPositionInReferenceFrame(contextUser, time, ReferenceFrame.FIXED, this._scratchCartesian);
+                        if (userPositionFixed) {
+                            var enuToFixedFrameTransform = Transforms.eastNorthUpToFixedFrame(userPositionFixed, undefined, this._scratchMatrix4);
+                            var enuRotationMatrix = Matrix4.getRotation(enuToFixedFrameTransform, this._scratchMatrix3);
+                            var enuOrientation = Quaternion.fromRotationMatrix(enuRotationMatrix);
+                            contextStage.position.setValue(userPositionFixed, ReferenceFrame.FIXED);
+                            contextStage.orientation.setValue(enuOrientation);
+                        }
+                    }
+                };
                 DeviceService.prototype._onDeviceState = function (deviceState) {
                     this.deviceState = deviceState;
                     var entities = deviceState.entities;
@@ -19427,7 +19420,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                             // provide fov controls
                             if (!frameState.strict) {
                                 decomposePerspectiveProjectionMatrix(subviews[0].projectionMatrix, scratchFrustum);
-                                scratchFrustum.fov = _this.viewService.subviews[0].frustum.fov;
+                                scratchFrustum.fov = _this.viewService.subviews[0] && _this.viewService.subviews[0].frustum.fov || CesiumMath.PI_OVER_THREE;
                                 if (aggregator && aggregator.isMoving(CameraEventType.WHEEL)) {
                                     var wheelMovement = aggregator.getMovement(CameraEventType.WHEEL);
                                     var diff = wheelMovement.endPosition.y;
@@ -20701,6 +20694,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
 
             _export('ArgonSystem', ArgonSystem = ArgonSystem_1 = function () {
                 function ArgonSystem(container, context, device, focus, reality, session, view, visibility, vuforia) {
+                    var _this = this;
                     this.container = container;
                     this.context = context;
                     this.device = device;
@@ -20712,6 +20706,10 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     this.vuforia = vuforia;
                     if (!ArgonSystem_1.instance) ArgonSystem_1.instance = this;
                     if (this.container.hasResolver(ArgonSystemProvider)) this._provider = this.container.get(ArgonSystemProvider);
+                    this.context.frameStateEvent.addEventListener(function (frameState) {
+                        _this.device._processContextFrameState(frameState);
+                        _this.view._processContextFrameState(frameState);
+                    });
                     this.session.connect();
                 }
                 Object.defineProperty(ArgonSystem.prototype, "provider", {

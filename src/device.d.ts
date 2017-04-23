@@ -51,6 +51,7 @@ export declare class DeviceService {
     protected _scratchCartesian2: Cartesian3;
     protected _scratchFrustum: PerspectiveFrustum;
     constructor(sessionService: SessionService, contextService: ContextService, viewService: ViewService, visibilityService: VisibilityService);
+    _processContextFrameState(state: ContextFrameState): void;
     private _onDeviceState(deviceState);
     private _updating;
     private _updateFrameState;

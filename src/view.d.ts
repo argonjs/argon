@@ -1,5 +1,5 @@
 /// <reference types="cesium" />
-import { CanvasViewport, Viewport, SubviewType } from './common';
+import { CanvasViewport, Viewport, ContextFrameState, SubviewType } from './common';
 import { SessionService, SessionPort } from './session';
 import { ContextService, EntityPose } from './context';
 import { PerspectiveFrustum } from './cesium/cesium-imports';
@@ -92,7 +92,7 @@ export declare class ViewService {
      */
     protected getSubviews(): Subview[];
     private _IDENTITY_SUBVIEW_POSE;
-    private _processFrameState(state);
+    _processContextFrameState(state: ContextFrameState): void;
     requestPresentationMode(mode: ViewportMode): Promise<void>;
     private _desiredViewportMode;
     desiredViewportMode: ViewportMode;
