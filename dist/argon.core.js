@@ -16363,7 +16363,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
 
             _export('cancelAnimationFrame', cAF = typeof window !== 'undefined' ? window.cancelAnimationFrame.bind(window) : clearTimeout);
 
-            _export('version', version = "1.1.14-0");
+            _export('version', version = "1.2.0-2");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -17961,6 +17961,12 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                             if (state) _this.showEvent.raiseEvent(undefined);else _this.hideEvent.raiseEvent(undefined);
                         }
                     };
+                    sessionService.manager.closeEvent.addEventListener(function () {
+                        if (_this._isVisible) {
+                            _this._isVisible = false;
+                            _this.hideEvent.raiseEvent(undefined);
+                        }
+                    });
                 }
                 Object.defineProperty(VisibilityService.prototype, "isVisible", {
                     /**
@@ -18215,8 +18221,8 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     return this.subviews;
                 };
                 ViewService.prototype._processFrameState = function (state) {
-                    var renderWidthScaleFactor = state.viewport.renderWidthScaleFactor;
-                    var renderHeightScaleFactor = state.viewport.renderHeightScaleFactor;
+                    var renderWidthScaleFactor = state.viewport.renderWidthScaleFactor || 1;
+                    var renderHeightScaleFactor = state.viewport.renderHeightScaleFactor || 1;
                     this._renderWidth = state.viewport.width * renderWidthScaleFactor;
                     this._renderHeight = state.viewport.height * renderHeightScaleFactor;
                     var serializedSubviewList = state.subviews;
