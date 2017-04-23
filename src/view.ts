@@ -203,12 +203,6 @@ export class ViewService {
                 this._updateViewportMode(ViewportMode.IMMERSIVE);
             }
         });
-
-        // keep the subviews up-to-date
-        this.contextService.frameStateEvent.addEventListener((state) => {
-            this._processFrameState(state);
-        });
-        this._processFrameState(this.contextService.serializedFrameState);
     }
 
     private _currentViewportJSON: string;
@@ -231,7 +225,7 @@ export class ViewService {
 
     private _IDENTITY_SUBVIEW_POSE = {p:Cartesian3.ZERO, o:Quaternion.IDENTITY, r:this.contextService.view.id};
 
-    private _processFrameState(state:ContextFrameState) {
+    public _processContextFrameState(state:ContextFrameState) {
 
         const renderWidthScaleFactor = state.viewport.renderWidthScaleFactor || 1;
         const renderHeightScaleFactor = state.viewport.renderHeightScaleFactor || 1;

@@ -153,71 +153,71 @@ export class DeviceService {
         sessionService.manager.on['ar.device.state'] = 
             sessionService.manager.on['ar.device.frameState'] = this._onDeviceState.bind(this);
 
-        contextService.frameStateEvent.addEventListener((state)=>{
-            const time = state.time;
-            const contextService = this.contextService;
-            const entities = state.entities;
-            
-            // stage
-            const deviceStage = this.stage;
-            const contextStage = contextService.stage;
-            if (entities[contextStage.id] === undefined) {
-                const contextStagePosition = contextStage.position as ConstantPositionProperty;
-                const contextStageOrientation = contextStage.orientation as ConstantProperty;
-                contextStagePosition.setValue(Cartesian3.ZERO, deviceStage);
-                contextStageOrientation.setValue(Quaternion.IDENTITY);
-            }
-
-            // user
-            const deviceUser = this.user;
-            const contextUser = contextService.user;
-            if (entities[contextUser.id] === undefined) {
-                const userPositionValue = this._getEntityPositionInReferenceFrame(deviceUser, time, deviceStage, this._scratchCartesian);
-                const userOrientationValue =  this._getEntityOrientationInReferenceFrame(deviceUser, time, deviceStage, this._scratchQuaternion);
-                const contextUserPosition = contextUser.position as ConstantPositionProperty;
-                const contextUserOrientation = contextUser.orientation as ConstantProperty;
-                contextUserPosition.setValue(userPositionValue, contextStage);
-                contextUserOrientation.setValue(userOrientationValue);
-            }
-
-            // view
-            const contextView = contextService.view;
-            if (entities[contextView.id] === undefined) {
-                const contextViewPosition = contextView.position as ConstantPositionProperty;
-                const contextViewOrientation = contextView.orientation as ConstantProperty;
-                contextViewPosition.setValue(Cartesian3.ZERO, contextUser);
-                contextViewOrientation.setValue(Quaternion.IDENTITY);
-            }
-
-            // floor
-            if (entities[contextService.floor.id] === undefined) {
-                const floorPosition = contextService.floor.position as ConstantPositionProperty;
-                floorPosition.setValue(Cartesian3.ZERO, contextStage);
-            }
-
-    
-            // If running within an older manager, we have to set the stage based on the user pose. 
-            if (this.sessionService.manager.isConnected && this.sessionService.manager.version[0] === 0) {
-                const userPositionFixed = this._getEntityPositionInReferenceFrame(
-                    contextUser,
-                    time,
-                    ReferenceFrame.FIXED,
-                    this._scratchCartesian
-                );
-                if (userPositionFixed) {
-                    const enuToFixedFrameTransform = Transforms.eastNorthUpToFixedFrame(userPositionFixed, undefined, this._scratchMatrix4);
-                    const enuRotationMatrix = Matrix4.getRotation(enuToFixedFrameTransform, this._scratchMatrix3);
-                    const enuOrientation = Quaternion.fromRotationMatrix(enuRotationMatrix);
-                    (contextStage.position as ConstantPositionProperty).setValue(userPositionFixed, ReferenceFrame.FIXED);
-                    (contextStage.orientation as ConstantProperty).setValue(enuOrientation);
-                }
-            }
-        })
-
         this.visibilityService.showEvent.addEventListener(() => this.startUpdates());
         this.visibilityService.hideEvent.addEventListener(() => this.stopUpdates());
         
         this._setupVRPresentChangeHandler();
+    }
+
+    public _processContextFrameState(state:ContextFrameState) {
+        const time = state.time;
+        const contextService = this.contextService;
+        const entities = state.entities;
+        
+        // stage
+        const deviceStage = this.stage;
+        const contextStage = contextService.stage;
+        if (entities[contextStage.id] === undefined) {
+            const contextStagePosition = contextStage.position as ConstantPositionProperty;
+            const contextStageOrientation = contextStage.orientation as ConstantProperty;
+            contextStagePosition.setValue(Cartesian3.ZERO, deviceStage);
+            contextStageOrientation.setValue(Quaternion.IDENTITY);
+        }
+
+        // user
+        const deviceUser = this.user;
+        const contextUser = contextService.user;
+        if (entities[contextUser.id] === undefined) {
+            const userPositionValue = this._getEntityPositionInReferenceFrame(deviceUser, time, deviceStage, this._scratchCartesian);
+            const userOrientationValue =  this._getEntityOrientationInReferenceFrame(deviceUser, time, deviceStage, this._scratchQuaternion);
+            const contextUserPosition = contextUser.position as ConstantPositionProperty;
+            const contextUserOrientation = contextUser.orientation as ConstantProperty;
+            contextUserPosition.setValue(userPositionValue, contextStage);
+            contextUserOrientation.setValue(userOrientationValue);
+        }
+
+        // view
+        const contextView = contextService.view;
+        if (entities[contextView.id] === undefined) {
+            const contextViewPosition = contextView.position as ConstantPositionProperty;
+            const contextViewOrientation = contextView.orientation as ConstantProperty;
+            contextViewPosition.setValue(Cartesian3.ZERO, contextUser);
+            contextViewOrientation.setValue(Quaternion.IDENTITY);
+        }
+
+        // floor
+        if (entities[contextService.floor.id] === undefined) {
+            const floorPosition = contextService.floor.position as ConstantPositionProperty;
+            floorPosition.setValue(Cartesian3.ZERO, contextStage);
+        }
+
+
+        // If running within an older manager, we have to set the stage based on the user pose. 
+        if (this.sessionService.manager.isConnected && this.sessionService.manager.version[0] === 0) {
+            const userPositionFixed = this._getEntityPositionInReferenceFrame(
+                contextUser,
+                time,
+                ReferenceFrame.FIXED,
+                this._scratchCartesian
+            );
+            if (userPositionFixed) {
+                const enuToFixedFrameTransform = Transforms.eastNorthUpToFixedFrame(userPositionFixed, undefined, this._scratchMatrix4);
+                const enuRotationMatrix = Matrix4.getRotation(enuToFixedFrameTransform, this._scratchMatrix3);
+                const enuOrientation = Quaternion.fromRotationMatrix(enuRotationMatrix);
+                (contextStage.position as ConstantPositionProperty).setValue(userPositionFixed, ReferenceFrame.FIXED);
+                (contextStage.orientation as ConstantProperty).setValue(enuOrientation);
+            }
+        }
     }
 
     private _onDeviceState(deviceState:DeviceState) {
