@@ -148,7 +148,7 @@ export class VuforiaObjectTracker extends VuforiaTracker {
      * Fetch a dataset from the provided url. 
      * If successfull, resolves to an id which represents the dataset. 
      */
-    public createDataSetFromURL(url: string) : Promise<VuforiaDataSetId> {        
+    public createDataSetFromURL(url: string) : Promise<VuforiaDataSetId> {
         if (url && window.document) {
             url = resolveURL(url);
         }
@@ -166,18 +166,28 @@ export class VuforiaObjectTracker extends VuforiaTracker {
      * resolves to the contained trackables
      */
     public loadDataSet(id: VuforiaDataSetId) : Promise<VuforiaTrackables> {
-        return this.managerSession.request('ar.vuforia.objectTrackerLoadDataSet', { id });
+        return this.managerSession.whenConnected().then(()=>{
+            if (this.managerSession.version[0] == 0) {
+                return <Promise<VuforiaTrackables>>this.managerSession.request('ar.vuforia.dataSetLoad', { id });
+            }
+            return <Promise<VuforiaTrackables>>this.managerSession.request('ar.vuforia.objectTrackerLoadDataSet', { id });
+        });
     }
 
     /**
      * Unload a dataset from memory (deactivating it if necessary)
      */
     public unloadDataSet(id: VuforiaDataSetId) : Promise<void> {
-        return this.managerSession.request('ar.vuforia.objectTrackerUnloadDataSet', { id });
+        return this.managerSession.whenConnected().then(()=>{
+            if (this.managerSession.version[0] == 0) {
+                return this.deactivateDataSet(id);
+            }
+            return this.managerSession.request('ar.vuforia.objectTrackerUnloadDataSet', { id });
+        });
     }
 
     /**
-     * Load (if necesasry) and activate a dataset to enable tracking of the contained trackables
+     * Load (if necessary) and activate a dataset to enable tracking of the contained trackables
      */
     public activateDataSet(id: VuforiaDataSetId|DeprecatedVuforiaDataSet): Promise<void> {
         id = (id instanceof DeprecatedVuforiaDataSet) ? id.id : id; // backwards compatability
