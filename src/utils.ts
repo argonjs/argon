@@ -12,8 +12,14 @@ import {
     Quaternion,
     Cartesian3,
     ReferenceFrame,
-    Matrix4
+    Matrix4,
+    Cartographic,
+    sampleTerrain
 } from './cesium/cesium-imports'
+
+import {
+    defaultTerrainProvider
+} from './cesium/cesium-extensions'
 
 export * from './utils/command-queue';
 export * from './utils/event';
@@ -392,4 +398,14 @@ export function deprecated(alternative?: string) : MethodDecorator {
     };
 
     return decorator;
+}
+
+var cartographic_array : Cartographic[] = [];
+export function getTerrainHeight(cartographic : Cartographic) {
+    cartographic_array[0] = cartographic;
+    return sampleTerrain(defaultTerrainProvider, 15, cartographic_array).then<Promise<Cartographic>>(_valueAtFirstIndex);
+}
+
+function _valueAtFirstIndex(array) {
+    return array[0];
 }

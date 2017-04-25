@@ -8,6 +8,10 @@ import {
     JulianDate
 } from './cesium-imports'
 
+import {
+    MapzenTerrariumTerrainProvider
+} from './MapzenTerrariumTerrainProvider'
+
 declare module 'cesium' {
     interface SampledProperty {
         maxNumSamples: number;
@@ -95,3 +99,9 @@ SampledPositionProperty.prototype.addSamplesPackedArray = after(
         removeOldSamples(this._property, this.maxNumSamples)
     }
 )
+
+export const defaultTerrainProvider = new MapzenTerrariumTerrainProvider({
+    url : 'https://s3.amazonaws.com/elevation-tiles-prod/terrarium/',
+    requestWaterMask : true,
+    requestVertexNormals : true
+});
