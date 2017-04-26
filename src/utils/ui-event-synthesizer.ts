@@ -103,6 +103,9 @@ function getEventSynthesizier() {
         delete capturedPointerTargets[e.pointerId];
     })
 
+    Element.prototype.setPointerCapture = function (id) { capturedPointerTargets[id] = this; };
+    Element.prototype.releasePointerCapture = function (id) { capturedPointerTargets[id] = null; };
+
     return eventSynthesizerFunction = (uievent:MouseEvent&WheelEvent&TouchEvent&PointerEvent)=>{
         (<any>uievent).view = window;
 
