@@ -16371,7 +16371,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
 
             _export('cancelAnimationFrame', cAF = typeof window !== 'undefined' ? window.cancelAnimationFrame.bind(window) : clearTimeout);
 
-            _export('version', version = "1.2.0-3");
+            _export('version', version = "1.2.0-4");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -18210,6 +18210,26 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 ViewService.prototype.getViewport = function () {
                     return this.viewport;
                 };
+                ViewService.prototype.setLayers = function (layers) {
+                    if (this._layers) {
+                        for (var _i = 0, _a = this._layers; _i < _a.length; _i++) {
+                            var l = _a[_i];
+                            this.element.removeChild(l.source);
+                        }
+                    }
+                    this._layers = layers;
+                    for (var _b = 0, layers_1 = layers; _b < layers_1.length; _b++) {
+                        var l = layers_1[_b];
+                        this.element.appendChild(l.source);
+                    }
+                };
+                Object.defineProperty(ViewService.prototype, "layers", {
+                    get: function () {
+                        return this._layers;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 Object.defineProperty(ViewService.prototype, "subviews", {
                     get: function () {
                         return this._subviews;
@@ -18299,11 +18319,21 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                         this._viewport = Viewport.clone(viewport, this._viewport);
                         if (this.element && !this.sessionService.isRealityManager && this.autoLayoutImmersiveMode && this.viewportMode === ViewportMode.IMMERSIVE) {
                             requestAnimationFrame(function () {
-                                _this.element.style.position = 'fixed';
-                                _this.element.style.left = viewport.x + 'px';
-                                _this.element.style.bottom = viewport.y + 'px';
-                                _this.element.style.width = viewport.width + 'px';
-                                _this.element.style.height = viewport.height + 'px';
+                                var elementStyle = _this.element.style;
+                                elementStyle.position = 'fixed';
+                                elementStyle.left = viewport.x + 'px';
+                                elementStyle.bottom = viewport.y + 'px';
+                                elementStyle.width = viewport.width + 'px';
+                                elementStyle.height = viewport.height + 'px';
+                                for (var _i = 0, _a = _this._layers; _i < _a.length; _i++) {
+                                    var layer = _a[_i];
+                                    var layerStyle = layer.source.style;
+                                    layerStyle.position = 'absolute';
+                                    layerStyle.left = viewport.x + 'px';
+                                    layerStyle.bottom = viewport.y + 'px';
+                                    layerStyle.width = viewport.width + 'px';
+                                    layerStyle.height = viewport.height + 'px';
+                                }
                             });
                         }
                         this.viewportChangeEvent.raiseEvent(viewport);
@@ -18864,8 +18894,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 DeviceService.prototype._webvrRequestPresentHMD = function () {
                     if (this._vrDisplay) {
                         var element = this.viewService.element;
-                        var layers = [];
-                        layers[0] = { source: element.querySelector('canvas') || element.lastElementChild };
+                        var layers = this.viewService.layers || [{ source: element.querySelector('canvas') || element.lastElementChild }];
                         return this._vrDisplay.requestPresent(layers).catch(function (e) {
                             throw e;
                         });

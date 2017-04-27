@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.2.0-4"></a>
+# [1.2.0-4](https://github.com/argonjs/argon/compare/v1.2.0-3...v1.2.0-4) (2017-04-27)
+
+
+### Bug Fixes
+
+* **DeviceService:** ensure that DeviceServiceProvider is aware of changes to presenting state ([189c630](https://github.com/argonjs/argon/commit/189c630))
+* **DeviceService:** Ensure that requestPresent is called in reality layers when webvr polypill is used ([87a4b81](https://github.com/argonjs/argon/commit/87a4b81))
+* **VuforiaService:** Fix backwards compatibility ([771b114](https://github.com/argonjs/argon/commit/771b114)), closes [#63](https://github.com/argonjs/argon/issues/63)
+
+
+### Features
+
+* **ViewService:** Added `setLayers` for managing layer elements ([52ead40](https://github.com/argonjs/argon/commit/52ead40))
+
+
+
 <a name="1.2.0-3"></a>
 # [1.2.0-3](https://github.com/argonjs/argon/compare/v1.2.0-2...v1.2.0-3) (2017-04-23)
 

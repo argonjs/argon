@@ -80,7 +80,7 @@ export declare class VuforiaObjectTracker extends VuforiaTracker {
      */
     unloadDataSet(id: VuforiaDataSetId): Promise<void>;
     /**
-     * Load (if necesasry) and activate a dataset to enable tracking of the contained trackables
+     * Load (if necessary) and activate a dataset to enable tracking of the contained trackables
      */
     activateDataSet(id: VuforiaDataSetId | DeprecatedVuforiaDataSet): Promise<void>;
     /**

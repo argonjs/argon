@@ -82,6 +82,13 @@ export declare class ViewService {
      */
     element: HTMLElement;
     constructor(sessionService: SessionService, contextService: ContextService, focusService: FocusService, elementOrSelector?: Element | string | null);
+    private _layers;
+    setLayers(layers: {
+        source: HTMLElement;
+    }[]): void;
+    readonly layers: {
+        source: HTMLElement;
+    }[];
     private _currentViewportJSON;
     private _subviews;
     private _subviewPose;
