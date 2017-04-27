@@ -423,7 +423,7 @@ export class DeviceService {
         if (!vrDisplay) return;
         
         const frameState = this.frameState;
-        frameState.strict = true;
+        frameState.strict = vrDisplay.displayName.match(/polyfill/g) ? false : true;
        
         var leftEye = vrDisplay.getEyeParameters("left");
         var rightEye = vrDisplay.getEyeParameters("right");
@@ -815,7 +815,7 @@ export class DeviceService {
         if (typeof window !=='undefined' && window.addEventListener) {
 
             this.viewService.viewportModeChangeEvent.addEventListener((mode)=>{
-                if (mode === ViewportMode.PAGE && this._vrDisplay && this._vrDisplay.displayName.match(/Cardboard/g)) 
+                if (mode === ViewportMode.PAGE && this._vrDisplay && this._vrDisplay.displayName.match(/polyfill/g)) 
                     this.exitPresentHMD();
             });
 
@@ -828,7 +828,7 @@ export class DeviceService {
                 if (display) {
                     if (display.isPresenting) {
                         this._vrDisplay = display;
-                        if (display.displayName.match(/Cardboard/g)) {
+                        if (display.displayName.match(/polyfill/g)) {
                             currentCanvas = display.getLayers()[0].source;
                             if (currentCanvas) currentCanvas.classList.add('argon-interactive');
                             previousPresentationMode = viewService.viewportMode;
@@ -837,7 +837,7 @@ export class DeviceService {
                         this._stableState.isPresentingHMD = true;
                         this.requestPresentHMD(); // seems redundant, but makes sure the manager knows
                     } else {
-                        if (currentCanvas && display.displayName.match(/Cardboard/g)) {
+                        if (currentCanvas && display.displayName.match(/polyfill/g)) {
                             currentCanvas.classList.remove('argon-interactive');
                             currentCanvas = undefined;
                             viewService.desiredViewportMode = previousPresentationMode;
