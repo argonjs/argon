@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.2.0-6"></a>
+# [1.2.0-6](https://github.com/argonjs/argon/compare/v1.2.0-5...v1.2.0-6) (2017-04-27)
+
+
+### Bug Fixes
+
+* **DeviceService:** Enable non-strict frame state for webvr polyfill ([6deb1d4](https://github.com/argonjs/argon/commit/6deb1d4))
+* **DeviceService:** Fixed isPresentingHMD state thrashing ([3c5763f](https://github.com/argonjs/argon/commit/3c5763f))
+* **DeviceService:** Keep track of isPresentingHMD in stable state rather than frame state ([84661e8](https://github.com/argonjs/argon/commit/84661e8))
+* **ViewService:** Workaround for webvr polyfill behavior when using multiple layers ([7044f57](https://github.com/argonjs/argon/commit/7044f57))
+
+
+
 <a name="1.2.0-5"></a>
 # [1.2.0-5](https://github.com/argonjs/argon/compare/v1.2.0-4...v1.2.0-5) (2017-04-27)
 
