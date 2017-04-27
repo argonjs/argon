@@ -341,6 +341,19 @@ export class ViewService {
     private _updateViewport(viewport:CanvasViewport) {
         const viewportJSON = JSON.stringify(viewport);
 
+        if (this.layers && this.autoStyleLayerElements) {
+            requestAnimationFrame(() => {
+                for (const layer of this._layers) {
+                    const layerStyle = layer.source.style;
+                    layerStyle.position = 'absolute';
+                    layerStyle.left = viewport.x + 'px';
+                    layerStyle.bottom = viewport.y + 'px';
+                    layerStyle.width = viewport.width + 'px';
+                    layerStyle.height = viewport.height + 'px';
+                }
+            })
+        }
+
         if (!this._currentViewportJSON || this._currentViewportJSON !== viewportJSON) {
             this._currentViewportJSON = viewportJSON;
 
@@ -357,19 +370,6 @@ export class ViewService {
                     elementStyle.bottom = viewport.y + 'px';
                     elementStyle.width = viewport.width + 'px';
                     elementStyle.height = viewport.height + 'px';
-                    for (const layer of this._layers) {
-                        const layerStyle = layer.source.style;
-                        layerStyle.position = 'absolute';
-                        layerStyle.left = viewport.x + 'px';
-                        layerStyle.bottom = viewport.y + 'px';
-                        layerStyle.width = viewport.width + 'px';
-                        layerStyle.height = viewport.height + 'px';
-                    }
-                })
-            }
-
-            if (this.layers && this.autoStyleLayerElements) {
-                requestAnimationFrame(() => {
                     for (const layer of this._layers) {
                         const layerStyle = layer.source.style;
                         layerStyle.position = 'absolute';
