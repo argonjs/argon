@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.2.0-5"></a>
+# [1.2.0-5](https://github.com/argonjs/argon/compare/v1.2.0-4...v1.2.0-5) (2017-04-27)
+
+
+### Bug Fixes
+
+* **ViewService:** apply zIndex to layer styles ([4f61ed5](https://github.com/argonjs/argon/commit/4f61ed5))
+* **ViewService:** Fix layer styles in _updateViewport ([336b5ed](https://github.com/argonjs/argon/commit/336b5ed))
+* **ViewService:** move zIndex layer updates into _updateViewport ([bc842b2](https://github.com/argonjs/argon/commit/bc842b2))
+* **VIewService:** Always set layer styles in _updateViewport ([af853c0](https://github.com/argonjs/argon/commit/af853c0))
+
+
+
 <a name="1.2.0-4"></a>
 # [1.2.0-4](https://github.com/argonjs/argon/compare/v1.2.0-3...v1.2.0-4) (2017-04-27)
 
