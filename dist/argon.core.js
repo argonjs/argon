@@ -19003,7 +19003,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 };
                 Object.defineProperty(DeviceService.prototype, "isPresentingHMD", {
                     get: function () {
-                        return this.frameState.isPresentingHMD || !!this._vrDisplay && this._vrDisplay.isPresenting;
+                        return this._stableState.isPresentingHMD;
                     },
                     enumerable: true,
                     configurable: true
@@ -19011,13 +19011,13 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 DeviceService.prototype.requestPresentHMD = function () {
                     var _this = this;
                     return this.sessionService.manager.request('ar.device.requestPresentHMD').then(function () {
-                        _this.frameState.isPresentingHMD = true;
+                        _this._stableState.isPresentingHMD = true;
                     });
                 };
                 DeviceService.prototype.exitPresentHMD = function () {
                     var _this = this;
                     return this.sessionService.manager.request('ar.device.exitPresentHMD').then(function () {
-                        _this.frameState.isPresentingHMD = false;
+                        _this._stableState.isPresentingHMD = false;
                     });
                 };
                 DeviceService.prototype._updateUserDefault = function () {
@@ -19113,14 +19113,16 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                                         previousPresentationMode_1 = viewService.viewportMode;
                                         viewService.desiredViewportMode = ViewportMode.IMMERSIVE;
                                     }
-                                    _this.requestPresentHMD(); // seems redundant, but makes the manager knows
+                                    _this._stableState.isPresentingHMD = true;
+                                    _this.requestPresentHMD(); // seems redundant, but makes sure the manager knows
                                 } else {
                                     if (currentCanvas_1 && display.displayName.match(/Cardboard/g)) {
                                         currentCanvas_1.classList.remove('argon-interactive');
                                         currentCanvas_1 = undefined;
                                         viewService.desiredViewportMode = previousPresentationMode_1;
                                     }
-                                    _this.exitPresentHMD(); // seems redundant, but makes the manager knows
+                                    _this._stableState.isPresentingHMD = false;
+                                    _this.exitPresentHMD(); // seems redundant, but makes sure the manager knows
                                 }
                             }
                         };
@@ -19217,7 +19219,6 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     stableState.geolocationDesired = this.contextServiceProvider.geolocationDesired;
                     stableState.geolocationOptions = this.contextServiceProvider.desiredGeolocationOptions;
                     stableState.suggestedUserHeight = this.suggestedUserHeight;
-                    stableState.isPresentingHMD = this.deviceService.isPresentingHMD;
                     this.onUpdateStableState(this.deviceService._stableState);
                     // send device state to each subscribed session 
                     var time = JulianDate.now();

@@ -668,18 +668,18 @@ export class DeviceService {
     }
 
     get isPresentingHMD() : boolean {
-        return this.frameState.isPresentingHMD || !!this._vrDisplay && this._vrDisplay.isPresenting;
+        return this._stableState.isPresentingHMD;
     }
 
     requestPresentHMD() : Promise<void> {
         return this.sessionService.manager.request('ar.device.requestPresentHMD').then(()=>{
-            this.frameState.isPresentingHMD = true; 
+            this._stableState.isPresentingHMD = true; 
         });
     }
 
     exitPresentHMD() : Promise<void> {
         return this.sessionService.manager.request('ar.device.exitPresentHMD').then(()=>{
-            this.frameState.isPresentingHMD = false;
+            this._stableState.isPresentingHMD = false;
         });
     }
 
@@ -830,14 +830,16 @@ export class DeviceService {
                             previousPresentationMode = viewService.viewportMode;
                             viewService.desiredViewportMode = ViewportMode.IMMERSIVE;
                         }
-                        this.requestPresentHMD(); // seems redundant, but makes the manager knows
+                        this._stableState.isPresentingHMD = true;
+                        this.requestPresentHMD(); // seems redundant, but makes sure the manager knows
                     } else {
                         if (currentCanvas && display.displayName.match(/Cardboard/g)) {
                             currentCanvas.classList.remove('argon-interactive');
                             currentCanvas = undefined;
                             viewService.desiredViewportMode = previousPresentationMode;
                         }
-                        this.exitPresentHMD(); // seems redundant, but makes the manager knows
+                        this._stableState.isPresentingHMD = false;
+                        this.exitPresentHMD(); // seems redundant, but makes sure the manager knows
                     }
                 }
             }
@@ -942,7 +944,6 @@ export class DeviceServiceProvider {
         stableState.geolocationDesired = this.contextServiceProvider.geolocationDesired;
         stableState.geolocationOptions = this.contextServiceProvider.desiredGeolocationOptions;
         stableState.suggestedUserHeight = this.suggestedUserHeight;
-        stableState.isPresentingHMD = this.deviceService.isPresentingHMD;
 
         this.onUpdateStableState(this.deviceService._stableState);
 
