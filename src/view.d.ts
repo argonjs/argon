@@ -74,6 +74,10 @@ export declare class ViewService {
      */
     autoLayoutImmersiveMode: boolean;
     /**
+     * Automatically style layer elements
+     */
+    autoStyleLayerElements: boolean;
+    /**
      * Automatically publish the viewport of the element during PresentationMode.EMBEDDED
      */
     autoPublishEmbeddedMode: boolean;
