@@ -18079,6 +18079,10 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                      */
                     this.autoLayoutImmersiveMode = true;
                     /**
+                     * Automatically style layer elements
+                     */
+                    this.autoStyleLayerElements = true;
+                    /**
                      * Automatically publish the viewport of the element during PresentationMode.EMBEDDED
                      */
                     this.autoPublishEmbeddedMode = true;
@@ -18325,6 +18329,19 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                                 elementStyle.bottom = viewport.y + 'px';
                                 elementStyle.width = viewport.width + 'px';
                                 elementStyle.height = viewport.height + 'px';
+                                for (var _i = 0, _a = _this._layers; _i < _a.length; _i++) {
+                                    var layer = _a[_i];
+                                    var layerStyle = layer.source.style;
+                                    layerStyle.position = 'absolute';
+                                    layerStyle.left = viewport.x + 'px';
+                                    layerStyle.bottom = viewport.y + 'px';
+                                    layerStyle.width = viewport.width + 'px';
+                                    layerStyle.height = viewport.height + 'px';
+                                }
+                            });
+                        }
+                        if (this.layers && this.autoStyleLayerElements) {
+                            requestAnimationFrame(function () {
                                 for (var _i = 0, _a = _this._layers; _i < _a.length; _i++) {
                                     var layer = _a[_i];
                                     var layerStyle = layer.source.style;
