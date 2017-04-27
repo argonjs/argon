@@ -9,7 +9,7 @@ import {
     Event,
     isIOS,
     createEventForwarder,
-    synthesizeEvent,
+    getEventSynthesizier,
     decomposePerspectiveProjectionMatrix,
     deprecated
 } from './utils'
@@ -175,7 +175,9 @@ export class ViewService {
                 }
             });
 
-            this.sessionService.manager.on['ar.view.uievent'] = synthesizeEvent!;
+            if (this.sessionService.isRealityViewer) {
+                this.sessionService.manager.on['ar.view.uievent'] = getEventSynthesizier()!;
+            }
 
             if (!this.sessionService.isRealityViewer) {
                 createEventForwarder(this, (event)=>{

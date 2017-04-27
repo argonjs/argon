@@ -4,7 +4,7 @@ import { Entity, JulianDate, PerspectiveFrustum, PerspectiveOffCenterFrustum, Qu
 export * from './utils/command-queue';
 export * from './utils/event';
 export * from './utils/message-channel';
-export { default as synthesizeEvent } from './utils/ui-event-synthesizer';
+export { default as getEventSynthesizier } from './utils/ui-event-synthesizer';
 export { default as createEventForwarder } from './utils/ui-event-forwarder';
 /**
  * Get array of ancestor reference frames of a Cesium Entity, ordered from
