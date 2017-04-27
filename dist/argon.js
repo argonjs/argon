@@ -24325,20 +24325,20 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 };
                 DeviceService.prototype._updateDefault = function () {
                     this._updateUserDefault();
-                    var deviceState = this._stableState;
+                    var stableState = this._stableState;
                     var frameState = this.frameState;
-                    frameState.suggestedUserHeight = deviceState.suggestedUserHeight;
-                    frameState.isPresentingHMD = deviceState.isPresentingHMD;
-                    frameState.geolocationDesired = deviceState.geolocationDesired;
-                    frameState.geolocationOptions = deviceState.geolocationOptions;
-                    frameState.strict = deviceState.strict;
+                    frameState.suggestedUserHeight = stableState.suggestedUserHeight;
+                    frameState.isPresentingHMD = stableState.isPresentingHMD;
+                    frameState.geolocationDesired = stableState.geolocationDesired;
+                    frameState.geolocationOptions = stableState.geolocationOptions;
+                    frameState.strict = stableState.strict;
                     var viewport = frameState.viewport;
-                    if (deviceState.viewport) {
-                        CanvasViewport.clone(deviceState.viewport, viewport);
+                    if (stableState.viewport) {
+                        CanvasViewport.clone(stableState.viewport, viewport);
                     }
                     var subviews = frameState.subviews;
-                    if (deviceState.subviews) {
-                        SerializedSubviewList.clone(deviceState.subviews, subviews);
+                    if (stableState.subviews) {
+                        SerializedSubviewList.clone(stableState.subviews, subviews);
                     } else {
                         subviews.length = 1;
                         var subview = subviews[0] || {};
@@ -24644,13 +24644,14 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                                         previousPresentationMode_1 = viewService.viewportMode;
                                         viewService.desiredViewportMode = ViewportMode.IMMERSIVE;
                                     }
+                                    _this.requestPresentHMD(); // seems redundant, but makes the manager knows
                                 } else {
-                                    _this._vrDisplay = undefined;
                                     if (currentCanvas_1 && display.displayName.match(/Cardboard/g)) {
                                         currentCanvas_1.classList.remove('argon-interactive');
                                         currentCanvas_1 = undefined;
                                         viewService.desiredViewportMode = previousPresentationMode_1;
                                     }
+                                    _this.exitPresentHMD(); // seems redundant, but makes the manager knows
                                 }
                             }
                         };
@@ -24705,13 +24706,13 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                         session.on['ar.device.requestPresentHMD'] = function () {
                             return _this.handleRequestPresentHMD(session).then(function () {
                                 _this.deviceService._stableState.isPresentingHMD = true;
-                                _this.publishDeviceState();
+                                _this.publishStableState();
                             });
                         };
                         session.on['ar.device.exitPresentHMD'] = function () {
                             return _this.handleExitPresentHMD(session).then(function () {
                                 _this.deviceService._stableState.isPresentingHMD = false;
-                                _this.publishDeviceState();
+                                _this.publishStableState();
                             });
                         };
                     });
@@ -24721,13 +24722,19 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     });
                     if (typeof window !== 'undefined' && window.addEventListener) {
                         var orientationChangeListener_1 = function () {
-                            _this.publishDeviceState();
+                            _this.publishStableState();
                         };
                         window.addEventListener('orientationchange', orientationChangeListener_1);
                         sessionService.manager.closeEvent.addEventListener(function () {
                             window.removeEventListener('orientationchange', orientationChangeListener_1);
                         });
                     }
+                    this.viewService.viewportChangeEvent.addEventListener(function () {
+                        _this.publishStableState();
+                    });
+                    this.viewService.viewportModeChangeEvent.addEventListener(function () {
+                        _this.publishStableState();
+                    });
                 }
                 DeviceServiceProvider.prototype.handleRequestPresentHMD = function (session) {
                     return this.deviceService._webvrRequestPresentHMD();
@@ -24735,23 +24742,23 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 DeviceServiceProvider.prototype.handleExitPresentHMD = function (session) {
                     return this.deviceService._webvrExitPresentHMD();
                 };
-                DeviceServiceProvider.prototype.publishDeviceState = function () {
+                DeviceServiceProvider.prototype.publishStableState = function () {
                     var _this = this;
-                    var deviceState = this.deviceService._stableState;
-                    deviceState.geolocationDesired = this.contextServiceProvider.geolocationDesired;
-                    deviceState.geolocationOptions = this.contextServiceProvider.desiredGeolocationOptions;
-                    deviceState.suggestedUserHeight = this.suggestedUserHeight;
-                    this.onUpdateDeviceState(this.deviceService._stableState);
+                    var stableState = this.deviceService._stableState;
+                    stableState.geolocationDesired = this.contextServiceProvider.geolocationDesired;
+                    stableState.geolocationOptions = this.contextServiceProvider.desiredGeolocationOptions;
+                    stableState.suggestedUserHeight = this.suggestedUserHeight;
+                    this.onUpdateStableState(this.deviceService._stableState);
                     // send device state to each subscribed session 
                     var time = JulianDate.now();
                     this._subscribers.forEach(function (s) {
                         if (s.version[0] > 0) {
-                            for (var k in deviceState.entities) {
-                                delete deviceState.entities[k];
+                            for (var k in stableState.entities) {
+                                delete stableState.entities[k];
                             }
 
-                            _this.contextServiceProvider.fillEntityStateMapForSession(s, time, deviceState.entities);
-                            s.send('ar.device.state', deviceState);
+                            _this.contextServiceProvider.fillEntityStateMapForSession(s, time, stableState.entities);
+                            s.send('ar.device.state', stableState);
                         }
                     });
                 };
@@ -24762,10 +24769,10 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     enumerable: true,
                     configurable: true
                 });
-                DeviceServiceProvider.prototype.onUpdateDeviceState = function (deviceState) {
-                    deviceState.viewport = undefined;
-                    deviceState.subviews = undefined;
-                    deviceState.strict = false;
+                DeviceServiceProvider.prototype.onUpdateStableState = function (stableState) {
+                    stableState.viewport = undefined;
+                    stableState.subviews = undefined;
+                    stableState.strict = false;
                 };
                 DeviceServiceProvider.prototype._checkDeviceGeolocationSubscribers = function () {
                     var subscribers = this.contextServiceProvider.subscribersByEntityId.get(this.deviceService.stage.id);
@@ -24780,7 +24787,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                         this.onStopGeolocationUpdates();
                         this._currentGeolocationOptions = undefined;
                     }
-                    this.publishDeviceState();
+                    this.publishStableState();
                 };
                 DeviceServiceProvider.prototype._handleSetGeolocationOptions = function (session, options) {
                     var _this = this;
@@ -24797,7 +24804,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     if (this._targetGeolocationOptions.enableHighAccuracy !== reducedOptions.enableHighAccuracy) {
                         this._targetGeolocationOptions = reducedOptions;
                     }
-                    this.publishDeviceState();
+                    this.publishStableState();
                 };
                 DeviceServiceProvider.prototype.configureStage = function (longitude, latitude, altitude, geoHorizontalAccuracy, geoVerticalAccuracy) {
                     var stage = this.deviceService.stage;
