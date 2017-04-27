@@ -668,7 +668,7 @@ export class DeviceService {
     }
 
     get isPresentingHMD() : boolean {
-        return this.frameState.isPresentingHMD;
+        return this.frameState.isPresentingHMD || !!this._vrDisplay && this._vrDisplay.isPresenting;
     }
 
     requestPresentHMD() : Promise<void> {
@@ -942,6 +942,7 @@ export class DeviceServiceProvider {
         stableState.geolocationDesired = this.contextServiceProvider.geolocationDesired;
         stableState.geolocationOptions = this.contextServiceProvider.desiredGeolocationOptions;
         stableState.suggestedUserHeight = this.suggestedUserHeight;
+        stableState.isPresentingHMD = this.deviceService.isPresentingHMD;
 
         this.onUpdateStableState(this.deviceService._stableState);
 
