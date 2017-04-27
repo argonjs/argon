@@ -248,4 +248,4 @@ function getEventSynthesizier() {
 }
 
 export default (typeof document !== 'undefined' && document.createElement) ? 
-    getEventSynthesizier() : undefined;
+    getEventSynthesizier : ()=>{ return undefined; };
