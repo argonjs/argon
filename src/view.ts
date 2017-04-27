@@ -104,6 +104,11 @@ export class ViewService {
     public autoLayoutImmersiveMode = true;
 
     /**
+     * Automatically style layer elements
+     */
+    public autoStyleLayerElements = true;
+
+    /**
      * Automatically publish the viewport of the element during PresentationMode.EMBEDDED
      */
     public autoPublishEmbeddedMode = true;
@@ -349,6 +354,19 @@ export class ViewService {
                     elementStyle.bottom = viewport.y + 'px';
                     elementStyle.width = viewport.width + 'px';
                     elementStyle.height = viewport.height + 'px';
+                    for (const layer of this._layers) {
+                        const layerStyle = layer.source.style;
+                        layerStyle.position = 'absolute';
+                        layerStyle.left = viewport.x + 'px';
+                        layerStyle.bottom = viewport.y + 'px';
+                        layerStyle.width = viewport.width + 'px';
+                        layerStyle.height = viewport.height + 'px';
+                    }
+                })
+            }
+
+            if (this.layers && this.autoStyleLayerElements) {
+                requestAnimationFrame(() => {
                     for (const layer of this._layers) {
                         const layerStyle = layer.source.style;
                         layerStyle.position = 'absolute';
