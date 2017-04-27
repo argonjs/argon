@@ -370,14 +370,6 @@ export class ViewService {
                     elementStyle.bottom = viewport.y + 'px';
                     elementStyle.width = viewport.width + 'px';
                     elementStyle.height = viewport.height + 'px';
-                    for (const layer of this._layers) {
-                        const layerStyle = layer.source.style;
-                        layerStyle.position = 'absolute';
-                        layerStyle.left = viewport.x + 'px';
-                        layerStyle.bottom = viewport.y + 'px';
-                        layerStyle.width = viewport.width + 'px';
-                        layerStyle.height = viewport.height + 'px';
-                    }
                 })
             }
 
