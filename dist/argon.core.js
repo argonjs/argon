@@ -19003,7 +19003,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 };
                 Object.defineProperty(DeviceService.prototype, "isPresentingHMD", {
                     get: function () {
-                        return this.frameState.isPresentingHMD;
+                        return this.frameState.isPresentingHMD || !!this._vrDisplay && this._vrDisplay.isPresenting;
                     },
                     enumerable: true,
                     configurable: true
@@ -19217,6 +19217,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     stableState.geolocationDesired = this.contextServiceProvider.geolocationDesired;
                     stableState.geolocationOptions = this.contextServiceProvider.desiredGeolocationOptions;
                     stableState.suggestedUserHeight = this.suggestedUserHeight;
+                    stableState.isPresentingHMD = this.deviceService.isPresentingHMD;
                     this.onUpdateStableState(this.deviceService._stableState);
                     // send device state to each subscribed session 
                     var time = JulianDate.now();
