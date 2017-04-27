@@ -563,8 +563,9 @@ export class DeviceService {
     public _webvrRequestPresentHMD() : Promise<void> {
         if (this._vrDisplay) {
             const element = this.viewService.element;
-            const layers:VRLayer&{}[] = [];
-            layers[0] = {source:element.querySelector('canvas') || <HTMLCanvasElement>element.lastElementChild};
+            const layers:VRLayer&{}[] = 
+                this.viewService.layers ||
+                [{source:element.querySelector('canvas') || <HTMLCanvasElement>element.lastElementChild}];
             return this._vrDisplay.requestPresent(layers).catch((e)=>{
                 throw e;
             });

@@ -207,6 +207,24 @@ export class ViewService {
         });
     }
 
+    private _layers:{source:HTMLElement}[]
+
+    public setLayers(layers:{source:HTMLElement}[]) {
+        if (this._layers) { 
+            for (const l of this._layers) {
+                this.element.removeChild(l.source);
+            }
+        }
+        this._layers = layers;
+        for (const l of layers) {
+            this.element.appendChild(l.source);
+        }
+    }
+
+    public get layers() {
+        return this._layers;
+    }
+
     private _currentViewportJSON: string;
 
     private _subviews: Subview[] = [];
@@ -325,11 +343,20 @@ export class ViewService {
                 this.autoLayoutImmersiveMode && 
                 this.viewportMode === ViewportMode.IMMERSIVE) {
                 requestAnimationFrame(() => {
-                    this.element.style.position = 'fixed';
-                    this.element.style.left = viewport.x + 'px';
-                    this.element.style.bottom = viewport.y + 'px';
-                    this.element.style.width = viewport.width + 'px';
-                    this.element.style.height = viewport.height + 'px';
+                    const elementStyle = this.element.style;
+                    elementStyle.position = 'fixed';
+                    elementStyle.left = viewport.x + 'px';
+                    elementStyle.bottom = viewport.y + 'px';
+                    elementStyle.width = viewport.width + 'px';
+                    elementStyle.height = viewport.height + 'px';
+                    for (const layer of this._layers) {
+                        const layerStyle = layer.source.style;
+                        layerStyle.position = 'absolute';
+                        layerStyle.left = viewport.x + 'px';
+                        layerStyle.bottom = viewport.y + 'px';
+                        layerStyle.width = viewport.width + 'px';
+                        layerStyle.height = viewport.height + 'px';
+                    }
                 })
             }
 
