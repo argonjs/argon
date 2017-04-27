@@ -16371,7 +16371,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
 
             _export('cancelAnimationFrame', cAF = typeof window !== 'undefined' ? window.cancelAnimationFrame.bind(window) : clearTimeout);
 
-            _export('version', version = "1.2.0-5");
+            _export('version', version = "1.2.0-6");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -18346,15 +18346,6 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                                 elementStyle.bottom = viewport.y + 'px';
                                 elementStyle.width = viewport.width + 'px';
                                 elementStyle.height = viewport.height + 'px';
-                                for (var _i = 0, _a = _this._layers; _i < _a.length; _i++) {
-                                    var layer = _a[_i];
-                                    var layerStyle = layer.source.style;
-                                    layerStyle.position = 'absolute';
-                                    layerStyle.left = viewport.x + 'px';
-                                    layerStyle.bottom = viewport.y + 'px';
-                                    layerStyle.width = viewport.width + 'px';
-                                    layerStyle.height = viewport.height + 'px';
-                                }
                             });
                         }
                         this.viewportChangeEvent.raiseEvent(viewport);
@@ -18834,7 +18825,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     var vrDisplay = this._vrDisplay;
                     if (!vrDisplay) return;
                     var frameState = this.frameState;
-                    frameState.strict = true;
+                    frameState.strict = vrDisplay.displayName.match(/polyfill/g) ? false : true;
                     var leftEye = vrDisplay.getEyeParameters("left");
                     var rightEye = vrDisplay.getEyeParameters("right");
                     var viewport = frameState.viewport;
@@ -19100,7 +19091,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     var _this = this;
                     if (typeof window !== 'undefined' && window.addEventListener) {
                         this.viewService.viewportModeChangeEvent.addEventListener(function (mode) {
-                            if (mode === ViewportMode.PAGE && _this._vrDisplay && _this._vrDisplay.displayName.match(/Cardboard/g)) _this.exitPresentHMD();
+                            if (mode === ViewportMode.PAGE && _this._vrDisplay && _this._vrDisplay.displayName.match(/polyfill/g)) _this.exitPresentHMD();
                         });
                         var currentCanvas_1;
                         var previousPresentationMode_1;
@@ -19110,7 +19101,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                             if (display) {
                                 if (display.isPresenting) {
                                     _this._vrDisplay = display;
-                                    if (display.displayName.match(/Cardboard/g)) {
+                                    if (display.displayName.match(/polyfill/g)) {
                                         currentCanvas_1 = display.getLayers()[0].source;
                                         if (currentCanvas_1) currentCanvas_1.classList.add('argon-interactive');
                                         previousPresentationMode_1 = viewService.viewportMode;
@@ -19119,7 +19110,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                                     _this._stableState.isPresentingHMD = true;
                                     _this.requestPresentHMD(); // seems redundant, but makes sure the manager knows
                                 } else {
-                                    if (currentCanvas_1 && display.displayName.match(/Cardboard/g)) {
+                                    if (currentCanvas_1 && display.displayName.match(/polyfill/g)) {
                                         currentCanvas_1.classList.remove('argon-interactive');
                                         currentCanvas_1 = undefined;
                                         viewService.desiredViewportMode = previousPresentationMode_1;
