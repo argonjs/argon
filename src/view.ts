@@ -221,8 +221,11 @@ export class ViewService {
             }
         }
         this._layers = layers;
+        let zIndex = -layers.length;
         for (const l of layers) {
             this.element.appendChild(l.source);
+            l.source.style.zIndex = '' + zIndex;
+            zIndex++;
         }
     }
 

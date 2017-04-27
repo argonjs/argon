@@ -23802,9 +23802,12 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                         }
                     }
                     this._layers = layers;
+                    var zIndex = -layers.length;
                     for (var _b = 0, layers_1 = layers; _b < layers_1.length; _b++) {
                         var l = layers_1[_b];
                         this.element.appendChild(l.source);
+                        l.source.style.zIndex = '' + zIndex;
+                        zIndex++;
                     }
                 };
                 Object.defineProperty(ViewService.prototype, "layers", {
