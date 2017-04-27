@@ -212,7 +212,7 @@ export class ViewService {
         });
     }
 
-    private _layers:{source:HTMLElement}[]
+    private _layers:{source:HTMLElement}[] = [];
 
     public setLayers(layers:{source:HTMLElement}[]) {
         if (this._layers) { 
@@ -337,8 +337,8 @@ export class ViewService {
     // Updates the element, if necessary, and raise a view change event
     private _updateViewport(viewport:CanvasViewport) {
         const viewportJSON = JSON.stringify(viewport);
-
-        if (this.layers && this.autoStyleLayerElements) {
+        
+        if (this._layers.length && this.autoStyleLayerElements) {
             requestAnimationFrame(() => {
                 let zIndex = -this._layers.length;
                 for (const layer of this._layers) {

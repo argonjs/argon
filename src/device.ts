@@ -564,8 +564,12 @@ export class DeviceService {
         if (this._vrDisplay) {
             const element = this.viewService.element;
             const layers:VRLayer&{}[] = 
-                this.viewService.layers ||
-                [{source:element.querySelector('canvas') || <HTMLCanvasElement>element.lastElementChild}];
+                [{
+                    source:
+                        this.viewService.layers[0] && this.viewService.layers[0].source || 
+                        element.querySelector('canvas') || 
+                        <HTMLCanvasElement>element.lastElementChild
+                }];
             return this._vrDisplay.requestPresent(layers).catch((e)=>{
                 throw e;
             });

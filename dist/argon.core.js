@@ -18086,6 +18086,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                      * Automatically publish the viewport of the element during PresentationMode.EMBEDDED
                      */
                     this.autoPublishEmbeddedMode = true;
+                    this._layers = [];
                     this._subviews = [];
                     this._subviewPose = [];
                     this._subviewFrustum = [];
@@ -18318,7 +18319,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 ViewService.prototype._updateViewport = function (viewport) {
                     var _this = this;
                     var viewportJSON = JSON.stringify(viewport);
-                    if (this.layers && this.autoStyleLayerElements) {
+                    if (this._layers.length && this.autoStyleLayerElements) {
                         requestAnimationFrame(function () {
                             var zIndex = -_this._layers.length;
                             for (var _i = 0, _a = _this._layers; _i < _a.length; _i++) {
@@ -18914,7 +18915,9 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 DeviceService.prototype._webvrRequestPresentHMD = function () {
                     if (this._vrDisplay) {
                         var element = this.viewService.element;
-                        var layers = this.viewService.layers || [{ source: element.querySelector('canvas') || element.lastElementChild }];
+                        var layers = [{
+                            source: this.viewService.layers[0] && this.viewService.layers[0].source || element.querySelector('canvas') || element.lastElementChild
+                        }];
                         return this._vrDisplay.requestPresent(layers).catch(function (e) {
                             throw e;
                         });
