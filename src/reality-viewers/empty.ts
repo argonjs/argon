@@ -171,7 +171,7 @@ export class EmptyRealityViewer extends RealityViewer {
                 // provide fov controls
                 if (!frameState.strict) {                    
                     decomposePerspectiveProjectionMatrix(subviews[0].projectionMatrix, scratchFrustum);
-                    scratchFrustum.fov = this.viewService.subviews[0].frustum.fov;
+                    scratchFrustum.fov = this.viewService.subviews[0] && this.viewService.subviews[0].frustum.fov || CesiumMath.PI_OVER_THREE;
 
                     if (aggregator && aggregator.isMoving(CameraEventType.WHEEL)) {
                         const wheelMovement = aggregator.getMovement(CameraEventType.WHEEL);

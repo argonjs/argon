@@ -89,15 +89,11 @@ export abstract class Configuration {
     'supportsCustomProtocols'?: boolean;
 }
 
-/**
- * Viewport values are expressed using a right-handed coordinate system with the origin
- * at the bottom left corner.
- */
 export class Viewport {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
+    x: number = 0;
+    y: number = 0;
+    width: number = 0;
+    height: number = 0;
 
     static clone(viewport:Viewport, result:Viewport=<any>{}) {
         result.x = viewport.x;
@@ -116,26 +112,25 @@ export class Viewport {
     }
 }
 
-export class NormalizedViewport {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
+/**
+ * Viewport values are expressed using a right-handed coordinate system with the origin
+ * at the bottom left corner.
+ */
+export class CanvasViewport extends Viewport {
+    renderWidthScaleFactor: number = 1;
+    renderHeightScaleFactor: number = 1;
 
-    static clone(viewport:NormalizedViewport, result:NormalizedViewport=<any>{}) {
-        result.x = viewport.x;
-        result.y = viewport.y;
-        result.width = viewport.width;
-        result.height = viewport.height;
+    static clone(viewport:CanvasViewport, result:CanvasViewport=<any>{}) {
+        Viewport.clone(viewport, result);
+        result.renderWidthScaleFactor = viewport.renderWidthScaleFactor;
+        result.renderHeightScaleFactor = viewport.renderHeightScaleFactor;
         return result;
     }
 
-    static equals(viewportA?:NormalizedViewport, viewportB?:NormalizedViewport) {
-        return viewportA && viewportB && 
-        CesiumMath.equalsEpsilon(viewportA.x, viewportB.x, CesiumMath.EPSILON7) &&
-        CesiumMath.equalsEpsilon(viewportA.y, viewportB.y, CesiumMath.EPSILON7) &&
-        CesiumMath.equalsEpsilon(viewportA.width, viewportB.width, CesiumMath.EPSILON7) &&
-        CesiumMath.equalsEpsilon(viewportA.height, viewportB.height, CesiumMath.EPSILON7);
+    static equals(viewportA?:CanvasViewport, viewportB?:CanvasViewport) {
+        return viewportA && viewportB && Viewport.equals(viewportA, viewportB) &&
+        CesiumMath.equalsEpsilon(viewportA.renderWidthScaleFactor, viewportB.renderWidthScaleFactor, CesiumMath.EPSILON7) &&
+        CesiumMath.equalsEpsilon(viewportA.renderHeightScaleFactor, viewportB.renderHeightScaleFactor, CesiumMath.EPSILON7);
     }
 }
 
@@ -205,7 +200,7 @@ export interface SerializedSubview {
     /**
      * The viewport for this subview (relative to the primary viewport)
      */
-    viewport: NormalizedViewport
+    viewport: Viewport
     /**
      * The pose for this subview (relative to the primary pose)
      */
@@ -225,7 +220,7 @@ export interface ReadonlySerializedSubview {
     /**
      * The viewport for this subview (relative to the primary viewport)
      */
-    readonly viewport: Readonly<Viewport>
+    readonly viewport: Readonly<CanvasViewport>
     /**
      * The pose for this subview (relative to the primary pose)
      */
@@ -237,7 +232,7 @@ export namespace SerializedSubview {
         result = result || <SerializedSubview>{};
         result.type = subview.type;
         result.projectionMatrix = Matrix4.clone(subview.projectionMatrix, result.projectionMatrix);
-        result.viewport = NormalizedViewport.clone(subview.viewport, result.viewport)!;
+        result.viewport = Viewport.clone(subview.viewport, result.viewport)!;
         result.pose = subview.pose ? SerializedEntityState.clone(subview.pose, result.pose) : undefined;
         return result;
     }
@@ -248,7 +243,7 @@ export interface SerializedDeviceState {
     eyeCartographicPosition: Cartographic|undefined;
     eyeHorizontalAccuracy: number|undefined;
     eyeVerticalAccuracy: number|undefined;
-    viewport: Viewport;
+    viewport: CanvasViewport;
     subviews: SerializedSubview[];
     strictSubviews: boolean;
     isPresentingHMD: boolean;
@@ -328,7 +323,7 @@ export class SerializedSubviewList extends Array<SerializedSubview> {
  * Describes the pose of a reality view and how it is able to render
  */
 export interface DeprecatedEyeParameters {
-    viewport?: Viewport; // default: maximum
+    viewport?: CanvasViewport; // default: maximum
     pose?: SerializedEntityState;
     stereoMultiplier?: number; // default: 1
     fov?: number; // default: defer to manager
@@ -353,7 +348,7 @@ export interface DeprecatedPartialFrameState {
  */
 export interface ContextFrameState {
     time: JulianDate,
-    viewport: Viewport,
+    viewport: CanvasViewport,
     subviews: SerializedSubviewList,
     reality?: string,
     index?: number,

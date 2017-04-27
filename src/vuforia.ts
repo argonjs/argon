@@ -132,7 +132,7 @@ export class VuforiaObjectTracker extends VuforiaTracker {
      * Deprecated. Please use createDataSetFromURI instead.
      * @deprecated To be removed. 
      */
-    @deprecated('createDataSetFromURI')
+    @deprecated('createDataSetFromURL')
     public createDataSet(url?: string): Promise<DeprecatedVuforiaDataSet> {
         if (url && window.document) {
             url = resolveURL(url);
@@ -148,30 +148,46 @@ export class VuforiaObjectTracker extends VuforiaTracker {
      * Fetch a dataset from the provided url. 
      * If successfull, resolves to an id which represents the dataset. 
      */
-    public createDataSetFromURI(uri: string) : Promise<VuforiaDataSetId> {
-        return this.managerSession.request('ar.vuforia.objectTrackerCreateDataSet', { uri })
+    public createDataSetFromURL(url: string) : Promise<VuforiaDataSetId> {
+        if (url && window.document) {
+            url = resolveURL(url);
+        }
+        return this.managerSession.request('ar.vuforia.objectTrackerCreateDataSet', { url })
             .then((message: { id: VuforiaDataSetId }) => {
                 return message.id;
             });
     }
+
+    @deprecated('createDataSetFromURL')
+    public get createDataSetFromURI() { return this.createDataSetFromURL };
 
     /**
      * Load the dataset into memory, and return a promise which
      * resolves to the contained trackables
      */
     public loadDataSet(id: VuforiaDataSetId) : Promise<VuforiaTrackables> {
-        return this.managerSession.request('ar.vuforia.objectTrackerLoadDataSet', { id });
+        return this.managerSession.whenConnected().then(()=>{
+            if (this.managerSession.version[0] == 0) {
+                return <Promise<VuforiaTrackables>>this.managerSession.request('ar.vuforia.dataSetLoad', { id });
+            }
+            return <Promise<VuforiaTrackables>>this.managerSession.request('ar.vuforia.objectTrackerLoadDataSet', { id });
+        });
     }
 
     /**
      * Unload a dataset from memory (deactivating it if necessary)
      */
     public unloadDataSet(id: VuforiaDataSetId) : Promise<void> {
-        return this.managerSession.request('ar.vuforia.objectTrackerUnloadDataSet', { id });
+        return this.managerSession.whenConnected().then(()=>{
+            if (this.managerSession.version[0] == 0) {
+                return this.deactivateDataSet(id);
+            }
+            return this.managerSession.request('ar.vuforia.objectTrackerUnloadDataSet', { id });
+        });
     }
 
     /**
-     * Load (if necesasry) and activate a dataset to enable tracking of the contained trackables
+     * Load (if necessary) and activate a dataset to enable tracking of the contained trackables
      */
     public activateDataSet(id: VuforiaDataSetId|DeprecatedVuforiaDataSet): Promise<void> {
         id = (id instanceof DeprecatedVuforiaDataSet) ? id.id : id; // backwards compatability

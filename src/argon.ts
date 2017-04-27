@@ -93,6 +93,11 @@ export class ArgonSystem {
         if (this.container.hasResolver(ArgonSystemProvider)) 
             this._provider = this.container.get(ArgonSystemProvider);
 
+        this.context.frameStateEvent.addEventListener((frameState)=>{
+            this.device._processContextFrameState(frameState);
+            this.view._processContextFrameState(frameState);
+        });
+
         this.session.connect();
     }
 

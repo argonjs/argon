@@ -7,6 +7,7 @@ import {
 import {
     Role,
     ContextFrameState,
+    CanvasViewport,
     Viewport,
     SerializedSubviewList
 } from './common'
@@ -314,7 +315,7 @@ export class RealityServiceProvider {
                         if (viewerSession.version[0] === 0) { // backwards compatability
                             const deviceState = this.deviceService.frameState;
                             if (!deviceState) return;
-                            frame.viewport = Viewport.clone(deviceState.viewport, frame.viewport);
+                            frame.viewport = CanvasViewport.clone(deviceState.viewport, frame.viewport);
                             frame.subviews = SerializedSubviewList.clone(deviceState.subviews, frame.subviews);
                             const eye = frame['eye'];
                             const eyePose = eye.pose;

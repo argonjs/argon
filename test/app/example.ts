@@ -22,6 +22,8 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 app.view.element.appendChild(renderer.domElement);
+renderer.domElement.style.width = '100%';
+renderer.domElement.style.height = '100%';
 
 // app.context.setDefaultReferenceFrame(app.context.localOriginEastUpSouth);
 app.context.setDefaultReferenceFrame(app.context.localOriginEastNorthUp);
@@ -107,7 +109,7 @@ kDYZIbq+RqPwaZhg0hXpT5Fwz97y4Z5NyjAu44kiYAK2Du0Vyi1e0PMtW2ja4ZH0
 =d+oG
 -----END PGP MESSAGE-----`
 }).then((api)=>{
-    api.objectTracker.createDataSetFromURI('dataset/StonesAndChips.xml').then( (id)=>{
+    api.objectTracker.createDataSetFromURL('dataset/StonesAndChips.xml').then( (id)=>{
 
         api.objectTracker.loadDataSet(id).then((trackables)=>{
             
@@ -156,20 +158,27 @@ app.updateEvent.addEventListener(() => {
         userLocation.position.copy(userPose.position);
     }
 })
-    
+
 app.renderEvent.addEventListener(() => {
-    const viewport = app.view.viewport;
-    renderer.setSize(viewport.width, viewport.height);
+    // css renderer, if used:
+    // const viewport = app.view.viewport;
+    // cssRenderer.setSize(viewport.width, viewport.height);
+
+    renderer.setSize(app.view.renderWidth, app.view.renderHeight, false);
     
     for (let subview of app.view.subviews) {
         camera.position.copy(subview.pose.position);
         camera.quaternion.copy(subview.pose.orientation);
         camera.projectionMatrix.fromArray(subview.frustum.projectionMatrix);
-        let {x,y,width,height} = subview.viewport;
+
+        let {x,y,width,height} = subview.renderViewport;
         renderer.setViewport(x,y,width,height);
         renderer.setScissor(x,y,width,height);
         renderer.setScissorTest(true);
         renderer.render(scene, camera);
+
+        // let {x,y,width,height} = subview.viewport;
+        // cssRenderer.setViewport(x,y,width,height, subview.index)
     }
 })
 

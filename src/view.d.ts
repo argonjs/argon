@@ -1,5 +1,5 @@
 /// <reference types="cesium" />
-import { Viewport, SubviewType } from './common';
+import { CanvasViewport, Viewport, ContextFrameState, SubviewType } from './common';
 import { SessionService, SessionPort } from './session';
 import { ContextService, EntityPose } from './context';
 import { PerspectiveFrustum } from './cesium/cesium-imports';
@@ -15,6 +15,7 @@ export declare class Subview {
     frustum: PerspectiveFrustum;
     pose: EntityPose;
     viewport: Viewport;
+    renderViewport: Viewport;
 }
 export declare const enum ViewportMode {
     EMBEDDED = 0,
@@ -41,7 +42,7 @@ export declare class ViewService {
     /**
      * An event that is raised when the viewport has changed
      */
-    viewportChangeEvent: Event<Viewport>;
+    viewportChangeEvent: Event<CanvasViewport>;
     /**
      * An event that is raised when the viewport mode has changed
      */
@@ -55,19 +56,19 @@ export declare class ViewService {
     /**
      * The current viewport
      */
-    readonly viewport: {
-        x: number;
-        y: number;
-        width: number;
-        height: number;
-    };
+    readonly viewport: Viewport;
     private _viewport;
-    getViewport(): {
-        x: number;
-        y: number;
-        width: number;
-        height: number;
-    };
+    /**
+     * The width which should be used for the render buffer
+     */
+    readonly renderWidth: number;
+    private _renderWidth;
+    /**
+     * The height which should be used for the render buffer
+     */
+    readonly renderHeight: number;
+    private _renderHeight;
+    getViewport(): Viewport;
     /**
      * Automatically layout the element to match the immersive viewport during PresentationMode.IMMERSIVE
      */
@@ -91,7 +92,7 @@ export declare class ViewService {
      */
     protected getSubviews(): Subview[];
     private _IDENTITY_SUBVIEW_POSE;
-    private _processFrameState(state);
+    _processContextFrameState(state: ContextFrameState): void;
     requestPresentationMode(mode: ViewportMode): Promise<void>;
     private _desiredViewportMode;
     desiredViewportMode: ViewportMode;

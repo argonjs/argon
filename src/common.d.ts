@@ -70,10 +70,6 @@ export declare abstract class Configuration {
     };
     'supportsCustomProtocols'?: boolean;
 }
-/**
- * Viewport values are expressed using a right-handed coordinate system with the origin
- * at the bottom left corner.
- */
 export declare class Viewport {
     x: number;
     y: number;
@@ -82,13 +78,15 @@ export declare class Viewport {
     static clone(viewport: Viewport, result?: Viewport): Viewport;
     static equals(viewportA?: Viewport, viewportB?: Viewport): boolean | undefined;
 }
-export declare class NormalizedViewport {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    static clone(viewport: NormalizedViewport, result?: NormalizedViewport): NormalizedViewport;
-    static equals(viewportA?: NormalizedViewport, viewportB?: NormalizedViewport): boolean | undefined;
+/**
+ * Viewport values are expressed using a right-handed coordinate system with the origin
+ * at the bottom left corner.
+ */
+export declare class CanvasViewport extends Viewport {
+    renderWidthScaleFactor: number;
+    renderHeightScaleFactor: number;
+    static clone(viewport: CanvasViewport, result?: CanvasViewport): CanvasViewport;
+    static equals(viewportA?: CanvasViewport, viewportB?: CanvasViewport): boolean | undefined;
 }
 /**
  * Identifies a subview in a [[SerializedSubview]]
@@ -129,7 +127,7 @@ export interface SerializedSubview {
     /**
      * The viewport for this subview (relative to the primary viewport)
      */
-    viewport: NormalizedViewport;
+    viewport: Viewport;
     /**
      * The pose for this subview (relative to the primary pose)
      */
@@ -147,7 +145,7 @@ export interface ReadonlySerializedSubview {
     /**
      * The viewport for this subview (relative to the primary viewport)
      */
-    readonly viewport: Readonly<Viewport>;
+    readonly viewport: Readonly<CanvasViewport>;
     /**
      * The pose for this subview (relative to the primary pose)
      */
@@ -161,7 +159,7 @@ export interface SerializedDeviceState {
     eyeCartographicPosition: Cartographic | undefined;
     eyeHorizontalAccuracy: number | undefined;
     eyeVerticalAccuracy: number | undefined;
-    viewport: Viewport;
+    viewport: CanvasViewport;
     subviews: SerializedSubview[];
     strictSubviews: boolean;
     isPresentingHMD: boolean;
@@ -174,7 +172,7 @@ export declare class SerializedSubviewList extends Array<SerializedSubview> {
  * Describes the pose of a reality view and how it is able to render
  */
 export interface DeprecatedEyeParameters {
-    viewport?: Viewport;
+    viewport?: CanvasViewport;
     pose?: SerializedEntityState;
     stereoMultiplier?: number;
     fov?: number;
@@ -200,7 +198,7 @@ export interface DeprecatedPartialFrameState {
  */
 export interface ContextFrameState {
     time: JulianDate;
-    viewport: Viewport;
+    viewport: CanvasViewport;
     subviews: SerializedSubviewList;
     reality?: string;
     index?: number;

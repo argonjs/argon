@@ -22,6 +22,7 @@ import {
     AVERAGE_EYE_HEIGHT,
     DEFAULT_NEAR_PLANE,
     DEFAULT_FAR_PLANE,
+    CanvasViewport,
     Viewport,
     SerializedSubviewList,
     SerializedEntityStateMap,
@@ -33,7 +34,7 @@ import {
 import {
     Event,
     getEntityPositionInReferenceFrame,
-    // getEntityOrientationInReferenceFrame,
+    getEntityOrientationInReferenceFrame,
     getSerializedEntityState,
     requestAnimationFrame,
     cancelAnimationFrame,
@@ -46,8 +47,10 @@ import {
     ViewportMode
 } from './view'
 
+import { VisibilityService } from './visibility'
+
 export class DeviceState {
-    viewport?:Viewport;
+    viewport?:CanvasViewport;
     subviews?:SerializedSubviewList;
     entities:SerializedEntityStateMap = {};
     suggestedUserHeight = AVERAGE_EYE_HEIGHT;
@@ -64,12 +67,12 @@ export class DeviceFrameState extends DeviceState {
 
     time = JulianDate.now();
 
-    viewport = {x:0,y:0,width:0,height:0};
+    viewport = new CanvasViewport;
 
     subviews:SerializedSubviewList = [{
         type: SubviewType.SINGULAR,
         pose: null,
-        viewport: {x:0, y:0, width: 0, height:0},
+        viewport: new Viewport,
         projectionMatrix: (
             this._scratchFrustum.near = DEFAULT_NEAR_PLANE,
             this._scratchFrustum.far = DEFAULT_FAR_PLANE,
@@ -79,6 +82,16 @@ export class DeviceFrameState extends DeviceState {
         )
     }];
 };
+
+let vrDisplays:VRDisplay[]|undefined;
+let vrDisplay:VRDisplay|undefined;
+
+if (typeof navigator !== 'undefined' && navigator.getVRDisplays) {
+    navigator.getVRDisplays().then(displays => {
+        vrDisplays = displays;
+        vrDisplay = displays[0];
+    });
+}
 
 @autoinject()
 export class DeviceService {
@@ -126,7 +139,7 @@ export class DeviceService {
     }
 
     private _getEntityPositionInReferenceFrame = getEntityPositionInReferenceFrame;
-    // private _getEntityOrientationInReferenceFrame = getEntityOrientationInReferenceFrame;
+    private _getEntityOrientationInReferenceFrame = getEntityOrientationInReferenceFrame;
     protected _scratchCartesian = new Cartesian3;
     protected _scratchCartesian2 = new Cartesian3;
     protected _scratchFrustum = new PerspectiveFrustum();
@@ -134,94 +147,82 @@ export class DeviceService {
     constructor(
         protected sessionService:SessionService,
         protected contextService:ContextService,
-        protected viewService:ViewService
+        protected viewService:ViewService,
+        protected visibilityService:VisibilityService
     ) {
         sessionService.manager.on['ar.device.state'] = 
             sessionService.manager.on['ar.device.frameState'] = this._onDeviceState.bind(this);
 
-        contextService.frameStateEvent.addEventListener((state)=>{
-            const time = state.time;
-            const contextService = this.contextService;
-            const entities = state.entities;
-            
-            // stage
-            const deviceStage = this.stage;
-            const contextStage = contextService.stage;
-            if (entities[contextStage.id] === undefined) {
-                const contextStagePosition = contextStage.position as ConstantPositionProperty;
-                const contextStageOrientation = contextStage.orientation as ConstantProperty;
-                contextStagePosition.setValue(Cartesian3.ZERO, deviceStage);
-                contextStageOrientation.setValue(Quaternion.IDENTITY);
-            }
-
-            // user
-            const deviceUser = this.user;
-            const contextUser = contextService.user;
-            if (entities[contextUser.id] === undefined) {
-                const deviceUserPosition = deviceUser.position as ConstantPositionProperty;
-                const deviceUserOrientation = deviceUser.orientation as ConstantProperty;
-                const userPositionValue = deviceUserPosition && deviceUserPosition.getValueInReferenceFrame(time, deviceStage, this._scratchCartesian);
-                const userOrientationValue = deviceUserOrientation && deviceUserOrientation.getValue(time, this._scratchQuaternion);
-                const contextUserPosition = contextUser.position as ConstantPositionProperty;
-                const contextUserOrientation = contextUser.orientation as ConstantProperty;
-                contextUserPosition.setValue(userPositionValue, contextStage);
-                contextUserOrientation.setValue(userOrientationValue);
-            }
-
-            // view
-            const contextView = contextService.view;
-            if (entities[contextView.id] === undefined) {
-                const contextViewPosition = contextView.position as ConstantPositionProperty;
-                const contextViewOrientation = contextView.orientation as ConstantProperty;
-                contextViewPosition.setValue(Cartesian3.ZERO, contextUser);
-                contextViewOrientation.setValue(Quaternion.IDENTITY);
-            }
-
-            // floor
-            if (entities[contextService.floor.id] === undefined) {
-                const floorPosition = contextService.floor.position as ConstantPositionProperty;
-                floorPosition.setValue(Cartesian3.ZERO, contextStage);
-            }
-
-    
-            // If running within an older manager, we have to set the stage based on the user pose. 
-            if (this.sessionService.manager.isConnected && this.sessionService.manager.version[0] === 0) {
-                const userPositionFixed = this._getEntityPositionInReferenceFrame(
-                    contextUser,
-                    time,
-                    ReferenceFrame.FIXED,
-                    this._scratchCartesian
-                );
-                if (userPositionFixed) {
-                    const enuToFixedFrameTransform = Transforms.eastNorthUpToFixedFrame(userPositionFixed, undefined, this._scratchMatrix4);
-                    const enuRotationMatrix = Matrix4.getRotation(enuToFixedFrameTransform, this._scratchMatrix3);
-                    const enuOrientation = Quaternion.fromRotationMatrix(enuRotationMatrix);
-                    (contextStage.position as ConstantPositionProperty).setValue(userPositionFixed, ReferenceFrame.FIXED);
-                    (contextStage.orientation as ConstantProperty).setValue(enuOrientation);
-                }
-            }
-        })
-
-        // if (this.sessionService.isRealityManager || this.sessionService.isRealityViewer) {
-        //     this.sessionService.manager.connectEvent.addEventListener(()=>{
-        //         this.startUpdates();
-        //     });
-        // }
-
-        this.startUpdates();
-        this.sessionService.manager.closeEvent.addEventListener(()=>{
-            this.stopUpdates();
-        })
-
+        this.visibilityService.showEvent.addEventListener(() => this.startUpdates());
+        this.visibilityService.hideEvent.addEventListener(() => this.stopUpdates());
+        
         this._setupVRPresentChangeHandler();
+    }
+
+    public _processContextFrameState(state:ContextFrameState) {
+        const time = state.time;
+        const contextService = this.contextService;
+        const entities = state.entities;
+        
+        // stage
+        const deviceStage = this.stage;
+        const contextStage = contextService.stage;
+        if (entities[contextStage.id] === undefined) {
+            const contextStagePosition = contextStage.position as ConstantPositionProperty;
+            const contextStageOrientation = contextStage.orientation as ConstantProperty;
+            contextStagePosition.setValue(Cartesian3.ZERO, deviceStage);
+            contextStageOrientation.setValue(Quaternion.IDENTITY);
+        }
+
+        // user
+        const deviceUser = this.user;
+        const contextUser = contextService.user;
+        if (entities[contextUser.id] === undefined) {
+            const userPositionValue = this._getEntityPositionInReferenceFrame(deviceUser, time, deviceStage, this._scratchCartesian);
+            const userOrientationValue =  this._getEntityOrientationInReferenceFrame(deviceUser, time, deviceStage, this._scratchQuaternion);
+            const contextUserPosition = contextUser.position as ConstantPositionProperty;
+            const contextUserOrientation = contextUser.orientation as ConstantProperty;
+            contextUserPosition.setValue(userPositionValue, contextStage);
+            contextUserOrientation.setValue(userOrientationValue);
+        }
+
+        // view
+        const contextView = contextService.view;
+        if (entities[contextView.id] === undefined) {
+            const contextViewPosition = contextView.position as ConstantPositionProperty;
+            const contextViewOrientation = contextView.orientation as ConstantProperty;
+            contextViewPosition.setValue(Cartesian3.ZERO, contextUser);
+            contextViewOrientation.setValue(Quaternion.IDENTITY);
+        }
+
+        // floor
+        if (entities[contextService.floor.id] === undefined) {
+            const floorPosition = contextService.floor.position as ConstantPositionProperty;
+            floorPosition.setValue(Cartesian3.ZERO, contextStage);
+        }
+
+
+        // If running within an older manager, we have to set the stage based on the user pose. 
+        if (this.sessionService.manager.isConnected && this.sessionService.manager.version[0] === 0) {
+            const userPositionFixed = this._getEntityPositionInReferenceFrame(
+                contextUser,
+                time,
+                ReferenceFrame.FIXED,
+                this._scratchCartesian
+            );
+            if (userPositionFixed) {
+                const enuToFixedFrameTransform = Transforms.eastNorthUpToFixedFrame(userPositionFixed, undefined, this._scratchMatrix4);
+                const enuRotationMatrix = Matrix4.getRotation(enuToFixedFrameTransform, this._scratchMatrix3);
+                const enuOrientation = Quaternion.fromRotationMatrix(enuRotationMatrix);
+                (contextStage.position as ConstantPositionProperty).setValue(userPositionFixed, ReferenceFrame.FIXED);
+                (contextStage.orientation as ConstantProperty).setValue(enuOrientation);
+            }
+        }
     }
 
     private _onDeviceState(deviceState:DeviceState) {
         this.deviceState = deviceState;
-        this.frameState.suggestedUserHeight = deviceState.suggestedUserHeight;
-        this.frameState.isPresentingHMD = deviceState.isPresentingHMD;
-        this.frameState.geolocationDesired = deviceState.geolocationDesired;
-        this.frameState.geolocationOptions = deviceState.geolocationOptions;
+
 
         const entities = deviceState.entities;
         const contextService = this.contextService;
@@ -236,9 +237,20 @@ export class DeviceService {
     private _updateFrameState = () => {
         if (!this._updating) return;
 
+        this.requestAnimationFrame(this._updateFrameState);
+
         const state = this.frameState = this.frameState || {};
         const time = state.time = JulianDate.now(state.time);
         state.screenOrientationDegrees = this.getScreenOrientationDegrees();
+
+        const element = this.viewService.element;
+        const viewport = state.viewport;
+        viewport.x = 0;
+        viewport.y = 0;
+        viewport.width = element && element.clientWidth || 0;
+        viewport.height = element && element.clientHeight || 0;
+        viewport.renderHeightScaleFactor = 1;
+        viewport.renderWidthScaleFactor = 1;
         
         this.onUpdateFrameState();
 
@@ -251,7 +263,9 @@ export class DeviceService {
 
         this.frameStateEvent.raiseEvent(state);
 
-        this.requestAnimationFrame(this._updateFrameState);
+        if (this.autoSubmitFrame && vrDisplay && vrDisplay.isPresenting) {
+            vrDisplay.submitFrame();
+        }
     };
 
     public getScreenOrientationDegrees() {
@@ -262,18 +276,18 @@ export class DeviceService {
      * Request an animation frame callback for the current view. 
      */
     public requestAnimationFrame:(callback:(timestamp:number)=>void)=>number = callback => {
-        if (currentVRDisplay) {
-            return (currentVRDisplay as VRDisplay).requestAnimationFrame(callback);
+        if (vrDisplay && this.isPresentingHMD) {
+            return vrDisplay.requestAnimationFrame(callback);
         } else {
             return requestAnimationFrame(callback);
         }
     }
 
     public cancelAnimationFrame:(id:number)=>void = id => {
-        if (currentVRDisplay) {
-            return (currentVRDisplay as VRDisplay).cancelAnimationFrame(id);
+        if (vrDisplay && this.isPresentingHMD) {
+            vrDisplay.cancelAnimationFrame(id);
         } else {
-            return cancelAnimationFrame(id);
+            cancelAnimationFrame(id);
         }
     }
 
@@ -303,7 +317,7 @@ export class DeviceService {
     }
 
     protected onUpdateFrameState() {
-        if (currentVRDisplay) {
+        if (vrDisplay && this.isPresentingHMD) {
             this._updateForWebVR();
         } else {
             this._updateDefault();
@@ -313,19 +327,18 @@ export class DeviceService {
     private _updateDefault() {
         this._updateUserDefault();
 
-        const frameState = this.frameState;
         const deviceState = this.deviceState;
-        
-        const element = this.viewService.element;
+
+        const frameState = this.frameState;
+        frameState.suggestedUserHeight = deviceState.suggestedUserHeight;
+        frameState.isPresentingHMD = deviceState.isPresentingHMD;
+        frameState.geolocationDesired = deviceState.geolocationDesired;
+        frameState.geolocationOptions = deviceState.geolocationOptions;
+        frameState.strict = deviceState.strict;
         
         const viewport = frameState.viewport;
         if (deviceState.viewport) {
-            Viewport.clone(deviceState.viewport, viewport);
-        } else {
-            viewport.x = 0;
-            viewport.y = 0;
-            viewport.width = element && element.clientWidth || 0;
-            viewport.height = element && element.clientHeight || 0;
+            CanvasViewport.clone(deviceState.viewport, viewport);
         }
 
         const subviews = frameState.subviews;
@@ -380,21 +393,18 @@ export class DeviceService {
 	private _defaultRightBounds = [ 0.5, 0.0, 0.5, 1.0 ];
 
     private _updateForWebVR() {
+
+        if (!vrDisplay) return;
         
         const frameState = this.frameState;
-
-        const vrDisplay:VRDisplay = currentVRDisplay;
-
-        // const element = this.viewService.element;
+        frameState.strict = true;
        
         var leftEye = vrDisplay.getEyeParameters("left");
         var rightEye = vrDisplay.getEyeParameters("right");
         
         const viewport = frameState.viewport;
-        viewport.x = 0;
-        viewport.y = 0;
-        viewport.width = Math.max(leftEye.renderWidth, rightEye.renderWidth) * 2;
-        viewport.height = Math.max(leftEye.renderHeight, rightEye.renderHeight);
+        viewport.renderWidthScaleFactor = 2 * Math.max(leftEye.renderWidth, rightEye.renderWidth) / viewport.width;
+        viewport.renderHeightScaleFactor = Math.max(leftEye.renderHeight, rightEye.renderHeight) / viewport.height;
 
         const vrFrameData : VRFrameData = this._vrFrameData = 
             this._vrFrameData || new VRFrameData();
@@ -422,13 +432,13 @@ export class DeviceService {
         leftSubview.type = SubviewType.LEFTEYE;
         rightSubview.type = SubviewType.RIGHTEYE;
 
-        const leftViewport = leftSubview.viewport = leftSubview.viewport || <Viewport>{};
+        const leftViewport = leftSubview.viewport = leftSubview.viewport || <CanvasViewport>{};
         leftViewport.x = leftBounds[0] * viewport.width;
         leftViewport.y = leftBounds[1] * viewport.height;
         leftViewport.width = leftBounds[2] * viewport.width;
         leftViewport.height = leftBounds[3] * viewport.height;
 
-        const rightViewport = rightSubview.viewport = rightSubview.viewport || <Viewport>{};
+        const rightViewport = rightSubview.viewport = rightSubview.viewport || <CanvasViewport>{};
         rightViewport.x = rightBounds[0] * viewport.width;
         rightViewport.y = rightBounds[1] * viewport.height;
         rightViewport.width = rightBounds[2] * viewport.width;
@@ -532,7 +542,7 @@ export class DeviceService {
      */
     public createContextFrameState(
         time:JulianDate,
-        viewport:Viewport,
+        viewport:CanvasViewport,
         subviewList:SerializedSubviewList,
         options?: {overrideStage?:boolean, overrideUser?:boolean, overrideView?:boolean, floorOffset?:number}
     ) : ContextFrameState {
@@ -546,7 +556,7 @@ export class DeviceService {
 
         const frameState:ContextFrameState = this._scratchFrameState;
         frameState.time = JulianDate.clone(time, frameState.time);
-        frameState.viewport = Viewport.clone(viewport, frameState.viewport);
+        frameState.viewport = CanvasViewport.clone(viewport, frameState.viewport);
         frameState.subviews = SerializedSubviewList.clone(subviewList, frameState.subviews);
 
         const contextService = this.contextService;
@@ -751,59 +761,41 @@ export class DeviceService {
     private _setupVRPresentChangeHandler() {
         if (typeof window !=='undefined' && window.addEventListener) {
 
+            this.viewService.viewportModeChangeEvent.addEventListener((mode)=>{
+                if (mode === ViewportMode.PAGE && vrDisplay && vrDisplay.displayName.match(/Cardboard/g)) 
+                    this.exitPresentHMD();
+            });
+
             let currentCanvas:HTMLElement|undefined;
             let previousPresentationMode:ViewportMode;
 
-            this.contextService.postRenderEvent.addEventListener(()=>{
-                if (this.autoSubmitFrame && currentVRDisplay && currentVRDisplay.isPresenting) {
-                    currentVRDisplay.submitFrame();
-                }
-            });
-
             const handleVRDisplayPresentChange = (e) => {
                 const viewService = this.viewService;
-                const vrDisplay:VRDisplay|undefined = e.display || e.detail.vrdisplay || e.detail.display;
-                if (vrDisplay) {
-                    const layers = vrDisplay.getLayers();
-                    let isThisView = currentVRDisplay === vrDisplay;
-                    for (const layer of layers) {
-                        if (layer.source && viewService.element.contains(layer.source)) {
-                            isThisView = true;
-                            break;
+                const display:VRDisplay|undefined = e.display || e.detail.vrdisplay || e.detail.display;
+                if (display) {
+                    if (display.isPresenting) {
+                        vrDisplay = display;
+                        if (display.displayName.match(/Cardboard/g)) {
+                            currentCanvas = display.getLayers()[0].source;
+                            if (currentCanvas) currentCanvas.classList.add('argon-interactive');
+                            previousPresentationMode = viewService.viewportMode;
+                            viewService.desiredViewportMode = ViewportMode.IMMERSIVE;
                         }
-                    }
-                    if (isThisView) {
-                        if (vrDisplay.isPresenting) {
-                            currentVRDisplay = vrDisplay;
-                            if (vrDisplay.displayName.match(/Cardboard/g)) {
-                                currentCanvas = vrDisplay.getLayers()[0].source;
-                                if (currentCanvas) currentCanvas.classList.add('argon-interactive');
-                                previousPresentationMode = viewService.viewportMode;
-                                viewService.desiredViewportMode = ViewportMode.IMMERSIVE;
-                            }
-                        } else {
-                            currentVRDisplay = undefined;
-                            if (currentCanvas && vrDisplay.displayName.match(/Cardboard/g)) {
-                                currentCanvas.classList.remove('argon-interactive');
-                                currentCanvas = undefined;
-                                viewService.desiredViewportMode = previousPresentationMode;
-                            }
+                    } else {
+                        vrDisplay = undefined;
+                        if (currentCanvas && display.displayName.match(/Cardboard/g)) {
+                            currentCanvas.classList.remove('argon-interactive');
+                            currentCanvas = undefined;
+                            viewService.desiredViewportMode = previousPresentationMode;
                         }
                     }
                 }
-
-                viewService.viewportModeChangeEvent.addEventListener((mode)=>{
-                    if (mode === ViewportMode.PAGE) 
-                        this.exitPresentHMD();
-                });
             }
             window.addEventListener('vrdisplaypresentchange', handleVRDisplayPresentChange);
         }
     }
 
 }
-
-let currentVRDisplay:any;
 
 @autoinject()
 export class DeviceServiceProvider {
@@ -876,33 +868,19 @@ export class DeviceServiceProvider {
     }
 
     protected handleRequestPresentHMD(session:SessionPort) : Promise<void> {
-        if (typeof navigator !== 'undefined' &&
-            navigator.getVRDisplays) {
-            const requestPresent = (vrDisplay:VRDisplay) => {
-                currentVRDisplay = vrDisplay;
-                const element = this.viewService.element;
-                const layers:VRLayer&{}[] = [];
-                layers[0] = {source:element.querySelector('canvas') || <HTMLCanvasElement>element.lastElementChild};
-                return vrDisplay.requestPresent(layers).catch((e)=>{
-                    currentVRDisplay = undefined;
-                    throw e;
-                });
-            }
-            if (navigator.activeVRDisplays && navigator.activeVRDisplays.length) {
-                return requestPresent(navigator.activeVRDisplays[0]);
-            } else {
-                return navigator.getVRDisplays()
-                    .then(displays => displays[0])
-                    .then(requestPresent)
-            }
+        if (vrDisplay) {
+            const element = this.viewService.element;
+            const layers:VRLayer&{}[] = [];
+            layers[0] = {source:element.querySelector('canvas') || <HTMLCanvasElement>element.lastElementChild};
+            return vrDisplay.requestPresent(layers).catch((e)=>{
+                throw e;
+            });
         }
         throw new Error('No HMD available');
     }
     
     protected handleExitPresentHMD(session:SessionPort) : Promise<void> {
-        if (currentVRDisplay) {
-            const vrDisplay:VRDisplay = currentVRDisplay;
-            currentVRDisplay = undefined;
+        if (vrDisplay) {
             return vrDisplay.exitPresent();
         }
         return Promise.resolve();
@@ -934,80 +912,10 @@ export class DeviceServiceProvider {
         return this.deviceService.isPresentingHMD ? this.defaultUserHeight : this.defaultUserHeight/2;
     }
 
-    // private _vrFrameData?:any;
-
     protected onUpdateDeviceState(deviceState:DeviceState) {
-
-        // const vrDisplay = currentVRDisplay;
-        // if (!vrDisplay) {
-            deviceState.viewport = undefined;
-            deviceState.subviews = undefined;
-            deviceState.strict = false;
-        //     return;
-        // }
-
-        // Since the WebVR polyfill only manages state within one browser window,
-        // we will just pass down the viewport/subview configuration in the device state.
-        // In managed sessions with real WebVR implementations, the WebVR API is used directly in the DeviceService
-        // (this is not really useful within an iframe, since real webVR implementations currently do not support
-        // a way to composite content from different iframes, however once WebVR is decoupled from the DOM and can run
-        // in a worker, the DeviceService should be able to leverage the WebVR API as needed within each frame)
-
-        // const vrFrameData : VRFrameData = this._vrFrameData = 
-        //     this._vrFrameData || new VRFrameData();
-        // if (!vrDisplay['getFrameData'](vrFrameData)) {
-        //     setTimeout(()=>this.publishDeviceState(), 500);
-        //     return;
-        // }
-
-        // const element = this.viewService.element;
-        // const viewport = deviceState.viewport = deviceState.viewport || <Viewport>{};
-        // viewport.x = 0;
-        // viewport.y = 0;
-        // viewport.width = element && element.clientWidth || 0;
-        // viewport.height = element && element.clientHeight || 0;
-
-        // const layers = vrDisplay.getLayers();
-        // let leftBounds = layers[0].leftBounds!;
-        // let rightBounds = layers[0].rightBounds!;
-
-        // if ( layers.length ) {
-        //     var layer = layers[ 0 ]!;
-        //     leftBounds = layer.leftBounds && layer.leftBounds.length === 4 ? layer.leftBounds : this._defaultLeftBounds;
-        //     rightBounds = layer.rightBounds && layer.rightBounds.length === 4 ? layer.rightBounds : this._defaultRightBounds;
-        // } else {
-        //     leftBounds = this._defaultLeftBounds;
-        //     rightBounds = this._defaultRightBounds;
-        // }
-        
-        // const subviews = deviceState.subviews = deviceState.subviews || [];
-        // subviews.length = 2;
-
-        // const leftSubview = subviews[0] = subviews[0] || {};
-        // const rightSubview = subviews[1] = subviews[1] || {};
-        // leftSubview.type = SubviewType.LEFTEYE;
-        // rightSubview.type = SubviewType.RIGHTEYE;
-
-        // const leftViewport = leftSubview.viewport = leftSubview.viewport || <Viewport>{};
-        // leftViewport.x = leftBounds[0] * viewport.width;
-        // leftViewport.y = leftBounds[1] * viewport.height;
-        // leftViewport.width = leftBounds[2] * viewport.width;
-        // leftViewport.height = leftBounds[3] * viewport.height;
-
-        // const rightViewport = rightSubview.viewport = rightSubview.viewport || <Viewport>{};
-        // rightViewport.x = rightBounds[0] * viewport.width;
-        // rightViewport.y = rightBounds[1] * viewport.height;
-        // rightViewport.width = rightBounds[2] * viewport.width;
-        // rightViewport.height = rightBounds[3] * viewport.height;
-
-        // leftSubview.projectionMatrix = Matrix4.clone(
-        //     <any>vrFrameData.leftProjectionMatrix, 
-        //     leftSubview.projectionMatrix
-        // );
-        // rightSubview.projectionMatrix = Matrix4.clone(
-        //     <any>vrFrameData.rightProjectionMatrix, 
-        //     rightSubview.projectionMatrix
-        // );
+        deviceState.viewport = undefined;
+        deviceState.subviews = undefined;
+        deviceState.strict = false;
     }
 
     private _currentGeolocationOptions?:GeolocationOptions;

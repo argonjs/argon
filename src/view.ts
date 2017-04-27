@@ -1,5 +1,5 @@
 import { autoinject, inject, Optional } from 'aurelia-dependency-injection'
-import { Viewport, ContextFrameState, SubviewType } from './common'
+import { CanvasViewport, Viewport, ContextFrameState, SubviewType } from './common'
 import { SessionService, SessionPort } from './session'
 import { ContextService, EntityPose } from './context'
 
@@ -26,6 +26,7 @@ export class Subview {
     frustum: PerspectiveFrustum;
     pose: EntityPose;
     viewport: Viewport;
+    renderViewport: Viewport;
 }
 
 export const enum ViewportMode {
@@ -52,7 +53,7 @@ export class ViewService {
     /**
      * An event that is raised when the viewport has changed
      */
-    public viewportChangeEvent = new Event<Viewport>();
+    public viewportChangeEvent = new Event<CanvasViewport>();
 
     /**
      * An event that is raised when the viewport mode has changed
@@ -74,7 +75,23 @@ export class ViewService {
     public get viewport() {
         return this._viewport;
     }
-    private _viewport = {x:0,y:0,width:0,height:0};
+    private _viewport = new Viewport;
+
+    /**
+     * The width which should be used for the render buffer
+     */
+    public get renderWidth() {
+        return this._renderWidth;
+    }
+    private _renderWidth = 0;
+
+    /**
+     * The height which should be used for the render buffer
+     */
+    public get renderHeight() {
+        return this._renderHeight;
+    }
+    private _renderHeight = 0;
     
     @deprecated('viewport')
     public getViewport() {
@@ -186,12 +203,6 @@ export class ViewService {
                 this._updateViewportMode(ViewportMode.IMMERSIVE);
             }
         });
-
-        // keep the subviews up-to-date
-        this.contextService.frameStateEvent.addEventListener((state) => {
-            this._processFrameState(state);
-        });
-        this._processFrameState(this.contextService.serializedFrameState);
     }
 
     private _currentViewportJSON: string;
@@ -214,8 +225,12 @@ export class ViewService {
 
     private _IDENTITY_SUBVIEW_POSE = {p:Cartesian3.ZERO, o:Quaternion.IDENTITY, r:this.contextService.view.id};
 
-    private _processFrameState(state:ContextFrameState) {
-        this._updateViewport(state.viewport);
+    public _processContextFrameState(state:ContextFrameState) {
+
+        const renderWidthScaleFactor = state.viewport.renderWidthScaleFactor || 1;
+        const renderHeightScaleFactor = state.viewport.renderHeightScaleFactor || 1;
+        this._renderWidth = state.viewport.width * renderWidthScaleFactor;
+        this._renderHeight = state.viewport.height * renderHeightScaleFactor;
 
         const serializedSubviewList = state.subviews;
         const subviews: Subview[] = this._subviews;
@@ -236,6 +251,11 @@ export class ViewService {
             subview.viewport.y = serializedSubview.viewport.y;
             subview.viewport.width = serializedSubview.viewport.width;
             subview.viewport.height = serializedSubview.viewport.height;
+            subview.renderViewport = subview.renderViewport || {};
+            subview.renderViewport.x = serializedSubview.viewport.x * renderWidthScaleFactor;
+            subview.renderViewport.y = serializedSubview.viewport.y * renderHeightScaleFactor;
+            subview.renderViewport.width = serializedSubview.viewport.width * renderWidthScaleFactor;
+            subview.renderViewport.height = serializedSubview.viewport.height * renderHeightScaleFactor;
 
             subview.frustum = this._subviewFrustum[index] = 
                 this._subviewFrustum[index] || new PerspectiveFrustum();
@@ -248,6 +268,8 @@ export class ViewService {
             
             index++;
         }
+
+        this._updateViewport(state.viewport);
     }
 
     @deprecated('desiredViewportMode')
@@ -288,7 +310,7 @@ export class ViewService {
     }
 
     // Updates the element, if necessary, and raise a view change event
-    private _updateViewport(viewport:Viewport) {
+    private _updateViewport(viewport:CanvasViewport) {
         const viewportJSON = JSON.stringify(viewport);
 
         if (!this._currentViewportJSON || this._currentViewportJSON !== viewportJSON) {
@@ -407,7 +429,7 @@ export class ViewServiceProvider {
                 this._publishViewportModes();
             }
 
-            session.on['ar.view.embeddedViewport'] = (viewport: Viewport) => {
+            session.on['ar.view.embeddedViewport'] = (viewport: CanvasViewport) => {
                 this.sessionEmbeddedViewport.set(session, viewport);
             }
 

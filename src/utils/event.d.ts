@@ -17,17 +17,17 @@ export declare class Event<T> {
       * @param The function to be executed when the event is raised.
       * @return A convenience function which removes this event listener when called
       */
-    addEventListener(listener: (data: T) => void): RemoveCallback;
+    addEventListener: (listener: (data: T) => void) => RemoveCallback;
     /**
      * Remove an event listener.
      * @param The function to be unregistered.
      * @return True if the listener was removed;
      * false if the listener and scope are not registered with the event.
      */
-    removeEventListener(listener: (data: T) => void): boolean;
+    removeEventListener: (listener: (data: T) => void) => boolean;
     /**
      * Raises the event by calling each registered listener with all supplied arguments.
      * @param This method takes any number of parameters and passes them through to the listener functions.
      */
-    raiseEvent(data: T): void;
+    raiseEvent: (data: T) => void;
 }

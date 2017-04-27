@@ -23,7 +23,9 @@ import {
     SubviewType,
     ContextFrameState,
     Role,
-    GeolocationOptions
+    GeolocationOptions,
+    CanvasViewport,
+    Viewport
 } from './common'
 import { SessionService, SessionPort } from './session'
 import { Event, getReachableAncestorReferenceFrames, getSerializedEntityState, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame, deprecated, decomposePerspectiveProjectionMatrix } from './utils'
@@ -231,11 +233,11 @@ export class ContextService {
             reality: undefined,
             time: JulianDate.now(),
             entities: {},
-            viewport: {x:0,y:0,width:0,height:0},
+            viewport: new CanvasViewport,
             subviews:  [{
                 type: SubviewType.SINGULAR, 
                 pose: null,
-                viewport: {x:0,y:0,width:1,height:1},
+                viewport: new Viewport,
                 projectionMatrix: this._scratchFrustum.projectionMatrix
             }],
         };
@@ -605,9 +607,6 @@ export class ContextService {
         this.timestamp = timestamp;
         JulianDate.clone(<JulianDate>frameState.time, this.time);
 
-        // if (entities[this.stage.id]) {}
-        // this._updateStage(frameState);
-
         // raise a frame state event (primarily for other services to hook into)
         this._serializedFrameState = frameState;
         this.frameStateEvent.raiseEvent(frameState);
@@ -692,8 +691,7 @@ export class ContextService {
         let entityPosition = entity.position;
         let entityOrientation = entity.orientation;
 
-        if (entityPosition instanceof ConstantPositionProperty && 
-            entityPosition.referenceFrame === referenceFrame) {
+        if (entityPosition instanceof ConstantPositionProperty) {
             entityPosition.setValue(positionValue, referenceFrame);
         } else {
             entity.position = new ConstantPositionProperty(positionValue, referenceFrame);
