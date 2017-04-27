@@ -221,11 +221,8 @@ export class ViewService {
             }
         }
         this._layers = layers;
-        let zIndex = -layers.length;
         for (const l of layers) {
             this.element.appendChild(l.source);
-            l.source.style.zIndex = '' + zIndex;
-            zIndex++;
         }
     }
 
@@ -343,6 +340,7 @@ export class ViewService {
 
         if (this.layers && this.autoStyleLayerElements) {
             requestAnimationFrame(() => {
+                let zIndex = -this._layers.length;
                 for (const layer of this._layers) {
                     const layerStyle = layer.source.style;
                     layerStyle.position = 'absolute';
@@ -350,6 +348,8 @@ export class ViewService {
                     layerStyle.bottom = viewport.y + 'px';
                     layerStyle.width = viewport.width + 'px';
                     layerStyle.height = viewport.height + 'px';
+                    layerStyle.zIndex = '' + zIndex;
+                    zIndex++;
                 }
             })
         }
