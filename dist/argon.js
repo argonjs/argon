@@ -21951,7 +21951,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
 
             _export('cancelAnimationFrame', cAF = typeof window !== 'undefined' ? window.cancelAnimationFrame.bind(window) : clearTimeout);
 
-            _export('version', version = "1.2.0-6");
+            _export('version', version = "1.2.0-7");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -23551,6 +23551,13 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                         if (_this._isVisible) {
                             _this._isVisible = false;
                             _this.hideEvent.raiseEvent(undefined);
+                        }
+                    });
+                    // if running in an old manager, assume we are visible
+                    sessionService.manager.connectEvent.addEventListener(function () {
+                        if (sessionService.manager.version[0] === 0) {
+                            _this._isVisible = true;
+                            _this.showEvent.raiseEvent(undefined);
                         }
                     });
                 }
