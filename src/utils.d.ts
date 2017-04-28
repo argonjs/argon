@@ -1,11 +1,18 @@
 /// <reference types="cesium" />
 import { SerializedEntityState } from './common';
-import { Entity, JulianDate, PerspectiveFrustum, PerspectiveOffCenterFrustum, Quaternion, Cartesian3, ReferenceFrame, Matrix4 } from './cesium/cesium-imports';
+import { Entity, JulianDate, PerspectiveFrustum, PerspectiveOffCenterFrustum, Quaternion, Cartesian3, ReferenceFrame, Matrix4, Transforms } from './cesium/cesium-imports';
 export * from './utils/command-queue';
 export * from './utils/event';
 export * from './utils/message-channel';
 export { default as getEventSynthesizier } from './utils/ui-event-synthesizer';
 export { default as createEventForwarder } from './utils/ui-event-forwarder';
+/**
+ * Computes a 4x4 transformation matrix from a reference frame with an east-up-south axes centered at the provided origin to the provided ellipsoid's fixed reference frame. The local axes are defined as:
+ * The x axis points in the local east direction.
+ * The y axis points in the points in the direction of the ellipsoid surface normal which passes through the position..
+ * The z axis points in the local south direction.
+ */
+export declare const eastUpSouthToFixedFrame: Transforms.ConversionFunction;
 /**
  * Get array of ancestor reference frames of a Cesium Entity, ordered from
  * farthest ancestor to the passed frame, excluding the passed frame.

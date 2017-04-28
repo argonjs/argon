@@ -9,7 +9,9 @@ import {
     Cartesian3,
     Quaternion,
     Matrix4,
+    Matrix3,
     CesiumMath,
+    Transforms,
     JulianDate,
     ReferenceFrame,
     PerspectiveFrustum,
@@ -18,7 +20,7 @@ import {
 import {
     DEFAULT_NEAR_PLANE,
     DEFAULT_FAR_PLANE,
-    SerializedEntityState, 
+    SerializedEntityState,
     SerializedEntityStateMap,
     SubviewType,
     ContextFrameState,
@@ -519,6 +521,45 @@ export class ContextService {
         }
 
         return undefined;
+    }
+
+    private _scratchMatrix3 = new Matrix3;
+    private _scratchMatrix4 = new Matrix4;
+
+     /**
+     * Create an entity that is positioned at the given cartographic location,
+     * with an orientation computed according to the given local to fixed frame converter.
+     * 
+     * For the localFrameToFixedFrame parameter, Cesium provides the following:
+     * 
+     * Cesium.Transforms.eastNorthUpToFixedFrame
+     * Cesium.Transforms.northEastDownToFixedFrame
+     * Cesium.Transforms.northUpEastToFixedFrame
+     * Cesium.Transforms.northWestUpToFixedFrame
+     *  
+     * Additionally, argon.js provides:
+     * 
+     * Argon.eastUpSouthToFixedFrame
+     * 
+     * Alternative transform functions can be created with:
+     * 
+     * Cesium.Transforms.localFrameToFixedFrameGenerator
+     */
+    public createGeoEntity(cartographic: Cartographic, localFrameToFixedFrame: typeof Transforms.northUpEastToFixedFrame) : Entity {
+        // Convert the cartographic location to an ECEF position
+        var position = Cartesian3.fromDegrees(cartographic.longitude, cartographic.latitude, cartographic.height, undefined, this._scratchCartesian);
+
+        // compute an appropriate orientation on the surface of the earth
+        var transformMatrix = localFrameToFixedFrame(position, undefined, this._scratchMatrix4);
+        var rotationMatrix = Matrix4.getRotation(transformMatrix,this._scratchMatrix3)
+        var orientation = Quaternion.fromRotationMatrix(rotationMatrix, this._scratchQuaternion);
+
+        // create the entity
+        var entity = new Entity({
+            position,
+            orientation
+        });
+        return entity;
     }
 
     /**
