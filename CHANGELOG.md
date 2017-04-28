@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.2.0-7"></a>
+# [1.2.0-7](https://github.com/argonjs/argon/compare/v1.2.0-6...v1.2.0-7) (2017-04-28)
+
+
+### Bug Fixes
+
+* **VisibilityService:** For backwards compatibility, ensure that visibility is true when running in an old manager ([2a0dfd6](https://github.com/argonjs/argon/commit/2a0dfd6))
+
+
+
 <a name="1.2.0-6"></a>
 # [1.2.0-6](https://github.com/argonjs/argon/compare/v1.2.0-5...v1.2.0-6) (2017-04-27)
 
