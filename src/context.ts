@@ -9,7 +9,10 @@ import {
     Cartesian3,
     Quaternion,
     Matrix4,
+    Matrix3,
     CesiumMath,
+    Ellipsoid,
+    Transforms,
     JulianDate,
     ReferenceFrame,
     PerspectiveFrustum,
@@ -519,6 +522,40 @@ export class ContextService {
         }
 
         return undefined;
+    }
+
+     /**
+     * The default local reference frame orientation for geospatial entities 
+     * created with the createGeoFrame() method. 
+     * This is oriented East-Up-South.   
+     */
+    public eastUpSouthToFixedFrame = Transforms.localFrameToFixedFrameGenerator('east','up');
+
+     /**
+     * The default local reference frame orientation for geospatial entities 
+     * created with the createGeoFrame() method. 
+     * This is oriented East-Up-South.   
+     */
+    private _scratchMatrix3: Matrix3 = new(Matrix3);
+    public createGeoFrame(name: string, cart: Cartographic, ellipsoid?: Ellipsoid, localCoordinates?: (Cartesian3, ellipsoid?: Ellipsoid, result?: Matrix4) => Matrix4) : Entity {
+        // get the cartesian position for the entity
+        var position = Cartesian3.fromDegrees(cart.longitude, cart.latitude, cart.height, ellipsoid);
+
+        // default transformation function
+        var xform = this.eastUpSouthToFixedFrame;
+        if (localCoordinates != undefined) xform = this.eastUpSouthToFixedFrame;
+
+        // get the local orientation on the surface of the earth
+        var matrix = xform(position, ellipsoid);
+        var quat: Quaternion = Quaternion.fromRotationMatrix(Matrix4.getRotation(matrix,this._scratchMatrix3))
+
+        // create the entity
+        var entity = new Entity({
+            name: name,
+            position: position,
+            orientation: quat
+        });
+        return entity;
     }
 
     /**

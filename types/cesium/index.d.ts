@@ -4732,6 +4732,8 @@ declare module 'cesium' {
     }
 
     module Transforms {
+        type ConversionFunction = (Cartesian3, ellipsoid?: Ellipsoid, result?: Matrix4) => Matrix4;
+        function localFrameToFixedFrameGenerator(firstAxis: string, secondAxis: string): ConversionFunction;
         function eastNorthUpToFixedFrame(origin: Cartesian3, ellipsoid?: Ellipsoid, result?: Matrix4): Matrix4;
         function northEastDownToFixedFrame(origin: Cartesian3, ellipsoid?: Ellipsoid, result?: Matrix4): Matrix4;
         function northUpEastToFixedFrame(origin: Cartesian3, ellipsoid?: Ellipsoid, result?: Matrix4): Matrix4;
