@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.2.0-8"></a>
+# [1.2.0-8](https://github.com/argonjs/argon/compare/v1.2.0-7...v1.2.0-8) (2017-04-29)
+
+
+### Features
+
+* **ContextServrice:** Added 'createGeoEntity’ ([00c5f3f](https://github.com/argonjs/argon/commit/00c5f3f))
+
+
+
 <a name="1.2.0-7"></a>
 # [1.2.0-7](https://github.com/argonjs/argon/compare/v1.2.0-6...v1.2.0-7) (2017-04-28)
 
