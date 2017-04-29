@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.2.0-9"></a>
+# [1.2.0-9](https://github.com/argonjs/argon/compare/v1.2.0-8...v1.2.0-9) (2017-04-29)
+
+
+### Bug Fixes
+
+* **DeviceService:** Fix call to headingPitchRollQuaternion ([888fc7d](https://github.com/argonjs/argon/commit/888fc7d))
+
+
+
 <a name="1.2.0-8"></a>
 # [1.2.0-8](https://github.com/argonjs/argon/compare/v1.2.0-7...v1.2.0-8) (2017-04-29)
 
