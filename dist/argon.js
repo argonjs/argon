@@ -536,6 +536,7 @@ define("9", ["a", "5", "6", "b", "7", "c", "d", "e", "f", "10"], function(Cartes
       aggregator._buttonsDown++;
       isDown[key] = true;
       pressTime[key] = new Date();
+      Cartesian2.lerp(event.position1, event.position2, 0.5, eventStartPosition[key]);
     }, ScreenSpaceEventType.PINCH_START, modifier);
     aggregator._eventHandler.setInputAction(function() {
       aggregator._buttonsDown = Math.max(aggregator._buttonsDown - 1, 0);
@@ -762,7 +763,7 @@ define("9", ["a", "5", "6", "b", "7", "c", "d", "e", "f", "10"], function(Cartes
     if (!defined(type)) {
       throw new DeveloperError('type is required.');
     }
-    if (type === CameraEventType.WHEEL || type === CameraEventType.PINCH) {
+    if (type === CameraEventType.WHEEL) {
       return this._currentMousePosition;
     }
     var key = getKey(type, modifier);
@@ -830,91 +831,134 @@ define("12", ["11"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("13", ["5"], function(defined) {
-  'use strict';
-  var getTimestamp;
-  if (typeof performance !== 'undefined' && defined(performance.now)) {
-    getTimestamp = function() {
-      return performance.now();
-    };
-  } else {
-    getTimestamp = function() {
-      return Date.now();
-    };
-  }
-  return getTimestamp;
-});
-
-})();
-(function() {
-var define = $__System.amdDefine;
-define("14", ["12", "15", "16", "5", "7", "8", "13", "17"], function(ClockRange, ClockStep, defaultValue, defined, DeveloperError, Event, getTimestamp, JulianDate) {
+define("13", ["12", "14", "15", "5", "6", "7", "8", "16", "17"], function(ClockRange, ClockStep, defaultValue, defined, defineProperties, DeveloperError, Event, getTimestamp, JulianDate) {
   'use strict';
   function Clock(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
-    var startTime = options.startTime;
-    var startTimeUndefined = !defined(startTime);
-    var stopTime = options.stopTime;
-    var stopTimeUndefined = !defined(stopTime);
     var currentTime = options.currentTime;
-    var currentTimeUndefined = !defined(currentTime);
-    if (startTimeUndefined && stopTimeUndefined && currentTimeUndefined) {
-      currentTime = JulianDate.now();
+    var startTime = options.startTime;
+    var stopTime = options.stopTime;
+    if (!defined(currentTime)) {
+      if (defined(startTime)) {
+        currentTime = JulianDate.clone(startTime);
+      } else if (defined(stopTime)) {
+        currentTime = JulianDate.addDays(stopTime, -1.0, new JulianDate());
+      } else {
+        currentTime = JulianDate.now();
+      }
+    } else {
+      currentTime = JulianDate.clone(currentTime);
+    }
+    if (!defined(startTime)) {
       startTime = JulianDate.clone(currentTime);
-      stopTime = JulianDate.addDays(currentTime, 1.0, new JulianDate());
-    } else if (startTimeUndefined && stopTimeUndefined) {
-      startTime = JulianDate.clone(currentTime);
-      stopTime = JulianDate.addDays(currentTime, 1.0, new JulianDate());
-    } else if (startTimeUndefined && currentTimeUndefined) {
-      startTime = JulianDate.addDays(stopTime, -1.0, new JulianDate());
-      currentTime = JulianDate.clone(startTime);
-    } else if (currentTimeUndefined && stopTimeUndefined) {
-      currentTime = JulianDate.clone(startTime);
+    } else {
+      startTime = JulianDate.clone(startTime);
+    }
+    if (!defined(stopTime)) {
       stopTime = JulianDate.addDays(startTime, 1.0, new JulianDate());
-    } else if (currentTimeUndefined) {
-      currentTime = JulianDate.clone(startTime);
-    } else if (stopTimeUndefined) {
-      stopTime = JulianDate.addDays(currentTime, 1.0, new JulianDate());
-    } else if (startTimeUndefined) {
-      startTime = JulianDate.clone(currentTime);
+    } else {
+      stopTime = JulianDate.clone(stopTime);
     }
     if (JulianDate.greaterThan(startTime, stopTime)) {
       throw new DeveloperError('startTime must come before stopTime.');
     }
     this.startTime = startTime;
     this.stopTime = stopTime;
+    this.clockRange = defaultValue(options.clockRange, ClockRange.UNBOUNDED);
+    this.canAnimate = defaultValue(options.canAnimate, true);
+    this.onTick = new Event();
+    this._currentTime = undefined;
+    this._multiplier = undefined;
+    this._clockStep = undefined;
+    this._shouldAnimate = undefined;
+    this._lastSystemTime = getTimestamp();
     this.currentTime = currentTime;
     this.multiplier = defaultValue(options.multiplier, 1.0);
     this.clockStep = defaultValue(options.clockStep, ClockStep.SYSTEM_CLOCK_MULTIPLIER);
-    this.clockRange = defaultValue(options.clockRange, ClockRange.UNBOUNDED);
-    this.canAnimate = defaultValue(options.canAnimate, true);
     this.shouldAnimate = defaultValue(options.shouldAnimate, true);
-    this.onTick = new Event();
-    this._lastSystemTime = getTimestamp();
   }
+  defineProperties(Clock.prototype, {
+    currentTime: {
+      get: function() {
+        return this._currentTime;
+      },
+      set: function(value) {
+        if (JulianDate.equals(this._currentTime, value)) {
+          return;
+        }
+        if (this._clockStep === ClockStep.SYSTEM_CLOCK) {
+          this._clockStep = ClockStep.SYSTEM_CLOCK_MULTIPLIER;
+        }
+        this._currentTime = value;
+      }
+    },
+    multiplier: {
+      get: function() {
+        return this._multiplier;
+      },
+      set: function(value) {
+        if (this._multiplier === value) {
+          return;
+        }
+        if (this._clockStep === ClockStep.SYSTEM_CLOCK) {
+          this._clockStep = ClockStep.SYSTEM_CLOCK_MULTIPLIER;
+        }
+        this._multiplier = value;
+      }
+    },
+    clockStep: {
+      get: function() {
+        return this._clockStep;
+      },
+      set: function(value) {
+        if (value === ClockStep.SYSTEM_CLOCK) {
+          this._multiplier = 1.0;
+          this._shouldAnimate = true;
+          this._currentTime = JulianDate.now();
+        }
+        this._clockStep = value;
+      }
+    },
+    shouldAnimate: {
+      get: function() {
+        return this._shouldAnimate;
+      },
+      set: function(value) {
+        if (this._shouldAnimate === value) {
+          return;
+        }
+        if (this._clockStep === ClockStep.SYSTEM_CLOCK) {
+          this._clockStep = ClockStep.SYSTEM_CLOCK_MULTIPLIER;
+        }
+        this._shouldAnimate = value;
+      }
+    }
+  });
   Clock.prototype.tick = function() {
     var currentSystemTime = getTimestamp();
-    var currentTime = JulianDate.clone(this.currentTime);
-    var startTime = this.startTime;
-    var stopTime = this.stopTime;
-    var multiplier = this.multiplier;
-    if (this.canAnimate && this.shouldAnimate) {
-      if (this.clockStep === ClockStep.SYSTEM_CLOCK) {
+    var currentTime = JulianDate.clone(this._currentTime);
+    if (this.canAnimate && this._shouldAnimate) {
+      var clockStep = this._clockStep;
+      if (clockStep === ClockStep.SYSTEM_CLOCK) {
         currentTime = JulianDate.now(currentTime);
       } else {
-        if (this.clockStep === ClockStep.TICK_DEPENDENT) {
+        var multiplier = this._multiplier;
+        if (clockStep === ClockStep.TICK_DEPENDENT) {
           currentTime = JulianDate.addSeconds(currentTime, multiplier, currentTime);
         } else {
           var milliseconds = currentSystemTime - this._lastSystemTime;
           currentTime = JulianDate.addSeconds(currentTime, multiplier * (milliseconds / 1000.0), currentTime);
         }
-        if (this.clockRange === ClockRange.CLAMPED) {
+        var clockRange = this.clockRange;
+        var startTime = this.startTime;
+        var stopTime = this.stopTime;
+        if (clockRange === ClockRange.CLAMPED) {
           if (JulianDate.lessThan(currentTime, startTime)) {
             currentTime = JulianDate.clone(startTime, currentTime);
           } else if (JulianDate.greaterThan(currentTime, stopTime)) {
             currentTime = JulianDate.clone(stopTime, currentTime);
           }
-        } else if (this.clockRange === ClockRange.LOOP_STOP) {
+        } else if (clockRange === ClockRange.LOOP_STOP) {
           if (JulianDate.lessThan(currentTime, startTime)) {
             currentTime = JulianDate.clone(startTime, currentTime);
           }
@@ -924,7 +968,7 @@ define("14", ["12", "15", "16", "5", "7", "8", "13", "17"], function(ClockRange,
         }
       }
     }
-    this.currentTime = currentTime;
+    this._currentTime = currentTime;
     this._lastSystemTime = currentSystemTime;
     this.onTick.raiseEvent(this);
     return currentTime;
@@ -935,7 +979,7 @@ define("14", ["12", "15", "16", "5", "7", "8", "13", "17"], function(ClockRange,
 })();
 (function() {
 var define = $__System.amdDefine;
-define("15", ["11"], function(freezeObject) {
+define("14", ["11"], function(freezeObject) {
   'use strict';
   var ClockStep = {
     TICK_DEPENDENT: 0,
@@ -1269,6 +1313,178 @@ define("18", ["19", "5", "6", "7", "d", "1a", "1b"], function(createGuid, define
 })();
 (function() {
 var define = $__System.amdDefine;
+define("1c", ["11", "17", "1d"], function(freezeObject, JulianDate, TimeInterval) {
+  'use strict';
+  var MINIMUM_VALUE = freezeObject(JulianDate.fromIso8601('0000-01-01T00:00:00Z'));
+  var MAXIMUM_VALUE = freezeObject(JulianDate.fromIso8601('9999-12-31T24:00:00Z'));
+  var MAXIMUM_INTERVAL = freezeObject(new TimeInterval({
+    start: MINIMUM_VALUE,
+    stop: MAXIMUM_VALUE
+  }));
+  var Iso8601 = {
+    MINIMUM_VALUE: MINIMUM_VALUE,
+    MAXIMUM_VALUE: MAXIMUM_VALUE,
+    MAXIMUM_INTERVAL: MAXIMUM_INTERVAL
+  };
+  return Iso8601;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("1d", ["15", "5", "6", "7", "11", "17"], function(defaultValue, defined, defineProperties, DeveloperError, freezeObject, JulianDate) {
+  'use strict';
+  function TimeInterval(options) {
+    options = defaultValue(options, defaultValue.EMPTY_OBJECT);
+    this.start = defined(options.start) ? JulianDate.clone(options.start) : new JulianDate();
+    this.stop = defined(options.stop) ? JulianDate.clone(options.stop) : new JulianDate();
+    this.data = options.data;
+    this.isStartIncluded = defaultValue(options.isStartIncluded, true);
+    this.isStopIncluded = defaultValue(options.isStopIncluded, true);
+  }
+  defineProperties(TimeInterval.prototype, {isEmpty: {get: function() {
+        var stopComparedToStart = JulianDate.compare(this.stop, this.start);
+        return stopComparedToStart < 0 || (stopComparedToStart === 0 && (!this.isStartIncluded || !this.isStopIncluded));
+      }}});
+  var scratchInterval = {
+    start: undefined,
+    stop: undefined,
+    isStartIncluded: undefined,
+    isStopIncluded: undefined,
+    data: undefined
+  };
+  TimeInterval.fromIso8601 = function(options, result) {
+    if (!defined(options)) {
+      throw new DeveloperError('options is required.');
+    }
+    if (!defined(options.iso8601)) {
+      throw new DeveloperError('options.iso8601 is required.');
+    }
+    var dates = options.iso8601.split('/');
+    var start = JulianDate.fromIso8601(dates[0]);
+    var stop = JulianDate.fromIso8601(dates[1]);
+    var isStartIncluded = defaultValue(options.isStartIncluded, true);
+    var isStopIncluded = defaultValue(options.isStopIncluded, true);
+    var data = options.data;
+    if (!defined(result)) {
+      scratchInterval.start = start;
+      scratchInterval.stop = stop;
+      scratchInterval.isStartIncluded = isStartIncluded;
+      scratchInterval.isStopIncluded = isStopIncluded;
+      scratchInterval.data = data;
+      return new TimeInterval(scratchInterval);
+    }
+    result.start = start;
+    result.stop = stop;
+    result.isStartIncluded = isStartIncluded;
+    result.isStopIncluded = isStopIncluded;
+    result.data = data;
+    return result;
+  };
+  TimeInterval.toIso8601 = function(timeInterval, precision) {
+    if (!defined(timeInterval)) {
+      throw new DeveloperError('timeInterval is required.');
+    }
+    return JulianDate.toIso8601(timeInterval.start, precision) + '/' + JulianDate.toIso8601(timeInterval.stop, precision);
+  };
+  TimeInterval.clone = function(timeInterval, result) {
+    if (!defined(timeInterval)) {
+      return undefined;
+    }
+    if (!defined(result)) {
+      return new TimeInterval(timeInterval);
+    }
+    result.start = timeInterval.start;
+    result.stop = timeInterval.stop;
+    result.isStartIncluded = timeInterval.isStartIncluded;
+    result.isStopIncluded = timeInterval.isStopIncluded;
+    result.data = timeInterval.data;
+    return result;
+  };
+  TimeInterval.equals = function(left, right, dataComparer) {
+    return left === right || defined(left) && defined(right) && (left.isEmpty && right.isEmpty || left.isStartIncluded === right.isStartIncluded && left.isStopIncluded === right.isStopIncluded && JulianDate.equals(left.start, right.start) && JulianDate.equals(left.stop, right.stop) && (left.data === right.data || (defined(dataComparer) && dataComparer(left.data, right.data))));
+  };
+  TimeInterval.equalsEpsilon = function(left, right, epsilon, dataComparer) {
+    if (typeof epsilon !== 'number') {
+      throw new DeveloperError('epsilon is required and must be a number.');
+    }
+    return left === right || defined(left) && defined(right) && (left.isEmpty && right.isEmpty || left.isStartIncluded === right.isStartIncluded && left.isStopIncluded === right.isStopIncluded && JulianDate.equalsEpsilon(left.start, right.start, epsilon) && JulianDate.equalsEpsilon(left.stop, right.stop, epsilon) && (left.data === right.data || (defined(dataComparer) && dataComparer(left.data, right.data))));
+  };
+  TimeInterval.intersect = function(left, right, result, mergeCallback) {
+    if (!defined(left)) {
+      throw new DeveloperError('left is required.');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required.');
+    }
+    if (!defined(right)) {
+      return TimeInterval.clone(TimeInterval.EMPTY, result);
+    }
+    var leftStart = left.start;
+    var leftStop = left.stop;
+    var rightStart = right.start;
+    var rightStop = right.stop;
+    var intersectsStartRight = JulianDate.greaterThanOrEquals(rightStart, leftStart) && JulianDate.greaterThanOrEquals(leftStop, rightStart);
+    var intersectsStartLeft = !intersectsStartRight && JulianDate.lessThanOrEquals(rightStart, leftStart) && JulianDate.lessThanOrEquals(leftStart, rightStop);
+    if (!intersectsStartRight && !intersectsStartLeft) {
+      return TimeInterval.clone(TimeInterval.EMPTY, result);
+    }
+    var leftIsStartIncluded = left.isStartIncluded;
+    var leftIsStopIncluded = left.isStopIncluded;
+    var rightIsStartIncluded = right.isStartIncluded;
+    var rightIsStopIncluded = right.isStopIncluded;
+    var leftLessThanRight = JulianDate.lessThan(leftStop, rightStop);
+    result.start = intersectsStartRight ? rightStart : leftStart;
+    result.isStartIncluded = (leftIsStartIncluded && rightIsStartIncluded) || (!JulianDate.equals(rightStart, leftStart) && ((intersectsStartRight && rightIsStartIncluded) || (intersectsStartLeft && leftIsStartIncluded)));
+    result.stop = leftLessThanRight ? leftStop : rightStop;
+    result.isStopIncluded = leftLessThanRight ? leftIsStopIncluded : (leftIsStopIncluded && rightIsStopIncluded) || (!JulianDate.equals(rightStop, leftStop) && rightIsStopIncluded);
+    result.data = defined(mergeCallback) ? mergeCallback(left.data, right.data) : left.data;
+    return result;
+  };
+  TimeInterval.contains = function(timeInterval, julianDate) {
+    if (!defined(timeInterval)) {
+      throw new DeveloperError('timeInterval is required.');
+    }
+    if (!defined(julianDate)) {
+      throw new DeveloperError('julianDate is required.');
+    }
+    if (timeInterval.isEmpty) {
+      return false;
+    }
+    var startComparedToDate = JulianDate.compare(timeInterval.start, julianDate);
+    if (startComparedToDate === 0) {
+      return timeInterval.isStartIncluded;
+    }
+    var dateComparedToStop = JulianDate.compare(julianDate, timeInterval.stop);
+    if (dateComparedToStop === 0) {
+      return timeInterval.isStopIncluded;
+    }
+    return startComparedToDate < 0 && dateComparedToStop < 0;
+  };
+  TimeInterval.prototype.clone = function(result) {
+    return TimeInterval.clone(this, result);
+  };
+  TimeInterval.prototype.equals = function(right, dataComparer) {
+    return TimeInterval.equals(this, right, dataComparer);
+  };
+  TimeInterval.prototype.equalsEpsilon = function(right, epsilon, dataComparer) {
+    return TimeInterval.equalsEpsilon(this, right, epsilon, dataComparer);
+  };
+  TimeInterval.prototype.toString = function() {
+    return TimeInterval.toIso8601(this);
+  };
+  TimeInterval.EMPTY = freezeObject(new TimeInterval({
+    start: new JulianDate(),
+    stop: new JulianDate(),
+    isStartIncluded: false,
+    isStopIncluded: false
+  }));
+  return TimeInterval;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
 define("19", [], function() {
   'use strict';
   function createGuid() {
@@ -1284,7 +1500,7 @@ define("19", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("1c", ["1d", "16", "5", "6", "7", "8", "1e", "1f"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, Event, ReferenceFrame, PositionProperty) {
+define("1e", ["1f", "15", "5", "6", "7", "8", "20", "21"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, Event, ReferenceFrame, PositionProperty) {
   'use strict';
   function ConstantPositionProperty(value, referenceFrame) {
     this._definitionChanged = new Event();
@@ -1337,7 +1553,21 @@ define("1c", ["1d", "16", "5", "6", "7", "8", "1e", "1f"], function(Cartesian3, 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("20", ["16", "5", "6", "7", "8"], function(defaultValue, defined, defineProperties, DeveloperError, Event) {
+define("22", ["23"], function(createPropertyDescriptor) {
+  'use strict';
+  function createRawProperty(value) {
+    return value;
+  }
+  function createRawPropertyDescriptor(name, configurable) {
+    return createPropertyDescriptor(name, configurable, createRawProperty);
+  }
+  return createRawPropertyDescriptor;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("24", ["5", "6", "8"], function(defined, defineProperties, Event) {
   'use strict';
   function ConstantProperty(value) {
     this._value = undefined;
@@ -1361,11 +1591,11 @@ define("20", ["16", "5", "6", "7", "8"], function(defaultValue, defined, defineP
       var isDefined = defined(value);
       var hasClone = isDefined && typeof value.clone === 'function';
       var hasEquals = isDefined && typeof value.equals === 'function';
-      this._hasClone = hasClone;
-      this._hasEquals = hasEquals;
       var changed = !hasEquals || !value.equals(oldValue);
       if (changed) {
-        this._value = !hasClone ? value : value.clone();
+        this._hasClone = hasClone;
+        this._hasEquals = hasEquals;
+        this._value = !hasClone ? value : value.clone(this._value);
         this._definitionChanged.raiseEvent(this);
       }
     }
@@ -1373,13 +1603,19 @@ define("20", ["16", "5", "6", "7", "8"], function(defaultValue, defined, defineP
   ConstantProperty.prototype.equals = function(other) {
     return this === other || (other instanceof ConstantProperty && ((!this._hasEquals && (this._value === other._value)) || (this._hasEquals && this._value.equals(other._value))));
   };
+  ConstantProperty.prototype.valueOf = function() {
+    return this._value;
+  };
+  ConstantProperty.prototype.toString = function() {
+    return String(this._value);
+  };
   return ConstantProperty;
 });
 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("21", ["16", "5", "20"], function(defaultValue, defined, ConstantProperty) {
+define("23", ["15", "5", "24"], function(defaultValue, defined, ConstantProperty) {
   'use strict';
   function createProperty(name, privateName, subscriptionName, configurable, createPropertyCallback) {
     return {
@@ -1394,8 +1630,8 @@ define("21", ["16", "5", "20"], function(defaultValue, defined, ConstantProperty
           subscription();
           this[subscriptionName] = undefined;
         }
-        var hasValue = defined(value);
-        if (hasValue && !defined(value.getValue) && defined(createPropertyCallback)) {
+        var hasValue = value !== undefined;
+        if (hasValue && (!defined(value) || !defined(value.getValue)) && defined(createPropertyCallback)) {
           value = createPropertyCallback(value);
         }
         if (oldValue !== value) {
@@ -1422,21 +1658,138 @@ define("21", ["16", "5", "20"], function(defaultValue, defined, ConstantProperty
 })();
 (function() {
 var define = $__System.amdDefine;
-define("22", ["21"], function(createPropertyDescriptor) {
+define("25", ["15", "5", "6", "7", "8", "24", "23", "26"], function(defaultValue, defined, defineProperties, DeveloperError, Event, ConstantProperty, createPropertyDescriptor, Property) {
   'use strict';
-  function createRawProperty(value) {
-    return value;
+  var PropertyBag = function(value, createPropertyCallback) {
+    this._propertyNames = [];
+    this._definitionChanged = new Event();
+    if (defined(value)) {
+      this.merge(value, createPropertyCallback);
+    }
+  };
+  defineProperties(PropertyBag.prototype, {
+    propertyNames: {get: function() {
+        return this._propertyNames;
+      }},
+    isConstant: {get: function() {
+        var propertyNames = this._propertyNames;
+        for (var i = 0,
+            len = propertyNames.length; i < len; i++) {
+          if (!Property.isConstant(this[propertyNames[i]])) {
+            return false;
+          }
+        }
+        return true;
+      }},
+    definitionChanged: {get: function() {
+        return this._definitionChanged;
+      }}
+  });
+  PropertyBag.prototype.hasProperty = function(propertyName) {
+    return this._propertyNames.indexOf(propertyName) !== -1;
+  };
+  function createConstantProperty(value) {
+    return new ConstantProperty(value);
   }
-  function createRawPropertyDescriptor(name, configurable) {
-    return createPropertyDescriptor(name, configurable, createRawProperty);
+  PropertyBag.prototype.addProperty = function(propertyName, value, createPropertyCallback) {
+    var propertyNames = this._propertyNames;
+    if (!defined(propertyName)) {
+      throw new DeveloperError('propertyName is required.');
+    }
+    if (propertyNames.indexOf(propertyName) !== -1) {
+      throw new DeveloperError(propertyName + ' is already a registered property.');
+    }
+    propertyNames.push(propertyName);
+    Object.defineProperty(this, propertyName, createPropertyDescriptor(propertyName, true, defaultValue(createPropertyCallback, createConstantProperty)));
+    if (defined(value)) {
+      this[propertyName] = value;
+    }
+    this._definitionChanged.raiseEvent(this);
+  };
+  PropertyBag.prototype.removeProperty = function(propertyName) {
+    var propertyNames = this._propertyNames;
+    var index = propertyNames.indexOf(propertyName);
+    if (!defined(propertyName)) {
+      throw new DeveloperError('propertyName is required.');
+    }
+    if (index === -1) {
+      throw new DeveloperError(propertyName + ' is not a registered property.');
+    }
+    this._propertyNames.splice(index, 1);
+    delete this[propertyName];
+    this._definitionChanged.raiseEvent(this);
+  };
+  PropertyBag.prototype.getValue = function(time, result) {
+    if (!defined(time)) {
+      throw new DeveloperError('time is required.');
+    }
+    if (!defined(result)) {
+      result = {};
+    }
+    var propertyNames = this._propertyNames;
+    for (var i = 0,
+        len = propertyNames.length; i < len; i++) {
+      var propertyName = propertyNames[i];
+      result[propertyName] = Property.getValueOrUndefined(this[propertyName], time, result[propertyName]);
+    }
+    return result;
+  };
+  PropertyBag.prototype.merge = function(source, createPropertyCallback) {
+    if (!defined(source)) {
+      throw new DeveloperError('source is required.');
+    }
+    var propertyNames = this._propertyNames;
+    var sourcePropertyNames = defined(source._propertyNames) ? source._propertyNames : Object.keys(source);
+    for (var i = 0,
+        len = sourcePropertyNames.length; i < len; i++) {
+      var name = sourcePropertyNames[i];
+      var targetProperty = this[name];
+      var sourceProperty = source[name];
+      if (targetProperty === undefined && propertyNames.indexOf(name) === -1) {
+        this.addProperty(name, undefined, createPropertyCallback);
+      }
+      if (sourceProperty !== undefined) {
+        if (targetProperty !== undefined) {
+          if (defined(targetProperty) && defined(targetProperty.merge)) {
+            targetProperty.merge(sourceProperty);
+          }
+        } else if (defined(sourceProperty) && defined(sourceProperty.merge) && defined(sourceProperty.clone)) {
+          this[name] = sourceProperty.clone();
+        } else {
+          this[name] = sourceProperty;
+        }
+      }
+    }
+  };
+  function propertiesEqual(a, b) {
+    var aPropertyNames = a._propertyNames;
+    var bPropertyNames = b._propertyNames;
+    var len = aPropertyNames.length;
+    if (len !== bPropertyNames.length) {
+      return false;
+    }
+    for (var aIndex = 0; aIndex < len; ++aIndex) {
+      var name = aPropertyNames[aIndex];
+      var bIndex = bPropertyNames.indexOf(name);
+      if (bIndex === -1) {
+        return false;
+      }
+      if (!Property.equals(a[name], b[name])) {
+        return false;
+      }
+    }
+    return true;
   }
-  return createRawPropertyDescriptor;
+  PropertyBag.prototype.equals = function(other) {
+    return this === other || (other instanceof PropertyBag && propertiesEqual(this, other));
+  };
+  return PropertyBag;
 });
 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("1a", ["1d", "19", "16", "5", "6", "7", "8", "23", "24", "25", "26", "@empty", "@empty", "1c", "@empty", "21", "22", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "27", "@empty", "@empty"], function(Cartesian3, createGuid, defaultValue, defined, defineProperties, DeveloperError, Event, Matrix3, Matrix4, Quaternion, Transforms, BillboardGraphics, BoxGraphics, ConstantPositionProperty, CorridorGraphics, createPropertyDescriptor, createRawPropertyDescriptor, CylinderGraphics, EllipseGraphics, EllipsoidGraphics, LabelGraphics, ModelGraphics, PathGraphics, PointGraphics, PolygonGraphics, PolylineGraphics, PolylineVolumeGraphics, Property, RectangleGraphics, WallGraphics) {
+define("1a", ["1f", "19", "15", "5", "6", "7", "8", "27", "28", "29", "2a", "@empty", "@empty", "1e", "@empty", "23", "22", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "@empty", "26", "25", "@empty", "@empty"], function(Cartesian3, createGuid, defaultValue, defined, defineProperties, DeveloperError, Event, Matrix3, Matrix4, Quaternion, Transforms, BillboardGraphics, BoxGraphics, ConstantPositionProperty, CorridorGraphics, createPropertyDescriptor, createRawPropertyDescriptor, CylinderGraphics, EllipseGraphics, EllipsoidGraphics, LabelGraphics, ModelGraphics, PathGraphics, PointGraphics, PolygonGraphics, PolylineGraphics, PolylineVolumeGraphics, Property, PropertyBag, RectangleGraphics, WallGraphics) {
   'use strict';
   function createConstantPositionProperty(value) {
     return new ConstantPositionProperty(value);
@@ -1464,7 +1817,7 @@ define("1a", ["1d", "19", "16", "5", "6", "7", "8", "23", "24", "25", "26", "@em
     this._name = options.name;
     this._show = defaultValue(options.show, true);
     this._parent = undefined;
-    this._propertyNames = ['billboard', 'box', 'corridor', 'cylinder', 'description', 'ellipse', 'ellipsoid', 'label', 'model', 'orientation', 'path', 'point', 'polygon', 'polyline', 'polylineVolume', 'position', 'rectangle', 'viewFrom', 'wall'];
+    this._propertyNames = ['billboard', 'box', 'corridor', 'cylinder', 'description', 'ellipse', 'ellipsoid', 'label', 'model', 'orientation', 'path', 'point', 'polygon', 'polyline', 'polylineVolume', 'position', 'properties', 'rectangle', 'viewFrom', 'wall'];
     this._billboard = undefined;
     this._billboardSubscription = undefined;
     this._box = undefined;
@@ -1497,6 +1850,8 @@ define("1a", ["1d", "19", "16", "5", "6", "7", "8", "23", "24", "25", "26", "@em
     this._polylineVolumeSubscription = undefined;
     this._position = undefined;
     this._positionSubscription = undefined;
+    this._properties = undefined;
+    this._propertiesSubscription = undefined;
     this._rectangle = undefined;
     this._rectangleSubscription = undefined;
     this._viewFrom = undefined;
@@ -1596,6 +1951,7 @@ define("1a", ["1d", "19", "16", "5", "6", "7", "8", "23", "24", "25", "26", "@em
     polygon: createPropertyTypeDescriptor('polygon', PolygonGraphics),
     polyline: createPropertyTypeDescriptor('polyline', PolylineGraphics),
     polylineVolume: createPropertyTypeDescriptor('polylineVolume', PolylineVolumeGraphics),
+    properties: createPropertyTypeDescriptor('properties', PropertyBag),
     position: createPositionPropertyDescriptor('position'),
     rectangle: createPropertyTypeDescriptor('rectangle', RectangleGraphics),
     viewFrom: createPropertyDescriptor('viewFrom'),
@@ -1688,7 +2044,7 @@ define("1a", ["1d", "19", "16", "5", "6", "7", "8", "23", "24", "25", "26", "@em
 })();
 (function() {
 var define = $__System.amdDefine;
-define("1b", ["28", "19", "5", "6", "7", "8", "29", "17", "2a", "2b", "1a"], function(AssociativeArray, createGuid, defined, defineProperties, DeveloperError, Event, Iso8601, JulianDate, RuntimeError, TimeInterval, Entity) {
+define("1b", ["2b", "19", "5", "6", "7", "8", "1c", "17", "2c", "1d", "1a"], function(AssociativeArray, createGuid, defined, defineProperties, DeveloperError, Event, Iso8601, JulianDate, RuntimeError, TimeInterval, Entity) {
   'use strict';
   var entityOptionsScratch = {id: undefined};
   function fireChangedEvent(collection) {
@@ -1916,7 +2272,7 @@ define("1b", ["28", "19", "5", "6", "7", "8", "29", "17", "2a", "2b", "1a"], fun
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2c", ["1d", "2d", "16", "5", "6", "7", "2e"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, Ellipsoid) {
+define("2d", ["1f", "2e", "15", "5", "6", "7", "2f"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, Ellipsoid) {
   'use strict';
   function GeographicProjection(ellipsoid) {
     this._ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
@@ -1961,7 +2317,7 @@ define("2c", ["1d", "2d", "16", "5", "6", "7", "2e"], function(Cartesian3, Carto
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2f", ["16", "5", "7", "d"], function(defaultValue, defined, DeveloperError, CesiumMath) {
+define("30", ["15", "5", "7", "d"], function(defaultValue, defined, DeveloperError, CesiumMath) {
   'use strict';
   var factorial = CesiumMath.factorial;
   function calculateCoefficientTerm(x, zIndices, xTable, derivOrder, termOrder, reservedIndices) {
@@ -2161,7 +2517,7 @@ define("2f", ["16", "5", "7", "d"], function(defaultValue, defined, DeveloperErr
 })();
 (function() {
 var define = $__System.amdDefine;
-define("30", ["5", "6", "7", "23", "25", "1e", "26"], function(defined, defineProperties, DeveloperError, Matrix3, Quaternion, ReferenceFrame, Transforms) {
+define("31", ["5", "6", "7", "27", "29", "20", "2a"], function(defined, defineProperties, DeveloperError, Matrix3, Quaternion, ReferenceFrame, Transforms) {
   "use strict";
   var OrientationProperty = function() {
     DeveloperError.throwInstantiationError();
@@ -2289,7 +2645,7 @@ define("30", ["5", "6", "7", "23", "25", "1e", "26"], function(defined, definePr
 })();
 (function() {
 var define = $__System.amdDefine;
-define("31", ["5", "6", "7", "32"], function(defined, defineProperties, DeveloperError, PerspectiveOffCenterFrustum) {
+define("32", ["5", "6", "7", "33"], function(defined, defineProperties, DeveloperError, PerspectiveOffCenterFrustum) {
   'use strict';
   function PerspectiveFrustum() {
     this._offCenterFrustum = new PerspectiveOffCenterFrustum();
@@ -2398,7 +2754,7 @@ define("31", ["5", "6", "7", "32"], function(defined, defineProperties, Develope
 })();
 (function() {
 var define = $__System.amdDefine;
-define("33", ["11"], function(freezeObject) {
+define("34", ["11"], function(freezeObject) {
   'use strict';
   var Intersect = {
     OUTSIDE: -1,
@@ -2411,7 +2767,7 @@ define("33", ["11"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("34", ["1d", "35", "16", "5", "7", "33", "36"], function(Cartesian3, Cartesian4, defaultValue, defined, DeveloperError, Intersect, Plane) {
+define("35", ["1f", "36", "15", "5", "7", "34", "37"], function(Cartesian3, Cartesian4, defaultValue, defined, DeveloperError, Intersect, Plane) {
   'use strict';
   function CullingVolume(planes) {
     this.planes = defaultValue(planes, []);
@@ -2515,7 +2871,7 @@ define("34", ["1d", "35", "16", "5", "7", "33", "36"], function(Cartesian3, Cart
 })();
 (function() {
 var define = $__System.amdDefine;
-define("32", ["a", "1d", "35", "16", "5", "6", "7", "24", "34"], function(Cartesian2, Cartesian3, Cartesian4, defaultValue, defined, defineProperties, DeveloperError, Matrix4, CullingVolume) {
+define("33", ["1f", "36", "5", "6", "7", "28", "35"], function(Cartesian3, Cartesian4, defined, defineProperties, DeveloperError, Matrix4, CullingVolume) {
   'use strict';
   function PerspectiveOffCenterFrustum() {
     this.left = undefined;
@@ -2721,7 +3077,7 @@ define("32", ["a", "1d", "35", "16", "5", "6", "7", "24", "34"], function(Cartes
 })();
 (function() {
 var define = $__System.amdDefine;
-define("37", ["5", "6", "7", "8", "27"], function(defined, defineProperties, DeveloperError, Event, Property) {
+define("38", ["5", "6", "7", "8", "26"], function(defined, defineProperties, DeveloperError, Event, Property) {
   "use strict";
   function resolve(that) {
     var targetEntity = that._targetEntity;
@@ -2792,7 +3148,7 @@ define("37", ["5", "6", "7", "8", "27"], function(defined, defineProperties, Dev
 })();
 (function() {
 var define = $__System.amdDefine;
-define("38", ["5", "6", "7", "8", "2a", "27"], function(defined, defineProperties, DeveloperError, Event, RuntimeError, Property) {
+define("39", ["5", "6", "7", "8", "2c", "26"], function(defined, defineProperties, DeveloperError, Event, RuntimeError, Property) {
   'use strict';
   function resolveEntity(that) {
     var entityIsResolved = true;
@@ -2966,7 +3322,7 @@ define("38", ["5", "6", "7", "8", "2a", "27"], function(defined, definePropertie
 })();
 (function() {
 var define = $__System.amdDefine;
-define("1e", ["11"], function(freezeObject) {
+define("20", ["11"], function(freezeObject) {
   'use strict';
   var ReferenceFrame = {
     FIXED: 0,
@@ -2978,7 +3334,7 @@ define("1e", ["11"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("1f", ["1d", "5", "6", "7", "23", "24", "25", "1e", "26"], function(Cartesian3, defined, defineProperties, DeveloperError, Matrix3, Matrix4, Quaternion, ReferenceFrame, Transforms) {
+define("21", ["1f", "5", "6", "7", "27", "28", "29", "20", "2a"], function(Cartesian3, defined, defineProperties, DeveloperError, Matrix3, Matrix4, Quaternion, ReferenceFrame, Transforms) {
   'use strict';
   function PositionProperty() {
     DeveloperError.throwInstantiationError();
@@ -3131,179 +3487,7 @@ define("1f", ["1d", "5", "6", "7", "23", "24", "25", "1e", "26"], function(Carte
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2b", ["16", "5", "6", "7", "11", "17"], function(defaultValue, defined, defineProperties, DeveloperError, freezeObject, JulianDate) {
-  'use strict';
-  function TimeInterval(options) {
-    options = defaultValue(options, defaultValue.EMPTY_OBJECT);
-    this.start = defined(options.start) ? JulianDate.clone(options.start) : new JulianDate();
-    this.stop = defined(options.stop) ? JulianDate.clone(options.stop) : new JulianDate();
-    this.data = options.data;
-    this.isStartIncluded = defaultValue(options.isStartIncluded, true);
-    this.isStopIncluded = defaultValue(options.isStopIncluded, true);
-  }
-  defineProperties(TimeInterval.prototype, {isEmpty: {get: function() {
-        var stopComparedToStart = JulianDate.compare(this.stop, this.start);
-        return stopComparedToStart < 0 || (stopComparedToStart === 0 && (!this.isStartIncluded || !this.isStopIncluded));
-      }}});
-  var scratchInterval = {
-    start: undefined,
-    stop: undefined,
-    isStartIncluded: undefined,
-    isStopIncluded: undefined,
-    data: undefined
-  };
-  TimeInterval.fromIso8601 = function(options, result) {
-    if (!defined(options)) {
-      throw new DeveloperError('options is required.');
-    }
-    if (!defined(options.iso8601)) {
-      throw new DeveloperError('options.iso8601 is required.');
-    }
-    var dates = options.iso8601.split('/');
-    var start = JulianDate.fromIso8601(dates[0]);
-    var stop = JulianDate.fromIso8601(dates[1]);
-    var isStartIncluded = defaultValue(options.isStartIncluded, true);
-    var isStopIncluded = defaultValue(options.isStopIncluded, true);
-    var data = options.data;
-    if (!defined(result)) {
-      scratchInterval.start = start;
-      scratchInterval.stop = stop;
-      scratchInterval.isStartIncluded = isStartIncluded;
-      scratchInterval.isStopIncluded = isStopIncluded;
-      scratchInterval.data = data;
-      return new TimeInterval(scratchInterval);
-    }
-    result.start = start;
-    result.stop = stop;
-    result.isStartIncluded = isStartIncluded;
-    result.isStopIncluded = isStopIncluded;
-    result.data = data;
-    return result;
-  };
-  TimeInterval.toIso8601 = function(timeInterval, precision) {
-    if (!defined(timeInterval)) {
-      throw new DeveloperError('timeInterval is required.');
-    }
-    return JulianDate.toIso8601(timeInterval.start, precision) + '/' + JulianDate.toIso8601(timeInterval.stop, precision);
-  };
-  TimeInterval.clone = function(timeInterval, result) {
-    if (!defined(timeInterval)) {
-      return undefined;
-    }
-    if (!defined(result)) {
-      return new TimeInterval(timeInterval);
-    }
-    result.start = timeInterval.start;
-    result.stop = timeInterval.stop;
-    result.isStartIncluded = timeInterval.isStartIncluded;
-    result.isStopIncluded = timeInterval.isStopIncluded;
-    result.data = timeInterval.data;
-    return result;
-  };
-  TimeInterval.equals = function(left, right, dataComparer) {
-    return left === right || defined(left) && defined(right) && (left.isEmpty && right.isEmpty || left.isStartIncluded === right.isStartIncluded && left.isStopIncluded === right.isStopIncluded && JulianDate.equals(left.start, right.start) && JulianDate.equals(left.stop, right.stop) && (left.data === right.data || (defined(dataComparer) && dataComparer(left.data, right.data))));
-  };
-  TimeInterval.equalsEpsilon = function(left, right, epsilon, dataComparer) {
-    if (typeof epsilon !== 'number') {
-      throw new DeveloperError('epsilon is required and must be a number.');
-    }
-    return left === right || defined(left) && defined(right) && (left.isEmpty && right.isEmpty || left.isStartIncluded === right.isStartIncluded && left.isStopIncluded === right.isStopIncluded && JulianDate.equalsEpsilon(left.start, right.start, epsilon) && JulianDate.equalsEpsilon(left.stop, right.stop, epsilon) && (left.data === right.data || (defined(dataComparer) && dataComparer(left.data, right.data))));
-  };
-  TimeInterval.intersect = function(left, right, result, mergeCallback) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required.');
-    }
-    if (!defined(right)) {
-      return TimeInterval.clone(TimeInterval.EMPTY, result);
-    }
-    var leftStart = left.start;
-    var leftStop = left.stop;
-    var rightStart = right.start;
-    var rightStop = right.stop;
-    var intersectsStartRight = JulianDate.greaterThanOrEquals(rightStart, leftStart) && JulianDate.greaterThanOrEquals(leftStop, rightStart);
-    var intersectsStartLeft = !intersectsStartRight && JulianDate.lessThanOrEquals(rightStart, leftStart) && JulianDate.lessThanOrEquals(leftStart, rightStop);
-    if (!intersectsStartRight && !intersectsStartLeft) {
-      return TimeInterval.clone(TimeInterval.EMPTY, result);
-    }
-    var leftIsStartIncluded = left.isStartIncluded;
-    var leftIsStopIncluded = left.isStopIncluded;
-    var rightIsStartIncluded = right.isStartIncluded;
-    var rightIsStopIncluded = right.isStopIncluded;
-    var leftLessThanRight = JulianDate.lessThan(leftStop, rightStop);
-    result.start = intersectsStartRight ? rightStart : leftStart;
-    result.isStartIncluded = (leftIsStartIncluded && rightIsStartIncluded) || (!JulianDate.equals(rightStart, leftStart) && ((intersectsStartRight && rightIsStartIncluded) || (intersectsStartLeft && leftIsStartIncluded)));
-    result.stop = leftLessThanRight ? leftStop : rightStop;
-    result.isStopIncluded = leftLessThanRight ? leftIsStopIncluded : (leftIsStopIncluded && rightIsStopIncluded) || (!JulianDate.equals(rightStop, leftStop) && rightIsStopIncluded);
-    result.data = defined(mergeCallback) ? mergeCallback(left.data, right.data) : left.data;
-    return result;
-  };
-  TimeInterval.contains = function(timeInterval, julianDate) {
-    if (!defined(timeInterval)) {
-      throw new DeveloperError('timeInterval is required.');
-    }
-    if (!defined(julianDate)) {
-      throw new DeveloperError('julianDate is required.');
-    }
-    if (timeInterval.isEmpty) {
-      return false;
-    }
-    var startComparedToDate = JulianDate.compare(timeInterval.start, julianDate);
-    if (startComparedToDate === 0) {
-      return timeInterval.isStartIncluded;
-    }
-    var dateComparedToStop = JulianDate.compare(julianDate, timeInterval.stop);
-    if (dateComparedToStop === 0) {
-      return timeInterval.isStopIncluded;
-    }
-    return startComparedToDate < 0 && dateComparedToStop < 0;
-  };
-  TimeInterval.prototype.clone = function(result) {
-    return TimeInterval.clone(this, result);
-  };
-  TimeInterval.prototype.equals = function(right, dataComparer) {
-    return TimeInterval.equals(this, right, dataComparer);
-  };
-  TimeInterval.prototype.equalsEpsilon = function(right, epsilon, dataComparer) {
-    return TimeInterval.equalsEpsilon(this, right, epsilon, dataComparer);
-  };
-  TimeInterval.prototype.toString = function() {
-    return TimeInterval.toIso8601(this);
-  };
-  TimeInterval.EMPTY = freezeObject(new TimeInterval({
-    start: new JulianDate(),
-    stop: new JulianDate(),
-    isStartIncluded: false,
-    isStopIncluded: false
-  }));
-  return TimeInterval;
-});
-
-})();
-(function() {
-var define = $__System.amdDefine;
-define("29", ["11", "17", "2b"], function(freezeObject, JulianDate, TimeInterval) {
-  'use strict';
-  var MINIMUM_VALUE = freezeObject(JulianDate.fromIso8601('0000-01-01T00:00:00Z'));
-  var MAXIMUM_VALUE = freezeObject(JulianDate.fromIso8601('9999-12-31T24:00:00Z'));
-  var MAXIMUM_INTERVAL = freezeObject(new TimeInterval({
-    start: MINIMUM_VALUE,
-    stop: MAXIMUM_VALUE
-  }));
-  var Iso8601 = {
-    MINIMUM_VALUE: MINIMUM_VALUE,
-    MAXIMUM_VALUE: MAXIMUM_VALUE,
-    MAXIMUM_INTERVAL: MAXIMUM_INTERVAL
-  };
-  return Iso8601;
-});
-
-})();
-(function() {
-var define = $__System.amdDefine;
-define("27", ["16", "5", "6", "7", "29"], function(defaultValue, defined, defineProperties, DeveloperError, Iso8601) {
+define("26", ["15", "5", "6", "7"], function(defaultValue, defined, defineProperties, DeveloperError) {
   'use strict';
   function Property() {
     DeveloperError.throwInstantiationError();
@@ -3357,7 +3541,7 @@ define("27", ["16", "5", "6", "7", "29"], function(defaultValue, defined, define
 })();
 (function() {
 var define = $__System.amdDefine;
-define("39", ["1d", "16", "5", "6", "7", "8", "1e", "1f", "27", "3a"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, Event, ReferenceFrame, PositionProperty, Property, SampledProperty) {
+define("3a", ["1f", "15", "5", "6", "7", "8", "20", "21", "26", "3b"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, Event, ReferenceFrame, PositionProperty, Property, SampledProperty) {
   'use strict';
   function SampledPositionProperty(referenceFrame, numberOfDerivatives) {
     numberOfDerivatives = defaultValue(numberOfDerivatives, 0);
@@ -3457,8 +3641,8 @@ define("39", ["1d", "16", "5", "6", "7", "8", "1e", "1f", "27", "3a"], function(
   SampledPositionProperty.prototype.addSamples = function(times, positions, derivatives) {
     this._property.addSamples(times, positions, derivatives);
   };
-  SampledPositionProperty.prototype.addSamplesPackedArray = function(data, epoch) {
-    this._property.addSamplesPackedArray(data, epoch);
+  SampledPositionProperty.prototype.addSamplesPackedArray = function(packedSamples, epoch) {
+    this._property.addSamplesPackedArray(packedSamples, epoch);
   };
   SampledPositionProperty.prototype.equals = function(other) {
     return this === other || (other instanceof SampledPositionProperty && Property.equals(this._property, other._property) && this._referenceFrame === other._referenceFrame);
@@ -3545,7 +3729,7 @@ define("8", ["5", "6", "7"], function(defined, defineProperties, DeveloperError)
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3b", ["11"], function(freezeObject) {
+define("3c", ["11"], function(freezeObject) {
   'use strict';
   var ExtrapolationType = {
     NONE: 0,
@@ -3558,7 +3742,7 @@ define("3b", ["11"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3c", ["5", "7"], function(defined, DeveloperError) {
+define("3d", ["5", "7"], function(defined, DeveloperError) {
   'use strict';
   var LinearApproximation = {type: 'Linear'};
   LinearApproximation.getRequiredDataPoints = function(degree) {
@@ -3594,7 +3778,7 @@ define("3c", ["5", "7"], function(defined, DeveloperError) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3a", ["3d", "16", "5", "6", "7", "8", "3b", "17", "3c"], function(binarySearch, defaultValue, defined, defineProperties, DeveloperError, Event, ExtrapolationType, JulianDate, LinearApproximation) {
+define("3b", ["3e", "15", "5", "6", "7", "8", "3c", "17", "3d"], function(binarySearch, defaultValue, defined, defineProperties, DeveloperError, Event, ExtrapolationType, JulianDate, LinearApproximation) {
   'use strict';
   var PackableNumber = {
     packedLength: 1,
@@ -4043,7 +4227,7 @@ define("3a", ["3d", "16", "5", "6", "7", "8", "3b", "17", "3c"], function(binary
 })();
 (function() {
 var define = $__System.amdDefine;
-define("28", ["5", "6", "7"], function(defined, defineProperties, DeveloperError) {
+define("2b", ["5", "6", "7"], function(defined, defineProperties, DeveloperError) {
   'use strict';
   function AssociativeArray() {
     this._array = [];
@@ -4106,7 +4290,7 @@ define("28", ["5", "6", "7"], function(defined, defineProperties, DeveloperError
 })();
 (function() {
 var define = $__System.amdDefine;
-define("b", ["16", "7"], function(defaultValue, DeveloperError) {
+define("b", ["15", "7"], function(defaultValue, DeveloperError) {
   'use strict';
   function returnTrue() {
     return true;
@@ -4130,6 +4314,24 @@ define("b", ["16", "7"], function(defaultValue, DeveloperError) {
 })();
 (function() {
 var define = $__System.amdDefine;
+define("16", ["5"], function(defined) {
+  'use strict';
+  var getTimestamp;
+  if (typeof performance !== 'undefined' && defined(performance.now)) {
+    getTimestamp = function() {
+      return performance.now();
+    };
+  } else {
+    getTimestamp = function() {
+      return Date.now();
+    };
+  }
+  return getTimestamp;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
 define("c", ["11"], function(freezeObject) {
   'use strict';
   var KeyboardEventModifier = {
@@ -4143,7 +4345,7 @@ define("c", ["11"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("e", ["28", "a", "16", "5", "b", "7", "3e", "c", "f"], function(AssociativeArray, Cartesian2, defaultValue, defined, destroyObject, DeveloperError, FeatureDetection, KeyboardEventModifier, ScreenSpaceEventType) {
+define("e", ["2b", "a", "15", "5", "b", "7", "3f", "16", "c", "f"], function(AssociativeArray, Cartesian2, defaultValue, defined, destroyObject, DeveloperError, FeatureDetection, getTimestamp, KeyboardEventModifier, ScreenSpaceEventType) {
   'use strict';
   function getPosition(screenSpaceEventHandler, event, result) {
     var element = screenSpaceEventHandler._element;
@@ -4195,6 +4397,7 @@ define("e", ["28", "a", "16", "5", "b", "7", "3e", "c", "f"], function(Associati
       registerListener(screenSpaceEventHandler, 'pointerdown', element, handlePointerDown);
       registerListener(screenSpaceEventHandler, 'pointerup', element, handlePointerUp);
       registerListener(screenSpaceEventHandler, 'pointermove', element, handlePointerMove);
+      registerListener(screenSpaceEventHandler, 'pointercancel', element, handlePointerUp);
     } else {
       registerListener(screenSpaceEventHandler, 'mousedown', element, handleMouseDown);
       registerListener(screenSpaceEventHandler, 'mouseup', alternateElement, handleMouseUp);
@@ -4202,6 +4405,7 @@ define("e", ["28", "a", "16", "5", "b", "7", "3e", "c", "f"], function(Associati
       registerListener(screenSpaceEventHandler, 'touchstart', element, handleTouchStart);
       registerListener(screenSpaceEventHandler, 'touchend', alternateElement, handleTouchEnd);
       registerListener(screenSpaceEventHandler, 'touchmove', alternateElement, handleTouchMove);
+      registerListener(screenSpaceEventHandler, 'touchcancel', alternateElement, handleTouchEnd);
     }
     registerListener(screenSpaceEventHandler, 'dblclick', element, handleDblClick);
     var wheelEvent;
@@ -4221,8 +4425,14 @@ define("e", ["28", "a", "16", "5", "b", "7", "3e", "c", "f"], function(Associati
     }
   }
   var mouseDownEvent = {position: new Cartesian2()};
+  function gotTouchEvent(screenSpaceEventHandler) {
+    screenSpaceEventHandler._lastSeenTouchEvent = getTimestamp();
+  }
+  function canProcessMouseEvent(screenSpaceEventHandler) {
+    return (getTimestamp() - screenSpaceEventHandler._lastSeenTouchEvent) > ScreenSpaceEventHandler.mouseEmulationIgnoreMilliseconds;
+  }
   function handleMouseDown(screenSpaceEventHandler, event) {
-    if (screenSpaceEventHandler._seenAnyTouchEvents) {
+    if (!canProcessMouseEvent(screenSpaceEventHandler)) {
       return;
     }
     var button = event.button;
@@ -4251,7 +4461,7 @@ define("e", ["28", "a", "16", "5", "b", "7", "3e", "c", "f"], function(Associati
   var mouseUpEvent = {position: new Cartesian2()};
   var mouseClickEvent = {position: new Cartesian2()};
   function handleMouseUp(screenSpaceEventHandler, event) {
-    if (screenSpaceEventHandler._seenAnyTouchEvents) {
+    if (!canProcessMouseEvent(screenSpaceEventHandler)) {
       return;
     }
     var button = event.button;
@@ -4296,7 +4506,7 @@ define("e", ["28", "a", "16", "5", "b", "7", "3e", "c", "f"], function(Associati
     endPosition: new Cartesian2()
   };
   function handleMouseMove(screenSpaceEventHandler, event) {
-    if (screenSpaceEventHandler._seenAnyTouchEvents) {
+    if (!canProcessMouseEvent(screenSpaceEventHandler)) {
       return;
     }
     var modifier = getModifier(event);
@@ -4319,10 +4529,6 @@ define("e", ["28", "a", "16", "5", "b", "7", "3e", "c", "f"], function(Associati
     var screenSpaceEventType;
     if (button === MouseButton.LEFT) {
       screenSpaceEventType = ScreenSpaceEventType.LEFT_DOUBLE_CLICK;
-    } else if (button === MouseButton.MIDDLE) {
-      screenSpaceEventType = ScreenSpaceEventType.MIDDLE_DOUBLE_CLICK;
-    } else if (button === MouseButton.RIGHT) {
-      screenSpaceEventType = ScreenSpaceEventType.RIGHT_DOUBLE_CLICK;
     } else {
       return;
     }
@@ -4360,7 +4566,7 @@ define("e", ["28", "a", "16", "5", "b", "7", "3e", "c", "f"], function(Associati
     }
   }
   function handleTouchStart(screenSpaceEventHandler, event) {
-    screenSpaceEventHandler._seenAnyTouchEvents = true;
+    gotTouchEvent(screenSpaceEventHandler);
     var changedTouches = event.changedTouches;
     var i;
     var length = changedTouches.length;
@@ -4381,7 +4587,7 @@ define("e", ["28", "a", "16", "5", "b", "7", "3e", "c", "f"], function(Associati
     }
   }
   function handleTouchEnd(screenSpaceEventHandler, event) {
-    screenSpaceEventHandler._seenAnyTouchEvents = true;
+    gotTouchEvent(screenSpaceEventHandler);
     var changedTouches = event.changedTouches;
     var i;
     var length = changedTouches.length;
@@ -4464,11 +4670,12 @@ define("e", ["28", "a", "16", "5", "b", "7", "3e", "c", "f"], function(Associati
         Cartesian2.clone(positions.values[0], touch2StartEvent.position1);
         Cartesian2.clone(positions.values[1], touch2StartEvent.position2);
         action(touch2StartEvent);
+        event.preventDefault();
       }
     }
   }
   function handleTouchMove(screenSpaceEventHandler, event) {
-    screenSpaceEventHandler._seenAnyTouchEvents = true;
+    gotTouchEvent(screenSpaceEventHandler);
     var changedTouches = event.changedTouches;
     var i;
     var length = changedTouches.length;
@@ -4577,7 +4784,11 @@ define("e", ["28", "a", "16", "5", "b", "7", "3e", "c", "f"], function(Associati
     if (event.pointerType === 'touch') {
       var positions = screenSpaceEventHandler._positions;
       var identifier = event.pointerId;
-      getPosition(screenSpaceEventHandler, event, positions.get(identifier));
+      var position = positions.get(identifier);
+      if (!defined(position)) {
+        return;
+      }
+      getPosition(screenSpaceEventHandler, event, position);
       fireTouchMoveEvents(screenSpaceEventHandler, event);
       var previousPositions = screenSpaceEventHandler._previousPositions;
       Cartesian2.clone(positions.get(identifier), previousPositions.get(identifier));
@@ -4589,7 +4800,7 @@ define("e", ["28", "a", "16", "5", "b", "7", "3e", "c", "f"], function(Associati
     this._inputEvents = {};
     this._buttonDown = undefined;
     this._isPinching = false;
-    this._seenAnyTouchEvents = false;
+    this._lastSeenTouchEvent = -ScreenSpaceEventHandler.mouseEmulationIgnoreMilliseconds;
     this._primaryStartPosition = new Cartesian2();
     this._primaryPosition = new Cartesian2();
     this._primaryPreviousPosition = new Cartesian2();
@@ -4631,6 +4842,7 @@ define("e", ["28", "a", "16", "5", "b", "7", "3e", "c", "f"], function(Associati
     unregisterListeners(this);
     return destroyObject(this);
   };
+  ScreenSpaceEventHandler.mouseEmulationIgnoreMilliseconds = 800;
   return ScreenSpaceEventHandler;
 });
 
@@ -4647,11 +4859,9 @@ define("f", ["11"], function(freezeObject) {
     RIGHT_DOWN: 5,
     RIGHT_UP: 6,
     RIGHT_CLICK: 7,
-    RIGHT_DOUBLE_CLICK: 8,
     MIDDLE_DOWN: 10,
     MIDDLE_UP: 11,
     MIDDLE_CLICK: 12,
-    MIDDLE_DOUBLE_CLICK: 13,
     MOUSE_MOVE: 15,
     WHEEL: 16,
     PINCH_START: 17,
@@ -4664,7 +4874,7 @@ define("f", ["11"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("a", ["16", "5", "7", "11", "d"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
+define("a", ["40", "15", "5", "7", "11", "d"], function(Check, defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
   'use strict';
   function Cartesian2(x, y) {
     this.x = defaultValue(x, 0.0);
@@ -4693,20 +4903,15 @@ define("a", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develop
   Cartesian2.fromCartesian4 = Cartesian2.clone;
   Cartesian2.packedLength = 2;
   Cartesian2.pack = function(value, array, startingIndex) {
-    if (!defined(value)) {
-      throw new DeveloperError('value is required');
-    }
-    if (!defined(array)) {
-      throw new DeveloperError('array is required');
-    }
+    Check.typeOf.object('value', value);
+    Check.defined('array', array);
     startingIndex = defaultValue(startingIndex, 0);
     array[startingIndex++] = value.x;
     array[startingIndex] = value.y;
+    return array;
   };
   Cartesian2.unpack = function(array, startingIndex, result) {
-    if (!defined(array)) {
-      throw new DeveloperError('array is required');
-    }
+    Check.defined('array', array);
     startingIndex = defaultValue(startingIndex, 0);
     if (!defined(result)) {
       result = new Cartesian2();
@@ -4716,9 +4921,7 @@ define("a", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develop
     return result;
   };
   Cartesian2.packArray = function(array, result) {
-    if (!defined(array)) {
-      throw new DeveloperError('array is required');
-    }
+    Check.defined('array', array);
     var length = array.length;
     if (!defined(result)) {
       result = new Array(length * 2);
@@ -4731,9 +4934,7 @@ define("a", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develop
     return result;
   };
   Cartesian2.unpackArray = function(array, result) {
-    if (!defined(array)) {
-      throw new DeveloperError('array is required');
-    }
+    Check.defined('array', array);
     var length = array.length;
     if (!defined(result)) {
       result = new Array(length / 2);
@@ -4748,49 +4949,31 @@ define("a", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develop
   };
   Cartesian2.fromArray = Cartesian2.unpack;
   Cartesian2.maximumComponent = function(cartesian) {
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
+    Check.typeOf.object('cartesian', cartesian);
     return Math.max(cartesian.x, cartesian.y);
   };
   Cartesian2.minimumComponent = function(cartesian) {
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
+    Check.typeOf.object('cartesian', cartesian);
     return Math.min(cartesian.x, cartesian.y);
   };
   Cartesian2.minimumByComponent = function(first, second, result) {
-    if (!defined(first)) {
-      throw new DeveloperError('first is required.');
-    }
-    if (!defined(second)) {
-      throw new DeveloperError('second is required.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required.');
-    }
+    Check.typeOf.object('first', first);
+    Check.typeOf.object('second', second);
+    Check.typeOf.object('result', result);
     result.x = Math.min(first.x, second.x);
     result.y = Math.min(first.y, second.y);
     return result;
   };
   Cartesian2.maximumByComponent = function(first, second, result) {
-    if (!defined(first)) {
-      throw new DeveloperError('first is required.');
-    }
-    if (!defined(second)) {
-      throw new DeveloperError('second is required.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required.');
-    }
+    Check.typeOf.object('first', first);
+    Check.typeOf.object('second', second);
+    Check.typeOf.object('result', result);
     result.x = Math.max(first.x, second.x);
     result.y = Math.max(first.y, second.y);
     return result;
   };
   Cartesian2.magnitudeSquared = function(cartesian) {
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
+    Check.typeOf.object('cartesian', cartesian);
     return cartesian.x * cartesian.x + cartesian.y * cartesian.y;
   };
   Cartesian2.magnitude = function(cartesian) {
@@ -4812,132 +4995,89 @@ define("a", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develop
     return Cartesian2.magnitudeSquared(distanceScratch);
   };
   Cartesian2.normalize = function(cartesian, result) {
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('cartesian', cartesian);
+    Check.typeOf.object('result', result);
     var magnitude = Cartesian2.magnitude(cartesian);
     result.x = cartesian.x / magnitude;
     result.y = cartesian.y / magnitude;
+    if (isNaN(result.x) || isNaN(result.y)) {
+      throw new DeveloperError('normalized result is not a number');
+    }
     return result;
   };
   Cartesian2.dot = function(left, right) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
     return left.x * right.x + left.y * right.y;
   };
   Cartesian2.multiplyComponents = function(left, right, result) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
+    Check.typeOf.object('result', result);
     result.x = left.x * right.x;
     result.y = left.y * right.y;
     return result;
   };
+  Cartesian2.divideComponents = function(left, right, result) {
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
+    Check.typeOf.object('result', result);
+    result.x = left.x / right.x;
+    result.y = left.y / right.y;
+    return result;
+  };
   Cartesian2.add = function(left, right, result) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
+    Check.typeOf.object('result', result);
     result.x = left.x + right.x;
     result.y = left.y + right.y;
     return result;
   };
   Cartesian2.subtract = function(left, right, result) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
+    Check.typeOf.object('result', result);
     result.x = left.x - right.x;
     result.y = left.y - right.y;
     return result;
   };
   Cartesian2.multiplyByScalar = function(cartesian, scalar, result) {
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
-    if (typeof scalar !== 'number') {
-      throw new DeveloperError('scalar is required and must be a number.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('cartesian', cartesian);
+    Check.typeOf.number('scalar', scalar);
+    Check.typeOf.object('result', result);
     result.x = cartesian.x * scalar;
     result.y = cartesian.y * scalar;
     return result;
   };
   Cartesian2.divideByScalar = function(cartesian, scalar, result) {
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
-    if (typeof scalar !== 'number') {
-      throw new DeveloperError('scalar is required and must be a number.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('cartesian', cartesian);
+    Check.typeOf.number('scalar', scalar);
+    Check.typeOf.object('result', result);
     result.x = cartesian.x / scalar;
     result.y = cartesian.y / scalar;
     return result;
   };
   Cartesian2.negate = function(cartesian, result) {
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('cartesian', cartesian);
+    Check.typeOf.object('result', result);
     result.x = -cartesian.x;
     result.y = -cartesian.y;
     return result;
   };
   Cartesian2.abs = function(cartesian, result) {
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('cartesian', cartesian);
+    Check.typeOf.object('result', result);
     result.x = Math.abs(cartesian.x);
     result.y = Math.abs(cartesian.y);
     return result;
   };
   var lerpScratch = new Cartesian2();
   Cartesian2.lerp = function(start, end, t, result) {
-    if (!defined(start)) {
-      throw new DeveloperError('start is required.');
-    }
-    if (!defined(end)) {
-      throw new DeveloperError('end is required.');
-    }
-    if (typeof t !== 'number') {
-      throw new DeveloperError('t is required and must be a number.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required.');
-    }
+    Check.typeOf.object('start', start);
+    Check.typeOf.object('end', end);
+    Check.typeOf.number('t', t);
+    Check.typeOf.object('result', result);
     Cartesian2.multiplyByScalar(end, t, lerpScratch);
     result = Cartesian2.multiplyByScalar(start, 1.0 - t, result);
     return Cartesian2.add(lerpScratch, result, result);
@@ -4945,24 +5085,16 @@ define("a", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develop
   var angleBetweenScratch = new Cartesian2();
   var angleBetweenScratch2 = new Cartesian2();
   Cartesian2.angleBetween = function(left, right) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
     Cartesian2.normalize(left, angleBetweenScratch);
     Cartesian2.normalize(right, angleBetweenScratch2);
     return CesiumMath.acosClamped(Cartesian2.dot(angleBetweenScratch, angleBetweenScratch2));
   };
   var mostOrthogonalAxisScratch = new Cartesian2();
   Cartesian2.mostOrthogonalAxis = function(cartesian, result) {
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required.');
-    }
+    Check.typeOf.object('cartesian', cartesian);
+    Check.typeOf.object('result', result);
     var f = Cartesian2.normalize(cartesian, mostOrthogonalAxisScratch);
     Cartesian2.abs(f, f);
     if (f.x <= f.y) {
@@ -5002,7 +5134,7 @@ define("a", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develop
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3f", ["40", "3d", "16", "5", "41", "11", "17", "42", "43", "2a", "44", "45"], function(when, binarySearch, defaultValue, defined, EarthOrientationParametersSample, freezeObject, JulianDate, LeapSecond, loadJson, RuntimeError, TimeConstants, TimeStandard) {
+define("41", ["42", "3e", "15", "5", "43", "11", "17", "44", "45", "2c", "46", "47"], function(when, binarySearch, defaultValue, defined, EarthOrientationParametersSample, freezeObject, JulianDate, LeapSecond, loadJson, RuntimeError, TimeConstants, TimeStandard) {
   'use strict';
   function EarthOrientationParameters(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
@@ -5228,7 +5360,7 @@ define("3f", ["40", "3d", "16", "5", "41", "11", "17", "42", "43", "2a", "44", "
 })();
 (function() {
 var define = $__System.amdDefine;
-define("41", [], function() {
+define("43", [], function() {
   'use strict';
   function EarthOrientationParametersSample(xPoleWander, yPoleWander, xPoleOffset, yPoleOffset, ut1MinusUtc) {
     this.xPoleWander = xPoleWander;
@@ -5243,7 +5375,7 @@ define("41", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("46", ["47", "16", "5", "7"], function(Uri, defaultValue, defined, DeveloperError) {
+define("48", ["49", "15", "5", "7"], function(Uri, defaultValue, defined, DeveloperError) {
   'use strict';
   function getAbsoluteUri(relative, base) {
     if (!defined(relative)) {
@@ -5260,155 +5392,7 @@ define("46", ["47", "16", "5", "7"], function(Uri, defaultValue, defined, Develo
 })();
 (function() {
 var define = $__System.amdDefine;
-define("47", [], function() {
-  function URI(uri) {
-    if (uri instanceof URI) {
-      this.scheme = uri.scheme;
-      this.authority = uri.authority;
-      this.path = uri.path;
-      this.query = uri.query;
-      this.fragment = uri.fragment;
-    } else if (uri) {
-      var c = parseRegex.exec(uri);
-      this.scheme = c[1];
-      this.authority = c[2];
-      this.path = c[3];
-      this.query = c[4];
-      this.fragment = c[5];
-    }
-  }
-  URI.prototype.scheme = null;
-  URI.prototype.authority = null;
-  URI.prototype.path = '';
-  URI.prototype.query = null;
-  URI.prototype.fragment = null;
-  var parseRegex = new RegExp('^(?:([^:/?#]+):)?(?://([^/?#]*))?([^?#]*)(?:\\?([^#]*))?(?:#(.*))?$');
-  URI.prototype.getScheme = function() {
-    return this.scheme;
-  };
-  URI.prototype.getAuthority = function() {
-    return this.authority;
-  };
-  URI.prototype.getPath = function() {
-    return this.path;
-  };
-  URI.prototype.getQuery = function() {
-    return this.query;
-  };
-  URI.prototype.getFragment = function() {
-    return this.fragment;
-  };
-  URI.prototype.isAbsolute = function() {
-    return !!this.scheme && !this.fragment;
-  };
-  URI.prototype.isSameDocumentAs = function(uri) {
-    return uri.scheme == this.scheme && uri.authority == this.authority && uri.path == this.path && uri.query == this.query;
-  };
-  URI.prototype.equals = function(uri) {
-    return this.isSameDocumentAs(uri) && uri.fragment == this.fragment;
-  };
-  URI.prototype.normalize = function() {
-    this.removeDotSegments();
-    if (this.scheme)
-      this.scheme = this.scheme.toLowerCase();
-    if (this.authority)
-      this.authority = this.authority.replace(authorityRegex, replaceAuthority).replace(caseRegex, replaceCase);
-    if (this.path)
-      this.path = this.path.replace(caseRegex, replaceCase);
-    if (this.query)
-      this.query = this.query.replace(caseRegex, replaceCase);
-    if (this.fragment)
-      this.fragment = this.fragment.replace(caseRegex, replaceCase);
-  };
-  var caseRegex = /%[0-9a-z]{2}/gi;
-  var percentRegex = /[a-zA-Z0-9\-\._~]/;
-  var authorityRegex = /(.*@)?([^@:]*)(:.*)?/;
-  function replaceCase(str) {
-    var dec = unescape(str);
-    return percentRegex.test(dec) ? dec : str.toUpperCase();
-  }
-  function replaceAuthority(str, p1, p2, p3) {
-    return (p1 || '') + p2.toLowerCase() + (p3 || '');
-  }
-  URI.prototype.resolve = function(baseURI) {
-    var uri = new URI();
-    if (this.scheme) {
-      uri.scheme = this.scheme;
-      uri.authority = this.authority;
-      uri.path = this.path;
-      uri.query = this.query;
-    } else {
-      uri.scheme = baseURI.scheme;
-      if (this.authority) {
-        uri.authority = this.authority;
-        uri.path = this.path;
-        uri.query = this.query;
-      } else {
-        uri.authority = baseURI.authority;
-        if (this.path == '') {
-          uri.path = baseURI.path;
-          uri.query = this.query || baseURI.query;
-        } else {
-          if (this.path.charAt(0) == '/') {
-            uri.path = this.path;
-            uri.removeDotSegments();
-          } else {
-            if (baseURI.authority && baseURI.path == '') {
-              uri.path = '/' + this.path;
-            } else {
-              uri.path = baseURI.path.substring(0, baseURI.path.lastIndexOf('/') + 1) + this.path;
-            }
-            uri.removeDotSegments();
-          }
-          uri.query = this.query;
-        }
-      }
-    }
-    uri.fragment = this.fragment;
-    return uri;
-  };
-  URI.prototype.removeDotSegments = function() {
-    var input = this.path.split('/'),
-        output = [],
-        segment,
-        absPath = input[0] == '';
-    if (absPath)
-      input.shift();
-    var sFirst = input[0] == '' ? input.shift() : null;
-    while (input.length) {
-      segment = input.shift();
-      if (segment == '..') {
-        output.pop();
-      } else if (segment != '.') {
-        output.push(segment);
-      }
-    }
-    if (segment == '.' || segment == '..')
-      output.push('');
-    if (absPath)
-      output.unshift('');
-    this.path = output.join('/');
-  };
-  URI.prototype.toString = function() {
-    var result = '';
-    if (this.scheme)
-      result += this.scheme + ':';
-    if (this.authority)
-      result += '//' + this.authority;
-    result += this.path;
-    if (this.query)
-      result += '?' + this.query;
-    if (this.fragment)
-      result += '#' + this.fragment;
-    return result;
-  };
-  return URI;
-});
-
-})();
-(function() {
-var define = $__System.amdDefine;
-define("48", ["47", "16", "5", "7"], function(Uri, defaultValue, defined, DeveloperError) {
+define("4a", ["49", "15", "5", "7"], function(Uri, defaultValue, defined, DeveloperError) {
   'use strict';
   function joinUrls(first, second, appendSlash) {
     if (!defined(first)) {
@@ -5478,7 +5462,7 @@ define("48", ["47", "16", "5", "7"], function(Uri, defaultValue, defined, Develo
 })();
 (function() {
 var define = $__System.amdDefine;
-define("49", ["47", "5", "7", "46", "48", "require"], function(Uri, defined, DeveloperError, getAbsoluteUri, joinUrls, _dereq_) {
+define("4b", ["49", "5", "7", "48", "4a", "require"], function(Uri, defined, DeveloperError, getAbsoluteUri, joinUrls, _dereq_) {
   'use strict';
   var cesiumScriptRegex = /((?:.*\/)|^)cesium[\w-]*\.js(?:\W|$)/i;
   function getBaseUrlFromCesiumScript() {
@@ -5544,7 +5528,7 @@ define("49", ["47", "5", "7", "46", "48", "require"], function(Uri, defined, Dev
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4a", ["16"], function(defaultValue) {
+define("4c", ["15"], function(defaultValue) {
   'use strict';
   function clone(object, deep) {
     if (object === null || typeof object !== 'object') {
@@ -5571,7 +5555,7 @@ define("4a", ["16"], function(defaultValue) {
 var define = $__System.amdDefine;
 (function(define) {
   'use strict';
-  define("40", [], function() {
+  define("42", [], function() {
     var reduceArray,
         slice,
         undef;
@@ -5914,7 +5898,7 @@ var define = $__System.amdDefine;
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4b", [], function() {
+define("4d", [], function() {
   'use strict';
   function parseResponseHeaders(headerString) {
     var headers = {};
@@ -5939,7 +5923,7 @@ define("4b", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4c", ["5", "4b"], function(defined, parseResponseHeaders) {
+define("4e", ["5", "4d"], function(defined, parseResponseHeaders) {
   'use strict';
   function RequestErrorEvent(statusCode, response, responseHeaders) {
     this.statusCode = statusCode;
@@ -5962,7 +5946,229 @@ define("4c", ["5", "4b"], function(defined, parseResponseHeaders) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4d", ["40", "16", "5", "7", "4c", "2a"], function(when, defaultValue, defined, DeveloperError, RequestErrorEvent, RuntimeError) {
+define("49", [], function() {
+  function URI(uri) {
+    if (uri instanceof URI) {
+      this.scheme = uri.scheme;
+      this.authority = uri.authority;
+      this.path = uri.path;
+      this.query = uri.query;
+      this.fragment = uri.fragment;
+    } else if (uri) {
+      var c = parseRegex.exec(uri);
+      this.scheme = c[1];
+      this.authority = c[2];
+      this.path = c[3];
+      this.query = c[4];
+      this.fragment = c[5];
+    }
+  }
+  URI.prototype.scheme = null;
+  URI.prototype.authority = null;
+  URI.prototype.path = '';
+  URI.prototype.query = null;
+  URI.prototype.fragment = null;
+  var parseRegex = new RegExp('^(?:([^:/?#]+):)?(?://([^/?#]*))?([^?#]*)(?:\\?([^#]*))?(?:#(.*))?$');
+  URI.prototype.getScheme = function() {
+    return this.scheme;
+  };
+  URI.prototype.getAuthority = function() {
+    return this.authority;
+  };
+  URI.prototype.getPath = function() {
+    return this.path;
+  };
+  URI.prototype.getQuery = function() {
+    return this.query;
+  };
+  URI.prototype.getFragment = function() {
+    return this.fragment;
+  };
+  URI.prototype.isAbsolute = function() {
+    return !!this.scheme && !this.fragment;
+  };
+  URI.prototype.isSameDocumentAs = function(uri) {
+    return uri.scheme == this.scheme && uri.authority == this.authority && uri.path == this.path && uri.query == this.query;
+  };
+  URI.prototype.equals = function(uri) {
+    return this.isSameDocumentAs(uri) && uri.fragment == this.fragment;
+  };
+  URI.prototype.normalize = function() {
+    this.removeDotSegments();
+    if (this.scheme)
+      this.scheme = this.scheme.toLowerCase();
+    if (this.authority)
+      this.authority = this.authority.replace(authorityRegex, replaceAuthority).replace(caseRegex, replaceCase);
+    if (this.path)
+      this.path = this.path.replace(caseRegex, replaceCase);
+    if (this.query)
+      this.query = this.query.replace(caseRegex, replaceCase);
+    if (this.fragment)
+      this.fragment = this.fragment.replace(caseRegex, replaceCase);
+  };
+  var caseRegex = /%[0-9a-z]{2}/gi;
+  var percentRegex = /[a-zA-Z0-9\-\._~]/;
+  var authorityRegex = /(.*@)?([^@:]*)(:.*)?/;
+  function replaceCase(str) {
+    var dec = unescape(str);
+    return percentRegex.test(dec) ? dec : str.toUpperCase();
+  }
+  function replaceAuthority(str, p1, p2, p3) {
+    return (p1 || '') + p2.toLowerCase() + (p3 || '');
+  }
+  URI.prototype.resolve = function(baseURI) {
+    var uri = new URI();
+    if (this.scheme) {
+      uri.scheme = this.scheme;
+      uri.authority = this.authority;
+      uri.path = this.path;
+      uri.query = this.query;
+    } else {
+      uri.scheme = baseURI.scheme;
+      if (this.authority) {
+        uri.authority = this.authority;
+        uri.path = this.path;
+        uri.query = this.query;
+      } else {
+        uri.authority = baseURI.authority;
+        if (this.path == '') {
+          uri.path = baseURI.path;
+          uri.query = this.query || baseURI.query;
+        } else {
+          if (this.path.charAt(0) == '/') {
+            uri.path = this.path;
+            uri.removeDotSegments();
+          } else {
+            if (baseURI.authority && baseURI.path == '') {
+              uri.path = '/' + this.path;
+            } else {
+              uri.path = baseURI.path.substring(0, baseURI.path.lastIndexOf('/') + 1) + this.path;
+            }
+            uri.removeDotSegments();
+          }
+          uri.query = this.query;
+        }
+      }
+    }
+    uri.fragment = this.fragment;
+    return uri;
+  };
+  URI.prototype.removeDotSegments = function() {
+    var input = this.path.split('/'),
+        output = [],
+        segment,
+        absPath = input[0] == '';
+    if (absPath)
+      input.shift();
+    var sFirst = input[0] == '' ? input.shift() : null;
+    while (input.length) {
+      segment = input.shift();
+      if (segment == '..') {
+        output.pop();
+      } else if (segment != '.') {
+        output.push(segment);
+      }
+    }
+    if (segment == '.' || segment == '..')
+      output.push('');
+    if (absPath)
+      output.unshift('');
+    this.path = output.join('/');
+  };
+  URI.prototype.toString = function() {
+    var result = '';
+    if (this.scheme)
+      result += this.scheme + ':';
+    if (this.authority)
+      result += '//' + this.authority;
+    result += this.path;
+    if (this.query)
+      result += '?' + this.query;
+    if (this.fragment)
+      result += '#' + this.fragment;
+    return result;
+  };
+  return URI;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("4f", ["49", "5", "7"], function(Uri, defined, DeveloperError) {
+  'use strict';
+  var TrustedServers = {};
+  var _servers = {};
+  TrustedServers.add = function(host, port) {
+    if (!defined(host)) {
+      throw new DeveloperError('host is required.');
+    }
+    if (!defined(port) || port <= 0) {
+      throw new DeveloperError('port is required to be greater than 0.');
+    }
+    var authority = host.toLowerCase() + ':' + port;
+    if (!defined(_servers[authority])) {
+      _servers[authority] = true;
+    }
+  };
+  TrustedServers.remove = function(host, port) {
+    if (!defined(host)) {
+      throw new DeveloperError('host is required.');
+    }
+    if (!defined(port) || port <= 0) {
+      throw new DeveloperError('port is required to be greater than 0.');
+    }
+    var authority = host.toLowerCase() + ':' + port;
+    if (defined(_servers[authority])) {
+      delete _servers[authority];
+    }
+  };
+  function getAuthority(url) {
+    var uri = new Uri(url);
+    uri.normalize();
+    var authority = uri.getAuthority();
+    if (!defined(authority)) {
+      return undefined;
+    }
+    if (authority.indexOf('@') !== -1) {
+      var parts = authority.split('@');
+      authority = parts[1];
+    }
+    if (authority.indexOf(':') === -1) {
+      var scheme = uri.getScheme();
+      if (!defined(scheme)) {
+        scheme = window.location.protocol;
+        scheme = scheme.substring(0, scheme.length - 1);
+      }
+      if (scheme === 'http') {
+        authority += ':80';
+      } else if (scheme === 'https') {
+        authority += ':443';
+      } else {
+        return undefined;
+      }
+    }
+    return authority;
+  }
+  TrustedServers.contains = function(url) {
+    if (!defined(url)) {
+      throw new DeveloperError('url is required.');
+    }
+    var authority = getAuthority(url);
+    if (defined(authority) && defined(_servers[authority])) {
+      return true;
+    }
+    return false;
+  };
+  TrustedServers.clear = function() {
+    _servers = {};
+  };
+  return TrustedServers;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("50", ["42", "15", "5", "7", "4e", "2c", "4f"], function(when, defaultValue, defined, DeveloperError, RequestErrorEvent, RuntimeError, TrustedServers) {
   'use strict';
   function loadWithXhr(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
@@ -6027,6 +6233,9 @@ define("4d", ["40", "16", "5", "7", "4c", "2a"], function(when, defaultValue, de
       return;
     }
     var xhr = new XMLHttpRequest();
+    if (TrustedServers.contains(url)) {
+      xhr.withCredentials = true;
+    }
     if (defined(overrideMimeType) && defined(xhr.overrideMimeType)) {
       xhr.overrideMimeType(overrideMimeType);
     }
@@ -6042,20 +6251,26 @@ define("4d", ["40", "16", "5", "7", "4c", "2a"], function(when, defaultValue, de
       xhr.responseType = responseType;
     }
     xhr.onload = function() {
-      if (xhr.status >= 200 && xhr.status < 300) {
-        if (defined(xhr.response)) {
-          deferred.resolve(xhr.response);
-        } else {
-          if (defined(xhr.responseXML) && xhr.responseXML.hasChildNodes()) {
-            deferred.resolve(xhr.responseXML);
-          } else if (defined(xhr.responseText)) {
-            deferred.resolve(xhr.responseText);
-          } else {
-            deferred.reject(new RuntimeError('unknown XMLHttpRequest response type.'));
-          }
-        }
-      } else {
+      if (xhr.status < 200 || xhr.status >= 300) {
         deferred.reject(new RequestErrorEvent(xhr.status, xhr.response, xhr.getAllResponseHeaders()));
+        return;
+      }
+      var response = xhr.response;
+      var browserResponseType = xhr.responseType;
+      if (defined(response) && (!defined(responseType) || (browserResponseType === responseType))) {
+        deferred.resolve(response);
+      } else if ((responseType === 'json') && typeof response === 'string') {
+        try {
+          deferred.resolve(JSON.parse(response));
+        } catch (e) {
+          deferred.reject(e);
+        }
+      } else if ((browserResponseType === '' || browserResponseType === 'document') && defined(xhr.responseXML) && xhr.responseXML.hasChildNodes()) {
+        deferred.resolve(xhr.responseXML);
+      } else if ((browserResponseType === '' || browserResponseType === 'text') && defined(xhr.responseText)) {
+        deferred.resolve(xhr.responseText);
+      } else {
+        deferred.reject(new RuntimeError('Invalid XMLHttpRequest response type.'));
       }
     };
     xhr.onerror = function(e) {
@@ -6070,7 +6285,7 @@ define("4d", ["40", "16", "5", "7", "4c", "2a"], function(when, defaultValue, de
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4e", ["4d"], function(loadWithXhr) {
+define("51", ["50"], function(loadWithXhr) {
   'use strict';
   function loadText(url, headers) {
     return loadWithXhr({
@@ -6084,7 +6299,7 @@ define("4e", ["4d"], function(loadWithXhr) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("43", ["4a", "5", "7", "4e"], function(clone, defined, DeveloperError, loadText) {
+define("45", ["4c", "5", "7", "51"], function(clone, defined, DeveloperError, loadText) {
   'use strict';
   var defaultHeaders = {Accept: 'application/json,*/*;q=0.01'};
   function loadJson(url, headers) {
@@ -6107,7 +6322,7 @@ define("43", ["4a", "5", "7", "4e"], function(clone, defined, DeveloperError, lo
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4f", ["40", "49", "16", "5", "50", "17", "43", "45"], function(when, buildModuleUrl, defaultValue, defined, Iau2006XysSample, JulianDate, loadJson, TimeStandard) {
+define("52", ["42", "4b", "15", "5", "53", "17", "45", "47"], function(when, buildModuleUrl, defaultValue, defined, Iau2006XysSample, JulianDate, loadJson, TimeStandard) {
   'use strict';
   function Iau2006XysData(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
@@ -6262,7 +6477,7 @@ define("4f", ["40", "49", "16", "5", "50", "17", "43", "45"], function(when, bui
 })();
 (function() {
 var define = $__System.amdDefine;
-define("50", [], function() {
+define("53", [], function() {
   'use strict';
   function Iau2006XysSample(x, y, s) {
     this.x = x;
@@ -6275,7 +6490,40 @@ define("50", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("51", ["5", "6"], function(defined, defineProperties) {
+define("54", ["15", "5", "7"], function(defaultValue, defined, DeveloperError) {
+  "use strict";
+  var warnings = {};
+  function oneTimeWarning(identifier, message) {
+    if (!defined(identifier)) {
+      throw new DeveloperError('identifier is required.');
+    }
+    if (!defined(warnings[identifier])) {
+      warnings[identifier] = true;
+      console.warn(defaultValue(message, identifier));
+    }
+  }
+  oneTimeWarning.geometryOutlines = 'Entity geometry outlines are unsupported on terrain. Outlines will be disabled. To enable outlines, disable geometry terrain clamping by explicitly setting height to 0.';
+  return oneTimeWarning;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("55", ["5", "7", "54"], function(defined, DeveloperError, oneTimeWarning) {
+  'use strict';
+  function deprecationWarning(identifier, message) {
+    if (!defined(identifier) || !defined(message)) {
+      throw new DeveloperError('identifier and message are required.');
+    }
+    oneTimeWarning(identifier, message);
+  }
+  return deprecationWarning;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("56", ["5", "6"], function(defined, defineProperties) {
   'use strict';
   var _supportsFullscreen;
   var _names = {
@@ -6413,7 +6661,7 @@ define("51", ["5", "6"], function(defined, defineProperties) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3e", ["16", "5", "51"], function(defaultValue, defined, Fullscreen) {
+define("3f", ["15", "5", "56"], function(defaultValue, defined, Fullscreen) {
   'use strict';
   var theNavigator;
   if (typeof navigator !== 'undefined') {
@@ -6434,10 +6682,12 @@ define("3e", ["16", "5", "51"], function(defaultValue, defined, Fullscreen) {
   function isChrome() {
     if (!defined(isChromeResult)) {
       isChromeResult = false;
-      var fields = (/ Chrome\/([\.0-9]+)/).exec(theNavigator.userAgent);
-      if (fields !== null) {
-        isChromeResult = true;
-        chromeVersionResult = extractVersion(fields[1]);
+      if (!isEdge()) {
+        var fields = (/ Chrome\/([\.0-9]+)/).exec(theNavigator.userAgent);
+        if (fields !== null) {
+          isChromeResult = true;
+          chromeVersionResult = extractVersion(fields[1]);
+        }
       }
     }
     return isChromeResult;
@@ -6450,7 +6700,7 @@ define("3e", ["16", "5", "51"], function(defaultValue, defined, Fullscreen) {
   function isSafari() {
     if (!defined(isSafariResult)) {
       isSafariResult = false;
-      if (!isChrome() && (/ Safari\/[\.0-9]+/).test(theNavigator.userAgent)) {
+      if (!isChrome() && !isEdge() && (/ Safari\/[\.0-9]+/).test(theNavigator.userAgent)) {
         var fields = (/ Version\/([\.0-9]+)/).exec(theNavigator.userAgent);
         if (fields !== null) {
           isSafariResult = true;
@@ -6504,6 +6754,22 @@ define("3e", ["16", "5", "51"], function(defaultValue, defined, Fullscreen) {
   }
   function internetExplorerVersion() {
     return isInternetExplorer() && internetExplorerVersionResult;
+  }
+  var isEdgeResult;
+  var edgeVersionResult;
+  function isEdge() {
+    if (!defined(isEdgeResult)) {
+      isEdgeResult = false;
+      var fields = (/ Edge\/([\.0-9]+)/).exec(theNavigator.userAgent);
+      if (fields !== null) {
+        isEdgeResult = true;
+        edgeVersionResult = extractVersion(fields[1]);
+      }
+    }
+    return isEdgeResult;
+  }
+  function edgeVersion() {
+    return isEdge() && edgeVersionResult;
   }
   var isFirefoxResult;
   var firefoxVersionResult;
@@ -6561,6 +6827,8 @@ define("3e", ["16", "5", "51"], function(defaultValue, defined, Fullscreen) {
     webkitVersion: webkitVersion,
     isInternetExplorer: isInternetExplorer,
     internetExplorerVersion: internetExplorerVersion,
+    isEdge: isEdge,
+    edgeVersion: edgeVersion,
     isFirefox: isFirefox,
     firefoxVersion: firefoxVersion,
     isWindows: isWindows,
@@ -6584,7 +6852,85 @@ define("3e", ["16", "5", "51"], function(defaultValue, defined, Fullscreen) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("25", ["1d", "16", "5", "7", "3e", "11", "d", "23"], function(Cartesian3, defaultValue, defined, DeveloperError, FeatureDetection, freezeObject, CesiumMath, Matrix3) {
+define("57", ["15", "5", "7", "d"], function(defaultValue, defined, DeveloperError, CesiumMath) {
+  "use strict";
+  function HeadingPitchRoll(heading, pitch, roll) {
+    this.heading = defaultValue(heading, 0.0);
+    this.pitch = defaultValue(pitch, 0.0);
+    this.roll = defaultValue(roll, 0.0);
+  }
+  HeadingPitchRoll.fromQuaternion = function(quaternion, result) {
+    if (!defined(quaternion)) {
+      throw new DeveloperError('quaternion is required');
+    }
+    if (!defined(result)) {
+      result = new HeadingPitchRoll();
+    }
+    var test = 2 * (quaternion.w * quaternion.y - quaternion.z * quaternion.x);
+    var denominatorRoll = 1 - 2 * (quaternion.x * quaternion.x + quaternion.y * quaternion.y);
+    var numeratorRoll = 2 * (quaternion.w * quaternion.x + quaternion.y * quaternion.z);
+    var denominatorHeading = 1 - 2 * (quaternion.y * quaternion.y + quaternion.z * quaternion.z);
+    var numeratorHeading = 2 * (quaternion.w * quaternion.z + quaternion.x * quaternion.y);
+    result.heading = -Math.atan2(numeratorHeading, denominatorHeading);
+    result.roll = Math.atan2(numeratorRoll, denominatorRoll);
+    result.pitch = -Math.asin(test);
+    return result;
+  };
+  HeadingPitchRoll.fromDegrees = function(heading, pitch, roll, result) {
+    if (!defined(heading)) {
+      throw new DeveloperError('heading is required');
+    }
+    if (!defined(pitch)) {
+      throw new DeveloperError('pitch is required');
+    }
+    if (!defined(roll)) {
+      throw new DeveloperError('roll is required');
+    }
+    if (!defined(result)) {
+      result = new HeadingPitchRoll();
+    }
+    result.heading = heading * CesiumMath.RADIANS_PER_DEGREE;
+    result.pitch = pitch * CesiumMath.RADIANS_PER_DEGREE;
+    result.roll = roll * CesiumMath.RADIANS_PER_DEGREE;
+    return result;
+  };
+  HeadingPitchRoll.clone = function(headingPitchRoll, result) {
+    if (!defined(headingPitchRoll)) {
+      return undefined;
+    }
+    if (!defined(result)) {
+      return new HeadingPitchRoll(headingPitchRoll.heading, headingPitchRoll.pitch, headingPitchRoll.roll);
+    }
+    result.heading = headingPitchRoll.heading;
+    result.pitch = headingPitchRoll.pitch;
+    result.roll = headingPitchRoll.roll;
+    return result;
+  };
+  HeadingPitchRoll.equals = function(left, right) {
+    return (left === right) || ((defined(left)) && (defined(right)) && (left.heading === right.heading) && (left.pitch === right.pitch) && (left.roll === right.roll));
+  };
+  HeadingPitchRoll.equalsEpsilon = function(left, right, relativeEpsilon, absoluteEpsilon) {
+    return (left === right) || (defined(left) && defined(right) && CesiumMath.equalsEpsilon(left.heading, right.heading, relativeEpsilon, absoluteEpsilon) && CesiumMath.equalsEpsilon(left.pitch, right.pitch, relativeEpsilon, absoluteEpsilon) && CesiumMath.equalsEpsilon(left.roll, right.roll, relativeEpsilon, absoluteEpsilon));
+  };
+  HeadingPitchRoll.prototype.clone = function(result) {
+    return HeadingPitchRoll.clone(this, result);
+  };
+  HeadingPitchRoll.prototype.equals = function(right) {
+    return HeadingPitchRoll.equals(this, right);
+  };
+  HeadingPitchRoll.prototype.equalsEpsilon = function(right, relativeEpsilon, absoluteEpsilon) {
+    return HeadingPitchRoll.equalsEpsilon(this, right, relativeEpsilon, absoluteEpsilon);
+  };
+  HeadingPitchRoll.prototype.toString = function() {
+    return '(' + this.heading + ', ' + this.pitch + ', ' + this.roll + ')';
+  };
+  return HeadingPitchRoll;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("29", ["1f", "40", "15", "5", "55", "3f", "11", "57", "d", "27"], function(Cartesian3, Check, defaultValue, defined, deprecationWarning, FeatureDetection, freezeObject, HeadingPitchRoll, CesiumMath, Matrix3) {
   'use strict';
   function Quaternion(x, y, z, w) {
     this.x = defaultValue(x, 0.0);
@@ -6594,12 +6940,8 @@ define("25", ["1d", "16", "5", "7", "3e", "11", "d", "23"], function(Cartesian3,
   }
   var fromAxisAngleScratch = new Cartesian3();
   Quaternion.fromAxisAngle = function(axis, angle, result) {
-    if (!defined(axis)) {
-      throw new DeveloperError('axis is required.');
-    }
-    if (typeof angle !== 'number') {
-      throw new DeveloperError('angle is required and must be a number.');
-    }
+    Check.typeOf.object('axis', axis);
+    Check.typeOf.number('angle', angle);
     var halfAngle = angle / 2.0;
     var s = Math.sin(halfAngle);
     fromAxisAngleScratch = Cartesian3.normalize(axis, fromAxisAngleScratch);
@@ -6619,9 +6961,7 @@ define("25", ["1d", "16", "5", "7", "3e", "11", "d", "23"], function(Cartesian3,
   var fromRotationMatrixNext = [1, 2, 0];
   var fromRotationMatrixQuat = new Array(3);
   Quaternion.fromRotationMatrix = function(matrix, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required.');
-    }
+    Check.typeOf.object('matrix', matrix);
     var root;
     var x;
     var y;
@@ -6670,21 +7010,30 @@ define("25", ["1d", "16", "5", "7", "3e", "11", "d", "23"], function(Cartesian3,
     return result;
   };
   var scratchHPRQuaternion = new Quaternion();
-  Quaternion.fromHeadingPitchRoll = function(heading, pitch, roll, result) {
-    if (!defined(heading)) {
-      throw new DeveloperError('heading is required.');
+  var scratchHeadingQuaternion = new Quaternion();
+  var scratchPitchQuaternion = new Quaternion();
+  var scratchRollQuaternion = new Quaternion();
+  Quaternion.fromHeadingPitchRoll = function(headingOrHeadingPitchRoll, pitchOrResult, roll, result) {
+    if (headingOrHeadingPitchRoll instanceof HeadingPitchRoll) {
+      Check.typeOf.object('headingPitchRoll', headingOrHeadingPitchRoll);
+    } else {
+      Check.typeOf.number('heading', headingOrHeadingPitchRoll);
+      Check.typeOf.number('pitch', pitchOrResult);
+      Check.typeOf.number('roll', roll);
     }
-    if (!defined(pitch)) {
-      throw new DeveloperError('pitch is required.');
+    var hpr;
+    if (headingOrHeadingPitchRoll instanceof HeadingPitchRoll) {
+      hpr = headingOrHeadingPitchRoll;
+      result = pitchOrResult;
+    } else {
+      deprecationWarning('Quaternion.fromHeadingPitchRoll(heading, pitch, roll,result)', 'The method was deprecated in Cesium 1.32 and will be removed in version 1.33. ' + 'Use Quaternion.fromHeadingPitchRoll(hpr,result) where hpr is a HeadingPitchRoll');
+      hpr = new HeadingPitchRoll(headingOrHeadingPitchRoll, pitchOrResult, roll);
     }
-    if (!defined(roll)) {
-      throw new DeveloperError('roll is required.');
-    }
-    var rollQuaternion = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, roll, scratchHPRQuaternion);
-    var pitchQuaternion = Quaternion.fromAxisAngle(Cartesian3.UNIT_Y, -pitch, result);
-    result = Quaternion.multiply(pitchQuaternion, rollQuaternion, pitchQuaternion);
-    var headingQuaternion = Quaternion.fromAxisAngle(Cartesian3.UNIT_Z, -heading, scratchHPRQuaternion);
-    return Quaternion.multiply(headingQuaternion, result, result);
+    scratchRollQuaternion = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, hpr.roll, scratchHPRQuaternion);
+    scratchPitchQuaternion = Quaternion.fromAxisAngle(Cartesian3.UNIT_Y, -hpr.pitch, result);
+    result = Quaternion.multiply(scratchPitchQuaternion, scratchRollQuaternion, scratchPitchQuaternion);
+    scratchHeadingQuaternion = Quaternion.fromAxisAngle(Cartesian3.UNIT_Z, -hpr.heading, scratchHPRQuaternion);
+    return Quaternion.multiply(scratchHeadingQuaternion, result, result);
   };
   var sampledQuaternionAxis = new Cartesian3();
   var sampledQuaternionRotation = new Cartesian3();
@@ -6693,22 +7042,17 @@ define("25", ["1d", "16", "5", "7", "3e", "11", "d", "23"], function(Cartesian3,
   var sampledQuaternionQuaternion0Conjugate = new Quaternion();
   Quaternion.packedLength = 4;
   Quaternion.pack = function(value, array, startingIndex) {
-    if (!defined(value)) {
-      throw new DeveloperError('value is required');
-    }
-    if (!defined(array)) {
-      throw new DeveloperError('array is required');
-    }
+    Check.typeOf.object('value', value);
+    Check.defined('array', array);
     startingIndex = defaultValue(startingIndex, 0);
     array[startingIndex++] = value.x;
     array[startingIndex++] = value.y;
     array[startingIndex++] = value.z;
     array[startingIndex] = value.w;
+    return array;
   };
   Quaternion.unpack = function(array, startingIndex, result) {
-    if (!defined(array)) {
-      throw new DeveloperError('array is required');
-    }
+    Check.defined('array', array);
     startingIndex = defaultValue(startingIndex, 0);
     if (!defined(result)) {
       result = new Quaternion();
@@ -6766,12 +7110,8 @@ define("25", ["1d", "16", "5", "7", "3e", "11", "d", "23"], function(Cartesian3,
     return result;
   };
   Quaternion.conjugate = function(quaternion, result) {
-    if (!defined(quaternion)) {
-      throw new DeveloperError('quaternion is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('quaternion', quaternion);
+    Check.typeOf.object('result', result);
     result.x = -quaternion.x;
     result.y = -quaternion.y;
     result.z = -quaternion.z;
@@ -6779,18 +7119,14 @@ define("25", ["1d", "16", "5", "7", "3e", "11", "d", "23"], function(Cartesian3,
     return result;
   };
   Quaternion.magnitudeSquared = function(quaternion) {
-    if (!defined(quaternion)) {
-      throw new DeveloperError('quaternion is required');
-    }
+    Check.typeOf.object('quaternion', quaternion);
     return quaternion.x * quaternion.x + quaternion.y * quaternion.y + quaternion.z * quaternion.z + quaternion.w * quaternion.w;
   };
   Quaternion.magnitude = function(quaternion) {
     return Math.sqrt(Quaternion.magnitudeSquared(quaternion));
   };
   Quaternion.normalize = function(quaternion, result) {
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('result', result);
     var inverseMagnitude = 1.0 / Quaternion.magnitude(quaternion);
     var x = quaternion.x * inverseMagnitude;
     var y = quaternion.y * inverseMagnitude;
@@ -6803,23 +7139,15 @@ define("25", ["1d", "16", "5", "7", "3e", "11", "d", "23"], function(Cartesian3,
     return result;
   };
   Quaternion.inverse = function(quaternion, result) {
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('result', result);
     var magnitudeSquared = Quaternion.magnitudeSquared(quaternion);
     result = Quaternion.conjugate(quaternion, result);
     return Quaternion.multiplyByScalar(result, 1.0 / magnitudeSquared, result);
   };
   Quaternion.add = function(left, right, result) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
+    Check.typeOf.object('result', result);
     result.x = left.x + right.x;
     result.y = left.y + right.y;
     result.z = left.z + right.z;
@@ -6827,15 +7155,9 @@ define("25", ["1d", "16", "5", "7", "3e", "11", "d", "23"], function(Cartesian3,
     return result;
   };
   Quaternion.subtract = function(left, right, result) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
+    Check.typeOf.object('result', result);
     result.x = left.x - right.x;
     result.y = left.y - right.y;
     result.z = left.z - right.z;
@@ -6843,12 +7165,8 @@ define("25", ["1d", "16", "5", "7", "3e", "11", "d", "23"], function(Cartesian3,
     return result;
   };
   Quaternion.negate = function(quaternion, result) {
-    if (!defined(quaternion)) {
-      throw new DeveloperError('quaternion is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('quaternion', quaternion);
+    Check.typeOf.object('result', result);
     result.x = -quaternion.x;
     result.y = -quaternion.y;
     result.z = -quaternion.z;
@@ -6856,24 +7174,14 @@ define("25", ["1d", "16", "5", "7", "3e", "11", "d", "23"], function(Cartesian3,
     return result;
   };
   Quaternion.dot = function(left, right) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
     return left.x * right.x + left.y * right.y + left.z * right.z + left.w * right.w;
   };
   Quaternion.multiply = function(left, right, result) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
+    Check.typeOf.object('result', result);
     var leftX = left.x;
     var leftY = left.y;
     var leftZ = left.z;
@@ -6893,15 +7201,9 @@ define("25", ["1d", "16", "5", "7", "3e", "11", "d", "23"], function(Cartesian3,
     return result;
   };
   Quaternion.multiplyByScalar = function(quaternion, scalar, result) {
-    if (!defined(quaternion)) {
-      throw new DeveloperError('quaternion is required');
-    }
-    if (typeof scalar !== 'number') {
-      throw new DeveloperError('scalar is required and must be a number.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('quaternion', quaternion);
+    Check.typeOf.number('scalar', scalar);
+    Check.typeOf.object('result', result);
     result.x = quaternion.x * scalar;
     result.y = quaternion.y * scalar;
     result.z = quaternion.z * scalar;
@@ -6909,15 +7211,9 @@ define("25", ["1d", "16", "5", "7", "3e", "11", "d", "23"], function(Cartesian3,
     return result;
   };
   Quaternion.divideByScalar = function(quaternion, scalar, result) {
-    if (!defined(quaternion)) {
-      throw new DeveloperError('quaternion is required');
-    }
-    if (typeof scalar !== 'number') {
-      throw new DeveloperError('scalar is required and must be a number.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('quaternion', quaternion);
+    Check.typeOf.number('scalar', scalar);
+    Check.typeOf.object('result', result);
     result.x = quaternion.x / scalar;
     result.y = quaternion.y / scalar;
     result.z = quaternion.z / scalar;
@@ -6925,12 +7221,8 @@ define("25", ["1d", "16", "5", "7", "3e", "11", "d", "23"], function(Cartesian3,
     return result;
   };
   Quaternion.computeAxis = function(quaternion, result) {
-    if (!defined(quaternion)) {
-      throw new DeveloperError('quaternion is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('quaternion', quaternion);
+    Check.typeOf.object('result', result);
     var w = quaternion.w;
     if (Math.abs(w - 1.0) < CesiumMath.EPSILON6) {
       result.x = result.y = result.z = 0;
@@ -6943,9 +7235,7 @@ define("25", ["1d", "16", "5", "7", "3e", "11", "d", "23"], function(Cartesian3,
     return result;
   };
   Quaternion.computeAngle = function(quaternion) {
-    if (!defined(quaternion)) {
-      throw new DeveloperError('quaternion is required');
-    }
+    Check.typeOf.object('quaternion', quaternion);
     if (Math.abs(quaternion.w - 1.0) < CesiumMath.EPSILON6) {
       return 0.0;
     }
@@ -6953,18 +7243,10 @@ define("25", ["1d", "16", "5", "7", "3e", "11", "d", "23"], function(Cartesian3,
   };
   var lerpScratch = new Quaternion();
   Quaternion.lerp = function(start, end, t, result) {
-    if (!defined(start)) {
-      throw new DeveloperError('start is required.');
-    }
-    if (!defined(end)) {
-      throw new DeveloperError('end is required.');
-    }
-    if (typeof t !== 'number') {
-      throw new DeveloperError('t is required and must be a number.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('start', start);
+    Check.typeOf.object('end', end);
+    Check.typeOf.number('t', t);
+    Check.typeOf.object('result', result);
     lerpScratch = Quaternion.multiplyByScalar(end, t, lerpScratch);
     result = Quaternion.multiplyByScalar(start, 1.0 - t, result);
     return Quaternion.add(lerpScratch, result, result);
@@ -6973,18 +7255,10 @@ define("25", ["1d", "16", "5", "7", "3e", "11", "d", "23"], function(Cartesian3,
   var slerpScaledP = new Quaternion();
   var slerpScaledR = new Quaternion();
   Quaternion.slerp = function(start, end, t, result) {
-    if (!defined(start)) {
-      throw new DeveloperError('start is required.');
-    }
-    if (!defined(end)) {
-      throw new DeveloperError('end is required.');
-    }
-    if (typeof t !== 'number') {
-      throw new DeveloperError('t is required and must be a number.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('start', start);
+    Check.typeOf.object('end', end);
+    Check.typeOf.number('t', t);
+    Check.typeOf.object('result', result);
     var dot = Quaternion.dot(start, end);
     var r = end;
     if (dot < 0.0) {
@@ -7001,12 +7275,8 @@ define("25", ["1d", "16", "5", "7", "3e", "11", "d", "23"], function(Cartesian3,
     return Quaternion.multiplyByScalar(result, 1.0 / Math.sin(theta), result);
   };
   Quaternion.log = function(quaternion, result) {
-    if (!defined(quaternion)) {
-      throw new DeveloperError('quaternion is required.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('quaternion', quaternion);
+    Check.typeOf.object('result', result);
     var theta = CesiumMath.acosClamped(quaternion.w);
     var thetaOverSinTheta = 0.0;
     if (theta !== 0.0) {
@@ -7015,12 +7285,8 @@ define("25", ["1d", "16", "5", "7", "3e", "11", "d", "23"], function(Cartesian3,
     return Cartesian3.multiplyByScalar(quaternion, thetaOverSinTheta, result);
   };
   Quaternion.exp = function(cartesian, result) {
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('cartesian', cartesian);
+    Check.typeOf.object('result', result);
     var theta = Cartesian3.magnitude(cartesian);
     var sinThetaOverTheta = 0.0;
     if (theta !== 0.0) {
@@ -7037,12 +7303,10 @@ define("25", ["1d", "16", "5", "7", "3e", "11", "d", "23"], function(Cartesian3,
   var squadScratchQuaternion0 = new Quaternion();
   var squadScratchQuaternion1 = new Quaternion();
   Quaternion.computeInnerQuadrangle = function(q0, q1, q2, result) {
-    if (!defined(q0) || !defined(q1) || !defined(q2)) {
-      throw new DeveloperError('q0, q1, and q2 are required.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('q0', q0);
+    Check.typeOf.object('q1', q1);
+    Check.typeOf.object('q2', q2);
+    Check.typeOf.object('result', result);
     var qInv = Quaternion.conjugate(q1, squadScratchQuaternion0);
     Quaternion.multiply(qInv, q2, squadScratchQuaternion1);
     var cart0 = Quaternion.log(squadScratchQuaternion1, squadScratchCartesian0);
@@ -7055,15 +7319,12 @@ define("25", ["1d", "16", "5", "7", "3e", "11", "d", "23"], function(Cartesian3,
     return Quaternion.multiply(q1, squadScratchQuaternion0, result);
   };
   Quaternion.squad = function(q0, q1, s0, s1, t, result) {
-    if (!defined(q0) || !defined(q1) || !defined(s0) || !defined(s1)) {
-      throw new DeveloperError('q0, q1, s0, and s1 are required.');
-    }
-    if (typeof t !== 'number') {
-      throw new DeveloperError('t is required and must be a number.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('q0', q0);
+    Check.typeOf.object('q1', q1);
+    Check.typeOf.object('s0', s0);
+    Check.typeOf.object('s1', s1);
+    Check.typeOf.number('t', t);
+    Check.typeOf.object('result', result);
     var slerp0 = Quaternion.slerp(q0, q1, t, squadScratchQuaternion0);
     var slerp1 = Quaternion.slerp(s0, s1, t, squadScratchQuaternion1);
     return Quaternion.slerp(slerp0, slerp1, 2.0 * t * (1.0 - t), result);
@@ -7083,18 +7344,10 @@ define("25", ["1d", "16", "5", "7", "3e", "11", "d", "23"], function(Cartesian3,
   u[7] = opmu / (8.0 * 17.0);
   v[7] = opmu * 8.0 / 17.0;
   Quaternion.fastSlerp = function(start, end, t, result) {
-    if (!defined(start)) {
-      throw new DeveloperError('start is required.');
-    }
-    if (!defined(end)) {
-      throw new DeveloperError('end is required.');
-    }
-    if (typeof t !== 'number') {
-      throw new DeveloperError('t is required and must be a number.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('start', start);
+    Check.typeOf.object('end', end);
+    Check.typeOf.number('t', t);
+    Check.typeOf.object('result', result);
     var x = Quaternion.dot(start, end);
     var sign;
     if (x >= 0) {
@@ -7118,15 +7371,12 @@ define("25", ["1d", "16", "5", "7", "3e", "11", "d", "23"], function(Cartesian3,
     return Quaternion.add(temp, result, result);
   };
   Quaternion.fastSquad = function(q0, q1, s0, s1, t, result) {
-    if (!defined(q0) || !defined(q1) || !defined(s0) || !defined(s1)) {
-      throw new DeveloperError('q0, q1, s0, and s1 are required.');
-    }
-    if (typeof t !== 'number') {
-      throw new DeveloperError('t is required and must be a number.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('q0', q0);
+    Check.typeOf.object('q1', q1);
+    Check.typeOf.object('s0', s0);
+    Check.typeOf.object('s1', s1);
+    Check.typeOf.number('t', t);
+    Check.typeOf.object('result', result);
     var slerp0 = Quaternion.fastSlerp(q0, q1, t, squadScratchQuaternion0);
     var slerp1 = Quaternion.fastSlerp(s0, s1, t, squadScratchQuaternion1);
     return Quaternion.fastSlerp(slerp0, slerp1, 2.0 * t * (1.0 - t), result);
@@ -7135,9 +7385,7 @@ define("25", ["1d", "16", "5", "7", "3e", "11", "d", "23"], function(Cartesian3,
     return (left === right) || ((defined(left)) && (defined(right)) && (left.x === right.x) && (left.y === right.y) && (left.z === right.z) && (left.w === right.w));
   };
   Quaternion.equalsEpsilon = function(left, right, epsilon) {
-    if (typeof epsilon !== 'number') {
-      throw new DeveloperError('epsilon is required and must be a number.');
-    }
+    Check.typeOf.number('epsilon', epsilon);
     return (left === right) || ((defined(left)) && (defined(right)) && (Math.abs(left.x - right.x) <= epsilon) && (Math.abs(left.y - right.y) <= epsilon) && (Math.abs(left.z - right.z) <= epsilon) && (Math.abs(left.w - right.w) <= epsilon));
   };
   Quaternion.ZERO = freezeObject(new Quaternion(0.0, 0.0, 0.0, 0.0));
@@ -7160,202 +7408,167 @@ define("25", ["1d", "16", "5", "7", "3e", "11", "d", "23"], function(Cartesian3,
 })();
 (function() {
 var define = $__System.amdDefine;
-define("26", ["40", "a", "1d", "35", "2d", "16", "5", "7", "3f", "41", "2e", "4f", "50", "17", "d", "23", "24", "25", "44"], function(when, Cartesian2, Cartesian3, Cartesian4, Cartographic, defaultValue, defined, DeveloperError, EarthOrientationParameters, EarthOrientationParametersSample, Ellipsoid, Iau2006XysData, Iau2006XysSample, JulianDate, CesiumMath, Matrix3, Matrix4, Quaternion, TimeConstants) {
+define("2a", ["42", "a", "1f", "36", "2e", "40", "15", "5", "55", "7", "41", "43", "2f", "52", "53", "17", "d", "27", "28", "29", "46"], function(when, Cartesian2, Cartesian3, Cartesian4, Cartographic, Check, defaultValue, defined, deprecationWarning, DeveloperError, EarthOrientationParameters, EarthOrientationParametersSample, Ellipsoid, Iau2006XysData, Iau2006XysSample, JulianDate, CesiumMath, Matrix3, Matrix4, Quaternion, TimeConstants) {
   'use strict';
   var Transforms = {};
-  var eastNorthUpToFixedFrameNormal = new Cartesian3();
-  var eastNorthUpToFixedFrameTangent = new Cartesian3();
-  var eastNorthUpToFixedFrameBitangent = new Cartesian3();
-  Transforms.eastNorthUpToFixedFrame = function(origin, ellipsoid, result) {
-    if (!defined(origin)) {
-      throw new DeveloperError('origin is required.');
+  var vectorProductLocalFrame = {
+    up: {
+      south: 'east',
+      north: 'west',
+      west: 'south',
+      east: 'north'
+    },
+    down: {
+      south: 'west',
+      north: 'east',
+      west: 'north',
+      east: 'south'
+    },
+    south: {
+      up: 'west',
+      down: 'east',
+      west: 'down',
+      east: 'up'
+    },
+    north: {
+      up: 'east',
+      down: 'west',
+      west: 'up',
+      east: 'down'
+    },
+    west: {
+      up: 'north',
+      down: 'south',
+      north: 'down',
+      south: 'up'
+    },
+    east: {
+      up: 'south',
+      down: 'north',
+      north: 'up',
+      south: 'down'
     }
-    if (CesiumMath.equalsEpsilon(origin.x, 0.0, CesiumMath.EPSILON14) && CesiumMath.equalsEpsilon(origin.y, 0.0, CesiumMath.EPSILON14)) {
-      var sign = CesiumMath.sign(origin.z);
-      if (!defined(result)) {
-        return new Matrix4(0.0, -sign, 0.0, origin.x, 1.0, 0.0, 0.0, origin.y, 0.0, 0.0, sign, origin.z, 0.0, 0.0, 0.0, 1.0);
-      }
-      result[0] = 0.0;
-      result[1] = 1.0;
-      result[2] = 0.0;
-      result[3] = 0.0;
-      result[4] = -sign;
-      result[5] = 0.0;
-      result[6] = 0.0;
-      result[7] = 0.0;
-      result[8] = 0.0;
-      result[9] = 0.0;
-      result[10] = sign;
-      result[11] = 0.0;
-      result[12] = origin.x;
-      result[13] = origin.y;
-      result[14] = origin.z;
-      result[15] = 1.0;
-      return result;
-    }
-    var normal = eastNorthUpToFixedFrameNormal;
-    var tangent = eastNorthUpToFixedFrameTangent;
-    var bitangent = eastNorthUpToFixedFrameBitangent;
-    ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
-    ellipsoid.geodeticSurfaceNormal(origin, normal);
-    tangent.x = -origin.y;
-    tangent.y = origin.x;
-    tangent.z = 0.0;
-    Cartesian3.normalize(tangent, tangent);
-    Cartesian3.cross(normal, tangent, bitangent);
-    if (!defined(result)) {
-      return new Matrix4(tangent.x, bitangent.x, normal.x, origin.x, tangent.y, bitangent.y, normal.y, origin.y, tangent.z, bitangent.z, normal.z, origin.z, 0.0, 0.0, 0.0, 1.0);
-    }
-    result[0] = tangent.x;
-    result[1] = tangent.y;
-    result[2] = tangent.z;
-    result[3] = 0.0;
-    result[4] = bitangent.x;
-    result[5] = bitangent.y;
-    result[6] = bitangent.z;
-    result[7] = 0.0;
-    result[8] = normal.x;
-    result[9] = normal.y;
-    result[10] = normal.z;
-    result[11] = 0.0;
-    result[12] = origin.x;
-    result[13] = origin.y;
-    result[14] = origin.z;
-    result[15] = 1.0;
-    return result;
   };
-  var northEastDownToFixedFrameNormal = new Cartesian3();
-  var northEastDownToFixedFrameTangent = new Cartesian3();
-  var northEastDownToFixedFrameBitangent = new Cartesian3();
-  Transforms.northEastDownToFixedFrame = function(origin, ellipsoid, result) {
-    if (!defined(origin)) {
-      throw new DeveloperError('origin is required.');
-    }
-    if (CesiumMath.equalsEpsilon(origin.x, 0.0, CesiumMath.EPSILON14) && CesiumMath.equalsEpsilon(origin.y, 0.0, CesiumMath.EPSILON14)) {
-      var sign = CesiumMath.sign(origin.z);
-      if (!defined(result)) {
-        return new Matrix4(-sign, 0.0, 0.0, origin.x, 0.0, 1.0, 0.0, origin.y, 0.0, 0.0, -sign, origin.z, 0.0, 0.0, 0.0, 1.0);
-      }
-      result[0] = -sign;
-      result[1] = 0.0;
-      result[2] = 0.0;
-      result[3] = 0.0;
-      result[4] = 0.0;
-      result[5] = 1.0;
-      result[6] = 0.0;
-      result[7] = 0.0;
-      result[8] = 0.0;
-      result[9] = 0.0;
-      result[10] = -sign;
-      result[11] = 0.0;
-      result[12] = origin.x;
-      result[13] = origin.y;
-      result[14] = origin.z;
-      result[15] = 1.0;
-      return result;
-    }
-    var normal = northEastDownToFixedFrameNormal;
-    var tangent = northEastDownToFixedFrameTangent;
-    var bitangent = northEastDownToFixedFrameBitangent;
-    ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
-    ellipsoid.geodeticSurfaceNormal(origin, normal);
-    tangent.x = -origin.y;
-    tangent.y = origin.x;
-    tangent.z = 0.0;
-    Cartesian3.normalize(tangent, tangent);
-    Cartesian3.cross(normal, tangent, bitangent);
-    if (!defined(result)) {
-      return new Matrix4(bitangent.x, tangent.x, -normal.x, origin.x, bitangent.y, tangent.y, -normal.y, origin.y, bitangent.z, tangent.z, -normal.z, origin.z, 0.0, 0.0, 0.0, 1.0);
-    }
-    result[0] = bitangent.x;
-    result[1] = bitangent.y;
-    result[2] = bitangent.z;
-    result[3] = 0.0;
-    result[4] = tangent.x;
-    result[5] = tangent.y;
-    result[6] = tangent.z;
-    result[7] = 0.0;
-    result[8] = -normal.x;
-    result[9] = -normal.y;
-    result[10] = -normal.z;
-    result[11] = 0.0;
-    result[12] = origin.x;
-    result[13] = origin.y;
-    result[14] = origin.z;
-    result[15] = 1.0;
-    return result;
+  var degeneratePositionLocalFrame = {
+    north: [-1, 0, 0],
+    east: [0, 1, 0],
+    up: [0, 0, 1],
+    south: [1, 0, 0],
+    west: [0, -1, 0],
+    down: [0, 0, -1]
   };
-  Transforms.northUpEastToFixedFrame = function(origin, ellipsoid, result) {
-    if (!defined(origin)) {
-      throw new DeveloperError('origin is required.');
-    }
-    if (CesiumMath.equalsEpsilon(origin.x, 0.0, CesiumMath.EPSILON14) && CesiumMath.equalsEpsilon(origin.y, 0.0, CesiumMath.EPSILON14)) {
-      var sign = CesiumMath.sign(origin.z);
-      if (!defined(result)) {
-        return new Matrix4(-sign, 0.0, 0.0, origin.x, 0.0, 0.0, 1.0, origin.y, 0.0, sign, 0.0, origin.z, 0.0, 0.0, 0.0, 1.0);
-      }
-      result[0] = -sign;
-      result[1] = 0.0;
-      result[2] = 0.0;
-      result[3] = 0.0;
-      result[4] = 0.0;
-      result[5] = 0.0;
-      result[6] = sign;
-      result[7] = 0.0;
-      result[8] = 0.0;
-      result[9] = 1.0;
-      result[10] = 0.0;
-      result[11] = 0.0;
-      result[12] = origin.x;
-      result[13] = origin.y;
-      result[14] = origin.z;
-      result[15] = 1.0;
-      return result;
-    }
-    var normal = eastNorthUpToFixedFrameNormal;
-    var tangent = eastNorthUpToFixedFrameTangent;
-    var bitangent = eastNorthUpToFixedFrameBitangent;
-    ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
-    ellipsoid.geodeticSurfaceNormal(origin, normal);
-    tangent.x = -origin.y;
-    tangent.y = origin.x;
-    tangent.z = 0.0;
-    Cartesian3.normalize(tangent, tangent);
-    Cartesian3.cross(normal, tangent, bitangent);
-    if (!defined(result)) {
-      return new Matrix4(bitangent.x, normal.x, tangent.x, origin.x, bitangent.y, normal.y, tangent.y, origin.y, bitangent.z, normal.z, tangent.z, origin.z, 0.0, 0.0, 0.0, 1.0);
-    }
-    result[0] = bitangent.x;
-    result[1] = bitangent.y;
-    result[2] = bitangent.z;
-    result[3] = 0.0;
-    result[4] = normal.x;
-    result[5] = normal.y;
-    result[6] = normal.z;
-    result[7] = 0.0;
-    result[8] = tangent.x;
-    result[9] = tangent.y;
-    result[10] = tangent.z;
-    result[11] = 0.0;
-    result[12] = origin.x;
-    result[13] = origin.y;
-    result[14] = origin.z;
-    result[15] = 1.0;
-    return result;
+  var localFrameToFixedFrameCache = {};
+  var scratchCalculateCartesian = {
+    east: new Cartesian3(),
+    north: new Cartesian3(),
+    up: new Cartesian3(),
+    west: new Cartesian3(),
+    south: new Cartesian3(),
+    down: new Cartesian3()
   };
+  var scratchFirstCartesian = new Cartesian3();
+  var scratchSecondCartesian = new Cartesian3();
+  var scratchThirdCartesian = new Cartesian3();
+  Transforms.localFrameToFixedFrameGenerator = function(firstAxis, secondAxis) {
+    if (!vectorProductLocalFrame.hasOwnProperty(firstAxis) || !vectorProductLocalFrame[firstAxis].hasOwnProperty(secondAxis)) {
+      throw new DeveloperError('firstAxis and secondAxis must be east, north, up, west, south or down.');
+    }
+    var thirdAxis = vectorProductLocalFrame[firstAxis][secondAxis];
+    var resultat;
+    var hashAxis = firstAxis + secondAxis;
+    if (defined(localFrameToFixedFrameCache[hashAxis])) {
+      resultat = localFrameToFixedFrameCache[hashAxis];
+    } else {
+      resultat = function(origin, ellipsoid, result) {
+        if (!defined(origin)) {
+          throw new DeveloperError('origin is required.');
+        }
+        if (!defined(result)) {
+          result = new Matrix4();
+        }
+        if (CesiumMath.equalsEpsilon(origin.x, 0.0, CesiumMath.EPSILON14) && CesiumMath.equalsEpsilon(origin.y, 0.0, CesiumMath.EPSILON14)) {
+          var sign = CesiumMath.sign(origin.z);
+          Cartesian3.unpack(degeneratePositionLocalFrame[firstAxis], 0, scratchFirstCartesian);
+          if (firstAxis !== 'east' && firstAxis !== 'west') {
+            Cartesian3.multiplyByScalar(scratchFirstCartesian, sign, scratchFirstCartesian);
+          }
+          Cartesian3.unpack(degeneratePositionLocalFrame[secondAxis], 0, scratchSecondCartesian);
+          if (secondAxis !== 'east' && secondAxis !== 'west') {
+            Cartesian3.multiplyByScalar(scratchSecondCartesian, sign, scratchSecondCartesian);
+          }
+          Cartesian3.unpack(degeneratePositionLocalFrame[thirdAxis], 0, scratchThirdCartesian);
+          if (thirdAxis !== 'east' && thirdAxis !== 'west') {
+            Cartesian3.multiplyByScalar(scratchThirdCartesian, sign, scratchThirdCartesian);
+          }
+        } else {
+          ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
+          ellipsoid.geodeticSurfaceNormal(origin, scratchCalculateCartesian.up);
+          var up = scratchCalculateCartesian.up;
+          var east = scratchCalculateCartesian.east;
+          east.x = -origin.y;
+          east.y = origin.x;
+          east.z = 0.0;
+          Cartesian3.normalize(east, scratchCalculateCartesian.east);
+          Cartesian3.cross(up, east, scratchCalculateCartesian.north);
+          Cartesian3.multiplyByScalar(scratchCalculateCartesian.up, -1, scratchCalculateCartesian.down);
+          Cartesian3.multiplyByScalar(scratchCalculateCartesian.east, -1, scratchCalculateCartesian.west);
+          Cartesian3.multiplyByScalar(scratchCalculateCartesian.north, -1, scratchCalculateCartesian.south);
+          scratchFirstCartesian = scratchCalculateCartesian[firstAxis];
+          scratchSecondCartesian = scratchCalculateCartesian[secondAxis];
+          scratchThirdCartesian = scratchCalculateCartesian[thirdAxis];
+        }
+        result[0] = scratchFirstCartesian.x;
+        result[1] = scratchFirstCartesian.y;
+        result[2] = scratchFirstCartesian.z;
+        result[3] = 0.0;
+        result[4] = scratchSecondCartesian.x;
+        result[5] = scratchSecondCartesian.y;
+        result[6] = scratchSecondCartesian.z;
+        result[7] = 0.0;
+        result[8] = scratchThirdCartesian.x;
+        result[9] = scratchThirdCartesian.y;
+        result[10] = scratchThirdCartesian.z;
+        result[11] = 0.0;
+        result[12] = origin.x;
+        result[13] = origin.y;
+        result[14] = origin.z;
+        result[15] = 1.0;
+        return result;
+      };
+      localFrameToFixedFrameCache[hashAxis] = resultat;
+    }
+    return resultat;
+  };
+  Transforms.eastNorthUpToFixedFrame = Transforms.localFrameToFixedFrameGenerator('east', 'north');
+  Transforms.northEastDownToFixedFrame = Transforms.localFrameToFixedFrameGenerator('north', 'east');
+  Transforms.northUpEastToFixedFrame = Transforms.localFrameToFixedFrameGenerator('north', 'up');
+  Transforms.northWestUpToFixedFrame = Transforms.localFrameToFixedFrameGenerator('north', 'west');
   var scratchHPRQuaternion = new Quaternion();
   var scratchScale = new Cartesian3(1.0, 1.0, 1.0);
   var scratchHPRMatrix4 = new Matrix4();
-  Transforms.headingPitchRollToFixedFrame = function(origin, heading, pitch, roll, ellipsoid, result) {
-    var hprQuaternion = Quaternion.fromHeadingPitchRoll(heading, pitch, roll, scratchHPRQuaternion);
+  Transforms.headingPitchRollToFixedFrame = function(origin, headingPitchRoll, ellipsoid, fixedFrameTransformOrResult, result) {
+    Check.typeOf.object('HeadingPitchRoll', headingPitchRoll);
+    if (fixedFrameTransformOrResult instanceof Matrix4) {
+      result = fixedFrameTransformOrResult;
+      fixedFrameTransformOrResult = undefined;
+      deprecationWarning('Transforms.headingPitchRollToFixedFrame(origin, headingPitchRoll, ellipsoid, result)', 'The method was deprecated in Cesium 1.31 and will be removed in version 1.33. Transforms.headingPitchRollToFixedFrame(origin, headingPitchRoll, ellipsoid, fixedFrameTransform, result) where fixedFrameTransform is a a 4x4 transformation matrix (see Transforms.localFrameToFixedFrameGenerator)');
+    }
+    fixedFrameTransformOrResult = defaultValue(fixedFrameTransformOrResult, Transforms.eastNorthUpToFixedFrame);
+    var hprQuaternion = Quaternion.fromHeadingPitchRoll(headingPitchRoll, scratchHPRQuaternion);
     var hprMatrix = Matrix4.fromTranslationQuaternionRotationScale(Cartesian3.ZERO, hprQuaternion, scratchScale, scratchHPRMatrix4);
-    result = Transforms.eastNorthUpToFixedFrame(origin, ellipsoid, result);
+    result = fixedFrameTransformOrResult(origin, ellipsoid, result);
     return Matrix4.multiply(result, hprMatrix, result);
   };
   var scratchENUMatrix4 = new Matrix4();
   var scratchHPRMatrix3 = new Matrix3();
-  Transforms.headingPitchRollQuaternion = function(origin, heading, pitch, roll, ellipsoid, result) {
-    var transform = Transforms.headingPitchRollToFixedFrame(origin, heading, pitch, roll, ellipsoid, scratchENUMatrix4);
+  Transforms.headingPitchRollQuaternion = function(origin, headingPitchRoll, ellipsoid, fixedFrameTransformOrResult, result) {
+    Check.typeOf.object('HeadingPitchRoll', headingPitchRoll);
+    if (fixedFrameTransformOrResult instanceof Quaternion) {
+      result = fixedFrameTransformOrResult;
+      fixedFrameTransformOrResult = undefined;
+      deprecationWarning('Transforms.headingPitchRollQuaternion(origin, headingPitchRoll, ellipsoid, result)', 'The method was deprecated in Cesium 1.31 and will be removed in version 1.33. Transforms.headingPitchRollQuaternion(origin, headingPitchRoll, ellipsoid, fixedFrameTransform, result) where fixedFrameTransform is a a 4x4 transformation matrix (see Transforms.localFrameToFixedFrameGenerator)');
+    }
+    var transform = Transforms.headingPitchRollToFixedFrame(origin, headingPitchRoll, ellipsoid, fixedFrameTransformOrResult, scratchENUMatrix4);
     var rotation = Matrix4.getRotation(transform, scratchHPRMatrix3);
     return Quaternion.fromRotationMatrix(rotation, result);
   };
@@ -7607,13 +7820,39 @@ define("26", ["40", "a", "1d", "35", "2d", "16", "5", "7", "3f", "41", "2e", "4f
     Matrix4.setColumn(result, 3, newOrigin, result);
     return result;
   };
+  var swizzleMatrix = new Matrix4(0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+  Transforms.wgs84To2DModelMatrix = function(projection, center, result) {
+    if (!defined(projection)) {
+      throw new DeveloperError('projection is required.');
+    }
+    if (!defined(center)) {
+      throw new DeveloperError('center is required.');
+    }
+    if (!defined(result)) {
+      throw new DeveloperError('result is required.');
+    }
+    var ellipsoid = projection.ellipsoid;
+    var fromENU = Transforms.eastNorthUpToFixedFrame(center, ellipsoid, scratchFromENU);
+    var toENU = Matrix4.inverseTransformation(fromENU, scratchToENU);
+    var cartographic = ellipsoid.cartesianToCartographic(center, scratchCartographic);
+    var projectedPosition = projection.project(cartographic, scratchCartesian3Projection);
+    var newOrigin = scratchCartesian4NewOrigin;
+    newOrigin.x = projectedPosition.z;
+    newOrigin.y = projectedPosition.x;
+    newOrigin.z = projectedPosition.y;
+    newOrigin.w = 1.0;
+    var translation = Matrix4.fromTranslation(newOrigin, scratchFromENU);
+    Matrix4.multiply(swizzleMatrix, toENU, result);
+    Matrix4.multiply(translation, result, result);
+    return result;
+  };
   return Transforms;
 });
 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("52", [], function() {
+define("58", [], function() {
   function sprintf() {
     var regex = /%%|%(\d+\$)?([-+\'#0 ]*)(\*\d+\$|\*|\d+)?(\.(\*\d+\$|\*|\d+))?([scboxXuideEfFgG])/g;
     var a = arguments,
@@ -7762,7 +8001,7 @@ define("52", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3d", ["5", "7"], function(defined, DeveloperError) {
+define("3e", ["5", "7"], function(defined, DeveloperError) {
   'use strict';
   function binarySearch(array, itemToFind, comparator) {
     if (!defined(array)) {
@@ -7799,7 +8038,7 @@ define("3d", ["5", "7"], function(defined, DeveloperError) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("53", [], function() {
+define("59", [], function() {
   'use strict';
   function GregorianDate(year, month, day, hour, minute, second, millisecond, isLeapSecond) {
     this.year = year;
@@ -7817,7 +8056,7 @@ define("53", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("54", ["7"], function(DeveloperError) {
+define("5a", ["7"], function(DeveloperError) {
   'use strict';
   function isLeapYear(year) {
     if (year === null || isNaN(year)) {
@@ -7831,7 +8070,7 @@ define("54", ["7"], function(DeveloperError) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("42", [], function() {
+define("44", [], function() {
   'use strict';
   function LeapSecond(date, offset) {
     this.julianDate = date;
@@ -7843,7 +8082,7 @@ define("42", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("17", ["52", "3d", "16", "5", "7", "53", "54", "42", "44", "45"], function(sprintf, binarySearch, defaultValue, defined, DeveloperError, GregorianDate, isLeapYear, LeapSecond, TimeConstants, TimeStandard) {
+define("17", ["58", "3e", "15", "5", "7", "59", "5a", "44", "46", "47"], function(sprintf, binarySearch, defaultValue, defined, DeveloperError, GregorianDate, isLeapYear, LeapSecond, TimeConstants, TimeStandard) {
   'use strict';
   var gregorianDateScratch = new GregorianDate();
   var daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -8372,14 +8611,14 @@ define("17", ["52", "3d", "16", "5", "7", "53", "54", "42", "44", "45"], functio
   JulianDate.prototype.toString = function() {
     return JulianDate.toIso8601(this);
   };
-  JulianDate.leapSeconds = [new LeapSecond(new JulianDate(2441317, 43210.0, TimeStandard.TAI), 10), new LeapSecond(new JulianDate(2441499, 43211.0, TimeStandard.TAI), 11), new LeapSecond(new JulianDate(2441683, 43212.0, TimeStandard.TAI), 12), new LeapSecond(new JulianDate(2442048, 43213.0, TimeStandard.TAI), 13), new LeapSecond(new JulianDate(2442413, 43214.0, TimeStandard.TAI), 14), new LeapSecond(new JulianDate(2442778, 43215.0, TimeStandard.TAI), 15), new LeapSecond(new JulianDate(2443144, 43216.0, TimeStandard.TAI), 16), new LeapSecond(new JulianDate(2443509, 43217.0, TimeStandard.TAI), 17), new LeapSecond(new JulianDate(2443874, 43218.0, TimeStandard.TAI), 18), new LeapSecond(new JulianDate(2444239, 43219.0, TimeStandard.TAI), 19), new LeapSecond(new JulianDate(2444786, 43220.0, TimeStandard.TAI), 20), new LeapSecond(new JulianDate(2445151, 43221.0, TimeStandard.TAI), 21), new LeapSecond(new JulianDate(2445516, 43222.0, TimeStandard.TAI), 22), new LeapSecond(new JulianDate(2446247, 43223.0, TimeStandard.TAI), 23), new LeapSecond(new JulianDate(2447161, 43224.0, TimeStandard.TAI), 24), new LeapSecond(new JulianDate(2447892, 43225.0, TimeStandard.TAI), 25), new LeapSecond(new JulianDate(2448257, 43226.0, TimeStandard.TAI), 26), new LeapSecond(new JulianDate(2448804, 43227.0, TimeStandard.TAI), 27), new LeapSecond(new JulianDate(2449169, 43228.0, TimeStandard.TAI), 28), new LeapSecond(new JulianDate(2449534, 43229.0, TimeStandard.TAI), 29), new LeapSecond(new JulianDate(2450083, 43230.0, TimeStandard.TAI), 30), new LeapSecond(new JulianDate(2450630, 43231.0, TimeStandard.TAI), 31), new LeapSecond(new JulianDate(2451179, 43232.0, TimeStandard.TAI), 32), new LeapSecond(new JulianDate(2453736, 43233.0, TimeStandard.TAI), 33), new LeapSecond(new JulianDate(2454832, 43234.0, TimeStandard.TAI), 34), new LeapSecond(new JulianDate(2456109, 43235.0, TimeStandard.TAI), 35), new LeapSecond(new JulianDate(2457204, 43236.0, TimeStandard.TAI), 36)];
+  JulianDate.leapSeconds = [new LeapSecond(new JulianDate(2441317, 43210.0, TimeStandard.TAI), 10), new LeapSecond(new JulianDate(2441499, 43211.0, TimeStandard.TAI), 11), new LeapSecond(new JulianDate(2441683, 43212.0, TimeStandard.TAI), 12), new LeapSecond(new JulianDate(2442048, 43213.0, TimeStandard.TAI), 13), new LeapSecond(new JulianDate(2442413, 43214.0, TimeStandard.TAI), 14), new LeapSecond(new JulianDate(2442778, 43215.0, TimeStandard.TAI), 15), new LeapSecond(new JulianDate(2443144, 43216.0, TimeStandard.TAI), 16), new LeapSecond(new JulianDate(2443509, 43217.0, TimeStandard.TAI), 17), new LeapSecond(new JulianDate(2443874, 43218.0, TimeStandard.TAI), 18), new LeapSecond(new JulianDate(2444239, 43219.0, TimeStandard.TAI), 19), new LeapSecond(new JulianDate(2444786, 43220.0, TimeStandard.TAI), 20), new LeapSecond(new JulianDate(2445151, 43221.0, TimeStandard.TAI), 21), new LeapSecond(new JulianDate(2445516, 43222.0, TimeStandard.TAI), 22), new LeapSecond(new JulianDate(2446247, 43223.0, TimeStandard.TAI), 23), new LeapSecond(new JulianDate(2447161, 43224.0, TimeStandard.TAI), 24), new LeapSecond(new JulianDate(2447892, 43225.0, TimeStandard.TAI), 25), new LeapSecond(new JulianDate(2448257, 43226.0, TimeStandard.TAI), 26), new LeapSecond(new JulianDate(2448804, 43227.0, TimeStandard.TAI), 27), new LeapSecond(new JulianDate(2449169, 43228.0, TimeStandard.TAI), 28), new LeapSecond(new JulianDate(2449534, 43229.0, TimeStandard.TAI), 29), new LeapSecond(new JulianDate(2450083, 43230.0, TimeStandard.TAI), 30), new LeapSecond(new JulianDate(2450630, 43231.0, TimeStandard.TAI), 31), new LeapSecond(new JulianDate(2451179, 43232.0, TimeStandard.TAI), 32), new LeapSecond(new JulianDate(2453736, 43233.0, TimeStandard.TAI), 33), new LeapSecond(new JulianDate(2454832, 43234.0, TimeStandard.TAI), 34), new LeapSecond(new JulianDate(2456109, 43235.0, TimeStandard.TAI), 35), new LeapSecond(new JulianDate(2457204, 43236.0, TimeStandard.TAI), 36), new LeapSecond(new JulianDate(2457754, 43237.0, TimeStandard.TAI), 37)];
   return JulianDate;
 });
 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("44", ["11"], function(freezeObject) {
+define("46", ["11"], function(freezeObject) {
   'use strict';
   var TimeConstants = {
     SECONDS_PER_MILLISECOND: 0.001,
@@ -8399,7 +8638,7 @@ define("44", ["11"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("45", ["11"], function(freezeObject) {
+define("47", ["11"], function(freezeObject) {
   'use strict';
   var TimeStandard = {
     UTC: 0,
@@ -8411,7 +8650,7 @@ define("45", ["11"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("55", ["1d", "5", "7", "17", "d", "23", "44", "45"], function(Cartesian3, defined, DeveloperError, JulianDate, CesiumMath, Matrix3, TimeConstants, TimeStandard) {
+define("5b", ["1f", "5", "7", "17", "d", "27", "46", "47"], function(Cartesian3, defined, DeveloperError, JulianDate, CesiumMath, Matrix3, TimeConstants, TimeStandard) {
   'use strict';
   var Simon1994PlanetaryPositions = {};
   function computeTdbMinusTtSpice(daysSinceJ2000InTerrestrialTime) {
@@ -8427,14 +8666,12 @@ define("55", ["1d", "5", "7", "17", "d", "23", "44", "45"], function(Cartesian3,
     return result;
   }
   var epoch = new JulianDate(2451545, 0, TimeStandard.TAI);
-  var GravitationalParameterOfEarth = 3.98600435e14;
-  var GravitationalParameterOfSun = GravitationalParameterOfEarth * (1.0 + 0.012300034) * 328900.56;
   var MetersPerKilometer = 1000.0;
   var RadiansPerDegree = CesiumMath.RADIANS_PER_DEGREE;
   var RadiansPerArcSecond = CesiumMath.RADIANS_PER_ARCSECOND;
   var MetersPerAstronomicalUnit = 1.49597870e+11;
   var perifocalToEquatorial = new Matrix3();
-  function elementsToCartesian(semimajorAxis, eccentricity, inclination, longitudeOfPerigee, longitudeOfNode, meanLongitude, gravitationalParameter, result) {
+  function elementsToCartesian(semimajorAxis, eccentricity, inclination, longitudeOfPerigee, longitudeOfNode, meanLongitude, result) {
     if (inclination < 0.0) {
       inclination = -inclination;
       longitudeOfNode += CesiumMath.PI;
@@ -8471,7 +8708,8 @@ define("55", ["1d", "5", "7", "17", "d", "23", "44", "45"], function(Cartesian3,
   function chooseOrbit(eccentricity, tolerance) {
     if (eccentricity < 0) {
       throw new DeveloperError('eccentricity cannot be negative.');
-    } else if (eccentricity <= tolerance) {
+    }
+    if (eccentricity <= tolerance) {
       return 'Circular';
     } else if (eccentricity < 1.0 - tolerance) {
       return 'Elliptical';
@@ -8615,7 +8853,7 @@ define("55", ["1d", "5", "7", "17", "d", "23", "44", "45"], function(Cartesian3,
     var longitudeOfPerigee = 102.93734808 * RadiansPerDegree + 11612.35290 * RadiansPerArcSecond * t;
     var inclination = 469.97289 * RadiansPerArcSecond * t;
     var longitudeOfNode = 174.87317577 * RadiansPerDegree - 8679.27034 * RadiansPerArcSecond * t;
-    return elementsToCartesian(semimajorAxis, eccentricity, inclination, longitudeOfPerigee, longitudeOfNode, meanLongitude, GravitationalParameterOfSun, result);
+    return elementsToCartesian(semimajorAxis, eccentricity, inclination, longitudeOfPerigee, longitudeOfNode, meanLongitude, result);
   }
   function computeSimonMoon(date, result) {
     taiToTdb(date, scratchDate);
@@ -8664,7 +8902,7 @@ define("55", ["1d", "5", "7", "17", "d", "23", "44", "45"], function(Cartesian3,
     var longitudeOfPerigee = longitudeOfPerigeeConstant + longitudeOfPerigeeSecPart * RadiansPerArcSecond;
     var meanLongitude = meanLongitudeConstant + meanLongitudeSecPart * RadiansPerArcSecond;
     var longitudeOfNode = longitudeOfNodeConstant + longitudeOfNodeSecPart * RadiansPerArcSecond;
-    return elementsToCartesian(semimajorAxis, eccentricity, inclination, longitudeOfPerigee, longitudeOfNode, meanLongitude, GravitationalParameterOfEarth, result);
+    return elementsToCartesian(semimajorAxis, eccentricity, inclination, longitudeOfPerigee, longitudeOfNode, meanLongitude, result);
   }
   var moonEarthMassRatio = 0.012300034;
   var factor = moonEarthMassRatio / (moonEarthMassRatio + 1.0) * -1;
@@ -8674,25 +8912,25 @@ define("55", ["1d", "5", "7", "17", "d", "23", "44", "45"], function(Cartesian3,
   }
   var axesTransformation = new Matrix3(1.0000000000000002, 5.619723173785822e-16, 4.690511510146299e-19, -5.154129427414611e-16, 0.9174820620691819, -0.39777715593191376, -2.23970096136568e-16, 0.39777715593191376, 0.9174820620691819);
   var translation = new Cartesian3();
-  Simon1994PlanetaryPositions.computeSunPositionInEarthInertialFrame = function(date, result) {
-    if (!defined(date)) {
-      date = JulianDate.now();
+  Simon1994PlanetaryPositions.computeSunPositionInEarthInertialFrame = function(julianDate, result) {
+    if (!defined(julianDate)) {
+      julianDate = JulianDate.now();
     }
     if (!defined(result)) {
       result = new Cartesian3();
     }
-    translation = computeSimonEarthMoonBarycenter(date, translation);
+    translation = computeSimonEarthMoonBarycenter(julianDate, translation);
     result = Cartesian3.negate(translation, result);
-    computeSimonEarth(date, translation);
+    computeSimonEarth(julianDate, translation);
     Cartesian3.subtract(result, translation, result);
     Matrix3.multiplyByVector(axesTransformation, result, result);
     return result;
   };
-  Simon1994PlanetaryPositions.computeMoonPositionInEarthInertialFrame = function(date, result) {
-    if (!defined(date)) {
-      date = JulianDate.now();
+  Simon1994PlanetaryPositions.computeMoonPositionInEarthInertialFrame = function(julianDate, result) {
+    if (!defined(julianDate)) {
+      julianDate = JulianDate.now();
     }
-    result = computeSimonMoon(date, result);
+    result = computeSimonMoon(julianDate, result);
     Matrix3.multiplyByVector(axesTransformation, result, result);
     return result;
   };
@@ -8702,7 +8940,7 @@ define("55", ["1d", "5", "7", "17", "d", "23", "44", "45"], function(Cartesian3,
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2e", ["1d", "2d", "16", "5", "6", "7", "11", "d", "56"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
+define("2f", ["1f", "2e", "15", "5", "6", "7", "11", "d", "5c"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
   'use strict';
   function initialize(ellipsoid, x, y, z) {
     x = defaultValue(x, 0.0);
@@ -8719,6 +8957,9 @@ define("2e", ["1d", "2d", "16", "5", "6", "7", "11", "d", "56"], function(Cartes
     ellipsoid._minimumRadius = Math.min(x, y, z);
     ellipsoid._maximumRadius = Math.max(x, y, z);
     ellipsoid._centerToleranceSquared = CesiumMath.EPSILON1;
+    if (ellipsoid._radiiSquared.z !== 0) {
+      ellipsoid._sqauredXOverSquaredZ = ellipsoid._radiiSquared.x / ellipsoid._radiiSquared.z;
+    }
   }
   function Ellipsoid(x, y, z) {
     this._radii = undefined;
@@ -8729,6 +8970,7 @@ define("2e", ["1d", "2d", "16", "5", "6", "7", "11", "d", "56"], function(Cartes
     this._minimumRadius = undefined;
     this._maximumRadius = undefined;
     this._centerToleranceSquared = undefined;
+    this._sqauredXOverSquaredZ = undefined;
     initialize(this, x, y, z);
   }
   defineProperties(Ellipsoid.prototype, {
@@ -8798,6 +9040,7 @@ define("2e", ["1d", "2d", "16", "5", "6", "7", "11", "d", "56"], function(Cartes
     }
     startingIndex = defaultValue(startingIndex, 0);
     Cartesian3.pack(value._radii, array, startingIndex);
+    return array;
   };
   Ellipsoid.unpack = function(array, startingIndex, result) {
     if (!defined(array)) {
@@ -8934,13 +9177,36 @@ define("2e", ["1d", "2d", "16", "5", "6", "7", "11", "d", "56"], function(Cartes
   Ellipsoid.prototype.toString = function() {
     return this._radii.toString();
   };
+  Ellipsoid.prototype.getSurfaceNormalIntersectionWithZAxis = function(position, buffer, result) {
+    if (!defined(position)) {
+      throw new DeveloperError('position is required.');
+    }
+    if (!CesiumMath.equalsEpsilon(this._radii.x, this._radii.y, CesiumMath.EPSILON15)) {
+      throw new DeveloperError('Ellipsoid must be an ellipsoid of revolution (radii.x == radii.y)');
+    }
+    if (this._radii.z === 0) {
+      throw new DeveloperError('Ellipsoid.radii.z must be greater than 0');
+    }
+    buffer = defaultValue(buffer, 0.0);
+    var sqauredXOverSquaredZ = this._sqauredXOverSquaredZ;
+    if (!defined(result)) {
+      result = new Cartesian3();
+    }
+    result.x = 0.0;
+    result.y = 0.0;
+    result.z = position.z * (1 - sqauredXOverSquaredZ);
+    if (Math.abs(result.z) >= this._radii.z - buffer) {
+      return undefined;
+    }
+    return result;
+  };
   return Ellipsoid;
 });
 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("57", ["1d", "2d", "16", "5", "6", "7", "2e", "d"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, Ellipsoid, CesiumMath) {
+define("5d", ["1f", "2e", "15", "5", "6", "7", "2f", "d"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, Ellipsoid, CesiumMath) {
   'use strict';
   function setConstants(ellipsoidGeodesic) {
     var uSquared = ellipsoidGeodesic._uSquared;
@@ -9126,7 +9392,7 @@ define("57", ["1d", "2d", "16", "5", "6", "7", "2e", "d"], function(Cartesian3, 
   };
   EllipsoidGeodesic.prototype.interpolateUsingSurfaceDistance = function(distance, result) {
     if (!defined(this._distance)) {
-      throw new DeveloperError('start and end must be set before calling funciton interpolateUsingSurfaceDistance');
+      throw new DeveloperError('start and end must be set before calling function interpolateUsingSurfaceDistance');
     }
     var constants = this._constants;
     var s = constants.distanceRatio + distance / constants.b;
@@ -9168,7 +9434,7 @@ define("57", ["1d", "2d", "16", "5", "6", "7", "2e", "d"], function(Cartesian3, 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("56", ["1d", "5", "7", "d"], function(Cartesian3, defined, DeveloperError, CesiumMath) {
+define("5c", ["1f", "5", "7", "d"], function(Cartesian3, defined, DeveloperError, CesiumMath) {
   'use strict';
   var scaleToGeodeticSurfaceIntersection = new Cartesian3();
   var scaleToGeodeticSurfaceGradient = new Cartesian3();
@@ -9250,7 +9516,7 @@ define("56", ["1d", "5", "7", "d"], function(Cartesian3, defined, DeveloperError
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2d", ["1d", "16", "5", "7", "11", "d", "56"], function(Cartesian3, defaultValue, defined, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
+define("2e", ["1f", "15", "5", "7", "11", "d", "5c"], function(Cartesian3, defaultValue, defined, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
   'use strict';
   function Cartographic(longitude, latitude, height) {
     this.longitude = defaultValue(longitude, 0.0);
@@ -9298,7 +9564,7 @@ define("2d", ["1d", "16", "5", "7", "11", "d", "56"], function(Cartesian3, defau
     if (!defined(p)) {
       return undefined;
     }
-    var n = Cartesian3.multiplyComponents(cartesian, oneOverRadiiSquared, cartesianToCartographicN);
+    var n = Cartesian3.multiplyComponents(p, oneOverRadiiSquared, cartesianToCartographicN);
     n = Cartesian3.normalize(n, n);
     var h = Cartesian3.subtract(cartesian, p, cartesianToCartographicH);
     var longitude = Math.atan2(n.y, n.x);
@@ -9352,7 +9618,19 @@ define("2d", ["1d", "16", "5", "7", "11", "d", "56"], function(Cartesian3, defau
 })();
 (function() {
 var define = $__System.amdDefine;
-define("58", ["7", "59"], function(DeveloperError, QuadraticRealPolynomial) {
+define("5e", ["15"], function(defaultValue) {
+  'use strict';
+  function Interval(start, stop) {
+    this.start = defaultValue(start, 0.0);
+    this.stop = defaultValue(stop, 0.0);
+  }
+  return Interval;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("5f", ["7", "60"], function(DeveloperError, QuadraticRealPolynomial) {
   'use strict';
   var CubicRealPolynomial = {};
   CubicRealPolynomial.computeDiscriminant = function(a, b, c, d) {
@@ -9519,7 +9797,7 @@ define("58", ["7", "59"], function(DeveloperError, QuadraticRealPolynomial) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("59", ["7", "d"], function(DeveloperError, CesiumMath) {
+define("60", ["7", "d"], function(DeveloperError, CesiumMath) {
   'use strict';
   var QuadraticRealPolynomial = {};
   QuadraticRealPolynomial.computeDiscriminant = function(a, b, c) {
@@ -9600,7 +9878,7 @@ define("59", ["7", "d"], function(DeveloperError, CesiumMath) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5a", ["58", "7", "d", "59"], function(CubicRealPolynomial, DeveloperError, CesiumMath, QuadraticRealPolynomial) {
+define("61", ["5f", "7", "d", "60"], function(CubicRealPolynomial, DeveloperError, CesiumMath, QuadraticRealPolynomial) {
   'use strict';
   var QuarticRealPolynomial = {};
   QuarticRealPolynomial.computeDiscriminant = function(a, b, c, d, e) {
@@ -9846,7 +10124,7 @@ define("5a", ["58", "7", "d", "59"], function(CubicRealPolynomial, DeveloperErro
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5b", ["1d", "16", "5", "7"], function(Cartesian3, defaultValue, defined, DeveloperError) {
+define("62", ["1f", "15", "5", "7"], function(Cartesian3, defaultValue, defined, DeveloperError) {
   'use strict';
   function Ray(origin, direction) {
     direction = Cartesian3.clone(defaultValue(direction, Cartesian3.ZERO));
@@ -9875,7 +10153,7 @@ define("5b", ["1d", "16", "5", "7"], function(Cartesian3, defaultValue, defined,
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5c", ["1d", "2d", "16", "5", "7", "d", "23", "59", "5a", "5b"], function(Cartesian3, Cartographic, defaultValue, defined, DeveloperError, CesiumMath, Matrix3, QuadraticRealPolynomial, QuarticRealPolynomial, Ray) {
+define("63", ["1f", "2e", "15", "5", "7", "5e", "d", "27", "60", "61", "62"], function(Cartesian3, Cartographic, defaultValue, defined, DeveloperError, Interval, CesiumMath, Matrix3, QuadraticRealPolynomial, QuarticRealPolynomial, Ray) {
   'use strict';
   var IntersectionTests = {};
   IntersectionTests.rayPlane = function(ray, plane, result) {
@@ -9907,7 +10185,7 @@ define("5c", ["1d", "2d", "16", "5", "7", "d", "23", "59", "5a", "5b"], function
   var scratchPVec = new Cartesian3();
   var scratchTVec = new Cartesian3();
   var scratchQVec = new Cartesian3();
-  function rayTriangle(ray, p0, p1, p2, cullBackFaces) {
+  IntersectionTests.rayTriangleParametric = function(ray, p0, p1, p2, cullBackFaces) {
     if (!defined(ray)) {
       throw new DeveloperError('ray is required.');
     }
@@ -9965,9 +10243,9 @@ define("5c", ["1d", "2d", "16", "5", "7", "d", "23", "59", "5a", "5b"], function
       t = Cartesian3.dot(edge1, q) * invDet;
     }
     return t;
-  }
+  };
   IntersectionTests.rayTriangle = function(ray, p0, p1, p2, cullBackFaces, result) {
-    var t = rayTriangle(ray, p0, p1, p2, cullBackFaces);
+    var t = IntersectionTests.rayTriangleParametric(ray, p0, p1, p2, cullBackFaces);
     if (!defined(t) || t < 0.0) {
       return undefined;
     }
@@ -9985,11 +10263,20 @@ define("5c", ["1d", "2d", "16", "5", "7", "d", "23", "59", "5a", "5b"], function
     if (!defined(v1)) {
       throw new DeveloperError('v1 is required.');
     }
+    if (!defined(p0)) {
+      throw new DeveloperError('p0 is required.');
+    }
+    if (!defined(p1)) {
+      throw new DeveloperError('p1 is required.');
+    }
+    if (!defined(p2)) {
+      throw new DeveloperError('p2 is required.');
+    }
     var ray = scratchLineSegmentTriangleRay;
     Cartesian3.clone(v0, ray.origin);
     Cartesian3.subtract(v1, v0, ray.direction);
     Cartesian3.normalize(ray.direction, ray.direction);
-    var t = rayTriangle(ray, p0, p1, p2, cullBackFaces);
+    var t = IntersectionTests.rayTriangleParametric(ray, p0, p1, p2, cullBackFaces);
     if (!defined(t) || t < 0.0 || t > Cartesian3.distance(v0, v1)) {
       return undefined;
     }
@@ -10030,7 +10317,7 @@ define("5c", ["1d", "2d", "16", "5", "7", "d", "23", "59", "5a", "5b"], function
   };
   function raySphere(ray, sphere, result) {
     if (!defined(result)) {
-      result = {};
+      result = new Interval();
     }
     var origin = ray.origin;
     var direction = ray.direction;
@@ -10121,10 +10408,7 @@ define("5c", ["1d", "2d", "16", "5", "7", "d", "23", "59", "5a", "5b"], function
         var root0 = temp / w2;
         var root1 = difference / temp;
         if (root0 < root1) {
-          return {
-            start: root0,
-            stop: root1
-          };
+          return new Interval(root0, root1);
         }
         return {
           start: root1,
@@ -10132,10 +10416,7 @@ define("5c", ["1d", "2d", "16", "5", "7", "d", "23", "59", "5a", "5b"], function
         };
       } else {
         var root = Math.sqrt(difference / w2);
-        return {
-          start: root,
-          stop: root
-        };
+        return new Interval(root, root);
       }
     } else if (q2 < 1.0) {
       difference = q2 - 1.0;
@@ -10143,17 +10424,11 @@ define("5c", ["1d", "2d", "16", "5", "7", "d", "23", "59", "5a", "5b"], function
       product = w2 * difference;
       discriminant = qw * qw - product;
       temp = -qw + Math.sqrt(discriminant);
-      return {
-        start: 0.0,
-        stop: temp / w2
-      };
+      return new Interval(0.0, temp / w2);
     } else {
       if (qw < 0.0) {
         w2 = Cartesian3.magnitudeSquared(w);
-        return {
-          start: 0.0,
-          stop: -qw / w2
-        };
+        return new Interval(0.0, -qw / w2);
       }
       return undefined;
     }
@@ -10262,9 +10537,11 @@ define("5c", ["1d", "2d", "16", "5", "7", "d", "23", "59", "5a", "5b"], function
     }
     var position = ray.origin;
     var direction = ray.direction;
-    var normal = ellipsoid.geodeticSurfaceNormal(position, firstAxisScratch);
-    if (Cartesian3.dot(direction, normal) >= 0.0) {
-      return position;
+    if (!Cartesian3.equals(position, Cartesian3.ZERO)) {
+      var normal = ellipsoid.geodeticSurfaceNormal(position, firstAxisScratch);
+      if (Cartesian3.dot(direction, normal) >= 0.0) {
+        return position;
+      }
     }
     var intersects = defined(this.rayEllipsoid(ray, ellipsoid));
     var f = ellipsoid.transformPositionToScaledSpace(direction, firstAxisScratch);
@@ -10426,7 +10703,7 @@ define("5c", ["1d", "2d", "16", "5", "7", "d", "23", "59", "5a", "5b"], function
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5d", ["5"], function(defined) {
+define("64", ["5"], function(defined) {
   'use strict';
   var isArray = Array.isArray;
   if (!defined(isArray)) {
@@ -10440,7 +10717,7 @@ define("5d", ["5"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("35", ["16", "5", "7", "11", "d"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
+define("36", ["40", "15", "5", "7", "11", "d"], function(Check, defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
   'use strict';
   function Cartesian4(x, y, z, w) {
     this.x = defaultValue(x, 0.0);
@@ -10459,9 +10736,7 @@ define("35", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develo
     return result;
   };
   Cartesian4.fromColor = function(color, result) {
-    if (!defined(color)) {
-      throw new DeveloperError('color is required');
-    }
+    Check.typeOf.object('color', color);
     if (!defined(result)) {
       return new Cartesian4(color.red, color.green, color.blue, color.alpha);
     }
@@ -10486,22 +10761,17 @@ define("35", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develo
   };
   Cartesian4.packedLength = 4;
   Cartesian4.pack = function(value, array, startingIndex) {
-    if (!defined(value)) {
-      throw new DeveloperError('value is required');
-    }
-    if (!defined(array)) {
-      throw new DeveloperError('array is required');
-    }
+    Check.typeOf.object('value', value);
+    Check.defined('array', array);
     startingIndex = defaultValue(startingIndex, 0);
     array[startingIndex++] = value.x;
     array[startingIndex++] = value.y;
     array[startingIndex++] = value.z;
     array[startingIndex] = value.w;
+    return array;
   };
   Cartesian4.unpack = function(array, startingIndex, result) {
-    if (!defined(array)) {
-      throw new DeveloperError('array is required');
-    }
+    Check.defined('array', array);
     startingIndex = defaultValue(startingIndex, 0);
     if (!defined(result)) {
       result = new Cartesian4();
@@ -10513,9 +10783,7 @@ define("35", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develo
     return result;
   };
   Cartesian4.packArray = function(array, result) {
-    if (!defined(array)) {
-      throw new DeveloperError('array is required');
-    }
+    Check.defined('array', array);
     var length = array.length;
     if (!defined(result)) {
       result = new Array(length * 4);
@@ -10528,9 +10796,7 @@ define("35", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develo
     return result;
   };
   Cartesian4.unpackArray = function(array, result) {
-    if (!defined(array)) {
-      throw new DeveloperError('array is required');
-    }
+    Check.defined('array', array);
     var length = array.length;
     if (!defined(result)) {
       result = new Array(length / 4);
@@ -10545,27 +10811,17 @@ define("35", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develo
   };
   Cartesian4.fromArray = Cartesian4.unpack;
   Cartesian4.maximumComponent = function(cartesian) {
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
+    Check.typeOf.object('cartesian', cartesian);
     return Math.max(cartesian.x, cartesian.y, cartesian.z, cartesian.w);
   };
   Cartesian4.minimumComponent = function(cartesian) {
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
+    Check.typeOf.object('cartesian', cartesian);
     return Math.min(cartesian.x, cartesian.y, cartesian.z, cartesian.w);
   };
   Cartesian4.minimumByComponent = function(first, second, result) {
-    if (!defined(first)) {
-      throw new DeveloperError('first is required.');
-    }
-    if (!defined(second)) {
-      throw new DeveloperError('second is required.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required.');
-    }
+    Check.typeOf.object('first', first);
+    Check.typeOf.object('second', second);
+    Check.typeOf.object('result', result);
     result.x = Math.min(first.x, second.x);
     result.y = Math.min(first.y, second.y);
     result.z = Math.min(first.z, second.z);
@@ -10573,15 +10829,9 @@ define("35", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develo
     return result;
   };
   Cartesian4.maximumByComponent = function(first, second, result) {
-    if (!defined(first)) {
-      throw new DeveloperError('first is required.');
-    }
-    if (!defined(second)) {
-      throw new DeveloperError('second is required.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required.');
-    }
+    Check.typeOf.object('first', first);
+    Check.typeOf.object('second', second);
+    Check.typeOf.object('result', result);
     result.x = Math.max(first.x, second.x);
     result.y = Math.max(first.y, second.y);
     result.z = Math.max(first.z, second.z);
@@ -10589,9 +10839,7 @@ define("35", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develo
     return result;
   };
   Cartesian4.magnitudeSquared = function(cartesian) {
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
+    Check.typeOf.object('cartesian', cartesian);
     return cartesian.x * cartesian.x + cartesian.y * cartesian.y + cartesian.z * cartesian.z + cartesian.w * cartesian.w;
   };
   Cartesian4.magnitude = function(cartesian) {
@@ -10599,68 +10847,59 @@ define("35", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develo
   };
   var distanceScratch = new Cartesian4();
   Cartesian4.distance = function(left, right) {
-    if (!defined(left) || !defined(right)) {
-      throw new DeveloperError('left and right are required.');
-    }
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
     Cartesian4.subtract(left, right, distanceScratch);
     return Cartesian4.magnitude(distanceScratch);
   };
   Cartesian4.distanceSquared = function(left, right) {
-    if (!defined(left) || !defined(right)) {
-      throw new DeveloperError('left and right are required.');
-    }
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
     Cartesian4.subtract(left, right, distanceScratch);
     return Cartesian4.magnitudeSquared(distanceScratch);
   };
   Cartesian4.normalize = function(cartesian, result) {
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('cartesian', cartesian);
+    Check.typeOf.object('result', result);
     var magnitude = Cartesian4.magnitude(cartesian);
     result.x = cartesian.x / magnitude;
     result.y = cartesian.y / magnitude;
     result.z = cartesian.z / magnitude;
     result.w = cartesian.w / magnitude;
+    if (isNaN(result.x) || isNaN(result.y) || isNaN(result.z) || isNaN(result.w)) {
+      throw new DeveloperError('normalized result is not a number');
+    }
     return result;
   };
   Cartesian4.dot = function(left, right) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
     return left.x * right.x + left.y * right.y + left.z * right.z + left.w * right.w;
   };
   Cartesian4.multiplyComponents = function(left, right, result) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
+    Check.typeOf.object('result', result);
     result.x = left.x * right.x;
     result.y = left.y * right.y;
     result.z = left.z * right.z;
     result.w = left.w * right.w;
     return result;
   };
+  Cartesian4.divideComponents = function(left, right, result) {
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
+    Check.typeOf.object('result', result);
+    result.x = left.x / right.x;
+    result.y = left.y / right.y;
+    result.z = left.z / right.z;
+    result.w = left.w / right.w;
+    return result;
+  };
   Cartesian4.add = function(left, right, result) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
+    Check.typeOf.object('result', result);
     result.x = left.x + right.x;
     result.y = left.y + right.y;
     result.z = left.z + right.z;
@@ -10668,15 +10907,9 @@ define("35", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develo
     return result;
   };
   Cartesian4.subtract = function(left, right, result) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
+    Check.typeOf.object('result', result);
     result.x = left.x - right.x;
     result.y = left.y - right.y;
     result.z = left.z - right.z;
@@ -10684,15 +10917,9 @@ define("35", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develo
     return result;
   };
   Cartesian4.multiplyByScalar = function(cartesian, scalar, result) {
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
-    if (typeof scalar !== 'number') {
-      throw new DeveloperError('scalar is required and must be a number.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('cartesian', cartesian);
+    Check.typeOf.number('scalar', scalar);
+    Check.typeOf.object('result', result);
     result.x = cartesian.x * scalar;
     result.y = cartesian.y * scalar;
     result.z = cartesian.z * scalar;
@@ -10700,15 +10927,9 @@ define("35", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develo
     return result;
   };
   Cartesian4.divideByScalar = function(cartesian, scalar, result) {
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
-    if (typeof scalar !== 'number') {
-      throw new DeveloperError('scalar is required and must be a number.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('cartesian', cartesian);
+    Check.typeOf.number('scalar', scalar);
+    Check.typeOf.object('result', result);
     result.x = cartesian.x / scalar;
     result.y = cartesian.y / scalar;
     result.z = cartesian.z / scalar;
@@ -10716,12 +10937,8 @@ define("35", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develo
     return result;
   };
   Cartesian4.negate = function(cartesian, result) {
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('cartesian', cartesian);
+    Check.typeOf.object('result', result);
     result.x = -cartesian.x;
     result.y = -cartesian.y;
     result.z = -cartesian.z;
@@ -10729,12 +10946,8 @@ define("35", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develo
     return result;
   };
   Cartesian4.abs = function(cartesian, result) {
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('cartesian', cartesian);
+    Check.typeOf.object('result', result);
     result.x = Math.abs(cartesian.x);
     result.y = Math.abs(cartesian.y);
     result.z = Math.abs(cartesian.z);
@@ -10743,30 +10956,18 @@ define("35", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develo
   };
   var lerpScratch = new Cartesian4();
   Cartesian4.lerp = function(start, end, t, result) {
-    if (!defined(start)) {
-      throw new DeveloperError('start is required.');
-    }
-    if (!defined(end)) {
-      throw new DeveloperError('end is required.');
-    }
-    if (typeof t !== 'number') {
-      throw new DeveloperError('t is required and must be a number.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required.');
-    }
+    Check.typeOf.object('start', start);
+    Check.typeOf.object('end', end);
+    Check.typeOf.number('t', t);
+    Check.typeOf.object('result', result);
     Cartesian4.multiplyByScalar(end, t, lerpScratch);
     result = Cartesian4.multiplyByScalar(start, 1.0 - t, result);
     return Cartesian4.add(lerpScratch, result, result);
   };
   var mostOrthogonalAxisScratch = new Cartesian4();
   Cartesian4.mostOrthogonalAxis = function(cartesian, result) {
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required.');
-    }
+    Check.typeOf.object('cartesian', cartesian);
+    Check.typeOf.object('result', result);
     var f = Cartesian4.normalize(cartesian, mostOrthogonalAxisScratch);
     Cartesian4.abs(f, f);
     if (f.x <= f.y) {
@@ -10847,7 +11048,7 @@ define("6", ["5"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath) {
+define("27", ["1f", "40", "15", "5", "6", "7", "11", "d"], function(Cartesian3, Check, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath) {
   'use strict';
   function Matrix3(column0Row0, column1Row0, column2Row0, column0Row1, column1Row1, column2Row1, column0Row2, column1Row2, column2Row2) {
     this[0] = defaultValue(column0Row0, 0.0);
@@ -10862,12 +11063,8 @@ define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaul
   }
   Matrix3.packedLength = 9;
   Matrix3.pack = function(value, array, startingIndex) {
-    if (!defined(value)) {
-      throw new DeveloperError('value is required');
-    }
-    if (!defined(array)) {
-      throw new DeveloperError('array is required');
-    }
+    Check.typeOf.object('value', value);
+    Check.defined('array', array);
     startingIndex = defaultValue(startingIndex, 0);
     array[startingIndex++] = value[0];
     array[startingIndex++] = value[1];
@@ -10878,11 +11075,10 @@ define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaul
     array[startingIndex++] = value[6];
     array[startingIndex++] = value[7];
     array[startingIndex++] = value[8];
+    return array;
   };
   Matrix3.unpack = function(array, startingIndex, result) {
-    if (!defined(array)) {
-      throw new DeveloperError('array is required');
-    }
+    Check.defined('array', array);
     startingIndex = defaultValue(startingIndex, 0);
     if (!defined(result)) {
       result = new Matrix3();
@@ -10898,28 +11094,26 @@ define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaul
     result[8] = array[startingIndex++];
     return result;
   };
-  Matrix3.clone = function(values, result) {
-    if (!defined(values)) {
+  Matrix3.clone = function(matrix, result) {
+    if (!defined(matrix)) {
       return undefined;
     }
     if (!defined(result)) {
-      return new Matrix3(values[0], values[3], values[6], values[1], values[4], values[7], values[2], values[5], values[8]);
+      return new Matrix3(matrix[0], matrix[3], matrix[6], matrix[1], matrix[4], matrix[7], matrix[2], matrix[5], matrix[8]);
     }
-    result[0] = values[0];
-    result[1] = values[1];
-    result[2] = values[2];
-    result[3] = values[3];
-    result[4] = values[4];
-    result[5] = values[5];
-    result[6] = values[6];
-    result[7] = values[7];
-    result[8] = values[8];
+    result[0] = matrix[0];
+    result[1] = matrix[1];
+    result[2] = matrix[2];
+    result[3] = matrix[3];
+    result[4] = matrix[4];
+    result[5] = matrix[5];
+    result[6] = matrix[6];
+    result[7] = matrix[7];
+    result[8] = matrix[8];
     return result;
   };
   Matrix3.fromArray = function(array, startingIndex, result) {
-    if (!defined(array)) {
-      throw new DeveloperError('array is required');
-    }
+    Check.defined('array', array);
     startingIndex = defaultValue(startingIndex, 0);
     if (!defined(result)) {
       result = new Matrix3();
@@ -10936,15 +11130,11 @@ define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaul
     return result;
   };
   Matrix3.fromColumnMajorArray = function(values, result) {
-    if (!defined(values)) {
-      throw new DeveloperError('values parameter is required');
-    }
+    Check.defined('values', values);
     return Matrix3.clone(values, result);
   };
   Matrix3.fromRowMajorArray = function(values, result) {
-    if (!defined(values)) {
-      throw new DeveloperError('values is required.');
-    }
+    Check.defined('values', values);
     if (!defined(result)) {
       return new Matrix3(values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8]);
     }
@@ -10960,9 +11150,7 @@ define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaul
     return result;
   };
   Matrix3.fromQuaternion = function(quaternion, result) {
-    if (!defined(quaternion)) {
-      throw new DeveloperError('quaternion is required');
-    }
+    Check.typeOf.object('quaternion', quaternion);
     var x2 = quaternion.x * quaternion.x;
     var xy = quaternion.x * quaternion.y;
     var xz = quaternion.x * quaternion.z;
@@ -10996,10 +11184,39 @@ define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaul
     result[8] = m22;
     return result;
   };
-  Matrix3.fromScale = function(scale, result) {
-    if (!defined(scale)) {
-      throw new DeveloperError('scale is required.');
+  Matrix3.fromHeadingPitchRoll = function(headingPitchRoll, result) {
+    Check.typeOf.object('headingPitchRoll', headingPitchRoll);
+    var cosTheta = Math.cos(-headingPitchRoll.pitch);
+    var cosPsi = Math.cos(-headingPitchRoll.heading);
+    var cosPhi = Math.cos(headingPitchRoll.roll);
+    var sinTheta = Math.sin(-headingPitchRoll.pitch);
+    var sinPsi = Math.sin(-headingPitchRoll.heading);
+    var sinPhi = Math.sin(headingPitchRoll.roll);
+    var m00 = cosTheta * cosPsi;
+    var m01 = -cosPhi * sinPsi + sinPhi * sinTheta * cosPsi;
+    var m02 = sinPhi * sinPsi + cosPhi * sinTheta * cosPsi;
+    var m10 = cosTheta * sinPsi;
+    var m11 = cosPhi * cosPsi + sinPhi * sinTheta * sinPsi;
+    var m12 = -sinPhi * cosPsi + cosPhi * sinTheta * sinPsi;
+    var m20 = -sinTheta;
+    var m21 = sinPhi * cosTheta;
+    var m22 = cosPhi * cosTheta;
+    if (!defined(result)) {
+      return new Matrix3(m00, m01, m02, m10, m11, m12, m20, m21, m22);
     }
+    result[0] = m00;
+    result[1] = m10;
+    result[2] = m20;
+    result[3] = m01;
+    result[4] = m11;
+    result[5] = m21;
+    result[6] = m02;
+    result[7] = m12;
+    result[8] = m22;
+    return result;
+  };
+  Matrix3.fromScale = function(scale, result) {
+    Check.typeOf.object('scale', scale);
     if (!defined(result)) {
       return new Matrix3(scale.x, 0.0, 0.0, 0.0, scale.y, 0.0, 0.0, 0.0, scale.z);
     }
@@ -11015,9 +11232,7 @@ define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaul
     return result;
   };
   Matrix3.fromUniformScale = function(scale, result) {
-    if (typeof scale !== 'number') {
-      throw new DeveloperError('scale is required.');
-    }
+    Check.typeOf.number('scale', scale);
     if (!defined(result)) {
       return new Matrix3(scale, 0.0, 0.0, 0.0, scale, 0.0, 0.0, 0.0, scale);
     }
@@ -11033,9 +11248,7 @@ define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaul
     return result;
   };
   Matrix3.fromCrossProduct = function(vector, result) {
-    if (!defined(vector)) {
-      throw new DeveloperError('vector is required.');
-    }
+    Check.typeOf.object('vector', vector);
     if (!defined(result)) {
       return new Matrix3(0.0, -vector.z, vector.y, vector.z, 0.0, -vector.x, -vector.y, vector.x, 0.0);
     }
@@ -11051,9 +11264,7 @@ define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaul
     return result;
   };
   Matrix3.fromRotationX = function(angle, result) {
-    if (!defined(angle)) {
-      throw new DeveloperError('angle is required.');
-    }
+    Check.typeOf.number('angle', angle);
     var cosAngle = Math.cos(angle);
     var sinAngle = Math.sin(angle);
     if (!defined(result)) {
@@ -11071,9 +11282,7 @@ define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaul
     return result;
   };
   Matrix3.fromRotationY = function(angle, result) {
-    if (!defined(angle)) {
-      throw new DeveloperError('angle is required.');
-    }
+    Check.typeOf.number('angle', angle);
     var cosAngle = Math.cos(angle);
     var sinAngle = Math.sin(angle);
     if (!defined(result)) {
@@ -11091,9 +11300,7 @@ define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaul
     return result;
   };
   Matrix3.fromRotationZ = function(angle, result) {
-    if (!defined(angle)) {
-      throw new DeveloperError('angle is required.');
-    }
+    Check.typeOf.number('angle', angle);
     var cosAngle = Math.cos(angle);
     var sinAngle = Math.sin(angle);
     if (!defined(result)) {
@@ -11111,9 +11318,7 @@ define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaul
     return result;
   };
   Matrix3.toArray = function(matrix, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
+    Check.typeOf.object('matrix', matrix);
     if (!defined(result)) {
       return [matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], matrix[6], matrix[7], matrix[8]];
     }
@@ -11129,24 +11334,17 @@ define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaul
     return result;
   };
   Matrix3.getElementIndex = function(column, row) {
-    if (typeof row !== 'number' || row < 0 || row > 2) {
-      throw new DeveloperError('row must be 0, 1, or 2.');
-    }
-    if (typeof column !== 'number' || column < 0 || column > 2) {
-      throw new DeveloperError('column must be 0, 1, or 2.');
-    }
+    Check.typeOf.number.greaterThanOrEquals('row', row, 0);
+    Check.typeOf.number.lessThanOrEquals('row', row, 2);
+    Check.typeOf.number.greaterThanOrEquals('column', column, 0);
+    Check.typeOf.number.lessThanOrEquals('column', column, 2);
     return column * 3 + row;
   };
   Matrix3.getColumn = function(matrix, index, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required.');
-    }
-    if (typeof index !== 'number' || index < 0 || index > 2) {
-      throw new DeveloperError('index must be 0, 1, or 2.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.number.greaterThanOrEquals('index', index, 0);
+    Check.typeOf.number.lessThanOrEquals('index', index, 2);
+    Check.typeOf.object('result', result);
     var startIndex = index * 3;
     var x = matrix[startIndex];
     var y = matrix[startIndex + 1];
@@ -11157,18 +11355,11 @@ define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaul
     return result;
   };
   Matrix3.setColumn = function(matrix, index, cartesian, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
-    if (typeof index !== 'number' || index < 0 || index > 2) {
-      throw new DeveloperError('index must be 0, 1, or 2.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.number.greaterThanOrEquals('index', index, 0);
+    Check.typeOf.number.lessThanOrEquals('index', index, 2);
+    Check.typeOf.object('cartesian', cartesian);
+    Check.typeOf.object('result', result);
     result = Matrix3.clone(matrix, result);
     var startIndex = index * 3;
     result[startIndex] = cartesian.x;
@@ -11177,15 +11368,10 @@ define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaul
     return result;
   };
   Matrix3.getRow = function(matrix, index, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required.');
-    }
-    if (typeof index !== 'number' || index < 0 || index > 2) {
-      throw new DeveloperError('index must be 0, 1, or 2.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.number.greaterThanOrEquals('index', index, 0);
+    Check.typeOf.number.lessThanOrEquals('index', index, 2);
+    Check.typeOf.object('result', result);
     var x = matrix[index];
     var y = matrix[index + 3];
     var z = matrix[index + 6];
@@ -11195,18 +11381,11 @@ define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaul
     return result;
   };
   Matrix3.setRow = function(matrix, index, cartesian, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
-    if (typeof index !== 'number' || index < 0 || index > 2) {
-      throw new DeveloperError('index must be 0, 1, or 2.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.number.greaterThanOrEquals('index', index, 0);
+    Check.typeOf.number.lessThanOrEquals('index', index, 2);
+    Check.typeOf.object('cartesian', cartesian);
+    Check.typeOf.object('result', result);
     result = Matrix3.clone(matrix, result);
     result[index] = cartesian.x;
     result[index + 3] = cartesian.y;
@@ -11215,12 +11394,8 @@ define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaul
   };
   var scratchColumn = new Cartesian3();
   Matrix3.getScale = function(matrix, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.object('result', result);
     result.x = Cartesian3.magnitude(Cartesian3.fromElements(matrix[0], matrix[1], matrix[2], scratchColumn));
     result.y = Cartesian3.magnitude(Cartesian3.fromElements(matrix[3], matrix[4], matrix[5], scratchColumn));
     result.z = Cartesian3.magnitude(Cartesian3.fromElements(matrix[6], matrix[7], matrix[8], scratchColumn));
@@ -11232,15 +11407,9 @@ define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaul
     return Cartesian3.maximumComponent(scratchScale);
   };
   Matrix3.multiply = function(left, right, result) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
+    Check.typeOf.object('result', result);
     var column0Row0 = left[0] * right[0] + left[3] * right[1] + left[6] * right[2];
     var column0Row1 = left[1] * right[0] + left[4] * right[1] + left[7] * right[2];
     var column0Row2 = left[2] * right[0] + left[5] * right[1] + left[8] * right[2];
@@ -11262,15 +11431,9 @@ define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaul
     return result;
   };
   Matrix3.add = function(left, right, result) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
+    Check.typeOf.object('result', result);
     result[0] = left[0] + right[0];
     result[1] = left[1] + right[1];
     result[2] = left[2] + right[2];
@@ -11283,15 +11446,9 @@ define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaul
     return result;
   };
   Matrix3.subtract = function(left, right, result) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
+    Check.typeOf.object('result', result);
     result[0] = left[0] - right[0];
     result[1] = left[1] - right[1];
     result[2] = left[2] - right[2];
@@ -11304,15 +11461,9 @@ define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaul
     return result;
   };
   Matrix3.multiplyByVector = function(matrix, cartesian, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.object('cartesian', cartesian);
+    Check.typeOf.object('result', result);
     var vX = cartesian.x;
     var vY = cartesian.y;
     var vZ = cartesian.z;
@@ -11325,15 +11476,9 @@ define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaul
     return result;
   };
   Matrix3.multiplyByScalar = function(matrix, scalar, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (typeof scalar !== 'number') {
-      throw new DeveloperError('scalar must be a number');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.number('scalar', scalar);
+    Check.typeOf.object('result', result);
     result[0] = matrix[0] * scalar;
     result[1] = matrix[1] * scalar;
     result[2] = matrix[2] * scalar;
@@ -11346,15 +11491,9 @@ define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaul
     return result;
   };
   Matrix3.multiplyByScale = function(matrix, scale, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(scale)) {
-      throw new DeveloperError('scale is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.object('scale', scale);
+    Check.typeOf.object('result', result);
     result[0] = matrix[0] * scale.x;
     result[1] = matrix[1] * scale.x;
     result[2] = matrix[2] * scale.x;
@@ -11367,12 +11506,8 @@ define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaul
     return result;
   };
   Matrix3.negate = function(matrix, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.object('result', result);
     result[0] = -matrix[0];
     result[1] = -matrix[1];
     result[2] = -matrix[2];
@@ -11385,12 +11520,8 @@ define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaul
     return result;
   };
   Matrix3.transpose = function(matrix, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.object('result', result);
     var column0Row0 = matrix[0];
     var column0Row1 = matrix[3];
     var column0Row2 = matrix[6];
@@ -11467,9 +11598,7 @@ define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaul
   var jMatrix = new Matrix3();
   var jMatrixTranspose = new Matrix3();
   Matrix3.computeEigenDecomposition = function(matrix, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required.');
-    }
+    Check.typeOf.object('matrix', matrix);
     var tolerance = CesiumMath.EPSILON20;
     var maxSweeps = 10;
     var count = 0;
@@ -11494,12 +11623,8 @@ define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaul
     return result;
   };
   Matrix3.abs = function(matrix, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.object('result', result);
     result[0] = Math.abs(matrix[0]);
     result[1] = Math.abs(matrix[1]);
     result[2] = Math.abs(matrix[2]);
@@ -11512,9 +11637,7 @@ define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaul
     return result;
   };
   Matrix3.determinant = function(matrix) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
+    Check.typeOf.object('matrix', matrix);
     var m11 = matrix[0];
     var m21 = matrix[3];
     var m31 = matrix[6];
@@ -11527,12 +11650,8 @@ define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaul
     return m11 * (m22 * m33 - m23 * m32) + m12 * (m23 * m31 - m21 * m33) + m13 * (m21 * m32 - m22 * m31);
   };
   Matrix3.inverse = function(matrix, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.object('result', result);
     var m11 = matrix[0];
     var m21 = matrix[1];
     var m31 = matrix[2];
@@ -11562,9 +11681,7 @@ define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaul
     return (left === right) || (defined(left) && defined(right) && left[0] === right[0] && left[1] === right[1] && left[2] === right[2] && left[3] === right[3] && left[4] === right[4] && left[5] === right[5] && left[6] === right[6] && left[7] === right[7] && left[8] === right[8]);
   };
   Matrix3.equalsEpsilon = function(left, right, epsilon) {
-    if (typeof epsilon !== 'number') {
-      throw new DeveloperError('epsilon must be a number');
-    }
+    Check.typeOf.number('epsilon', epsilon);
     return (left === right) || (defined(left) && defined(right) && Math.abs(left[0] - right[0]) <= epsilon && Math.abs(left[1] - right[1]) <= epsilon && Math.abs(left[2] - right[2]) <= epsilon && Math.abs(left[3] - right[3]) <= epsilon && Math.abs(left[4] - right[4]) <= epsilon && Math.abs(left[5] - right[5]) <= epsilon && Math.abs(left[6] - right[6]) <= epsilon && Math.abs(left[7] - right[7]) <= epsilon && Math.abs(left[8] - right[8]) <= epsilon);
   };
   Matrix3.IDENTITY = freezeObject(new Matrix3(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0));
@@ -11602,7 +11719,7 @@ define("23", ["1d", "16", "5", "6", "7", "11", "d"], function(Cartesian3, defaul
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2a", ["5"], function(defined) {
+define("2c", ["5"], function(defined) {
   'use strict';
   function RuntimeError(message) {
     this.name = 'RuntimeError';
@@ -11632,7 +11749,7 @@ define("2a", ["5"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(Cartesian3, Cartesian4, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath, Matrix3, RuntimeError) {
+define("28", ["1f", "36", "40", "15", "5", "6", "11", "d", "27", "2c"], function(Cartesian3, Cartesian4, Check, defaultValue, defined, defineProperties, freezeObject, CesiumMath, Matrix3, RuntimeError) {
   'use strict';
   function Matrix4(column0Row0, column1Row0, column2Row0, column3Row0, column0Row1, column1Row1, column2Row1, column3Row1, column0Row2, column1Row2, column2Row2, column3Row2, column0Row3, column1Row3, column2Row3, column3Row3) {
     this[0] = defaultValue(column0Row0, 0.0);
@@ -11654,12 +11771,8 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
   }
   Matrix4.packedLength = 16;
   Matrix4.pack = function(value, array, startingIndex) {
-    if (!defined(value)) {
-      throw new DeveloperError('value is required');
-    }
-    if (!defined(array)) {
-      throw new DeveloperError('array is required');
-    }
+    Check.typeOf.object('value', value);
+    Check.defined('array', array);
     startingIndex = defaultValue(startingIndex, 0);
     array[startingIndex++] = value[0];
     array[startingIndex++] = value[1];
@@ -11677,11 +11790,10 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     array[startingIndex++] = value[13];
     array[startingIndex++] = value[14];
     array[startingIndex] = value[15];
+    return array;
   };
   Matrix4.unpack = function(array, startingIndex, result) {
-    if (!defined(array)) {
-      throw new DeveloperError('array is required');
-    }
+    Check.defined('array', array);
     startingIndex = defaultValue(startingIndex, 0);
     if (!defined(result)) {
       result = new Matrix4();
@@ -11731,15 +11843,11 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
   };
   Matrix4.fromArray = Matrix4.unpack;
   Matrix4.fromColumnMajorArray = function(values, result) {
-    if (!defined(values)) {
-      throw new DeveloperError('values is required');
-    }
+    Check.defined('values', values);
     return Matrix4.clone(values, result);
   };
   Matrix4.fromRowMajorArray = function(values, result) {
-    if (!defined(values)) {
-      throw new DeveloperError('values is required.');
-    }
+    Check.defined('values', values);
     if (!defined(result)) {
       return new Matrix4(values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15]);
     }
@@ -11762,9 +11870,7 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     return result;
   };
   Matrix4.fromRotationTranslation = function(rotation, translation, result) {
-    if (!defined(rotation)) {
-      throw new DeveloperError('rotation is required.');
-    }
+    Check.typeOf.object('rotation', rotation);
     translation = defaultValue(translation, Cartesian3.ZERO);
     if (!defined(result)) {
       return new Matrix4(rotation[0], rotation[3], rotation[6], translation.x, rotation[1], rotation[4], rotation[7], translation.y, rotation[2], rotation[5], rotation[8], translation.z, 0.0, 0.0, 0.0, 1.0);
@@ -11788,15 +11894,9 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     return result;
   };
   Matrix4.fromTranslationQuaternionRotationScale = function(translation, rotation, scale, result) {
-    if (!defined(translation)) {
-      throw new DeveloperError('translation is required.');
-    }
-    if (!defined(rotation)) {
-      throw new DeveloperError('rotation is required.');
-    }
-    if (!defined(scale)) {
-      throw new DeveloperError('scale is required.');
-    }
+    Check.typeOf.object('translation', translation);
+    Check.typeOf.object('rotation', rotation);
+    Check.typeOf.object('scale', scale);
     if (!defined(result)) {
       result = new Matrix4();
     }
@@ -11841,21 +11941,15 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     return result;
   };
   Matrix4.fromTranslationRotationScale = function(translationRotationScale, result) {
-    if (!defined(translationRotationScale)) {
-      throw new DeveloperError('translationRotationScale is required.');
-    }
+    Check.typeOf.object('translationRotationScale', translationRotationScale);
     return Matrix4.fromTranslationQuaternionRotationScale(translationRotationScale.translation, translationRotationScale.rotation, translationRotationScale.scale, result);
   };
   Matrix4.fromTranslation = function(translation, result) {
-    if (!defined(translation)) {
-      throw new DeveloperError('translation is required.');
-    }
+    Check.typeOf.object('translation', translation);
     return Matrix4.fromRotationTranslation(Matrix3.IDENTITY, translation, result);
   };
   Matrix4.fromScale = function(scale, result) {
-    if (!defined(scale)) {
-      throw new DeveloperError('scale is required.');
-    }
+    Check.typeOf.object('scale', scale);
     if (!defined(result)) {
       return new Matrix4(scale.x, 0.0, 0.0, 0.0, 0.0, scale.y, 0.0, 0.0, 0.0, 0.0, scale.z, 0.0, 0.0, 0.0, 0.0, 1.0);
     }
@@ -11878,9 +11972,7 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     return result;
   };
   Matrix4.fromUniformScale = function(scale, result) {
-    if (typeof scale !== 'number') {
-      throw new DeveloperError('scale is required.');
-    }
+    Check.typeOf.number('scale', scale);
     if (!defined(result)) {
       return new Matrix4(scale, 0.0, 0.0, 0.0, 0.0, scale, 0.0, 0.0, 0.0, 0.0, scale, 0.0, 0.0, 0.0, 0.0, 1.0);
     }
@@ -11906,21 +11998,13 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
   var fromCameraR = new Cartesian3();
   var fromCameraU = new Cartesian3();
   Matrix4.fromCamera = function(camera, result) {
-    if (!defined(camera)) {
-      throw new DeveloperError('camera is required.');
-    }
+    Check.typeOf.object('camera', camera);
     var position = camera.position;
     var direction = camera.direction;
     var up = camera.up;
-    if (!defined(position)) {
-      throw new DeveloperError('camera.position is required.');
-    }
-    if (!defined(direction)) {
-      throw new DeveloperError('camera.direction is required.');
-    }
-    if (!defined(up)) {
-      throw new DeveloperError('camera.up is required.');
-    }
+    Check.typeOf.object('camera.position', position);
+    Check.typeOf.object('camera.direction', direction);
+    Check.typeOf.object('camera.up', up);
     Cartesian3.normalize(direction, fromCameraF);
     Cartesian3.normalize(Cartesian3.cross(fromCameraF, up, fromCameraR), fromCameraR);
     Cartesian3.normalize(Cartesian3.cross(fromCameraR, fromCameraF, fromCameraU), fromCameraU);
@@ -11961,21 +12045,11 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     return result;
   };
   Matrix4.computePerspectiveFieldOfView = function(fovY, aspectRatio, near, far, result) {
-    if (fovY <= 0.0 || fovY > Math.PI) {
-      throw new DeveloperError('fovY must be in [0, PI).');
-    }
-    if (aspectRatio <= 0.0) {
-      throw new DeveloperError('aspectRatio must be greater than zero.');
-    }
-    if (near <= 0.0) {
-      throw new DeveloperError('near must be greater than zero.');
-    }
-    if (far <= 0.0) {
-      throw new DeveloperError('far must be greater than zero.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.number.greaterThan('fovY', fovY, 0.0);
+    Check.typeOf.number.lessThan('fovY', fovY, Math.PI);
+    Check.typeOf.number.greaterThan('near', near, 0.0);
+    Check.typeOf.number.greaterThan('far', far, 0.0);
+    Check.typeOf.object('result', result);
     var bottom = Math.tan(fovY * 0.5);
     var column1Row1 = 1.0 / bottom;
     var column0Row0 = column1Row1 / aspectRatio;
@@ -12000,27 +12074,13 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     return result;
   };
   Matrix4.computeOrthographicOffCenter = function(left, right, bottom, top, near, far, result) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required.');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required.');
-    }
-    if (!defined(bottom)) {
-      throw new DeveloperError('bottom is required.');
-    }
-    if (!defined(top)) {
-      throw new DeveloperError('top is required.');
-    }
-    if (!defined(near)) {
-      throw new DeveloperError('near is required.');
-    }
-    if (!defined(far)) {
-      throw new DeveloperError('far is required.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.number('left', left);
+    Check.typeOf.number('right', right);
+    Check.typeOf.number('bottom', bottom);
+    Check.typeOf.number('top', top);
+    Check.typeOf.number('near', near);
+    Check.typeOf.number('far', far);
+    Check.typeOf.object('result', result);
     var a = 1.0 / (right - left);
     var b = 1.0 / (top - bottom);
     var c = 1.0 / (far - near);
@@ -12049,27 +12109,13 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     return result;
   };
   Matrix4.computePerspectiveOffCenter = function(left, right, bottom, top, near, far, result) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required.');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required.');
-    }
-    if (!defined(bottom)) {
-      throw new DeveloperError('bottom is required.');
-    }
-    if (!defined(top)) {
-      throw new DeveloperError('top is required.');
-    }
-    if (!defined(near)) {
-      throw new DeveloperError('near is required.');
-    }
-    if (!defined(far)) {
-      throw new DeveloperError('far is required.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.number('left', left);
+    Check.typeOf.number('right', right);
+    Check.typeOf.number('bottom', bottom);
+    Check.typeOf.number('top', top);
+    Check.typeOf.number('near', near);
+    Check.typeOf.number('far', far);
+    Check.typeOf.object('result', result);
     var column0Row0 = 2.0 * near / (right - left);
     var column1Row1 = 2.0 * near / (top - bottom);
     var column2Row0 = (right + left) / (right - left);
@@ -12096,24 +12142,12 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     return result;
   };
   Matrix4.computeInfinitePerspectiveOffCenter = function(left, right, bottom, top, near, result) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required.');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required.');
-    }
-    if (!defined(bottom)) {
-      throw new DeveloperError('bottom is required.');
-    }
-    if (!defined(top)) {
-      throw new DeveloperError('top is required.');
-    }
-    if (!defined(near)) {
-      throw new DeveloperError('near is required.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.number('left', left);
+    Check.typeOf.number('right', right);
+    Check.typeOf.number('bottom', bottom);
+    Check.typeOf.number('top', top);
+    Check.typeOf.number('near', near);
+    Check.typeOf.object('result', result);
     var column0Row0 = 2.0 * near / (right - left);
     var column1Row1 = 2.0 * near / (top - bottom);
     var column2Row0 = (right + left) / (right - left);
@@ -12140,9 +12174,7 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     return result;
   };
   Matrix4.computeViewportTransformation = function(viewport, nearDepthRange, farDepthRange, result) {
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('result', result);
     viewport = defaultValue(viewport, defaultValue.EMPTY_OBJECT);
     var x = defaultValue(viewport.x, 0.0);
     var y = defaultValue(viewport.y, 0.0);
@@ -12179,21 +12211,11 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     return result;
   };
   Matrix4.computeView = function(position, direction, up, right, result) {
-    if (!defined(position)) {
-      throw new DeveloperError('position is required');
-    }
-    if (!defined(direction)) {
-      throw new DeveloperError('direction is required');
-    }
-    if (!defined(up)) {
-      throw new DeveloperError('up is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('position', position);
+    Check.typeOf.object('direction', direction);
+    Check.typeOf.object('up', up);
+    Check.typeOf.object('right', right);
+    Check.typeOf.object('result', result);
     result[0] = right.x;
     result[1] = up.x;
     result[2] = -direction.x;
@@ -12213,9 +12235,7 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     return result;
   };
   Matrix4.toArray = function(matrix, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
+    Check.typeOf.object('matrix', matrix);
     if (!defined(result)) {
       return [matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], matrix[6], matrix[7], matrix[8], matrix[9], matrix[10], matrix[11], matrix[12], matrix[13], matrix[14], matrix[15]];
     }
@@ -12238,24 +12258,17 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     return result;
   };
   Matrix4.getElementIndex = function(column, row) {
-    if (typeof row !== 'number' || row < 0 || row > 3) {
-      throw new DeveloperError('row must be 0, 1, 2, or 3.');
-    }
-    if (typeof column !== 'number' || column < 0 || column > 3) {
-      throw new DeveloperError('column must be 0, 1, 2, or 3.');
-    }
+    Check.typeOf.number.greaterThanOrEquals('row', row, 0);
+    Check.typeOf.number.lessThanOrEquals('row', row, 3);
+    Check.typeOf.number.greaterThanOrEquals('column', column, 0);
+    Check.typeOf.number.lessThanOrEquals('column', column, 3);
     return column * 4 + row;
   };
   Matrix4.getColumn = function(matrix, index, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required.');
-    }
-    if (typeof index !== 'number' || index < 0 || index > 3) {
-      throw new DeveloperError('index must be 0, 1, 2, or 3.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.number.greaterThanOrEquals('index', index, 0);
+    Check.typeOf.number.lessThanOrEquals('index', index, 3);
+    Check.typeOf.object('result', result);
     var startIndex = index * 4;
     var x = matrix[startIndex];
     var y = matrix[startIndex + 1];
@@ -12268,18 +12281,11 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     return result;
   };
   Matrix4.setColumn = function(matrix, index, cartesian, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
-    if (typeof index !== 'number' || index < 0 || index > 3) {
-      throw new DeveloperError('index must be 0, 1, 2, or 3.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.number.greaterThanOrEquals('index', index, 0);
+    Check.typeOf.number.lessThanOrEquals('index', index, 3);
+    Check.typeOf.object('cartesian', cartesian);
+    Check.typeOf.object('result', result);
     result = Matrix4.clone(matrix, result);
     var startIndex = index * 4;
     result[startIndex] = cartesian.x;
@@ -12289,15 +12295,9 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     return result;
   };
   Matrix4.setTranslation = function(matrix, translation, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(translation)) {
-      throw new DeveloperError('translation is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.object('translation', translation);
+    Check.typeOf.object('result', result);
     result[0] = matrix[0];
     result[1] = matrix[1];
     result[2] = matrix[2];
@@ -12317,15 +12317,10 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     return result;
   };
   Matrix4.getRow = function(matrix, index, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required.');
-    }
-    if (typeof index !== 'number' || index < 0 || index > 3) {
-      throw new DeveloperError('index must be 0, 1, 2, or 3.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.number.greaterThanOrEquals('index', index, 0);
+    Check.typeOf.number.lessThanOrEquals('index', index, 3);
+    Check.typeOf.object('result', result);
     var x = matrix[index];
     var y = matrix[index + 4];
     var z = matrix[index + 8];
@@ -12337,18 +12332,11 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     return result;
   };
   Matrix4.setRow = function(matrix, index, cartesian, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
-    if (typeof index !== 'number' || index < 0 || index > 3) {
-      throw new DeveloperError('index must be 0, 1, 2, or 3.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.number.greaterThanOrEquals('index', index, 0);
+    Check.typeOf.number.lessThanOrEquals('index', index, 3);
+    Check.typeOf.object('cartesian', cartesian);
+    Check.typeOf.object('result', result);
     result = Matrix4.clone(matrix, result);
     result[index] = cartesian.x;
     result[index + 4] = cartesian.y;
@@ -12358,12 +12346,8 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
   };
   var scratchColumn = new Cartesian3();
   Matrix4.getScale = function(matrix, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.object('result', result);
     result.x = Cartesian3.magnitude(Cartesian3.fromElements(matrix[0], matrix[1], matrix[2], scratchColumn));
     result.y = Cartesian3.magnitude(Cartesian3.fromElements(matrix[4], matrix[5], matrix[6], scratchColumn));
     result.z = Cartesian3.magnitude(Cartesian3.fromElements(matrix[8], matrix[9], matrix[10], scratchColumn));
@@ -12375,15 +12359,9 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     return Cartesian3.maximumComponent(scratchScale);
   };
   Matrix4.multiply = function(left, right, result) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
+    Check.typeOf.object('result', result);
     var left0 = left[0];
     var left1 = left[1];
     var left2 = left[2];
@@ -12451,15 +12429,9 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     return result;
   };
   Matrix4.add = function(left, right, result) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
+    Check.typeOf.object('result', result);
     result[0] = left[0] + right[0];
     result[1] = left[1] + right[1];
     result[2] = left[2] + right[2];
@@ -12479,15 +12451,9 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     return result;
   };
   Matrix4.subtract = function(left, right, result) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
+    Check.typeOf.object('result', result);
     result[0] = left[0] - right[0];
     result[1] = left[1] - right[1];
     result[2] = left[2] - right[2];
@@ -12507,15 +12473,9 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     return result;
   };
   Matrix4.multiplyTransformation = function(left, right, result) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
+    Check.typeOf.object('result', result);
     var left0 = left[0];
     var left1 = left[1];
     var left2 = left[2];
@@ -12571,15 +12531,9 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     return result;
   };
   Matrix4.multiplyByMatrix3 = function(matrix, rotation, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(rotation)) {
-      throw new DeveloperError('rotation is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.object('rotation', rotation);
+    Check.typeOf.object('result', result);
     var left0 = matrix[0];
     var left1 = matrix[1];
     var left2 = matrix[2];
@@ -12626,15 +12580,9 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     return result;
   };
   Matrix4.multiplyByTranslation = function(matrix, translation, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(translation)) {
-      throw new DeveloperError('translation is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.object('translation', translation);
+    Check.typeOf.object('result', result);
     var x = translation.x;
     var y = translation.y;
     var z = translation.z;
@@ -12661,30 +12609,18 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
   };
   var uniformScaleScratch = new Cartesian3();
   Matrix4.multiplyByUniformScale = function(matrix, scale, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (typeof scale !== 'number') {
-      throw new DeveloperError('scale is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.number('scale', scale);
+    Check.typeOf.object('result', result);
     uniformScaleScratch.x = scale;
     uniformScaleScratch.y = scale;
     uniformScaleScratch.z = scale;
     return Matrix4.multiplyByScale(matrix, uniformScaleScratch, result);
   };
   Matrix4.multiplyByScale = function(matrix, scale, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(scale)) {
-      throw new DeveloperError('scale is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.object('scale', scale);
+    Check.typeOf.object('result', result);
     var scaleX = scale.x;
     var scaleY = scale.y;
     var scaleZ = scale.z;
@@ -12710,15 +12646,9 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     return result;
   };
   Matrix4.multiplyByVector = function(matrix, cartesian, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.object('cartesian', cartesian);
+    Check.typeOf.object('result', result);
     var vX = cartesian.x;
     var vY = cartesian.y;
     var vZ = cartesian.z;
@@ -12734,15 +12664,9 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     return result;
   };
   Matrix4.multiplyByPointAsVector = function(matrix, cartesian, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.object('cartesian', cartesian);
+    Check.typeOf.object('result', result);
     var vX = cartesian.x;
     var vY = cartesian.y;
     var vZ = cartesian.z;
@@ -12755,15 +12679,9 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     return result;
   };
   Matrix4.multiplyByPoint = function(matrix, cartesian, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.object('cartesian', cartesian);
+    Check.typeOf.object('result', result);
     var vX = cartesian.x;
     var vY = cartesian.y;
     var vZ = cartesian.z;
@@ -12776,15 +12694,9 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     return result;
   };
   Matrix4.multiplyByScalar = function(matrix, scalar, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (typeof scalar !== 'number') {
-      throw new DeveloperError('scalar must be a number');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.number('scalar', scalar);
+    Check.typeOf.object('result', result);
     result[0] = matrix[0] * scalar;
     result[1] = matrix[1] * scalar;
     result[2] = matrix[2] * scalar;
@@ -12804,12 +12716,8 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     return result;
   };
   Matrix4.negate = function(matrix, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.object('result', result);
     result[0] = -matrix[0];
     result[1] = -matrix[1];
     result[2] = -matrix[2];
@@ -12829,12 +12737,8 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     return result;
   };
   Matrix4.transpose = function(matrix, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.object('result', result);
     var matrix1 = matrix[1];
     var matrix2 = matrix[2];
     var matrix3 = matrix[3];
@@ -12860,12 +12764,8 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     return result;
   };
   Matrix4.abs = function(matrix, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.object('result', result);
     result[0] = Math.abs(matrix[0]);
     result[1] = Math.abs(matrix[1]);
     result[2] = Math.abs(matrix[2]);
@@ -12888,30 +12788,20 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     return (left === right) || (defined(left) && defined(right) && left[12] === right[12] && left[13] === right[13] && left[14] === right[14] && left[0] === right[0] && left[1] === right[1] && left[2] === right[2] && left[4] === right[4] && left[5] === right[5] && left[6] === right[6] && left[8] === right[8] && left[9] === right[9] && left[10] === right[10] && left[3] === right[3] && left[7] === right[7] && left[11] === right[11] && left[15] === right[15]);
   };
   Matrix4.equalsEpsilon = function(left, right, epsilon) {
-    if (typeof epsilon !== 'number') {
-      throw new DeveloperError('epsilon must be a number');
-    }
+    Check.typeOf.number('epsilon', epsilon);
     return (left === right) || (defined(left) && defined(right) && Math.abs(left[0] - right[0]) <= epsilon && Math.abs(left[1] - right[1]) <= epsilon && Math.abs(left[2] - right[2]) <= epsilon && Math.abs(left[3] - right[3]) <= epsilon && Math.abs(left[4] - right[4]) <= epsilon && Math.abs(left[5] - right[5]) <= epsilon && Math.abs(left[6] - right[6]) <= epsilon && Math.abs(left[7] - right[7]) <= epsilon && Math.abs(left[8] - right[8]) <= epsilon && Math.abs(left[9] - right[9]) <= epsilon && Math.abs(left[10] - right[10]) <= epsilon && Math.abs(left[11] - right[11]) <= epsilon && Math.abs(left[12] - right[12]) <= epsilon && Math.abs(left[13] - right[13]) <= epsilon && Math.abs(left[14] - right[14]) <= epsilon && Math.abs(left[15] - right[15]) <= epsilon);
   };
   Matrix4.getTranslation = function(matrix, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.object('result', result);
     result.x = matrix[12];
     result.y = matrix[13];
     result.z = matrix[14];
     return result;
   };
   Matrix4.getRotation = function(matrix, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.object('result', result);
     result[0] = matrix[0];
     result[1] = matrix[1];
     result[2] = matrix[2];
@@ -12928,12 +12818,8 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
   var scratchBottomRow = new Cartesian4();
   var scratchExpectedBottomRow = new Cartesian4(0.0, 0.0, 0.0, 1.0);
   Matrix4.inverse = function(matrix, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.object('result', result);
     if (Matrix3.equalsEpsilon(Matrix4.getRotation(matrix, scratchInverseRotation), scratchMatrix3Zero, CesiumMath.EPSILON7) && Cartesian4.equals(Matrix4.getRow(matrix, 3, scratchBottomRow), scratchExpectedBottomRow)) {
       result[0] = 0.0;
       result[1] = 0.0;
@@ -13033,12 +12919,8 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
     return result;
   };
   Matrix4.inverseTransformation = function(matrix, result) {
-    if (!defined(matrix)) {
-      throw new DeveloperError('matrix is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('matrix', matrix);
+    Check.typeOf.object('result', result);
     var matrix0 = matrix[0];
     var matrix1 = matrix[1];
     var matrix2 = matrix[2];
@@ -13114,7 +12996,77 @@ define("24", ["1d", "35", "16", "5", "6", "7", "11", "d", "23", "2a"], function(
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5e", [], function() {
+define("40", ["5", "7"], function(defined, DeveloperError) {
+  'use strict';
+  var Check = {};
+  Check.typeOf = {};
+  function getUndefinedErrorMessage(name) {
+    return name + ' is required, actual value was undefined';
+  }
+  function getFailedTypeErrorMessage(actual, expected, name) {
+    return 'Expected ' + name + ' to be typeof ' + expected + ', actual typeof was ' + actual;
+  }
+  Check.defined = function(name, test) {
+    if (!defined(test)) {
+      throw new DeveloperError(getUndefinedErrorMessage(name));
+    }
+  };
+  Check.typeOf.func = function(name, test) {
+    if (typeof test !== 'function') {
+      throw new DeveloperError(getFailedTypeErrorMessage(typeof test, 'function', name));
+    }
+  };
+  Check.typeOf.string = function(name, test) {
+    if (typeof test !== 'string') {
+      throw new DeveloperError(getFailedTypeErrorMessage(typeof test, 'string', name));
+    }
+  };
+  Check.typeOf.number = function(name, test) {
+    if (typeof test !== 'number') {
+      throw new DeveloperError(getFailedTypeErrorMessage(typeof test, 'number', name));
+    }
+  };
+  Check.typeOf.number.lessThan = function(name, test, limit) {
+    Check.typeOf.number(name, test);
+    if (test >= limit) {
+      throw new DeveloperError('Expected ' + name + ' to be less than ' + limit + ', actual value was ' + test);
+    }
+  };
+  Check.typeOf.number.lessThanOrEquals = function(name, test, limit) {
+    Check.typeOf.number(name, test);
+    if (test > limit) {
+      throw new DeveloperError('Expected ' + name + ' to be less than or equal to ' + limit + ', actual value was ' + test);
+    }
+  };
+  Check.typeOf.number.greaterThan = function(name, test, limit) {
+    Check.typeOf.number(name, test);
+    if (test <= limit) {
+      throw new DeveloperError('Expected ' + name + ' to be greater than ' + limit + ', actual value was ' + test);
+    }
+  };
+  Check.typeOf.number.greaterThanOrEquals = function(name, test, limit) {
+    Check.typeOf.number(name, test);
+    if (test < limit) {
+      throw new DeveloperError('Expected ' + name + ' to be greater than or equal to' + limit + ', actual value was ' + test);
+    }
+  };
+  Check.typeOf.object = function(name, test) {
+    if (typeof test !== 'object') {
+      throw new DeveloperError(getFailedTypeErrorMessage(typeof test, 'object', name));
+    }
+  };
+  Check.typeOf.bool = function(name, test) {
+    if (typeof test !== 'boolean') {
+      throw new DeveloperError(getFailedTypeErrorMessage(typeof test, 'boolean', name));
+    }
+  };
+  return Check;
+});
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("65", [], function() {
   var MersenneTwister = function(seed) {
     if (seed == undefined) {
       seed = new Date().getTime();
@@ -13171,7 +13123,7 @@ define("5e", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("16", ["11"], function(freezeObject) {
+define("15", ["11"], function(freezeObject) {
   'use strict';
   function defaultValue(a, b) {
     if (a !== undefined) {
@@ -13186,7 +13138,7 @@ define("16", ["11"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("d", ["5e", "16", "5", "7"], function(MersenneTwister, defaultValue, defined, DeveloperError) {
+define("d", ["65", "15", "5", "7"], function(MersenneTwister, defaultValue, defined, DeveloperError) {
   'use strict';
   var CesiumMath = {};
   CesiumMath.EPSILON1 = 0.1;
@@ -13225,11 +13177,13 @@ define("d", ["5e", "16", "5", "7"], function(MersenneTwister, defaultValue, defi
   CesiumMath.signNotZero = function(value) {
     return value < 0.0 ? -1.0 : 1.0;
   };
-  CesiumMath.toSNorm = function(value) {
-    return Math.round((CesiumMath.clamp(value, -1.0, 1.0) * 0.5 + 0.5) * 255.0);
+  CesiumMath.toSNorm = function(value, rangeMax) {
+    rangeMax = defaultValue(rangeMax, 255);
+    return Math.round((CesiumMath.clamp(value, -1.0, 1.0) * 0.5 + 0.5) * rangeMax);
   };
-  CesiumMath.fromSNorm = function(value) {
-    return CesiumMath.clamp(value, 0.0, 255.0) / 255.0 * 2.0 - 1.0;
+  CesiumMath.fromSNorm = function(value, rangeMax) {
+    rangeMax = defaultValue(rangeMax, 255);
+    return CesiumMath.clamp(value, 0.0, rangeMax) / rangeMax * 2.0 - 1.0;
   };
   CesiumMath.sinh = function(value) {
     var part1 = Math.pow(Math.E, value);
@@ -13282,18 +13236,24 @@ define("d", ["5e", "16", "5", "7"], function(MersenneTwister, defaultValue, defi
     }
     return simplified;
   };
-  CesiumMath.negativePiToPi = function(x) {
-    if (!defined(x)) {
-      throw new DeveloperError('x is required.');
+  CesiumMath.clampToLatitudeRange = function(angle) {
+    if (!defined(angle)) {
+      throw new DeveloperError('angle is required.');
     }
-    return CesiumMath.zeroToTwoPi(x + CesiumMath.PI) - CesiumMath.PI;
+    return CesiumMath.clamp(angle, -1 * CesiumMath.PI_OVER_TWO, CesiumMath.PI_OVER_TWO);
   };
-  CesiumMath.zeroToTwoPi = function(x) {
-    if (!defined(x)) {
-      throw new DeveloperError('x is required.');
+  CesiumMath.negativePiToPi = function(angle) {
+    if (!defined(angle)) {
+      throw new DeveloperError('angle is required.');
     }
-    var mod = CesiumMath.mod(x, CesiumMath.TWO_PI);
-    if (Math.abs(mod) < CesiumMath.EPSILON14 && Math.abs(x) > CesiumMath.EPSILON14) {
+    return CesiumMath.zeroToTwoPi(angle + CesiumMath.PI) - CesiumMath.PI;
+  };
+  CesiumMath.zeroToTwoPi = function(angle) {
+    if (!defined(angle)) {
+      throw new DeveloperError('angle is required.');
+    }
+    var mod = CesiumMath.mod(angle, CesiumMath.TWO_PI);
+    if (Math.abs(mod) < CesiumMath.EPSILON14 && Math.abs(angle) > CesiumMath.EPSILON14) {
       return CesiumMath.TWO_PI;
     }
     return mod;
@@ -13430,7 +13390,7 @@ define("d", ["5e", "16", "5", "7"], function(MersenneTwister, defaultValue, defi
 })();
 (function() {
 var define = $__System.amdDefine;
-define("1d", ["16", "5", "7", "11", "d"], function(defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
+define("1f", ["40", "15", "5", "7", "11", "d"], function(Check, defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
   'use strict';
   function Cartesian3(x, y, z) {
     this.x = defaultValue(x, 0.0);
@@ -13438,9 +13398,7 @@ define("1d", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develo
     this.z = defaultValue(z, 0.0);
   }
   Cartesian3.fromSpherical = function(spherical, result) {
-    if (!defined(spherical)) {
-      throw new DeveloperError('spherical is required');
-    }
+    Check.typeOf.object('spherical', spherical);
     if (!defined(result)) {
       result = new Cartesian3();
     }
@@ -13477,21 +13435,16 @@ define("1d", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develo
   Cartesian3.fromCartesian4 = Cartesian3.clone;
   Cartesian3.packedLength = 3;
   Cartesian3.pack = function(value, array, startingIndex) {
-    if (!defined(value)) {
-      throw new DeveloperError('value is required');
-    }
-    if (!defined(array)) {
-      throw new DeveloperError('array is required');
-    }
+    Check.typeOf.object('value', value);
+    Check.defined('array', array);
     startingIndex = defaultValue(startingIndex, 0);
     array[startingIndex++] = value.x;
     array[startingIndex++] = value.y;
     array[startingIndex] = value.z;
+    return array;
   };
   Cartesian3.unpack = function(array, startingIndex, result) {
-    if (!defined(array)) {
-      throw new DeveloperError('array is required');
-    }
+    Check.defined('array', array);
     startingIndex = defaultValue(startingIndex, 0);
     if (!defined(result)) {
       result = new Cartesian3();
@@ -13502,9 +13455,7 @@ define("1d", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develo
     return result;
   };
   Cartesian3.packArray = function(array, result) {
-    if (!defined(array)) {
-      throw new DeveloperError('array is required');
-    }
+    Check.defined('array', array);
     var length = array.length;
     if (!defined(result)) {
       result = new Array(length * 3);
@@ -13517,8 +13468,10 @@ define("1d", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develo
     return result;
   };
   Cartesian3.unpackArray = function(array, result) {
-    if (!defined(array)) {
-      throw new DeveloperError('array is required');
+    Check.defined('array', array);
+    Check.typeOf.number.greaterThanOrEquals('array.length', array.length, 3);
+    if (array.length % 3 !== 0) {
+      throw new DeveloperError('array length must be a multiple of 3.');
     }
     var length = array.length;
     if (!defined(result)) {
@@ -13534,51 +13487,33 @@ define("1d", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develo
   };
   Cartesian3.fromArray = Cartesian3.unpack;
   Cartesian3.maximumComponent = function(cartesian) {
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
+    Check.typeOf.object('cartesian', cartesian);
     return Math.max(cartesian.x, cartesian.y, cartesian.z);
   };
   Cartesian3.minimumComponent = function(cartesian) {
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
+    Check.typeOf.object('cartesian', cartesian);
     return Math.min(cartesian.x, cartesian.y, cartesian.z);
   };
   Cartesian3.minimumByComponent = function(first, second, result) {
-    if (!defined(first)) {
-      throw new DeveloperError('first is required.');
-    }
-    if (!defined(second)) {
-      throw new DeveloperError('second is required.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required.');
-    }
+    Check.typeOf.object('first', first);
+    Check.typeOf.object('second', second);
+    Check.typeOf.object('result', result);
     result.x = Math.min(first.x, second.x);
     result.y = Math.min(first.y, second.y);
     result.z = Math.min(first.z, second.z);
     return result;
   };
   Cartesian3.maximumByComponent = function(first, second, result) {
-    if (!defined(first)) {
-      throw new DeveloperError('first is required.');
-    }
-    if (!defined(second)) {
-      throw new DeveloperError('second is required.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required.');
-    }
+    Check.typeOf.object('first', first);
+    Check.typeOf.object('second', second);
+    Check.typeOf.object('result', result);
     result.x = Math.max(first.x, second.x);
     result.y = Math.max(first.y, second.y);
     result.z = Math.max(first.z, second.z);
     return result;
   };
   Cartesian3.magnitudeSquared = function(cartesian) {
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
+    Check.typeOf.object('cartesian', cartesian);
     return cartesian.x * cartesian.x + cartesian.y * cartesian.y + cartesian.z * cartesian.z;
   };
   Cartesian3.magnitude = function(cartesian) {
@@ -13586,57 +13521,44 @@ define("1d", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develo
   };
   var distanceScratch = new Cartesian3();
   Cartesian3.distance = function(left, right) {
-    if (!defined(left) || !defined(right)) {
-      throw new DeveloperError('left and right are required.');
-    }
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
     Cartesian3.subtract(left, right, distanceScratch);
     return Cartesian3.magnitude(distanceScratch);
   };
   Cartesian3.distanceSquared = function(left, right) {
-    if (!defined(left) || !defined(right)) {
-      throw new DeveloperError('left and right are required.');
-    }
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
     Cartesian3.subtract(left, right, distanceScratch);
     return Cartesian3.magnitudeSquared(distanceScratch);
   };
   Cartesian3.normalize = function(cartesian, result) {
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('cartesian', cartesian);
+    Check.typeOf.object('result', result);
     var magnitude = Cartesian3.magnitude(cartesian);
     result.x = cartesian.x / magnitude;
     result.y = cartesian.y / magnitude;
     result.z = cartesian.z / magnitude;
+    if (isNaN(result.x) || isNaN(result.y) || isNaN(result.z)) {
+      throw new DeveloperError('normalized result is not a number');
+    }
     return result;
   };
   Cartesian3.dot = function(left, right) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
     return left.x * right.x + left.y * right.y + left.z * right.z;
   };
   Cartesian3.multiplyComponents = function(left, right, result) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
+    Check.typeOf.object('result', result);
     result.x = left.x * right.x;
     result.y = left.y * right.y;
     result.z = left.z * right.z;
     return result;
   };
-  Cartesian3.add = function(left, right, result) {
+  Cartesian3.divideComponents = function(left, right, result) {
     if (!defined(left)) {
       throw new DeveloperError('left is required');
     }
@@ -13646,75 +13568,58 @@ define("1d", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develo
     if (!defined(result)) {
       throw new DeveloperError('result is required');
     }
+    result.x = left.x / right.x;
+    result.y = left.y / right.y;
+    result.z = left.z / right.z;
+    return result;
+  };
+  Cartesian3.add = function(left, right, result) {
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
+    Check.typeOf.object('result', result);
     result.x = left.x + right.x;
     result.y = left.y + right.y;
     result.z = left.z + right.z;
     return result;
   };
   Cartesian3.subtract = function(left, right, result) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
+    Check.typeOf.object('result', result);
     result.x = left.x - right.x;
     result.y = left.y - right.y;
     result.z = left.z - right.z;
     return result;
   };
   Cartesian3.multiplyByScalar = function(cartesian, scalar, result) {
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
-    if (typeof scalar !== 'number') {
-      throw new DeveloperError('scalar is required and must be a number.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('cartesian', cartesian);
+    Check.typeOf.number('scalar', scalar);
+    Check.typeOf.object('result', result);
     result.x = cartesian.x * scalar;
     result.y = cartesian.y * scalar;
     result.z = cartesian.z * scalar;
     return result;
   };
   Cartesian3.divideByScalar = function(cartesian, scalar, result) {
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
-    if (typeof scalar !== 'number') {
-      throw new DeveloperError('scalar is required and must be a number.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('cartesian', cartesian);
+    Check.typeOf.number('scalar', scalar);
+    Check.typeOf.object('result', result);
     result.x = cartesian.x / scalar;
     result.y = cartesian.y / scalar;
     result.z = cartesian.z / scalar;
     return result;
   };
   Cartesian3.negate = function(cartesian, result) {
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('cartesian', cartesian);
+    Check.typeOf.object('result', result);
     result.x = -cartesian.x;
     result.y = -cartesian.y;
     result.z = -cartesian.z;
     return result;
   };
   Cartesian3.abs = function(cartesian, result) {
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('cartesian', cartesian);
+    Check.typeOf.object('result', result);
     result.x = Math.abs(cartesian.x);
     result.y = Math.abs(cartesian.y);
     result.z = Math.abs(cartesian.z);
@@ -13722,18 +13627,10 @@ define("1d", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develo
   };
   var lerpScratch = new Cartesian3();
   Cartesian3.lerp = function(start, end, t, result) {
-    if (!defined(start)) {
-      throw new DeveloperError('start is required.');
-    }
-    if (!defined(end)) {
-      throw new DeveloperError('end is required.');
-    }
-    if (typeof t !== 'number') {
-      throw new DeveloperError('t is required and must be a number.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required.');
-    }
+    Check.typeOf.object('start', start);
+    Check.typeOf.object('end', end);
+    Check.typeOf.number('t', t);
+    Check.typeOf.object('result', result);
     Cartesian3.multiplyByScalar(end, t, lerpScratch);
     result = Cartesian3.multiplyByScalar(start, 1.0 - t, result);
     return Cartesian3.add(lerpScratch, result, result);
@@ -13741,12 +13638,8 @@ define("1d", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develo
   var angleBetweenScratch = new Cartesian3();
   var angleBetweenScratch2 = new Cartesian3();
   Cartesian3.angleBetween = function(left, right) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
     Cartesian3.normalize(left, angleBetweenScratch);
     Cartesian3.normalize(right, angleBetweenScratch2);
     var cosine = Cartesian3.dot(angleBetweenScratch, angleBetweenScratch2);
@@ -13755,12 +13648,8 @@ define("1d", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develo
   };
   var mostOrthogonalAxisScratch = new Cartesian3();
   Cartesian3.mostOrthogonalAxis = function(cartesian, result) {
-    if (!defined(cartesian)) {
-      throw new DeveloperError('cartesian is required.');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required.');
-    }
+    Check.typeOf.object('cartesian', cartesian);
+    Check.typeOf.object('result', result);
     var f = Cartesian3.normalize(cartesian, mostOrthogonalAxisScratch);
     Cartesian3.abs(f, f);
     if (f.x <= f.y) {
@@ -13788,15 +13677,9 @@ define("1d", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develo
     return (left === right) || (defined(left) && defined(right) && CesiumMath.equalsEpsilon(left.x, right.x, relativeEpsilon, absoluteEpsilon) && CesiumMath.equalsEpsilon(left.y, right.y, relativeEpsilon, absoluteEpsilon) && CesiumMath.equalsEpsilon(left.z, right.z, relativeEpsilon, absoluteEpsilon));
   };
   Cartesian3.cross = function(left, right, result) {
-    if (!defined(left)) {
-      throw new DeveloperError('left is required');
-    }
-    if (!defined(right)) {
-      throw new DeveloperError('right is required');
-    }
-    if (!defined(result)) {
-      throw new DeveloperError('result is required');
-    }
+    Check.typeOf.object('left', left);
+    Check.typeOf.object('right', right);
+    Check.typeOf.object('result', result);
     var leftX = left.x;
     var leftY = left.y;
     var leftZ = left.z;
@@ -13812,26 +13695,18 @@ define("1d", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develo
     return result;
   };
   Cartesian3.fromDegrees = function(longitude, latitude, height, ellipsoid, result) {
-    if (!defined(longitude)) {
-      throw new DeveloperError('longitude is required');
-    }
-    if (!defined(latitude)) {
-      throw new DeveloperError('latitude is required');
-    }
-    var lon = CesiumMath.toRadians(longitude);
-    var lat = CesiumMath.toRadians(latitude);
-    return Cartesian3.fromRadians(lon, lat, height, ellipsoid, result);
+    Check.typeOf.number('longitude', longitude);
+    Check.typeOf.number('latitude', latitude);
+    longitude = CesiumMath.toRadians(longitude);
+    latitude = CesiumMath.toRadians(latitude);
+    return Cartesian3.fromRadians(longitude, latitude, height, ellipsoid, result);
   };
   var scratchN = new Cartesian3();
   var scratchK = new Cartesian3();
   var wgs84RadiiSquared = new Cartesian3(6378137.0 * 6378137.0, 6378137.0 * 6378137.0, 6356752.3142451793 * 6356752.3142451793);
   Cartesian3.fromRadians = function(longitude, latitude, height, ellipsoid, result) {
-    if (!defined(longitude)) {
-      throw new DeveloperError('longitude is required');
-    }
-    if (!defined(latitude)) {
-      throw new DeveloperError('latitude is required');
-    }
+    Check.typeOf.number('longitude', longitude);
+    Check.typeOf.number('latitude', latitude);
     height = defaultValue(height, 0.0);
     var radiiSquared = defined(ellipsoid) ? ellipsoid.radiiSquared : wgs84RadiiSquared;
     var cosLatitude = Math.cos(latitude);
@@ -13849,24 +13724,9 @@ define("1d", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develo
     return Cartesian3.add(scratchK, scratchN, result);
   };
   Cartesian3.fromDegreesArray = function(coordinates, ellipsoid, result) {
-    if (!defined(coordinates)) {
-      throw new DeveloperError('positions is required.');
-    }
-    var pos = new Array(coordinates.length);
-    for (var i = 0; i < coordinates.length; i++) {
-      pos[i] = CesiumMath.toRadians(coordinates[i]);
-    }
-    return Cartesian3.fromRadiansArray(pos, ellipsoid, result);
-  };
-  Cartesian3.fromRadiansArray = function(coordinates, ellipsoid, result) {
-    if (!defined(coordinates)) {
-      throw new DeveloperError('positions is required.');
-    }
-    if (coordinates.length < 2) {
-      throw new DeveloperError('positions length cannot be less than 2.');
-    }
-    if (coordinates.length % 2 !== 0) {
-      throw new DeveloperError('positions length must be a multiple of 2.');
+    Check.defined('coordinates', coordinates);
+    if (coordinates.length < 2 || coordinates.length % 2 !== 0) {
+      throw new DeveloperError('the number of coordinates must be a multiple of 2 and at least 2');
     }
     var length = coordinates.length;
     if (!defined(result)) {
@@ -13875,39 +13735,36 @@ define("1d", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develo
       result.length = length / 2;
     }
     for (var i = 0; i < length; i += 2) {
-      var lon = coordinates[i];
-      var lat = coordinates[i + 1];
-      result[i / 2] = Cartesian3.fromRadians(lon, lat, 0, ellipsoid, result[i / 2]);
+      var longitude = coordinates[i];
+      var latitude = coordinates[i + 1];
+      var index = i / 2;
+      result[index] = Cartesian3.fromDegrees(longitude, latitude, 0, ellipsoid, result[index]);
+    }
+    return result;
+  };
+  Cartesian3.fromRadiansArray = function(coordinates, ellipsoid, result) {
+    Check.defined('coordinates', coordinates);
+    if (coordinates.length < 2 || coordinates.length % 2 !== 0) {
+      throw new DeveloperError('the number of coordinates must be a multiple of 2 and at least 2');
+    }
+    var length = coordinates.length;
+    if (!defined(result)) {
+      result = new Array(length / 2);
+    } else {
+      result.length = length / 2;
+    }
+    for (var i = 0; i < length; i += 2) {
+      var longitude = coordinates[i];
+      var latitude = coordinates[i + 1];
+      var index = i / 2;
+      result[index] = Cartesian3.fromRadians(longitude, latitude, 0, ellipsoid, result[index]);
     }
     return result;
   };
   Cartesian3.fromDegreesArrayHeights = function(coordinates, ellipsoid, result) {
-    if (!defined(coordinates)) {
-      throw new DeveloperError('positions is required.');
-    }
-    if (coordinates.length < 3) {
-      throw new DeveloperError('positions length cannot be less than 3.');
-    }
-    if (coordinates.length % 3 !== 0) {
-      throw new DeveloperError('positions length must be a multiple of 3.');
-    }
-    var pos = new Array(coordinates.length);
-    for (var i = 0; i < coordinates.length; i += 3) {
-      pos[i] = CesiumMath.toRadians(coordinates[i]);
-      pos[i + 1] = CesiumMath.toRadians(coordinates[i + 1]);
-      pos[i + 2] = coordinates[i + 2];
-    }
-    return Cartesian3.fromRadiansArrayHeights(pos, ellipsoid, result);
-  };
-  Cartesian3.fromRadiansArrayHeights = function(coordinates, ellipsoid, result) {
-    if (!defined(coordinates)) {
-      throw new DeveloperError('positions is required.');
-    }
-    if (coordinates.length < 3) {
-      throw new DeveloperError('positions length cannot be less than 3.');
-    }
-    if (coordinates.length % 3 !== 0) {
-      throw new DeveloperError('positions length must be a multiple of 3.');
+    Check.defined('coordinates', coordinates);
+    if (coordinates.length < 3 || coordinates.length % 3 !== 0) {
+      throw new DeveloperError('the number of coordinates must be a multiple of 3 and at least 3');
     }
     var length = coordinates.length;
     if (!defined(result)) {
@@ -13916,10 +13773,31 @@ define("1d", ["16", "5", "7", "11", "d"], function(defaultValue, defined, Develo
       result.length = length / 3;
     }
     for (var i = 0; i < length; i += 3) {
-      var lon = coordinates[i];
-      var lat = coordinates[i + 1];
-      var alt = coordinates[i + 2];
-      result[i / 3] = Cartesian3.fromRadians(lon, lat, alt, ellipsoid, result[i / 3]);
+      var longitude = coordinates[i];
+      var latitude = coordinates[i + 1];
+      var height = coordinates[i + 2];
+      var index = i / 3;
+      result[index] = Cartesian3.fromDegrees(longitude, latitude, height, ellipsoid, result[index]);
+    }
+    return result;
+  };
+  Cartesian3.fromRadiansArrayHeights = function(coordinates, ellipsoid, result) {
+    Check.defined('coordinates', coordinates);
+    if (coordinates.length < 3 || coordinates.length % 3 !== 0) {
+      throw new DeveloperError('the number of coordinates must be a multiple of 3 and at least 3');
+    }
+    var length = coordinates.length;
+    if (!defined(result)) {
+      result = new Array(length / 3);
+    } else {
+      result.length = length / 3;
+    }
+    for (var i = 0; i < length; i += 3) {
+      var longitude = coordinates[i];
+      var latitude = coordinates[i + 1];
+      var height = coordinates[i + 2];
+      var index = i / 3;
+      result[index] = Cartesian3.fromRadians(longitude, latitude, height, ellipsoid, result[index]);
     }
     return result;
   };
@@ -14003,7 +13881,7 @@ define("11", ["5"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("36", ["1d", "5", "7", "11"], function(Cartesian3, defined, DeveloperError, freezeObject) {
+define("37", ["1f", "5", "7", "11"], function(Cartesian3, defined, DeveloperError, freezeObject) {
   'use strict';
   function Plane(normal, distance) {
     if (!defined(normal)) {
@@ -14063,7 +13941,7 @@ define("36", ["1d", "5", "7", "11"], function(Cartesian3, defined, DeveloperErro
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5f", ["1d", "2d", "16", "5", "7", "2e", "57", "5c", "5d", "d", "24", "36"], function(Cartesian3, Cartographic, defaultValue, defined, DeveloperError, Ellipsoid, EllipsoidGeodesic, IntersectionTests, isArray, CesiumMath, Matrix4, Plane) {
+define("66", ["1f", "2e", "15", "5", "7", "2f", "5d", "63", "64", "d", "28", "37"], function(Cartesian3, Cartographic, defaultValue, defined, DeveloperError, Ellipsoid, EllipsoidGeodesic, IntersectionTests, isArray, CesiumMath, Matrix4, Plane) {
   'use strict';
   var PolylinePipeline = {};
   PolylinePipeline.numberOfPoints = function(p0, p1, minDistance) {
@@ -14189,10 +14067,12 @@ define("5f", ["1d", "2d", "16", "5", "7", "2e", "57", "5c", "5d", "d", "24", "36
     var length = positions.length;
     var ellipsoid = defaultValue(options.ellipsoid, Ellipsoid.WGS84);
     var height = defaultValue(options.height, 0);
+    var hasHeightArray = isArray(height);
     if (length < 1) {
       return [];
     } else if (length === 1) {
       var p = ellipsoid.scaleToGeodeticSurface(positions[0], scaleFirst);
+      height = hasHeightArray ? height[0] : height;
       if (height !== 0) {
         var n = ellipsoid.geodeticSurfaceNormal(p, cartesian);
         Cartesian3.multiplyByScalar(n, height, n);
@@ -14213,7 +14093,6 @@ define("5f", ["1d", "2d", "16", "5", "7", "2e", "57", "5c", "5d", "d", "24", "36
     var arrayLength = (numPoints + 1) * 3;
     var newPositions = new Array(arrayLength);
     var offset = 0;
-    var hasHeightArray = isArray(height);
     for (i = 0; i < length - 1; i++) {
       var p0 = positions[i];
       var p1 = positions[i + 1];
@@ -14242,7 +14121,7 @@ define("5f", ["1d", "2d", "16", "5", "7", "2e", "57", "5c", "5d", "d", "24", "36
 });
 
 })();
-$__System.registerDynamic('60', ['61', '62', '63'], true, function ($__require, exports, module) {
+$__System.registerDynamic('67', ['68', '69', '6a'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -14261,9 +14140,9 @@ $__System.registerDynamic('60', ['61', '62', '63'], true, function ($__require, 
    * limitations under the License.
    */
 
-  var CardboardUI = $__require('61');
-  var Util = $__require('62');
-  var WGLUPreserveGLState = $__require('63');
+  var CardboardUI = $__require('68');
+  var Util = $__require('69');
+  var WGLUPreserveGLState = $__require('6a');
 
   var distortionVS = ['attribute vec2 position;', 'attribute vec3 texCoord;', 'varying vec2 vTexCoord;', 'uniform vec4 viewportOffsetScale[2];', 'void main() {', '  vec4 viewport = viewportOffsetScale[int(texCoord.z)];', '  vTexCoord = (texCoord.xy * viewport.zw) + viewport.xy;', '  gl_Position = vec4( position, 1.0, 1.0 );', '}'].join('\n');
 
@@ -14888,7 +14767,7 @@ $__System.registerDynamic('60', ['61', '62', '63'], true, function ($__require, 
   module.exports = CardboardDistorter;
   return module.exports;
 });
-$__System.registerDynamic("63", [], true, function ($__require, exports, module) {
+$__System.registerDynamic("6a", [], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -15056,7 +14935,7 @@ $__System.registerDynamic("63", [], true, function ($__require, exports, module)
   module.exports = WGLUPreserveGLState;
   return module.exports;
 });
-$__System.registerDynamic('61', ['62', '63'], true, function ($__require, exports, module) {
+$__System.registerDynamic('68', ['69', '6a'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -15075,8 +14954,8 @@ $__System.registerDynamic('61', ['62', '63'], true, function ($__require, export
    * limitations under the License.
    */
 
-  var Util = $__require('62');
-  var WGLUPreserveGLState = $__require('63');
+  var Util = $__require('69');
+  var WGLUPreserveGLState = $__require('6a');
 
   var uiVS = ['attribute vec2 position;', 'uniform mat4 projectionMat;', 'void main() {', '  gl_Position = projectionMat * vec4( position, -1.0, 1.0 );', '}'].join('\n');
 
@@ -15313,7 +15192,7 @@ $__System.registerDynamic('61', ['62', '63'], true, function ($__require, export
   module.exports = CardboardUI;
   return module.exports;
 });
-$__System.registerDynamic("64", [], true, function ($__require, exports, module) {
+$__System.registerDynamic("6b", [], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -15871,7 +15750,7 @@ $__System.registerDynamic("64", [], true, function ($__require, exports, module)
   module.exports = DPDB_CACHE;
   return module.exports;
 });
-$__System.registerDynamic('65', ['64', '62'], true, function ($__require, exports, module) {
+$__System.registerDynamic('6c', ['6b', '69'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -15892,8 +15771,8 @@ $__System.registerDynamic('65', ['64', '62'], true, function ($__require, export
 
   // Offline cache of the DPDB, to be used until we load the online one (and
   // as a fallback in case we can't load the online one).
-  var DPDB_CACHE = $__require('64');
-  var Util = $__require('62');
+  var DPDB_CACHE = $__require('6b');
+  var Util = $__require('69');
 
   // Online DPDB URL.
   var ONLINE_DPDB_URL = 'https://storage.googleapis.com/cardboard-dpdb/dpdb.json';
@@ -16065,7 +15944,7 @@ $__System.registerDynamic('65', ['64', '62'], true, function ($__require, export
   module.exports = Dpdb;
   return module.exports;
 });
-$__System.registerDynamic("66", [], true, function ($__require, exports, module) {
+$__System.registerDynamic("6d", [], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -16085,7 +15964,7 @@ $__System.registerDynamic("66", [], true, function ($__require, exports, module)
   module.exports = SensorSample;
   return module.exports;
 });
-$__System.registerDynamic('67', ['66', '68', '62'], true, function ($__require, exports, module) {
+$__System.registerDynamic('6e', ['6d', '6f', '69'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -16104,9 +15983,9 @@ $__System.registerDynamic('67', ['66', '68', '62'], true, function ($__require, 
    * limitations under the License.
    */
 
-  var SensorSample = $__require('66');
-  var MathUtil = $__require('68');
-  var Util = $__require('62');
+  var SensorSample = $__require('6d');
+  var MathUtil = $__require('6f');
+  var Util = $__require('69');
 
   var DEBUG = false;
 
@@ -16250,7 +16129,7 @@ $__System.registerDynamic('67', ['66', '68', '62'], true, function ($__require, 
   module.exports = ComplementaryFilter;
   return module.exports;
 });
-$__System.registerDynamic('69', ['68'], true, function ($__require, exports, module) {
+$__System.registerDynamic('70', ['6f'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -16268,7 +16147,7 @@ $__System.registerDynamic('69', ['68'], true, function ($__require, exports, mod
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
-  var MathUtil = $__require('68');
+  var MathUtil = $__require('6f');
   var DEBUG = false;
 
   /**
@@ -16335,7 +16214,7 @@ $__System.registerDynamic('69', ['68'], true, function ($__require, exports, mod
   module.exports = PosePredictor;
   return module.exports;
 });
-$__System.registerDynamic('6a', ['68', '62'], true, function ($__require, exports, module) {
+$__System.registerDynamic('71', ['6f', '69'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -16353,8 +16232,8 @@ $__System.registerDynamic('6a', ['68', '62'], true, function ($__require, export
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
-  var MathUtil = $__require('68');
-  var Util = $__require('62');
+  var MathUtil = $__require('6f');
+  var Util = $__require('69');
 
   var ROTATE_SPEED = 0.5;
   /**
@@ -16417,7 +16296,7 @@ $__System.registerDynamic('6a', ['68', '62'], true, function ($__require, export
   module.exports = TouchPanner;
   return module.exports;
 });
-$__System.registerDynamic('6b', ['67', '69', '6a', '68', '62'], true, function ($__require, exports, module) {
+$__System.registerDynamic('72', ['6e', '70', '71', '6f', '69'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -16435,11 +16314,11 @@ $__System.registerDynamic('6b', ['67', '69', '6a', '68', '62'], true, function (
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
-  var ComplementaryFilter = $__require('67');
-  var PosePredictor = $__require('69');
-  var TouchPanner = $__require('6a');
-  var MathUtil = $__require('68');
-  var Util = $__require('62');
+  var ComplementaryFilter = $__require('6e');
+  var PosePredictor = $__require('70');
+  var TouchPanner = $__require('71');
+  var MathUtil = $__require('6f');
+  var Util = $__require('69');
 
   /**
    * The pose sensor, implemented using DeviceMotion APIs.
@@ -16603,7 +16482,7 @@ $__System.registerDynamic('6b', ['67', '69', '6a', '68', '62'], true, function (
   module.exports = FusionPoseSensor;
   return module.exports;
 });
-$__System.registerDynamic('6c', ['62'], true, function ($__require, exports, module) {
+$__System.registerDynamic('73', ['69'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -16622,7 +16501,7 @@ $__System.registerDynamic('6c', ['62'], true, function ($__require, exports, mod
    * limitations under the License.
    */
 
-  var Util = $__require('62');
+  var Util = $__require('69');
 
   function RotateInstructions() {
     this.loadIcon_();
@@ -16752,7 +16631,7 @@ $__System.registerDynamic('6c', ['62'], true, function ($__require, exports, mod
   module.exports = RotateInstructions;
   return module.exports;
 });
-$__System.registerDynamic("6d", [], true, function ($__require, exports, module) {
+$__System.registerDynamic("74", [], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -16800,7 +16679,7 @@ $__System.registerDynamic("6d", [], true, function ($__require, exports, module)
   module.exports = Emitter;
   return module.exports;
 });
-$__System.registerDynamic("6e", [], true, function ($__require, exports, module) {
+$__System.registerDynamic("75", [], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -16987,7 +16866,7 @@ $__System.registerDynamic("6e", [], true, function ($__require, exports, module)
   module.exports = Distortion;
   return module.exports;
 });
-$__System.registerDynamic('6f', ['6e', '68', '62'], true, function ($__require, exports, module) {
+$__System.registerDynamic('76', ['75', '6f', '69'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -17006,9 +16885,9 @@ $__System.registerDynamic('6f', ['6e', '68', '62'], true, function ($__require, 
    * limitations under the License.
    */
 
-  var Distortion = $__require('6e');
-  var MathUtil = $__require('68');
-  var Util = $__require('62');
+  var Distortion = $__require('75');
+  var MathUtil = $__require('6f');
+  var Util = $__require('69');
 
   function Device(params) {
     this.width = params.width || Util.getScreenWidth();
@@ -17345,7 +17224,7 @@ $__System.registerDynamic('6f', ['6e', '68', '62'], true, function ($__require, 
   module.exports = DeviceInfo;
   return module.exports;
 });
-$__System.registerDynamic('70', ['6d', '62', '6f'], true, function ($__require, exports, module) {
+$__System.registerDynamic('77', ['74', '69', '76'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -17364,9 +17243,9 @@ $__System.registerDynamic('70', ['6d', '62', '6f'], true, function ($__require, 
    * limitations under the License.
    */
 
-  var Emitter = $__require('6d');
-  var Util = $__require('62');
-  var DeviceInfo = $__require('6f');
+  var Emitter = $__require('74');
+  var Util = $__require('69');
+  var DeviceInfo = $__require('76');
 
   var DEFAULT_VIEWER = 'CardboardV1';
   var VIEWER_KEY = 'WEBVR_CARDBOARD_VIEWER';
@@ -17550,7 +17429,7 @@ $__System.registerDynamic('70', ['6d', '62', '6f'], true, function ($__require, 
   module.exports = ViewerSelector;
   return module.exports;
 });
-$__System.registerDynamic('71', ['60', '61', '6f', '65', '6b', '6c', '70', '72', '62'], true, function ($__require, exports, module) {
+$__System.registerDynamic('78', ['67', '68', '76', '6c', '72', '73', '77', '79', '69'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -17569,15 +17448,15 @@ $__System.registerDynamic('71', ['60', '61', '6f', '65', '6b', '6c', '70', '72',
    * limitations under the License.
    */
 
-  var CardboardDistorter = $__require('60');
-  var CardboardUI = $__require('61');
-  var DeviceInfo = $__require('6f');
-  var Dpdb = $__require('65');
-  var FusionPoseSensor = $__require('6b');
-  var RotateInstructions = $__require('6c');
-  var ViewerSelector = $__require('70');
-  var VRDisplay = $__require('72').VRDisplay;
-  var Util = $__require('62');
+  var CardboardDistorter = $__require('67');
+  var CardboardUI = $__require('68');
+  var DeviceInfo = $__require('76');
+  var Dpdb = $__require('6c');
+  var FusionPoseSensor = $__require('72');
+  var RotateInstructions = $__require('73');
+  var ViewerSelector = $__require('77');
+  var VRDisplay = $__require('79').VRDisplay;
+  var Util = $__require('69');
 
   var Eye = {
     LEFT: 'left',
@@ -17822,7 +17701,7 @@ $__System.registerDynamic('71', ['60', '61', '6f', '65', '6b', '6c', '70', '72',
   module.exports = CardboardVRDisplay;
   return module.exports;
 });
-$__System.registerDynamic("68", [], true, function ($__require, exports, module) {
+$__System.registerDynamic("6f", [], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -18199,7 +18078,7 @@ $__System.registerDynamic("68", [], true, function ($__require, exports, module)
   module.exports = MathUtil;
   return module.exports;
 });
-$__System.registerDynamic('73', ['72', '68', '62'], true, function ($__require, exports, module) {
+$__System.registerDynamic('7a', ['79', '6f', '69'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -18218,9 +18097,9 @@ $__System.registerDynamic('73', ['72', '68', '62'], true, function ($__require, 
    * limitations under the License.
    */
 
-  var VRDisplay = $__require('72').VRDisplay;
-  var MathUtil = $__require('68');
-  var Util = $__require('62');
+  var VRDisplay = $__require('79').VRDisplay;
+  var MathUtil = $__require('6f');
+  var Util = $__require('69');
 
   // How much to rotate per key stroke.
   var KEY_SPEED = 0.15;
@@ -18385,7 +18264,7 @@ $__System.registerDynamic('73', ['72', '68', '62'], true, function ($__require, 
   module.exports = MouseKeyboardVRDisplay;
   return module.exports;
 });
-$__System.registerDynamic('74', [], true, function ($__require, exports, module) {
+$__System.registerDynamic('7b', [], true, function ($__require, exports, module) {
 	'use strict';
 	/* eslint-disable no-unused-vars */
 
@@ -18474,7 +18353,7 @@ $__System.registerDynamic('74', [], true, function ($__require, exports, module)
 	};
 	return module.exports;
 });
-$__System.registerDynamic('62', ['74'], true, function ($__require, exports, module) {
+$__System.registerDynamic('69', ['7b'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -18493,7 +18372,7 @@ $__System.registerDynamic('62', ['74'], true, function ($__require, exports, mod
    * limitations under the License.
    */
 
-  var objectAssign = $__require('74');
+  var objectAssign = $__require('7b');
 
   var Util = window.Util || {};
 
@@ -18890,7 +18769,7 @@ $__System.registerDynamic('62', ['74'], true, function ($__require, exports, mod
   module.exports = Util;
   return module.exports;
 });
-$__System.registerDynamic('75', ['62'], true, function ($__require, exports, module) {
+$__System.registerDynamic('7c', ['69'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -18909,7 +18788,7 @@ $__System.registerDynamic('75', ['62'], true, function ($__require, exports, mod
    * limitations under the License.
    */
 
-  var Util = $__require('62');
+  var Util = $__require('69');
 
   /**
    * Android and iOS compatible wakelock implementation.
@@ -18969,7 +18848,7 @@ $__System.registerDynamic('75', ['62'], true, function ($__require, exports, mod
   module.exports = getWakeLock();
   return module.exports;
 });
-$__System.registerDynamic('72', ['62', '75'], true, function ($__require, exports, module) {
+$__System.registerDynamic('79', ['69', '7c'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -18988,8 +18867,8 @@ $__System.registerDynamic('72', ['62', '75'], true, function ($__require, export
    * limitations under the License.
    */
 
-  var Util = $__require('62');
-  var WakeLock = $__require('75');
+  var Util = $__require('69');
+  var WakeLock = $__require('7c');
 
   // Start at a higher number to reduce chance of conflict.
   var nextDisplayId = 1000;
@@ -19406,7 +19285,7 @@ $__System.registerDynamic('72', ['62', '75'], true, function ($__require, export
   module.exports.PositionSensorVRDevice = PositionSensorVRDevice;
   return module.exports;
 });
-$__System.registerDynamic('76', ['72'], true, function ($__require, exports, module) {
+$__System.registerDynamic('7d', ['79'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -19424,9 +19303,9 @@ $__System.registerDynamic('76', ['72'], true, function ($__require, exports, mod
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
-  var VRDisplay = $__require('72').VRDisplay;
-  var HMDVRDevice = $__require('72').HMDVRDevice;
-  var PositionSensorVRDevice = $__require('72').PositionSensorVRDevice;
+  var VRDisplay = $__require('79').VRDisplay;
+  var HMDVRDevice = $__require('79').HMDVRDevice;
+  var PositionSensorVRDevice = $__require('79').PositionSensorVRDevice;
 
   /**
    * Wraps a VRDisplay and exposes it as a HMDVRDevice
@@ -19499,7 +19378,7 @@ $__System.registerDynamic('76', ['72'], true, function ($__require, exports, mod
   module.exports.VRDisplayPositionSensorDevice = VRDisplayPositionSensorDevice;
   return module.exports;
 });
-$__System.registerDynamic('77', ['62', '71', '73', '72', '76'], true, function ($__require, exports, module) {
+$__System.registerDynamic('7e', ['69', '78', '7a', '79', '7d'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -19518,17 +19397,17 @@ $__System.registerDynamic('77', ['62', '71', '73', '72', '76'], true, function (
    * limitations under the License.
    */
 
-  var Util = $__require('62');
-  var CardboardVRDisplay = $__require('71');
-  var MouseKeyboardVRDisplay = $__require('73');
+  var Util = $__require('69');
+  var CardboardVRDisplay = $__require('78');
+  var MouseKeyboardVRDisplay = $__require('7a');
   // Uncomment to add positional tracking via webcam.
   //var WebcamPositionSensorVRDevice = require('./webcam-position-sensor-vr-device.js');
-  var VRDisplay = $__require('72').VRDisplay;
-  var VRFrameData = $__require('72').VRFrameData;
-  var HMDVRDevice = $__require('72').HMDVRDevice;
-  var PositionSensorVRDevice = $__require('72').PositionSensorVRDevice;
-  var VRDisplayHMDDevice = $__require('76').VRDisplayHMDDevice;
-  var VRDisplayPositionSensorDevice = $__require('76').VRDisplayPositionSensorDevice;
+  var VRDisplay = $__require('79').VRDisplay;
+  var VRFrameData = $__require('79').VRFrameData;
+  var HMDVRDevice = $__require('79').HMDVRDevice;
+  var PositionSensorVRDevice = $__require('79').PositionSensorVRDevice;
+  var VRDisplayHMDDevice = $__require('7d').VRDisplayHMDDevice;
+  var VRDisplayPositionSensorDevice = $__require('7d').VRDisplayPositionSensorDevice;
 
   function WebVRPolyfill() {
     this.displays = [];
@@ -19719,7 +19598,7 @@ $__System.registerDynamic('77', ['62', '71', '73', '72', '76'], true, function (
   module.exports.WebVRPolyfill = WebVRPolyfill;
   return module.exports;
 });
-$__System.registerDynamic('78', ['62', '77'], true, function ($__require, exports, module) {
+$__System.registerDynamic('7f', ['69', '7e'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -19737,8 +19616,8 @@ $__System.registerDynamic('78', ['62', '77'], true, function ($__require, export
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
-  var Util = $__require('62');
-  var WebVRPolyfill = $__require('77').WebVRPolyfill;
+  var Util = $__require('69');
+  var WebVRPolyfill = $__require('7e').WebVRPolyfill;
 
   // Initialize a WebVRConfig just in case.
   window.WebVRConfig = Util.extend({
@@ -19800,10 +19679,10 @@ $__System.registerDynamic('78', ['62', '77'], true, function ($__require, export
   }
   return module.exports;
 });
-$__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', '14', '15', '18', '1c', '20', '16', '5', '7', '2e', '1a', '1b', '8', '3b', '3e', '2c', '2f', '17', 'd', '23', '24', '30', '31', '32', '1f', '27', '25', '37', '1e', '38', '39', '3a', 'e', 'f', '26', '55', '5f', '61', '78'], function (_export, _context) {
+$__System.register('1', ['2', '3', '3e', '4', '9', '10', 'a', '1f', '36', '2e', '13', '14', '18', '1e', '24', '15', '5', '7', '2f', '1a', '1b', '8', '3c', '3f', '2d', '30', '17', 'd', '27', '28', '31', '32', '33', '21', '26', '29', '38', '20', '39', '3a', '3b', 'e', 'f', '2a', '5b', '66', '68', '7f'], function (_export, _context) {
     "use strict";
 
-    var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, cesium_Source_Core_Clock_js, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, cesium_Source_Core_defaultValue_js, defined, cesium_Source_Core_DeveloperError_js, cesium_Source_Core_Ellipsoid_js, Entity, EntityCollection, CesiumEvent, cesium_Source_Core_ExtrapolationType_js, cesium_Source_Core_FeatureDetection_js, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, ReferenceEntity, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, CardboardUI, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, DI, after, lut, i, cesiumImports, kButtonWidthDp, kTouchSlopFactor, __extends$1, AVERAGE_EYE_HEIGHT, DEFAULT_NEAR_PLANE, DEFAULT_FAR_PLANE, Role, Configuration, Viewport, CanvasViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, getEventSynthesizier$1, cloneTouch, cloneTouches, scratchAncestorCartesian, scratchAncestorQuaternion, getEntityPosition, getEntityOrientation, _scratchFramesArray, _entityStateCache, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, lastTime, rAF, cAF, version, __extends, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, WKWebViewConnectService, AndroidWebViewConnectService, _a$1, _b$1, __decorate$4, __metadata$4, EntityPose, PoseStatus, ContextService, ContextServiceProvider, _a$4, _b$4, _c$3, _d$3, _e$3, _f$2, __decorate$6, __metadata$6, FocusService, FocusServiceProvider, _a$6, _b$6, __decorate$7, __metadata$7, VisibilityService, VisibilityServiceProvider, _a$7, _b$7, __decorate$5, __metadata$5, Subview, ViewportMode, ViewElement, ViewService, ViewServiceProvider, viewportMetaTag, argonMetaTag, style, sheet, _a$5, _b$5, _c$4, _d$4, _e$4, _f$3, __extends$2, __decorate$3, __metadata$3, DeviceStableState, DeviceFrameState, DeviceService, DeviceServiceProvider, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, _h$1, RealityViewer, __extends$3, __decorate$9, __metadata$9, EmptyRealityViewer, _a$9, _b$9, _c$6, _d$6, __extends$4, __decorate$10, __metadata$10, LiveRealityViewer, _a$10, _b$10, _c$7, __extends$5, __decorate$11, __metadata$11, HostedRealityViewer, _a$11, _b$11, __decorate$8, __metadata$8, RealityViewerFactory, RealityService, RealityServiceProvider, _a$8, _b$8, _c$5, _d$5, _e$5, _f$4, _g$2, _h$2, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __extends$6, __decorate$12, __metadata$12, VuforiaServiceProvider, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$12, _b$12, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, ArgonConfigurationManager, initReality, _a, _b, _c, _d, _e, _f, _g, ArgonSystem_1, _h, _j, _k, _l, _m, _o, _p, _q, _r;
+    var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, cesium_Source_Core_Clock_js, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, cesium_Source_Core_defaultValue_js, defined, cesium_Source_Core_DeveloperError_js, cesium_Source_Core_Ellipsoid_js, Entity, EntityCollection, CesiumEvent, cesium_Source_Core_ExtrapolationType_js, cesium_Source_Core_FeatureDetection_js, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, ReferenceEntity, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, CardboardUI, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, DI, after, lut, i, cesiumImports, kButtonWidthDp, kTouchSlopFactor, __extends$1, AVERAGE_EYE_HEIGHT, DEFAULT_NEAR_PLANE, DEFAULT_FAR_PLANE, Role, Configuration, Viewport, CanvasViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, getEventSynthesizier$1, cloneTouch, cloneTouches, eastUpSouthToFixedFrame, scratchAncestorCartesian, scratchAncestorQuaternion, getEntityPosition, getEntityOrientation, _scratchFramesArray, _entityStateCache, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, lastTime, rAF, cAF, version, __extends, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, WKWebViewConnectService, AndroidWebViewConnectService, _a$1, _b$1, __decorate$4, __metadata$4, EntityPose, PoseStatus, ContextService, ContextServiceProvider, _a$4, _b$4, _c$3, _d$3, _e$3, _f$2, __decorate$6, __metadata$6, FocusService, FocusServiceProvider, _a$6, _b$6, __decorate$7, __metadata$7, VisibilityService, VisibilityServiceProvider, _a$7, _b$7, __decorate$5, __metadata$5, Subview, ViewportMode, ViewElement, ViewService, ViewServiceProvider, viewportMetaTag, argonMetaTag, style, sheet, _a$5, _b$5, _c$4, _d$4, _e$4, _f$3, __extends$2, __decorate$3, __metadata$3, DeviceStableState, DeviceFrameState, DeviceService, DeviceServiceProvider, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, _h$1, RealityViewer, __extends$3, __decorate$9, __metadata$9, EmptyRealityViewer, _a$9, _b$9, _c$6, _d$6, __extends$4, __decorate$10, __metadata$10, LiveRealityViewer, _a$10, _b$10, _c$7, __extends$5, __decorate$11, __metadata$11, HostedRealityViewer, _a$11, _b$11, __decorate$8, __metadata$8, RealityViewerFactory, RealityService, RealityServiceProvider, _a$8, _b$8, _c$5, _d$5, _e$5, _f$4, _g$2, _h$2, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __extends$6, __decorate$12, __metadata$12, VuforiaServiceProvider, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$12, _b$12, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, ArgonConfigurationManager, initReality, _a, _b, _c, _d, _e, _f, _g, ArgonSystem_1, _h, _j, _k, _l, _m, _o, _p, _q, _r;
 
     function alwaysValid() {
         return true;
@@ -20375,6 +20254,13 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
     }
 
     /**
+     * Computes a 4x4 transformation matrix from a reference frame with an east-up-south axes centered at the provided origin to the provided ellipsoid's fixed reference frame. The local axes are defined as:
+     * The x axis points in the local east direction.
+     * The y axis points in the points in the direction of the ellipsoid surface normal which passes through the position..
+     * The z axis points in the local south direction.
+     */
+
+    /**
      * Get array of ancestor reference frames of a Cesium Entity, ordered from
      * farthest ancestor to the passed frame, excluding the passed frame.
      * @param frame A Cesium Entity to get ancestor reference frames.
@@ -20715,8 +20601,8 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
         setters: [function (_) {}, function (_2) {
             AggregateError = _2.AggregateError;
             PLATFORM = _2.PLATFORM;
-        }, function (_d2) {
-            binarySearch = _d2.default;
+        }, function (_e2) {
+            binarySearch = _e2.default;
         }, function (_3) {
             cesium_Source_DataSources_CallbackProperty_js = _3.default;
         }, function (_4) {
@@ -20725,20 +20611,20 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
             CameraEventType = _5.default;
         }, function (_a2) {
             cesium_Source_Core_Cartesian2_js = _a2.default;
-        }, function (_d3) {
-            Cartesian3 = _d3.default;
+        }, function (_f2) {
+            Cartesian3 = _f2.default;
         }, function (_6) {
             cesium_Source_Core_Cartesian4_js = _6.default;
-        }, function (_d4) {
-            Cartographic = _d4.default;
+        }, function (_e3) {
+            Cartographic = _e3.default;
         }, function (_7) {
             cesium_Source_Core_Clock_js = _7.default;
         }, function (_8) {
             cesium_Source_Core_ClockStep_js = _8.default;
         }, function (_9) {
             cesium_Source_DataSources_CompositeEntityCollection_js = _9.default;
-        }, function (_c2) {
-            ConstantPositionProperty = _c2.default;
+        }, function (_e4) {
+            ConstantPositionProperty = _e4.default;
         }, function (_10) {
             ConstantProperty = _10.default;
         }, function (_11) {
@@ -20747,65 +20633,65 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
             defined = _12.default;
         }, function (_13) {
             cesium_Source_Core_DeveloperError_js = _13.default;
-        }, function (_e2) {
-            cesium_Source_Core_Ellipsoid_js = _e2.default;
+        }, function (_f3) {
+            cesium_Source_Core_Ellipsoid_js = _f3.default;
         }, function (_a3) {
             Entity = _a3.default;
         }, function (_b2) {
             EntityCollection = _b2.default;
         }, function (_14) {
             CesiumEvent = _14.default;
-        }, function (_b3) {
-            cesium_Source_Core_ExtrapolationType_js = _b3.default;
-        }, function (_e3) {
-            cesium_Source_Core_FeatureDetection_js = _e3.default;
-        }, function (_c3) {
-            cesium_Source_Core_GeographicProjection_js = _c3.default;
-        }, function (_f2) {
-            cesium_Source_Core_HermitePolynomialApproximation_js = _f2.default;
+        }, function (_c2) {
+            cesium_Source_Core_ExtrapolationType_js = _c2.default;
+        }, function (_f4) {
+            cesium_Source_Core_FeatureDetection_js = _f4.default;
+        }, function (_d2) {
+            cesium_Source_Core_GeographicProjection_js = _d2.default;
         }, function (_15) {
-            JulianDate = _15.default;
-        }, function (_d5) {
-            CesiumMath = _d5.default;
+            cesium_Source_Core_HermitePolynomialApproximation_js = _15.default;
         }, function (_16) {
-            Matrix3 = _16.default;
+            JulianDate = _16.default;
+        }, function (_d3) {
+            CesiumMath = _d3.default;
         }, function (_17) {
-            Matrix4 = _17.default;
+            Matrix3 = _17.default;
         }, function (_18) {
-            OrientationProperty = _18.default;
+            Matrix4 = _18.default;
         }, function (_19) {
-            PerspectiveFrustum = _19.default;
+            OrientationProperty = _19.default;
         }, function (_20) {
-            PerspectiveOffCenterFrustum = _20.default;
-        }, function (_f3) {
-            cesium_Source_DataSources_PositionProperty_js = _f3.default;
+            PerspectiveFrustum = _20.default;
         }, function (_21) {
-            cesium_Source_DataSources_Property_js = _21.default;
+            PerspectiveOffCenterFrustum = _21.default;
         }, function (_22) {
-            Quaternion = _22.default;
+            cesium_Source_DataSources_PositionProperty_js = _22.default;
         }, function (_23) {
-            ReferenceEntity = _23.default;
-        }, function (_e4) {
-            ReferenceFrame = _e4.default;
+            cesium_Source_DataSources_Property_js = _23.default;
         }, function (_24) {
-            cesium_Source_DataSources_ReferenceProperty_js = _24.default;
+            Quaternion = _24.default;
         }, function (_25) {
-            SampledPositionProperty = _25.default;
+            ReferenceEntity = _25.default;
+        }, function (_26) {
+            ReferenceFrame = _26.default;
+        }, function (_27) {
+            cesium_Source_DataSources_ReferenceProperty_js = _27.default;
         }, function (_a4) {
-            SampledProperty = _a4.default;
+            SampledPositionProperty = _a4.default;
+        }, function (_b3) {
+            SampledProperty = _b3.default;
         }, function (_e5) {
             cesium_Source_Core_ScreenSpaceEventHandler_js = _e5.default;
-        }, function (_f4) {
-            cesium_Source_Core_ScreenSpaceEventType_js = _f4.default;
-        }, function (_26) {
-            Transforms = _26.default;
-        }, function (_27) {
-            cesium_Source_Core_Simon1994PlanetaryPositions_js = _27.default;
         }, function (_f5) {
-            cesium_Source_Core_PolylinePipeline_js = _f5.default;
+            cesium_Source_Core_ScreenSpaceEventType_js = _f5.default;
+        }, function (_a5) {
+            Transforms = _a5.default;
+        }, function (_b4) {
+            cesium_Source_Core_Simon1994PlanetaryPositions_js = _b4.default;
         }, function (_28) {
-            CardboardUI = _28.default;
-        }, function (_29) {}],
+            cesium_Source_Core_PolylinePipeline_js = _28.default;
+        }, function (_29) {
+            CardboardUI = _29.default;
+        }, function (_f6) {}],
         execute: function () {
             _extends = Object.assign || function (target) {
                 for (var i = 1; i < arguments.length; i++) {
@@ -21921,6 +21807,8 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                 return touchList;
             };
 
+            _export('eastUpSouthToFixedFrame', eastUpSouthToFixedFrame = Transforms.localFrameToFixedFrameGenerator('east', 'up'));
+
             scratchAncestorCartesian = new Cartesian3();
             scratchAncestorQuaternion = new Quaternion();
 
@@ -21951,7 +21839,7 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
 
             _export('cancelAnimationFrame', cAF = typeof window !== 'undefined' ? window.cancelAnimationFrame.bind(window) : clearTimeout);
 
-            _export('version', version = "1.2.0-7");
+            _export('version', version = "1.2.0-8");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -22881,6 +22769,8 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                     this._scratchCartesian = new Cartesian3();
                     this._scratchQuaternion = new Quaternion();
                     this._scratchFrustum = new PerspectiveFrustum();
+                    this._scratchMatrix3 = new Matrix3();
+                    this._scratchMatrix4 = new Matrix4();
                     this._frameIndex = -1;
                     this._getReachableAncestorReferenceFrames = getReachableAncestorReferenceFrames;
                     this._scratchArray = [];
@@ -23057,6 +22947,39 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
                         return Cartographic.fromCartesian(fixedPosition, undefined, cartographic);
                     }
                     return undefined;
+                };
+                /**
+                * Create an entity that is positioned at the given cartographic location,
+                * with an orientation computed according to the given local to fixed frame converter.
+                *
+                * For the localFrameToFixedFrame parameter, Cesium provides the following:
+                *
+                * Cesium.Transforms.eastNorthUpToFixedFrame
+                * Cesium.Transforms.northEastDownToFixedFrame
+                * Cesium.Transforms.northUpEastToFixedFrame
+                * Cesium.Transforms.northWestUpToFixedFrame
+                *
+                * Additionally, argon.js provides:
+                *
+                * Argon.eastUpSouthToFixedFrame
+                *
+                * Alternative transform functions can be created with:
+                *
+                * Cesium.Transforms.localFrameToFixedFrameGenerator
+                */
+                ContextService.prototype.createGeoEntity = function (cartographic, localFrameToFixedFrame) {
+                    // Convert the cartographic location to an ECEF position
+                    var position = Cartesian3.fromDegrees(cartographic.longitude, cartographic.latitude, cartographic.height, undefined, this._scratchCartesian);
+                    // compute an appropriate orientation on the surface of the earth
+                    var transformMatrix = localFrameToFixedFrame(position, undefined, this._scratchMatrix4);
+                    var rotationMatrix = Matrix4.getRotation(transformMatrix, this._scratchMatrix3);
+                    var orientation = Quaternion.fromRotationMatrix(rotationMatrix, this._scratchQuaternion);
+                    // create the entity
+                    var entity = new Entity({
+                        position: position,
+                        orientation: orientation
+                    });
+                    return entity;
                 };
                 /**
                  * Create a new EntityPose instance to represent the pose of an entity
@@ -26593,6 +26516,8 @@ $__System.register('1', ['2', '3', '3d', '4', '9', '10', 'a', '1d', '35', '2d', 
             _export('AndroidWebViewConnectService', AndroidWebViewConnectService);
 
             _export('DefaultUIService', DefaultUIService);
+
+            _export('eastUpSouthToFixedFrame', eastUpSouthToFixedFrame);
 
             _export('getAncestorReferenceFrames', getAncestorReferenceFrames);
 
