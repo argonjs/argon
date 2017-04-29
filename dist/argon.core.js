@@ -16262,7 +16262,7 @@ $__System.register('1', ['2', '3', '3e', '4', '9', '10', 'a', '1f', '36', '2e', 
 
             _export('cancelAnimationFrame', cAF = typeof window !== 'undefined' ? window.cancelAnimationFrame.bind(window) : clearTimeout);
 
-            _export('version', version = "1.2.0-10");
+            _export('version', version = "1.2.0-11");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
