@@ -1135,6 +1135,16 @@ declare module 'cesium' {
         static equals(left?: Matrix3, right?: Matrix3): boolean;
         static equalsEpsilon(left: Matrix3, right: Matrix3, epsilon: number): boolean;
         length: number;
+        0: number;
+        1: number;
+        2: number;
+        3: number;
+        4: number;
+        5: number;
+        6: number;
+        7: number;
+        8: number;
+        9: number;
     }
 
     class Matrix4 {
@@ -1208,6 +1218,22 @@ declare module 'cesium' {
         static inverse(matrix: Matrix4, result: Matrix4): Matrix4;
         static inverseTransformation(matrix: Matrix4, result: Matrix4): Matrix4;
         length: number;
+        0: number;
+        1: number;
+        2: number;
+        3: number;
+        4: number;
+        5: number;
+        6: number;
+        7: number;
+        8: number;
+        9: number;
+        10: number;
+        11: number;
+        12: number;
+        13: number;
+        14: number;
+        15: number;
     }
 
     class NearFarScalar {
