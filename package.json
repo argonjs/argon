@@ -17,7 +17,7 @@
       "cesium": "github:aelatgt/cesium@referenceFrames",
       "aurelia-dependency-injection": "npm:aurelia-dependency-injection@^1.2.0",
       "aurelia-polyfills": "npm:aurelia-polyfills@^1.0.0-beta.1.0.0",
-      "googlevr/webvr-polyfill": "github:googlevr/webvr-polyfill@0.9.3",
+      "googlevr/webvr-polyfill": "github:googlevr/webvr-polyfill@0.9.27",
       "json": "github:systemjs/plugin-json@^0.2.3",
       "mobile-detect": "npm:mobile-detect@^1.3.2",
       "object-assign": "npm:object-assign@^4.1.0"
