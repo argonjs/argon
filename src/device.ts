@@ -11,7 +11,8 @@ import {
     Transforms,
     JulianDate,
     PerspectiveFrustum,
-    defined
+    defined,
+    HeadingPitchRoll
 } from './cesium/cesium-imports'
 
 import {autoinject} from 'aurelia-dependency-injection';
@@ -1017,6 +1018,8 @@ export class DeviceServiceProvider {
     protected _scratchQuaternionLocalOrigin = new Quaternion;
     protected _scratchFrustum = new PerspectiveFrustum();
 
+    protected _identityHPR = HeadingPitchRoll.fromQuaternion(Quaternion.IDENTITY);
+
     protected configureStage(
             longitude?:number,
             latitude?:number,
@@ -1031,7 +1034,7 @@ export class DeviceServiceProvider {
             const height = defined(altitude) ? altitude : 0;
 
             const fixedPosition = Cartesian3.fromDegrees(longitude, latitude, height, undefined, this._scratchCartesianLocalOrigin);
-            const enuOrientation = Transforms.headingPitchRollQuaternion(fixedPosition, 0,0,0, undefined, this._scratchQuaternionLocalOrigin);
+            const enuOrientation = Transforms.headingPitchRollQuaternion(fixedPosition, this._identityHPR, undefined, this._scratchQuaternionLocalOrigin);
 
             stage.position = stage.position || new ConstantPositionProperty();
             stage.orientation = stage.orientation || new ConstantProperty();

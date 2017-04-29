@@ -106,6 +106,10 @@ declare module 'cesium/Source/Core/GeographicProjection' {
     import { GeographicProjection } from 'cesium';
     export default GeographicProjection;
 }
+declare module 'cesium/Source/Core/HeadingPitchRoll' {
+    import { HeadingPitchRoll } from 'cesium';
+    export default HeadingPitchRoll;
+}
 declare module 'cesium/Source/Core/HermitePolynomialApproximation' {
     import { HermitePolynomialApproximation } from 'cesium';
     export default HermitePolynomialApproximation;
@@ -4757,14 +4761,30 @@ declare module 'cesium' {
         TAI,
     }
 
+    class HeadingPitchRoll {
+        public heading:number;
+        public pitch:number;
+        public roll:number;
+        constructor(heading:number, pitch:number, roll:number);
+        static clone(headingPitchRoll?:HeadingPitchRoll, result?:HeadingPitchRoll) : HeadingPitchRoll|undefined;
+        static equals(left?:HeadingPitchRoll, right?:HeadingPitchRoll) : boolean;
+        static equalsEpsilon(left:HeadingPitchRoll|undefined, right:HeadingPitchRoll|undefined, relativeEpsilon:number, absoluteEpsilon?:number) : boolean;
+        static fromDegrees(heading:number, pitch:number, roll:number, result?:HeadingPitchRoll) : HeadingPitchRoll;
+        static fromQuaternion(quaternion:Quaternion, result?:HeadingPitchRoll) : HeadingPitchRoll;
+        clone(result?:HeadingPitchRoll) : HeadingPitchRoll;
+        equals(right?:HeadingPitchRoll) : boolean;
+        equalsEpsilon(right:HeadingPitchRoll|undefined, relativeEpsilon:number|undefined, absoluteEpsilon?:number) : boolean;
+        toString(): string;
+    }
+
     module Transforms {
         type ConversionFunction = (origin: Cartesian3, ellipsoid?: Ellipsoid, result?: Matrix4) => Matrix4;
         function localFrameToFixedFrameGenerator(firstAxis: string, secondAxis: string): ConversionFunction;
         function eastNorthUpToFixedFrame(origin: Cartesian3, ellipsoid?: Ellipsoid, result?: Matrix4): Matrix4;
         function northEastDownToFixedFrame(origin: Cartesian3, ellipsoid?: Ellipsoid, result?: Matrix4): Matrix4;
         function northUpEastToFixedFrame(origin: Cartesian3, ellipsoid?: Ellipsoid, result?: Matrix4): Matrix4;
-        function headingPitchRollToFixedFrame(origin: Cartesian3, heading: number, pitch: number, roll: number, ellipsoid?: Ellipsoid, result?: Matrix4): Matrix4;
-        function headingPitchRollQuaternion(origin: Cartesian3, heading: number, pitch: number, roll: number, ellipsoid?: Ellipsoid, result?: Quaternion): Quaternion;
+        function headingPitchRollToFixedFrame(origin: Cartesian3, headingPitchRoll: HeadingPitchRoll, ellipsoid?: Ellipsoid, result?: Matrix4): Matrix4;
+        function headingPitchRollQuaternion(origin: Cartesian3, headingPitchRoll: HeadingPitchRoll, ellipsoid?: Ellipsoid, result?: Quaternion): Quaternion;
         function computeTemeToPseudoFixedMatrix(date: JulianDate, result?: Matrix3): Matrix3;
         function preloadIcrfFixed(timeInterval: TimeInterval): Promise<void>;
         function computeIcrfToFixedMatrix(date: JulianDate, result?: Matrix3): Matrix3;

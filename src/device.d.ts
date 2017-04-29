@@ -165,6 +165,7 @@ export declare class DeviceServiceProvider {
     protected _scratchCartesianLocalOrigin: Cartesian3;
     protected _scratchQuaternionLocalOrigin: Quaternion;
     protected _scratchFrustum: PerspectiveFrustum;
+    protected _identityHPR: any;
     protected configureStage(longitude?: number, latitude?: number, altitude?: number, geoHorizontalAccuracy?: number, geoVerticalAccuracy?: number): void;
     private _geolocationWatchId?;
     /**
