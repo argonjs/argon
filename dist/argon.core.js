@@ -16262,7 +16262,7 @@ $__System.register('1', ['2', '3', '3e', '4', '9', '10', 'a', '1f', '36', '2e', 
 
             _export('cancelAnimationFrame', cAF = typeof window !== 'undefined' ? window.cancelAnimationFrame.bind(window) : clearTimeout);
 
-            _export('version', version = "1.2.0-9");
+            _export('version', version = "1.2.0-10");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -19079,7 +19079,7 @@ $__System.register('1', ['2', '3', '3e', '4', '9', '10', 'a', '1f', '36', '2e', 
                     this._scratchCartesianLocalOrigin = new Cartesian3();
                     this._scratchQuaternionLocalOrigin = new Quaternion();
                     this._scratchFrustum = new PerspectiveFrustum();
-                    this._identityHPR = HeadingPitchRoll.fromQuaternion(Quaternion.IDENTITY);
+                    this._identityHPR = new HeadingPitchRoll();
                     this.contextServiceProvider.publishingReferenceFrameMap.set(deviceService.stage.id, ReferenceFrame.FIXED);
                     this.contextServiceProvider.publishingReferenceFrameMap.set(deviceService.user.id, deviceService.stage.id);
                     this.sessionService.connectEvent.addEventListener(function (session) {
