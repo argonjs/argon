@@ -19679,10 +19679,10 @@ $__System.registerDynamic('7f', ['69', '7e'], true, function ($__require, export
   }
   return module.exports;
 });
-$__System.register('1', ['2', '3', '3e', '4', '9', '10', 'a', '1f', '36', '2e', '13', '14', '18', '1e', '24', '15', '5', '7', '2f', '1a', '1b', '8', '3c', '3f', '2d', '30', '17', 'd', '27', '28', '31', '32', '33', '21', '26', '29', '38', '20', '39', '3a', '3b', 'e', 'f', '2a', '5b', '66', '68', '7f'], function (_export, _context) {
+$__System.register('1', ['2', '3', '3e', '4', '9', '10', 'a', '1f', '36', '2e', '13', '14', '18', '1e', '24', '15', '5', '7', '2f', '1a', '1b', '8', '3c', '3f', '2d', '57', '30', '17', 'd', '27', '28', '31', '32', '33', '21', '26', '29', '38', '20', '39', '3a', '3b', 'e', 'f', '2a', '5b', '66', '68', '7f'], function (_export, _context) {
     "use strict";
 
-    var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, cesium_Source_Core_Clock_js, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, cesium_Source_Core_defaultValue_js, defined, cesium_Source_Core_DeveloperError_js, cesium_Source_Core_Ellipsoid_js, Entity, EntityCollection, CesiumEvent, cesium_Source_Core_ExtrapolationType_js, cesium_Source_Core_FeatureDetection_js, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, ReferenceEntity, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, CardboardUI, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, DI, after, lut, i, cesiumImports, kButtonWidthDp, kTouchSlopFactor, __extends$1, AVERAGE_EYE_HEIGHT, DEFAULT_NEAR_PLANE, DEFAULT_FAR_PLANE, Role, Configuration, Viewport, CanvasViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, getEventSynthesizier$1, cloneTouch, cloneTouches, eastUpSouthToFixedFrame, scratchAncestorCartesian, scratchAncestorQuaternion, getEntityPosition, getEntityOrientation, _scratchFramesArray, _entityStateCache, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, lastTime, rAF, cAF, version, __extends, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, WKWebViewConnectService, AndroidWebViewConnectService, _a$1, _b$1, __decorate$4, __metadata$4, EntityPose, PoseStatus, ContextService, ContextServiceProvider, _a$4, _b$4, _c$3, _d$3, _e$3, _f$2, __decorate$6, __metadata$6, FocusService, FocusServiceProvider, _a$6, _b$6, __decorate$7, __metadata$7, VisibilityService, VisibilityServiceProvider, _a$7, _b$7, __decorate$5, __metadata$5, Subview, ViewportMode, ViewElement, ViewService, ViewServiceProvider, viewportMetaTag, argonMetaTag, style, sheet, _a$5, _b$5, _c$4, _d$4, _e$4, _f$3, __extends$2, __decorate$3, __metadata$3, DeviceStableState, DeviceFrameState, DeviceService, DeviceServiceProvider, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, _h$1, RealityViewer, __extends$3, __decorate$9, __metadata$9, EmptyRealityViewer, _a$9, _b$9, _c$6, _d$6, __extends$4, __decorate$10, __metadata$10, LiveRealityViewer, _a$10, _b$10, _c$7, __extends$5, __decorate$11, __metadata$11, HostedRealityViewer, _a$11, _b$11, __decorate$8, __metadata$8, RealityViewerFactory, RealityService, RealityServiceProvider, _a$8, _b$8, _c$5, _d$5, _e$5, _f$4, _g$2, _h$2, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __extends$6, __decorate$12, __metadata$12, VuforiaServiceProvider, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$12, _b$12, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, ArgonConfigurationManager, initReality, _a, _b, _c, _d, _e, _f, _g, ArgonSystem_1, _h, _j, _k, _l, _m, _o, _p, _q, _r;
+    var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, cesium_Source_Core_Clock_js, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, cesium_Source_Core_defaultValue_js, defined, cesium_Source_Core_DeveloperError_js, cesium_Source_Core_Ellipsoid_js, Entity, EntityCollection, CesiumEvent, cesium_Source_Core_ExtrapolationType_js, cesium_Source_Core_FeatureDetection_js, cesium_Source_Core_GeographicProjection_js, HeadingPitchRoll, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, ReferenceEntity, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, CardboardUI, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, DI, after, lut, i, cesiumImports, kButtonWidthDp, kTouchSlopFactor, __extends$1, AVERAGE_EYE_HEIGHT, DEFAULT_NEAR_PLANE, DEFAULT_FAR_PLANE, Role, Configuration, Viewport, CanvasViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, getEventSynthesizier$1, cloneTouch, cloneTouches, eastUpSouthToFixedFrame, scratchAncestorCartesian, scratchAncestorQuaternion, getEntityPosition, getEntityOrientation, _scratchFramesArray, _entityStateCache, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, lastTime, rAF, cAF, version, __extends, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, WKWebViewConnectService, AndroidWebViewConnectService, _a$1, _b$1, __decorate$4, __metadata$4, EntityPose, PoseStatus, ContextService, ContextServiceProvider, _a$4, _b$4, _c$3, _d$3, _e$3, _f$2, __decorate$6, __metadata$6, FocusService, FocusServiceProvider, _a$6, _b$6, __decorate$7, __metadata$7, VisibilityService, VisibilityServiceProvider, _a$7, _b$7, __decorate$5, __metadata$5, Subview, ViewportMode, ViewElement, ViewService, ViewServiceProvider, viewportMetaTag, argonMetaTag, style, sheet, _a$5, _b$5, _c$4, _d$4, _e$4, _f$3, __extends$2, __decorate$3, __metadata$3, DeviceStableState, DeviceFrameState, DeviceService, DeviceServiceProvider, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, _h$1, RealityViewer, __extends$3, __decorate$9, __metadata$9, EmptyRealityViewer, _a$9, _b$9, _c$6, _d$6, __extends$4, __decorate$10, __metadata$10, LiveRealityViewer, _a$10, _b$10, _c$7, __extends$5, __decorate$11, __metadata$11, HostedRealityViewer, _a$11, _b$11, __decorate$8, __metadata$8, RealityViewerFactory, RealityService, RealityServiceProvider, _a$8, _b$8, _c$5, _d$5, _e$5, _f$4, _g$2, _h$2, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __extends$6, __decorate$12, __metadata$12, VuforiaServiceProvider, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$12, _b$12, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, ArgonConfigurationManager, initReality, _a, _b, _c, _d, _e, _f, _g, ArgonSystem_1, _h, _j, _k, _l, _m, _o, _p, _q, _r;
 
     function alwaysValid() {
         return true;
@@ -20648,33 +20648,35 @@ $__System.register('1', ['2', '3', '3e', '4', '9', '10', 'a', '1f', '36', '2e', 
         }, function (_d2) {
             cesium_Source_Core_GeographicProjection_js = _d2.default;
         }, function (_15) {
-            cesium_Source_Core_HermitePolynomialApproximation_js = _15.default;
+            HeadingPitchRoll = _15.default;
         }, function (_16) {
-            JulianDate = _16.default;
+            cesium_Source_Core_HermitePolynomialApproximation_js = _16.default;
+        }, function (_17) {
+            JulianDate = _17.default;
         }, function (_d3) {
             CesiumMath = _d3.default;
-        }, function (_17) {
-            Matrix3 = _17.default;
         }, function (_18) {
-            Matrix4 = _18.default;
+            Matrix3 = _18.default;
         }, function (_19) {
-            OrientationProperty = _19.default;
+            Matrix4 = _19.default;
         }, function (_20) {
-            PerspectiveFrustum = _20.default;
+            OrientationProperty = _20.default;
         }, function (_21) {
-            PerspectiveOffCenterFrustum = _21.default;
+            PerspectiveFrustum = _21.default;
         }, function (_22) {
-            cesium_Source_DataSources_PositionProperty_js = _22.default;
+            PerspectiveOffCenterFrustum = _22.default;
         }, function (_23) {
-            cesium_Source_DataSources_Property_js = _23.default;
+            cesium_Source_DataSources_PositionProperty_js = _23.default;
         }, function (_24) {
-            Quaternion = _24.default;
+            cesium_Source_DataSources_Property_js = _24.default;
         }, function (_25) {
-            ReferenceEntity = _25.default;
+            Quaternion = _25.default;
         }, function (_26) {
-            ReferenceFrame = _26.default;
+            ReferenceEntity = _26.default;
         }, function (_27) {
-            cesium_Source_DataSources_ReferenceProperty_js = _27.default;
+            ReferenceFrame = _27.default;
+        }, function (_28) {
+            cesium_Source_DataSources_ReferenceProperty_js = _28.default;
         }, function (_a4) {
             SampledPositionProperty = _a4.default;
         }, function (_b3) {
@@ -20687,10 +20689,10 @@ $__System.register('1', ['2', '3', '3e', '4', '9', '10', 'a', '1f', '36', '2e', 
             Transforms = _a5.default;
         }, function (_b4) {
             cesium_Source_Core_Simon1994PlanetaryPositions_js = _b4.default;
-        }, function (_28) {
-            cesium_Source_Core_PolylinePipeline_js = _28.default;
         }, function (_29) {
-            CardboardUI = _29.default;
+            cesium_Source_Core_PolylinePipeline_js = _29.default;
+        }, function (_30) {
+            CardboardUI = _30.default;
         }, function (_f6) {}],
         execute: function () {
             _extends = Object.assign || function (target) {
@@ -21284,6 +21286,7 @@ $__System.register('1', ['2', '3', '3e', '4', '9', '10', 'a', '1f', '36', '2e', 
                 ExtrapolationType: cesium_Source_Core_ExtrapolationType_js,
                 FeatureDetection: cesium_Source_Core_FeatureDetection_js,
                 GeographicProjection: cesium_Source_Core_GeographicProjection_js,
+                HeadingPitchRoll: HeadingPitchRoll,
                 HermitePolynomialApproximation: cesium_Source_Core_HermitePolynomialApproximation_js,
                 JulianDate: JulianDate,
                 CesiumMath: CesiumMath,
@@ -21839,7 +21842,7 @@ $__System.register('1', ['2', '3', '3e', '4', '9', '10', 'a', '1f', '36', '2e', 
 
             _export('cancelAnimationFrame', cAF = typeof window !== 'undefined' ? window.cancelAnimationFrame.bind(window) : clearTimeout);
 
-            _export('version', version = "1.2.0-8");
+            _export('version', version = "1.2.0-9");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -24656,6 +24659,7 @@ $__System.register('1', ['2', '3', '3e', '4', '9', '10', 'a', '1f', '36', '2e', 
                     this._scratchCartesianLocalOrigin = new Cartesian3();
                     this._scratchQuaternionLocalOrigin = new Quaternion();
                     this._scratchFrustum = new PerspectiveFrustum();
+                    this._identityHPR = HeadingPitchRoll.fromQuaternion(Quaternion.IDENTITY);
                     this.contextServiceProvider.publishingReferenceFrameMap.set(deviceService.stage.id, ReferenceFrame.FIXED);
                     this.contextServiceProvider.publishingReferenceFrameMap.set(deviceService.user.id, deviceService.stage.id);
                     this.sessionService.connectEvent.addEventListener(function (session) {
@@ -24787,7 +24791,7 @@ $__System.register('1', ['2', '3', '3e', '4', '9', '10', 'a', '1f', '36', '2e', 
                         // TODO: fallback on https://cesiumjs.org/Cesium/Build/Documentation/sampleTerrain.html for height
                         var height = defined(altitude) ? altitude : 0;
                         var fixedPosition = Cartesian3.fromDegrees(longitude, latitude, height, undefined, this._scratchCartesianLocalOrigin);
-                        var enuOrientation = Transforms.headingPitchRollQuaternion(fixedPosition, 0, 0, 0, undefined, this._scratchQuaternionLocalOrigin);
+                        var enuOrientation = Transforms.headingPitchRollQuaternion(fixedPosition, this._identityHPR, undefined, this._scratchQuaternionLocalOrigin);
                         stage.position = stage.position || new ConstantPositionProperty();
                         stage.orientation = stage.orientation || new ConstantProperty();
                         stage.position.setValue(fixedPosition, ReferenceFrame.FIXED);

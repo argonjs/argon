@@ -1,5 +1,5 @@
 /// <reference types="cesium" />
-import { Entity, Cartesian3, Quaternion, JulianDate, PerspectiveFrustum } from './cesium/cesium-imports';
+import { Entity, Cartesian3, Quaternion, JulianDate, PerspectiveFrustum, HeadingPitchRoll } from './cesium/cesium-imports';
 import { ContextService, ContextServiceProvider } from './context';
 import { SessionService, SessionPort } from './session';
 import { CanvasViewport, SerializedSubviewList, SerializedEntityStateMap, ContextFrameState, GeolocationOptions } from './common';
@@ -165,7 +165,7 @@ export declare class DeviceServiceProvider {
     protected _scratchCartesianLocalOrigin: Cartesian3;
     protected _scratchQuaternionLocalOrigin: Quaternion;
     protected _scratchFrustum: PerspectiveFrustum;
-    protected _identityHPR: any;
+    protected _identityHPR: HeadingPitchRoll;
     protected configureStage(longitude?: number, latitude?: number, altitude?: number, geoHorizontalAccuracy?: number, geoVerticalAccuracy?: number): void;
     private _geolocationWatchId?;
     /**
