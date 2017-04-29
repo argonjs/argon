@@ -4765,7 +4765,7 @@ declare module 'cesium' {
         public heading:number;
         public pitch:number;
         public roll:number;
-        constructor(heading:number, pitch:number, roll:number);
+        constructor(heading?:number, pitch?:number, roll?:number);
         static clone(headingPitchRoll?:HeadingPitchRoll, result?:HeadingPitchRoll) : HeadingPitchRoll|undefined;
         static equals(left?:HeadingPitchRoll, right?:HeadingPitchRoll) : boolean;
         static equalsEpsilon(left:HeadingPitchRoll|undefined, right:HeadingPitchRoll|undefined, relativeEpsilon:number, absoluteEpsilon?:number) : boolean;

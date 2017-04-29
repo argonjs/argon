@@ -1018,7 +1018,7 @@ export class DeviceServiceProvider {
     protected _scratchQuaternionLocalOrigin = new Quaternion;
     protected _scratchFrustum = new PerspectiveFrustum();
 
-    protected _identityHPR = HeadingPitchRoll.fromQuaternion(Quaternion.IDENTITY);
+    private _identityHPR = new HeadingPitchRoll;
 
     protected configureStage(
             longitude?:number,
