@@ -118,6 +118,10 @@ export class EmptyRealityViewer extends RealityViewer {
         const internalSession = this.sessionService.createSessionPort(this.uri);
         internalSession.suppressErrorOnUnknownTopic = true;
 
+        internalSession.on['argon.configureStage.setStageGeolocation'] = ({location:Cartographic}) => {
+            console.log(`Received argon.configureStage.setStageGeolocation message with location: ${location.toString()}`)
+        }
+
         internalSession.connectEvent.addEventListener(() => {
 
             const scratchQuaternion = new Quaternion;
@@ -282,7 +286,13 @@ export class EmptyRealityViewer extends RealityViewer {
             if (this.sessionService.manager.isClosed) return;
             const messageChannel = this.sessionService.createSynchronousMessageChannel();
             session.open(messageChannel.port1, this.sessionService.configuration);
-            internalSession.open(messageChannel.port2, { role: Role.REALITY_VIEWER, uri: this.uri, title: 'Empty', version: this.sessionService.configuration.version });
+            internalSession.open(messageChannel.port2, { 
+                role: Role.REALITY_VIEWER, 
+                uri: this.uri,
+                title: 'Empty',
+                version: this.sessionService.configuration.version,
+                protocols: ['argon.configureStage@v1']
+            });
         });
     }
 }
