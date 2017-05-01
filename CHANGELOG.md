@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.2.0-14"></a>
+# [1.2.0-14](https://github.com/argonjs/argon/compare/v1.2.0-13...v1.2.0-14) (2017-05-01)
+
+
+### Features
+
+* **EmptyRealityViewer:** Added `argon.configureStage` protocol ([b78f559](https://github.com/argonjs/argon/commit/b78f559))
+
+
+
 <a name="1.2.0-13"></a>
 # [1.2.0-13](https://github.com/argonjs/argon/compare/v1.2.0-12...v1.2.0-13) (2017-05-01)
 
