@@ -1,5 +1,5 @@
 /// <reference types="cesium" />
-import { Entity, Cartesian3, Quaternion, JulianDate, PerspectiveFrustum } from './cesium/cesium-imports';
+import { Entity, Cartesian3, Quaternion, JulianDate, PerspectiveFrustum, Cartographic } from './cesium/cesium-imports';
 import { ContextService, ContextServiceProvider } from './context';
 import { SessionService, SessionPort } from './session';
 import { CanvasViewport, SerializedSubviewList, SerializedEntityStateMap, ContextFrameState, GeolocationOptions } from './common';
@@ -166,8 +166,9 @@ export declare class DeviceServiceProvider {
     protected _scratchQuaternionLocalOrigin: Quaternion;
     protected _scratchFrustum: PerspectiveFrustum;
     private _identityHPR;
-    protected configureStage(longitude?: number, latitude?: number, altitude?: number, geoHorizontalAccuracy?: number, geoVerticalAccuracy?: number): void;
+    protected configureStage(cartographic: Cartographic, geoHorizontalAccuracy?: number, geoVerticalAccuracy?: number): void;
     private _geolocationWatchId?;
+    private _scratchCartographic;
     /**
      * Overridable. Should call setGeolocation when new geolocation is available
      */

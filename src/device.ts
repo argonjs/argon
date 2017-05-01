@@ -1021,45 +1021,41 @@ export class DeviceServiceProvider {
     private _identityHPR = new HeadingPitchRoll;
 
     protected configureStage(
-            longitude?:number,
-            latitude?:number,
-            altitude?:number,
+            cartographic:Cartographic,
             geoHorizontalAccuracy?:number,
             geoVerticalAccuracy?:number) {
 
-        const stage = this.deviceService.stage;
-
-        if (defined(longitude) && defined(latitude)) {
-            // TODO: fallback on https://cesiumjs.org/Cesium/Build/Documentation/sampleTerrain.html for height
-            const height = defined(altitude) ? altitude : 0;
-
-            const fixedPosition = Cartesian3.fromDegrees(longitude, latitude, height, undefined, this._scratchCartesianLocalOrigin);
-            const enuOrientation = Transforms.headingPitchRollQuaternion(fixedPosition, this._identityHPR, undefined, this._scratchQuaternionLocalOrigin);
-
-            stage.position = stage.position || new ConstantPositionProperty();
-            stage.orientation = stage.orientation || new ConstantProperty();
-
-            (stage.position as ConstantPositionProperty).setValue(
-                fixedPosition,
-                ReferenceFrame.FIXED
-            );
-
-            (stage.orientation as ConstantProperty).setValue(
-                enuOrientation
-            );
-
-            stage['meta'] = {
-                geoHorizontalAccuracy,
-                geoVerticalAccuracy
-            };
-        } else {
-            stage.position = undefined;
-            stage.orientation = undefined;
-            stage['meta'] = undefined;
+        if (!defined(geoVerticalAccuracy) && cartographic.height === 0) {
+            updateHeightFromTerrain(cartographic).then(() => this.configureStage(cartographic, geoHorizontalAccuracy, 0));
+            return;
         }
+
+        const stage = this.deviceService.stage;
+        
+        const fixedPosition = Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, cartographic.height, undefined, this._scratchCartesianLocalOrigin);
+        const enuOrientation = Transforms.headingPitchRollQuaternion(fixedPosition, this._identityHPR, undefined, this._scratchQuaternionLocalOrigin);
+
+        stage.position = stage.position || new ConstantPositionProperty();
+        stage.orientation = stage.orientation || new ConstantProperty();
+
+        (stage.position as ConstantPositionProperty).setValue(
+            fixedPosition,
+            ReferenceFrame.FIXED
+        );
+
+        (stage.orientation as ConstantProperty).setValue(
+            enuOrientation
+        );
+
+        stage['meta'] = {
+            geoHorizontalAccuracy,
+            geoVerticalAccuracy
+        };
     }
 
     private _geolocationWatchId?:number;
+
+    private _scratchCartographic = new Cartographic;
 
     /**
      * Overridable. Should call setGeolocation when new geolocation is available 
@@ -1070,29 +1066,13 @@ export class DeviceServiceProvider {
         if (!defined(this._geolocationWatchId)) {
             this._geolocationWatchId = navigator.geolocation.watchPosition((pos) => {
 
-                if (!pos.coords.altitude) {
-                    const cartographic = new Cartographic;
-                    cartographic.latitude = pos.coords.longitude;
-                    cartographic.longitude = pos.coords.latitude;
-                    cartographic.height = 0;
-
-                    updateHeightFromTerrain(cartographic).then(()=>{    
-                        this.configureStage(
-                            cartographic.longitude, 
-                            cartographic.latitude, 
-                            cartographic.height, 
-                            (pos.coords.accuracy > 0) ? pos.coords.accuracy : undefined,
-                            undefined
-                        );
-                    });
-
-                    return;
-                }
+                const longDegrees = pos.coords.longitude;
+                const latDegrees = pos.coords.latitude;
+                const altitude = pos.coords.altitude;
+                const cartographic = Cartographic.fromDegrees(longDegrees, latDegrees, altitude||0, this._scratchCartographic);
 
                 this.configureStage(
-                    pos.coords.longitude, 
-                    pos.coords.latitude,
-                    pos.coords.altitude, 
+                    cartographic,
                     (pos.coords.accuracy > 0) ? pos.coords.accuracy : undefined,
                     pos.coords.altitudeAccuracy || undefined
                 );
