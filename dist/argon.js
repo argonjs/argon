@@ -26477,7 +26477,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _scratchArray = [];
 
-            _export('version', version = "1.2.0-12");
+            _export('version', version = "1.2.0-13");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -29295,6 +29295,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     this._scratchQuaternionLocalOrigin = new Quaternion();
                     this._scratchFrustum = new PerspectiveFrustum();
                     this._identityHPR = new HeadingPitchRoll();
+                    this._scratchCartographic = new Cartographic();
                     this.contextServiceProvider.publishingReferenceFrameMap.set(deviceService.stage.id, ReferenceFrame.FIXED);
                     this.contextServiceProvider.publishingReferenceFrameMap.set(deviceService.user.id, deviceService.stage.id);
                     this.sessionService.connectEvent.addEventListener(function (session) {
@@ -29420,26 +29421,25 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     }
                     this.publishStableState();
                 };
-                DeviceServiceProvider.prototype.configureStage = function (longitude, latitude, altitude, geoHorizontalAccuracy, geoVerticalAccuracy) {
-                    var stage = this.deviceService.stage;
-                    if (defined(longitude) && defined(latitude)) {
-                        // TODO: fallback on https://cesiumjs.org/Cesium/Build/Documentation/sampleTerrain.html for height
-                        var height = defined(altitude) ? altitude : 0;
-                        var fixedPosition = Cartesian3.fromDegrees(longitude, latitude, height, undefined, this._scratchCartesianLocalOrigin);
-                        var enuOrientation = Transforms.headingPitchRollQuaternion(fixedPosition, this._identityHPR, undefined, this._scratchQuaternionLocalOrigin);
-                        stage.position = stage.position || new ConstantPositionProperty();
-                        stage.orientation = stage.orientation || new ConstantProperty();
-                        stage.position.setValue(fixedPosition, ReferenceFrame.FIXED);
-                        stage.orientation.setValue(enuOrientation);
-                        stage['meta'] = {
-                            geoHorizontalAccuracy: geoHorizontalAccuracy,
-                            geoVerticalAccuracy: geoVerticalAccuracy
-                        };
-                    } else {
-                        stage.position = undefined;
-                        stage.orientation = undefined;
-                        stage['meta'] = undefined;
+                DeviceServiceProvider.prototype.configureStage = function (cartographic, geoHorizontalAccuracy, geoVerticalAccuracy) {
+                    var _this = this;
+                    if (!defined(geoVerticalAccuracy) && cartographic.height === 0) {
+                        updateHeightFromTerrain(cartographic).then(function () {
+                            return _this.configureStage(cartographic, geoHorizontalAccuracy, 0);
+                        });
+                        return;
                     }
+                    var stage = this.deviceService.stage;
+                    var fixedPosition = Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, cartographic.height, undefined, this._scratchCartesianLocalOrigin);
+                    var enuOrientation = Transforms.headingPitchRollQuaternion(fixedPosition, this._identityHPR, undefined, this._scratchQuaternionLocalOrigin);
+                    stage.position = stage.position || new ConstantPositionProperty();
+                    stage.orientation = stage.orientation || new ConstantProperty();
+                    stage.position.setValue(fixedPosition, ReferenceFrame.FIXED);
+                    stage.orientation.setValue(enuOrientation);
+                    stage['meta'] = {
+                        geoHorizontalAccuracy: geoHorizontalAccuracy,
+                        geoVerticalAccuracy: geoVerticalAccuracy
+                    };
                 };
                 /**
                  * Overridable. Should call setGeolocation when new geolocation is available
@@ -29449,17 +29449,11 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     if (typeof navigator == 'undefined' || !navigator.geolocation) throw new Error('Unable to start geolocation updates');
                     if (!defined(this._geolocationWatchId)) {
                         this._geolocationWatchId = navigator.geolocation.watchPosition(function (pos) {
-                            if (!pos.coords.altitude) {
-                                var cartographic_1 = new Cartographic();
-                                cartographic_1.latitude = pos.coords.longitude;
-                                cartographic_1.longitude = pos.coords.latitude;
-                                cartographic_1.height = 0;
-                                updateHeightFromTerrain(cartographic_1).then(function () {
-                                    _this.configureStage(cartographic_1.longitude, cartographic_1.latitude, cartographic_1.height, pos.coords.accuracy > 0 ? pos.coords.accuracy : undefined, undefined);
-                                });
-                                return;
-                            }
-                            _this.configureStage(pos.coords.longitude, pos.coords.latitude, pos.coords.altitude, pos.coords.accuracy > 0 ? pos.coords.accuracy : undefined, pos.coords.altitudeAccuracy || undefined);
+                            var longDegrees = pos.coords.longitude;
+                            var latDegrees = pos.coords.latitude;
+                            var altitude = pos.coords.altitude;
+                            var cartographic = Cartographic.fromDegrees(longDegrees, latDegrees, altitude || 0, _this._scratchCartographic);
+                            _this.configureStage(cartographic, pos.coords.accuracy > 0 ? pos.coords.accuracy : undefined, pos.coords.altitudeAccuracy || undefined);
                         }, function (e) {
                             console.warn('Unable to start geolocation updates: ' + e.message);
                         }, options);
