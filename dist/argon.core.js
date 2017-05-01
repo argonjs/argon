@@ -20897,7 +20897,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _scratchArray = [];
 
-            _export('version', version = "1.2.0-13");
+            _export('version', version = "1.2.0-14");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -24048,6 +24048,10 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     });
                     var internalSession = this.sessionService.createSessionPort(this.uri);
                     internalSession.suppressErrorOnUnknownTopic = true;
+                    internalSession.on['argon.configureStage.setStageGeolocation'] = function (_a) {
+                        var Cartographic$$1 = _a.location;
+                        console.log("Received argon.configureStage.setStageGeolocation message with location: " + location.toString());
+                    };
                     internalSession.connectEvent.addEventListener(function () {
                         var scratchQuaternion = new Quaternion();
                         var scratchQuaternionDragYaw = new Quaternion();
@@ -24170,7 +24174,13 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         if (_this.sessionService.manager.isClosed) return;
                         var messageChannel = _this.sessionService.createSynchronousMessageChannel();
                         session.open(messageChannel.port1, _this.sessionService.configuration);
-                        internalSession.open(messageChannel.port2, { role: Role.REALITY_VIEWER, uri: _this.uri, title: 'Empty', version: _this.sessionService.configuration.version });
+                        internalSession.open(messageChannel.port2, {
+                            role: Role.REALITY_VIEWER,
+                            uri: _this.uri,
+                            title: 'Empty',
+                            version: _this.sessionService.configuration.version,
+                            protocols: ['argon.configureStage@v1']
+                        });
                     });
                 };
                 return EmptyRealityViewer;
