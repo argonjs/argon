@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.2.0-12"></a>
+# [1.2.0-12](https://github.com/argonjs/argon/compare/v1.2.0-11...v1.2.0-12) (2017-05-01)
+
+
+### Bug Fixes
+
+* **ui-event-synthesizer:** Adapt to browser quirks ([ea4a64e](https://github.com/argonjs/argon/commit/ea4a64e))
+
+
+### Features
+
+* Added terrain provider for altitude sampling ([56915fa](https://github.com/argonjs/argon/commit/56915fa))
+
+
+
 <a name="1.2.0-11"></a>
 # [1.2.0-11](https://github.com/argonjs/argon/compare/v1.2.0-10...v1.2.0-11) (2017-04-29)
 
