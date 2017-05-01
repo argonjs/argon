@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.2.0-13"></a>
+# [1.2.0-13](https://github.com/argonjs/argon/compare/v1.2.0-12...v1.2.0-13) (2017-05-01)
+
+
+### Bug Fixes
+
+* **DeviceService:** Fixed units for geolocation updates ([dab091f](https://github.com/argonjs/argon/commit/dab091f))
+
+
+
 <a name="1.2.0-12"></a>
 # [1.2.0-12](https://github.com/argonjs/argon/compare/v1.2.0-11...v1.2.0-12) (2017-05-01)
 
