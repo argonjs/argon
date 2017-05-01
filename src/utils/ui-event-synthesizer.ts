@@ -80,10 +80,15 @@ function getEventSynthesizier() {
 
     const deserializeTouches = (touches:Touch[], target:Element|Window, uievent:TouchEvent) => {
         touches.forEach((t, i)=>{
-            touches[i] = document.createTouch(
-                uievent.view, target, t.identifier, 
-                t.clientX, t.clientY, t.screenX, t.screenY
-            );
+            if (document.createTouch) {
+                touches[i] = document.createTouch(
+                    uievent.view, target, t.identifier, 
+                    t.clientX, t.clientY, t.screenX, t.screenY
+                );
+            } else if (typeof Touch !== undefined) {
+                (<any>t).target = target;
+                touches[i] = new (<any>Touch)(t);
+            }
         })
         return touches;
     }
