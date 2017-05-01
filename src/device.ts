@@ -12,7 +12,8 @@ import {
     JulianDate,
     PerspectiveFrustum,
     defined,
-    HeadingPitchRoll
+    HeadingPitchRoll,
+    Cartographic
 } from './cesium/cesium-imports'
 
 import {autoinject} from 'aurelia-dependency-injection';
@@ -39,8 +40,7 @@ import {
     getSerializedEntityState,
     requestAnimationFrame,
     cancelAnimationFrame,
-    // getAncestorReferenceFrames,
-    // getReachableAncestorReferenceFrames
+    updateHeightFromTerrain
 } from './utils'
 
 import {
@@ -1069,10 +1069,30 @@ export class DeviceServiceProvider {
             throw new Error('Unable to start geolocation updates');
         if (!defined(this._geolocationWatchId)) {
             this._geolocationWatchId = navigator.geolocation.watchPosition((pos) => {
+
+                if (!pos.coords.altitude) {
+                    const cartographic = new Cartographic;
+                    cartographic.latitude = pos.coords.longitude;
+                    cartographic.longitude = pos.coords.latitude;
+                    cartographic.height = 0;
+
+                    updateHeightFromTerrain(cartographic).then(()=>{    
+                        this.configureStage(
+                            cartographic.longitude, 
+                            cartographic.latitude, 
+                            cartographic.height, 
+                            (pos.coords.accuracy > 0) ? pos.coords.accuracy : undefined,
+                            undefined
+                        );
+                    });
+
+                    return;
+                }
+
                 this.configureStage(
                     pos.coords.longitude, 
-                    pos.coords.latitude, 
-                    pos.coords.altitude || 0, 
+                    pos.coords.latitude,
+                    pos.coords.altitude, 
                     (pos.coords.accuracy > 0) ? pos.coords.accuracy : undefined,
                     pos.coords.altitudeAccuracy || undefined
                 );

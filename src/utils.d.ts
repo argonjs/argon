@@ -1,6 +1,6 @@
 /// <reference types="cesium" />
 import { SerializedEntityState } from './common';
-import { Entity, JulianDate, PerspectiveFrustum, PerspectiveOffCenterFrustum, Quaternion, Cartesian3, ReferenceFrame, Matrix4, Transforms } from './cesium/cesium-imports';
+import { Entity, JulianDate, PerspectiveFrustum, PerspectiveOffCenterFrustum, Quaternion, Cartesian3, ReferenceFrame, Matrix4, Transforms, Cartographic } from './cesium/cesium-imports';
 export * from './utils/command-queue';
 export * from './utils/event';
 export * from './utils/message-channel';
@@ -108,3 +108,5 @@ declare const rAF: any;
 declare const cAF: any;
 export { rAF as requestAnimationFrame, cAF as cancelAnimationFrame };
 export declare function deprecated(alternative?: string): MethodDecorator;
+export declare const defaultTerrainProvider: any;
+export declare function updateHeightFromTerrain(cartographic: Cartographic): Promise<Promise<Cartographic>>;

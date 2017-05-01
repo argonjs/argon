@@ -184,9 +184,19 @@ declare module 'cesium/Source/Core/ScreenSpaceEventType' {
     export default ScreenSpaceEventType
 }
 
+declare module 'cesium/Source/Core/TerrainProvider' {
+    import { TerrainProvider } from 'cesium';
+    export default TerrainProvider;
+}
+
 declare module 'cesium/Source/Core/Transforms' {
     import { Transforms } from 'cesium';
     export default Transforms;
+}
+
+declare module 'cesium/Source/Core/throttleRequestByServer' {
+    import { throttleRequestByServer } from 'cesium';
+    export default throttleRequestByServer;
 }
 
 declare module 'cesium/Source/Core/Simon1994PlanetaryPositions' {
@@ -197,6 +207,36 @@ declare module 'cesium/Source/Core/Simon1994PlanetaryPositions' {
 declare module 'cesium/Source/Core/PolylinePipeline' {
     import { PolylinePipeline } from 'cesium';
     export default PolylinePipeline;
+}
+
+declare module 'cesium/Source/Core/loadImage' {
+    import { loadImage } from 'cesium';
+    export default loadImage;
+}
+
+declare module 'cesium/Source/Core/HeightmapTerrainData' {
+    import { HeightmapTerrainData } from 'cesium';
+    export default HeightmapTerrainData;
+}
+
+declare module 'cesium/Source/Core/getImagePixels' {
+    import { getImagePixels } from 'cesium';
+    export default getImagePixels;
+}
+
+declare module 'cesium/Source/Core/WebMercatorTilingScheme' {
+    import { WebMercatorTilingScheme } from 'cesium';
+    export default WebMercatorTilingScheme;
+}
+
+declare module 'cesium/Source/Core/Credit' {
+    import { Credit } from 'cesium';
+    export default Credit;
+}
+
+declare module 'cesium/Source/Core/sampleTerrain' {
+    import { sampleTerrain } from 'cesium';
+    export default sampleTerrain;
 }
 
 declare module 'cesium' {
@@ -4369,7 +4409,7 @@ declare module 'cesium' {
 
     function getFilenameFromUri(uri: string): string;
 
-    function getImagePixels(image: HTMLImageElement): number[];
+    function getImagePixels(image: HTMLImageElement, width:number, height:number): Uint8Array;
 
     function isArray(value: any): boolean;
 
