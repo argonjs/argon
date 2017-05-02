@@ -20904,7 +20904,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _scratchArray = [];
 
-            _export('version', version = "1.2.0-14");
+            _export('version', version = "1.2.0-15");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -23341,6 +23341,9 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     var contextService = this.contextService;
                     if (entities) for (var id in entities) {
                         contextService.updateEntityFromSerializedState(id, entities[id]);
+                    }
+                    if (this._parentState && this._parentState.isPresentingHMD !== stableState.isPresentingHMD || this._parentState && this._parentState.isPresentingRealityHMD !== stableState.isPresentingRealityHMD) {
+                        this.presentHMDChangeEvent.raiseEvent(undefined);
                     }
                     this._parentState = stableState;
                 };

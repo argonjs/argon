@@ -67,7 +67,7 @@ export declare class DeviceService {
     readonly geolocationOptions: GeolocationOptions | undefined;
     defaultUserHeight: number;
     readonly suggestedUserHeight: number;
-    readonly strict: boolean | (() => boolean | undefined);
+    readonly strict: boolean;
     private _getEntityPositionInReferenceFrame;
     private _getEntityOrientationInReferenceFrame;
     protected _scratchCartesian: Cartesian3;
@@ -168,6 +168,7 @@ export declare class DeviceServiceProvider {
     constructor(sessionService: SessionService, deviceService: DeviceService, contextService: ContextService, viewService: ViewService, contextServiceProvider: ContextServiceProvider);
     protected handleRequestPresentHMD(session: SessionPort): Promise<void>;
     protected handleExitPresentHMD(session: SessionPort): Promise<void>;
+    private _needsPublish;
     private _publishTime;
     private _stableState;
     publishStableState(): void;

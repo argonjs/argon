@@ -153,6 +153,7 @@ export interface ReadonlySerializedSubview {
 }
 export declare namespace SerializedSubview {
     function clone(subview: SerializedSubview, result?: SerializedSubview): SerializedSubview;
+    function equals(left?: SerializedSubview, right?: SerializedSubview): boolean | undefined;
 }
 export interface SerializedDeviceState {
     currentFov: number;
