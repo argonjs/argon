@@ -23281,7 +23281,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 });
                 Object.defineProperty(DeviceService.prototype, "strict", {
                     get: function () {
-                        return !!(this._parentState && this._parentState.strict) || this._hasPolyfillWebVRDisplay() || false;
+                        return !!(this._parentState && this._parentState.strict) || this.isPresentingHMD && !this._hasPolyfillWebVRDisplay() || false;
                     },
                     enumerable: true,
                     configurable: true

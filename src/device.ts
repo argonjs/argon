@@ -168,7 +168,7 @@ export class DeviceService {
 
     public get strict() : boolean {
         return !!(this._parentState && this._parentState.strict) ||
-            this._hasPolyfillWebVRDisplay() || false;
+            this.isPresentingHMD && !this._hasPolyfillWebVRDisplay() || false;
     }
 
     private _getEntityPositionInReferenceFrame = getEntityPositionInReferenceFrame;
