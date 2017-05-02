@@ -23738,14 +23738,12 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                                         previousPresentationMode_1 = viewService.viewportMode;
                                         viewService.desiredViewportMode = ViewportMode.IMMERSIVE;
                                     }
-                                    _this.requestPresentHMD(); // seems redundant, but makes sure the manager knows
                                 } else {
                                     if (currentCanvas_1 && display.displayName.match(/polyfill/g)) {
                                         currentCanvas_1.classList.remove('argon-interactive'); // for now, only use webvr when not in Argon
                                         currentCanvas_1 = undefined;
                                         viewService.desiredViewportMode = previousPresentationMode_1;
                                     }
-                                    _this.exitPresentHMD(); // seems redundant, but makes sure the manager knows
                                 }
                             }
                         };

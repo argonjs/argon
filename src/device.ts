@@ -911,7 +911,6 @@ export class DeviceService {
                             previousPresentationMode = viewService.viewportMode;
                             viewService.desiredViewportMode = ViewportMode.IMMERSIVE;
                         }
-                        this.requestPresentHMD(); // seems redundant, but makes sure the manager knows
                     } else {
                         if (currentCanvas && display.displayName.match(/polyfill/g)) {
                             
@@ -919,7 +918,6 @@ export class DeviceService {
                             currentCanvas = undefined;
                             viewService.desiredViewportMode = previousPresentationMode;
                         }
-                        this.exitPresentHMD(); // seems redundant, but makes sure the manager knows
                     }
                 }
             }
