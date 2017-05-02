@@ -45,6 +45,8 @@ const emptyObject = Object.freeze({})
  */
 export class SessionPort {
 
+    public id = createGuid();
+
     /**
      * An event which fires when a connection has been 
      * established to the other [[SessionPort]].

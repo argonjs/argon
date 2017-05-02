@@ -27,6 +27,7 @@ export interface ErrorMessage {
  */
 export declare class SessionPort {
     uri: string;
+    id: string;
     /**
      * An event which fires when a connection has been
      * established to the other [[SessionPort]].
