@@ -28736,6 +28736,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         _this.requestAnimationFrame(_this._updateFrameState);
                         var state = _this.frameState;
                         var time = JulianDate.now(state.time);
+                        state['strict'] = _this.strict; // backwards-compat
                         _this.onUpdateFrameState();
                         var contextViewId = _this.contextService.view.id;
                         for (var i = 0; i < state.subviews.length; i++) {
@@ -29127,6 +29128,13 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                  * @param entityOptions
                  */
                 DeviceService.prototype.createContextFrameState = function (time, viewport, subviewList, options) {
+                    var overrideUser = options && options.overrideUser;
+                    if (this.strict) {
+                        if (overrideUser) {
+                            console.warn('The `overrideUser` flag is set, but the user pose can not be overridden in strict mode');
+                            overrideUser = false;
+                        }
+                    }
                     // TODO: In certain cases (webvr?), we may want to disallow the reality from overriding the user entity 
                     for (var _i = 0, subviewList_1 = subviewList; _i < subviewList_1.length; _i++) {
                         var s = subviewList_1[_i];
@@ -29147,7 +29155,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     }
                     // user
                     var user = contextService.user;
-                    if (options && options.overrideUser) {
+                    if (overrideUser) {
                         frameState.entities[user.id] = getEntityState(user, time, stage);
                     } else {
                         delete frameState.entities[user.id];

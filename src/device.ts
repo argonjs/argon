@@ -298,6 +298,7 @@ export class DeviceService {
 
         const state = this.frameState;
         const time = JulianDate.now(state.time);
+        state['strict'] = this.strict; // backwards-compat
 
         this.onUpdateFrameState();
 
@@ -656,6 +657,14 @@ export class DeviceService {
         options?: {overrideStage?:boolean, overrideUser?:boolean, overrideView?:boolean, floorOffset?:number}
     ) : ContextFrameState {
 
+        let overrideUser = options && options.overrideUser;
+        if (this.strict) {
+            if (overrideUser) {
+                console.warn('The `overrideUser` flag is set, but the user pose can not be overridden in strict mode');
+                overrideUser = false;
+            }
+        }
+
         // TODO: In certain cases (webvr?), we may want to disallow the reality from overriding the user entity 
 
         for (const s of subviewList) {
@@ -681,7 +690,7 @@ export class DeviceService {
 
         // user
         const user = contextService.user;
-        if (options && options.overrideUser) {
+        if (overrideUser) {
             frameState.entities[user.id] = getEntityState(user, time, stage);
         } else {
             delete frameState.entities[user.id];
@@ -906,14 +915,12 @@ export class DeviceService {
                         this._vrDisplay = display;
                         if (display.displayName.match(/polyfill/g)) {
                             currentCanvas = display.getLayers()[0].source;
-                            if (currentCanvas) 
-                            currentCanvas.classList.add('argon-interactive'); // for now, only use webvr when not in Argon
+                            if (currentCanvas) currentCanvas.classList.add('argon-interactive'); // for now, only use webvr when not in Argon
                             previousPresentationMode = viewService.viewportMode;
                             viewService.desiredViewportMode = ViewportMode.IMMERSIVE;
                         }
                     } else {
                         if (currentCanvas && display.displayName.match(/polyfill/g)) {
-                            
                             currentCanvas.classList.remove('argon-interactive'); // for now, only use webvr when not in Argon
                             currentCanvas = undefined;
                             viewService.desiredViewportMode = previousPresentationMode;
