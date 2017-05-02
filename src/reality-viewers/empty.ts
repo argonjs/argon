@@ -5,6 +5,8 @@ import {
     CameraEventType,
     ConstantPositionProperty,
     ConstantProperty,
+    ReferenceFrame,
+    Cartographic,
     Cartesian2,
     Cartesian3,
     Quaternion,
@@ -15,7 +17,7 @@ import {
 } from '../cesium/cesium-imports'
 import { Role, SerializedSubviewList } from '../common'
 import { SessionService } from '../session'
-import { decomposePerspectiveProjectionMatrix, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame } from '../utils'
+import { decomposePerspectiveProjectionMatrix, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame, eastUpSouthToFixedFrame } from '../utils'
 import { ContextService, PoseStatus } from '../context'
 import { DeviceService } from '../device'
 import { ViewService } from '../view'
@@ -109,6 +111,9 @@ export class EmptyRealityViewer extends RealityViewer {
         }
     }
 
+    private _scratchMatrix3 = new Matrix3;
+    private _scratchMatrix4 = new Matrix4;
+
     public load(): void {
         const session = this.sessionService.addManagedSessionPort(this.uri);
         session.connectEvent.addEventListener(()=>{
@@ -118,8 +123,20 @@ export class EmptyRealityViewer extends RealityViewer {
         const internalSession = this.sessionService.createSessionPort(this.uri);
         internalSession.suppressErrorOnUnknownTopic = true;
 
-        internalSession.on['argon.configureStage.setStageGeolocation'] = ({location:Cartographic}) => {
-            console.log(`Received argon.configureStage.setStageGeolocation message with location: ${location.toString()}`)
+        let customStagePosition:Cartesian3|undefined;
+        let customStageOrientation:Quaternion|undefined;
+
+        internalSession.on['argon.configureStage.setStageGeolocation'] = ({geolocation}:{geolocation:Cartographic}) => {
+            customStagePosition = Cartesian3.fromRadians(geolocation.longitude, geolocation.latitude, geolocation.height, undefined, customStagePosition);
+
+            const transformMatrix = eastUpSouthToFixedFrame(customStagePosition, undefined, this._scratchMatrix4);
+            const rotationMatrix = Matrix4.getRotation(transformMatrix, this._scratchMatrix3);
+            customStageOrientation = Quaternion.fromRotationMatrix(rotationMatrix, customStageOrientation);
+        }
+
+        internalSession.on['argon.configureStage.resetStageGeolocation'] = () => {
+            customStagePosition = undefined;
+            customStageOrientation = undefined;
         }
 
         internalSession.connectEvent.addEventListener(() => {
@@ -263,16 +280,27 @@ export class EmptyRealityViewer extends RealityViewer {
                     (contextUser.orientation as ConstantProperty).setValue(orientation);
                 }
 
-                aggregator && aggregator.reset();
+                const overrideStage = customStagePosition && customStageOrientation ? true : false;
+
+                if (overrideStage) {
+                    const contextStage = this.contextService.stage;
+                    (contextStage.position as ConstantPositionProperty).setValue(customStagePosition, ReferenceFrame.FIXED);
+                    (contextStage.orientation as ConstantProperty).setValue(customStageOrientation);
+                }
 
                 const contextFrameState = this.deviceService.createContextFrameState(
                     time,
                     frameState.viewport,
                     subviews,
-                    {overrideUser}
+                    {
+                        overrideUser,
+                        overrideStage
+                    }
                 );
 
                 internalSession.send('ar.reality.frameState', contextFrameState);
+
+                aggregator && aggregator.reset();
             });
 
             internalSession.closeEvent.addEventListener(()=>{
