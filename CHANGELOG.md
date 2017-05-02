@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.2.0-15"></a>
+# [1.2.0-15](https://github.com/argonjs/argon/compare/v1.2.0-14...v1.2.0-15) (2017-05-02)
+
+
+### Bug Fixes
+
+* **DeviceService:** Disable `strict` when using webvr polyfill ([d87fc0f](https://github.com/argonjs/argon/commit/d87fc0f))
+* **DeviceService:** enforce strict mode ([5a7cfa0](https://github.com/argonjs/argon/commit/5a7cfa0))
+* **DeviceService:** Prevent the manager from publishing stable state to itself ([8931d18](https://github.com/argonjs/argon/commit/8931d18))
+* **DeviceServiceProvider:** Publish stable state when needed ([099085a](https://github.com/argonjs/argon/commit/099085a))
+
+
+### Features
+
+* **RealityService:** Added `setStageGeolocation` and `resetStageGeolocation` ([455b24b](https://github.com/argonjs/argon/commit/455b24b))
+* **SessionPort:** Added `id` property ([457b86f](https://github.com/argonjs/argon/commit/457b86f))
+
+
+
 <a name="1.2.0-14"></a>
 # [1.2.0-14](https://github.com/argonjs/argon/compare/v1.2.0-13...v1.2.0-14) (2017-05-01)
 
