@@ -286,6 +286,11 @@ export class DeviceService {
             contextService.updateEntityFromSerializedState(id, entities[id]);
         }
 
+        if (this._parentState && this._parentState.isPresentingHMD !== stableState.isPresentingHMD ||
+            this._parentState && this._parentState.isPresentingRealityHMD !== stableState.isPresentingRealityHMD) {
+            this.presentHMDChangeEvent.raiseEvent(undefined);
+        }
+
         this._parentState = stableState;
     }
 
