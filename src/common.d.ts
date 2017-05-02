@@ -75,7 +75,7 @@ export declare class Viewport {
     y: number;
     width: number;
     height: number;
-    static clone(viewport: Viewport, result?: Viewport): Viewport;
+    static clone(viewport?: Viewport, result?: Viewport): Viewport | undefined;
     static equals(viewportA?: Viewport, viewportB?: Viewport): boolean | undefined;
 }
 /**
@@ -85,7 +85,7 @@ export declare class Viewport {
 export declare class CanvasViewport extends Viewport {
     renderWidthScaleFactor: number;
     renderHeightScaleFactor: number;
-    static clone(viewport: CanvasViewport, result?: CanvasViewport): CanvasViewport;
+    static clone(viewport?: CanvasViewport, result?: CanvasViewport): CanvasViewport | undefined;
     static equals(viewportA?: CanvasViewport, viewportB?: CanvasViewport): boolean | undefined;
 }
 /**
@@ -166,7 +166,7 @@ export interface SerializedDeviceState {
 }
 export declare class SerializedSubviewList extends Array<SerializedSubview> {
     constructor();
-    static clone(subviews: SerializedSubviewList, result?: SerializedSubviewList): SerializedSubviewList;
+    static clone(subviews?: SerializedSubviewList, result?: SerializedSubviewList): SerializedSubviewList | undefined;
 }
 /**
  * Describes the pose of a reality view and how it is able to render

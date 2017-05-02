@@ -357,7 +357,7 @@ export class ViewService {
         if (!this._currentViewportJSON || this._currentViewportJSON !== viewportJSON) {
             this._currentViewportJSON = viewportJSON;
 
-            this._viewport = Viewport.clone(viewport, this._viewport);
+            this._viewport = Viewport.clone(viewport, this._viewport)!;
 
             if (this.element && 
                 !this.sessionService.isRealityManager && 

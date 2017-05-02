@@ -175,10 +175,10 @@ export class EmptyRealityViewer extends RealityViewer {
                     return;
                 }
 
-                if (frameState.geolocationDesired) {
+                if (this.deviceService.geolocationDesired) {
                     if (!subscribedGeolocation) {
                         subscribedGeolocation = true;
-                        this.deviceService.subscribeGeolocation(frameState.geolocationOptions, internalSession);
+                        this.deviceService.subscribeGeolocation(this.deviceService.geolocationOptions, internalSession);
                     }
                 } else {
                     if (subscribedGeolocation) {
@@ -190,7 +190,7 @@ export class EmptyRealityViewer extends RealityViewer {
                 SerializedSubviewList.clone(frameState.subviews, subviews);
                 
                 // provide fov controls
-                if (!frameState.strict) {                    
+                if (!this.deviceService.strict) {                    
                     decomposePerspectiveProjectionMatrix(subviews[0].projectionMatrix, scratchFrustum);
                     scratchFrustum.fov = this.viewService.subviews[0] && this.viewService.subviews[0].frustum.fov || CesiumMath.PI_OVER_THREE;
 

@@ -12,13 +12,13 @@ export declare class DeviceStableState {
     entities: SerializedEntityStateMap;
     suggestedUserHeight: number;
     geolocationDesired: boolean;
-    geolocationOptions: GeolocationOptions;
+    geolocationOptions?: GeolocationOptions;
     isPresentingHMD: boolean;
+    isPresentingRealityHMD: boolean;
     strict: boolean;
 }
-export declare class DeviceFrameState extends DeviceStableState {
+export declare class DeviceFrameState {
     private _scratchFrustum;
-    screenOrientationDegrees: number;
     time: JulianDate;
     viewport: CanvasViewport;
     subviews: SerializedSubviewList;
@@ -37,10 +37,6 @@ export declare class DeviceService {
      */
     autoSubmitFrame: boolean;
     /**
-     * Device state which changes infrequently. Used internally.
-     */
-    _stableState: DeviceStableState;
-    /**
      * Device state for the current frame. This
      * is not updated unless the view is visible.
      */
@@ -49,6 +45,11 @@ export declare class DeviceService {
      * An event that fires every time the device frameState is updated.
      */
     frameStateEvent: Event<DeviceFrameState>;
+    /**
+     * An even that fires when the view starts or stops presenting to an HMD
+     */
+    presentHMDChangeEvent: Event<void>;
+    screenOrientationChangeEvent: Event<void>;
     /**
      * An entity representing the physical floor-level plane below the user,
      * where +X is east, +Y is North, and +Z is up (if geolocation is known)
@@ -62,6 +63,11 @@ export declare class DeviceService {
     readonly geoHeadingAccuracy: number | undefined;
     readonly geoHorizontalAccuracy: number | undefined;
     readonly geoVerticalAccuracy: number | undefined;
+    readonly geolocationDesired: boolean;
+    readonly geolocationOptions: GeolocationOptions | undefined;
+    defaultUserHeight: number;
+    readonly suggestedUserHeight: number;
+    readonly strict: boolean | (() => boolean | undefined);
     private _getEntityPositionInReferenceFrame;
     private _getEntityOrientationInReferenceFrame;
     protected _scratchCartesian: Cartesian3;
@@ -71,10 +77,12 @@ export declare class DeviceService {
     private _vrDisplay;
     constructor(sessionService: SessionService, contextService: ContextService, viewService: ViewService, visibilityService: VisibilityService);
     _processContextFrameState(state: ContextFrameState): void;
-    private _updateStableState(stableState);
+    protected _parentState: DeviceStableState | undefined;
+    private _processStableState(stableState);
     private _updatingFrameState;
     private _updateFrameState;
-    getScreenOrientationDegrees(): number;
+    readonly screenOrientationDegrees: number;
+    protected getScreenOrientationDegrees(): () => any;
     /**
      * Request an animation frame callback for the current view.
      */
@@ -92,6 +100,7 @@ export declare class DeviceService {
      */
     private _stopUpdates();
     protected onUpdateFrameState(): void;
+    private _updateViewport();
     private _updateDefault();
     private _vrFrameData?;
     private _scratchQuaternion;
@@ -108,9 +117,9 @@ export declare class DeviceService {
     private _updateForWebVR();
     private _scratchFrameState;
     private _getSerializedEntityState;
-    _hasWebVRDisplay(): boolean;
-    _webvrRequestPresentHMD(): Promise<void>;
-    _webvrExitPresentHMD(): Promise<void>;
+    private _hasPolyfillWebVRDisplay();
+    protected onRequestPresentHMD(): Promise<void>;
+    protected onExitPresentHMD(): Promise<void>;
     /**
      * Generate a frame state for the ContextService.
      *
@@ -129,7 +138,14 @@ export declare class DeviceService {
     getSubviewEntity(index: number): Entity;
     subscribeGeolocation(options?: GeolocationOptions, session?: SessionPort): Promise<void>;
     unsubscribeGeolocation(session?: SessionPort): void;
+    /**
+     * Is the view presenting to an HMD
+     */
     readonly isPresentingHMD: boolean;
+    /**
+     * Is the current reality presenting to an HMD
+     */
+    readonly isPresentingRealityHMD: boolean;
     requestPresentHMD(): Promise<void>;
     exitPresentHMD(): Promise<void>;
     private _deviceOrientationListener;
@@ -152,9 +168,9 @@ export declare class DeviceServiceProvider {
     constructor(sessionService: SessionService, deviceService: DeviceService, contextService: ContextService, viewService: ViewService, contextServiceProvider: ContextServiceProvider);
     protected handleRequestPresentHMD(session: SessionPort): Promise<void>;
     protected handleExitPresentHMD(session: SessionPort): Promise<void>;
+    private _publishTime;
+    private _stableState;
     publishStableState(): void;
-    defaultUserHeight: number;
-    readonly suggestedUserHeight: number;
     protected onUpdateStableState(stableState: DeviceStableState): void;
     private _currentGeolocationOptions?;
     private _targetGeolocationOptions;

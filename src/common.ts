@@ -95,7 +95,8 @@ export class Viewport {
     width: number = 0;
     height: number = 0;
 
-    static clone(viewport:Viewport, result:Viewport=<any>{}) {
+    static clone(viewport?:Viewport, result:Viewport=new Viewport) {
+        if (!viewport) return undefined;
         result.x = viewport.x;
         result.y = viewport.y;
         result.width = viewport.width;
@@ -120,7 +121,8 @@ export class CanvasViewport extends Viewport {
     renderWidthScaleFactor: number = 1;
     renderHeightScaleFactor: number = 1;
 
-    static clone(viewport:CanvasViewport, result:CanvasViewport=<any>{}) {
+    static clone(viewport?:CanvasViewport, result:CanvasViewport=<any>new CanvasViewport) {
+        if (!viewport) return undefined;
         Viewport.clone(viewport, result);
         result.renderWidthScaleFactor = viewport.renderWidthScaleFactor;
         result.renderHeightScaleFactor = viewport.renderHeightScaleFactor;
@@ -288,7 +290,8 @@ export class SerializedSubviewList extends Array<SerializedSubview> {
     constructor() {
         super();
     }
-    static clone(subviews:SerializedSubviewList, result?:SerializedSubviewList) {
+    static clone(subviews?:SerializedSubviewList, result?:SerializedSubviewList) {
+        if (!subviews) return undefined;
         result = result || new SerializedSubviewList;
         result.length = subviews.length;
         for (let i=0; i < subviews.length; i++) {
