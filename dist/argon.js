@@ -29424,7 +29424,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     JulianDate.now(this._publishTime);
                     for (var id in this._subscribers) {
                         var session = this._subscribers[id];
-                        if (session.version[0] > 0) {
+                        if (session.version[0] > 0 && session !== this.sessionService.manager) {
                             for (var k in stableState.entities) {
                                 delete stableState.entities[k];
                             }

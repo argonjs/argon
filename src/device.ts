@@ -30,7 +30,8 @@ import {
     SerializedEntityStateMap,
     SubviewType,
     ContextFrameState,
-    GeolocationOptions
+    GeolocationOptions,
+    Role
 } from './common'
 
 import {
@@ -1034,7 +1035,7 @@ export class DeviceServiceProvider {
         JulianDate.now(this._publishTime);
         for (const id in this._subscribers) {
             const session = this._subscribers[id];
-            if (session.version[0] > 0) {
+            if (session.version[0] > 0 && session !== this.sessionService.manager) {
                 for (const k in stableState.entities) {delete stableState.entities[k]};
                 this.contextServiceProvider.fillEntityStateMapForSession(session, this._publishTime, stableState.entities);
                 session.send('ar.device.state', stableState);
