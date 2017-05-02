@@ -31,7 +31,7 @@ import {
     SubviewType,
     ContextFrameState,
     GeolocationOptions,
-    Role
+    SerializedSubview
 } from './common'
 
 import {
@@ -1001,7 +1001,21 @@ export class DeviceServiceProvider {
             this._needsPublish = true;
         });
 
-        this.deviceService.frameStateEvent.addEventListener(()=>{
+        this.deviceService.frameStateEvent.addEventListener((state)=>{
+            if (CanvasViewport.equals(this._stableState.viewport, state.viewport) === false) 
+                this._needsPublish = true;
+            
+            if (this._stableState.subviews && this._stableState.subviews.length === state.subviews.length) {
+                for (let i=0; i < state.subviews.length; i++) {
+                    if (!SerializedSubview.equals(state.subviews[i], this._stableState.subviews[i])) {
+                        this._needsPublish = true;
+                        break;
+                    }
+                }
+            } else {
+                this._needsPublish = true;
+            }
+
             if (this._needsPublish) this.publishStableState();
         });
     }

@@ -238,6 +238,12 @@ export namespace SerializedSubview {
         result.pose = subview.pose ? SerializedEntityState.clone(subview.pose, result.pose) : undefined;
         return result;
     }
+    export function equals(left?:SerializedSubview, right?:SerializedSubview) {
+        return left && right && 
+            left.type === right.type &&
+            Viewport.equals(left.viewport, right.viewport) && 
+            Matrix4.equals(left.projectionMatrix, right.projectionMatrix);
+    }
 }
 
 export interface SerializedDeviceState {
