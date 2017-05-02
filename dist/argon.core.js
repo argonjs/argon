@@ -20400,6 +20400,10 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     return result;
                 }
                 SerializedSubview.clone = clone;
+                function equals(left, right) {
+                    return left && right && left.type === right.type && Viewport.equals(left.viewport, right.viewport) && Matrix4.equals(left.projectionMatrix, right.projectionMatrix);
+                }
+                SerializedSubview.equals = equals;
             })(SerializedSubview || _export('SerializedSubview', SerializedSubview = {}));
             // export interface PhysicalViewState {
             //     time: JulianDate,
@@ -23820,7 +23824,18 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     this.deviceService.screenOrientationChangeEvent.addEventListener(function () {
                         _this._needsPublish = true;
                     });
-                    this.deviceService.frameStateEvent.addEventListener(function () {
+                    this.deviceService.frameStateEvent.addEventListener(function (state) {
+                        if (CanvasViewport.equals(_this._stableState.viewport, state.viewport) === false) _this._needsPublish = true;
+                        if (_this._stableState.subviews && _this._stableState.subviews.length === state.subviews.length) {
+                            for (var i = 0; i < state.subviews.length; i++) {
+                                if (!SerializedSubview.equals(state.subviews[i], _this._stableState.subviews[i])) {
+                                    _this._needsPublish = true;
+                                    break;
+                                }
+                            }
+                        } else {
+                            _this._needsPublish = true;
+                        }
                         if (_this._needsPublish) _this.publishStableState();
                     });
                 }
