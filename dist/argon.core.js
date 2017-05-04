@@ -20904,7 +20904,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _scratchArray = [];
 
-            _export('version', version = "1.2.0-15");
+            _export('version', version = "1.2.0-16");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -23144,6 +23144,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         position: undefined,
                         orientation: undefined
                     }));
+                    this._geolocationDesired = false;
                     this.defaultUserHeight = AVERAGE_EYE_HEIGHT;
                     this._getEntityPositionInReferenceFrame = getEntityPositionInReferenceFrame;
                     this._getEntityOrientationInReferenceFrame = getEntityOrientationInReferenceFrame;
@@ -23261,14 +23262,14 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 });
                 Object.defineProperty(DeviceService.prototype, "geolocationDesired", {
                     get: function () {
-                        return this._parentState && this._parentState.geolocationDesired || false;
+                        return this._parentState ? this._parentState.geolocationDesired : this._geolocationDesired;
                     },
                     enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(DeviceService.prototype, "geolocationOptions", {
                     get: function () {
-                        return this._parentState && this._parentState.geolocationOptions;
+                        return this._parentState ? this._parentState.geolocationOptions : this._geolocationOptions;
                     },
                     enumerable: true,
                     configurable: true
@@ -23856,8 +23857,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 };
                 DeviceServiceProvider.prototype.publishStableState = function () {
                     var stableState = this._stableState;
-                    stableState.geolocationDesired = this.contextServiceProvider.geolocationDesired;
-                    stableState.geolocationOptions = stableState.geolocationOptions || {};
+                    this.deviceService._geolocationDesired = stableState.geolocationDesired = this.contextServiceProvider.geolocationDesired;
+                    this.deviceService._geolocationOptions = stableState.geolocationOptions = stableState.geolocationOptions || {};
                     stableState.geolocationOptions.enableHighAccuracy = this.contextServiceProvider.desiredGeolocationOptions.enableHighAccuracy;
                     stableState.suggestedUserHeight = this.deviceService.suggestedUserHeight;
                     stableState.strict = this.deviceService.strict;

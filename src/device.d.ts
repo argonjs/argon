@@ -63,7 +63,9 @@ export declare class DeviceService {
     readonly geoHeadingAccuracy: number | undefined;
     readonly geoHorizontalAccuracy: number | undefined;
     readonly geoVerticalAccuracy: number | undefined;
+    _geolocationDesired: boolean;
     readonly geolocationDesired: boolean;
+    _geolocationOptions: GeolocationOptions | undefined;
     readonly geolocationOptions: GeolocationOptions | undefined;
     defaultUserHeight: number;
     readonly suggestedUserHeight: number;
