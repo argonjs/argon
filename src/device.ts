@@ -151,12 +151,14 @@ export class DeviceService {
         return this.stage['meta'] ? this.stage['meta'].geoVerticalAccuracy : undefined;
     }
 
+    public _geolocationDesired = false;
     public get geolocationDesired() {
-        return this._parentState && this._parentState.geolocationDesired || false;
+        return this._parentState ? this._parentState.geolocationDesired : this._geolocationDesired;
     }
 
+    public _geolocationOptions:GeolocationOptions|undefined; 
     public get geolocationOptions() {
-        return this._parentState && this._parentState.geolocationOptions;
+        return this._parentState ? this._parentState.geolocationOptions : this._geolocationOptions;
     }
 
     public defaultUserHeight = AVERAGE_EYE_HEIGHT;
@@ -1045,8 +1047,8 @@ export class DeviceServiceProvider {
     public publishStableState() {
         const stableState = this._stableState;
         
-        stableState.geolocationDesired = this.contextServiceProvider.geolocationDesired;
-        stableState.geolocationOptions = stableState.geolocationOptions || {};
+        this.deviceService._geolocationDesired = stableState.geolocationDesired = this.contextServiceProvider.geolocationDesired;
+        this.deviceService._geolocationOptions = stableState.geolocationOptions = stableState.geolocationOptions || {};
         stableState.geolocationOptions.enableHighAccuracy = this.contextServiceProvider.desiredGeolocationOptions.enableHighAccuracy;
         stableState.suggestedUserHeight = this.deviceService.suggestedUserHeight;
         stableState.strict = this.deviceService.strict;
