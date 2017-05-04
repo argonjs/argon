@@ -316,7 +316,12 @@ export class DeviceService {
             if (s.pose) s.pose.r = contextViewId;
         }
 
-        this.frameStateEvent.raiseEvent(state);
+        try {
+            this.frameStateEvent.raiseEvent(state);
+        } catch(e) {
+            this.sessionService.manager.sendError(e);
+            this.sessionService.errorEvent.raiseEvent(e);
+        }
 
         const vrDisplay = this._vrDisplay;
         if (this.autoSubmitFrame && vrDisplay && vrDisplay.isPresenting) {
