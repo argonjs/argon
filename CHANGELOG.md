@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.2.0-16"></a>
+# [1.2.0-16](https://github.com/argonjs/argon/compare/v1.2.0-15...v1.2.0-16) (2017-05-04)
+
+
+### Bug Fixes
+
+* **device:** Fix geolocationDesired / geolocationOptions values in manager ([6b8ba66](https://github.com/argonjs/argon/commit/6b8ba66))
+
+
+
 <a name="1.2.0-15"></a>
 # [1.2.0-15](https://github.com/argonjs/argon/compare/v1.2.0-14...v1.2.0-15) (2017-05-02)
 
