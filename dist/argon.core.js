@@ -20904,7 +20904,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _scratchArray = [];
 
-            _export('version', version = "1.2.0-16");
+            _export('version', version = "1.2.0-17");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -23165,7 +23165,12 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                             s.pose = _this._getSerializedEntityState(_this.getSubviewEntity(i), time, _this.user);
                             if (s.pose) s.pose.r = contextViewId;
                         }
-                        _this.frameStateEvent.raiseEvent(state);
+                        try {
+                            _this.frameStateEvent.raiseEvent(state);
+                        } catch (e) {
+                            _this.sessionService.manager.sendError(e);
+                            _this.sessionService.errorEvent.raiseEvent(e);
+                        }
                         var vrDisplay = _this._vrDisplay;
                         if (_this.autoSubmitFrame && vrDisplay && vrDisplay.isPresenting) {
                             vrDisplay.submitFrame();
