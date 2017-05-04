@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.2.0-17"></a>
+# [1.2.0-17](https://github.com/argonjs/argon/compare/v1.2.0-16...v1.2.0-17) (2017-05-04)
+
+
+### Bug Fixes
+
+* **DeviceService:** Catch errors in frameStateEvent ([cdd3fc7](https://github.com/argonjs/argon/commit/cdd3fc7))
+
+
+
 <a name="1.2.0-16"></a>
 # [1.2.0-16](https://github.com/argonjs/argon/compare/v1.2.0-15...v1.2.0-16) (2017-05-04)
 
