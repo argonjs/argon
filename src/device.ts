@@ -995,6 +995,8 @@ export class DeviceServiceProvider {
             session.on['ar.device.exitPresentHMD'] = () => {
                 return this.handleExitPresentHMD(session);
             }
+
+            this._needsPublish = true;
         });
 
         this.contextServiceProvider.subscribersChangeEvent.addEventListener(({id})=>{
@@ -1010,27 +1012,27 @@ export class DeviceServiceProvider {
             this._needsPublish = true;
         });
 
-        this.deviceService.presentHMDChangeEvent.addEventListener(()=>{
-            this._needsPublish = true;
-        });
-
         this.deviceService.screenOrientationChangeEvent.addEventListener(()=>{
             this._needsPublish = true;
         });
 
         this.deviceService.frameStateEvent.addEventListener((state)=>{
-            if (CanvasViewport.equals(this._stableState.viewport, state.viewport) === false) 
-                this._needsPublish = true;
-            
-            if (this._stableState.subviews && this._stableState.subviews.length === state.subviews.length) {
-                for (let i=0; i < state.subviews.length; i++) {
-                    if (!SerializedSubview.equals(state.subviews[i], this._stableState.subviews[i])) {
-                        this._needsPublish = true;
-                        break;
+            if (this._needsPublish ||
+                this._stableState.isPresentingHMD !== this.deviceService.isPresentingHMD ||
+                this._stableState.isPresentingRealityHMD !== this.deviceService.isPresentingRealityHMD ||
+                CanvasViewport.equals(this._stableState.viewport, state.viewport) === false) {
+                    this._needsPublish = true;
+            } else if (this._stableState.subviews) {
+                if (this._stableState.subviews.length === state.subviews.length) {
+                    for (let i=0; i < state.subviews.length; i++) {
+                        if (!SerializedSubview.equals(state.subviews[i], this._stableState.subviews[i])) {
+                            this._needsPublish = true;
+                            break;
+                        }
                     }
+                } else {
+                    this._needsPublish = true;
                 }
-            } else {
-                this._needsPublish = true;
             }
 
             if (this._needsPublish) this.publishStableState();
