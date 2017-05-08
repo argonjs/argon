@@ -26484,7 +26484,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _scratchArray = [];
 
-            _export('version', version = "1.2.0-17");
+            _export('version', version = "1.2.0-18");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -29402,6 +29402,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         session.on['ar.device.exitPresentHMD'] = function () {
                             return _this.handleExitPresentHMD(session);
                         };
+                        _this._needsPublish = true;
                     });
                     this.contextServiceProvider.subscribersChangeEvent.addEventListener(function (_a) {
                         var id = _a.id;
@@ -29413,23 +29414,23 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     this.viewService.viewportModeChangeEvent.addEventListener(function () {
                         _this._needsPublish = true;
                     });
-                    this.deviceService.presentHMDChangeEvent.addEventListener(function () {
-                        _this._needsPublish = true;
-                    });
                     this.deviceService.screenOrientationChangeEvent.addEventListener(function () {
                         _this._needsPublish = true;
                     });
                     this.deviceService.frameStateEvent.addEventListener(function (state) {
-                        if (CanvasViewport.equals(_this._stableState.viewport, state.viewport) === false) _this._needsPublish = true;
-                        if (_this._stableState.subviews && _this._stableState.subviews.length === state.subviews.length) {
-                            for (var i = 0; i < state.subviews.length; i++) {
-                                if (!SerializedSubview.equals(state.subviews[i], _this._stableState.subviews[i])) {
-                                    _this._needsPublish = true;
-                                    break;
-                                }
-                            }
-                        } else {
+                        if (_this._needsPublish || _this._stableState.isPresentingHMD !== _this.deviceService.isPresentingHMD || _this._stableState.isPresentingRealityHMD !== _this.deviceService.isPresentingRealityHMD || CanvasViewport.equals(_this._stableState.viewport, state.viewport) === false) {
                             _this._needsPublish = true;
+                        } else if (_this._stableState.subviews) {
+                            if (_this._stableState.subviews.length === state.subviews.length) {
+                                for (var i = 0; i < state.subviews.length; i++) {
+                                    if (!SerializedSubview.equals(state.subviews[i], _this._stableState.subviews[i])) {
+                                        _this._needsPublish = true;
+                                        break;
+                                    }
+                                }
+                            } else {
+                                _this._needsPublish = true;
+                            }
                         }
                         if (_this._needsPublish) _this.publishStableState();
                     });
