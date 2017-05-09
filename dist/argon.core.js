@@ -24133,7 +24133,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     internalSession.on['argon.configureStage.setStageGeolocation'] = function (_a) {
                         var geolocation = _a.geolocation;
                         customStagePosition = Cartesian3.fromRadians(geolocation.longitude, geolocation.latitude, geolocation.height, undefined, customStagePosition);
-                        var transformMatrix = eastUpSouthToFixedFrame(customStagePosition, undefined, _this._scratchMatrix4);
+                        //            const transformMatrix = eastUpSouthToFixedFrame(customStagePosition, undefined, this._scratchMatrix4);
+                        var transformMatrix = Transforms.eastNorthUpToFixedFrame(customStagePosition, undefined, _this._scratchMatrix4);
                         var rotationMatrix = Matrix4.getRotation(transformMatrix, _this._scratchMatrix3);
                         customStageOrientation = Quaternion.fromRotationMatrix(rotationMatrix, customStageOrientation);
                     };

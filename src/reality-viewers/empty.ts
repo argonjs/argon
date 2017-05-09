@@ -12,6 +12,7 @@ import {
     Quaternion,
     Matrix3,
     Matrix4,
+    Transforms,
     PerspectiveFrustum,
     CesiumMath
 } from '../cesium/cesium-imports'
@@ -129,7 +130,9 @@ export class EmptyRealityViewer extends RealityViewer {
         internalSession.on['argon.configureStage.setStageGeolocation'] = ({geolocation}:{geolocation:Cartographic}) => {
             customStagePosition = Cartesian3.fromRadians(geolocation.longitude, geolocation.latitude, geolocation.height, undefined, customStagePosition);
 
-            const transformMatrix = eastUpSouthToFixedFrame(customStagePosition, undefined, this._scratchMatrix4);
+
+//            const transformMatrix = eastUpSouthToFixedFrame(customStagePosition, undefined, this._scratchMatrix4);
+            const transformMatrix = Transforms.eastNorthUpToFixedFrame(customStagePosition, undefined, this._scratchMatrix4);
             const rotationMatrix = Matrix4.getRotation(transformMatrix, this._scratchMatrix3);
             customStageOrientation = Quaternion.fromRotationMatrix(rotationMatrix, customStageOrientation);
         }
