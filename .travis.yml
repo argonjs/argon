@@ -10,4 +10,4 @@ cache:
 
 before_install:
   - npm install
-  - jspm install
+  
