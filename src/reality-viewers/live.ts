@@ -104,8 +104,8 @@ export class LiveRealityViewer extends RealityViewer {
 
                 const remove =this.deviceService.frameStateEvent.addEventListener((frameState)=>{
 
-                    if (frameState.geolocationDesired) {
-                        this.deviceService.subscribeGeolocation(frameState.geolocationOptions, internalSession);
+                    if (this.deviceService.geolocationDesired) {
+                        this.deviceService.subscribeGeolocation(this.deviceService.geolocationOptions, internalSession);
                     } else {
                         this.deviceService.unsubscribeGeolocation(internalSession);
                     }

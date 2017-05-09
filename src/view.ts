@@ -9,7 +9,7 @@ import {
     Event,
     isIOS,
     createEventForwarder,
-    synthesizeEvent,
+    getEventSynthesizier,
     decomposePerspectiveProjectionMatrix,
     deprecated
 } from './utils'
@@ -104,6 +104,11 @@ export class ViewService {
     public autoLayoutImmersiveMode = true;
 
     /**
+     * Automatically style layer elements
+     */
+    public autoStyleLayerElements = true;
+
+    /**
      * Automatically publish the viewport of the element during PresentationMode.EMBEDDED
      */
     public autoPublishEmbeddedMode = true;
@@ -175,7 +180,9 @@ export class ViewService {
                 }
             });
 
-            this.sessionService.manager.on['ar.view.uievent'] = synthesizeEvent!;
+            if (this.sessionService.isRealityViewer) {
+                this.sessionService.manager.on['ar.view.uievent'] = getEventSynthesizier()!;
+            }
 
             if (!this.sessionService.isRealityViewer) {
                 createEventForwarder(this, (event)=>{
@@ -203,6 +210,24 @@ export class ViewService {
                 this._updateViewportMode(ViewportMode.IMMERSIVE);
             }
         });
+    }
+
+    private _layers:{source:HTMLElement}[] = [];
+
+    public setLayers(layers:{source:HTMLElement}[]) {
+        if (this._layers) { 
+            for (const l of this._layers) {
+                this.element.removeChild(l.source);
+            }
+        }
+        this._layers = layers;
+        for (const l of layers) {
+            this.element.appendChild(l.source);
+        }
+    }
+
+    public get layers() {
+        return this._layers;
     }
 
     private _currentViewportJSON: string;
@@ -312,22 +337,39 @@ export class ViewService {
     // Updates the element, if necessary, and raise a view change event
     private _updateViewport(viewport:CanvasViewport) {
         const viewportJSON = JSON.stringify(viewport);
+        
+        if (this._layers.length && this.autoStyleLayerElements) {
+            requestAnimationFrame(() => {
+                let zIndex = -this._layers.length;
+                for (const layer of this._layers) {
+                    const layerStyle = layer.source.style;
+                    layerStyle.position = 'absolute';
+                    layerStyle.left = viewport.x + 'px';
+                    layerStyle.bottom = viewport.y + 'px';
+                    layerStyle.width = viewport.width + 'px';
+                    layerStyle.height = viewport.height + 'px';
+                    layerStyle.zIndex = '' + zIndex;
+                    zIndex++;
+                }
+            })
+        }
 
         if (!this._currentViewportJSON || this._currentViewportJSON !== viewportJSON) {
             this._currentViewportJSON = viewportJSON;
 
-            this._viewport = Viewport.clone(viewport, this._viewport);
+            this._viewport = Viewport.clone(viewport, this._viewport)!;
 
             if (this.element && 
                 !this.sessionService.isRealityManager && 
                 this.autoLayoutImmersiveMode && 
                 this.viewportMode === ViewportMode.IMMERSIVE) {
                 requestAnimationFrame(() => {
-                    this.element.style.position = 'fixed';
-                    this.element.style.left = viewport.x + 'px';
-                    this.element.style.bottom = viewport.y + 'px';
-                    this.element.style.width = viewport.width + 'px';
-                    this.element.style.height = viewport.height + 'px';
+                    const elementStyle = this.element.style;
+                    elementStyle.position = 'fixed';
+                    elementStyle.left = viewport.x + 'px';
+                    elementStyle.bottom = viewport.y + 'px';
+                    elementStyle.width = viewport.width + 'px';
+                    elementStyle.height = viewport.height + 'px';
                 })
             }
 

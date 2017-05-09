@@ -1,3 +1,5 @@
+/// <reference types="cesium" />
+import { Cartographic } from './cesium/cesium-imports';
 import { SessionPort, SessionService } from './session';
 import { Event } from './utils';
 import { ContextService } from './context';
@@ -69,6 +71,14 @@ export declare class RealityService {
     setDesired(reality: {
         uri: string;
     } | undefined): void;
+    /**
+     * Ask a reality to move the stage to the given geolocation
+     */
+    setStageGeolocation(realitySession: SessionPort, geolocation: Cartographic): Promise<void>;
+    /**
+     * Ask a reality to move the stage to the given geolocation
+     */
+    resetStageGeolocation(realitySession: SessionPort): Promise<void>;
 }
 export declare class RealityServiceProvider {
     private sessionService;

@@ -80,10 +80,15 @@ function getEventSynthesizier() {
 
     const deserializeTouches = (touches:Touch[], target:Element|Window, uievent:TouchEvent) => {
         touches.forEach((t, i)=>{
-            touches[i] = document.createTouch(
-                uievent.view, target, t.identifier, 
-                t.clientX, t.clientY, t.screenX, t.screenY
-            );
+            if (document.createTouch) {
+                touches[i] = document.createTouch(
+                    uievent.view, target, t.identifier, 
+                    t.clientX, t.clientY, t.screenX, t.screenY
+                );
+            } else if (typeof Touch !== undefined) {
+                (<any>t).target = target;
+                touches[i] = new (<any>Touch)(t);
+            }
         })
         return touches;
     }
@@ -102,6 +107,9 @@ function getEventSynthesizier() {
     document.documentElement.addEventListener('lostpointercapture', (e)=>{
         delete capturedPointerTargets[e.pointerId];
     })
+
+    Element.prototype.setPointerCapture = function (id) { capturedPointerTargets[id] = this; };
+    Element.prototype.releasePointerCapture = function (id) { capturedPointerTargets[id] = null; };
 
     return eventSynthesizerFunction = (uievent:MouseEvent&WheelEvent&TouchEvent&PointerEvent)=>{
         (<any>uievent).view = window;
@@ -245,4 +253,4 @@ function getEventSynthesizier() {
 }
 
 export default (typeof document !== 'undefined' && document.createElement) ? 
-    getEventSynthesizier() : undefined;
+    getEventSynthesizier : ()=>{ return undefined; };

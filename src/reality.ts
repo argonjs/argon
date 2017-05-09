@@ -2,7 +2,8 @@ import { autoinject, inject, Factory } from 'aurelia-dependency-injection'
 import {
     createGuid,
     PerspectiveFrustum,
-    Matrix4
+    Matrix4,
+    Cartographic
 } from './cesium/cesium-imports'
 import {
     Role,
@@ -207,6 +208,25 @@ export class RealityService {
         this.request(reality ? reality.uri : RealityViewer.DEFAULT);
     }
 
+
+    /**
+     * Ask a reality to move the stage to the given geolocation
+     */
+    public setStageGeolocation(realitySession:SessionPort, geolocation:Cartographic) : Promise<void> {
+        if (!realitySession.supportsProtocol('ar.configureStage')) 
+            return Promise.reject('Protocol `ar.configureStage` is not supported'); 
+        return realitySession.request('ar.configureStage.setStageGeolocation', {geolocation});
+    }
+
+    /**
+     * Ask a reality to move the stage to the given geolocation
+     */
+    public resetStageGeolocation(realitySession:SessionPort) : Promise<void> {
+        if (!realitySession.supportsProtocol('ar.configureStage')) 
+            return Promise.reject('Protocol `ar.configureStage` is not supported'); 
+        return realitySession.request('ar.configureStage.resetStageGeolocation');
+    }
+
 }
 
 @autoinject
@@ -315,8 +335,8 @@ export class RealityServiceProvider {
                         if (viewerSession.version[0] === 0) { // backwards compatability
                             const deviceState = this.deviceService.frameState;
                             if (!deviceState) return;
-                            frame.viewport = CanvasViewport.clone(deviceState.viewport, frame.viewport);
-                            frame.subviews = SerializedSubviewList.clone(deviceState.subviews, frame.subviews);
+                            frame.viewport = CanvasViewport.clone(deviceState.viewport, frame.viewport)!;
+                            frame.subviews = SerializedSubviewList.clone(deviceState.subviews, frame.subviews)!;
                             const eye = frame['eye'];
                             const eyePose = eye.pose;
                             const eyeFov = eye.fov;

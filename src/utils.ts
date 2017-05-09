@@ -12,15 +12,33 @@ import {
     Quaternion,
     Cartesian3,
     ReferenceFrame,
-    Matrix4
+    Matrix4,
+    Transforms,
+    Cartographic,
+    sampleTerrain
 } from './cesium/cesium-imports'
+
+import {
+    MapzenTerrariumTerrainProvider
+} from './cesium/MapzenTerrariumTerrainProvider'
 
 export * from './utils/command-queue';
 export * from './utils/event';
 export * from './utils/message-channel';
-export {default as synthesizeEvent} from './utils/ui-event-synthesizer';
+export {default as getEventSynthesizier} from './utils/ui-event-synthesizer';
 export {default as createEventForwarder} from './utils/ui-event-forwarder';
 export * from './utils/platform-properties';
+
+
+
+
+/**
+ * Computes a 4x4 transformation matrix from a reference frame with an east-up-south axes centered at the provided origin to the provided ellipsoid's fixed reference frame. The local axes are defined as:
+ * The x axis points in the local east direction.
+ * The y axis points in the points in the direction of the ellipsoid surface normal which passes through the position..
+ * The z axis points in the local south direction.
+ */
+export const eastUpSouthToFixedFrame = Transforms.localFrameToFixedFrameGenerator('east','up');
 
 /**
  * Get array of ancestor reference frames of a Cesium Entity, ordered from 
@@ -393,4 +411,21 @@ export function deprecated(alternative?: string) : MethodDecorator {
     };
 
     return decorator;
+}
+
+export const defaultTerrainProvider = new MapzenTerrariumTerrainProvider({
+    url : 'https://s3.amazonaws.com/elevation-tiles-prod/terrarium/',
+    requestWaterMask : true,
+    requestVertexNormals : true
+});
+
+
+var _scratchArray : Cartographic[] = [];
+export function updateHeightFromTerrain(cartographic : Cartographic) {
+    _scratchArray[0] = cartographic;
+    return sampleTerrain(defaultTerrainProvider, 15, _scratchArray).then<Promise<Cartographic>>(_valueAtFirstIndex);
+}
+
+function _valueAtFirstIndex(array) {
+    return array[0];
 }

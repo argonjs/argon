@@ -5,6 +5,8 @@ import {
     CameraEventType,
     ConstantPositionProperty,
     ConstantProperty,
+    ReferenceFrame,
+    Cartographic,
     Cartesian2,
     Cartesian3,
     Quaternion,
@@ -15,7 +17,7 @@ import {
 } from '../cesium/cesium-imports'
 import { Role, SerializedSubviewList } from '../common'
 import { SessionService } from '../session'
-import { decomposePerspectiveProjectionMatrix, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame } from '../utils'
+import { decomposePerspectiveProjectionMatrix, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame, eastUpSouthToFixedFrame } from '../utils'
 import { ContextService, PoseStatus } from '../context'
 import { DeviceService } from '../device'
 import { ViewService } from '../view'
@@ -109,6 +111,9 @@ export class EmptyRealityViewer extends RealityViewer {
         }
     }
 
+    private _scratchMatrix3 = new Matrix3;
+    private _scratchMatrix4 = new Matrix4;
+
     public load(): void {
         const session = this.sessionService.addManagedSessionPort(this.uri);
         session.connectEvent.addEventListener(()=>{
@@ -117,6 +122,22 @@ export class EmptyRealityViewer extends RealityViewer {
 
         const internalSession = this.sessionService.createSessionPort(this.uri);
         internalSession.suppressErrorOnUnknownTopic = true;
+
+        let customStagePosition:Cartesian3|undefined;
+        let customStageOrientation:Quaternion|undefined;
+
+        internalSession.on['argon.configureStage.setStageGeolocation'] = ({geolocation}:{geolocation:Cartographic}) => {
+            customStagePosition = Cartesian3.fromRadians(geolocation.longitude, geolocation.latitude, geolocation.height, undefined, customStagePosition);
+
+            const transformMatrix = eastUpSouthToFixedFrame(customStagePosition, undefined, this._scratchMatrix4);
+            const rotationMatrix = Matrix4.getRotation(transformMatrix, this._scratchMatrix3);
+            customStageOrientation = Quaternion.fromRotationMatrix(rotationMatrix, customStageOrientation);
+        }
+
+        internalSession.on['argon.configureStage.resetStageGeolocation'] = () => {
+            customStagePosition = undefined;
+            customStageOrientation = undefined;
+        }
 
         internalSession.connectEvent.addEventListener(() => {
 
@@ -154,10 +175,10 @@ export class EmptyRealityViewer extends RealityViewer {
                     return;
                 }
 
-                if (frameState.geolocationDesired) {
+                if (this.deviceService.geolocationDesired) {
                     if (!subscribedGeolocation) {
                         subscribedGeolocation = true;
-                        this.deviceService.subscribeGeolocation(frameState.geolocationOptions, internalSession);
+                        this.deviceService.subscribeGeolocation(this.deviceService.geolocationOptions, internalSession);
                     }
                 } else {
                     if (subscribedGeolocation) {
@@ -169,7 +190,7 @@ export class EmptyRealityViewer extends RealityViewer {
                 SerializedSubviewList.clone(frameState.subviews, subviews);
                 
                 // provide fov controls
-                if (!frameState.strict) {                    
+                if (!this.deviceService.strict) {                    
                     decomposePerspectiveProjectionMatrix(subviews[0].projectionMatrix, scratchFrustum);
                     scratchFrustum.fov = this.viewService.subviews[0] && this.viewService.subviews[0].frustum.fov || CesiumMath.PI_OVER_THREE;
 
@@ -259,16 +280,27 @@ export class EmptyRealityViewer extends RealityViewer {
                     (contextUser.orientation as ConstantProperty).setValue(orientation);
                 }
 
-                aggregator && aggregator.reset();
+                const overrideStage = customStagePosition && customStageOrientation ? true : false;
+
+                if (overrideStage) {
+                    const contextStage = this.contextService.stage;
+                    (contextStage.position as ConstantPositionProperty).setValue(customStagePosition, ReferenceFrame.FIXED);
+                    (contextStage.orientation as ConstantProperty).setValue(customStageOrientation);
+                }
 
                 const contextFrameState = this.deviceService.createContextFrameState(
                     time,
                     frameState.viewport,
                     subviews,
-                    {overrideUser}
+                    {
+                        overrideUser,
+                        overrideStage
+                    }
                 );
 
                 internalSession.send('ar.reality.frameState', contextFrameState);
+
+                aggregator && aggregator.reset();
             });
 
             internalSession.closeEvent.addEventListener(()=>{
@@ -282,7 +314,13 @@ export class EmptyRealityViewer extends RealityViewer {
             if (this.sessionService.manager.isClosed) return;
             const messageChannel = this.sessionService.createSynchronousMessageChannel();
             session.open(messageChannel.port1, this.sessionService.configuration);
-            internalSession.open(messageChannel.port2, { role: Role.REALITY_VIEWER, uri: this.uri, title: 'Empty', version: this.sessionService.configuration.version });
+            internalSession.open(messageChannel.port2, { 
+                role: Role.REALITY_VIEWER, 
+                uri: this.uri,
+                title: 'Empty',
+                version: this.sessionService.configuration.version,
+                protocols: ['argon.configureStage@v1']
+            });
         });
     }
 }

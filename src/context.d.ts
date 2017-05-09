@@ -1,5 +1,5 @@
 /// <reference types="cesium" />
-import { Entity, EntityCollection, Cartographic, Cartesian3, Quaternion, JulianDate, ReferenceFrame } from './cesium/cesium-imports';
+import { Entity, EntityCollection, Cartographic, Cartesian3, Quaternion, Transforms, JulianDate, ReferenceFrame } from './cesium/cesium-imports';
 import { SerializedEntityState, SerializedEntityStateMap, ContextFrameState, GeolocationOptions } from './common';
 import { SessionService, SessionPort } from './session';
 import { Event } from './utils';
@@ -233,6 +233,28 @@ export declare class ContextService {
      * Get the cartographic position of an Entity
      */
     getEntityCartographic(entity?: Entity, cartographic?: Cartographic): Cartographic | undefined;
+    private _scratchMatrix3;
+    private _scratchMatrix4;
+    /**
+    * Create an entity that is positioned at the given cartographic location,
+    * with an orientation computed according to the given local to fixed frame converter.
+    *
+    * For the localFrameToFixedFrame parameter, Cesium provides the following:
+    *
+    * Cesium.Transforms.eastNorthUpToFixedFrame
+    * Cesium.Transforms.northEastDownToFixedFrame
+    * Cesium.Transforms.northUpEastToFixedFrame
+    * Cesium.Transforms.northWestUpToFixedFrame
+    *
+    * Additionally, argon.js provides:
+    *
+    * Argon.eastUpSouthToFixedFrame
+    *
+    * Alternative transform functions can be created with:
+    *
+    * Cesium.Transforms.localFrameToFixedFrameGenerator
+    */
+    createGeoEntity(cartographic: Cartographic, localFrameToFixedFrame: typeof Transforms.northUpEastToFixedFrame): Entity;
     /**
      * Create a new EntityPose instance to represent the pose of an entity
      * relative to a given reference frame. If no reference frame is specified,

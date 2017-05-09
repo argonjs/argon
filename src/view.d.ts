@@ -74,6 +74,10 @@ export declare class ViewService {
      */
     autoLayoutImmersiveMode: boolean;
     /**
+     * Automatically style layer elements
+     */
+    autoStyleLayerElements: boolean;
+    /**
      * Automatically publish the viewport of the element during PresentationMode.EMBEDDED
      */
     autoPublishEmbeddedMode: boolean;
@@ -82,6 +86,13 @@ export declare class ViewService {
      */
     element: HTMLElement;
     constructor(sessionService: SessionService, contextService: ContextService, focusService: FocusService, elementOrSelector?: Element | string | null);
+    private _layers;
+    setLayers(layers: {
+        source: HTMLElement;
+    }[]): void;
+    readonly layers: {
+        source: HTMLElement;
+    }[];
     private _currentViewportJSON;
     private _subviews;
     private _subviewPose;

@@ -106,6 +106,10 @@ declare module 'cesium/Source/Core/GeographicProjection' {
     import { GeographicProjection } from 'cesium';
     export default GeographicProjection;
 }
+declare module 'cesium/Source/Core/HeadingPitchRoll' {
+    import { HeadingPitchRoll } from 'cesium';
+    export default HeadingPitchRoll;
+}
 declare module 'cesium/Source/Core/HermitePolynomialApproximation' {
     import { HermitePolynomialApproximation } from 'cesium';
     export default HermitePolynomialApproximation;
@@ -180,9 +184,19 @@ declare module 'cesium/Source/Core/ScreenSpaceEventType' {
     export default ScreenSpaceEventType
 }
 
+declare module 'cesium/Source/Core/TerrainProvider' {
+    import { TerrainProvider } from 'cesium';
+    export default TerrainProvider;
+}
+
 declare module 'cesium/Source/Core/Transforms' {
     import { Transforms } from 'cesium';
     export default Transforms;
+}
+
+declare module 'cesium/Source/Core/throttleRequestByServer' {
+    import { throttleRequestByServer } from 'cesium';
+    export default throttleRequestByServer;
 }
 
 declare module 'cesium/Source/Core/Simon1994PlanetaryPositions' {
@@ -193,6 +207,36 @@ declare module 'cesium/Source/Core/Simon1994PlanetaryPositions' {
 declare module 'cesium/Source/Core/PolylinePipeline' {
     import { PolylinePipeline } from 'cesium';
     export default PolylinePipeline;
+}
+
+declare module 'cesium/Source/Core/loadImage' {
+    import { loadImage } from 'cesium';
+    export default loadImage;
+}
+
+declare module 'cesium/Source/Core/HeightmapTerrainData' {
+    import { HeightmapTerrainData } from 'cesium';
+    export default HeightmapTerrainData;
+}
+
+declare module 'cesium/Source/Core/getImagePixels' {
+    import { getImagePixels } from 'cesium';
+    export default getImagePixels;
+}
+
+declare module 'cesium/Source/Core/WebMercatorTilingScheme' {
+    import { WebMercatorTilingScheme } from 'cesium';
+    export default WebMercatorTilingScheme;
+}
+
+declare module 'cesium/Source/Core/Credit' {
+    import { Credit } from 'cesium';
+    export default Credit;
+}
+
+declare module 'cesium/Source/Core/sampleTerrain' {
+    import { sampleTerrain } from 'cesium';
+    export default sampleTerrain;
 }
 
 declare module 'cesium' {
@@ -1135,6 +1179,16 @@ declare module 'cesium' {
         static equals(left?: Matrix3, right?: Matrix3): boolean;
         static equalsEpsilon(left: Matrix3, right: Matrix3, epsilon: number): boolean;
         length: number;
+        0: number;
+        1: number;
+        2: number;
+        3: number;
+        4: number;
+        5: number;
+        6: number;
+        7: number;
+        8: number;
+        9: number;
     }
 
     class Matrix4 {
@@ -1208,6 +1262,22 @@ declare module 'cesium' {
         static inverse(matrix: Matrix4, result: Matrix4): Matrix4;
         static inverseTransformation(matrix: Matrix4, result: Matrix4): Matrix4;
         length: number;
+        0: number;
+        1: number;
+        2: number;
+        3: number;
+        4: number;
+        5: number;
+        6: number;
+        7: number;
+        8: number;
+        9: number;
+        10: number;
+        11: number;
+        12: number;
+        13: number;
+        14: number;
+        15: number;
     }
 
     class NearFarScalar {
@@ -4339,7 +4409,7 @@ declare module 'cesium' {
 
     function getFilenameFromUri(uri: string): string;
 
-    function getImagePixels(image: HTMLImageElement): number[];
+    function getImagePixels(image: HTMLImageElement, width:number, height:number): Uint8Array;
 
     function isArray(value: any): boolean;
 
@@ -4731,12 +4801,30 @@ declare module 'cesium' {
         TAI,
     }
 
+    class HeadingPitchRoll {
+        public heading:number;
+        public pitch:number;
+        public roll:number;
+        constructor(heading?:number, pitch?:number, roll?:number);
+        static clone(headingPitchRoll?:HeadingPitchRoll, result?:HeadingPitchRoll) : HeadingPitchRoll|undefined;
+        static equals(left?:HeadingPitchRoll, right?:HeadingPitchRoll) : boolean;
+        static equalsEpsilon(left:HeadingPitchRoll|undefined, right:HeadingPitchRoll|undefined, relativeEpsilon:number, absoluteEpsilon?:number) : boolean;
+        static fromDegrees(heading:number, pitch:number, roll:number, result?:HeadingPitchRoll) : HeadingPitchRoll;
+        static fromQuaternion(quaternion:Quaternion, result?:HeadingPitchRoll) : HeadingPitchRoll;
+        clone(result?:HeadingPitchRoll) : HeadingPitchRoll;
+        equals(right?:HeadingPitchRoll) : boolean;
+        equalsEpsilon(right:HeadingPitchRoll|undefined, relativeEpsilon:number|undefined, absoluteEpsilon?:number) : boolean;
+        toString(): string;
+    }
+
     module Transforms {
+        type ConversionFunction = (origin: Cartesian3, ellipsoid?: Ellipsoid, result?: Matrix4) => Matrix4;
+        function localFrameToFixedFrameGenerator(firstAxis: string, secondAxis: string): ConversionFunction;
         function eastNorthUpToFixedFrame(origin: Cartesian3, ellipsoid?: Ellipsoid, result?: Matrix4): Matrix4;
         function northEastDownToFixedFrame(origin: Cartesian3, ellipsoid?: Ellipsoid, result?: Matrix4): Matrix4;
         function northUpEastToFixedFrame(origin: Cartesian3, ellipsoid?: Ellipsoid, result?: Matrix4): Matrix4;
-        function headingPitchRollToFixedFrame(origin: Cartesian3, heading: number, pitch: number, roll: number, ellipsoid?: Ellipsoid, result?: Matrix4): Matrix4;
-        function headingPitchRollQuaternion(origin: Cartesian3, heading: number, pitch: number, roll: number, ellipsoid?: Ellipsoid, result?: Quaternion): Quaternion;
+        function headingPitchRollToFixedFrame(origin: Cartesian3, headingPitchRoll: HeadingPitchRoll, ellipsoid?: Ellipsoid, result?: Matrix4): Matrix4;
+        function headingPitchRollQuaternion(origin: Cartesian3, headingPitchRoll: HeadingPitchRoll, ellipsoid?: Ellipsoid, result?: Quaternion): Quaternion;
         function computeTemeToPseudoFixedMatrix(date: JulianDate, result?: Matrix3): Matrix3;
         function preloadIcrfFixed(timeInterval: TimeInterval): Promise<void>;
         function computeIcrfToFixedMatrix(date: JulianDate, result?: Matrix3): Matrix3;

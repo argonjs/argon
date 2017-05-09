@@ -11,7 +11,9 @@ import {
     Transforms,
     JulianDate,
     PerspectiveFrustum,
-    defined
+    defined,
+    HeadingPitchRoll,
+    Cartographic
 } from './cesium/cesium-imports'
 
 import {autoinject} from 'aurelia-dependency-injection';
@@ -28,7 +30,8 @@ import {
     SerializedEntityStateMap,
     SubviewType,
     ContextFrameState,
-    GeolocationOptions
+    GeolocationOptions,
+    SerializedSubview
 } from './common'
 
 import {
@@ -38,8 +41,7 @@ import {
     getSerializedEntityState,
     requestAnimationFrame,
     cancelAnimationFrame,
-    // getAncestorReferenceFrames,
-    // getReachableAncestorReferenceFrames
+    updateHeightFromTerrain,
 } from './utils'
 
 import {
@@ -49,21 +51,20 @@ import {
 
 import { VisibilityService } from './visibility'
 
-export class DeviceState {
+export class DeviceStableState {
     viewport?:CanvasViewport;
     subviews?:SerializedSubviewList;
     entities:SerializedEntityStateMap = {};
     suggestedUserHeight = AVERAGE_EYE_HEIGHT;
     geolocationDesired = false;
-    geolocationOptions:GeolocationOptions = {};
+    geolocationOptions?:GeolocationOptions = {};
     isPresentingHMD = false;
+    isPresentingRealityHMD = false;
     strict = false;
 }
 
-export class DeviceFrameState extends DeviceState {
+export class DeviceFrameState {
     private _scratchFrustum = new PerspectiveFrustum();
-
-    screenOrientationDegrees = 0;
 
     time = JulianDate.now();
 
@@ -83,26 +84,38 @@ export class DeviceFrameState extends DeviceState {
     }];
 };
 
-let vrDisplays:VRDisplay[]|undefined;
-let vrDisplay:VRDisplay|undefined;
-
-if (typeof navigator !== 'undefined' && navigator.getVRDisplays) {
-    navigator.getVRDisplays().then(displays => {
-        vrDisplays = displays;
-        vrDisplay = displays[0];
-    });
-}
-
+/**
+ * The DeviceService provides the current device state
+ */
 @autoinject()
 export class DeviceService {
 
+    /**
+     * If this is true (and we are presenting via webvr api), then
+     * vrDisplay.submitFrame is called after the frameState event
+     */
     public autoSubmitFrame = true;
 
-    public deviceState = new DeviceState; 
-
+    /**
+     * Device state for the current frame. This
+     * is not updated unless the view is visible.
+     */
     public frameState = new DeviceFrameState;
 
+    /**
+     * An event that fires every time the device frameState is updated. 
+     */
     public frameStateEvent = new Event<DeviceFrameState>();
+
+    /**
+     * An even that fires when the view starts or stops presenting to an HMD
+     */
+    public presentHMDChangeEvent = new Event<void>();
+
+    /*
+     * An event that fires when the screen orientation changes
+     */
+    public screenOrientationChangeEvent = new Event<void>();
 
     /**
      * An entity representing the physical floor-level plane below the user,
@@ -124,7 +137,7 @@ export class DeviceService {
         name: 'Device User',
         position: undefined,
         orientation: undefined
-    }));
+    }));    
     
     public get geoHeadingAccuracy() : number|undefined {
         return this.user['meta'] ? this.user['meta'].geoHeadingAccuracy : undefined;
@@ -138,11 +151,36 @@ export class DeviceService {
         return this.stage['meta'] ? this.stage['meta'].geoVerticalAccuracy : undefined;
     }
 
+    public _geolocationDesired = false;
+    public get geolocationDesired() {
+        return this._parentState ? this._parentState.geolocationDesired : this._geolocationDesired;
+    }
+
+    public _geolocationOptions:GeolocationOptions|undefined; 
+    public get geolocationOptions() {
+        return this._parentState ? this._parentState.geolocationOptions : this._geolocationOptions;
+    }
+
+    public defaultUserHeight = AVERAGE_EYE_HEIGHT;
+
+    public get suggestedUserHeight() {
+        return this._parentState && this._parentState.suggestedUserHeight || 
+            this.isPresentingHMD ? this.defaultUserHeight : this.defaultUserHeight/2;
+    }
+
+    public get strict() : boolean {
+        return !!(this._parentState && this._parentState.strict) ||
+            this.isPresentingHMD && !this._hasPolyfillWebVRDisplay() || false;
+    }
+
     private _getEntityPositionInReferenceFrame = getEntityPositionInReferenceFrame;
     private _getEntityOrientationInReferenceFrame = getEntityOrientationInReferenceFrame;
     protected _scratchCartesian = new Cartesian3;
     protected _scratchCartesian2 = new Cartesian3;
     protected _scratchFrustum = new PerspectiveFrustum();
+
+    private _vrDisplays:VRDisplay[]|undefined;
+    private _vrDisplay:VRDisplay|undefined;
 
     constructor(
         protected sessionService:SessionService,
@@ -151,12 +189,32 @@ export class DeviceService {
         protected visibilityService:VisibilityService
     ) {
         sessionService.manager.on['ar.device.state'] = 
-            sessionService.manager.on['ar.device.frameState'] = this._onDeviceState.bind(this);
+            sessionService.manager.on['ar.device.frameState'] = this._processStableState.bind(this);
 
-        this.visibilityService.showEvent.addEventListener(() => this.startUpdates());
-        this.visibilityService.hideEvent.addEventListener(() => this.stopUpdates());
-        
-        this._setupVRPresentChangeHandler();
+        this.visibilityService.showEvent.addEventListener(() => this._startUpdates());
+        this.visibilityService.hideEvent.addEventListener(() => this._stopUpdates());
+
+        if (typeof navigator !== 'undefined' && 
+            navigator.getVRDisplays && 
+            navigator.userAgent.indexOf('Argon') > 0 === false) { // for now, only use webvr when not in argon-app
+            
+            this._setupVRPresentChangeHandler();
+            navigator.getVRDisplays().then(displays => {
+                this._vrDisplays = displays;
+                this._vrDisplay = displays[0];
+            });
+
+        }
+
+        if (typeof window !== 'undefined' && window.addEventListener) {
+            const orientationChangeListener = ()=>{
+                this.screenOrientationChangeEvent.raiseEvent(undefined);
+            }
+            window.addEventListener('orientationchange', orientationChangeListener);
+            sessionService.manager.closeEvent.addEventListener(()=>{
+                window.removeEventListener('orientationchange', orientationChangeListener);
+            });
+        }
     }
 
     public _processContextFrameState(state:ContextFrameState) {
@@ -220,38 +278,35 @@ export class DeviceService {
         }
     }
 
-    private _onDeviceState(deviceState:DeviceState) {
-        this.deviceState = deviceState;
+    protected _parentState : DeviceStableState|undefined;
 
-
-        const entities = deviceState.entities;
+    private _processStableState(stableState:DeviceStableState) {
+        const entities = stableState.entities;
         const contextService = this.contextService;
 
         if (entities) for (const id in entities) {
             contextService.updateEntityFromSerializedState(id, entities[id]);
         }
+
+        if (this._parentState && this._parentState.isPresentingHMD !== stableState.isPresentingHMD ||
+            this._parentState && this._parentState.isPresentingRealityHMD !== stableState.isPresentingRealityHMD) {
+            this.presentHMDChangeEvent.raiseEvent(undefined);
+        }
+
+        this._parentState = stableState;
     }
 
-    private _updating = false;
+    private _updatingFrameState = false;
 
     private _updateFrameState = () => {
-        if (!this._updating) return;
+        if (!this._updatingFrameState) return;
 
         this.requestAnimationFrame(this._updateFrameState);
 
-        const state = this.frameState = this.frameState || {};
-        const time = state.time = JulianDate.now(state.time);
-        state.screenOrientationDegrees = this.getScreenOrientationDegrees();
+        const state = this.frameState;
+        const time = JulianDate.now(state.time);
+        state['strict'] = this.strict; // backwards-compat
 
-        const element = this.viewService.element;
-        const viewport = state.viewport;
-        viewport.x = 0;
-        viewport.y = 0;
-        viewport.width = element && element.clientWidth || 0;
-        viewport.height = element && element.clientHeight || 0;
-        viewport.renderHeightScaleFactor = 1;
-        viewport.renderWidthScaleFactor = 1;
-        
         this.onUpdateFrameState();
 
         const contextViewId = this.contextService.view.id;
@@ -261,31 +316,44 @@ export class DeviceService {
             if (s.pose) s.pose.r = contextViewId;
         }
 
-        this.frameStateEvent.raiseEvent(state);
+        try {
+            this.frameStateEvent.raiseEvent(state);
+        } catch(e) {
+            this.sessionService.manager.sendError(e);
+            this.sessionService.errorEvent.raiseEvent(e);
+        }
 
+        const vrDisplay = this._vrDisplay;
         if (this.autoSubmitFrame && vrDisplay && vrDisplay.isPresenting) {
             vrDisplay.submitFrame();
         }
-    };
+    }
 
-    public getScreenOrientationDegrees() {
+    public get screenOrientationDegrees() {
         return typeof window !== 'undefined' ? (screen['orientation'] && -screen['orientation'].angle) || -window.orientation || 0 : 0;
+    }
+
+    protected getScreenOrientationDegrees() {
+        return this.getScreenOrientationDegrees;
     }
 
     /**
      * Request an animation frame callback for the current view. 
      */
     public requestAnimationFrame:(callback:(timestamp:number)=>void)=>number = callback => {
-        if (vrDisplay && this.isPresentingHMD) {
-            return vrDisplay.requestAnimationFrame(callback);
+        if (this._vrDisplay && this.isPresentingHMD) {
+            return this._vrDisplay.requestAnimationFrame(callback);
         } else {
             return requestAnimationFrame(callback);
         }
     }
 
+    /**
+     * Cancel an animation frame callback for the current view. 
+     */
     public cancelAnimationFrame:(id:number)=>void = id => {
-        if (vrDisplay && this.isPresentingHMD) {
-            vrDisplay.cancelAnimationFrame(id);
+        if (this._vrDisplay && this.isPresentingHMD) {
+            this._vrDisplay.cancelAnimationFrame(id);
         } else {
             cancelAnimationFrame(id);
         }
@@ -294,9 +362,9 @@ export class DeviceService {
     /**
      * Start emmitting frameState events
      */
-    public startUpdates() : void {
-        if (!this._updating) this.requestAnimationFrame(this._updateFrameState);
-        this._updating = true;
+    private _startUpdates() : void {
+        if (!this._updatingFrameState) this.requestAnimationFrame(this._updateFrameState);
+        this._updatingFrameState = true;
         this.sessionService.manager.whenConnected().then(()=>{
             if (this.sessionService.manager.version[0] > 0) {
                 this.sessionService.manager.send('ar.device.startUpdates');
@@ -307,8 +375,8 @@ export class DeviceService {
     /**
      * Stop emitting frameState events
      */
-    public stopUpdates() : void {
-        this._updating = false;
+    private _stopUpdates() : void {
+        this._updatingFrameState = false;
         this.sessionService.manager.whenConnected().then(()=>{
             if (this.sessionService.manager.version[0] > 0) {
                 this.sessionService.manager.send('ar.device.stopUpdates');
@@ -317,33 +385,67 @@ export class DeviceService {
     }
 
     protected onUpdateFrameState() {
-        if (vrDisplay && this.isPresentingHMD) {
+        this._updateViewport();
+
+        if (this._vrDisplay && this._vrDisplay.isPresenting) {
             this._updateForWebVR();
         } else {
             this._updateDefault();
         }
     }
 
+    private _updateViewport() {
+        const parentState = this._parentState;
+        const state = this.frameState;
+        const viewport = state.viewport;
+        
+        if (parentState && parentState.viewport) { 
+
+            CanvasViewport.clone(parentState.viewport, viewport);
+
+        } else {
+
+            const element = this.viewService.element;
+            viewport.x = 0;
+            viewport.y = 0;
+            viewport.width = element && element.clientWidth || 0;
+            viewport.height = element && element.clientHeight || 0;
+
+            const vrDisplay = this._vrDisplay;
+
+            if (vrDisplay && vrDisplay.isPresenting) {
+
+                var leftEye = vrDisplay.getEyeParameters("left");
+                var rightEye = vrDisplay.getEyeParameters("right");
+                
+                const viewport = state.viewport;
+                viewport.renderWidthScaleFactor = 2 * Math.max(leftEye.renderWidth, rightEye.renderWidth) / viewport.width;
+                viewport.renderHeightScaleFactor = Math.max(leftEye.renderHeight, rightEye.renderHeight) / viewport.height;
+
+            } else {
+
+                viewport.renderHeightScaleFactor = 1;
+                viewport.renderWidthScaleFactor = 1;
+
+            }
+
+        }
+    }
+
     private _updateDefault() {
         this._updateUserDefault();
 
-        const deviceState = this.deviceState;
-
+        const parentState = this._parentState;
         const frameState = this.frameState;
-        frameState.suggestedUserHeight = deviceState.suggestedUserHeight;
-        frameState.isPresentingHMD = deviceState.isPresentingHMD;
-        frameState.geolocationDesired = deviceState.geolocationDesired;
-        frameState.geolocationOptions = deviceState.geolocationOptions;
-        frameState.strict = deviceState.strict;
         
         const viewport = frameState.viewport;
-        if (deviceState.viewport) {
-            CanvasViewport.clone(deviceState.viewport, viewport);
+        if (parentState && parentState.viewport) {
+            CanvasViewport.clone(parentState.viewport, viewport);
         }
 
         const subviews = frameState.subviews;
-        if (deviceState.subviews) {
-            SerializedSubviewList.clone(deviceState.subviews, subviews);
+        if (parentState && parentState.subviews) {
+            SerializedSubviewList.clone(parentState.subviews, subviews);
         } else {
             subviews.length = 1;
             const subview = subviews[0] || {};
@@ -393,30 +495,21 @@ export class DeviceService {
 	private _defaultRightBounds = [ 0.5, 0.0, 0.5, 1.0 ];
 
     private _updateForWebVR() {
-
+        const vrDisplay = this._vrDisplay;
         if (!vrDisplay) return;
         
         const frameState = this.frameState;
-        frameState.strict = true;
-       
-        var leftEye = vrDisplay.getEyeParameters("left");
-        var rightEye = vrDisplay.getEyeParameters("right");
-        
-        const viewport = frameState.viewport;
-        viewport.renderWidthScaleFactor = 2 * Math.max(leftEye.renderWidth, rightEye.renderWidth) / viewport.width;
-        viewport.renderHeightScaleFactor = Math.max(leftEye.renderHeight, rightEye.renderHeight) / viewport.height;
 
         const vrFrameData : VRFrameData = this._vrFrameData = 
             this._vrFrameData || new VRFrameData();
         if (!vrDisplay['getFrameData'](vrFrameData)) 
             return this.frameState;
 
-        const layers = vrDisplay.getLayers();
-        let leftBounds = layers[0].leftBounds;
-        let rightBounds = layers[0].rightBounds;
+        const layer = vrDisplay.getLayers()[0];
+        let leftBounds = layer && layer.leftBounds;
+        let rightBounds = layer && layer.rightBounds;
 
-        if ( layers.length ) {
-            var layer = layers[ 0 ]!;
+        if ( layer ) {
             leftBounds = layer.leftBounds && layer.leftBounds.length === 4 ? layer.leftBounds : this._defaultLeftBounds;
             rightBounds = layer.rightBounds && layer.rightBounds.length === 4 ? layer.rightBounds : this._defaultRightBounds;
         } else {
@@ -424,6 +517,7 @@ export class DeviceService {
             rightBounds = this._defaultRightBounds;
         }
         
+        const viewport = frameState.viewport;
         const subviews = frameState.subviews = frameState.subviews || [];
         subviews.length = 2;
 
@@ -531,6 +625,34 @@ export class DeviceService {
 
     private _getSerializedEntityState = getSerializedEntityState;
 
+    private _hasPolyfillWebVRDisplay() : boolean {
+        return !!this._vrDisplay && !!this._vrDisplay.displayName.match(/polyfill/g);
+    }
+
+    protected onRequestPresentHMD() : Promise<void> {
+        if (this._vrDisplay) {
+            const element = this.viewService.element;
+            const layers:VRLayer&{}[] = 
+                [{
+                    source:
+                        this.viewService.layers[0] && this.viewService.layers[0].source || 
+                        element.querySelector('canvas') || 
+                        <HTMLCanvasElement>element.lastElementChild
+                }];
+            return this._vrDisplay.requestPresent(layers).catch((e)=>{
+                throw e;
+            });
+        }
+        throw new Error('No HMD available');
+    }
+    
+    protected onExitPresentHMD() : Promise<void> {
+        if (this._vrDisplay && this._vrDisplay.isPresenting) {
+            return this._vrDisplay.exitPresent();
+        }
+        return Promise.resolve();
+    }
+
     /**
      * Generate a frame state for the ContextService.
      * 
@@ -547,6 +669,14 @@ export class DeviceService {
         options?: {overrideStage?:boolean, overrideUser?:boolean, overrideView?:boolean, floorOffset?:number}
     ) : ContextFrameState {
 
+        let overrideUser = options && options.overrideUser;
+        if (this.strict) {
+            if (overrideUser) {
+                console.warn('The `overrideUser` flag is set, but the user pose can not be overridden in strict mode');
+                overrideUser = false;
+            }
+        }
+
         // TODO: In certain cases (webvr?), we may want to disallow the reality from overriding the user entity 
 
         for (const s of subviewList) {
@@ -556,8 +686,8 @@ export class DeviceService {
 
         const frameState:ContextFrameState = this._scratchFrameState;
         frameState.time = JulianDate.clone(time, frameState.time);
-        frameState.viewport = CanvasViewport.clone(viewport, frameState.viewport);
-        frameState.subviews = SerializedSubviewList.clone(subviewList, frameState.subviews);
+        frameState.viewport = CanvasViewport.clone(viewport, frameState.viewport)!;
+        frameState.subviews = SerializedSubviewList.clone(subviewList, frameState.subviews)!;
 
         const contextService = this.contextService;
         const getEntityState = this._getSerializedEntityState;
@@ -572,7 +702,7 @@ export class DeviceService {
 
         // user
         const user = contextService.user;
-        if (options && options.overrideUser) {
+        if (overrideUser) {
             frameState.entities[user.id] = getEntityState(user, time, stage);
         } else {
             delete frameState.entities[user.id];
@@ -618,20 +748,40 @@ export class DeviceService {
         this.contextService.unsubscribe(this.stage.id, session);
     }
 
+    /**
+     * Is the view presenting to an HMD
+     */
     get isPresentingHMD() : boolean {
-        return this.frameState.isPresentingHMD;
+        return this._parentState && this._parentState.isPresentingHMD || 
+            this._vrDisplay && this._vrDisplay.isPresenting ||
+            false;
+    }
+
+    /**
+     * Is the current reality presenting to an HMD
+     */
+    get isPresentingRealityHMD() : boolean {
+        return this._parentState && this._parentState.isPresentingRealityHMD || 
+            this._vrDisplay && this._vrDisplay.isPresenting && !!this._vrDisplay.displayName.match(/polyfill/g) ||
+            false;
     }
 
     requestPresentHMD() : Promise<void> {
-        return this.sessionService.manager.request('ar.device.requestPresentHMD').then(()=>{
-            this.frameState.isPresentingHMD = true; 
-        });
+        if (!this.sessionService.manager.isConnected) 
+            throw new Error('Session must be connected');
+        if (this.sessionService.isRealityManager) {
+            return this.onRequestPresentHMD();
+        }
+        return this.sessionService.manager.request('ar.device.requestPresentHMD');
     }
 
     exitPresentHMD() : Promise<void> {
-        return this.sessionService.manager.request('ar.device.exitPresentHMD').then(()=>{
-            this.frameState.isPresentingHMD = false;
-        });
+        if (!this.sessionService.manager.isConnected) 
+            throw new Error('Session must be connected');
+        if (this.sessionService.isRealityManager) {
+            return this.onExitPresentHMD();
+        }
+        return this.sessionService.manager.request('ar.device.exitPresentHMD');
     }
 
     private _deviceOrientationListener;
@@ -655,7 +805,7 @@ export class DeviceService {
         const screenOrientation = 
             Quaternion.fromAxisAngle(
                 Cartesian3.UNIT_Z, 
-                this.frameState.screenOrientationDegrees * CesiumMath.RADIANS_PER_DEGREE, 
+                this.screenOrientationDegrees * CesiumMath.RADIANS_PER_DEGREE, 
                 this._scratchQuaternion
             );
 
@@ -663,7 +813,7 @@ export class DeviceService {
         if (!deviceUser.orientation) deviceUser.orientation = new ConstantProperty();
         
         (deviceUser.position as ConstantPositionProperty).setValue(
-            Cartesian3.fromElements(0,0,this.deviceState.suggestedUserHeight, this._scratchCartesian), 
+            Cartesian3.fromElements(0,0,this.suggestedUserHeight, this._scratchCartesian), 
             deviceStage
         );
 
@@ -762,7 +912,7 @@ export class DeviceService {
         if (typeof window !=='undefined' && window.addEventListener) {
 
             this.viewService.viewportModeChangeEvent.addEventListener((mode)=>{
-                if (mode === ViewportMode.PAGE && vrDisplay && vrDisplay.displayName.match(/Cardboard/g)) 
+                if (mode === ViewportMode.PAGE && this._vrDisplay && this._vrDisplay.displayName.match(/polyfill/g)) 
                     this.exitPresentHMD();
             });
 
@@ -774,17 +924,16 @@ export class DeviceService {
                 const display:VRDisplay|undefined = e.display || e.detail.vrdisplay || e.detail.display;
                 if (display) {
                     if (display.isPresenting) {
-                        vrDisplay = display;
-                        if (display.displayName.match(/Cardboard/g)) {
+                        this._vrDisplay = display;
+                        if (display.displayName.match(/polyfill/g)) {
                             currentCanvas = display.getLayers()[0].source;
-                            if (currentCanvas) currentCanvas.classList.add('argon-interactive');
+                            if (currentCanvas) currentCanvas.classList.add('argon-interactive'); // for now, only use webvr when not in Argon
                             previousPresentationMode = viewService.viewportMode;
                             viewService.desiredViewportMode = ViewportMode.IMMERSIVE;
                         }
                     } else {
-                        vrDisplay = undefined;
-                        if (currentCanvas && display.displayName.match(/Cardboard/g)) {
-                            currentCanvas.classList.remove('argon-interactive');
+                        if (currentCanvas && display.displayName.match(/polyfill/g)) {
+                            currentCanvas.classList.remove('argon-interactive'); // for now, only use webvr when not in Argon
                             currentCanvas = undefined;
                             viewService.desiredViewportMode = previousPresentationMode;
                         }
@@ -797,10 +946,13 @@ export class DeviceService {
 
 }
 
+/**
+ * 
+ */
 @autoinject()
 export class DeviceServiceProvider {
 
-    private _subscribers = new Set<SessionPort>();
+    private _subscribers:{[id:string]:SessionPort} = {};
     
     constructor(
         protected sessionService:SessionService,
@@ -815,7 +967,7 @@ export class DeviceServiceProvider {
         this.sessionService.connectEvent.addEventListener((session)=>{
             // backwards compat pre-v1.1.8
             session.on['ar.device.requestFrameState'] = () => {
-                this._subscribers.add(session);
+                this._subscribers[session.id] = session;
                 return new Promise((resolve) => {
                     const remove = this.deviceService.frameStateEvent.addEventListener((frameState)=>{
                         resolve(frameState)
@@ -825,11 +977,11 @@ export class DeviceServiceProvider {
             }
 
             session.on['ar.device.startUpdates'] = () => {
-                this._subscribers.add(session);
+                this._subscribers[session.id] = session;
             }
 
             session.on['ar.device.stopUpdates'] = () => {
-                this._subscribers.delete(session);
+                delete this._subscribers[session.id];
             }
 
             session.on['ar.device.setGeolocationOptions'] = (options) => {
@@ -837,18 +989,14 @@ export class DeviceServiceProvider {
             }
 
             session.on['ar.device.requestPresentHMD'] = () => {
-                return this.handleRequestPresentHMD(session).then(()=>{
-                    this.deviceService.deviceState.isPresentingHMD = true;
-                    this.publishDeviceState();
-                })
+                return this.handleRequestPresentHMD(session);
             }
 
             session.on['ar.device.exitPresentHMD'] = () => {
-                return this.handleExitPresentHMD(session).then(()=>{
-                    this.deviceService.deviceState.isPresentingHMD = false;
-                    this.publishDeviceState();
-                })
+                return this.handleExitPresentHMD(session);
             }
+
+            this._needsPublish = true;
         });
 
         this.contextServiceProvider.subscribersChangeEvent.addEventListener(({id})=>{
@@ -856,66 +1004,82 @@ export class DeviceServiceProvider {
                 this._checkDeviceGeolocationSubscribers();
         });
 
-        if (typeof window !== 'undefined' && window.addEventListener) {
-            const orientationChangeListener = ()=>{
-                this.publishDeviceState();
+        this.viewService.viewportChangeEvent.addEventListener(()=>{
+            this._needsPublish = true;
+        });
+
+        this.viewService.viewportModeChangeEvent.addEventListener(()=>{
+            this._needsPublish = true;
+        });
+
+        this.deviceService.screenOrientationChangeEvent.addEventListener(()=>{
+            this._needsPublish = true;
+        });
+
+        this.deviceService.frameStateEvent.addEventListener((state)=>{
+            if (this._needsPublish ||
+                this._stableState.isPresentingHMD !== this.deviceService.isPresentingHMD ||
+                this._stableState.isPresentingRealityHMD !== this.deviceService.isPresentingRealityHMD ||
+                CanvasViewport.equals(this._stableState.viewport, state.viewport) === false) {
+                    this._needsPublish = true;
+            } else if (this._stableState.subviews) {
+                if (this._stableState.subviews.length === state.subviews.length) {
+                    for (let i=0; i < state.subviews.length; i++) {
+                        if (!SerializedSubview.equals(state.subviews[i], this._stableState.subviews[i])) {
+                            this._needsPublish = true;
+                            break;
+                        }
+                    }
+                } else {
+                    this._needsPublish = true;
+                }
             }
-            window.addEventListener('orientationchange', orientationChangeListener);
-            sessionService.manager.closeEvent.addEventListener(()=>{
-                window.removeEventListener('orientationchange', orientationChangeListener);
-            })
-        }
-    }
 
-    protected handleRequestPresentHMD(session:SessionPort) : Promise<void> {
-        if (vrDisplay) {
-            const element = this.viewService.element;
-            const layers:VRLayer&{}[] = [];
-            layers[0] = {source:element.querySelector('canvas') || <HTMLCanvasElement>element.lastElementChild};
-            return vrDisplay.requestPresent(layers).catch((e)=>{
-                throw e;
-            });
-        }
-        throw new Error('No HMD available');
-    }
-    
-    protected handleExitPresentHMD(session:SessionPort) : Promise<void> {
-        if (vrDisplay) {
-            return vrDisplay.exitPresent();
-        }
-        return Promise.resolve();
-    }
-
-    public publishDeviceState() {
-        const deviceState = this.deviceService.deviceState;
-        
-        deviceState.geolocationDesired = this.contextServiceProvider.geolocationDesired;
-        deviceState.geolocationOptions = this.contextServiceProvider.desiredGeolocationOptions;
-        deviceState.suggestedUserHeight = this.suggestedUserHeight;
-
-        this.onUpdateDeviceState(this.deviceService.deviceState);
-
-        // send device state to each subscribed session 
-        const time = JulianDate.now();
-        this._subscribers.forEach((s)=>{
-            if (s.version[0] > 0) {
-                for (const k in deviceState.entities) {delete deviceState.entities[k]};
-                this.contextServiceProvider.fillEntityStateMapForSession(s, time, deviceState.entities);
-                s.send('ar.device.state', deviceState);
-            }
+            if (this._needsPublish) this.publishStableState();
         });
     }
 
-    public defaultUserHeight = AVERAGE_EYE_HEIGHT;
-
-    public get suggestedUserHeight() {
-        return this.deviceService.isPresentingHMD ? this.defaultUserHeight : this.defaultUserHeight/2;
+    protected handleRequestPresentHMD(session:SessionPort) : Promise<void> {
+        return this.deviceService.requestPresentHMD();
     }
 
-    protected onUpdateDeviceState(deviceState:DeviceState) {
-        deviceState.viewport = undefined;
-        deviceState.subviews = undefined;
-        deviceState.strict = false;
+    protected handleExitPresentHMD(session:SessionPort) : Promise<void> {
+        return this.deviceService.exitPresentHMD();
+    }
+
+    private _needsPublish = false;
+    private _publishTime = new JulianDate(0,0);
+    private _stableState = new DeviceStableState;
+
+    public publishStableState() {
+        const stableState = this._stableState;
+        
+        this.deviceService._geolocationDesired = stableState.geolocationDesired = this.contextServiceProvider.geolocationDesired;
+        this.deviceService._geolocationOptions = stableState.geolocationOptions = stableState.geolocationOptions || {};
+        stableState.geolocationOptions.enableHighAccuracy = this.contextServiceProvider.desiredGeolocationOptions.enableHighAccuracy;
+        stableState.suggestedUserHeight = this.deviceService.suggestedUserHeight;
+        stableState.strict = this.deviceService.strict;
+        stableState.viewport = CanvasViewport.clone(this.deviceService.frameState.viewport, stableState.viewport)
+        stableState.subviews = SerializedSubviewList.clone(this.deviceService.frameState.subviews, stableState.subviews)
+        
+        this.onUpdateStableState(this._stableState);
+
+        // send stable state to each subscribed session 
+        JulianDate.now(this._publishTime);
+        for (const id in this._subscribers) {
+            const session = this._subscribers[id];
+            if (session.version[0] > 0 && session !== this.sessionService.manager) {
+                for (const k in stableState.entities) {delete stableState.entities[k]};
+                this.contextServiceProvider.fillEntityStateMapForSession(session, this._publishTime, stableState.entities);
+                session.send('ar.device.state', stableState);
+            }
+        }
+
+        this._needsPublish = false;
+    }
+
+    protected onUpdateStableState(stableState:DeviceStableState) {
+
     }
 
     private _currentGeolocationOptions?:GeolocationOptions;
@@ -935,7 +1099,7 @@ export class DeviceServiceProvider {
             this.onStopGeolocationUpdates();
             this._currentGeolocationOptions = undefined;
         }
-        this.publishDeviceState();
+        this._needsPublish = true;
     }
 
     private _handleSetGeolocationOptions(session:SessionPort, options:GeolocationOptions) {
@@ -954,53 +1118,51 @@ export class DeviceServiceProvider {
         if (this._targetGeolocationOptions.enableHighAccuracy !== reducedOptions.enableHighAccuracy) {
             this._targetGeolocationOptions = reducedOptions;
         }
-        this.publishDeviceState();
+        this._needsPublish = true;
     }
 
     protected _scratchCartesianLocalOrigin = new Cartesian3;
     protected _scratchQuaternionLocalOrigin = new Quaternion;
     protected _scratchFrustum = new PerspectiveFrustum();
 
+    private _identityHPR = new HeadingPitchRoll;
+
     protected configureStage(
-            longitude?:number,
-            latitude?:number,
-            altitude?:number,
+            cartographic:Cartographic,
             geoHorizontalAccuracy?:number,
             geoVerticalAccuracy?:number) {
 
-        const stage = this.deviceService.stage;
-
-        if (defined(longitude) && defined(latitude)) {
-            // TODO: fallback on https://cesiumjs.org/Cesium/Build/Documentation/sampleTerrain.html for height
-            const height = defined(altitude) ? altitude : 0;
-
-            const fixedPosition = Cartesian3.fromDegrees(longitude, latitude, height, undefined, this._scratchCartesianLocalOrigin);
-            const enuOrientation = Transforms.headingPitchRollQuaternion(fixedPosition, 0,0,0, undefined, this._scratchQuaternionLocalOrigin);
-
-            stage.position = stage.position || new ConstantPositionProperty();
-            stage.orientation = stage.orientation || new ConstantProperty();
-
-            (stage.position as ConstantPositionProperty).setValue(
-                fixedPosition,
-                ReferenceFrame.FIXED
-            );
-
-            (stage.orientation as ConstantProperty).setValue(
-                enuOrientation
-            );
-
-            stage['meta'] = {
-                geoHorizontalAccuracy,
-                geoVerticalAccuracy
-            };
-        } else {
-            stage.position = undefined;
-            stage.orientation = undefined;
-            stage['meta'] = undefined;
+        if (!defined(geoVerticalAccuracy) && cartographic.height === 0) {
+            updateHeightFromTerrain(cartographic).then(() => this.configureStage(cartographic, geoHorizontalAccuracy, 0));
+            return;
         }
+
+        const stage = this.deviceService.stage;
+        
+        const fixedPosition = Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, cartographic.height, undefined, this._scratchCartesianLocalOrigin);
+        const enuOrientation = Transforms.headingPitchRollQuaternion(fixedPosition, this._identityHPR, undefined, this._scratchQuaternionLocalOrigin);
+
+        stage.position = stage.position || new ConstantPositionProperty();
+        stage.orientation = stage.orientation || new ConstantProperty();
+
+        (stage.position as ConstantPositionProperty).setValue(
+            fixedPosition,
+            ReferenceFrame.FIXED
+        );
+
+        (stage.orientation as ConstantProperty).setValue(
+            enuOrientation
+        );
+
+        stage['meta'] = {
+            geoHorizontalAccuracy,
+            geoVerticalAccuracy
+        };
     }
 
     private _geolocationWatchId?:number;
+
+    private _scratchCartographic = new Cartographic;
 
     /**
      * Overridable. Should call setGeolocation when new geolocation is available 
@@ -1010,10 +1172,14 @@ export class DeviceServiceProvider {
             throw new Error('Unable to start geolocation updates');
         if (!defined(this._geolocationWatchId)) {
             this._geolocationWatchId = navigator.geolocation.watchPosition((pos) => {
+
+                const longDegrees = pos.coords.longitude;
+                const latDegrees = pos.coords.latitude;
+                const altitude = pos.coords.altitude;
+                const cartographic = Cartographic.fromDegrees(longDegrees, latDegrees, altitude||0, this._scratchCartographic);
+
                 this.configureStage(
-                    pos.coords.longitude, 
-                    pos.coords.latitude, 
-                    pos.coords.altitude || 0, 
+                    cartographic,
                     (pos.coords.accuracy > 0) ? pos.coords.accuracy : undefined,
                     pos.coords.altitudeAccuracy || undefined
                 );

@@ -1,37 +1,55 @@
 /// <reference types="cesium" />
-import { Entity, Cartesian3, Quaternion, JulianDate, PerspectiveFrustum } from './cesium/cesium-imports';
+import { Entity, Cartesian3, Quaternion, JulianDate, PerspectiveFrustum, Cartographic } from './cesium/cesium-imports';
 import { ContextService, ContextServiceProvider } from './context';
 import { SessionService, SessionPort } from './session';
 import { CanvasViewport, SerializedSubviewList, SerializedEntityStateMap, ContextFrameState, GeolocationOptions } from './common';
 import { Event } from './utils';
 import { ViewService } from './view';
 import { VisibilityService } from './visibility';
-export declare class DeviceState {
+export declare class DeviceStableState {
     viewport?: CanvasViewport;
     subviews?: SerializedSubviewList;
     entities: SerializedEntityStateMap;
     suggestedUserHeight: number;
     geolocationDesired: boolean;
-    geolocationOptions: GeolocationOptions;
+    geolocationOptions?: GeolocationOptions;
     isPresentingHMD: boolean;
+    isPresentingRealityHMD: boolean;
     strict: boolean;
 }
-export declare class DeviceFrameState extends DeviceState {
+export declare class DeviceFrameState {
     private _scratchFrustum;
-    screenOrientationDegrees: number;
     time: JulianDate;
     viewport: CanvasViewport;
     subviews: SerializedSubviewList;
 }
+/**
+ * The DeviceService provides the current device state
+ */
 export declare class DeviceService {
     protected sessionService: SessionService;
     protected contextService: ContextService;
     protected viewService: ViewService;
     protected visibilityService: VisibilityService;
+    /**
+     * If this is true (and we are presenting via webvr api), then
+     * vrDisplay.submitFrame is called after the frameState event
+     */
     autoSubmitFrame: boolean;
-    deviceState: DeviceState;
+    /**
+     * Device state for the current frame. This
+     * is not updated unless the view is visible.
+     */
     frameState: DeviceFrameState;
+    /**
+     * An event that fires every time the device frameState is updated.
+     */
     frameStateEvent: Event<DeviceFrameState>;
+    /**
+     * An even that fires when the view starts or stops presenting to an HMD
+     */
+    presentHMDChangeEvent: Event<void>;
+    screenOrientationChangeEvent: Event<void>;
     /**
      * An entity representing the physical floor-level plane below the user,
      * where +X is east, +Y is North, and +Z is up (if geolocation is known)
@@ -45,31 +63,46 @@ export declare class DeviceService {
     readonly geoHeadingAccuracy: number | undefined;
     readonly geoHorizontalAccuracy: number | undefined;
     readonly geoVerticalAccuracy: number | undefined;
+    _geolocationDesired: boolean;
+    readonly geolocationDesired: boolean;
+    _geolocationOptions: GeolocationOptions | undefined;
+    readonly geolocationOptions: GeolocationOptions | undefined;
+    defaultUserHeight: number;
+    readonly suggestedUserHeight: number;
+    readonly strict: boolean;
     private _getEntityPositionInReferenceFrame;
     private _getEntityOrientationInReferenceFrame;
     protected _scratchCartesian: Cartesian3;
     protected _scratchCartesian2: Cartesian3;
     protected _scratchFrustum: PerspectiveFrustum;
+    private _vrDisplays;
+    private _vrDisplay;
     constructor(sessionService: SessionService, contextService: ContextService, viewService: ViewService, visibilityService: VisibilityService);
     _processContextFrameState(state: ContextFrameState): void;
-    private _onDeviceState(deviceState);
-    private _updating;
+    protected _parentState: DeviceStableState | undefined;
+    private _processStableState(stableState);
+    private _updatingFrameState;
     private _updateFrameState;
-    getScreenOrientationDegrees(): number;
+    readonly screenOrientationDegrees: number;
+    protected getScreenOrientationDegrees(): () => any;
     /**
      * Request an animation frame callback for the current view.
      */
     requestAnimationFrame: (callback: (timestamp: number) => void) => number;
+    /**
+     * Cancel an animation frame callback for the current view.
+     */
     cancelAnimationFrame: (id: number) => void;
     /**
      * Start emmitting frameState events
      */
-    startUpdates(): void;
+    private _startUpdates();
     /**
      * Stop emitting frameState events
      */
-    stopUpdates(): void;
+    private _stopUpdates();
     protected onUpdateFrameState(): void;
+    private _updateViewport();
     private _updateDefault();
     private _vrFrameData?;
     private _scratchQuaternion;
@@ -86,6 +119,9 @@ export declare class DeviceService {
     private _updateForWebVR();
     private _scratchFrameState;
     private _getSerializedEntityState;
+    private _hasPolyfillWebVRDisplay();
+    protected onRequestPresentHMD(): Promise<void>;
+    protected onExitPresentHMD(): Promise<void>;
     /**
      * Generate a frame state for the ContextService.
      *
@@ -104,7 +140,14 @@ export declare class DeviceService {
     getSubviewEntity(index: number): Entity;
     subscribeGeolocation(options?: GeolocationOptions, session?: SessionPort): Promise<void>;
     unsubscribeGeolocation(session?: SessionPort): void;
+    /**
+     * Is the view presenting to an HMD
+     */
     readonly isPresentingHMD: boolean;
+    /**
+     * Is the current reality presenting to an HMD
+     */
+    readonly isPresentingRealityHMD: boolean;
     requestPresentHMD(): Promise<void>;
     exitPresentHMD(): Promise<void>;
     private _deviceOrientationListener;
@@ -114,6 +157,9 @@ export declare class DeviceService {
     private _tryOrientationUpdates();
     private _setupVRPresentChangeHandler();
 }
+/**
+ *
+ */
 export declare class DeviceServiceProvider {
     protected sessionService: SessionService;
     protected deviceService: DeviceService;
@@ -124,10 +170,11 @@ export declare class DeviceServiceProvider {
     constructor(sessionService: SessionService, deviceService: DeviceService, contextService: ContextService, viewService: ViewService, contextServiceProvider: ContextServiceProvider);
     protected handleRequestPresentHMD(session: SessionPort): Promise<void>;
     protected handleExitPresentHMD(session: SessionPort): Promise<void>;
-    publishDeviceState(): void;
-    defaultUserHeight: number;
-    readonly suggestedUserHeight: number;
-    protected onUpdateDeviceState(deviceState: DeviceState): void;
+    private _needsPublish;
+    private _publishTime;
+    private _stableState;
+    publishStableState(): void;
+    protected onUpdateStableState(stableState: DeviceStableState): void;
     private _currentGeolocationOptions?;
     private _targetGeolocationOptions;
     private _sessionGeolocationOptions;
@@ -137,8 +184,10 @@ export declare class DeviceServiceProvider {
     protected _scratchCartesianLocalOrigin: Cartesian3;
     protected _scratchQuaternionLocalOrigin: Quaternion;
     protected _scratchFrustum: PerspectiveFrustum;
-    protected configureStage(longitude?: number, latitude?: number, altitude?: number, geoHorizontalAccuracy?: number, geoVerticalAccuracy?: number): void;
+    private _identityHPR;
+    protected configureStage(cartographic: Cartographic, geoHorizontalAccuracy?: number, geoVerticalAccuracy?: number): void;
     private _geolocationWatchId?;
+    private _scratchCartographic;
     /**
      * Overridable. Should call setGeolocation when new geolocation is available
      */

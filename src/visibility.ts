@@ -39,6 +39,14 @@ export class VisibilityService {
                 this.hideEvent.raiseEvent(undefined);
             }
         })
+        
+        // if running in an old manager, assume we are visible
+        sessionService.manager.connectEvent.addEventListener(()=>{
+            if (sessionService.manager.version[0] === 0) {
+                this._isVisible = true;
+                this.showEvent.raiseEvent(undefined);
+            }
+        })
     }
 
 }
