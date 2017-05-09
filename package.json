@@ -248,6 +248,7 @@
     "derequire": "^2.0.3",
     "jspm": "0.17.0-beta.32",
     "node-static": "^0.7.7",
+    "systemjs": "^0.20.9",
     "tsconfig-glob": "^0.2.1",
     "typedoc": "^0.5.7",
     "typescript": "^2.2.1",
