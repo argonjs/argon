@@ -21990,10 +21990,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         session = this.sessionService.manager;
                     }
                     id = id.id || id;
-                    return session.request('ar.context.subscribe', { id: id }).then(function (resolve) {
+                    return session.request('ar.context.subscribe', { id: id }).then(function () {
                         return _this.entities.getOrCreateEntity(id);
-                    }, function (reject) {
-                        return Promise.reject(reject);
                     });
                 };
                 /**
@@ -22262,7 +22260,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     this._cacheTime = new JulianDate(0, 0);
                     this._entityPoseCache = {};
                     this._getSerializedEntityState = getSerializedEntityState;
-                    this.requestPermission = function (request) {
+                    this.handlePermissionRequest = function (request) {
                         return Promise.resolve(true);
                     };
                     this._sessionEntities = {};
@@ -22287,15 +22285,14 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                                     subscribers.delete(session);
                                     _this.subscribersChangeEvent.raiseEvent({ id: id, subscribers: subscribers });
                                 });
+                                return Promise.resolve();
                             };
                             if (PermissionTypes.indexOf(id) >= 0) {
-                                _this.requestPermission({ type: id, uri: session.uri, force: false }).then(function (resolve) {
-                                    if (resolve == true) subscription();
-                                }, function (reject) {
-                                    return Promise.reject(new Error('Permission not granted'));
+                                _this.handlePermissionRequest({ type: id, uri: session.uri }).then(function (result) {
+                                    if (result === true) return subscription();else return Promise.reject(new Error("Permission request denied."));
                                 });
                             } else {
-                                subscription();
+                                return subscription();
                             }
                         };
                         session.on['ar.context.unsubscribe'] = function (_a) {

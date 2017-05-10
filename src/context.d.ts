@@ -3,7 +3,7 @@ import { Entity, EntityCollection, Cartographic, Cartesian3, Quaternion, Transfo
 import { SerializedEntityState, SerializedEntityStateMap, ContextFrameState, GeolocationOptions } from './common';
 import { SessionService, SessionPort } from './session';
 import { Event } from './utils';
-import { PermissionRequest } from './permissions';
+import { PermissionRequest } from './permission';
 /**
  * Represents the pose of an entity relative to a particular reference frame.
  *
@@ -308,7 +308,7 @@ export declare class ContextServiceProvider {
     private _cacheTime;
     private _entityPoseCache;
     private _getSerializedEntityState;
-    requestPermission: (request: PermissionRequest) => Promise<boolean>;
+    handlePermissionRequest: (request: PermissionRequest) => Promise<boolean>;
     constructor(sessionService: SessionService, contextService: ContextService);
     fillEntityStateMapForSession(session: SessionPort, time: JulianDate, entities: SerializedEntityStateMap): void;
     private _publishUpdates();

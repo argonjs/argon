@@ -31,7 +31,7 @@ import {
 } from './common'
 import { SessionService, SessionPort } from './session'
 import { Event, getReachableAncestorReferenceFrames, getSerializedEntityState, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame, deprecated, decomposePerspectiveProjectionMatrix } from './utils'
-import {PermissionTypes, PermissionRequest} from './permissions'
+import {PermissionTypes, PermissionRequest} from './permission'
 
 /**
  * Represents the pose of an entity relative to a particular reference frame. 
@@ -493,10 +493,8 @@ export class ContextService {
      */
     public subscribe(id: string|Entity, session=this.sessionService.manager) : Promise<Entity> {
         id = (<Entity>id).id || <string>id;
-        return session.request('ar.context.subscribe', {id}).then((resolve)=>{
+        return session.request('ar.context.subscribe', {id}).then(()=>{
             return this.entities.getOrCreateEntity(id);            
-        }, (reject)=>{
-            return Promise.reject(reject);
         });
     }
 
@@ -808,7 +806,9 @@ export class ContextServiceProvider {
     private _entityPoseCache: SerializedEntityStateMap = {};
     private _getSerializedEntityState = getSerializedEntityState;
 
-    public requestPermission = (request: PermissionRequest) => {return Promise.resolve(true);};
+    public handlePermissionRequest = (request: PermissionRequest) => {
+        return Promise.resolve(true);
+    };
 
     constructor(
         private sessionService:SessionService,
@@ -837,17 +837,20 @@ export class ContextServiceProvider {
                         subscribers.delete(session);
                         this.subscribersChangeEvent.raiseEvent({id, subscribers});
                     })
+                    return Promise.resolve();
                 }
 
                 if (PermissionTypes.indexOf(id) >= 0) {//when the request is for permissions
-                    this.requestPermission({type: id, uri: <string>session.uri, force: false}).then(
-                        (resolve) => {
-                            if (resolve == true) subscription();
-                        },
-                        (reject) => {return Promise.reject(new Error('Permission not granted'));}
+                    this.handlePermissionRequest({type: id, uri: <string>session.uri}).then(
+                        (result) => {
+                            if (result === true)
+                                return subscription();
+                            else
+                                return Promise.reject(new Error("Permission request denied."));
+                        }
                     );                        
                 } else {    //when the request is to a vuforia dataset
-                    subscription();
+                    return subscription();
                 }
             }
 
