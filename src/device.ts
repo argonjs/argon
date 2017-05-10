@@ -984,7 +984,7 @@ export class DeviceServiceProvider {
                 delete this._subscribers[session.id];
             }
 
-            session.on['ar.device.setGeolocationOptions'] = (options) => {
+            session.on['ar.device.setGeolocationOptions'] = ({options}) => {
                 this._handleSetGeolocationOptions(session, options);
             }
 
@@ -1107,6 +1107,7 @@ export class DeviceServiceProvider {
         session.closeEvent.addEventListener(()=>{
             this._sessionGeolocationOptions.delete(session);
         });
+        this._checkDeviceGeolocationSubscribers();
     }
 
     private _updateTargetGeolocationOptions() {
