@@ -20904,7 +20904,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _scratchArray = [];
 
-            _export('version', version = "1.2.0-18");
+            _export('version', version = "1.2.0-19");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -23813,7 +23813,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         session.on['ar.device.stopUpdates'] = function () {
                             delete _this._subscribers[session.id];
                         };
-                        session.on['ar.device.setGeolocationOptions'] = function (options) {
+                        session.on['ar.device.setGeolocationOptions'] = function (_a) {
+                            var options = _a.options;
                             _this._handleSetGeolocationOptions(session, options);
                         };
                         session.on['ar.device.requestPresentHMD'] = function () {
@@ -23908,6 +23909,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     session.closeEvent.addEventListener(function () {
                         _this._sessionGeolocationOptions.delete(session);
                     });
+                    this._checkDeviceGeolocationSubscribers();
                 };
                 DeviceServiceProvider.prototype._updateTargetGeolocationOptions = function () {
                     var reducedOptions = {};
