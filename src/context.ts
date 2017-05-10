@@ -31,7 +31,7 @@ import {
 } from './common'
 import { SessionService, SessionPort } from './session'
 import { Event, getReachableAncestorReferenceFrames, getSerializedEntityState, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame, deprecated, decomposePerspectiveProjectionMatrix } from './utils'
-
+import {PermissionTypes, PermissionRequest} from './permissions'
 
 /**
  * Represents the pose of an entity relative to a particular reference frame. 
@@ -493,8 +493,10 @@ export class ContextService {
      */
     public subscribe(id: string|Entity, session=this.sessionService.manager) : Promise<Entity> {
         id = (<Entity>id).id || <string>id;
-        return session.request('ar.context.subscribe', {id}).then(()=>{
-            return this.entities.getOrCreateEntity(id);
+        return session.request('ar.context.subscribe', {id}).then((resolve)=>{
+            return this.entities.getOrCreateEntity(id);            
+        }, (reject)=>{
+            return Promise.reject(reject);
         });
     }
 
@@ -806,6 +808,8 @@ export class ContextServiceProvider {
     private _entityPoseCache: SerializedEntityStateMap = {};
     private _getSerializedEntityState = getSerializedEntityState;
 
+    public requestPermission = (request: PermissionRequest) => {return Promise.resolve(true);};
+
     constructor(
         private sessionService:SessionService,
         private contextService:ContextService
@@ -816,19 +820,35 @@ export class ContextServiceProvider {
             const subscriptions = {};
             this.entitySubscriptionsBySubscriber.set(session, subscriptions);
 
-            session.on['ar.context.subscribe'] = ({id}:{id:string}) => {
-                if (subscriptions[id]) return;
-
-                const subscribers = this.subscribersByEntityId.get(id) || new Set<SessionPort>();
-                this.subscribersByEntityId.set(id, subscribers);
-                subscribers.add(session);
-                subscriptions[id] = true;
-                this.subscribersChangeEvent.raiseEvent({id, subscribers});
-
-                session.closeEvent.addEventListener(()=>{
-                    subscribers.delete(session);
+            session.on['ar.context.subscribe'] = ({id}:{id:string}) => {                
+                if (!session.uri) 
+                    return Promise.reject(new Error('Subscription failed. Invalid URI'));
+                
+                const subscription = () => {
+                    if (subscriptions[id]) return;
+                    
+                    const subscribers = this.subscribersByEntityId.get(id) || new Set<SessionPort>();
+                    this.subscribersByEntityId.set(id, subscribers);
+                    subscribers.add(session);
+                    subscriptions[id] = true;
                     this.subscribersChangeEvent.raiseEvent({id, subscribers});
-                })
+
+                    session.closeEvent.addEventListener(()=>{
+                        subscribers.delete(session);
+                        this.subscribersChangeEvent.raiseEvent({id, subscribers});
+                    })
+                }
+
+                if (PermissionTypes.indexOf(id) >= 0) {//when the request is for permissions
+                    this.requestPermission({type: id, uri: <string>session.uri, force: false}).then(
+                        (resolve) => {
+                            if (resolve == true) subscription();
+                        },
+                        (reject) => {return Promise.reject(new Error('Permission not granted'));}
+                    );                        
+                } else {    //when the request is to a vuforia dataset
+                    subscription();
+                }
             }
 
             session.on['ar.context.unsubscribe'] = ({id}:{id:string}) => {

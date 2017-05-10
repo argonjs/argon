@@ -28,6 +28,7 @@ export * from './utils';
 export * from './view';
 export * from './visibility';
 export * from './vuforia';
+export * from './permissions';
 export { RealityViewer, EmptyRealityViewer, LiveRealityViewer, HostedRealityViewer };
 export declare class ArgonSystemProvider {
     context: ContextServiceProvider;
