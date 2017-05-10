@@ -547,7 +547,7 @@ export class ContextService {
      */
     public createGeoEntity(cartographic: Cartographic, localFrameToFixedFrame: typeof Transforms.northUpEastToFixedFrame) : Entity {
         // Convert the cartographic location to an ECEF position
-        var position = Cartesian3.fromDegrees(cartographic.longitude, cartographic.latitude, cartographic.height, undefined, this._scratchCartesian);
+        var position = Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, cartographic.height, undefined, this._scratchCartesian);
 
         // compute an appropriate orientation on the surface of the earth
         var transformMatrix = localFrameToFixedFrame(position, undefined, this._scratchMatrix4);
