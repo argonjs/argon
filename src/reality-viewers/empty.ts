@@ -18,7 +18,7 @@ import {
 } from '../cesium/cesium-imports'
 import { Role, SerializedSubviewList } from '../common'
 import { SessionService } from '../session'
-import { decomposePerspectiveProjectionMatrix, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame, eastUpSouthToFixedFrame } from '../utils'
+import { decomposePerspectiveProjectionMatrix, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame } from '../utils'
 import { ContextService, PoseStatus } from '../context'
 import { DeviceService } from '../device'
 import { ViewService } from '../view'
