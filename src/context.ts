@@ -810,6 +810,10 @@ export class ContextServiceProvider {
         return Promise.resolve(true);
     };
 
+    public handlePermissionRevoke = (request: PermissionRequest) => {
+        return Promise.resolve();
+    }
+
     constructor(
         private sessionService:SessionService,
         private contextService:ContextService
@@ -840,7 +844,7 @@ export class ContextServiceProvider {
                     return Promise.resolve();
                 }
 
-                if (PermissionTypes.indexOf(id) >= 0) {//when the request is for permissions
+                if (PermissionTypes.indexOf(id) >= 0) { //when the request is for permissions
                     this.handlePermissionRequest({type: id, uri: <string>session.uri}).then(
                         (result) => {
                             if (result === true)
@@ -857,10 +861,21 @@ export class ContextServiceProvider {
             session.on['ar.context.unsubscribe'] = ({id}:{id:string}) => {
                 if (!subscriptions[id]) return;
 
-                const subscribers = this.subscribersByEntityId.get(id);
-                subscribers && subscribers.delete(session);
-                delete subscriptions[id];
-                this.subscribersChangeEvent.raiseEvent({id, subscribers});
+                const unsubscription = () => {
+                    const subscribers = this.subscribersByEntityId.get(id);
+                    subscribers && subscribers.delete(session);
+                    delete subscriptions[id];
+                    this.subscribersChangeEvent.raiseEvent({id, subscribers});
+                    return Promise.resolve();
+                }
+
+                if (PermissionTypes.indexOf(id) >= 0) { //when the request is for permissions
+                    this.handlePermissionRevoke({type: id, uri: <string>session.uri}).then(() => {
+                        return unsubscription();
+                    });                        
+                } else {    //when the request is to a vuforia dataset
+                    return unsubscription();
+                }
             }
 
             session.on['ar.context.setGeolocationOptions'] = ({options}) => {

@@ -309,6 +309,7 @@ export declare class ContextServiceProvider {
     private _entityPoseCache;
     private _getSerializedEntityState;
     handlePermissionRequest: (request: PermissionRequest) => Promise<boolean>;
+    handlePermissionRevoke: (request: PermissionRequest) => Promise<void>;
     constructor(sessionService: SessionService, contextService: ContextService);
     fillEntityStateMapForSession(session: SessionPort, time: JulianDate, entities: SerializedEntityStateMap): void;
     private _publishUpdates();
