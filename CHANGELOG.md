@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.2.0-20"></a>
+# [1.2.0-20](https://github.com/argonjs/argon/compare/v1.2.0-19...v1.2.0-20) (2017-05-15)
+
+
+
 <a name="1.2.0-19"></a>
 # [1.2.0-19](https://github.com/argonjs/argon/compare/v1.2.0-18...v1.2.0-19) (2017-05-10)
 
