@@ -26484,7 +26484,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _scratchArray = [];
 
-            _export('version', version = "1.2.0-19");
+            _export('version', version = "1.2.0-20");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -30485,10 +30485,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                             case RealityViewer.DEFAULT:
                                 uri = this.realityService.default;
                         }
-                        var viewer = this._viewerByURI.get(uri);
-                        if (!viewer) {
-                            this._handleInstall(session, uri);
-                        }
+                        this._handleInstall(session, uri);
                         this._setPresentingRealityViewer(this._viewerByURI.get(uri));
                         return Promise.resolve();
                     }
@@ -30505,6 +30502,19 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 };
                 RealityServiceProvider.prototype.getViewerByURI = function (uri) {
                     return this._viewerByURI.get(uri);
+                };
+                RealityServiceProvider.prototype.removeInstaller = function (installerSession) {
+                    var _this = this;
+                    this._viewerByURI.forEach(function (viewer, realityUri, map) {
+                        var installers = _this._installersByURI.get(realityUri);
+                        if (installers && installers.has(installerSession)) {
+                            installers.delete(installerSession);
+                            if (installers.size === 0 && viewer.session) {
+                                _this._handleUninstall(viewer.session, realityUri);
+                                _this._installersByURI.delete(realityUri);
+                            }
+                        }
+                    });
                 };
                 return RealityServiceProvider;
             }());
