@@ -115,4 +115,5 @@ export declare class RealityServiceProvider {
     }): Promise<void>;
     private _setPresentingRealityViewer(viewer);
     getViewerByURI(uri: string): RealityViewer | undefined;
+    removeInstaller(installerSession: SessionPort): void;
 }

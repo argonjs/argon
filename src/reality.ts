@@ -437,10 +437,7 @@ export class RealityServiceProvider {
                     uri = this.realityService.default;
             }
             
-            let viewer = this._viewerByURI.get(uri);
-            if (!viewer) {
-                this._handleInstall(session, uri);
-            }
+            this._handleInstall(session, uri);
             this._setPresentingRealityViewer(this._viewerByURI.get(uri)!);
 
             return Promise.resolve();
@@ -463,5 +460,18 @@ export class RealityServiceProvider {
 
     public getViewerByURI(uri: string) {
         return this._viewerByURI.get(uri);
+    }
+
+    public removeInstaller(installerSession: SessionPort) {
+        this._viewerByURI.forEach((viewer, realityUri, map)=>{
+            const installers = this._installersByURI.get(realityUri);
+            if (installers && installers.has(installerSession)) {
+                installers.delete(installerSession);
+                if (installers.size === 0 && viewer.session) {
+                    this._handleUninstall(viewer.session, realityUri);
+                    this._installersByURI.delete(realityUri);
+                }
+            }
+        });
     }
 }
