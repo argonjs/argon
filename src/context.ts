@@ -329,16 +329,16 @@ export class ContextService {
 
     // To be removed. This is no longer useful.
     @deprecated()
-    public get localOriginEastNorthUp() {return this._localOrigin;}
+    public get localOriginEastUpSouth() {return this._localOrigin;}
 
     // To be removed. This is no longer useful.
     @deprecated()
-    public get localOriginEastUpSouth() { return this._localOriginEastUpSouth; }
-    private _localOriginEastUpSouth: Entity = this.entities.add(new Entity({
-        id: 'ar.localOriginEUS',
-        name: 'Local Origin (EUS)',
+    public get localOriginEastNorthUp() { return this._localOriginEastNorthUp; }
+    private _localOriginEastNorthUp: Entity = this.entities.add(new Entity({
+        id: 'ar.localOriginENU',
+        name: 'Local Origin (ENU)',
         position: new ConstantPositionProperty(Cartesian3.ZERO, this.localOriginEastNorthUp),
-        orientation: new ConstantProperty(Quaternion.fromAxisAngle(Cartesian3.UNIT_X, Math.PI / 2))
+        orientation: new ConstantProperty(Quaternion.fromAxisAngle(Cartesian3.UNIT_X, -Math.PI / 2))
     }));
 
     /**
