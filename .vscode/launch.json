@@ -11,6 +11,7 @@
             "program": "${workspaceRoot}/node_modules/jspm/jspm.js",
             "cwd": "${workspaceRoot}",
             "outFiles": [],
+            "protocol": "legacy",
             "sourceMaps": true,
             "args": [
                 "run",
