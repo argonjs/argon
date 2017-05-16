@@ -824,10 +824,6 @@ export class ContextService {
 
 @autoinject()
 export class ContextServiceProvider {
-
-    public entitySubscriptionsBySubscriber = new WeakMap<SessionPort, {[subcription:string]:any}>();
-    public subscribersByEntityId = new Map<string, Set<SessionPort>>();
-    public subscribersChangeEvent = new Event<{id:string, subscribers}>();
     
     private _cacheTime = new JulianDate(0,0)
 
@@ -894,7 +890,7 @@ export class ContextServiceProvider {
         }
 
         // get subscribed entities for the session
-        const subscriptions = this.entitySubscriptionsBySubscriber.get(session)!;
+        const subscriptions = this.entityServiceProvider.subscriptionsBySubscriber.get(session)!;
         
         // exclude the stage state unless it is explicitly subscribed 
         const contextService = this.contextService;
