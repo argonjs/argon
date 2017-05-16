@@ -119,9 +119,9 @@ export declare class ContextService {
     /** alias for origin */
     readonly localOrigin: Entity;
     private _localOrigin;
-    readonly localOriginEastNorthUp: Entity;
     readonly localOriginEastUpSouth: Entity;
-    private _localOriginEastUpSouth;
+    readonly localOriginEastNorthUp: Entity;
+    private _localOriginEastNorthUp;
     /**
      * A coordinate system representing the physical space in which the user is free to
      * move around, positioned on the surface the user is standing on,
@@ -130,7 +130,7 @@ export declare class ContextService {
      */
     stage: Entity;
     /**
-     * An coordinate system representing the floor.
+     * A coordinate system representing the floor.
      * While the `stage` always represents a physical surface,
      * the `floor` entity may represent a virtual floor.
      */
@@ -277,14 +277,6 @@ export declare class ContextServiceProvider {
     protected sessionService: SessionService;
     protected contextService: ContextService;
     protected entityServiceProvider: EntityServiceProvider;
-    entitySubscriptionsBySubscriber: WeakMap<SessionPort, {
-        [subcription: string]: any;
-    }>;
-    subscribersByEntityId: Map<string, Set<SessionPort>>;
-    subscribersChangeEvent: Event<{
-        id: string;
-        subscribers: any;
-    }>;
     private _cacheTime;
     constructor(sessionService: SessionService, contextService: ContextService, entityServiceProvider: EntityServiceProvider);
     private _publishUpdates();
