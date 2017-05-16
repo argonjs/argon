@@ -3,7 +3,7 @@ import { CanvasViewport, Viewport, ContextFrameState, SubviewType } from './comm
 import { SessionService, SessionPort } from './session'
 import { ContextService, EntityPose } from './context'
 
-import { PerspectiveFrustum, Cartesian3, Quaternion, Matrix4 } from './cesium/cesium-imports'
+import { PerspectiveFrustum, Matrix4 } from './cesium/cesium-imports'
 
 import { 
     Event,
@@ -41,7 +41,7 @@ export abstract class ViewElement {};
 /**
  * Manages the view state
  */
-@inject(SessionService, ContextService, FocusService, Optional.of(ViewElement))
+@inject(SessionService, FocusService, Optional.of(ViewElement))
 export class ViewService {
     
     /**
@@ -120,7 +120,6 @@ export class ViewService {
 
     constructor(
         private sessionService: SessionService,
-        private contextService: ContextService,
         private focusService: FocusService,
         elementOrSelector?: Element|string|null) {
 
@@ -248,9 +247,9 @@ export class ViewService {
         return this.subviews;
     }
 
-    private _IDENTITY_SUBVIEW_POSE = {p:Cartesian3.ZERO, o:Quaternion.IDENTITY, r:this.contextService.view.id};
-
-    public _processContextFrameState(state:ContextFrameState) {
+    // Kind of hacky that we are passing the ContextService here.
+    // Might be better to bring this logic into the ContextService
+    public _processContextFrameState(state:ContextFrameState, contextService:ContextService) {
 
         const renderWidthScaleFactor = state.viewport.renderWidthScaleFactor || 1;
         const renderHeightScaleFactor = state.viewport.renderHeightScaleFactor || 1;
@@ -263,9 +262,6 @@ export class ViewService {
 
         let index = 0;
         for (const serializedSubview of serializedSubviewList) {
-            const subviewPose = serializedSubview.pose || this._IDENTITY_SUBVIEW_POSE;
-            const subviewEntity = this.contextService.getSubviewEntity(index);
-            this.contextService.updateEntityFromSerializedState(subviewEntity.id, subviewPose);
 
             const subview = subviews[index] = subviews[index] || <Subview>{};
             subview.index = index;
@@ -288,7 +284,7 @@ export class ViewService {
             subview['projectionMatrix'] = <Matrix4>subview.frustum.projectionMatrix;
 
             subview.pose = this._subviewPose[index] = 
-                this._subviewPose[index] || this.contextService.createEntityPose(subviewEntity);
+                this._subviewPose[index] || contextService.createEntityPose(contextService.getSubviewEntity(index));
             subview.pose.update();
             
             index++;

@@ -17,6 +17,7 @@ import { Configuration, Role } from './common'
 import { DefaultUIService } from './ui'
 import { Event } from './utils'
 
+import { EntityService, EntityServiceProvider } from './entity'
 import { ContextService, ContextServiceProvider } from './context'
 import { FocusService, FocusServiceProvider } from './focus'
 import { DeviceService, DeviceServiceProvider } from './device'
@@ -33,6 +34,7 @@ import { HostedRealityViewer } from './reality-viewers/hosted'
 export { DI, Cesium }
 export * from './common'
 export * from './context'
+export * from './entity'
 export * from './focus'
 export * from './device'
 export * from './reality'
@@ -52,6 +54,7 @@ export {
 @DI.autoinject()
 export class ArgonSystemProvider {
     constructor(
+        public entity:EntityServiceProvider,
         public context:ContextServiceProvider,
         public focus:FocusServiceProvider,
         public device:DeviceServiceProvider,
@@ -79,6 +82,7 @@ export class ArgonSystem {
 
     constructor(
         public container: DI.Container,
+        public entity:EntityService,
         public context: ContextService,
         public device: DeviceService,
         public focus: FocusService,
@@ -92,12 +96,7 @@ export class ArgonSystem {
 
         if (this.container.hasResolver(ArgonSystemProvider)) 
             this._provider = this.container.get(ArgonSystemProvider);
-
-        this.context.frameStateEvent.addEventListener((frameState)=>{
-            this.device._processContextFrameState(frameState);
-            this.view._processContextFrameState(frameState);
-        });
-
+        
         this.session.connect();
     }
 

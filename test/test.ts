@@ -55,8 +55,254 @@ describe('Argon', () => {
         });
     })
 
+    describe('app.context.subscribeGeolocation', () => {
+        it('should set suggestedGeolocationSubscription options in DeviceService', () => {
+            const manager = Argon.init(null, { role: Argon.Role.REALITY_MANAGER });
+            
+            manager.device.suggestedGeolocationSubscriptionChangeEvent.addEventListener(()=>{
+                expect(manager.device.suggestedGeolocationSubscription).to.exist;
+                expect(manager.device.suggestedGeolocationSubscription!.enableHighAccuracy).to.be.true;
+            });
+
+            expect(manager.device.suggestedGeolocationSubscription).to.not.exist;
+            manager.context.subscribeGeolocation({enableHighAccuracy:true});
+        });
+    })
+
+    describe('app.context.unsubscribeGeolocation', () => {
+        it('should unset suggestedGeolocationSubscription options in DeviceService', () => {
+            const manager = Argon.init(null, { role: Argon.Role.REALITY_MANAGER });
+            
+            const remove = manager.device.suggestedGeolocationSubscriptionChangeEvent.addEventListener(()=>{
+                expect(manager.device.suggestedGeolocationSubscription).to.exist;
+                expect(manager.device.suggestedGeolocationSubscription!.enableHighAccuracy).to.be.true;
+                remove();
+
+                manager.context.unsubscribeGeolocation();
+                manager.device.suggestedGeolocationSubscriptionChangeEvent.addEventListener(()=>{
+                    expect(manager.device.suggestedGeolocationSubscription).to.not.exist;
+                })
+            });
+
+            expect(manager.device.suggestedGeolocationSubscription).to.not.exist;
+            manager.context.subscribeGeolocation({enableHighAccuracy:true});
+        });
+    })
+
+    describe('app.device.subscribeGeolocation', () => {
+        it('should attempt to start geolocation updates', (done) => {
+
+            const manager = Argon.init(null, { role: Argon.Role.REALITY_MANAGER });
+            
+            manager.provider.device.onStartGeolocationUpdates = (options) => {
+                expect(options && options.enableHighAccuracy).to.be.true;
+                done();
+            }
+
+            manager.device.subscribeGeolocation({enableHighAccuracy:true});
+        });
+    })
+
+    describe('app.device.unsubscribeGeolocation', () => {
+        it('should attempt to stop geolocation updates', (done) => {
+
+            const manager = Argon.init(null, { role: Argon.Role.REALITY_MANAGER });
+            
+            manager.provider.device.onStartGeolocationUpdates = (options) => {
+                expect(options && options.enableHighAccuracy).to.be.true;
+            }
+
+            manager.provider.device.onStopGeolocationUpdates = () => {
+                done();
+                manager.provider.device.onStopGeolocationUpdates = () => {};
+            }
+
+            manager.device.subscribeGeolocation({enableHighAccuracy:true});
+        });
+    })
+
 });
 
+describe('EntityService', () => {
+
+    describe('new EntityService()', () => {
+        it('should create an EntityService instance', () => {
+            const sessionService = new Argon.SessionService(
+                { role:Argon.Role.REALITY_MANAGER }, 
+                new Argon.LoopbackConnectService,
+                new Argon.SessionPortFactory,
+                new Argon.MessageChannelFactory
+            );
+            const entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
+            expect(entityService).to.be.instanceOf(Argon.EntityService);
+            expect(entityService.collection).to.be.instanceOf(Argon.Cesium.EntityCollection);
+        });
+    })
+
+    describe('subscribe', () => {
+
+        it('should return resolved promise after success', () => {
+            const sessionService = new Argon.SessionService(
+                { role:Argon.Role.REALITY_MANAGER }, 
+                new Argon.LoopbackConnectService,
+                new Argon.SessionPortFactory,
+                new Argon.MessageChannelFactory
+            );
+
+            const entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
+            new Argon.EntityServiceProvider(sessionService, entityService);
+
+            sessionService.connect();
+            const testId = Argon.Cesium.createGuid();
+            return entityService.subscribe(testId);
+        });
+
+        it('should emit subscribedEvent after success', (done) => {
+            const sessionService = new Argon.SessionService(
+                { role:Argon.Role.REALITY_MANAGER }, 
+                new Argon.LoopbackConnectService,
+                new Argon.SessionPortFactory,
+                new Argon.MessageChannelFactory
+            );
+
+            const entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
+            const entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService);
+
+            const testId = Argon.Cesium.createGuid();
+            entityService.subscribedEvent.addEventListener(({id, options})=>{
+                expect(id).to.equal(testId);
+                expect(options && options['hello']).to.equal('world');
+                const subscribers = entityServiceProvider.subscribersByEntity.get(testId);
+                expect(subscribers).to.exist && expect(subscribers!.has(sessionService.manager));
+                done();
+            });
+
+            sessionService.connect();
+            entityService.subscribe(testId, {hello:'world'});
+        });
+        
+        it('should emit sessionSubscribedEvent on provider after success', (done) => {
+            const sessionService = new Argon.SessionService(
+                { role:Argon.Role.REALITY_MANAGER }, 
+                new Argon.LoopbackConnectService,
+                new Argon.SessionPortFactory,
+                new Argon.MessageChannelFactory
+            );
+            const entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
+            const entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService);
+
+            const testId = Argon.Cesium.createGuid();
+            entityServiceProvider.sessionSubscribedEvent.addEventListener(({id, session, options})=>{
+                expect(id).to.equal(testId);
+                expect(session).to.equal(sessionService.manager);
+                expect(options).to.exist && expect(options['something']).to.equal('here');
+                const subscribers = entityServiceProvider.subscribersByEntity.get(testId);
+                expect(subscribers).to.exist && expect(subscribers!.has(sessionService.manager));
+                const subscriptions = entityServiceProvider.subscriptionsBySubscriber.get(sessionService.manager);
+                expect(subscriptions).to.exist && expect(Argon.jsonEquals(subscriptions!.get(id),options));
+                done();
+            });
+
+            sessionService.connect();
+            entityService.subscribe(testId, {something:'here'});
+        });
+
+        it('should return a rejected promise after rejection', (done) => {
+            const sessionService = new Argon.SessionService(
+                { role:Argon.Role.REALITY_MANAGER }, 
+                new Argon.LoopbackConnectService,
+                new Argon.SessionPortFactory,
+                new Argon.MessageChannelFactory
+            );
+            const entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
+            const entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService);
+
+            const testId = Argon.Cesium.createGuid();
+            entityServiceProvider.onAllowSubscription = (session, id, options) => {
+                expect(session).to.equal(sessionService.manager);
+                expect(id).to.equal(testId);
+                expect(options).to.exist && expect(options['something']).to.equal('here');
+                return Promise.reject('fail')
+            }
+
+            entityService.subscribedEvent.addEventListener(()=>{
+                done(new Error('unexpected subscribed event'));
+            })
+
+            entityService.unsubscribedEvent.addEventListener(()=>{
+                done(new Error('unexpected unsubscribed event'));
+            })
+
+            sessionService.connect();
+            entityService.subscribe(testId, {something:'here'}).catch((e:Error)=>{
+                expect(e.message).to.equal('fail');
+                done()
+            });
+        });
+    })
+
+
+    describe('unsubscribe', () => {
+        it('should emit unsubscribedEvent', (done) => {
+            const sessionService = new Argon.SessionService(
+                { role:Argon.Role.REALITY_MANAGER }, 
+                new Argon.LoopbackConnectService,
+                new Argon.SessionPortFactory,
+                new Argon.MessageChannelFactory
+            );
+            const entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
+            const entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService);
+
+
+            const testId = Argon.Cesium.createGuid();
+            entityService.subscribedEvent.addEventListener(({id, options})=>{
+                expect(id).to.equal(testId);
+                expect(options).to.exist && expect(options && options['something']).to.equal('here');
+                entityService.unsubscribe(testId);
+            });
+
+            entityService.unsubscribedEvent.addEventListener(({id})=>{
+                expect(id).to.equal(testId);
+                done();
+            });
+
+            sessionService.connect();
+            entityServiceProvider.sessionUnsubscribedEvent
+            entityService.subscribe(testId, {something:'here'});
+        });
+
+        it('should emit sessionUnsubscribedEvent on provider', (done) => {
+            const sessionService = new Argon.SessionService(
+                { role:Argon.Role.REALITY_MANAGER }, 
+                new Argon.LoopbackConnectService,
+                new Argon.SessionPortFactory,
+                new Argon.MessageChannelFactory
+            );
+            const entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
+            const entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService);
+
+
+            const testId = Argon.Cesium.createGuid();
+            entityServiceProvider.sessionSubscribedEvent.addEventListener(({id, session, options})=>{
+                expect(id).to.equal(testId);
+                expect(session).to.equal(sessionService.manager);
+                expect(options).to.exist && expect(options['something']).to.equal('here');
+                entityService.unsubscribe(testId);
+            });
+
+            entityServiceProvider.sessionUnsubscribedEvent.addEventListener(({id, session})=>{
+                expect(id).to.equal(testId);
+                expect(session).to.equal(sessionService.manager);
+                done();
+            });
+
+            sessionService.connect();
+            entityServiceProvider.sessionUnsubscribedEvent
+            entityService.subscribe(testId, {something:'here'});
+        });
+    })
+
+});
 
 describe('RealityService', () => {
     let sessionService:Argon.SessionService;
@@ -78,7 +324,8 @@ describe('RealityService', () => {
             
             realityService.default = Argon.RealityViewer.EMPTY;
             
-            let removeListener = contextService.frameStateEvent.addEventListener((frameState) => {
+            let removeListener = contextService.updateEvent.addEventListener(() => {
+                const frameState = contextService.serializedFrameState;
                 expect(realityService.current === Argon.RealityViewer.EMPTY);
                 expect(frameState.reality === Argon.RealityViewer.EMPTY);
                 expect(frameState.time).to.haveOwnProperty('dayNumber');

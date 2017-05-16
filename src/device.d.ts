@@ -1,8 +1,8 @@
 /// <reference types="cesium" />
-import { Entity, Cartesian3, Quaternion, JulianDate, PerspectiveFrustum, Cartographic } from './cesium/cesium-imports';
-import { ContextService, ContextServiceProvider } from './context';
+import { Entity, Cartesian3, JulianDate, PerspectiveFrustum, Cartographic } from './cesium/cesium-imports';
+import { EntityService, EntityServiceProvider } from './entity';
 import { SessionService, SessionPort } from './session';
-import { CanvasViewport, SerializedSubviewList, SerializedEntityStateMap, ContextFrameState, GeolocationOptions } from './common';
+import { CanvasViewport, SerializedSubviewList, SerializedEntityStateMap, GeolocationOptions } from './common';
 import { Event } from './utils';
 import { ViewService } from './view';
 import { VisibilityService } from './visibility';
@@ -10,6 +10,9 @@ export declare class DeviceStableState {
     viewport?: CanvasViewport;
     subviews?: SerializedSubviewList;
     entities: SerializedEntityStateMap;
+    suggestedGeolocationSubscription?: {
+        enableHighAccuracy?: boolean;
+    };
     suggestedUserHeight: number;
     geolocationDesired: boolean;
     geolocationOptions?: GeolocationOptions;
@@ -28,7 +31,7 @@ export declare class DeviceFrameState {
  */
 export declare class DeviceService {
     protected sessionService: SessionService;
-    protected contextService: ContextService;
+    protected entityService: EntityService;
     protected viewService: ViewService;
     protected visibilityService: VisibilityService;
     /**
@@ -50,6 +53,11 @@ export declare class DeviceService {
      */
     presentHMDChangeEvent: Event<void>;
     screenOrientationChangeEvent: Event<void>;
+    suggestedGeolocationSubscriptionChangeEvent: Event<void>;
+    /**
+     * An entity representing the origin of the device coordinate system, +Y up.
+     */
+    origin: Entity;
     /**
      * An entity representing the physical floor-level plane below the user,
      * where +X is east, +Y is North, and +Z is up (if geolocation is known)
@@ -64,23 +72,26 @@ export declare class DeviceService {
     readonly geoHorizontalAccuracy: number | undefined;
     readonly geoVerticalAccuracy: number | undefined;
     _geolocationDesired: boolean;
-    readonly geolocationDesired: boolean;
+    readonly geolocationDesired: {
+        enableHighAccuracy?: boolean | undefined;
+    };
     _geolocationOptions: GeolocationOptions | undefined;
     readonly geolocationOptions: GeolocationOptions | undefined;
+    private _suggestedGeolocationSubscription;
+    private _setSuggestedGeolocationSubscription(options?);
+    readonly suggestedGeolocationSubscription: {
+        enableHighAccuracy?: boolean | undefined;
+    } | undefined;
     defaultUserHeight: number;
     readonly suggestedUserHeight: number;
     readonly strict: boolean;
-    private _getEntityPositionInReferenceFrame;
-    private _getEntityOrientationInReferenceFrame;
     protected _scratchCartesian: Cartesian3;
-    protected _scratchCartesian2: Cartesian3;
     protected _scratchFrustum: PerspectiveFrustum;
     private _vrDisplays;
     private _vrDisplay;
-    constructor(sessionService: SessionService, contextService: ContextService, viewService: ViewService, visibilityService: VisibilityService);
-    _processContextFrameState(state: ContextFrameState): void;
+    readonly vrDisplay: any;
+    constructor(sessionService: SessionService, entityService: EntityService, viewService: ViewService, visibilityService: VisibilityService);
     protected _parentState: DeviceStableState | undefined;
-    private _processStableState(stableState);
     private _updatingFrameState;
     private _updateFrameState;
     readonly screenOrientationDegrees: number;
@@ -104,39 +115,29 @@ export declare class DeviceService {
     protected onUpdateFrameState(): void;
     private _updateViewport();
     private _updateDefault();
+    private _stringIdentifierFromReferenceFrame;
+    private _getReachableAncestorReferenceFrames;
+    private _getEntityPositionInReferenceFrame;
+    private _scratchArray;
+    private _updateDefaultOrigin();
+    private _updateDefaultUser();
     private _vrFrameData?;
     private _scratchQuaternion;
     private _scratchQuaternion2;
     private _scratchMatrix3;
     private _scratchMatrix4;
-    private _stageEUS;
-    /**
-     * Defines the webvr standing space, positioned at the stage (EUS) frame by default.
-     */
-    vrStandingSpace: Entity;
     private _defaultLeftBounds;
     private _defaultRightBounds;
     private _updateForWebVR();
-    private _scratchFrameState;
-    private _getSerializedEntityState;
     private _hasPolyfillWebVRDisplay();
     protected onRequestPresentHMD(): Promise<void>;
     protected onExitPresentHMD(): Promise<void>;
-    /**
-     * Generate a frame state for the ContextService.
-     *
-     * @param time
-     * @param viewport
-     * @param subviewList
-     * @param user
-     * @param entityOptions
-     */
     createContextFrameState(time: JulianDate, viewport: CanvasViewport, subviewList: SerializedSubviewList, options?: {
         overrideStage?: boolean;
         overrideUser?: boolean;
         overrideView?: boolean;
         floorOffset?: number;
-    }): ContextFrameState;
+    }): any;
     getSubviewEntity(index: number): Entity;
     subscribeGeolocation(options?: GeolocationOptions, session?: SessionPort): Promise<void>;
     unsubscribeGeolocation(session?: SessionPort): void;
@@ -153,7 +154,6 @@ export declare class DeviceService {
     private _deviceOrientationListener;
     private _deviceOrientation;
     private _deviceOrientationHeadingAccuracy;
-    private _updateUserDefault();
     private _tryOrientationUpdates();
     private _setupVRPresentChangeHandler();
 }
@@ -163,11 +163,11 @@ export declare class DeviceService {
 export declare class DeviceServiceProvider {
     protected sessionService: SessionService;
     protected deviceService: DeviceService;
-    protected contextService: ContextService;
     protected viewService: ViewService;
-    protected contextServiceProvider: ContextServiceProvider;
+    protected entityService: EntityService;
+    protected entityServiceProvider: EntityServiceProvider;
     private _subscribers;
-    constructor(sessionService: SessionService, deviceService: DeviceService, contextService: ContextService, viewService: ViewService, contextServiceProvider: ContextServiceProvider);
+    constructor(sessionService: SessionService, deviceService: DeviceService, viewService: ViewService, entityService: EntityService, entityServiceProvider: EntityServiceProvider);
     protected handleRequestPresentHMD(session: SessionPort): Promise<void>;
     protected handleExitPresentHMD(session: SessionPort): Promise<void>;
     private _needsPublish;
@@ -179,21 +179,20 @@ export declare class DeviceServiceProvider {
     private _targetGeolocationOptions;
     private _sessionGeolocationOptions;
     private _checkDeviceGeolocationSubscribers();
-    private _handleSetGeolocationOptions(session, options);
-    private _updateTargetGeolocationOptions();
-    protected _scratchCartesianLocalOrigin: Cartesian3;
-    protected _scratchQuaternionLocalOrigin: Quaternion;
-    protected _scratchFrustum: PerspectiveFrustum;
-    private _identityHPR;
+    private _sctachStageCartesian;
+    private _scatchStageMatrix4;
+    private _scatchStageMatrix3;
+    private _scatchStageQuaternion;
+    private _eastUpSouthToFixedFrame;
     protected configureStage(cartographic: Cartographic, geoHorizontalAccuracy?: number, geoVerticalAccuracy?: number): void;
     private _geolocationWatchId?;
     private _scratchCartographic;
     /**
-     * Overridable. Should call setGeolocation when new geolocation is available
+     * Overridable. Should call configureStage when new geolocation is available
      */
-    protected onStartGeolocationUpdates(options: GeolocationOptions): void;
+    onStartGeolocationUpdates(options: GeolocationOptions): void;
     /**
      * Overridable.
      */
-    protected onStopGeolocationUpdates(): void;
+    onStopGeolocationUpdates(): void;
 }

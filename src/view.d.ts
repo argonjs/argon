@@ -29,7 +29,6 @@ export declare abstract class ViewElement {
  */
 export declare class ViewService {
     private sessionService;
-    private contextService;
     private focusService;
     /**
      * UI events that occur within this view. To handle an event (and prevent it from
@@ -85,7 +84,7 @@ export declare class ViewService {
      * The DOM element associated with this viewport
      */
     element: HTMLElement;
-    constructor(sessionService: SessionService, contextService: ContextService, focusService: FocusService, elementOrSelector?: Element | string | null);
+    constructor(sessionService: SessionService, focusService: FocusService, elementOrSelector?: Element | string | null);
     private _layers;
     setLayers(layers: {
         source: HTMLElement;
@@ -102,8 +101,7 @@ export declare class ViewService {
      * @private
      */
     protected getSubviews(): Subview[];
-    private _IDENTITY_SUBVIEW_POSE;
-    _processContextFrameState(state: ContextFrameState): void;
+    _processContextFrameState(state: ContextFrameState, contextService: ContextService): void;
     requestPresentationMode(mode: ViewportMode): Promise<void>;
     private _desiredViewportMode;
     desiredViewportMode: ViewportMode;

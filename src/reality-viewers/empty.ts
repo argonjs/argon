@@ -159,15 +159,21 @@ export class EmptyRealityViewer extends RealityViewer {
             const deviceUser = this.deviceService.user;
 
             const NEGATIVE_UNIT_Z = new Cartesian3(0,0,-1);
-            const X_90ROT = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, CesiumMath.PI_OVER_TWO);
+            // const X_90ROT = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, CesiumMath.PI_OVER_TWO);
 
             const subviews:SerializedSubviewList = [];
 
             const deviceUserPose = this.contextService.createEntityPose(deviceUser, deviceStage);
 
-            let subscribedGeolocation = false;
+            const remove1 = this.deviceService.suggestedGeolocationSubscriptionChangeEvent.addEventListener(()=>{
+                if (this.deviceService.suggestedGeolocationSubscription) {
+                    this.deviceService.subscribeGeolocation(this.deviceService.suggestedGeolocationSubscription, internalSession);
+                } else {
+                    this.deviceService.unsubscribeGeolocation();
+                }
+            });
 
-            const remove = this.deviceService.frameStateEvent.addEventListener((frameState) => {
+            const remove2 = this.deviceService.frameStateEvent.addEventListener((frameState) => {
                 if (internalSession.isClosed) return;
                 
                 const aggregator = this._aggregator;
@@ -176,18 +182,6 @@ export class EmptyRealityViewer extends RealityViewer {
                 if (!this.isPresenting) {
                     aggregator && aggregator.reset();
                     return;
-                }
-
-                if (this.deviceService.geolocationDesired) {
-                    if (!subscribedGeolocation) {
-                        subscribedGeolocation = true;
-                        this.deviceService.subscribeGeolocation(this.deviceService.geolocationOptions, internalSession);
-                    }
-                } else {
-                    if (subscribedGeolocation) {
-                        subscribedGeolocation = false;
-                        this.deviceService.unsubscribeGeolocation(internalSession);
-                    }
                 }
 
                 SerializedSubviewList.clone(frameState.subviews, subviews);
@@ -230,10 +224,10 @@ export class EmptyRealityViewer extends RealityViewer {
 
                     const position = 
                         getEntityPositionInReferenceFrame(contextUser, time, contextStage, positionScratchCartesian) || 
-                        Cartesian3.clone(Cartesian3.ZERO, positionScratchCartesian);
+                        Cartesian3.fromElements(0, this.deviceService.suggestedUserHeight, 0, positionScratchCartesian);
 
                     let orientation = getEntityOrientationInReferenceFrame(contextUser, time, contextStage, scratchQuaternion) ||
-                        Quaternion.clone(X_90ROT, scratchQuaternion);
+                        Quaternion.clone(Quaternion.IDENTITY, scratchQuaternion);
                     
                     if (aggregator && aggregator.isMoving(CameraEventType.LEFT_DRAG)) {
                         const dragMovement = aggregator.getMovement(CameraEventType.LEFT_DRAG);
@@ -291,7 +285,7 @@ export class EmptyRealityViewer extends RealityViewer {
                     (contextStage.orientation as ConstantProperty).setValue(customStageOrientation);
                 }
 
-                const contextFrameState = this.deviceService.createContextFrameState(
+                const contextFrameState = this.contextService.createFrameState(
                     time,
                     frameState.viewport,
                     subviews,
@@ -307,7 +301,8 @@ export class EmptyRealityViewer extends RealityViewer {
             });
 
             internalSession.closeEvent.addEventListener(()=>{
-                remove();
+                remove1();
+                remove2();
             });
 
         });

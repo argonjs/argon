@@ -47,6 +47,178 @@ describe('Argon', function () {
             });
         });
     });
+    describe('app.context.subscribeGeolocation', function () {
+        it('should set suggestedGeolocationSubscription options in DeviceService', function () {
+            var manager = Argon.init(null, { role: Argon.Role.REALITY_MANAGER });
+            manager.device.suggestedGeolocationSubscriptionChangeEvent.addEventListener(function () {
+                expect(manager.device.suggestedGeolocationSubscription).to.exist;
+                expect(manager.device.suggestedGeolocationSubscription.enableHighAccuracy).to.be.true;
+            });
+            expect(manager.device.suggestedGeolocationSubscription).to.not.exist;
+            manager.context.subscribeGeolocation({ enableHighAccuracy: true });
+        });
+    });
+    describe('app.context.unsubscribeGeolocation', function () {
+        it('should unset suggestedGeolocationSubscription options in DeviceService', function () {
+            var manager = Argon.init(null, { role: Argon.Role.REALITY_MANAGER });
+            var remove = manager.device.suggestedGeolocationSubscriptionChangeEvent.addEventListener(function () {
+                expect(manager.device.suggestedGeolocationSubscription).to.exist;
+                expect(manager.device.suggestedGeolocationSubscription.enableHighAccuracy).to.be.true;
+                remove();
+                manager.context.unsubscribeGeolocation();
+                manager.device.suggestedGeolocationSubscriptionChangeEvent.addEventListener(function () {
+                    expect(manager.device.suggestedGeolocationSubscription).to.not.exist;
+                });
+            });
+            expect(manager.device.suggestedGeolocationSubscription).to.not.exist;
+            manager.context.subscribeGeolocation({ enableHighAccuracy: true });
+        });
+    });
+    describe('app.device.subscribeGeolocation', function () {
+        it('should attempt to start geolocation updates', function (done) {
+            var manager = Argon.init(null, { role: Argon.Role.REALITY_MANAGER });
+            manager.provider.device.onStartGeolocationUpdates = function (options) {
+                expect(options && options.enableHighAccuracy).to.be.true;
+                done();
+            };
+            manager.device.subscribeGeolocation({ enableHighAccuracy: true });
+        });
+    });
+    describe('app.device.unsubscribeGeolocation', function () {
+        it('should attempt to stop geolocation updates', function (done) {
+            var manager = Argon.init(null, { role: Argon.Role.REALITY_MANAGER });
+            manager.provider.device.onStartGeolocationUpdates = function (options) {
+                expect(options && options.enableHighAccuracy).to.be.true;
+            };
+            manager.provider.device.onStopGeolocationUpdates = function () {
+                done();
+                manager.provider.device.onStopGeolocationUpdates = function () { };
+            };
+            manager.device.subscribeGeolocation({ enableHighAccuracy: true });
+        });
+    });
+});
+describe('EntityService', function () {
+    describe('new EntityService()', function () {
+        it('should create an EntityService instance', function () {
+            var sessionService = new Argon.SessionService({ role: Argon.Role.REALITY_MANAGER }, new Argon.LoopbackConnectService, new Argon.SessionPortFactory, new Argon.MessageChannelFactory);
+            var entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
+            expect(entityService).to.be.instanceOf(Argon.EntityService);
+            expect(entityService.collection).to.be.instanceOf(Argon.Cesium.EntityCollection);
+        });
+    });
+    describe('subscribe', function () {
+        it('should return resolved promise after success', function () {
+            var sessionService = new Argon.SessionService({ role: Argon.Role.REALITY_MANAGER }, new Argon.LoopbackConnectService, new Argon.SessionPortFactory, new Argon.MessageChannelFactory);
+            var entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
+            new Argon.EntityServiceProvider(sessionService, entityService);
+            sessionService.connect();
+            var testId = Argon.Cesium.createGuid();
+            return entityService.subscribe(testId);
+        });
+        it('should emit subscribedEvent after success', function (done) {
+            var sessionService = new Argon.SessionService({ role: Argon.Role.REALITY_MANAGER }, new Argon.LoopbackConnectService, new Argon.SessionPortFactory, new Argon.MessageChannelFactory);
+            var entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
+            var entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService);
+            var testId = Argon.Cesium.createGuid();
+            entityService.subscribedEvent.addEventListener(function (_a) {
+                var id = _a.id, options = _a.options;
+                expect(id).to.equal(testId);
+                expect(options && options['hello']).to.equal('world');
+                var subscribers = entityServiceProvider.subscribersByEntity.get(testId);
+                expect(subscribers).to.exist && expect(subscribers.has(sessionService.manager));
+                done();
+            });
+            sessionService.connect();
+            entityService.subscribe(testId, { hello: 'world' });
+        });
+        it('should emit sessionSubscribedEvent on provider after success', function (done) {
+            var sessionService = new Argon.SessionService({ role: Argon.Role.REALITY_MANAGER }, new Argon.LoopbackConnectService, new Argon.SessionPortFactory, new Argon.MessageChannelFactory);
+            var entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
+            var entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService);
+            var testId = Argon.Cesium.createGuid();
+            entityServiceProvider.sessionSubscribedEvent.addEventListener(function (_a) {
+                var id = _a.id, session = _a.session, options = _a.options;
+                expect(id).to.equal(testId);
+                expect(session).to.equal(sessionService.manager);
+                expect(options).to.exist && expect(options['something']).to.equal('here');
+                var subscribers = entityServiceProvider.subscribersByEntity.get(testId);
+                expect(subscribers).to.exist && expect(subscribers.has(sessionService.manager));
+                var subscriptions = entityServiceProvider.subscriptionsBySubscriber.get(sessionService.manager);
+                expect(subscriptions).to.exist && expect(Argon.jsonEquals(subscriptions.get(id), options));
+                done();
+            });
+            sessionService.connect();
+            entityService.subscribe(testId, { something: 'here' });
+        });
+        it('should return a rejected promise after rejection', function (done) {
+            var sessionService = new Argon.SessionService({ role: Argon.Role.REALITY_MANAGER }, new Argon.LoopbackConnectService, new Argon.SessionPortFactory, new Argon.MessageChannelFactory);
+            var entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
+            var entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService);
+            var testId = Argon.Cesium.createGuid();
+            entityServiceProvider.onAllowSubscription = function (session, id, options) {
+                expect(session).to.equal(sessionService.manager);
+                expect(id).to.equal(testId);
+                expect(options).to.exist && expect(options['something']).to.equal('here');
+                return Promise.reject('fail');
+            };
+            entityService.subscribedEvent.addEventListener(function () {
+                done(new Error('unexpected subscribed event'));
+            });
+            entityService.unsubscribedEvent.addEventListener(function () {
+                done(new Error('unexpected unsubscribed event'));
+            });
+            sessionService.connect();
+            entityService.subscribe(testId, { something: 'here' }).catch(function (e) {
+                expect(e.message).to.equal('fail');
+                done();
+            });
+        });
+    });
+    describe('unsubscribe', function () {
+        it('should emit unsubscribedEvent', function (done) {
+            var sessionService = new Argon.SessionService({ role: Argon.Role.REALITY_MANAGER }, new Argon.LoopbackConnectService, new Argon.SessionPortFactory, new Argon.MessageChannelFactory);
+            var entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
+            var entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService);
+            var testId = Argon.Cesium.createGuid();
+            entityService.subscribedEvent.addEventListener(function (_a) {
+                var id = _a.id, options = _a.options;
+                expect(id).to.equal(testId);
+                expect(options).to.exist && expect(options && options['something']).to.equal('here');
+                entityService.unsubscribe(testId);
+            });
+            entityService.unsubscribedEvent.addEventListener(function (_a) {
+                var id = _a.id;
+                expect(id).to.equal(testId);
+                done();
+            });
+            sessionService.connect();
+            entityServiceProvider.sessionUnsubscribedEvent;
+            entityService.subscribe(testId, { something: 'here' });
+        });
+        it('should emit sessionUnsubscribedEvent on provider', function (done) {
+            var sessionService = new Argon.SessionService({ role: Argon.Role.REALITY_MANAGER }, new Argon.LoopbackConnectService, new Argon.SessionPortFactory, new Argon.MessageChannelFactory);
+            var entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
+            var entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService);
+            var testId = Argon.Cesium.createGuid();
+            entityServiceProvider.sessionSubscribedEvent.addEventListener(function (_a) {
+                var id = _a.id, session = _a.session, options = _a.options;
+                expect(id).to.equal(testId);
+                expect(session).to.equal(sessionService.manager);
+                expect(options).to.exist && expect(options['something']).to.equal('here');
+                entityService.unsubscribe(testId);
+            });
+            entityServiceProvider.sessionUnsubscribedEvent.addEventListener(function (_a) {
+                var id = _a.id, session = _a.session;
+                expect(id).to.equal(testId);
+                expect(session).to.equal(sessionService.manager);
+                done();
+            });
+            sessionService.connect();
+            entityServiceProvider.sessionUnsubscribedEvent;
+            entityService.subscribe(testId, { something: 'here' });
+        });
+    });
 });
 describe('RealityService', function () {
     var sessionService;
@@ -64,7 +236,8 @@ describe('RealityService', function () {
             sessionService = container.get(Argon.SessionService);
             container.get(Argon.ArgonSystemProvider);
             realityService.default = Argon.RealityViewer.EMPTY;
-            var removeListener = contextService.frameStateEvent.addEventListener(function (frameState) {
+            var removeListener = contextService.updateEvent.addEventListener(function () {
+                var frameState = contextService.serializedFrameState;
                 expect(realityService.current === Argon.RealityViewer.EMPTY);
                 expect(frameState.reality === Argon.RealityViewer.EMPTY);
                 expect(frameState.time).to.haveOwnProperty('dayNumber');

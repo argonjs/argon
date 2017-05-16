@@ -206,7 +206,7 @@ export interface SerializedSubview {
     /**
      * The pose for this subview (relative to the primary pose)
      */
-    pose: SerializedEntityState|null|undefined, // if undefined, identity is assumed
+    // pose: SerializedEntityState|null|undefined, // if undefined, identity is assumed
 }
 
 
@@ -223,10 +223,10 @@ export interface ReadonlySerializedSubview {
      * The viewport for this subview (relative to the primary viewport)
      */
     readonly viewport: Readonly<CanvasViewport>
-    /**
-     * The pose for this subview (relative to the primary pose)
-     */
-    readonly pose?: Readonly<SerializedEntityState>, // if undefined, identity is assumed
+    // /**
+    //  * The pose for this subview (relative to the primary pose)
+    //  */
+    // readonly pose?: Readonly<SerializedEntityState>, // if undefined, identity is assumed
 }
 
 export namespace SerializedSubview {
@@ -235,7 +235,7 @@ export namespace SerializedSubview {
         result.type = subview.type;
         result.projectionMatrix = Matrix4.clone(subview.projectionMatrix, result.projectionMatrix);
         result.viewport = Viewport.clone(subview.viewport, result.viewport)!;
-        result.pose = subview.pose ? SerializedEntityState.clone(subview.pose, result.pose) : undefined;
+        // result.pose = subview.pose ? SerializedEntityState.clone(subview.pose, result.pose) : undefined;
         return result;
     }
     export function equals(left?:SerializedSubview, right?:SerializedSubview) {

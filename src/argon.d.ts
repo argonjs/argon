@@ -5,6 +5,7 @@ import './webvr';
 import { SessionService } from './session';
 import { Configuration } from './common';
 import { Event } from './utils';
+import { EntityService, EntityServiceProvider } from './entity';
 import { ContextService, ContextServiceProvider } from './context';
 import { FocusService, FocusServiceProvider } from './focus';
 import { DeviceService, DeviceServiceProvider } from './device';
@@ -19,6 +20,7 @@ import { HostedRealityViewer } from './reality-viewers/hosted';
 export { DI, Cesium };
 export * from './common';
 export * from './context';
+export * from './entity';
 export * from './focus';
 export * from './device';
 export * from './reality';
@@ -30,6 +32,7 @@ export * from './visibility';
 export * from './vuforia';
 export { RealityViewer, EmptyRealityViewer, LiveRealityViewer, HostedRealityViewer };
 export declare class ArgonSystemProvider {
+    entity: EntityServiceProvider;
     context: ContextServiceProvider;
     focus: FocusServiceProvider;
     device: DeviceServiceProvider;
@@ -37,7 +40,7 @@ export declare class ArgonSystemProvider {
     reality: RealityServiceProvider;
     view: ViewServiceProvider;
     vuforia: VuforiaServiceProvider;
-    constructor(context: ContextServiceProvider, focus: FocusServiceProvider, device: DeviceServiceProvider, visibility: VisibilityServiceProvider, reality: RealityServiceProvider, view: ViewServiceProvider, vuforia: VuforiaServiceProvider);
+    constructor(entity: EntityServiceProvider, context: ContextServiceProvider, focus: FocusServiceProvider, device: DeviceServiceProvider, visibility: VisibilityServiceProvider, reality: RealityServiceProvider, view: ViewServiceProvider, vuforia: VuforiaServiceProvider);
 }
 /**
  * A composition root which instantiates the object graph based on a provided configuration.
@@ -48,6 +51,7 @@ export declare class ArgonSystemProvider {
  */
 export declare class ArgonSystem {
     container: DI.Container;
+    entity: EntityService;
     context: ContextService;
     device: DeviceService;
     focus: FocusService;
@@ -60,7 +64,7 @@ export declare class ArgonSystem {
      * The ArgonSystem instance which shares a view provided by a manager
      */
     static instance?: ArgonSystem;
-    constructor(container: DI.Container, context: ContextService, device: DeviceService, focus: FocusService, reality: RealityService, session: SessionService, view: ViewService, visibility: VisibilityService, vuforia: VuforiaService);
+    constructor(container: DI.Container, entity: EntityService, context: ContextService, device: DeviceService, focus: FocusService, reality: RealityService, session: SessionService, view: ViewService, visibility: VisibilityService, vuforia: VuforiaService);
     _provider: ArgonSystemProvider;
     readonly provider: ArgonSystemProvider;
     readonly updateEvent: Event<any>;

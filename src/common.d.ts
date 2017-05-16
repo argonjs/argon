@@ -128,10 +128,6 @@ export interface SerializedSubview {
      * The viewport for this subview (relative to the primary viewport)
      */
     viewport: Viewport;
-    /**
-     * The pose for this subview (relative to the primary pose)
-     */
-    pose: SerializedEntityState | null | undefined;
 }
 /**
  * The serialized rendering parameters for a particular subview
@@ -146,10 +142,6 @@ export interface ReadonlySerializedSubview {
      * The viewport for this subview (relative to the primary viewport)
      */
     readonly viewport: Readonly<CanvasViewport>;
-    /**
-     * The pose for this subview (relative to the primary pose)
-     */
-    readonly pose?: Readonly<SerializedEntityState>;
 }
 export declare namespace SerializedSubview {
     function clone(subview: SerializedSubview, result?: SerializedSubview): SerializedSubview;

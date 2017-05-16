@@ -21,6 +21,7 @@ export class LiveRealityViewer extends RealityViewer {
     constructor(
         private sessionService: SessionService,
         private viewService: ViewService,
+        private contextService: ContextService,
         private deviceService: DeviceService,
         public uri:string) {
         super(uri);
@@ -102,13 +103,17 @@ export class LiveRealityViewer extends RealityViewer {
                 // const viewService = this.viewService;
                 let lastFrameTime = -1;
 
-                const remove =this.deviceService.frameStateEvent.addEventListener((frameState)=>{
-
-                    if (this.deviceService.geolocationDesired) {
-                        this.deviceService.subscribeGeolocation(this.deviceService.geolocationOptions, internalSession);
+                const remove1 = this.deviceService.suggestedGeolocationSubscriptionChangeEvent.addEventListener(()=>{
+                    
+                    if (this.deviceService.suggestedGeolocationSubscription) {
+                        this.deviceService.subscribeGeolocation(this.deviceService.suggestedGeolocationSubscription, internalSession);
                     } else {
-                        this.deviceService.unsubscribeGeolocation(internalSession);
+                        this.deviceService.unsubscribeGeolocation();
                     }
+
+                });
+
+                const remove2 =this.deviceService.frameStateEvent.addEventListener((frameState)=>{
 
                     if (videoElement.currentTime != lastFrameTime) {
                         lastFrameTime = videoElement.currentTime;
@@ -116,7 +121,7 @@ export class LiveRealityViewer extends RealityViewer {
                         // const videoWidth = videoElement.videoWidth;
                         // const videoHeight = videoElement.videoHeight;
 
-                        const contextFrameState = this.deviceService.createContextFrameState(
+                        const contextFrameState = this.contextService.createFrameState(
                             frameState.time,
                             frameState.viewport,
                             frameState.subviews
@@ -128,7 +133,8 @@ export class LiveRealityViewer extends RealityViewer {
                 });
 
                 internalSession.closeEvent.addEventListener(()=>{
-                    remove();
+                    remove1();
+                    remove2();
                 })
             }
         });
