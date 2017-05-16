@@ -135,8 +135,10 @@ export class DeviceService {
     }));
 
     /**
-     * An entity representing the physical floor-level plane below the user,
-     * where +X is east, +Y is North, and +Z is up (if geolocation is known)
+     * A coordinate system representing the physical space in which the user is free to 
+     * move around, positioned on the surface the user is standing on,
+     * where +X is east, +Y is up, and +Z is south (East-Up-South), if geolocation is known.
+     * If the stage is not geolocated, then the +X and +Z directions are arbitrary. 
      */
     public stage: Entity = this.entityService.collection.add(new Entity({
         id: 'ar.device.stage',
@@ -144,7 +146,7 @@ export class DeviceService {
         position: undefined,
         orientation: undefined
     }));
-
+    
     /**
      * An entity representing the physical pose of the user, 
      * where +X is right, +Y is up, and -Z is forward

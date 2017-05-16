@@ -355,7 +355,7 @@ export class ContextService {
     }));
 
     /**
-     * An coordinate system representing the floor.
+     * A coordinate system representing the floor.
      * While the `stage` always represents a physical surface, 
      * the `floor` entity may represent a virtual floor.
      */
