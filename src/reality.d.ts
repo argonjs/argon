@@ -46,9 +46,6 @@ export declare class RealityService {
     default: string;
     constructor(sessionService: SessionService, contextService: ContextService);
     /**
-     * RealityViewer-only. Publish the next view state.
-     */
-    /**
      * Install the specified reality viewer
      */
     install(uri: string): Promise<void>;

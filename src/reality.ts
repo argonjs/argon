@@ -124,7 +124,8 @@ export class RealityService {
         
         let i = 0;
 
-        this.contextService.frameStateEvent.addEventListener((frameState)=>{
+        this.contextService.updateEvent.addEventListener(()=>{
+            const frameState = this.contextService.serializedFrameState;
             if (sessionService.isRealityViewer && sessionService.manager.isConnected) {
                 // backwards compatability
                 if (sessionService.manager.isConnected && sessionService.manager.version[0] === 0) {
@@ -148,19 +149,6 @@ export class RealityService {
             }
         });
     }
-
-    /**
-     * RealityViewer-only. Publish the next view state.
-     */
-    // public publishViewState(viewState: ViewState) {
-    //     this.sessionService.ensureIsRealityViewer();
-    //     if (this.sessionService.isRealityViewer) {
-    //         if (this.sessionService.manager.isConnected)
-    //             this.sessionService.manager.send('ar.reality.viewState', viewState);
-    //         viewState.reality = 'self';
-    //     }
-    //     this.contextService.pushNextFrameState(viewState);
-    // }
 
     /**
      * Install the specified reality viewer
