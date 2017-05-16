@@ -6,6 +6,8 @@ export * from './utils/event';
 export * from './utils/message-channel';
 export { default as getEventSynthesizier } from './utils/ui-event-synthesizer';
 export { default as createEventForwarder } from './utils/ui-event-forwarder';
+export declare function stringIdentifierFromReferenceFrame(referenceFrame: string | ReferenceFrame | Entity): string;
+export declare function jsonEquals(left?: {}, right?: {}): boolean;
 /**
  * Computes a 4x4 transformation matrix from a reference frame with an east-up-south axes centered at the provided origin to the provided ellipsoid's fixed reference frame. The local axes are defined as:
  * The x axis points in the local east direction.

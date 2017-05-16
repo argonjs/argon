@@ -29,7 +29,15 @@ export {default as getEventSynthesizier} from './utils/ui-event-synthesizer';
 export {default as createEventForwarder} from './utils/ui-event-forwarder';
 
 
+export function stringIdentifierFromReferenceFrame(referenceFrame: string | ReferenceFrame | Entity): string {
+    const rf = referenceFrame as Entity;
+    return defined(rf.id) ? rf.id : '' + rf;
+}
 
+
+export function jsonEquals(left?:{}, right?:{}) {
+    return JSON.stringify(left) === JSON.stringify(right);
+}
 
 /**
  * Computes a 4x4 transformation matrix from a reference frame with an east-up-south axes centered at the provided origin to the provided ellipsoid's fixed reference frame. The local axes are defined as:
@@ -169,6 +177,7 @@ export function getSerializedEntityState(entity: Entity, time: JulianDate, frame
     }
 
     if (!defined(frame)) return null;
+    if (entity === frame) return null;
 
     const key = entity.id + '@' + ((frame as Entity).id ? (frame as Entity).id : frame);
     let result = _entityStateCache[key];
