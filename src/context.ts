@@ -1,6 +1,5 @@
 import { autoinject } from 'aurelia-dependency-injection'
 import {
-    ReferenceEntity,
     Entity,
     EntityCollection,
     Cartographic,
@@ -14,8 +13,7 @@ import {
     Transforms,
     JulianDate,
     ReferenceFrame,
-    PerspectiveFrustum,
-    defined
+    PerspectiveFrustum
 } from './cesium/cesium-imports'
 import {
     DEFAULT_NEAR_PLANE,
@@ -40,134 +38,10 @@ import {
     deprecated,
     decomposePerspectiveProjectionMatrix 
 } from './utils'
-import { EntityService, EntityServiceProvider } from './entity'
+import { EntityService, EntityServiceProvider, EntityPose } from './entity'
 import { DeviceService } from './device'
 import { eastUpSouthToFixedFrame } from './utils'
 import { ViewService } from './view'
-
-
-/**
- * Represents the pose of an entity relative to a particular reference frame. 
- * 
- * The `update` method must be called in order to update the position / orientation / poseStatus. 
- */
-export class EntityPose {
-    constructor(
-        public context:ContextService, 
-        entityOrId:Entity|string, 
-        referenceFrameId?:Entity|ReferenceFrame|string
-    ){
-        if (typeof entityOrId === 'string') {
-            let entity:Entity|ReferenceEntity|undefined = this.context.entities.getById(entityOrId);
-            if (!entity) entity = <Entity><any> new ReferenceEntity(context.entities, entityOrId);
-            this._entity = entity;
-        } else {
-            this._entity = entityOrId;
-        }
-        
-        if (typeof referenceFrameId === 'string') {
-            let referenceFrame:Entity|ReferenceEntity|ReferenceFrame|undefined = this.context.entities.getById(referenceFrameId);
-            if (!defined(referenceFrame)) referenceFrame = <Entity><any> new ReferenceEntity(context.entities, referenceFrameId);
-            this._referenceFrame = referenceFrame;
-        } else {
-            this._referenceFrame = referenceFrameId;
-        }
-    }
-
-    private _entity:Entity;
-    private _referenceFrame:Entity|ReferenceFrame|undefined;
-
-    get entity() { return this._entity }
-
-    get referenceFrame() {
-        if (!defined(this._referenceFrame))
-            return this.context.defaultReferenceFrame;
-        return this._referenceFrame;
-    }
-
-    /**
-     * The status of this pose, as a bitmask.
-     * 
-     * If the current pose is known, then the KNOWN bit is 1.
-     * If the current pose is not known, then the KNOWN bit is 0. 
-     * 
-     * If the previous pose was known and the current pose is unknown, 
-     * then the LOST bit is 1. 
-     * If the previous pose was unknown and the current pose status is known, 
-     * then the FOUND bit is 1.
-     * In all other cases, both the LOST bit and the FOUND bit are 0. 
-     */
-    status:PoseStatus = 0;
-
-    /**
-     * alias for status
-     */
-    get poseStatus() { return this.status };
-
-    position = new Cartesian3;
-    orientation = new Quaternion;
-    time = new JulianDate(0,0)
-
-    
-    private _previousTime:JulianDate;
-    private _previousStatus:PoseStatus = 0;
-
-    update(time=this.context.time) {
-
-        JulianDate.clone(time, this.time);
-
-        if (!JulianDate.equals(this._previousTime, time)) {
-            this._previousStatus = this.status;
-            this._previousTime = JulianDate.clone(time, this._previousTime)
-        }
-
-        const entity = this.entity;
-        const referenceFrame = this.referenceFrame;
-        
-        let position = getEntityPositionInReferenceFrame(
-            entity,
-            time,
-            referenceFrame,
-            this.position
-        );
-
-        let orientation = getEntityOrientationInReferenceFrame(
-            entity,
-            time,
-            referenceFrame,
-            this.orientation
-        );
-
-        const hasPose = position && orientation;
-
-        let currentStatus: PoseStatus = 0;
-        const previousStatus = this._previousStatus;
-
-        if (hasPose) {
-            currentStatus |= PoseStatus.KNOWN;
-        }
-
-        if (hasPose && !(previousStatus & PoseStatus.KNOWN)) {
-            currentStatus |= PoseStatus.FOUND;
-        } else if (!hasPose && previousStatus & PoseStatus.KNOWN) {
-            currentStatus |= PoseStatus.LOST;
-        }
-
-        this.status = currentStatus;
-    }
-}
-
-/**
-* A bitmask that provides metadata about the pose of an EntityPose.
-*   KNOWN - the pose of the entity state is defined. 
-*   KNOWN & FOUND - the pose was undefined when the entity state was last queried, and is now defined.
-*   LOST - the pose was defined when the entity state was last queried, and is now undefined
-*/
-export enum PoseStatus {
-    KNOWN = 1,
-    FOUND = 2,
-    LOST = 4
-}
 
 /**
  * Provides a means of querying the current state of reality.
@@ -515,11 +389,11 @@ export class ContextService {
      * relative to a given reference frame. If no reference frame is specified,
      * then the pose is based on the context's defaultReferenceFrame.
      * 
-     * @param entity - the entity to track
-     * @param referenceFrameOrId - the reference frame to use
+     * @param entityOrId - the entity to track
+     * @param referenceFrameOrId - The intended reference frame. Defaults to `this.defaultReferenceFrame`.
      */
-    public createEntityPose(entityOrId: Entity|string, referenceFrameOrId?: string | ReferenceFrame | Entity) {            
-        return new EntityPose(this, entityOrId, referenceFrameOrId);
+    public createEntityPose(entityOrId: Entity|string, referenceFrameOrId: string | ReferenceFrame | Entity = this.defaultReferenceFrame) : EntityPose {            
+        return this.entityService.createEntityPose(entityOrId, referenceFrameOrId);
     }
 
     private _stringIdentifierFromReferenceFrame = stringIdentifierFromReferenceFrame;
@@ -528,18 +402,18 @@ export class ContextService {
      * Gets the current pose of an entity, relative to a given reference frame.
      *
      * @deprecated
-     * @param entity - The entity whose state is to be queried.
-     * @param referenceFrame - The intended reference frame. Defaults to `this.defaultReferenceFrame`.
+     * @param entityOrId - The entity whose state is to be queried.
+     * @param referenceFrameOrId - The intended reference frame. Defaults to `this.defaultReferenceFrame`.
      */
-    public getEntityPose(entityOrId: Entity|string, referenceFrameOrId: string | ReferenceFrame | Entity=this.defaultReferenceFrame): EntityPose {
+    public getEntityPose(entityOrId: Entity|string, referenceFrameOrId: string | ReferenceFrame | Entity = this.defaultReferenceFrame): EntityPose {
         const key = this._stringIdentifierFromReferenceFrame(entityOrId) + '@' + this._stringIdentifierFromReferenceFrame(referenceFrameOrId);
         
         let entityPose = this._entityPoseMap.get(key);
         if (!entityPose) {
-            entityPose = this.createEntityPose(entityOrId, referenceFrameOrId);
+            entityPose = this.entityService.createEntityPose(entityOrId, referenceFrameOrId);
             this._entityPoseMap.set(key, entityPose);
         }
-        entityPose.update();
+        entityPose.update(this.time);
 
         return entityPose;
     }
@@ -770,6 +644,8 @@ export class ContextService {
         // raise events for the user to update and render the scene
         if (this._originChanged) {
             this._originChanged = false;
+            const originPosition = this.origin.position as ConstantPositionProperty;
+            console.log('Updated context origin to ' + JSON.stringify(originPosition['_value']) + " at " + this._stringIdentifierFromReferenceFrame(originPosition.referenceFrame));
             this.originChangeEvent.raiseEvent(undefined);
         }
         this.updateEvent.raiseEvent(this);
@@ -876,6 +752,7 @@ export class ContextServiceProvider {
 
     private _sendUpdateForSession(state:ContextFrameState, session: SessionPort) {
         const sessionEntities = this._sessionEntities;
+        const entityServiceProvider = this.entityServiceProvider
 
         // clear session entities
         for (var id in sessionEntities) {
@@ -889,8 +766,11 @@ export class ContextServiceProvider {
             }
         }
 
+        // always send the origin state
+        sessionEntities[this.contextService.origin.id] = entityServiceProvider.getCachedSerializedEntityState(this.contextService.origin, state.time)
+
         // get subscribed entities for the session
-        const subscriptions = this.entityServiceProvider.subscriptionsBySubscriber.get(session)!;
+        const subscriptions = entityServiceProvider.subscriptionsBySubscriber.get(session)!;
         
         // exclude the stage state unless it is explicitly subscribed 
         const contextService = this.contextService;
@@ -900,7 +780,7 @@ export class ContextServiceProvider {
         // add the entity states for all subscribed entities
         for (const id in subscriptions) {
             const entity = contextService.entities.getById(id);
-            sessionEntities[id] = this.entityServiceProvider.getCachedSerializedEntityState(entity, state.time);
+            sessionEntities[id] = entityServiceProvider.getCachedSerializedEntityState(entity, state.time);
         }
 
         // recycle the frame state object, but with the session entities

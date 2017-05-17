@@ -19,9 +19,10 @@ import {
 import { Role, SerializedSubviewList } from '../common'
 import { SessionService } from '../session'
 import { decomposePerspectiveProjectionMatrix, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame } from '../utils'
-import { ContextService, PoseStatus } from '../context'
+import { ContextService } from '../context'
 import { DeviceService } from '../device'
 import { ViewService } from '../view'
+import { PoseStatus } from '../entity'
 import { RealityViewer } from './base'
 
 interface Movement {

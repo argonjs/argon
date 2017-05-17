@@ -1,7 +1,8 @@
 import { autoinject, inject, Optional } from 'aurelia-dependency-injection'
 import { CanvasViewport, Viewport, ContextFrameState, SubviewType } from './common'
 import { SessionService, SessionPort } from './session'
-import { ContextService, EntityPose } from './context'
+import { ContextService } from './context'
+import { EntityPose } from './entity'
 
 import { PerspectiveFrustum, Matrix4 } from './cesium/cesium-imports'
 
@@ -285,7 +286,7 @@ export class ViewService {
 
             subview.pose = this._subviewPose[index] = 
                 this._subviewPose[index] || contextService.createEntityPose(contextService.getSubviewEntity(index));
-            subview.pose.update();
+            subview.pose.update(state.time);
             
             index++;
         }

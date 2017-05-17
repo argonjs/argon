@@ -1,6 +1,6 @@
 import { autoinject } from 'aurelia-dependency-injection';
 import { SessionService, SessionPort } from './session';
-import { Event, getEntityPositionInReferenceFrame, getSerializedEntityState, jsonEquals } from './utils';
+import { Event, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame, getSerializedEntityState, jsonEquals } from './utils';
 import { SerializedEntityState, SerializedEntityStateMap } from './common';
 import {
     defined,
@@ -14,9 +14,138 @@ import {
     Matrix3,
     Matrix4,
     ReferenceFrame,
+    ReferenceEntity,
     Transforms,
     Quaternion
 } from './cesium/cesium-imports'
+
+
+
+/**
+ * Represents the pose of an entity relative to a particular reference frame. 
+ * 
+ * The `update` method must be called in order to update the position / orientation / poseStatus. 
+ */
+export class EntityPose {
+    constructor(
+        private _collection:EntityCollection, 
+        entityOrId:Entity|string, 
+        referenceFrameId:Entity|ReferenceFrame|string
+    ){
+        if (typeof entityOrId === 'string') {
+            let entity:Entity|ReferenceEntity|undefined = this._collection.getById(entityOrId);
+            if (!entity) entity = <Entity><any> new ReferenceEntity(this._collection, entityOrId);
+            this._entity = entity;
+        } else {
+            this._entity = entityOrId;
+        }
+        
+        if (typeof referenceFrameId === 'string') {
+            let referenceFrame:Entity|ReferenceEntity|ReferenceFrame|undefined = this._collection.getById(referenceFrameId);
+            if (!defined(referenceFrame)) referenceFrame = <Entity><any> new ReferenceEntity(this._collection, referenceFrameId);
+            this._referenceFrame = referenceFrame;
+        } else {
+            this._referenceFrame = referenceFrameId;
+        }
+    }
+
+    private _entity:Entity;
+    private _referenceFrame:Entity|ReferenceFrame;
+
+    get entity() { return this._entity }
+
+    get referenceFrame() {
+        return this._referenceFrame;
+    }
+
+    /**
+     * The status of this pose, as a bitmask.
+     * 
+     * If the current pose is known, then the KNOWN bit is 1.
+     * If the current pose is not known, then the KNOWN bit is 0. 
+     * 
+     * If the previous pose was known and the current pose is unknown, 
+     * then the LOST bit is 1. 
+     * If the previous pose was unknown and the current pose status is known, 
+     * then the FOUND bit is 1.
+     * In all other cases, both the LOST bit and the FOUND bit are 0. 
+     */
+    status:PoseStatus = 0;
+
+    /**
+     * alias for status
+     */
+    get poseStatus() { return this.status };
+
+    position = new Cartesian3;
+    orientation = new Quaternion;
+    time = new JulianDate(0,0)
+
+    
+    private _previousTime:JulianDate;
+    private _previousStatus:PoseStatus = 0;
+
+    private _getEntityPositionInReferenceFrame = getEntityPositionInReferenceFrame;
+    private _getEntityOrientationInReferenceFrame = getEntityOrientationInReferenceFrame;
+
+    update(time:JulianDate) {
+        const _JulianDate = JulianDate;
+        const _PoseStatus = PoseStatus;
+
+        _JulianDate.clone(time, this.time);
+
+        if (!_JulianDate.equals(this._previousTime, time)) {
+            this._previousStatus = this.status;
+            this._previousTime = _JulianDate.clone(time, this._previousTime)
+        }
+
+        const entity = this.entity;
+        const referenceFrame = this.referenceFrame;
+        
+        let position = this._getEntityPositionInReferenceFrame(
+            entity,
+            time,
+            referenceFrame,
+            this.position
+        );
+
+        let orientation = this._getEntityOrientationInReferenceFrame(
+            entity,
+            time,
+            referenceFrame,
+            this.orientation
+        );
+
+        const hasPose = position && orientation;
+
+        let currentStatus: PoseStatus = 0;
+        const previousStatus = this._previousStatus;
+
+        if (hasPose) {
+            currentStatus |= _PoseStatus.KNOWN;
+        }
+
+        if (hasPose && !(previousStatus & _PoseStatus.KNOWN)) {
+            currentStatus |= _PoseStatus.FOUND;
+        } else if (!hasPose && previousStatus & _PoseStatus.KNOWN) {
+            currentStatus |= _PoseStatus.LOST;
+        }
+
+        this.status = currentStatus;
+    }
+}
+
+/**
+* A bitmask that provides metadata about the pose of an EntityPose.
+*   KNOWN - the pose of the entity state is defined. 
+*   KNOWN & FOUND - the pose was undefined when the entity state was last queried, and is now defined.
+*   LOST - the pose was defined when the entity state was last queried, and is now undefined
+*/
+export enum PoseStatus {
+    KNOWN = 1,
+    FOUND = 2,
+    LOST = 4
+}
 
 /**
  * A service for subscribing/unsubscribing to entities
@@ -153,6 +282,18 @@ export class EntityService {
     }
 
     /**
+     * Create a new EntityPose instance to represent the pose of an entity
+     * relative to a given reference frame. If no reference frame is specified,
+     * then the pose is based on the context's defaultReferenceFrame.
+     * 
+     * @param entity - the entity to track
+     * @param referenceFrameOrId - the reference frame to use
+     */
+    public createEntityPose(entityOrId: Entity|string, referenceFrameOrId: string | ReferenceFrame | Entity) {            
+        return new EntityPose(this.collection, entityOrId, referenceFrameOrId);
+    }
+
+    /**
      * 
      * @param id 
      * @param entityState 
@@ -283,7 +424,7 @@ export class EntityServiceProvider {
             const referenceFrameId = this.targetReferenceFrameMap.get(id);
             const referenceFrame = defined(referenceFrameId) && typeof referenceFrameId === 'string' ? 
                 this.entityService.collection.getById(referenceFrameId) :
-                defined(referenceFrameId) ? referenceFrameId : this.entityService.collection.getById('ar.origin');
+                defined(referenceFrameId) ? referenceFrameId : this.entityService.collection.getById('ar.stage');
             this._entityPoseCache[id] = this._getSerializedEntityState(entity, time, referenceFrame);
         }
 

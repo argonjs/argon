@@ -15,7 +15,7 @@ import {
 } from './cesium/cesium-imports'
 
 import {autoinject} from 'aurelia-dependency-injection';
-import {EntityService, EntityServiceProvider} from './entity'
+import {EntityService, EntityServiceProvider, PoseStatus} from './entity'
 import {SessionService, SessionPort} from './session'
 
 import {ArgonSystem} from './argon'
@@ -36,7 +36,6 @@ import {
 import {
     deprecated,
     eastUpSouthToFixedFrame,
-    getEntityPositionInReferenceFrame,
     getReachableAncestorReferenceFrames,
     requestAnimationFrame,
     cancelAnimationFrame,
@@ -130,8 +129,8 @@ export class DeviceService {
     public origin: Entity = this.entityService.collection.add(new Entity({
         id: 'ar.device.origin',
         name: 'Device Origin',
-        position: undefined,
-        orientation: undefined
+        position: new ConstantPositionProperty(undefined, ReferenceFrame.FIXED),
+        orientation: new ConstantProperty(undefined)
     }));
 
     /**
@@ -445,17 +444,20 @@ export class DeviceService {
 
     private _stringIdentifierFromReferenceFrame = stringIdentifierFromReferenceFrame;
     private _getReachableAncestorReferenceFrames = getReachableAncestorReferenceFrames;
-    private _getEntityPositionInReferenceFrame = getEntityPositionInReferenceFrame;
     private _scratchArray = [];
+
+    private _originPose = this.entityService.createEntityPose(this.origin, this.stage);
 
     private _updateDefaultOrigin() {
         const origin = this.origin;
         const stage = this.stage;
             
+        const originPose = this._originPose;
         const time = this.frameState.time;
-        const displacement = this._getEntityPositionInReferenceFrame(origin, time, stage, this._scratchCartesian)
+        originPose.update(time);
 
-        if (displacement && Cartesian3.magnitudeSquared(displacement) > 10000) {
+        if ((originPose.status & PoseStatus.KNOWN) === 0 ||
+            Cartesian3.magnitudeSquared(originPose.position) > 10000) {
             
             const stageFrame = this._getReachableAncestorReferenceFrames(stage, time, this._scratchArray)[0];
             
@@ -466,10 +468,10 @@ export class DeviceService {
                 
                 if (stagePositionValue && stageOrientationValue) {
 
-                    console.log('Updating local origin to ' + JSON.stringify(stagePositionValue) + " at " + this._stringIdentifierFromReferenceFrame(stageFrame));
                     (origin.position as ConstantPositionProperty).setValue(stagePositionValue, stageFrame);
                     (origin.orientation as ConstantProperty).setValue(stageOrientationValue);
-                    
+                    console.log('Updated device origin to ' + JSON.stringify(stagePositionValue) + " at " + this._stringIdentifierFromReferenceFrame(stageFrame));
+
                     return;
 
                 }
