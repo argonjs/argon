@@ -31,7 +31,7 @@ import {
 } from './common'
 import { SessionService, SessionPort } from './session'
 import { Event, getReachableAncestorReferenceFrames, getSerializedEntityState, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame, deprecated, decomposePerspectiveProjectionMatrix } from './utils'
-
+import {PermissionTypes, PermissionRequest} from './permission'
 
 /**
  * Represents the pose of an entity relative to a particular reference frame. 
@@ -494,7 +494,7 @@ export class ContextService {
     public subscribe(id: string|Entity, session=this.sessionService.manager) : Promise<Entity> {
         id = (<Entity>id).id || <string>id;
         return session.request('ar.context.subscribe', {id}).then(()=>{
-            return this.entities.getOrCreateEntity(id);
+            return this.entities.getOrCreateEntity(id);            
         });
     }
 
@@ -806,6 +806,14 @@ export class ContextServiceProvider {
     private _entityPoseCache: SerializedEntityStateMap = {};
     private _getSerializedEntityState = getSerializedEntityState;
 
+    public handlePermissionRequest = (request: PermissionRequest) => {
+        return Promise.resolve(true);
+    };
+
+    public handlePermissionRevoke = (request: PermissionRequest) => {
+        return Promise.resolve();
+    }
+
     constructor(
         private sessionService:SessionService,
         private contextService:ContextService
@@ -816,28 +824,58 @@ export class ContextServiceProvider {
             const subscriptions = {};
             this.entitySubscriptionsBySubscriber.set(session, subscriptions);
 
-            session.on['ar.context.subscribe'] = ({id}:{id:string}) => {
-                if (subscriptions[id]) return;
-
-                const subscribers = this.subscribersByEntityId.get(id) || new Set<SessionPort>();
-                this.subscribersByEntityId.set(id, subscribers);
-                subscribers.add(session);
-                subscriptions[id] = true;
-                this.subscribersChangeEvent.raiseEvent({id, subscribers});
-
-                session.closeEvent.addEventListener(()=>{
-                    subscribers.delete(session);
+            session.on['ar.context.subscribe'] = ({id}:{id:string}) => {                
+                if (!session.uri) 
+                    return Promise.reject(new Error('Subscription failed. Invalid URI'));
+                
+                const subscription = () => {
+                    if (subscriptions[id]) return;
+                    
+                    const subscribers = this.subscribersByEntityId.get(id) || new Set<SessionPort>();
+                    this.subscribersByEntityId.set(id, subscribers);
+                    subscribers.add(session);
+                    subscriptions[id] = true;
                     this.subscribersChangeEvent.raiseEvent({id, subscribers});
-                })
+
+                    session.closeEvent.addEventListener(()=>{
+                        subscribers.delete(session);
+                        this.subscribersChangeEvent.raiseEvent({id, subscribers});
+                    })
+                    return Promise.resolve();
+                }
+
+                if (PermissionTypes.indexOf(id) >= 0) { //when the request is for permissions
+                    this.handlePermissionRequest({type: id, uri: <string>session.uri}).then(
+                        (result) => {
+                            if (result === true)
+                                return subscription();
+                            else
+                                return Promise.reject(new Error("Permission request denied."));
+                        }
+                    );                        
+                } else {    //when the request is to a vuforia dataset
+                    return subscription();
+                }
             }
 
             session.on['ar.context.unsubscribe'] = ({id}:{id:string}) => {
                 if (!subscriptions[id]) return;
 
-                const subscribers = this.subscribersByEntityId.get(id);
-                subscribers && subscribers.delete(session);
-                delete subscriptions[id];
-                this.subscribersChangeEvent.raiseEvent({id, subscribers});
+                const unsubscription = () => {
+                    const subscribers = this.subscribersByEntityId.get(id);
+                    subscribers && subscribers.delete(session);
+                    delete subscriptions[id];
+                    this.subscribersChangeEvent.raiseEvent({id, subscribers});
+                    return Promise.resolve();
+                }
+
+                if (PermissionTypes.indexOf(id) >= 0) { //when the request is for permissions
+                    this.handlePermissionRevoke({type: id, uri: <string>session.uri}).then(() => {
+                        return unsubscription();
+                    });                        
+                } else {    //when the request is to a vuforia dataset
+                    return unsubscription();
+                }
             }
 
             session.on['ar.context.setGeolocationOptions'] = ({options}) => {
