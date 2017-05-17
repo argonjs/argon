@@ -765,6 +765,8 @@ export class DeviceService {
     private _deviceOrientation:Quaternion|undefined;
     private _deviceOrientationHeadingAccuracy:number|undefined;
 
+    private _negX90 = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, -CesiumMath.PI_OVER_TWO);
+
     private _tryOrientationUpdates() : void {
         if (typeof window == 'undefined' || !window.addEventListener) 
             return;
@@ -822,7 +824,8 @@ export class DeviceService {
             const gammaQuat = Quaternion.fromAxisAngle(Cartesian3.UNIT_Y, gamma, this._scratchQuaternion2);
             const alphaBetaGammaQuat = Quaternion.multiply(alphaBetaQuat, gammaQuat, this._scratchQuaternion);
 
-            this._deviceOrientation = Quaternion.clone(alphaBetaGammaQuat, this._deviceOrientation);
+            // finally, convert from ENU to EUS
+            this._deviceOrientation = Quaternion.multiply(this._negX90, alphaBetaGammaQuat, this._deviceOrientation || new Quaternion); // rotate from ENU to EUS
             this._deviceOrientationHeadingAccuracy = webkitCompassAccuracy;
 
             // TODO: fix heading drift calculation (heading should match webkitCompassHeading)

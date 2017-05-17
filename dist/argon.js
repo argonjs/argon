@@ -24067,7 +24067,7 @@ $__System.registerDynamic('98', ['82', '97'], true, function ($__require, export
 $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', '13', '14', '18', '1e', '24', '15', '5', '7', '42', '1a', '1b', '8', '39', '3c', '51', '6e', '2d', '17', 'd', '27', '28', '2e', '2f', '30', '21', '26', '29', '35', '20', '36', '37', '38', 'e', 'f', '2a', '3d', '44', '7c', '46', '49', '4c', '4f', '7d', '7e', '7f', '81', '98'], function (_export, _context) {
     "use strict";
 
-    var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, cesium_Source_Core_Clock_js, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, defaultValue, defined, cesium_Source_Core_DeveloperError_js, Ellipsoid, Entity, EntityCollection, Event, cesium_Source_Core_ExtrapolationType_js, cesium_Source_Core_FeatureDetection_js, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HeadingPitchRoll_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, ReferenceEntity, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, TerrainProvider, throttleRequestByServer, loadImage, WebMercatorTilingScheme, getImagePixels, HeightmapTerrainData, Credit, sampleTerrain, CardboardUI, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, DI, after, lut, i, cesiumImports, kButtonWidthDp, kTouchSlopFactor, __extends$1, AVERAGE_EYE_HEIGHT, DEFAULT_NEAR_PLANE, DEFAULT_FAR_PLANE, Role, Configuration, Viewport, CanvasViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event$1, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, getEventSynthesizier$1, cloneTouch, cloneTouches, eastUpSouthToFixedFrame, scratchAncestorCartesian, scratchAncestorQuaternion, getEntityPosition, getEntityOrientation, _scratchFramesArray, _entityStateCache, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, lastTime, rAF, cAF, defaultTerrainProvider, _scratchArray, version, __extends, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, WKWebViewConnectService, AndroidWebViewConnectService, _a$1, _b$1, __decorate$4, __metadata$4, EntityService, EntityServiceProvider, _a$4, _b$4, _c$3, __decorate$6, __metadata$6, FocusService, FocusServiceProvider, _a$6, _b$6, __decorate$7, __metadata$7, VisibilityService, VisibilityServiceProvider, _a$7, _b$7, __decorate$5, __metadata$5, Subview, ViewportMode, ViewElement, ViewService, ViewServiceProvider, viewportMetaTag, argonMetaTag, style, sheet, _a$5, _b$5, _c$4, _d$3, _e$3, __decorate$3, __metadata$3, DeviceStableState$$1, DeviceFrameState$$1, DeviceService, DeviceServiceProvider, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, _h$1, _j$1, _k$1, _l$1, __decorate$9, __metadata$9, EntityPose, PoseStatus, ContextService, ContextServiceProvider, _a$9, _b$9, _c$6, _d$5, _e$5, _f$3, _g$3, _h$3, _j$2, _k$2, _l$2, RealityViewer, __extends$2, __decorate$10, __metadata$10, EmptyRealityViewer, _a$10, _b$10, _c$7, _d$6, __extends$3, __decorate$11, __metadata$11, LiveRealityViewer, _a$11, _b$11, _c$8, _d$7, __extends$4, __decorate$12, __metadata$12, HostedRealityViewer, _a$12, _b$12, __decorate$8, __metadata$8, RealityViewerFactory, RealityService, RealityServiceProvider, _a$8, _b$8, _c$5, _d$4, _e$4, _f$2, _g$2, _h$2, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __extends$5, __decorate$13, __metadata$13, VuforiaServiceProvider, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$13, _b$13, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, ArgonConfigurationManager, initReality, _a, _b, _c, _d, _e, _f, _g, _h, ArgonSystem_1, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t;
+    var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, cesium_Source_Core_Clock_js, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, defaultValue, defined, cesium_Source_Core_DeveloperError_js, Ellipsoid, Entity, EntityCollection, Event, cesium_Source_Core_ExtrapolationType_js, cesium_Source_Core_FeatureDetection_js, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HeadingPitchRoll_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, ReferenceEntity, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, TerrainProvider, throttleRequestByServer, loadImage, WebMercatorTilingScheme, getImagePixels, HeightmapTerrainData, Credit, sampleTerrain, CardboardUI, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, DI, after, lut, i, cesiumImports, kButtonWidthDp, kTouchSlopFactor, __extends$1, AVERAGE_EYE_HEIGHT, DEFAULT_NEAR_PLANE, DEFAULT_FAR_PLANE, Role, Configuration, Viewport, CanvasViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event$1, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, getEventSynthesizier$1, cloneTouch, cloneTouches, eastUpSouthToFixedFrame, scratchAncestorCartesian, scratchAncestorQuaternion, getEntityPosition, getEntityOrientation, _scratchFramesArray, _entityStateCache, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, lastTime, rAF, cAF, defaultTerrainProvider, _scratchArray, version, __extends, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, WKWebViewConnectService, AndroidWebViewConnectService, _a$1, _b$1, __decorate$4, __metadata$4, EntityPose, PoseStatus, EntityService, EntityServiceProvider, _a$4, _b$4, _c$3, __decorate$6, __metadata$6, FocusService, FocusServiceProvider, _a$6, _b$6, __decorate$7, __metadata$7, VisibilityService, VisibilityServiceProvider, _a$7, _b$7, __decorate$5, __metadata$5, Subview, ViewportMode, ViewElement, ViewService, ViewServiceProvider, viewportMetaTag, argonMetaTag, style, sheet, _a$5, _b$5, _c$4, _d$3, _e$3, __decorate$3, __metadata$3, DeviceStableState$$1, DeviceFrameState$$1, DeviceService, DeviceServiceProvider, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, _h$1, _j$1, _k$1, _l$1, __decorate$9, __metadata$9, ContextService, ContextServiceProvider, _a$9, _b$9, _c$6, _d$5, _e$5, _f$3, _g$3, _h$3, _j$2, _k$2, _l$2, RealityViewer, __extends$2, __decorate$10, __metadata$10, EmptyRealityViewer, _a$10, _b$10, _c$7, _d$6, __extends$3, __decorate$11, __metadata$11, LiveRealityViewer, _a$11, _b$11, _c$8, _d$7, __extends$4, __decorate$12, __metadata$12, HostedRealityViewer, _a$12, _b$12, __decorate$8, __metadata$8, RealityViewerFactory, RealityService, RealityServiceProvider, _a$8, _b$8, _c$5, _d$4, _e$4, _f$2, _g$2, _h$2, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __extends$5, __decorate$13, __metadata$13, VuforiaServiceProvider, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$13, _b$13, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, ArgonConfigurationManager, initReality, _a, _b, _c, _d, _e, _f, _g, _h, ArgonSystem_1, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t;
 
     function alwaysValid() {
         return true;
@@ -26492,7 +26492,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _scratchArray = [];
 
-            _export('version', version = "1.2.0-20-refactor-y-up-4");
+            _export('version', version = "1.2.0-20-refactor-y-up-10");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -27159,6 +27159,105 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
             };
 
+            _export('EntityPose', EntityPose = function () {
+                function EntityPose(_collection, entityOrId, referenceFrameId) {
+                    this._collection = _collection;
+                    /**
+                     * The status of this pose, as a bitmask.
+                     *
+                     * If the current pose is known, then the KNOWN bit is 1.
+                     * If the current pose is not known, then the KNOWN bit is 0.
+                     *
+                     * If the previous pose was known and the current pose is unknown,
+                     * then the LOST bit is 1.
+                     * If the previous pose was unknown and the current pose status is known,
+                     * then the FOUND bit is 1.
+                     * In all other cases, both the LOST bit and the FOUND bit are 0.
+                     */
+                    this.status = 0;
+                    this.position = new Cartesian3();
+                    this.orientation = new Quaternion();
+                    this.time = new JulianDate(0, 0);
+                    this._previousStatus = 0;
+                    this._getEntityPositionInReferenceFrame = getEntityPositionInReferenceFrame;
+                    this._getEntityOrientationInReferenceFrame = getEntityOrientationInReferenceFrame;
+                    if (typeof entityOrId === 'string') {
+                        var entity = this._collection.getById(entityOrId);
+                        if (!entity) entity = new ReferenceEntity(this._collection, entityOrId);
+                        this._entity = entity;
+                    } else {
+                        this._entity = entityOrId;
+                    }
+                    if (typeof referenceFrameId === 'string') {
+                        var referenceFrame = this._collection.getById(referenceFrameId);
+                        if (!defined(referenceFrame)) referenceFrame = new ReferenceEntity(this._collection, referenceFrameId);
+                        this._referenceFrame = referenceFrame;
+                    } else {
+                        this._referenceFrame = referenceFrameId;
+                    }
+                }
+                Object.defineProperty(EntityPose.prototype, "entity", {
+                    get: function () {
+                        return this._entity;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(EntityPose.prototype, "referenceFrame", {
+                    get: function () {
+                        return this._referenceFrame;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(EntityPose.prototype, "poseStatus", {
+                    /**
+                     * alias for status
+                     */
+                    get: function () {
+                        return this.status;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+
+                EntityPose.prototype.update = function (time) {
+                    var _JulianDate = JulianDate;
+                    var _PoseStatus = PoseStatus;
+                    _JulianDate.clone(time, this.time);
+                    if (!_JulianDate.equals(this._previousTime, time)) {
+                        this._previousStatus = this.status;
+                        this._previousTime = _JulianDate.clone(time, this._previousTime);
+                    }
+                    var entity = this.entity;
+                    var referenceFrame = this.referenceFrame;
+                    var position = this._getEntityPositionInReferenceFrame(entity, time, referenceFrame, this.position);
+                    var orientation = this._getEntityOrientationInReferenceFrame(entity, time, referenceFrame, this.orientation);
+                    var hasPose = position && orientation;
+                    var currentStatus = 0;
+                    var previousStatus = this._previousStatus;
+                    if (hasPose) {
+                        currentStatus |= _PoseStatus.KNOWN;
+                    }
+                    if (hasPose && !(previousStatus & _PoseStatus.KNOWN)) {
+                        currentStatus |= _PoseStatus.FOUND;
+                    } else if (!hasPose && previousStatus & _PoseStatus.KNOWN) {
+                        currentStatus |= _PoseStatus.LOST;
+                    }
+                    this.status = currentStatus;
+                };
+                return EntityPose;
+            }());
+
+            (function (PoseStatus) {
+                PoseStatus[PoseStatus["KNOWN"] = 1] = "KNOWN";
+                PoseStatus[PoseStatus["FOUND"] = 2] = "FOUND";
+                PoseStatus[PoseStatus["LOST"] = 4] = "LOST";
+            })(PoseStatus || _export('PoseStatus', PoseStatus = {}));
+            /**
+             * A service for subscribing/unsubscribing to entities
+             */
+
             _export('EntityService', EntityService = function () {
                 function EntityService(collection, sessionService) {
                     // sessionService.manager.on['ar.entity.state'] = ({id, state}: { id:string, state:SerializedEntityState }) => {
@@ -27268,6 +27367,17 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     var id = idOrEntity.id || idOrEntity;
                     session.send('ar.entity.unsubscribe', { id: id });
                     this._handleUnsubscribed(id);
+                };
+                /**
+                 * Create a new EntityPose instance to represent the pose of an entity
+                 * relative to a given reference frame. If no reference frame is specified,
+                 * then the pose is based on the context's defaultReferenceFrame.
+                 *
+                 * @param entity - the entity to track
+                 * @param referenceFrameOrId - the reference frame to use
+                 */
+                EntityService.prototype.createEntityPose = function (entityOrId, referenceFrameOrId) {
+                    return new EntityPose(this.collection, entityOrId, referenceFrameOrId);
                 };
                 /**
                  *
@@ -27380,7 +27490,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     var id = entity.id;
                     if (!defined(this._entityPoseCache[id]) || this._cacheTime.equalsEpsilon(time, 0.000001)) {
                         var referenceFrameId = this.targetReferenceFrameMap.get(id);
-                        var referenceFrame = defined(referenceFrameId) && typeof referenceFrameId === 'string' ? this.entityService.collection.getById(referenceFrameId) : defined(referenceFrameId) ? referenceFrameId : this.entityService.collection.getById('ar.origin');
+                        var referenceFrame = defined(referenceFrameId) && typeof referenceFrameId === 'string' ? this.entityService.collection.getById(referenceFrameId) : defined(referenceFrameId) ? referenceFrameId : this.entityService.collection.getById('ar.stage');
                         this._entityPoseCache[id] = this._getSerializedEntityState(entity, time, referenceFrame);
                     }
                     return this._entityPoseCache[id];
@@ -27829,7 +27939,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         decomposePerspectiveProjectionMatrix(serializedSubview.projectionMatrix, subview.frustum);
                         subview['projectionMatrix'] = subview.frustum.projectionMatrix;
                         subview.pose = this._subviewPose[index] = this._subviewPose[index] || contextService.createEntityPose(contextService.getSubviewEntity(index));
-                        subview.pose.update();
+                        subview.pose.update(state.time);
                         index++;
                     }
                     this._updateViewport(state.viewport);
@@ -28108,8 +28218,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     this.origin = this.entityService.collection.add(new Entity({
                         id: 'ar.device.origin',
                         name: 'Device Origin',
-                        position: undefined,
-                        orientation: undefined
+                        position: new ConstantPositionProperty(undefined, ReferenceFrame.FIXED),
+                        orientation: new ConstantProperty(undefined)
                     }));
                     /**
                      * A coordinate system representing the physical space in which the user is free to
@@ -28174,14 +28284,15 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     };
                     this._stringIdentifierFromReferenceFrame = stringIdentifierFromReferenceFrame;
                     this._getReachableAncestorReferenceFrames = getReachableAncestorReferenceFrames;
-                    this._getEntityPositionInReferenceFrame = getEntityPositionInReferenceFrame;
                     this._scratchArray = [];
+                    this._originPose = this.entityService.createEntityPose(this.origin, this.stage);
                     this._scratchQuaternion = new Quaternion();
                     this._scratchQuaternion2 = new Quaternion();
                     this._scratchMatrix3 = new Matrix3();
                     this._scratchMatrix4 = new Matrix4();
                     this._defaultLeftBounds = [0.0, 0.0, 0.5, 1.0];
                     this._defaultRightBounds = [0.5, 0.0, 0.5, 1.0];
+                    this._negX90 = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, -CesiumMath.PI_OVER_TWO);
                     this.visibilityService.showEvent.addEventListener(function () {
                         return _this._startUpdates();
                     });
@@ -28396,17 +28507,18 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 DeviceService$$1.prototype._updateDefaultOrigin = function () {
                     var origin = this.origin;
                     var stage = this.stage;
+                    var originPose = this._originPose;
                     var time = this.frameState.time;
-                    var displacement = this._getEntityPositionInReferenceFrame(origin, time, stage, this._scratchCartesian);
-                    if (displacement && Cartesian3.magnitudeSquared(displacement) > 10000) {
+                    originPose.update(time);
+                    if ((originPose.status & PoseStatus.KNOWN) === 0 || Cartesian3.magnitudeSquared(originPose.position) > 10000) {
                         var stageFrame = this._getReachableAncestorReferenceFrames(stage, time, this._scratchArray)[0];
                         if (defined(stageFrame)) {
                             var stagePositionValue = stage.position.getValueInReferenceFrame(time, stageFrame, this._scratchCartesian);
                             var stageOrientationValue = stage.orientation.getValue(time, this._scratchQuaternion);
                             if (stagePositionValue && stageOrientationValue) {
-                                console.log('Updating local origin to ' + JSON.stringify(stagePositionValue) + " at " + this._stringIdentifierFromReferenceFrame(stageFrame));
                                 origin.position.setValue(stagePositionValue, stageFrame);
                                 origin.orientation.setValue(stageOrientationValue);
+                                console.log('Updated device origin to ' + JSON.stringify(stagePositionValue) + " at " + this._stringIdentifierFromReferenceFrame(stageFrame));
                                 return;
                             }
                         }
@@ -28632,7 +28744,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         var alphaBetaQuat = Quaternion.multiply(alphaQuat, betaQuat, _this._scratchQuaternion);
                         var gammaQuat = Quaternion.fromAxisAngle(Cartesian3.UNIT_Y, gamma, _this._scratchQuaternion2);
                         var alphaBetaGammaQuat = Quaternion.multiply(alphaBetaQuat, gammaQuat, _this._scratchQuaternion);
-                        _this._deviceOrientation = Quaternion.clone(alphaBetaGammaQuat, _this._deviceOrientation);
+                        // finally, convert from ENU to EUS
+                        _this._deviceOrientation = Quaternion.multiply(_this._negX90, alphaBetaGammaQuat, _this._deviceOrientation || new Quaternion()); // rotate from ENU to EUS
                         _this._deviceOrientationHeadingAccuracy = webkitCompassAccuracy;
                         // TODO: fix heading drift calculation (heading should match webkitCompassHeading)
                         // if (defined(webkitCompassHeading)) {
@@ -28909,105 +29022,6 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
             __metadata$9 = undefined && undefined.__metadata || function (k, v) {
                 if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
             };
-
-            _export('EntityPose', EntityPose = function () {
-                function EntityPose(context, entityOrId, referenceFrameId) {
-                    this.context = context;
-                    /**
-                     * The status of this pose, as a bitmask.
-                     *
-                     * If the current pose is known, then the KNOWN bit is 1.
-                     * If the current pose is not known, then the KNOWN bit is 0.
-                     *
-                     * If the previous pose was known and the current pose is unknown,
-                     * then the LOST bit is 1.
-                     * If the previous pose was unknown and the current pose status is known,
-                     * then the FOUND bit is 1.
-                     * In all other cases, both the LOST bit and the FOUND bit are 0.
-                     */
-                    this.status = 0;
-                    this.position = new Cartesian3();
-                    this.orientation = new Quaternion();
-                    this.time = new JulianDate(0, 0);
-                    this._previousStatus = 0;
-                    if (typeof entityOrId === 'string') {
-                        var entity = this.context.entities.getById(entityOrId);
-                        if (!entity) entity = new ReferenceEntity(context.entities, entityOrId);
-                        this._entity = entity;
-                    } else {
-                        this._entity = entityOrId;
-                    }
-                    if (typeof referenceFrameId === 'string') {
-                        var referenceFrame = this.context.entities.getById(referenceFrameId);
-                        if (!defined(referenceFrame)) referenceFrame = new ReferenceEntity(context.entities, referenceFrameId);
-                        this._referenceFrame = referenceFrame;
-                    } else {
-                        this._referenceFrame = referenceFrameId;
-                    }
-                }
-                Object.defineProperty(EntityPose.prototype, "entity", {
-                    get: function () {
-                        return this._entity;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(EntityPose.prototype, "referenceFrame", {
-                    get: function () {
-                        if (!defined(this._referenceFrame)) return this.context.defaultReferenceFrame;
-                        return this._referenceFrame;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(EntityPose.prototype, "poseStatus", {
-                    /**
-                     * alias for status
-                     */
-                    get: function () {
-                        return this.status;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-
-                EntityPose.prototype.update = function (time) {
-                    if (time === void 0) {
-                        time = this.context.time;
-                    }
-                    JulianDate.clone(time, this.time);
-                    if (!JulianDate.equals(this._previousTime, time)) {
-                        this._previousStatus = this.status;
-                        this._previousTime = JulianDate.clone(time, this._previousTime);
-                    }
-                    var entity = this.entity;
-                    var referenceFrame = this.referenceFrame;
-                    var position = getEntityPositionInReferenceFrame(entity, time, referenceFrame, this.position);
-                    var orientation = getEntityOrientationInReferenceFrame(entity, time, referenceFrame, this.orientation);
-                    var hasPose = position && orientation;
-                    var currentStatus = 0;
-                    var previousStatus = this._previousStatus;
-                    if (hasPose) {
-                        currentStatus |= PoseStatus.KNOWN;
-                    }
-                    if (hasPose && !(previousStatus & PoseStatus.KNOWN)) {
-                        currentStatus |= PoseStatus.FOUND;
-                    } else if (!hasPose && previousStatus & PoseStatus.KNOWN) {
-                        currentStatus |= PoseStatus.LOST;
-                    }
-                    this.status = currentStatus;
-                };
-                return EntityPose;
-            }());
-
-            (function (PoseStatus) {
-                PoseStatus[PoseStatus["KNOWN"] = 1] = "KNOWN";
-                PoseStatus[PoseStatus["FOUND"] = 2] = "FOUND";
-                PoseStatus[PoseStatus["LOST"] = 4] = "LOST";
-            })(PoseStatus || _export('PoseStatus', PoseStatus = {}));
-            /**
-             * Provides a means of querying the current state of reality.
-             */
 
             _export('ContextService', ContextService = function () {
                 function ContextService(entityService, sessionService, deviceService, viewService) {
@@ -29362,18 +29376,21 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                  * relative to a given reference frame. If no reference frame is specified,
                  * then the pose is based on the context's defaultReferenceFrame.
                  *
-                 * @param entity - the entity to track
-                 * @param referenceFrameOrId - the reference frame to use
+                 * @param entityOrId - the entity to track
+                 * @param referenceFrameOrId - The intended reference frame. Defaults to `this.defaultReferenceFrame`.
                  */
                 ContextService.prototype.createEntityPose = function (entityOrId, referenceFrameOrId) {
-                    return new EntityPose(this, entityOrId, referenceFrameOrId);
+                    if (referenceFrameOrId === void 0) {
+                        referenceFrameOrId = this.defaultReferenceFrame;
+                    }
+                    return this.entityService.createEntityPose(entityOrId, referenceFrameOrId);
                 };
                 /**
                  * Gets the current pose of an entity, relative to a given reference frame.
                  *
                  * @deprecated
-                 * @param entity - The entity whose state is to be queried.
-                 * @param referenceFrame - The intended reference frame. Defaults to `this.defaultReferenceFrame`.
+                 * @param entityOrId - The entity whose state is to be queried.
+                 * @param referenceFrameOrId - The intended reference frame. Defaults to `this.defaultReferenceFrame`.
                  */
                 ContextService.prototype.getEntityPose = function (entityOrId, referenceFrameOrId) {
                     if (referenceFrameOrId === void 0) {
@@ -29382,10 +29399,10 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     var key = this._stringIdentifierFromReferenceFrame(entityOrId) + '@' + this._stringIdentifierFromReferenceFrame(referenceFrameOrId);
                     var entityPose = this._entityPoseMap.get(key);
                     if (!entityPose) {
-                        entityPose = this.createEntityPose(entityOrId, referenceFrameOrId);
+                        entityPose = this.entityService.createEntityPose(entityOrId, referenceFrameOrId);
                         this._entityPoseMap.set(key, entityPose);
                     }
-                    entityPose.update();
+                    entityPose.update(this.time);
                     return entityPose;
                 };
                 /**
@@ -29563,6 +29580,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     // raise events for the user to update and render the scene
                     if (this._originChanged) {
                         this._originChanged = false;
+                        var originPosition = this.origin.position;
+                        console.log('Updated context origin to ' + JSON.stringify(originPosition['_value']) + " at " + this._stringIdentifierFromReferenceFrame(originPosition.referenceFrame));
                         this.originChangeEvent.raiseEvent(undefined);
                     }
                     this.updateEvent.raiseEvent(this);
@@ -29677,6 +29696,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 };
                 ContextServiceProvider.prototype._sendUpdateForSession = function (state, session) {
                     var sessionEntities = this._sessionEntities;
+                    var entityServiceProvider = this.entityServiceProvider;
                     // clear session entities
                     for (var id in sessionEntities) {
                         delete sessionEntities[id];
@@ -29687,8 +29707,10 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                             sessionEntities[id] = state.entities[id];
                         }
                     }
+                    // always send the origin state
+                    sessionEntities[this.contextService.origin.id] = entityServiceProvider.getCachedSerializedEntityState(this.contextService.origin, state.time);
                     // get subscribed entities for the session
-                    var subscriptions = this.entityServiceProvider.subscriptionsBySubscriber.get(session);
+                    var subscriptions = entityServiceProvider.subscriptionsBySubscriber.get(session);
                     // exclude the stage state unless it is explicitly subscribed 
                     var contextService = this.contextService;
                     var contextStageId = contextService.stage.id;
@@ -29696,7 +29718,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     // add the entity states for all subscribed entities
                     for (var id_1 in subscriptions) {
                         var entity = contextService.entities.getById(id_1);
-                        sessionEntities[id_1] = this.entityServiceProvider.getCachedSerializedEntityState(entity, state.time);
+                        sessionEntities[id_1] = entityServiceProvider.getCachedSerializedEntityState(entity, state.time);
                     }
                     // recycle the frame state object, but with the session entities
                     var parentEntities = state.entities;
@@ -31429,13 +31451,13 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _export('SerializedSubviewList', SerializedSubviewList);
 
-            _export('EntityPose', EntityPose);
-
-            _export('PoseStatus', PoseStatus);
-
             _export('ContextService', ContextService);
 
             _export('ContextServiceProvider', ContextServiceProvider);
+
+            _export('EntityPose', EntityPose);
+
+            _export('PoseStatus', PoseStatus);
 
             _export('EntityService', EntityService);
 
