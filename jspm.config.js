@@ -21,6 +21,9 @@ SystemJS.config({
             'map': {
                 './webvr': {
                     '~browser': '@empty'
+                },
+                './utils/platform-properties': {
+                    '~browser': '@empty'
                 }
             }
         },
@@ -358,7 +361,7 @@ SystemJS.config({
         'aurelia-polyfills': 'npm:aurelia-polyfills@1.0.0-beta.1.0.0',
         'cesium': 'github:aelatgt/cesium@referenceFrames',
         'googlevr/webvr-polyfill': 'github:googlevr/webvr-polyfill@0.9.3',
-        'mobile-detect': 'npm:mobile-detect@1.3.2'
+        'webvr-feature-detector': 'github:pindiespace/webvr-feature-detector@master'
     },
     packages: {}
 });

@@ -27,6 +27,7 @@ export * from './utils/event';
 export * from './utils/message-channel';
 export {default as getEventSynthesizier} from './utils/ui-event-synthesizer';
 export {default as createEventForwarder} from './utils/ui-event-forwarder';
+export * from './utils/platform-properties';
 
 
 
