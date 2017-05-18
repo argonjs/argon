@@ -2,8 +2,8 @@ import { autoinject } from 'aurelia-dependency-injection';
 import { SessionService, SessionPort } from './session';
 
 export type PermissionType = 
-    'ar.stage'          //geolocation
-    | 'ar.camera'       //camera
+    'ar.stage'          //Geolocation
+    | 'ar.camera'       //Camera
     | 'ar.3dmesh';      //3D Structural mesh
 
 /**
@@ -40,10 +40,10 @@ export class Permission {
 }
 
 export enum PermissionState {
-    NOT_REQUIRED = 0, //not being used by app
-    PROMPT = 1, //show the user a prompt to decide whether to succeed 
-    GRANTED = 77,    //succeed without prompting the user     
-    DENIED = 44,     //fail without prompting the user
+    NOT_REQUIRED = 0,   //Default state. Permission is not being used.
+    PROMPT = 1,         //Permission should be asked for from the user.
+    GRANTED = 77,       //Permission has been granted.
+    DENIED = 44,        //Permission has been denied.
 }
 
 /**
@@ -58,7 +58,7 @@ export class PermissionService {
     /**
      * Query current state of permission
      * 
-     * @returns A PermissionState
+     * @returns A Promise that resolves to the current state of the permission
      */
     // public query() : Promise<Permission[]>;
     public query(type: PermissionType, session = this.sessionService.manager) : Promise<PermissionState> {
@@ -71,7 +71,8 @@ export class PermissionService {
     /**
      * Revoke permissions
      * 
-     * @returns revoked state (should be PermissionState.Denied on success)
+     * @returns A promise that resolves to the state of requested permission after revoking.
+     * Should be PermissionState.Denied on success.
      */
     public revoke(type: PermissionType) : Promise<PermissionState> {
         const session = this.sessionService.manager;
@@ -91,19 +92,34 @@ export class PermissionServiceProvider {
     constructor(private sessionService:SessionService) {
         this.sessionService.ensureIsRealityManager();
         this.sessionService.connectEvent.addEventListener((session: SessionPort) => {
+
+            /**
+             * Browsers should override this to check their locally stored permissions.
+             * @param type
+             * @returns The current state of the permission
+             */
             session.on['ar.permission.query'] = ({type}: {type: PermissionType}) => {
                 return Promise.resolve({state: PermissionState.GRANTED});
             }
 
+            /**
+             * Browswer should override this if they want to allow revoking permissions.
+             * @param type
+             * @returns The state of the permission after revoking
+             */
             session.on['ar.permission.revoke'] = ({type}: {type: PermissionType}) => {
-                return Promise.resolve({state: PermissionState.DENIED});
+                return Promise.reject(new Error("Revoking permission is not supported on this browser."));
             }
         });
     }
 
     /**
-     * Should return a resolved promise if subscription is permitted, 
-     * or a rejected promise if subscription is not permitted.
+     * Browsers should override this and ask the users via their own UI.
+     * The permissions should be stored locally based on the host name and id(=type).
+     * @param session Used to acquire hostname from the uri
+     * @param id Can be used as a type of permission. Also can be random id's. ex) Vuforia requests
+     * @returns A resolved promise if subscription is permitted, 
+     * @returns A rejected promise if subscription is not permitted.
      */
     public handlePermissionRequest(session: SessionPort, id: string) {
         return Promise.resolve();
