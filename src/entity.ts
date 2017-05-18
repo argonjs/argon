@@ -2,6 +2,7 @@ import { autoinject } from 'aurelia-dependency-injection';
 import { SessionService, SessionPort } from './session';
 import { Event, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame, getSerializedEntityState, jsonEquals } from './utils';
 import { SerializedEntityState, SerializedEntityStateMap } from './common';
+import { PermissionServiceProvider } from './permission'
 import {
     defined,
     Cartesian3,
@@ -363,7 +364,11 @@ export class EntityServiceProvider {
 
     public targetReferenceFrameMap = new Map<string, string|ReferenceFrame>();
 
-    constructor(private sessionService: SessionService, private entityService: EntityService) {
+    constructor(
+        private sessionService: SessionService,
+        private entityService: EntityService,
+        private permissionServiceProvider: PermissionServiceProvider
+    ) {
         this.sessionService.ensureIsRealityManager();
         
         this.sessionService.connectEvent.addEventListener((session) => {
@@ -374,7 +379,7 @@ export class EntityServiceProvider {
                 const currentOptions = subscriptions.get(id);
                 if (currentOptions && jsonEquals(currentOptions,options)) return;
 
-                return Promise.resolve(this.onAllowSubscription(session, id, options)).then(()=>{
+                return this.permissionServiceProvider.handlePermissionRequest(session, id).then(()=>{
                     const subscribers = this.subscribersByEntity.get(id) || new Set<SessionPort>();
                     this.subscribersByEntity.set(id, subscribers);
                     subscribers.add(session);
@@ -401,14 +406,6 @@ export class EntityServiceProvider {
                 });
             })
         });
-    }
-
-    /**
-     * Should return a resolved promise if subscription is permitted, 
-     * or a rejected promise if subscription is not permitted.
-     */
-    public onAllowSubscription(session, id, options) {
-        return Promise.resolve();
     }
 
     public fillEntityStateMapForSession(session:SessionPort, time:JulianDate, entities:SerializedEntityStateMap) {

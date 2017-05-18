@@ -25,6 +25,7 @@ import { RealityService, RealityServiceProvider } from './reality'
 import { ViewService, ViewServiceProvider, ViewElement } from './view'
 import { VisibilityService, VisibilityServiceProvider } from './visibility'
 import { VuforiaService, VuforiaServiceProvider } from './vuforia'
+import { PermissionService, PermissionServiceProvider } from './permission'
 
 import { RealityViewer } from './reality-viewers/base'
 import { EmptyRealityViewer } from './reality-viewers/empty'
@@ -63,7 +64,8 @@ export class ArgonSystemProvider {
         public visibility:VisibilityServiceProvider,
         public reality:RealityServiceProvider, 
         public view:ViewServiceProvider,
-        public vuforia:VuforiaServiceProvider
+        public vuforia:VuforiaServiceProvider,
+        public permission:PermissionServiceProvider
     ) {}
 }
 
@@ -92,7 +94,8 @@ export class ArgonSystem {
         public session: SessionService,
         public view: ViewService,
         public visibility: VisibilityService,
-        public vuforia: VuforiaService
+        public vuforia: VuforiaService,
+        public permission: PermissionService
     ) {
         if (!ArgonSystem.instance) ArgonSystem.instance = this;
 
