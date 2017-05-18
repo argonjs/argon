@@ -86,7 +86,7 @@ export class PermissionService {
  * Manage permissions
  */
 @autoinject()
-export abstract class PermissionServiceProvider {
+export class PermissionServiceProvider {
 
     constructor(private sessionService:SessionService) {
         this.sessionService.ensureIsRealityManager();

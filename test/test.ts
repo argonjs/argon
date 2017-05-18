@@ -150,7 +150,8 @@ describe('EntityService', () => {
             );
 
             const entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
-            new Argon.EntityServiceProvider(sessionService, entityService);
+            const permissionServiceProvider = new Argon.PermissionServiceProvider(sessionService);
+            new Argon.EntityServiceProvider(sessionService, entityService, permissionServiceProvider);
 
             sessionService.connect();
             const testId = Argon.Cesium.createGuid();
@@ -164,9 +165,11 @@ describe('EntityService', () => {
                 new Argon.SessionPortFactory,
                 new Argon.MessageChannelFactory
             );
-
+            // const permissionService = new Argon.PermissionService(sessionService);
+            const permissionServiceProvider = new Argon.PermissionServiceProvider(sessionService);
             const entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
-            const entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService);
+            const entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService, permissionServiceProvider);
+
 
             const testId = Argon.Cesium.createGuid();
             entityService.subscribedEvent.addEventListener(({id, options})=>{
@@ -188,8 +191,9 @@ describe('EntityService', () => {
                 new Argon.SessionPortFactory,
                 new Argon.MessageChannelFactory
             );
+            const permissionServiceProvider = new Argon.PermissionServiceProvider(sessionService);
             const entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
-            const entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService);
+            const entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService, permissionServiceProvider);
 
             const testId = Argon.Cesium.createGuid();
             entityServiceProvider.sessionSubscribedEvent.addEventListener(({id, session, options})=>{
@@ -214,14 +218,14 @@ describe('EntityService', () => {
                 new Argon.SessionPortFactory,
                 new Argon.MessageChannelFactory
             );
+            const permissionServiceProvider = new Argon.PermissionServiceProvider(sessionService);
             const entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
-            const entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService);
+            new Argon.EntityServiceProvider(sessionService, entityService, permissionServiceProvider);
 
             const testId = Argon.Cesium.createGuid();
-            entityServiceProvider.onAllowSubscription = (session, id, options) => {
+            permissionServiceProvider.handlePermissionRequest = (session, id) => {
                 expect(session).to.equal(sessionService.manager);
                 expect(id).to.equal(testId);
-                expect(options).to.exist && expect(options['something']).to.equal('here');
                 return Promise.reject('fail')
             }
 
@@ -250,8 +254,9 @@ describe('EntityService', () => {
                 new Argon.SessionPortFactory,
                 new Argon.MessageChannelFactory
             );
+            const permissionServiceProvider = new Argon.PermissionServiceProvider(sessionService);
             const entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
-            const entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService);
+            const entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService, permissionServiceProvider);
 
 
             const testId = Argon.Cesium.createGuid();
@@ -278,8 +283,9 @@ describe('EntityService', () => {
                 new Argon.SessionPortFactory,
                 new Argon.MessageChannelFactory
             );
+            const permissionServiceProvider = new Argon.PermissionServiceProvider(sessionService);
             const entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
-            const entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService);
+            const entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService, permissionServiceProvider);
 
 
             const testId = Argon.Cesium.createGuid();
