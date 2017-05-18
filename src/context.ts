@@ -452,7 +452,7 @@ export class ContextService {
         time:JulianDate,
         viewport:CanvasViewport,
         subviewList:SerializedSubviewList,
-        options?: {overrideStage?:boolean, overrideUser?:boolean, overrideView?:boolean, floorOffset?:number}
+        options?: {overrideStage?:boolean, overrideUser?:boolean, overrideView?:boolean, overrideSubviews?:boolean, floorOffset?:number}
     ) : ContextFrameState {
 
         let overrideUser = options && options.overrideUser;
@@ -463,49 +463,51 @@ export class ContextService {
             }
         }
 
-        // check for valid projection matrices
-        for (const s of subviewList) {
-            if (!isFinite(s.projectionMatrix[0]))
-                throw new Error('Invalid projection matrix (contains non-finite values)');
-        }
-
         const frameState:ContextFrameState = this._scratchFrameState;
         frameState.time = JulianDate.clone(time, frameState.time);
         frameState.viewport = CanvasViewport.clone(viewport, frameState.viewport)!;
         frameState.subviews = SerializedSubviewList.clone(subviewList, frameState.subviews)!;
+        const entities = frameState.entities = {};
 
-        const getEntityState = this._getSerializedEntityState;
+        const getSerializedEntityState = this._getSerializedEntityState;
 
         // stage
         const stage = this.stage;
         if (options && options.overrideStage) {
-            frameState.entities[stage.id] = getEntityState(stage, time, undefined);
-        } else {
-            delete frameState.entities[stage.id];
+            entities[stage.id] = getSerializedEntityState(stage, time, undefined);
         }
 
         // user
         const user = this.user;
         if (overrideUser) {
-            frameState.entities[user.id] = getEntityState(user, time, stage);
-        } else {
-            delete frameState.entities[user.id];
+            entities[user.id] = getSerializedEntityState(user, time, stage);
         }
 
         // view
         const view = this.view;
         if (options && options.overrideView) {
-            frameState.entities[view.id] = getEntityState(view, time, user);
-        } else {
-            delete frameState.entities[view.id];
+            entities[view.id] = getSerializedEntityState(view, time, user);
+        }
+        
+        // subviews
+        for (let index=0; index < subviewList.length; index++) {
+            // check for valid projection matrices
+            const subview = subviewList[index];
+            if (!isFinite(subview.projectionMatrix[0]))
+                throw new Error('Invalid projection matrix (contains non-finite values)');
+            
+            if (options && options.overrideSubviews) {
+                const subviewEntity = this.getSubviewEntity(index);
+                entities[subviewEntity.id] = getSerializedEntityState(subviewEntity, time, view);
+            }
         }
 
         // floor
         const floorOffset = options && options.floorOffset || 0;
         const floor = this.floor;
-        (floor.position as ConstantPositionProperty).setValue(Cartesian3.fromElements(0,0,floorOffset, this._scratchCartesian), stage);
+        (floor.position as ConstantPositionProperty).setValue(Cartesian3.fromElements(0,floorOffset,0, this._scratchCartesian), stage);
         if (floorOffset !== 0) {
-            frameState.entities[this.floor.id] = getEntityState(floor, time, stage);
+            frameState.entities[this.floor.id] = getSerializedEntityState(floor, time, stage);
         }
         
         return frameState;
@@ -558,6 +560,7 @@ export class ContextService {
     // TODO: This function is called a lot. Potential for optimization. 
     private _update(frameState: ContextFrameState) {
 
+        this._serializedFrameState = frameState;
         const time = frameState.time;
         const entities = frameState.entities;
 
@@ -640,6 +643,7 @@ export class ContextService {
 
         // update view
         this.viewService._processContextFrameState(frameState, this);
+        // TODO: realityService._processContextFrameState(frameState); 
 
         // raise events for the user to update and render the scene
         if (this._originChanged) {

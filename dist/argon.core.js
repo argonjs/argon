@@ -20912,7 +20912,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _scratchArray = [];
 
-            _export('version', version = "1.2.0-20-refactor-y-up-9");
+            _export('version', version = "1.2.0-20-refactor-y-up-11");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -23849,43 +23849,43 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                             overrideUser = false;
                         }
                     }
-                    // check for valid projection matrices
-                    for (var _i = 0, subviewList_1 = subviewList; _i < subviewList_1.length; _i++) {
-                        var s = subviewList_1[_i];
-                        if (!isFinite(s.projectionMatrix[0])) throw new Error('Invalid projection matrix (contains non-finite values)');
-                    }
                     var frameState = this._scratchFrameState;
                     frameState.time = JulianDate.clone(time, frameState.time);
                     frameState.viewport = CanvasViewport.clone(viewport, frameState.viewport);
                     frameState.subviews = SerializedSubviewList.clone(subviewList, frameState.subviews);
-                    var getEntityState = this._getSerializedEntityState;
+                    var entities = frameState.entities = {};
+                    var getSerializedEntityState$$1 = this._getSerializedEntityState;
                     // stage
                     var stage = this.stage;
                     if (options && options.overrideStage) {
-                        frameState.entities[stage.id] = getEntityState(stage, time, undefined);
-                    } else {
-                        delete frameState.entities[stage.id];
+                        entities[stage.id] = getSerializedEntityState$$1(stage, time, undefined);
                     }
                     // user
                     var user = this.user;
                     if (overrideUser) {
-                        frameState.entities[user.id] = getEntityState(user, time, stage);
-                    } else {
-                        delete frameState.entities[user.id];
+                        entities[user.id] = getSerializedEntityState$$1(user, time, stage);
                     }
                     // view
                     var view = this.view;
                     if (options && options.overrideView) {
-                        frameState.entities[view.id] = getEntityState(view, time, user);
-                    } else {
-                        delete frameState.entities[view.id];
+                        entities[view.id] = getSerializedEntityState$$1(view, time, user);
+                    }
+                    // subviews
+                    for (var index = 0; index < subviewList.length; index++) {
+                        // check for valid projection matrices
+                        var subview = subviewList[index];
+                        if (!isFinite(subview.projectionMatrix[0])) throw new Error('Invalid projection matrix (contains non-finite values)');
+                        if (options && options.overrideSubviews) {
+                            var subviewEntity = this.getSubviewEntity(index);
+                            entities[subviewEntity.id] = getSerializedEntityState$$1(subviewEntity, time, view);
+                        }
                     }
                     // floor
                     var floorOffset = options && options.floorOffset || 0;
                     var floor = this.floor;
-                    floor.position.setValue(Cartesian3.fromElements(0, 0, floorOffset, this._scratchCartesian), stage);
+                    floor.position.setValue(Cartesian3.fromElements(0, floorOffset, 0, this._scratchCartesian), stage);
                     if (floorOffset !== 0) {
-                        frameState.entities[this.floor.id] = getEntityState(floor, time, stage);
+                        frameState.entities[this.floor.id] = getSerializedEntityState$$1(floor, time, stage);
                     }
                     return frameState;
                 };
@@ -23924,6 +23924,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 };
                 // TODO: This function is called a lot. Potential for optimization. 
                 ContextService.prototype._update = function (frameState) {
+                    this._serializedFrameState = frameState;
                     var time = frameState.time;
                     var entities = frameState.entities;
                     // update our time values
@@ -23997,6 +23998,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     contextOriginOrientation.setValue(deviceOriginOrientationValue);
                     // update view
                     this.viewService._processContextFrameState(frameState, this);
+                    // TODO: realityService._processContextFrameState(frameState); 
                     // raise events for the user to update and render the scene
                     if (this._originChanged) {
                         this._originChanged = false;
