@@ -414,7 +414,11 @@ export class EntityServiceProvider {
     public fillEntityStateMapForSession(session:SessionPort, time:JulianDate, entities:SerializedEntityStateMap) {
         const subscriptions = this.subscriptionsBySubscriber.get(session);
         if (!subscriptions) return;
-        for (const id in subscriptions) {
+
+        const iter = subscriptions.keys();
+        let item:IteratorResult<string>;
+        while (item = iter.next(), !item.done) { // not using for-of since typescript converts this to broken es5
+            const id = item.value;
             const entity = this.entityService.collection.getById(id);
             entities[id] = entity ? this.getCachedSerializedEntityState(entity, time) : null;
         }

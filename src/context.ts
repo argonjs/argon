@@ -787,7 +787,10 @@ export class ContextServiceProvider {
         if (!subscriptions[contextStageId]) delete sessionEntities[contextStageId];
         
         // add the entity states for all subscribed entities
-        for (const id in subscriptions) {
+        const iter = subscriptions.keys();
+        let item:IteratorResult<string>;
+        while (item = iter.next(), !item.done) { // not using for-of since typescript converts this to broken es5
+            const id = item.value;
             const entity = contextService.entities.getById(id);
             sessionEntities[id] = entityServiceProvider.getCachedSerializedEntityState(entity, state.time);
         }
