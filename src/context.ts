@@ -662,17 +662,18 @@ export class ContextService {
             vrDisplay.submitFrame();
         }
     }
-
-    public getSubviewEntity(index:number) {
-        const subviewEntity = this.entities.getOrCreateEntity('ar.view_'+index);
+        
+    getSubviewEntity(index:number) {
+        const subviewEntity = this.entityService.collection.getOrCreateEntity('ar.view_'+index);
         if (!subviewEntity.position) {
-            subviewEntity.position = new ConstantPositionProperty();
+            subviewEntity.position = new ConstantPositionProperty(Cartesian3.ZERO, this.user);
         }
         if (!subviewEntity.orientation) {
-            subviewEntity.orientation = new ConstantProperty();
+            subviewEntity.orientation = new ConstantProperty(Quaternion.IDENTITY);
         }
         return subviewEntity;
     }
+
 
     subscribeGeolocation(options?:GeolocationOptions) : Promise<void> {
         return this.sessionService.manager.whenConnected().then(()=>{
