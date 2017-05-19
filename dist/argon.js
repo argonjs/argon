@@ -26492,7 +26492,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _scratchArray = [];
 
-            _export('version', version = "1.2.0-20-refactor-y-up-12");
+            _export('version', version = "1.2.0-20-refactor-y-up-14");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -27355,7 +27355,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     var id = idOrEntity.id || idOrEntity;
                     var evt = { id: id, options: options };
                     return session.whenConnected().then(function () {
-                        if (session.version[0] === 0) return session.request('ar.context.subscribe', evt);else return session.request('ar.entity.subscribe', evt);
+                        if (session.version[0] === 0 && session.version[1] < 2) return session.request('ar.context.subscribe', evt);else return session.request('ar.entity.subscribe', evt);
                     }).then(function () {
                         var entity = _this.collection.getOrCreateEntity(id);
                         _this._handleSubscribed(evt);
@@ -27369,7 +27369,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     }
                     var id = idOrEntity.id || idOrEntity;
                     session.whenConnected().then(function () {
-                        if (session.version[0] === 0) session.send('ar.context.unsubscribe', { id: id });else session.send('ar.entity.unsubscribe', { id: id });
+                        if (session.version[0] === 0 && session.version[1] < 2) session.send('ar.context.unsubscribe', { id: id });else session.send('ar.entity.unsubscribe', { id: id });
                     }).then(function () {
                         _this._handleUnsubscribed(id);
                     });
@@ -29506,7 +29506,11 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         var eusOrientation = Quaternion.fromRotationMatrix(eusRotationMatrix);
                         this.stage.position.setValue(userPositionFixed, ReferenceFrame.FIXED);
                         this.stage.orientation.setValue(eusOrientation);
+                    } else {
+                        this.stage.position.setValue(Cartesian3.fromElements(0, -this.deviceService.suggestedUserHeight, 0, this._scratchCartesian), this.user.position.referenceFrame);
+                        this.stage.orientation.setValue(Quaternion.IDENTITY);
                     }
+                    frameState.entities[this.stage.id] = true; // assume overriden for _update
                 };
                 // TODO: This function is called a lot. Potential for optimization. 
                 ContextService.prototype._update = function (frameState) {
@@ -29602,12 +29606,12 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     }
                 };
                 ContextService.prototype.getSubviewEntity = function (index) {
-                    var subviewEntity = this.entities.getOrCreateEntity('ar.view_' + index);
+                    var subviewEntity = this.entityService.collection.getOrCreateEntity('ar.view_' + index);
                     if (!subviewEntity.position) {
-                        subviewEntity.position = new ConstantPositionProperty();
+                        subviewEntity.position = new ConstantPositionProperty(Cartesian3.ZERO, this.user);
                     }
                     if (!subviewEntity.orientation) {
-                        subviewEntity.orientation = new ConstantProperty();
+                        subviewEntity.orientation = new ConstantProperty(Quaternion.IDENTITY);
                     }
                     return subviewEntity;
                 };
