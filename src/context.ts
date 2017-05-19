@@ -734,7 +734,7 @@ export class ContextServiceProvider {
         })
 
         // unsubscribe from context geolocation if all child sessions are unsubscribed
-        this.entityServiceProvider.sessionSubscribedEvent.addEventListener(()=>{
+        this.entityServiceProvider.sessionUnsubscribedEvent.addEventListener(()=>{
             const subscribers = this.entityServiceProvider.subscribersByEntity.get(this.contextService.stage.id);
             if (subscribers && subscribers.size === 1 && subscribers.has(this.sessionService.manager)) {
                 this.contextService.unsubscribeGeolocation();

@@ -252,9 +252,13 @@ export class DeviceService {
 
         if (this.sessionService.isRealityManager) {
             this.entityService.subscribedEvent.addEventListener((evt)=>{
-                if (evt.id === 'ar.context.stage') 
+                if (evt.id === 'ar.stage')
                     this._setSuggestedGeolocationSubscription(evt.options);
             });
+            this.entityService.unsubscribedEvent.addEventListener((evt)=>{
+                if (evt.id === 'ar.stage')
+                    this._setSuggestedGeolocationSubscription(undefined);
+            })
         } else {
             sessionService.manager.on['ar.device.state'] = sessionService.manager.on['ar.device.frameState'] = (stableState:DeviceStableState) => {
                 const entities = stableState.entities;
@@ -959,6 +963,10 @@ export class DeviceServiceProvider {
                 this._checkDeviceGeolocationSubscribers();
         })
 
+        this.deviceService.suggestedGeolocationSubscriptionChangeEvent.addEventListener(()=>{
+            this._needsPublish = true;
+        })
+
         this.viewService.viewportChangeEvent.addEventListener(()=>{
             this._needsPublish = true;
         });
@@ -1009,7 +1017,7 @@ export class DeviceServiceProvider {
     public publishStableState() {
         const stableState = this._stableState;
         
-        stableState.suggestedGeolocationSubscription = this.entityService.subscriptions.get('ar.stage');
+        stableState.suggestedGeolocationSubscription = this.deviceService.suggestedGeolocationSubscription;
         stableState.suggestedUserHeight = this.deviceService.suggestedUserHeight;
         stableState.strict = this.deviceService.strict;
         stableState.viewport = CanvasViewport.clone(this.deviceService.frameState.viewport, stableState.viewport)

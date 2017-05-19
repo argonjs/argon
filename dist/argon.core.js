@@ -20912,7 +20912,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _scratchArray = [];
 
-            _export('version', version = "1.2.0-20-refactor-y-up-13");
+            _export('version', version = "1.2.0-20-refactor-y-up-16");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -21906,7 +21906,10 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 EntityServiceProvider.prototype.fillEntityStateMapForSession = function (session, time, entities) {
                     var subscriptions = this.subscriptionsBySubscriber.get(session);
                     if (!subscriptions) return;
-                    for (var id in subscriptions) {
+                    var iter = subscriptions.keys();
+                    var item;
+                    while (item = iter.next(), !item.done) {
+                        var id = item.value;
                         var entity = this.entityService.collection.getById(id);
                         entities[id] = entity ? this.getCachedSerializedEntityState(entity, time) : null;
                     }
@@ -21914,7 +21917,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 EntityServiceProvider.prototype.getCachedSerializedEntityState = function (entity, time) {
                     if (!entity) return null;
                     var id = entity.id;
-                    if (!defined(this._entityPoseCache[id]) || this._cacheTime.equalsEpsilon(time, 0.000001)) {
+                    if (!defined(this._entityPoseCache[id]) || !this._cacheTime.equalsEpsilon(time, 0.000001)) {
                         var referenceFrameId = this.targetReferenceFrameMap.get(id);
                         var referenceFrame = defined(referenceFrameId) && typeof referenceFrameId === 'string' ? this.entityService.collection.getById(referenceFrameId) : defined(referenceFrameId) ? referenceFrameId : this.entityService.collection.getById('ar.stage');
                         this._entityPoseCache[id] = this._getSerializedEntityState(entity, time, referenceFrame);
@@ -22743,7 +22746,10 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     }
                     if (this.sessionService.isRealityManager) {
                         this.entityService.subscribedEvent.addEventListener(function (evt) {
-                            if (evt.id === 'ar.context.stage') _this._setSuggestedGeolocationSubscription(evt.options);
+                            if (evt.id === 'ar.stage') _this._setSuggestedGeolocationSubscription(evt.options);
+                        });
+                        this.entityService.unsubscribedEvent.addEventListener(function (evt) {
+                            if (evt.id === 'ar.stage') _this._setSuggestedGeolocationSubscription(undefined);
                         });
                     } else {
                         sessionService.manager.on['ar.device.state'] = sessionService.manager.on['ar.device.frameState'] = function (stableState) {
@@ -23305,6 +23311,9 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         var id = _a.id;
                         if (_this.deviceService.stage.id === id) _this._checkDeviceGeolocationSubscribers();
                     });
+                    this.deviceService.suggestedGeolocationSubscriptionChangeEvent.addEventListener(function () {
+                        _this._needsPublish = true;
+                    });
                     this.viewService.viewportChangeEvent.addEventListener(function () {
                         _this._needsPublish = true;
                     });
@@ -23340,7 +23349,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 };
                 DeviceServiceProvider$$1.prototype.publishStableState = function () {
                     var stableState = this._stableState;
-                    stableState.suggestedGeolocationSubscription = this.entityService.subscriptions.get('ar.stage');
+                    stableState.suggestedGeolocationSubscription = this.deviceService.suggestedGeolocationSubscription;
                     stableState.suggestedUserHeight = this.deviceService.suggestedUserHeight;
                     stableState.strict = this.deviceService.strict;
                     stableState.viewport = CanvasViewport.clone(this.deviceService.frameState.viewport, stableState.viewport);
@@ -24107,7 +24116,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         }
                     });
                     // unsubscribe from context geolocation if all child sessions are unsubscribed
-                    this.entityServiceProvider.sessionSubscribedEvent.addEventListener(function () {
+                    this.entityServiceProvider.sessionUnsubscribedEvent.addEventListener(function () {
                         var subscribers = _this.entityServiceProvider.subscribersByEntity.get(_this.contextService.stage.id);
                         if (subscribers && subscribers.size === 1 && subscribers.has(_this.sessionService.manager)) {
                             _this.contextService.unsubscribeGeolocation();
@@ -24148,7 +24157,10 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     var contextStageId = contextService.stage.id;
                     if (!subscriptions[contextStageId]) delete sessionEntities[contextStageId];
                     // add the entity states for all subscribed entities
-                    for (var id_1 in subscriptions) {
+                    var iter = subscriptions.keys();
+                    var item;
+                    while (item = iter.next(), !item.done) {
+                        var id_1 = item.value;
                         var entity = contextService.entities.getById(id_1);
                         sessionEntities[id_1] = entityServiceProvider.getCachedSerializedEntityState(entity, state.time);
                     }
