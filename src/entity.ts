@@ -266,7 +266,7 @@ export class EntityService {
         const id = (<Entity>idOrEntity).id || <string>idOrEntity;
         const evt = {id, options};
         return session.whenConnected().then(()=>{
-            if (session.version[0] === 0) return session.request('ar.context.subscribe', evt)
+            if (session.version[0] === 0 && session.version[1] < 2) return session.request('ar.context.subscribe', evt)
             else return session.request('ar.entity.subscribe', evt)
         }).then(()=>{
             const entity = this.collection.getOrCreateEntity(id);
@@ -283,7 +283,7 @@ export class EntityService {
     public unsubscribe(idOrEntity: string|Entity, session=this.sessionService.manager) : void {
         const id = (<Entity>idOrEntity).id || <string>idOrEntity;
         session.whenConnected().then(()=>{
-            if (session.version[0] === 0) session.send('ar.context.unsubscribe', {id});
+            if (session.version[0] === 0 && session.version[1] < 2) session.send('ar.context.unsubscribe', {id});
             else session.send('ar.entity.unsubscribe', {id});
         }).then(()=>{
             this._handleUnsubscribed(id);
