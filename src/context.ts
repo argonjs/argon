@@ -326,10 +326,10 @@ export class ContextService {
     }
 
     /**
-     * Deprecated. To be removed. Use the defaultReferenceFrame property. 
+     * Deprecated. To be removed. Use the defaultReferenceFrame property if necessary. 
      * @private
      */
-    @deprecated('defaultReferenceFrame')
+    @deprecated()
     public setDefaultReferenceFrame(origin: Entity) {
         this.defaultReferenceFrame = origin;
     }
