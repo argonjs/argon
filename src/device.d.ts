@@ -119,8 +119,8 @@ export declare class DeviceService {
     private _updateDefault();
     private _stringIdentifierFromReferenceFrame;
     private _getReachableAncestorReferenceFrames;
-    private _getEntityPositionInReferenceFrame;
     private _scratchArray;
+    private _originPose;
     private _updateDefaultOrigin();
     private _updateDefaultUser();
     private _vrFrameData?;
@@ -156,6 +156,7 @@ export declare class DeviceService {
     private _deviceOrientationListener;
     private _deviceOrientation;
     private _deviceOrientationHeadingAccuracy;
+    private _negX90;
     private _tryOrientationUpdates();
     private _setupVRPresentChangeHandler();
 }

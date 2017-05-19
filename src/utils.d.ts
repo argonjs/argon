@@ -111,4 +111,4 @@ declare const cAF: any;
 export { rAF as requestAnimationFrame, cAF as cancelAnimationFrame };
 export declare function deprecated(alternative?: string): MethodDecorator;
 export declare const defaultTerrainProvider: any;
-export declare function updateHeightFromTerrain(cartographic: Cartographic): Promise<Promise<Cartographic>>;
+export declare function updateHeightFromTerrain(cartographic: Cartographic): Promise<Cartographic>;

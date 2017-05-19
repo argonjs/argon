@@ -26492,7 +26492,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _scratchArray = [];
 
-            _export('version', version = "1.2.0-20-refactor-y-up-11");
+            _export('version', version = "1.2.0-20-refactor-y-up-12");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -27274,10 +27274,10 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     this._scratchMatrix3 = new Matrix3();
                     this._scratchMatrix4 = new Matrix4();
                     this._getEntityPositionInReferenceFrame = getEntityPositionInReferenceFrame;
-                    sessionService.manager.on['ar.entity.subscribed'] = function (event) {
+                    sessionService.manager.on['ar.context.subscribe'] = sessionService.manager.on['ar.entity.subscribed'] = function (event) {
                         _this._handleSubscribed(event);
                     };
-                    sessionService.manager.on['ar.entity.unsubscribed'] = function (_a) {
+                    sessionService.manager.on['ar.context.unsubscribe'] = sessionService.manager.on['ar.entity.unsubscribed'] = function (_a) {
                         var id = _a.id;
                         _this._handleUnsubscribed(id);
                     };
@@ -27354,19 +27354,25 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     }
                     var id = idOrEntity.id || idOrEntity;
                     var evt = { id: id, options: options };
-                    return session.request('ar.entity.subscribe', evt).then(function () {
+                    return session.whenConnected().then(function () {
+                        if (session.version[0] === 0) return session.request('ar.context.subscribe', evt);else return session.request('ar.entity.subscribe', evt);
+                    }).then(function () {
                         var entity = _this.collection.getOrCreateEntity(id);
                         _this._handleSubscribed(evt);
                         return entity;
                     });
                 };
                 EntityService.prototype.unsubscribe = function (idOrEntity, session) {
+                    var _this = this;
                     if (session === void 0) {
                         session = this.sessionService.manager;
                     }
                     var id = idOrEntity.id || idOrEntity;
-                    session.send('ar.entity.unsubscribe', { id: id });
-                    this._handleUnsubscribed(id);
+                    session.whenConnected().then(function () {
+                        if (session.version[0] === 0) session.send('ar.context.unsubscribe', { id: id });else session.send('ar.entity.unsubscribe', { id: id });
+                    }).then(function () {
+                        _this._handleUnsubscribed(id);
+                    });
                 };
                 /**
                  * Create a new EntityPose instance to represent the pose of an entity
@@ -29335,7 +29341,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     return this.time;
                 };
                 /**
-                 * Deprecated. To be removed. Use the defaultReferenceFrame property.
+                 * Deprecated. To be removed. Use the defaultReferenceFrame property if necessary.
                  * @private
                  */
                 ContextService.prototype.setDefaultReferenceFrame = function (origin) {
@@ -29645,7 +29651,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
             __decorate$9([deprecated$1(), __metadata$9("design:type", Object), __metadata$9("design:paramtypes", [])], ContextService.prototype, "localOriginEastNorthUp", null);
             __decorate$9([deprecated$1('timestamp'), __metadata$9("design:type", Object), __metadata$9("design:paramtypes", [])], ContextService.prototype, "systemTime", null);
             __decorate$9([deprecated$1('time'), __metadata$9("design:type", Function), __metadata$9("design:paramtypes", []), __metadata$9("design:returntype", typeof (_a$9 = typeof JulianDate !== "undefined" && JulianDate) === "function" && _a$9 || Object)], ContextService.prototype, "getTime", null);
-            __decorate$9([deprecated$1('defaultReferenceFrame'), __metadata$9("design:type", Function), __metadata$9("design:paramtypes", [typeof (_b$9 = typeof Entity !== "undefined" && Entity) === "function" && _b$9 || Object]), __metadata$9("design:returntype", void 0)], ContextService.prototype, "setDefaultReferenceFrame", null);
+            __decorate$9([deprecated$1(), __metadata$9("design:type", Function), __metadata$9("design:paramtypes", [typeof (_b$9 = typeof Entity !== "undefined" && Entity) === "function" && _b$9 || Object]), __metadata$9("design:returntype", void 0)], ContextService.prototype, "setDefaultReferenceFrame", null);
             __decorate$9([deprecated$1('defaultReferenceFrame'), __metadata$9("design:type", Function), __metadata$9("design:paramtypes", []), __metadata$9("design:returntype", typeof (_c$6 = typeof Entity !== "undefined" && Entity) === "function" && _c$6 || Object)], ContextService.prototype, "getDefaultReferenceFrame", null);
             __decorate$9([deprecated$1('subscribe'), __metadata$9("design:type", Function), __metadata$9("design:paramtypes", [String]), __metadata$9("design:returntype", typeof (_d$5 = typeof Entity !== "undefined" && Entity) === "function" && _d$5 || Object)], ContextService.prototype, "subscribeToEntityById", null);
             __decorate$9([deprecated$1('EntityService.createFixed'), __metadata$9("design:type", Function), __metadata$9("design:paramtypes", [typeof (_e$5 = typeof Cartographic !== "undefined" && Cartographic) === "function" && _e$5 || Object, Object]), __metadata$9("design:returntype", void 0)], ContextService.prototype, "createGeoEntity", null);

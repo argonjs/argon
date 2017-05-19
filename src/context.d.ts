@@ -1,58 +1,11 @@
 /// <reference types="cesium" />
-import { Entity, EntityCollection, Cartographic, Cartesian3, Quaternion, Transforms, JulianDate, ReferenceFrame } from './cesium/cesium-imports';
+import { Entity, EntityCollection, Cartographic, Transforms, JulianDate, ReferenceFrame } from './cesium/cesium-imports';
 import { SerializedSubviewList, ContextFrameState, GeolocationOptions, CanvasViewport } from './common';
 import { SessionService, SessionPort } from './session';
 import { Event } from './utils';
-import { EntityService, EntityServiceProvider } from './entity';
+import { EntityService, EntityServiceProvider, EntityPose } from './entity';
 import { DeviceService } from './device';
 import { ViewService } from './view';
-/**
- * Represents the pose of an entity relative to a particular reference frame.
- *
- * The `update` method must be called in order to update the position / orientation / poseStatus.
- */
-export declare class EntityPose {
-    context: ContextService;
-    constructor(context: ContextService, entityOrId: Entity | string, referenceFrameId?: Entity | ReferenceFrame | string);
-    private _entity;
-    private _referenceFrame;
-    readonly entity: Entity;
-    readonly referenceFrame: Entity | ReferenceFrame;
-    /**
-     * The status of this pose, as a bitmask.
-     *
-     * If the current pose is known, then the KNOWN bit is 1.
-     * If the current pose is not known, then the KNOWN bit is 0.
-     *
-     * If the previous pose was known and the current pose is unknown,
-     * then the LOST bit is 1.
-     * If the previous pose was unknown and the current pose status is known,
-     * then the FOUND bit is 1.
-     * In all other cases, both the LOST bit and the FOUND bit are 0.
-     */
-    status: PoseStatus;
-    /**
-     * alias for status
-     */
-    readonly poseStatus: PoseStatus;
-    position: Cartesian3;
-    orientation: Quaternion;
-    time: JulianDate;
-    private _previousTime;
-    private _previousStatus;
-    update(time?: JulianDate): void;
-}
-/**
-* A bitmask that provides metadata about the pose of an EntityPose.
-*   KNOWN - the pose of the entity state is defined.
-*   KNOWN & FOUND - the pose was undefined when the entity state was last queried, and is now defined.
-*   LOST - the pose was defined when the entity state was last queried, and is now undefined
-*/
-export declare enum PoseStatus {
-    KNOWN = 1,
-    FOUND = 2,
-    LOST = 4,
-}
 /**
  * Provides a means of querying the current state of reality.
  */
@@ -184,7 +137,7 @@ export declare class ContextService {
      */
     getTime(): JulianDate;
     /**
-     * Deprecated. To be removed. Use the defaultReferenceFrame property.
+     * Deprecated. To be removed. Use the defaultReferenceFrame property if necessary.
      * @private
      */
     setDefaultReferenceFrame(origin: Entity): void;
@@ -225,8 +178,8 @@ export declare class ContextService {
      * relative to a given reference frame. If no reference frame is specified,
      * then the pose is based on the context's defaultReferenceFrame.
      *
-     * @param entity - the entity to track
-     * @param referenceFrameOrId - the reference frame to use
+     * @param entityOrId - the entity to track
+     * @param referenceFrameOrId - The intended reference frame. Defaults to `this.defaultReferenceFrame`.
      */
     createEntityPose(entityOrId: Entity | string, referenceFrameOrId?: string | ReferenceFrame | Entity): EntityPose;
     private _stringIdentifierFromReferenceFrame;
@@ -234,8 +187,8 @@ export declare class ContextService {
      * Gets the current pose of an entity, relative to a given reference frame.
      *
      * @deprecated
-     * @param entity - The entity whose state is to be queried.
-     * @param referenceFrame - The intended reference frame. Defaults to `this.defaultReferenceFrame`.
+     * @param entityOrId - The entity whose state is to be queried.
+     * @param referenceFrameOrId - The intended reference frame. Defaults to `this.defaultReferenceFrame`.
      */
     getEntityPose(entityOrId: Entity | string, referenceFrameOrId?: string | ReferenceFrame | Entity): EntityPose;
     private _frameIndex;
@@ -260,6 +213,7 @@ export declare class ContextService {
         overrideStage?: boolean;
         overrideUser?: boolean;
         overrideView?: boolean;
+        overrideSubviews?: boolean;
         floorOffset?: number;
     }): ContextFrameState;
     private _scratchMatrix3;

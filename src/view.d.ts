@@ -1,7 +1,8 @@
 /// <reference types="cesium" />
 import { CanvasViewport, Viewport, ContextFrameState, SubviewType } from './common';
 import { SessionService, SessionPort } from './session';
-import { ContextService, EntityPose } from './context';
+import { ContextService } from './context';
+import { EntityPose } from './entity';
 import { PerspectiveFrustum } from './cesium/cesium-imports';
 import { Event } from './utils';
 import { FocusService, FocusServiceProvider } from './focus';

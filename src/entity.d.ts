@@ -2,7 +2,56 @@
 import { SessionService, SessionPort } from './session';
 import { Event } from './utils';
 import { SerializedEntityState, SerializedEntityStateMap } from './common';
-import { Cartographic, Entity, EntityCollection, JulianDate, ReferenceFrame, Transforms } from './cesium/cesium-imports';
+import { Cartesian3, Cartographic, Entity, EntityCollection, JulianDate, ReferenceFrame, Transforms, Quaternion } from './cesium/cesium-imports';
+/**
+ * Represents the pose of an entity relative to a particular reference frame.
+ *
+ * The `update` method must be called in order to update the position / orientation / poseStatus.
+ */
+export declare class EntityPose {
+    private _collection;
+    constructor(_collection: EntityCollection, entityOrId: Entity | string, referenceFrameId: Entity | ReferenceFrame | string);
+    private _entity;
+    private _referenceFrame;
+    readonly entity: Entity;
+    readonly referenceFrame: Entity | ReferenceFrame;
+    /**
+     * The status of this pose, as a bitmask.
+     *
+     * If the current pose is known, then the KNOWN bit is 1.
+     * If the current pose is not known, then the KNOWN bit is 0.
+     *
+     * If the previous pose was known and the current pose is unknown,
+     * then the LOST bit is 1.
+     * If the previous pose was unknown and the current pose status is known,
+     * then the FOUND bit is 1.
+     * In all other cases, both the LOST bit and the FOUND bit are 0.
+     */
+    status: PoseStatus;
+    /**
+     * alias for status
+     */
+    readonly poseStatus: PoseStatus;
+    position: Cartesian3;
+    orientation: Quaternion;
+    time: JulianDate;
+    private _previousTime;
+    private _previousStatus;
+    private _getEntityPositionInReferenceFrame;
+    private _getEntityOrientationInReferenceFrame;
+    update(time: JulianDate): void;
+}
+/**
+* A bitmask that provides metadata about the pose of an EntityPose.
+*   KNOWN - the pose of the entity state is defined.
+*   KNOWN & FOUND - the pose was undefined when the entity state was last queried, and is now defined.
+*   LOST - the pose was defined when the entity state was last queried, and is now undefined
+*/
+export declare enum PoseStatus {
+    KNOWN = 1,
+    FOUND = 2,
+    LOST = 4,
+}
 /**
  * A service for subscribing/unsubscribing to entities
  */
@@ -68,6 +117,15 @@ export declare class EntityService {
      */
     unsubscribe(idOrEntity: any): void;
     unsubscribe(idOrEntity: string | Entity, session?: SessionPort): void;
+    /**
+     * Create a new EntityPose instance to represent the pose of an entity
+     * relative to a given reference frame. If no reference frame is specified,
+     * then the pose is based on the context's defaultReferenceFrame.
+     *
+     * @param entity - the entity to track
+     * @param referenceFrameOrId - the reference frame to use
+     */
+    createEntityPose(entityOrId: Entity | string, referenceFrameOrId: string | ReferenceFrame | Entity): EntityPose;
     /**
      *
      * @param id
