@@ -554,7 +554,11 @@ export class ContextService {
             const eusOrientation = Quaternion.fromRotationMatrix(eusRotationMatrix);
             (this.stage.position as ConstantPositionProperty).setValue(userPositionFixed, ReferenceFrame.FIXED);
             (this.stage.orientation as ConstantProperty).setValue(eusOrientation);
+        } else {
+            (this.stage.position as ConstantPositionProperty).setValue(Cartesian3.fromElements(0,-this.deviceService.suggestedUserHeight, 0, this._scratchCartesian), this.user.position!.referenceFrame);
+            (this.stage.orientation as ConstantProperty).setValue(Quaternion.IDENTITY);
         }
+        frameState.entities[this.stage.id] = <any>true; // assume overriden for _update
     }
 
     // TODO: This function is called a lot. Potential for optimization. 
