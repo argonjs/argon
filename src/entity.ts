@@ -433,7 +433,7 @@ export class EntityServiceProvider {
 
         const id = entity.id;
 
-        if (!defined(this._entityPoseCache[id]) || this._cacheTime.equalsEpsilon(time, 0.000001)) {
+        if (!defined(this._entityPoseCache[id]) || !this._cacheTime.equalsEpsilon(time, 0.000001)) {
             const referenceFrameId = this.targetReferenceFrameMap.get(id);
             const referenceFrame = defined(referenceFrameId) && typeof referenceFrameId === 'string' ? 
                 this.entityService.collection.getById(referenceFrameId) :
