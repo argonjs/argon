@@ -158,10 +158,12 @@ export class EntityService {
         //     this.updateEntityFromSerializedState(id, state);
         // }
         
+        sessionService.manager.on['ar.context.subscribe'] = 
         sessionService.manager.on['ar.entity.subscribed'] = (event: { id: string, options:any }) => {
             this._handleSubscribed(event);
         }
         
+        sessionService.manager.on['ar.context.unsubscribe'] = 
         sessionService.manager.on['ar.entity.unsubscribed'] = ({id}: { id: string }) => {
             this._handleUnsubscribed(id);
         }
@@ -263,7 +265,10 @@ export class EntityService {
     public subscribe(idOrEntity: string|Entity, options?:{}, session=this.sessionService.manager) : Promise<Entity> {
         const id = (<Entity>idOrEntity).id || <string>idOrEntity;
         const evt = {id, options};
-        return session.request('ar.entity.subscribe', evt).then(()=>{
+        return session.whenConnected().then(()=>{
+            if (session.version[0] === 0) return session.request('ar.context.subscribe', evt)
+            else return session.request('ar.entity.subscribe', evt)
+        }).then(()=>{
             const entity = this.collection.getOrCreateEntity(id);
             this._handleSubscribed(evt);
             return entity;
@@ -277,8 +282,12 @@ export class EntityService {
     public unsubscribe(idOrEntity: string|Entity, session?:SessionPort) : void;
     public unsubscribe(idOrEntity: string|Entity, session=this.sessionService.manager) : void {
         const id = (<Entity>idOrEntity).id || <string>idOrEntity;
-        session.send('ar.entity.unsubscribe', {id});
-        this._handleUnsubscribed(id);
+        session.whenConnected().then(()=>{
+            if (session.version[0] === 0) session.send('ar.context.unsubscribe', {id});
+            else session.send('ar.entity.unsubscribe', {id});
+        }).then(()=>{
+            this._handleUnsubscribed(id);
+        })
     }
 
     /**
