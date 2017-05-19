@@ -6,6 +6,17 @@ export type PermissionType =
     | 'ar.camera'       //Camera
     | 'ar.3dmesh';      //3D Structural mesh
 
+export const PermissionNames = {
+        'ar.stage': 'LOCATION',
+        'ar.camera': 'CAMERA',
+        'ar.3dmesh': 'STUCTURAL MESH'
+    };
+
+const PermissionDescriptions = {
+        'ar.stage': 'You are about to grant this website your location!', 
+        'ar.camera': 'You are about to let this website see through your camera!',
+        'ar.3dmesh': 'You are about to let this website understand the structure of your surroundings!'
+    };
 /**
  * 
  */
@@ -13,29 +24,17 @@ export class Permission {
     readonly type: PermissionType;
     readonly state: PermissionState;
 
-    private Names = {
-        'ar.stage': 'LOCATION',
-        'ar.camera': 'CAMERA',
-        'ar.3dmesh': 'STUCTURAL MESH'
-    };
-
-    private Descriptions = {
-        'ar.stage': 'You are about to grant this website your location!', 
-        'ar.camera': 'You are about to let this website see through your camera!',
-        'ar.3dmesh': 'You are about to let this website understand the structure of your surroundings!'
-    };
-
     constructor(type: PermissionType, state?: PermissionState) {
         this.type = type;
         this.state = state || PermissionState.NOT_REQUIRED;
     }
 
     get name() {
-        return this.Names[this.type];
+        return PermissionNames[this.type];
     }
 
     get description() {
-        return this.Descriptions[this.type];
+        return PermissionDescriptions[this.type];
     }
 }
 
@@ -116,9 +115,9 @@ export class PermissionServiceProvider {
     /**
      * Browsers should override this and ask the users via their own UI.
      * The permissions should be stored locally based on the host name and id(=type).
-     * @param session Used to acquire hostname from the uri
-     * @param id Can be used as a type of permission. Also can be random id's. ex) Vuforia requests
-     * @returns A resolved promise if subscription is permitted, 
+     * @param session Used to acquire hostname from the uri.
+     * @param id Can be used as a type of permission. Also can be random id's on Vuforia requests.
+     * @returns A resolved promise if subscription is permitted.
      * @returns A rejected promise if subscription is not permitted.
      */
     public handlePermissionRequest(session: SessionPort, id: string) {
