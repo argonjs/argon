@@ -7,15 +7,15 @@ export type PermissionType =
     | 'ar.3dmesh';      //3D Structural mesh
 
 export const PermissionNames = {
-        'ar.stage': 'LOCATION',
-        'ar.camera': 'CAMERA',
-        'ar.3dmesh': 'STUCTURAL MESH'
+        'ar.stage': 'Location',
+        'ar.camera': 'Camera',
+        'ar.3dmesh': 'Structural mesh'
     };
 
 const PermissionDescriptions = {
-        'ar.stage': 'You are about to grant this website your location!', 
-        'ar.camera': 'You are about to let this website see through your camera!',
-        'ar.3dmesh': 'You are about to let this website understand the structure of your surroundings!'
+        'ar.stage': 'your location', 
+        'ar.camera': 'your camera',
+        'ar.3dmesh': 'the structure of your surroundings'
     };
 /**
  * 
