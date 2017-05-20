@@ -253,7 +253,7 @@ export class DeviceService {
         if (this.sessionService.isRealityManager) {
             this.entityService.subscribedEvent.addEventListener((evt)=>{
                 if (evt.id === 'ar.stage')
-                    this._setSuggestedGeolocationSubscription(evt.options);
+                    this._setSuggestedGeolocationSubscription(evt.options || {});
             });
             this.entityService.unsubscribedEvent.addEventListener((evt)=>{
                 if (evt.id === 'ar.stage')
