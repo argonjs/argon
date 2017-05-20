@@ -166,13 +166,18 @@ export class EmptyRealityViewer extends RealityViewer {
 
             const deviceUserPose = this.contextService.createEntityPose(deviceUser, deviceStage);
 
-            const remove1 = this.deviceService.suggestedGeolocationSubscriptionChangeEvent.addEventListener(()=>{
+
+            const checkSuggestedGeolocationSubscription = () => {
                 if (this.deviceService.suggestedGeolocationSubscription) {
                     this.deviceService.subscribeGeolocation(this.deviceService.suggestedGeolocationSubscription, internalSession);
                 } else {
                     this.deviceService.unsubscribeGeolocation();
                 }
-            });
+            }
+
+            checkSuggestedGeolocationSubscription();
+            
+            const remove1 = this.deviceService.suggestedGeolocationSubscriptionChangeEvent.addEventListener(checkSuggestedGeolocationSubscription);
 
             const remove2 = this.deviceService.frameStateEvent.addEventListener((frameState) => {
                 if (internalSession.isClosed) return;
