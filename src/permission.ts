@@ -39,10 +39,10 @@ export class Permission {
 }
 
 export enum PermissionState {
-    NOT_REQUIRED = 0,   //Default state. Permission is not being used.
-    PROMPT = 1,         //Permission should be asked for from the user.
-    GRANTED = 77,       //Permission has been granted.
-    DENIED = 44,        //Permission has been denied.
+    NOT_REQUIRED = 'not_required' as any,   //Default state. Permission is not being used.
+    PROMPT = 'prompt' as any,         //Permission should be asked for from the user.
+    GRANTED = 'granted' as any,       //Permission has been granted.
+    DENIED = 'denied' as any,        //Permission has been denied.
 }
 
 /**
