@@ -2,6 +2,7 @@
 import { SessionService, SessionPort } from './session';
 import { Event } from './utils';
 import { SerializedEntityState, SerializedEntityStateMap } from './common';
+import { PermissionServiceProvider } from './permission';
 import { Cartesian3, Cartographic, Entity, EntityCollection, JulianDate, ReferenceFrame, Transforms, Quaternion } from './cesium/cesium-imports';
 /**
  * Represents the pose of an entity relative to a particular reference frame.
@@ -139,6 +140,7 @@ export declare class EntityService {
 export declare class EntityServiceProvider {
     private sessionService;
     private entityService;
+    private permissionServiceProvider;
     subscriptionsBySubscriber: WeakMap<SessionPort, Map<string, {} | undefined>>;
     subscribersByEntity: Map<string, Set<SessionPort>>;
     sessionSubscribedEvent: Event<{
@@ -151,12 +153,7 @@ export declare class EntityServiceProvider {
         id: string;
     }>;
     targetReferenceFrameMap: Map<string, string | ReferenceFrame>;
-    constructor(sessionService: SessionService, entityService: EntityService);
-    /**
-     * Should return a resolved promise if subscription is permitted,
-     * or a rejected promise if subscription is not permitted.
-     */
-    onAllowSubscription(session: any, id: any, options: any): Promise<void>;
+    constructor(sessionService: SessionService, entityService: EntityService, permissionServiceProvider: PermissionServiceProvider);
     fillEntityStateMapForSession(session: SessionPort, time: JulianDate, entities: SerializedEntityStateMap): void;
     private _cacheTime;
     private _entityPoseCache;

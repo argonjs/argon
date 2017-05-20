@@ -24067,7 +24067,7 @@ $__System.registerDynamic('98', ['82', '97'], true, function ($__require, export
 $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', '13', '14', '18', '1e', '24', '15', '5', '7', '42', '1a', '1b', '8', '39', '3c', '51', '6e', '2d', '17', 'd', '27', '28', '2e', '2f', '30', '21', '26', '29', '35', '20', '36', '37', '38', 'e', 'f', '2a', '3d', '44', '7c', '46', '49', '4c', '4f', '7d', '7e', '7f', '81', '98'], function (_export, _context) {
     "use strict";
 
-    var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, cesium_Source_Core_Clock_js, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, defaultValue, defined, cesium_Source_Core_DeveloperError_js, Ellipsoid, Entity, EntityCollection, Event, cesium_Source_Core_ExtrapolationType_js, cesium_Source_Core_FeatureDetection_js, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HeadingPitchRoll_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, ReferenceEntity, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, TerrainProvider, throttleRequestByServer, loadImage, WebMercatorTilingScheme, getImagePixels, HeightmapTerrainData, Credit, sampleTerrain, CardboardUI, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, DI, after, lut, i, cesiumImports, kButtonWidthDp, kTouchSlopFactor, __extends$1, AVERAGE_EYE_HEIGHT, DEFAULT_NEAR_PLANE, DEFAULT_FAR_PLANE, Role, Configuration, Viewport, CanvasViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event$1, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, getEventSynthesizier$1, cloneTouch, cloneTouches, eastUpSouthToFixedFrame, scratchAncestorCartesian, scratchAncestorQuaternion, getEntityPosition, getEntityOrientation, _scratchFramesArray, _entityStateCache, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, lastTime, rAF, cAF, defaultTerrainProvider, _scratchArray, version, __extends, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, WKWebViewConnectService, AndroidWebViewConnectService, _a$1, _b$1, __decorate$4, __metadata$4, EntityPose, PoseStatus, EntityService, EntityServiceProvider, _a$4, _b$4, _c$3, __decorate$6, __metadata$6, FocusService, FocusServiceProvider, _a$6, _b$6, __decorate$7, __metadata$7, VisibilityService, VisibilityServiceProvider, _a$7, _b$7, __decorate$5, __metadata$5, Subview, ViewportMode, ViewElement, ViewService, ViewServiceProvider, viewportMetaTag, argonMetaTag, style, sheet, _a$5, _b$5, _c$4, _d$3, _e$3, __decorate$3, __metadata$3, DeviceStableState$$1, DeviceFrameState$$1, DeviceService, DeviceServiceProvider, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, _h$1, _j$1, _k$1, _l$1, __decorate$9, __metadata$9, ContextService, ContextServiceProvider, _a$9, _b$9, _c$6, _d$5, _e$5, _f$3, _g$3, _h$3, _j$2, _k$2, _l$2, RealityViewer, __extends$2, __decorate$10, __metadata$10, EmptyRealityViewer, _a$10, _b$10, _c$7, _d$6, __extends$3, __decorate$11, __metadata$11, LiveRealityViewer, _a$11, _b$11, _c$8, _d$7, __extends$4, __decorate$12, __metadata$12, HostedRealityViewer, _a$12, _b$12, __decorate$8, __metadata$8, RealityViewerFactory, RealityService, RealityServiceProvider, _a$8, _b$8, _c$5, _d$4, _e$4, _f$2, _g$2, _h$2, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __extends$5, __decorate$13, __metadata$13, VuforiaServiceProvider, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$13, _b$13, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, ArgonConfigurationManager, initReality, _a, _b, _c, _d, _e, _f, _g, _h, ArgonSystem_1, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t;
+    var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, cesium_Source_Core_Clock_js, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, defaultValue, defined, cesium_Source_Core_DeveloperError_js, Ellipsoid, Entity, EntityCollection, Event, cesium_Source_Core_ExtrapolationType_js, cesium_Source_Core_FeatureDetection_js, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HeadingPitchRoll_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, ReferenceEntity, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, TerrainProvider, throttleRequestByServer, loadImage, WebMercatorTilingScheme, getImagePixels, HeightmapTerrainData, Credit, sampleTerrain, CardboardUI, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, DI, after, lut, i, cesiumImports, kButtonWidthDp, kTouchSlopFactor, __extends$1, AVERAGE_EYE_HEIGHT, DEFAULT_NEAR_PLANE, DEFAULT_FAR_PLANE, Role, Configuration, Viewport, CanvasViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event$1, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, getEventSynthesizier$1, cloneTouch, cloneTouches, eastUpSouthToFixedFrame, scratchAncestorCartesian, scratchAncestorQuaternion, getEntityPosition, getEntityOrientation, _scratchFramesArray, _entityStateCache, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, lastTime, rAF, cAF, defaultTerrainProvider, _scratchArray, version, __extends, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, WKWebViewConnectService, AndroidWebViewConnectService, _a$1, _b$1, __decorate$5, __metadata$5, PermissionNames, PermissionDescriptions, Permission, PermissionState, PermissionService, PermissionServiceProvider, _a$5, _b$5, __decorate$4, __metadata$4, EntityPose, PoseStatus, EntityService, EntityServiceProvider, _a$4, _b$4, _c$3, _d$3, __decorate$7, __metadata$7, FocusService, FocusServiceProvider, _a$7, _b$7, __decorate$8, __metadata$8, VisibilityService, VisibilityServiceProvider, _a$8, _b$8, __decorate$6, __metadata$6, Subview, ViewportMode, ViewElement, ViewService, ViewServiceProvider, viewportMetaTag, argonMetaTag, style, sheet, _a$6, _b$6, _c$4, _d$4, _e$3, __decorate$3, __metadata$3, DeviceStableState$$1, DeviceFrameState$$1, DeviceService, DeviceServiceProvider, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, _h$1, _j$1, _k$1, _l$1, __decorate$10, __metadata$10, ContextService, ContextServiceProvider, _a$10, _b$10, _c$6, _d$6, _e$5, _f$3, _g$3, _h$3, _j$2, _k$2, _l$2, RealityViewer, __extends$2, __decorate$11, __metadata$11, EmptyRealityViewer, _a$11, _b$11, _c$7, _d$7, __extends$3, __decorate$12, __metadata$12, LiveRealityViewer, _a$12, _b$12, _c$8, _d$8, __extends$4, __decorate$13, __metadata$13, HostedRealityViewer, _a$13, _b$13, __decorate$9, __metadata$9, RealityViewerFactory, RealityService, RealityServiceProvider, _a$9, _b$9, _c$5, _d$5, _e$4, _f$2, _g$2, _h$2, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __extends$5, __decorate$14, __metadata$14, VuforiaServiceProvider, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$14, _b$14, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, ArgonConfigurationManager, initReality, _a, _b, _c, _d, _e, _f, _g, _h, _j, ArgonSystem_1, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
 
     function alwaysValid() {
         return true;
@@ -26492,7 +26492,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _scratchArray = [];
 
-            _export('version', version = "1.2.0-20-refactor-y-up-16");
+            _export('version', version = "1.2.0-20-refactor-y-up-18");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -27147,6 +27147,144 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return AndroidWebViewConnectService;
             }(ConnectService));
 
+            __decorate$5 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
+                var c = arguments.length,
+                    r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+                    d;
+                if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+                return c > 3 && r && Object.defineProperty(target, key, r), r;
+            };
+
+            __metadata$5 = undefined && undefined.__metadata || function (k, v) {
+                if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+            };
+
+            _export('PermissionNames', PermissionNames = {
+                'ar.stage': 'LOCATION',
+                'ar.camera': 'CAMERA',
+                'ar.3dmesh': 'STUCTURAL MESH'
+            });
+
+            PermissionDescriptions = {
+                'ar.stage': 'You are about to grant this website your location!',
+                'ar.camera': 'You are about to let this website see through your camera!',
+                'ar.3dmesh': 'You are about to let this website understand the structure of your surroundings!'
+            };
+
+            _export('Permission', Permission = function () {
+                function Permission(type, state) {
+                    this.type = type;
+                    this.state = state || PermissionState.NOT_REQUIRED;
+                }
+                Object.defineProperty(Permission.prototype, "name", {
+                    get: function () {
+                        return PermissionNames[this.type];
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(Permission.prototype, "description", {
+                    get: function () {
+                        return PermissionDescriptions[this.type];
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                return Permission;
+            }());
+
+            (function (PermissionState) {
+                PermissionState[PermissionState["NOT_REQUIRED"] = 'not_required'] = "NOT_REQUIRED";
+                PermissionState[PermissionState["PROMPT"] = 'prompt'] = "PROMPT";
+                PermissionState[PermissionState["GRANTED"] = 'granted'] = "GRANTED";
+                PermissionState[PermissionState["DENIED"] = 'denied'] = "DENIED";
+            })(PermissionState || _export('PermissionState', PermissionState = {}));
+            /**
+             * Access permission states
+             */
+
+            _export('PermissionService', PermissionService = function () {
+                function PermissionService(sessionService) {
+                    this.sessionService = sessionService;
+                }
+                /**
+                 * Query current state of permission
+                 *
+                 * @returns A Promise that resolves to the current state of the permission
+                 */
+                // public query() : Promise<Permission[]>;
+                PermissionService.prototype.query = function (type, session) {
+                    if (session === void 0) {
+                        session = this.sessionService.manager;
+                    }
+                    // let permissionMaps: Permission[] = [];
+                    return session.request('ar.permission.query', { type: type }).then(function (_a) {
+                        var state = _a.state;
+                        return state || PermissionState.NOT_REQUIRED;
+                    });
+                };
+                /**
+                 * Revoke permissions
+                 *
+                 * @returns A promise that resolves to the state of requested permission after revoking.
+                 * Should be PermissionState.Denied on success.
+                 */
+                PermissionService.prototype.revoke = function (type) {
+                    var session = this.sessionService.manager;
+                    return session.request('ar.permission.revoke', { type: type }).then(function (_a) {
+                        var state = _a.state;
+                        return state;
+                    });
+                };
+                return PermissionService;
+            }());
+
+            _export('PermissionService', PermissionService = __decorate$5([autoinject(), __metadata$5("design:paramtypes", [typeof (_a$5 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$5 || Object])], PermissionService));
+            /**
+             * Manage permissions
+             */
+
+            _export('PermissionServiceProvider', PermissionServiceProvider = function () {
+                function PermissionServiceProvider(sessionService) {
+                    this.sessionService = sessionService;
+                    this.sessionService.ensureIsRealityManager();
+                    this.sessionService.connectEvent.addEventListener(function (session) {
+                        /**
+                         * Browsers should override this to check their locally stored permissions.
+                         * @param type
+                         * @returns The current state of the permission
+                         */
+                        session.on['ar.permission.query'] = function (_a) {
+                            var type = _a.type;
+                            return Promise.resolve({ state: PermissionState.GRANTED });
+                        };
+                        /**
+                         * Browswer should override this if they want to allow revoking permissions.
+                         * @param type
+                         * @returns The state of the permission after revoking
+                         */
+                        session.on['ar.permission.revoke'] = function (_a) {
+                            var type = _a.type;
+                            return Promise.reject(new Error("Revoking permission is not supported on this browser."));
+                        };
+                    });
+                }
+                /**
+                 * Browsers should override this and ask the users via their own UI.
+                 * The permissions should be stored locally based on the host name and id(=type).
+                 * @param session Used to acquire hostname from the uri.
+                 * @param id Can be used as a type of permission. Also can be random id's on Vuforia requests.
+                 * @returns A resolved promise if subscription is permitted.
+                 * @returns A rejected promise if subscription is not permitted.
+                 */
+                PermissionServiceProvider.prototype.handlePermissionRequest = function (session, id) {
+                    return Promise.resolve();
+                };
+                return PermissionServiceProvider;
+            }());
+
+            _export('PermissionServiceProvider', PermissionServiceProvider = __decorate$5([autoinject(), __metadata$5("design:paramtypes", [typeof (_b$5 = typeof SessionService !== "undefined" && SessionService) === "function" && _b$5 || Object])], PermissionServiceProvider));
+
             __decorate$4 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
                 var c = arguments.length,
                     r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
@@ -27429,10 +27567,11 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
              */
 
             _export('EntityServiceProvider', EntityServiceProvider = function () {
-                function EntityServiceProvider(sessionService, entityService) {
+                function EntityServiceProvider(sessionService, entityService, permissionServiceProvider) {
                     var _this = this;
                     this.sessionService = sessionService;
                     this.entityService = entityService;
+                    this.permissionServiceProvider = permissionServiceProvider;
                     this.subscriptionsBySubscriber = new WeakMap();
                     this.subscribersByEntity = new Map();
                     this.sessionSubscribedEvent = new Event$1();
@@ -27450,7 +27589,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                                 options = _a.options;
                             var currentOptions = subscriptions.get(id);
                             if (currentOptions && jsonEquals(currentOptions, options)) return;
-                            return Promise.resolve(_this.onAllowSubscription(session, id, options)).then(function () {
+                            return _this.permissionServiceProvider.handlePermissionRequest(session, id).then(function () {
                                 var subscribers = _this.subscribersByEntity.get(id) || new Set();
                                 _this.subscribersByEntity.set(id, subscribers);
                                 subscribers.add(session);
@@ -27476,13 +27615,6 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         });
                     });
                 }
-                /**
-                 * Should return a resolved promise if subscription is permitted,
-                 * or a rejected promise if subscription is not permitted.
-                 */
-                EntityServiceProvider.prototype.onAllowSubscription = function (session, id, options) {
-                    return Promise.resolve();
-                };
                 EntityServiceProvider.prototype.fillEntityStateMapForSession = function (session, time, entities) {
                     var subscriptions = this.subscriptionsBySubscriber.get(session);
                     if (!subscriptions) return;
@@ -27507,9 +27639,9 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return EntityServiceProvider;
             }());
 
-            _export('EntityServiceProvider', EntityServiceProvider = __decorate$4([autoinject, __metadata$4("design:paramtypes", [typeof (_c$3 = typeof SessionService !== "undefined" && SessionService) === "function" && _c$3 || Object, EntityService])], EntityServiceProvider));
+            _export('EntityServiceProvider', EntityServiceProvider = __decorate$4([autoinject, __metadata$4("design:paramtypes", [typeof (_c$3 = typeof SessionService !== "undefined" && SessionService) === "function" && _c$3 || Object, EntityService, typeof (_d$3 = typeof PermissionServiceProvider !== "undefined" && PermissionServiceProvider) === "function" && _d$3 || Object])], EntityServiceProvider));
 
-            __decorate$6 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
+            __decorate$7 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
                 var c = arguments.length,
                     r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
                     d;
@@ -27517,7 +27649,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return c > 3 && r && Object.defineProperty(target, key, r), r;
             };
 
-            __metadata$6 = undefined && undefined.__metadata || function (k, v) {
+            __metadata$7 = undefined && undefined.__metadata || function (k, v) {
                 if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
             };
 
@@ -27558,7 +27690,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return FocusService;
             }());
 
-            _export('FocusService', FocusService = __decorate$6([inject(SessionService), __metadata$6("design:paramtypes", [typeof (_a$6 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$6 || Object])], FocusService));
+            _export('FocusService', FocusService = __decorate$7([inject(SessionService), __metadata$7("design:paramtypes", [typeof (_a$7 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$7 || Object])], FocusService));
             /**
              * Manage focus state
              */
@@ -27599,9 +27731,9 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return FocusServiceProvider;
             }());
 
-            _export('FocusServiceProvider', FocusServiceProvider = __decorate$6([inject(SessionService, FocusService), __metadata$6("design:paramtypes", [typeof (_b$6 = typeof SessionService !== "undefined" && SessionService) === "function" && _b$6 || Object])], FocusServiceProvider));
+            _export('FocusServiceProvider', FocusServiceProvider = __decorate$7([inject(SessionService, FocusService), __metadata$7("design:paramtypes", [typeof (_b$7 = typeof SessionService !== "undefined" && SessionService) === "function" && _b$7 || Object])], FocusServiceProvider));
 
-            __decorate$7 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
+            __decorate$8 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
                 var c = arguments.length,
                     r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
                     d;
@@ -27609,7 +27741,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return c > 3 && r && Object.defineProperty(target, key, r), r;
             };
 
-            __metadata$7 = undefined && undefined.__metadata || function (k, v) {
+            __metadata$8 = undefined && undefined.__metadata || function (k, v) {
                 if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
             };
 
@@ -27659,7 +27791,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return VisibilityService;
             }());
 
-            _export('VisibilityService', VisibilityService = __decorate$7([inject(SessionService), __metadata$7("design:paramtypes", [typeof (_a$7 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$7 || Object])], VisibilityService));
+            _export('VisibilityService', VisibilityService = __decorate$8([inject(SessionService), __metadata$8("design:paramtypes", [typeof (_a$8 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$8 || Object])], VisibilityService));
             /**
              * Manage visibility state
              */
@@ -27693,9 +27825,9 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return VisibilityServiceProvider;
             }());
 
-            _export('VisibilityServiceProvider', VisibilityServiceProvider = __decorate$7([inject(SessionService, VisibilityService), __metadata$7("design:paramtypes", [typeof (_b$7 = typeof SessionService !== "undefined" && SessionService) === "function" && _b$7 || Object])], VisibilityServiceProvider));
+            _export('VisibilityServiceProvider', VisibilityServiceProvider = __decorate$8([inject(SessionService, VisibilityService), __metadata$8("design:paramtypes", [typeof (_b$8 = typeof SessionService !== "undefined" && SessionService) === "function" && _b$8 || Object])], VisibilityServiceProvider));
 
-            __decorate$5 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
+            __decorate$6 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
                 var c = arguments.length,
                     r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
                     d;
@@ -27703,7 +27835,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return c > 3 && r && Object.defineProperty(target, key, r), r;
             };
 
-            __metadata$5 = undefined && undefined.__metadata || function (k, v) {
+            __metadata$6 = undefined && undefined.__metadata || function (k, v) {
                 if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
             };
 
@@ -28063,11 +28195,11 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return ViewService;
             }());
 
-            __decorate$5([deprecated$1('viewportMode'), __metadata$5("design:type", Object), __metadata$5("design:paramtypes", [])], ViewService.prototype, "presentationMode", null);
-            __decorate$5([deprecated$1('viewport'), __metadata$5("design:type", Function), __metadata$5("design:paramtypes", []), __metadata$5("design:returntype", void 0)], ViewService.prototype, "getViewport", null);
-            __decorate$5([deprecated$1('subviews'), __metadata$5("design:type", Function), __metadata$5("design:paramtypes", []), __metadata$5("design:returntype", void 0)], ViewService.prototype, "getSubviews", null);
-            __decorate$5([deprecated$1('desiredViewportMode'), __metadata$5("design:type", Function), __metadata$5("design:paramtypes", [Number]), __metadata$5("design:returntype", Object)], ViewService.prototype, "requestPresentationMode", null);
-            _export('ViewService', ViewService = __decorate$5([inject(SessionService, FocusService, Optional.of(ViewElement)), __metadata$5("design:paramtypes", [typeof (_a$5 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$5 || Object, typeof (_b$5 = typeof FocusService !== "undefined" && FocusService) === "function" && _b$5 || Object, Object])], ViewService));
+            __decorate$6([deprecated$1('viewportMode'), __metadata$6("design:type", Object), __metadata$6("design:paramtypes", [])], ViewService.prototype, "presentationMode", null);
+            __decorate$6([deprecated$1('viewport'), __metadata$6("design:type", Function), __metadata$6("design:paramtypes", []), __metadata$6("design:returntype", void 0)], ViewService.prototype, "getViewport", null);
+            __decorate$6([deprecated$1('subviews'), __metadata$6("design:type", Function), __metadata$6("design:paramtypes", []), __metadata$6("design:returntype", void 0)], ViewService.prototype, "getSubviews", null);
+            __decorate$6([deprecated$1('desiredViewportMode'), __metadata$6("design:type", Function), __metadata$6("design:paramtypes", [Number]), __metadata$6("design:returntype", Object)], ViewService.prototype, "requestPresentationMode", null);
+            _export('ViewService', ViewService = __decorate$6([inject(SessionService, FocusService, Optional.of(ViewElement)), __metadata$6("design:paramtypes", [typeof (_a$6 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$6 || Object, typeof (_b$6 = typeof FocusService !== "undefined" && FocusService) === "function" && _b$6 || Object, Object])], ViewService));
 
             _export('ViewServiceProvider', ViewServiceProvider = function () {
                 function ViewServiceProvider(sessionService, viewportService, focusServiceProvider, visibilityServiceProvider) {
@@ -28121,7 +28253,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return ViewServiceProvider;
             }());
 
-            _export('ViewServiceProvider', ViewServiceProvider = __decorate$5([autoinject(), __metadata$5("design:paramtypes", [typeof (_c$4 = typeof SessionService !== "undefined" && SessionService) === "function" && _c$4 || Object, ViewService, typeof (_d$3 = typeof FocusServiceProvider !== "undefined" && FocusServiceProvider) === "function" && _d$3 || Object, typeof (_e$3 = typeof VisibilityServiceProvider !== "undefined" && VisibilityServiceProvider) === "function" && _e$3 || Object])], ViewServiceProvider));
+            _export('ViewServiceProvider', ViewServiceProvider = __decorate$6([autoinject(), __metadata$6("design:paramtypes", [typeof (_c$4 = typeof SessionService !== "undefined" && SessionService) === "function" && _c$4 || Object, ViewService, typeof (_d$4 = typeof FocusServiceProvider !== "undefined" && FocusServiceProvider) === "function" && _d$4 || Object, typeof (_e$3 = typeof VisibilityServiceProvider !== "undefined" && VisibilityServiceProvider) === "function" && _e$3 || Object])], ViewServiceProvider));
             // setup our DOM environment
             if (typeof document !== 'undefined' && document.createElement) {
                 viewportMetaTag = document.querySelector('meta[name=viewport]');
@@ -29026,7 +29158,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _export('DeviceServiceProvider', DeviceServiceProvider = __decorate$3([autoinject(), __metadata$3("design:paramtypes", [typeof (_h$1 = typeof SessionService !== "undefined" && SessionService) === "function" && _h$1 || Object, DeviceService, typeof (_j$1 = typeof ViewService !== "undefined" && ViewService) === "function" && _j$1 || Object, typeof (_k$1 = typeof EntityService !== "undefined" && EntityService) === "function" && _k$1 || Object, typeof (_l$1 = typeof EntityServiceProvider !== "undefined" && EntityServiceProvider) === "function" && _l$1 || Object])], DeviceServiceProvider));
 
-            __decorate$9 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
+            __decorate$10 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
                 var c = arguments.length,
                     r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
                     d;
@@ -29034,7 +29166,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return c > 3 && r && Object.defineProperty(target, key, r), r;
             };
 
-            __metadata$9 = undefined && undefined.__metadata || function (k, v) {
+            __metadata$10 = undefined && undefined.__metadata || function (k, v) {
                 if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
             };
 
@@ -29658,17 +29790,17 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return ContextService;
             }());
 
-            __decorate$9([deprecated$1('originChangeEvent'), __metadata$9("design:type", Object), __metadata$9("design:paramtypes", [])], ContextService.prototype, "localOriginChangeEvent", null);
-            __decorate$9([deprecated$1('origin'), __metadata$9("design:type", Object), __metadata$9("design:paramtypes", [])], ContextService.prototype, "localOrigin", null);
-            __decorate$9([deprecated$1(), __metadata$9("design:type", Object), __metadata$9("design:paramtypes", [])], ContextService.prototype, "localOriginEastUpSouth", null);
-            __decorate$9([deprecated$1(), __metadata$9("design:type", Object), __metadata$9("design:paramtypes", [])], ContextService.prototype, "localOriginEastNorthUp", null);
-            __decorate$9([deprecated$1('timestamp'), __metadata$9("design:type", Object), __metadata$9("design:paramtypes", [])], ContextService.prototype, "systemTime", null);
-            __decorate$9([deprecated$1('time'), __metadata$9("design:type", Function), __metadata$9("design:paramtypes", []), __metadata$9("design:returntype", typeof (_a$9 = typeof JulianDate !== "undefined" && JulianDate) === "function" && _a$9 || Object)], ContextService.prototype, "getTime", null);
-            __decorate$9([deprecated$1(), __metadata$9("design:type", Function), __metadata$9("design:paramtypes", [typeof (_b$9 = typeof Entity !== "undefined" && Entity) === "function" && _b$9 || Object]), __metadata$9("design:returntype", void 0)], ContextService.prototype, "setDefaultReferenceFrame", null);
-            __decorate$9([deprecated$1('defaultReferenceFrame'), __metadata$9("design:type", Function), __metadata$9("design:paramtypes", []), __metadata$9("design:returntype", typeof (_c$6 = typeof Entity !== "undefined" && Entity) === "function" && _c$6 || Object)], ContextService.prototype, "getDefaultReferenceFrame", null);
-            __decorate$9([deprecated$1('subscribe'), __metadata$9("design:type", Function), __metadata$9("design:paramtypes", [String]), __metadata$9("design:returntype", typeof (_d$5 = typeof Entity !== "undefined" && Entity) === "function" && _d$5 || Object)], ContextService.prototype, "subscribeToEntityById", null);
-            __decorate$9([deprecated$1('EntityService.createFixed'), __metadata$9("design:type", Function), __metadata$9("design:paramtypes", [typeof (_e$5 = typeof Cartographic !== "undefined" && Cartographic) === "function" && _e$5 || Object, Object]), __metadata$9("design:returntype", void 0)], ContextService.prototype, "createGeoEntity", null);
-            _export('ContextService', ContextService = __decorate$9([autoinject(), __metadata$9("design:paramtypes", [typeof (_f$3 = typeof EntityService !== "undefined" && EntityService) === "function" && _f$3 || Object, typeof (_g$3 = typeof SessionService !== "undefined" && SessionService) === "function" && _g$3 || Object, typeof (_h$3 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _h$3 || Object, typeof (_j$2 = typeof ViewService !== "undefined" && ViewService) === "function" && _j$2 || Object])], ContextService));
+            __decorate$10([deprecated$1('originChangeEvent'), __metadata$10("design:type", Object), __metadata$10("design:paramtypes", [])], ContextService.prototype, "localOriginChangeEvent", null);
+            __decorate$10([deprecated$1('origin'), __metadata$10("design:type", Object), __metadata$10("design:paramtypes", [])], ContextService.prototype, "localOrigin", null);
+            __decorate$10([deprecated$1(), __metadata$10("design:type", Object), __metadata$10("design:paramtypes", [])], ContextService.prototype, "localOriginEastUpSouth", null);
+            __decorate$10([deprecated$1(), __metadata$10("design:type", Object), __metadata$10("design:paramtypes", [])], ContextService.prototype, "localOriginEastNorthUp", null);
+            __decorate$10([deprecated$1('timestamp'), __metadata$10("design:type", Object), __metadata$10("design:paramtypes", [])], ContextService.prototype, "systemTime", null);
+            __decorate$10([deprecated$1('time'), __metadata$10("design:type", Function), __metadata$10("design:paramtypes", []), __metadata$10("design:returntype", typeof (_a$10 = typeof JulianDate !== "undefined" && JulianDate) === "function" && _a$10 || Object)], ContextService.prototype, "getTime", null);
+            __decorate$10([deprecated$1(), __metadata$10("design:type", Function), __metadata$10("design:paramtypes", [typeof (_b$10 = typeof Entity !== "undefined" && Entity) === "function" && _b$10 || Object]), __metadata$10("design:returntype", void 0)], ContextService.prototype, "setDefaultReferenceFrame", null);
+            __decorate$10([deprecated$1('defaultReferenceFrame'), __metadata$10("design:type", Function), __metadata$10("design:paramtypes", []), __metadata$10("design:returntype", typeof (_c$6 = typeof Entity !== "undefined" && Entity) === "function" && _c$6 || Object)], ContextService.prototype, "getDefaultReferenceFrame", null);
+            __decorate$10([deprecated$1('subscribe'), __metadata$10("design:type", Function), __metadata$10("design:paramtypes", [String]), __metadata$10("design:returntype", typeof (_d$6 = typeof Entity !== "undefined" && Entity) === "function" && _d$6 || Object)], ContextService.prototype, "subscribeToEntityById", null);
+            __decorate$10([deprecated$1('EntityService.createFixed'), __metadata$10("design:type", Function), __metadata$10("design:paramtypes", [typeof (_e$5 = typeof Cartographic !== "undefined" && Cartographic) === "function" && _e$5 || Object, Object]), __metadata$10("design:returntype", void 0)], ContextService.prototype, "createGeoEntity", null);
+            _export('ContextService', ContextService = __decorate$10([autoinject(), __metadata$10("design:paramtypes", [typeof (_f$3 = typeof EntityService !== "undefined" && EntityService) === "function" && _f$3 || Object, typeof (_g$3 = typeof SessionService !== "undefined" && SessionService) === "function" && _g$3 || Object, typeof (_h$3 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _h$3 || Object, typeof (_j$2 = typeof ViewService !== "undefined" && ViewService) === "function" && _j$2 || Object])], ContextService));
 
             _export('ContextServiceProvider', ContextServiceProvider = function () {
                 function ContextServiceProvider(sessionService, contextService, entityServiceProvider) {
@@ -29793,7 +29925,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return ContextServiceProvider;
             }());
 
-            _export('ContextServiceProvider', ContextServiceProvider = __decorate$9([autoinject(), __metadata$9("design:paramtypes", [typeof (_k$2 = typeof SessionService !== "undefined" && SessionService) === "function" && _k$2 || Object, ContextService, typeof (_l$2 = typeof EntityServiceProvider !== "undefined" && EntityServiceProvider) === "function" && _l$2 || Object])], ContextServiceProvider));
+            _export('ContextServiceProvider', ContextServiceProvider = __decorate$10([autoinject(), __metadata$10("design:paramtypes", [typeof (_k$2 = typeof SessionService !== "undefined" && SessionService) === "function" && _k$2 || Object, ContextService, typeof (_l$2 = typeof EntityServiceProvider !== "undefined" && EntityServiceProvider) === "function" && _l$2 || Object])], ContextServiceProvider));
 
             _export('RealityViewer', RealityViewer = function () {
                 function RealityViewer(uri) {
@@ -29860,7 +29992,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
             };
 
-            __decorate$10 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
+            __decorate$11 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
                 var c = arguments.length,
                     r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
                     d;
@@ -29868,7 +30000,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return c > 3 && r && Object.defineProperty(target, key, r), r;
             };
 
-            __metadata$10 = undefined && undefined.__metadata || function (k, v) {
+            __metadata$11 = undefined && undefined.__metadata || function (k, v) {
                 if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
             };
 
@@ -29983,13 +30115,15 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         // const X_90ROT = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, CesiumMath.PI_OVER_TWO);
                         var subviews = [];
                         var deviceUserPose = _this.contextService.createEntityPose(deviceUser, deviceStage);
-                        var remove1 = _this.deviceService.suggestedGeolocationSubscriptionChangeEvent.addEventListener(function () {
+                        var checkSuggestedGeolocationSubscription = function () {
                             if (_this.deviceService.suggestedGeolocationSubscription) {
                                 _this.deviceService.subscribeGeolocation(_this.deviceService.suggestedGeolocationSubscription, internalSession);
                             } else {
                                 _this.deviceService.unsubscribeGeolocation();
                             }
-                        });
+                        };
+                        checkSuggestedGeolocationSubscription();
+                        var remove1 = _this.deviceService.suggestedGeolocationSubscriptionChangeEvent.addEventListener(checkSuggestedGeolocationSubscription);
                         var remove2 = _this.deviceService.frameStateEvent.addEventListener(function (frameState) {
                             if (internalSession.isClosed) return;
                             var aggregator = _this._aggregator;
@@ -30105,7 +30239,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return EmptyRealityViewer;
             }(RealityViewer));
 
-            _export('EmptyRealityViewer', EmptyRealityViewer = __decorate$10([inject(SessionService, ContextService, ViewService, DeviceService), __metadata$10("design:paramtypes", [typeof (_a$10 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$10 || Object, typeof (_b$10 = typeof ContextService !== "undefined" && ContextService) === "function" && _b$10 || Object, typeof (_c$7 = typeof ViewService !== "undefined" && ViewService) === "function" && _c$7 || Object, typeof (_d$6 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _d$6 || Object, String])], EmptyRealityViewer));
+            _export('EmptyRealityViewer', EmptyRealityViewer = __decorate$11([inject(SessionService, ContextService, ViewService, DeviceService), __metadata$11("design:paramtypes", [typeof (_a$11 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$11 || Object, typeof (_b$11 = typeof ContextService !== "undefined" && ContextService) === "function" && _b$11 || Object, typeof (_c$7 = typeof ViewService !== "undefined" && ViewService) === "function" && _c$7 || Object, typeof (_d$7 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _d$7 || Object, String])], EmptyRealityViewer));
 
             __extends$3 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -30115,7 +30249,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
             };
 
-            __decorate$11 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
+            __decorate$12 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
                 var c = arguments.length,
                     r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
                     d;
@@ -30123,7 +30257,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return c > 3 && r && Object.defineProperty(target, key, r), r;
             };
 
-            __metadata$11 = undefined && undefined.__metadata || function (k, v) {
+            __metadata$12 = undefined && undefined.__metadata || function (k, v) {
                 if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
             };
 
@@ -30259,7 +30393,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return LiveRealityViewer;
             }(RealityViewer));
 
-            _export('LiveRealityViewer', LiveRealityViewer = __decorate$11([inject(SessionService, ViewService, ContextService, DeviceService), __metadata$11("design:paramtypes", [typeof (_a$11 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$11 || Object, typeof (_b$11 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$11 || Object, typeof (_c$8 = typeof ContextService !== "undefined" && ContextService) === "function" && _c$8 || Object, typeof (_d$7 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _d$7 || Object, String])], LiveRealityViewer));
+            _export('LiveRealityViewer', LiveRealityViewer = __decorate$12([inject(SessionService, ViewService, ContextService, DeviceService), __metadata$12("design:paramtypes", [typeof (_a$12 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$12 || Object, typeof (_b$12 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$12 || Object, typeof (_c$8 = typeof ContextService !== "undefined" && ContextService) === "function" && _c$8 || Object, typeof (_d$8 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _d$8 || Object, String])], LiveRealityViewer));
 
             __extends$4 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -30269,7 +30403,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
             };
 
-            __decorate$12 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
+            __decorate$13 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
                 var c = arguments.length,
                     r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
                     d;
@@ -30277,7 +30411,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return c > 3 && r && Object.defineProperty(target, key, r), r;
             };
 
-            __metadata$12 = undefined && undefined.__metadata || function (k, v) {
+            __metadata$13 = undefined && undefined.__metadata || function (k, v) {
                 if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
             };
 
@@ -30338,9 +30472,9 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return HostedRealityViewer;
             }(RealityViewer));
 
-            _export('HostedRealityViewer', HostedRealityViewer = __decorate$12([inject(SessionService, ViewService), __metadata$12("design:paramtypes", [typeof (_a$12 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$12 || Object, typeof (_b$12 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$12 || Object, String])], HostedRealityViewer));
+            _export('HostedRealityViewer', HostedRealityViewer = __decorate$13([inject(SessionService, ViewService), __metadata$13("design:paramtypes", [typeof (_a$13 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$13 || Object, typeof (_b$13 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$13 || Object, String])], HostedRealityViewer));
 
-            __decorate$8 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
+            __decorate$9 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
                 var c = arguments.length,
                     r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
                     d;
@@ -30348,7 +30482,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return c > 3 && r && Object.defineProperty(target, key, r), r;
             };
 
-            __metadata$8 = undefined && undefined.__metadata || function (k, v) {
+            __metadata$9 = undefined && undefined.__metadata || function (k, v) {
                 if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
             };
 
@@ -30373,7 +30507,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return RealityViewerFactory;
             }());
 
-            _export('RealityViewerFactory', RealityViewerFactory = __decorate$8([inject(Factory.of(EmptyRealityViewer), Factory.of(LiveRealityViewer), Factory.of(HostedRealityViewer)), __metadata$8("design:paramtypes", [Object, Object, Object])], RealityViewerFactory));
+            _export('RealityViewerFactory', RealityViewerFactory = __decorate$9([inject(Factory.of(EmptyRealityViewer), Factory.of(LiveRealityViewer), Factory.of(HostedRealityViewer)), __metadata$9("design:paramtypes", [Object, Object, Object])], RealityViewerFactory));
             /**
             * A service which makes requests to manage the reality viewer.
             */
@@ -30531,8 +30665,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return RealityService;
             }());
 
-            __decorate$8([deprecated$1('request'), __metadata$8("design:type", Function), __metadata$8("design:paramtypes", [Object]), __metadata$8("design:returntype", void 0)], RealityService.prototype, "setDesired", null);
-            _export('RealityService', RealityService = __decorate$8([autoinject(), __metadata$8("design:paramtypes", [typeof (_a$8 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$8 || Object, typeof (_b$8 = typeof ContextService !== "undefined" && ContextService) === "function" && _b$8 || Object])], RealityService));
+            __decorate$9([deprecated$1('request'), __metadata$9("design:type", Function), __metadata$9("design:paramtypes", [Object]), __metadata$9("design:returntype", void 0)], RealityService.prototype, "setDesired", null);
+            _export('RealityService', RealityService = __decorate$9([autoinject(), __metadata$9("design:paramtypes", [typeof (_a$9 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$9 || Object, typeof (_b$9 = typeof ContextService !== "undefined" && ContextService) === "function" && _b$9 || Object])], RealityService));
 
             _export('RealityServiceProvider', RealityServiceProvider = function () {
                 function RealityServiceProvider(sessionService, realityService, contextService, deviceService, viewServiceProvider, visibilityServiceProvider, focusServiceProvider, realityViewerFactory) {
@@ -30750,7 +30884,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return RealityServiceProvider;
             }());
 
-            _export('RealityServiceProvider', RealityServiceProvider = __decorate$8([autoinject, __metadata$8("design:paramtypes", [typeof (_c$5 = typeof SessionService !== "undefined" && SessionService) === "function" && _c$5 || Object, RealityService, typeof (_d$4 = typeof ContextService !== "undefined" && ContextService) === "function" && _d$4 || Object, typeof (_e$4 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _e$4 || Object, typeof (_f$2 = typeof ViewServiceProvider !== "undefined" && ViewServiceProvider) === "function" && _f$2 || Object, typeof (_g$2 = typeof VisibilityServiceProvider !== "undefined" && VisibilityServiceProvider) === "function" && _g$2 || Object, typeof (_h$2 = typeof FocusServiceProvider !== "undefined" && FocusServiceProvider) === "function" && _h$2 || Object, RealityViewerFactory])], RealityServiceProvider));
+            _export('RealityServiceProvider', RealityServiceProvider = __decorate$9([autoinject, __metadata$9("design:paramtypes", [typeof (_c$5 = typeof SessionService !== "undefined" && SessionService) === "function" && _c$5 || Object, RealityService, typeof (_d$5 = typeof ContextService !== "undefined" && ContextService) === "function" && _d$5 || Object, typeof (_e$4 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _e$4 || Object, typeof (_f$2 = typeof ViewServiceProvider !== "undefined" && ViewServiceProvider) === "function" && _f$2 || Object, typeof (_g$2 = typeof VisibilityServiceProvider !== "undefined" && VisibilityServiceProvider) === "function" && _g$2 || Object, typeof (_h$2 = typeof FocusServiceProvider !== "undefined" && FocusServiceProvider) === "function" && _h$2 || Object, RealityViewerFactory])], RealityServiceProvider));
 
             __decorate$2 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
                 var c = arguments.length,
@@ -31050,7 +31184,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
             };
 
-            __decorate$13 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
+            __decorate$14 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
                 var c = arguments.length,
                     r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
                     d;
@@ -31058,7 +31192,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return c > 3 && r && Object.defineProperty(target, key, r), r;
             };
 
-            __metadata$13 = undefined && undefined.__metadata || function (k, v) {
+            __metadata$14 = undefined && undefined.__metadata || function (k, v) {
                 if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
             };
 
@@ -31080,7 +31214,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return VuforiaServiceProvider;
             }());
 
-            _export('VuforiaServiceProvider', VuforiaServiceProvider = __decorate$13([inject(SessionService), __metadata$13("design:paramtypes", [typeof (_a$13 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$13 || Object])], VuforiaServiceProvider));
+            _export('VuforiaServiceProvider', VuforiaServiceProvider = __decorate$14([inject(SessionService), __metadata$14("design:paramtypes", [typeof (_a$14 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$14 || Object])], VuforiaServiceProvider));
             /**
              * A service for interacting with the Vuforia API
              */
@@ -31125,7 +31259,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return VuforiaService;
             }());
 
-            _export('VuforiaService', VuforiaService = __decorate$13([inject(SessionService, VuforiaServiceProvider), __metadata$13("design:paramtypes", [typeof (_b$13 = typeof SessionService !== "undefined" && SessionService) === "function" && _b$13 || Object])], VuforiaService));
+            _export('VuforiaService', VuforiaService = __decorate$14([inject(SessionService, VuforiaServiceProvider), __metadata$14("design:paramtypes", [typeof (_b$14 = typeof SessionService !== "undefined" && SessionService) === "function" && _b$14 || Object])], VuforiaService));
 
             _export('VuforiaAPI', VuforiaAPI = function () {
                 function VuforiaAPI(manager) {
@@ -31248,8 +31382,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return VuforiaObjectTracker;
             }(VuforiaTracker));
 
-            __decorate$13([deprecated$1('createDataSetFromURL'), __metadata$13("design:type", Function), __metadata$13("design:paramtypes", [String]), __metadata$13("design:returntype", Object)], VuforiaObjectTracker.prototype, "createDataSet", null);
-            __decorate$13([deprecated$1('createDataSetFromURL'), __metadata$13("design:type", Object), __metadata$13("design:paramtypes", [])], VuforiaObjectTracker.prototype, "createDataSetFromURI", null);
+            __decorate$14([deprecated$1('createDataSetFromURL'), __metadata$14("design:type", Function), __metadata$14("design:paramtypes", [String]), __metadata$14("design:returntype", Object)], VuforiaObjectTracker.prototype, "createDataSet", null);
+            __decorate$14([deprecated$1('createDataSetFromURL'), __metadata$14("design:type", Object), __metadata$14("design:paramtypes", [])], VuforiaObjectTracker.prototype, "createDataSetFromURI", null);
             /**
              * @deprecated To be removed.
              */
@@ -31298,7 +31432,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
             };
 
             _export('ArgonSystemProvider', ArgonSystemProvider = function () {
-                function ArgonSystemProvider(entity, context, focus, device, visibility, reality, view, vuforia) {
+                function ArgonSystemProvider(entity, context, focus, device, visibility, reality, view, vuforia, permission) {
                     this.entity = entity;
                     this.context = context;
                     this.focus = focus;
@@ -31307,11 +31441,12 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     this.reality = reality;
                     this.view = view;
                     this.vuforia = vuforia;
+                    this.permission = permission;
                 }
                 return ArgonSystemProvider;
             }());
 
-            _export('ArgonSystemProvider', ArgonSystemProvider = __decorate([autoinject(), __metadata("design:paramtypes", [typeof (_a = typeof EntityServiceProvider !== "undefined" && EntityServiceProvider) === "function" && _a || Object, typeof (_b = typeof ContextServiceProvider !== "undefined" && ContextServiceProvider) === "function" && _b || Object, typeof (_c = typeof FocusServiceProvider !== "undefined" && FocusServiceProvider) === "function" && _c || Object, typeof (_d = typeof DeviceServiceProvider !== "undefined" && DeviceServiceProvider) === "function" && _d || Object, typeof (_e = typeof VisibilityServiceProvider !== "undefined" && VisibilityServiceProvider) === "function" && _e || Object, typeof (_f = typeof RealityServiceProvider !== "undefined" && RealityServiceProvider) === "function" && _f || Object, typeof (_g = typeof ViewServiceProvider !== "undefined" && ViewServiceProvider) === "function" && _g || Object, typeof (_h = typeof VuforiaServiceProvider !== "undefined" && VuforiaServiceProvider) === "function" && _h || Object])], ArgonSystemProvider));
+            _export('ArgonSystemProvider', ArgonSystemProvider = __decorate([autoinject(), __metadata("design:paramtypes", [typeof (_a = typeof EntityServiceProvider !== "undefined" && EntityServiceProvider) === "function" && _a || Object, typeof (_b = typeof ContextServiceProvider !== "undefined" && ContextServiceProvider) === "function" && _b || Object, typeof (_c = typeof FocusServiceProvider !== "undefined" && FocusServiceProvider) === "function" && _c || Object, typeof (_d = typeof DeviceServiceProvider !== "undefined" && DeviceServiceProvider) === "function" && _d || Object, typeof (_e = typeof VisibilityServiceProvider !== "undefined" && VisibilityServiceProvider) === "function" && _e || Object, typeof (_f = typeof RealityServiceProvider !== "undefined" && RealityServiceProvider) === "function" && _f || Object, typeof (_g = typeof ViewServiceProvider !== "undefined" && ViewServiceProvider) === "function" && _g || Object, typeof (_h = typeof VuforiaServiceProvider !== "undefined" && VuforiaServiceProvider) === "function" && _h || Object, typeof (_j = typeof PermissionServiceProvider !== "undefined" && PermissionServiceProvider) === "function" && _j || Object])], ArgonSystemProvider));
             /**
              * A composition root which instantiates the object graph based on a provided configuration.
              * You generally want to create a new ArgonSystem via the provided [[init]] or [[initReality]] functions:
@@ -31321,7 +31456,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
              */
 
             _export('ArgonSystem', ArgonSystem = ArgonSystem_1 = function () {
-                function ArgonSystem(container, entity, context, device, focus, reality, session, view, visibility, vuforia) {
+                function ArgonSystem(container, entity, context, device, focus, reality, session, view, visibility, vuforia, permission) {
                     this.container = container;
                     this.entity = entity;
                     this.context = context;
@@ -31332,6 +31467,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     this.view = view;
                     this.visibility = visibility;
                     this.vuforia = vuforia;
+                    this.permission = permission;
                     if (!ArgonSystem_1.instance) ArgonSystem_1.instance = this;
                     if (this.container.hasResolver(ArgonSystemProvider)) this._provider = this.container.get(ArgonSystemProvider);
                     this.session.connect();
@@ -31382,7 +31518,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return ArgonSystem;
             }());
 
-            _export('ArgonSystem', ArgonSystem = ArgonSystem_1 = __decorate([autoinject, __metadata("design:paramtypes", [typeof (_j = (typeof DI !== "undefined" && DI).Container) === "function" && _j || Object, typeof (_k = typeof EntityService !== "undefined" && EntityService) === "function" && _k || Object, typeof (_l = typeof ContextService !== "undefined" && ContextService) === "function" && _l || Object, typeof (_m = typeof DeviceService !== "undefined" && DeviceService) === "function" && _m || Object, typeof (_o = typeof FocusService !== "undefined" && FocusService) === "function" && _o || Object, typeof (_p = typeof RealityService !== "undefined" && RealityService) === "function" && _p || Object, typeof (_q = typeof SessionService !== "undefined" && SessionService) === "function" && _q || Object, typeof (_r = typeof ViewService !== "undefined" && ViewService) === "function" && _r || Object, typeof (_s = typeof VisibilityService !== "undefined" && VisibilityService) === "function" && _s || Object, typeof (_t = typeof VuforiaService !== "undefined" && VuforiaService) === "function" && _t || Object])], ArgonSystem));
+            _export('ArgonSystem', ArgonSystem = ArgonSystem_1 = __decorate([autoinject, __metadata("design:paramtypes", [typeof (_k = (typeof DI !== "undefined" && DI).Container) === "function" && _k || Object, typeof (_l = typeof EntityService !== "undefined" && EntityService) === "function" && _l || Object, typeof (_m = typeof ContextService !== "undefined" && ContextService) === "function" && _m || Object, typeof (_o = typeof DeviceService !== "undefined" && DeviceService) === "function" && _o || Object, typeof (_p = typeof FocusService !== "undefined" && FocusService) === "function" && _p || Object, typeof (_q = typeof RealityService !== "undefined" && RealityService) === "function" && _q || Object, typeof (_r = typeof SessionService !== "undefined" && SessionService) === "function" && _r || Object, typeof (_s = typeof ViewService !== "undefined" && ViewService) === "function" && _s || Object, typeof (_t = typeof VisibilityService !== "undefined" && VisibilityService) === "function" && _t || Object, typeof (_u = typeof VuforiaService !== "undefined" && VuforiaService) === "function" && _u || Object, typeof (_v = typeof PermissionService !== "undefined" && PermissionService) === "function" && _v || Object])], ArgonSystem));
 
             _export('ArgonConfigurationManager', ArgonConfigurationManager = function () {
                 function ArgonConfigurationManager(configuration, container) {
@@ -31614,6 +31750,16 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
             _export('VuforiaObjectTracker', VuforiaObjectTracker);
 
             _export('DeprecatedVuforiaDataSet', DeprecatedVuforiaDataSet);
+
+            _export('PermissionNames', PermissionNames);
+
+            _export('Permission', Permission);
+
+            _export('PermissionState', PermissionState);
+
+            _export('PermissionService', PermissionService);
+
+            _export('PermissionServiceProvider', PermissionServiceProvider);
         }
     };
 });

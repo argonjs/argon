@@ -13,6 +13,7 @@ import { RealityService, RealityServiceProvider } from './reality';
 import { ViewService, ViewServiceProvider } from './view';
 import { VisibilityService, VisibilityServiceProvider } from './visibility';
 import { VuforiaService, VuforiaServiceProvider } from './vuforia';
+import { PermissionService, PermissionServiceProvider } from './permission';
 import { RealityViewer } from './reality-viewers/base';
 import { EmptyRealityViewer } from './reality-viewers/empty';
 import { LiveRealityViewer } from './reality-viewers/live';
@@ -30,6 +31,7 @@ export * from './utils';
 export * from './view';
 export * from './visibility';
 export * from './vuforia';
+export * from './permission';
 export { RealityViewer, EmptyRealityViewer, LiveRealityViewer, HostedRealityViewer };
 export declare class ArgonSystemProvider {
     entity: EntityServiceProvider;
@@ -40,7 +42,8 @@ export declare class ArgonSystemProvider {
     reality: RealityServiceProvider;
     view: ViewServiceProvider;
     vuforia: VuforiaServiceProvider;
-    constructor(entity: EntityServiceProvider, context: ContextServiceProvider, focus: FocusServiceProvider, device: DeviceServiceProvider, visibility: VisibilityServiceProvider, reality: RealityServiceProvider, view: ViewServiceProvider, vuforia: VuforiaServiceProvider);
+    permission: PermissionServiceProvider;
+    constructor(entity: EntityServiceProvider, context: ContextServiceProvider, focus: FocusServiceProvider, device: DeviceServiceProvider, visibility: VisibilityServiceProvider, reality: RealityServiceProvider, view: ViewServiceProvider, vuforia: VuforiaServiceProvider, permission: PermissionServiceProvider);
 }
 /**
  * A composition root which instantiates the object graph based on a provided configuration.
@@ -60,11 +63,12 @@ export declare class ArgonSystem {
     view: ViewService;
     visibility: VisibilityService;
     vuforia: VuforiaService;
+    permission: PermissionService;
     /**
      * The ArgonSystem instance which shares a view provided by a manager
      */
     static instance?: ArgonSystem;
-    constructor(container: DI.Container, entity: EntityService, context: ContextService, device: DeviceService, focus: FocusService, reality: RealityService, session: SessionService, view: ViewService, visibility: VisibilityService, vuforia: VuforiaService);
+    constructor(container: DI.Container, entity: EntityService, context: ContextService, device: DeviceService, focus: FocusService, reality: RealityService, session: SessionService, view: ViewService, visibility: VisibilityService, vuforia: VuforiaService, permission: PermissionService);
     _provider: ArgonSystemProvider;
     readonly provider: ArgonSystemProvider;
     readonly updateEvent: Event<any>;

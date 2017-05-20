@@ -111,15 +111,18 @@ describe('EntityService', function () {
         it('should return resolved promise after success', function () {
             var sessionService = new Argon.SessionService({ role: Argon.Role.REALITY_MANAGER }, new Argon.LoopbackConnectService, new Argon.SessionPortFactory, new Argon.MessageChannelFactory);
             var entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
-            new Argon.EntityServiceProvider(sessionService, entityService);
+            var permissionServiceProvider = new Argon.PermissionServiceProvider(sessionService);
+            new Argon.EntityServiceProvider(sessionService, entityService, permissionServiceProvider);
             sessionService.connect();
             var testId = Argon.Cesium.createGuid();
             return entityService.subscribe(testId);
         });
         it('should emit subscribedEvent after success', function (done) {
             var sessionService = new Argon.SessionService({ role: Argon.Role.REALITY_MANAGER }, new Argon.LoopbackConnectService, new Argon.SessionPortFactory, new Argon.MessageChannelFactory);
+            // const permissionService = new Argon.PermissionService(sessionService);
+            var permissionServiceProvider = new Argon.PermissionServiceProvider(sessionService);
             var entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
-            var entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService);
+            var entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService, permissionServiceProvider);
             var testId = Argon.Cesium.createGuid();
             entityService.subscribedEvent.addEventListener(function (_a) {
                 var id = _a.id, options = _a.options;
@@ -134,8 +137,9 @@ describe('EntityService', function () {
         });
         it('should emit sessionSubscribedEvent on provider after success', function (done) {
             var sessionService = new Argon.SessionService({ role: Argon.Role.REALITY_MANAGER }, new Argon.LoopbackConnectService, new Argon.SessionPortFactory, new Argon.MessageChannelFactory);
+            var permissionServiceProvider = new Argon.PermissionServiceProvider(sessionService);
             var entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
-            var entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService);
+            var entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService, permissionServiceProvider);
             var testId = Argon.Cesium.createGuid();
             entityServiceProvider.sessionSubscribedEvent.addEventListener(function (_a) {
                 var id = _a.id, session = _a.session, options = _a.options;
@@ -153,13 +157,13 @@ describe('EntityService', function () {
         });
         it('should return a rejected promise after rejection', function (done) {
             var sessionService = new Argon.SessionService({ role: Argon.Role.REALITY_MANAGER }, new Argon.LoopbackConnectService, new Argon.SessionPortFactory, new Argon.MessageChannelFactory);
+            var permissionServiceProvider = new Argon.PermissionServiceProvider(sessionService);
             var entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
-            var entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService);
+            new Argon.EntityServiceProvider(sessionService, entityService, permissionServiceProvider);
             var testId = Argon.Cesium.createGuid();
-            entityServiceProvider.onAllowSubscription = function (session, id, options) {
+            permissionServiceProvider.handlePermissionRequest = function (session, id) {
                 expect(session).to.equal(sessionService.manager);
                 expect(id).to.equal(testId);
-                expect(options).to.exist && expect(options['something']).to.equal('here');
                 return Promise.reject('fail');
             };
             entityService.subscribedEvent.addEventListener(function () {
@@ -178,8 +182,9 @@ describe('EntityService', function () {
     describe('unsubscribe', function () {
         it('should emit unsubscribedEvent', function (done) {
             var sessionService = new Argon.SessionService({ role: Argon.Role.REALITY_MANAGER }, new Argon.LoopbackConnectService, new Argon.SessionPortFactory, new Argon.MessageChannelFactory);
+            var permissionServiceProvider = new Argon.PermissionServiceProvider(sessionService);
             var entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
-            var entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService);
+            var entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService, permissionServiceProvider);
             var testId = Argon.Cesium.createGuid();
             entityService.subscribedEvent.addEventListener(function (_a) {
                 var id = _a.id, options = _a.options;
@@ -198,8 +203,9 @@ describe('EntityService', function () {
         });
         it('should emit sessionUnsubscribedEvent on provider', function (done) {
             var sessionService = new Argon.SessionService({ role: Argon.Role.REALITY_MANAGER }, new Argon.LoopbackConnectService, new Argon.SessionPortFactory, new Argon.MessageChannelFactory);
+            var permissionServiceProvider = new Argon.PermissionServiceProvider(sessionService);
             var entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
-            var entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService);
+            var entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService, permissionServiceProvider);
             var testId = Argon.Cesium.createGuid();
             entityServiceProvider.sessionSubscribedEvent.addEventListener(function (_a) {
                 var id = _a.id, session = _a.session, options = _a.options;
