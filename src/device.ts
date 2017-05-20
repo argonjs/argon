@@ -667,7 +667,7 @@ export class DeviceService {
         } else {
             // for real webvr, the origin is always at the stage
             (this.origin.position as ConstantPositionProperty).setValue(Cartesian3.ZERO, this.stage);
-            (this.origin.orientation as ConstantProperty).setValue(Quaternion.ZERO);
+            (this.origin.orientation as ConstantProperty).setValue(Quaternion.IDENTITY);
         }
     }
 
