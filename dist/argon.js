@@ -26492,7 +26492,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _scratchArray = [];
 
-            _export('version', version = "1.2.0-20-refactor-y-up-18");
+            _export('version', version = "1.2.0-20-refactor-y-up-19");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -28458,7 +28458,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     }
                     if (this.sessionService.isRealityManager) {
                         this.entityService.subscribedEvent.addEventListener(function (evt) {
-                            if (evt.id === 'ar.stage') _this._setSuggestedGeolocationSubscription(evt.options);
+                            if (evt.id === 'ar.stage') _this._setSuggestedGeolocationSubscription(evt.options || {});
                         });
                         this.entityService.unsubscribedEvent.addEventListener(function (evt) {
                             if (evt.id === 'ar.stage') _this._setSuggestedGeolocationSubscription(undefined);
@@ -28809,7 +28809,6 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     if (session === void 0) {
                         session = this.sessionService.manager;
                     }
-                    if (session.version[0] > 0) session.send('ar.device.setGeolocationOptions', { options: options }); // to be removed
                     return this.entityService.subscribe(this.stage.id, options, session).then(function () {});
                 };
                 DeviceService$$1.prototype.unsubscribeGeolocation = function (session) {
@@ -29757,11 +29756,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     return subviewEntity;
                 };
                 ContextService.prototype.subscribeGeolocation = function (options) {
-                    var _this = this;
-                    return this.sessionService.manager.whenConnected().then(function () {
-                        if (_this.sessionService.manager.version[0] > 0) _this.sessionService.manager.send('ar.context.setGeolocationOptions', { options: options });
-                        return _this.entityService.subscribe(_this.stage.id, options).then(function () {});
-                    });
+                    return this.entityService.subscribe(this.stage.id, options).then(function () {});
                 };
                 ContextService.prototype.unsubscribeGeolocation = function () {
                     this.entityService.unsubscribe(this.stage.id);
@@ -29814,12 +29809,6 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     this.desiredGeolocationOptions = {};
                     this.sessionGeolocationOptions = new Map();
                     this.entityServiceProvider.targetReferenceFrameMap.set(this.contextService.stage.id, ReferenceFrame.FIXED);
-                    sessionService.connectEvent.addEventListener(function (session) {
-                        session.on['ar.context.setGeolocationOptions'] = function (_a) {
-                            var options = _a.options;
-                            _this._setGeolocationOptions(session, options);
-                        };
-                    });
                     // subscribe to context geolocation if any child sessions have subscribed
                     this.entityServiceProvider.sessionSubscribedEvent.addEventListener(function (evt) {
                         if (evt.id === _this.contextService.stage.id && evt.session !== _this.sessionService.manager) {
