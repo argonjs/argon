@@ -20912,7 +20912,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _scratchArray = [];
 
-            _export('version', version = "1.2.0-20-refactor-y-up-19");
+            _export('version', version = "1.2.0-20-refactor-y-up-20");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -23188,7 +23188,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     } else {
                         // for real webvr, the origin is always at the stage
                         this.origin.position.setValue(Cartesian3.ZERO, this.stage);
-                        this.origin.orientation.setValue(Quaternion.ZERO);
+                        this.origin.orientation.setValue(Quaternion.IDENTITY);
                     }
                 };
                 DeviceService$$1.prototype._hasPolyfillWebVRDisplay = function () {
