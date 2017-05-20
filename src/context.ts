@@ -680,11 +680,7 @@ export class ContextService {
 
 
     subscribeGeolocation(options?:GeolocationOptions) : Promise<void> {
-        return this.sessionService.manager.whenConnected().then(()=>{
-            if (this.sessionService.manager.version[0] > 0)
-                this.sessionService.manager.send('ar.context.setGeolocationOptions', {options});
-            return this.entityService.subscribe(this.stage.id, options).then(()=>{});
-        })
+        return this.entityService.subscribe(this.stage.id, options).then(()=>{});
     }
 
     unsubscribeGeolocation() : void {
@@ -718,12 +714,6 @@ export class ContextServiceProvider {
         protected entityServiceProvider:EntityServiceProvider
     ) {
         this.entityServiceProvider.targetReferenceFrameMap.set(this.contextService.stage.id, ReferenceFrame.FIXED);
-
-        sessionService.connectEvent.addEventListener((session) => {
-            session.on['ar.context.setGeolocationOptions'] = ({options}) => {
-                this._setGeolocationOptions(session, options)
-            }
-        });
 
         // subscribe to context geolocation if any child sessions have subscribed
         this.entityServiceProvider.sessionSubscribedEvent.addEventListener((evt)=>{

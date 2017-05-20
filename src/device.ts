@@ -721,7 +721,6 @@ export class DeviceService {
     }
 
     subscribeGeolocation(options?:GeolocationOptions, session=this.sessionService.manager) : Promise<void> {
-        if (session.version[0] > 0) session.send('ar.device.setGeolocationOptions', {options}); // to be removed
         return this.entityService.subscribe(this.stage.id, options, session).then(()=>{});
     }
 
