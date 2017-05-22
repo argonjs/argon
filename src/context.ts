@@ -636,14 +636,16 @@ export class ContextService {
         }
 
         // update origin entity
-        const deviceOrigin = this.deviceService.origin;
-        const contextOrigin = this.origin;
-        const deviceOriginPositionValue = this._getEntityPositionInReferenceFrame(deviceOrigin, time, deviceStage, this._scratchCartesian);
-        const deviceOriginOrientationValue =  this._getEntityOrientationInReferenceFrame(deviceOrigin, time, deviceStage, this._scratchQuaternion);
-        const contextOriginPosition = contextOrigin.position as ConstantPositionProperty;
-        const contextOriginOrientation = contextOrigin.orientation as ConstantProperty;
-        contextOriginPosition.setValue(deviceOriginPositionValue, contextStage);
-        contextOriginOrientation.setValue(deviceOriginOrientationValue);
+        if (entities[this.origin.id] === undefined) {
+            const deviceOrigin = this.deviceService.origin;
+            const contextOrigin = this.origin;
+            const deviceOriginPositionValue = this._getEntityPositionInReferenceFrame(deviceOrigin, time, deviceStage, this._scratchCartesian);
+            const deviceOriginOrientationValue =  this._getEntityOrientationInReferenceFrame(deviceOrigin, time, deviceStage, this._scratchQuaternion);
+            const contextOriginPosition = contextOrigin.position as ConstantPositionProperty;
+            const contextOriginOrientation = contextOrigin.orientation as ConstantProperty;
+            contextOriginPosition.setValue(deviceOriginPositionValue, contextStage);
+            contextOriginOrientation.setValue(deviceOriginOrientationValue);
+        }
 
         // update view
         this.viewService._processContextFrameState(frameState, this);

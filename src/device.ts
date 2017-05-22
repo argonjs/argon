@@ -124,16 +124,6 @@ export class DeviceService {
     public suggestedGeolocationSubscriptionChangeEvent = new Event<void>();
 
     /**
-     * An entity representing the origin of the device coordinate system, +Y up.
-     */
-    public origin: Entity = this.entityService.collection.add(new Entity({
-        id: 'ar.device.origin',
-        name: 'Device Origin',
-        position: new ConstantPositionProperty(undefined, ReferenceFrame.FIXED),
-        orientation: new ConstantProperty(undefined)
-    }));
-
-    /**
      * A coordinate system representing the physical space in which the user is free to 
      * move around, positioned on the surface the user is standing on,
      * where +X is east, +Y is up, and +Z is south (East-Up-South), if geolocation is known.
@@ -144,6 +134,16 @@ export class DeviceService {
         name: 'Device Stage',
         position: undefined,
         orientation: undefined
+    }));
+    
+    /**
+     * An entity representing the origin of the device coordinate system, +Y up.
+     */
+    public origin: Entity = this.entityService.collection.add(new Entity({
+        id: 'ar.device.origin',
+        name: 'Device Origin',
+        position: new ConstantPositionProperty(Cartesian3.ZERO, this.stage),
+        orientation: new ConstantProperty(Quaternion.IDENTITY)
     }));
     
     /**
