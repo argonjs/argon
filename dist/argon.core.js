@@ -20912,7 +20912,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _scratchArray = [];
 
-            _export('version', version = "1.2.0-20-refactor-y-up-21");
+            _export('version', version = "1.2.0-20-refactor-y-up-24");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -22774,15 +22774,6 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                      */
                     this.suggestedGeolocationSubscriptionChangeEvent = new Event$1();
                     /**
-                     * An entity representing the origin of the device coordinate system, +Y up.
-                     */
-                    this.origin = this.entityService.collection.add(new Entity({
-                        id: 'ar.device.origin',
-                        name: 'Device Origin',
-                        position: new ConstantPositionProperty(undefined, ReferenceFrame.FIXED),
-                        orientation: new ConstantProperty(undefined)
-                    }));
-                    /**
                      * A coordinate system representing the physical space in which the user is free to
                      * move around, positioned on the surface the user is standing on,
                      * where +X is east, +Y is up, and +Z is south (East-Up-South), if geolocation is known.
@@ -22793,6 +22784,15 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         name: 'Device Stage',
                         position: undefined,
                         orientation: undefined
+                    }));
+                    /**
+                     * An entity representing the origin of the device coordinate system, +Y up.
+                     */
+                    this.origin = this.entityService.collection.add(new Entity({
+                        id: 'ar.device.origin',
+                        name: 'Device Origin',
+                        position: new ConstantPositionProperty(Cartesian3.ZERO, this.stage),
+                        orientation: new ConstantProperty(Quaternion.IDENTITY)
                     }));
                     /**
                      * An entity representing the physical pose of the user,
@@ -24138,14 +24138,16 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         floorPosition.setValue(Cartesian3.ZERO, contextStage);
                     }
                     // update origin entity
-                    var deviceOrigin = this.deviceService.origin;
-                    var contextOrigin = this.origin;
-                    var deviceOriginPositionValue = this._getEntityPositionInReferenceFrame(deviceOrigin, time, deviceStage, this._scratchCartesian);
-                    var deviceOriginOrientationValue = this._getEntityOrientationInReferenceFrame(deviceOrigin, time, deviceStage, this._scratchQuaternion);
-                    var contextOriginPosition = contextOrigin.position;
-                    var contextOriginOrientation = contextOrigin.orientation;
-                    contextOriginPosition.setValue(deviceOriginPositionValue, contextStage);
-                    contextOriginOrientation.setValue(deviceOriginOrientationValue);
+                    if (entities[this.origin.id] === undefined) {
+                        var deviceOrigin = this.deviceService.origin;
+                        var contextOrigin = this.origin;
+                        var deviceOriginPositionValue = this._getEntityPositionInReferenceFrame(deviceOrigin, time, deviceStage, this._scratchCartesian);
+                        var deviceOriginOrientationValue = this._getEntityOrientationInReferenceFrame(deviceOrigin, time, deviceStage, this._scratchQuaternion);
+                        var contextOriginPosition = contextOrigin.position;
+                        var contextOriginOrientation = contextOrigin.orientation;
+                        contextOriginPosition.setValue(deviceOriginPositionValue, contextStage);
+                        contextOriginOrientation.setValue(deviceOriginOrientationValue);
+                    }
                     // update view
                     this.viewService._processContextFrameState(frameState, this);
                     // TODO: realityService._processContextFrameState(frameState); 
