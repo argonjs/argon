@@ -815,6 +815,10 @@ export class ContextServiceProvider {
             state.viewport = view.viewport;
             state.subviews = view.subviews;
 
+        } else if (session.version[0] === 1 && session.version[1] === 1) {
+            state.entities['ar.user']!.r = 'ar.stageEUS';
+            session.send('ar.context.update', state);
+            state.entities['ar.user']!.r = 'ar.stage';
         } else {
             session.send('ar.context.update', state);
         }
