@@ -428,12 +428,10 @@ export const defaultTerrainProvider = new MapzenTerrariumTerrainProvider({
 });
 
 
-var _scratchArray : Cartographic[] = [];
 export function updateHeightFromTerrain(cartographic : Cartographic) : Promise<Cartographic> {
-    _scratchArray[0] = cartographic;
-    return sampleTerrain(defaultTerrainProvider, 15, _scratchArray).then<Cartographic>(_valueAtFirstIndex);
+    return sampleTerrain(defaultTerrainProvider, 15, [cartographic]).then<Cartographic>(_valueAtFirstIndex);
 }
 
-function _valueAtFirstIndex(array) {
+function _valueAtFirstIndex(array:Cartographic[]) {
     return array[0];
 }
