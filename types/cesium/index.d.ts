@@ -1411,7 +1411,7 @@ declare module 'cesium' {
         toString(): string;
         static fromAxisAngle(axis: Cartesian3, angle: number, result?: Quaternion): Quaternion;
         static fromRotationMatrix(matrix: Matrix3, result?: Quaternion): Quaternion;
-        static fromHeadingPitchRoll(heading: number, pitch: number, roll: number, result: Quaternion): Quaternion;
+        static fromHeadingPitchRoll(headingPitchRoll: HeadingPitchRoll, result?: Quaternion): Quaternion;
         static pack(value: Quaternion, array: number[], startingIndex?: number);
         static unpack(array: number[], startingIndex?: number, result?: Quaternion);
         static convertPackedArrayForInterpolation(packedArray: number[], startingIndex?: number, lastIndex?: number, result?: number[]);
