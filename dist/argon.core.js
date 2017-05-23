@@ -24309,7 +24309,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         delete state['view'];
                         state.viewport = view.viewport;
                         state.subviews = view.subviews;
-                    } else if (session.version[0] === 1 && session.version[1] === 1) {
+                    } else if (session.version[0] === 1 && session.version[1] === 1 && state.entities['ar.user']) {
                         state.entities['ar.user'].r = 'ar.stageEUS';
                         session.send('ar.context.update', state);
                         state.entities['ar.user'].r = 'ar.stage';
