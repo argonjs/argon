@@ -378,14 +378,14 @@ export class EntityServiceProvider {
             session.on['ar.entity.subscribe'] = session.on['ar.context.subscribe'] = ({id, options}:{id:string, options:any}) => {
                 const currentOptions = subscriptions.get(id);
                 if (currentOptions && jsonEquals(currentOptions,options)) return;
-
-                return this.permissionServiceProvider.handlePermissionRequest(session, id, options).then(()=>{
-                    const subscribers = this.subscribersByEntity.get(id) || new Set<SessionPort>();
-                    this.subscribersByEntity.set(id, subscribers);
-                    subscribers.add(session);
-                    subscriptions.set(id,options);
-                    this.sessionSubscribedEvent.raiseEvent({session, id, options});
-                });
+                
+                const subscribers = this.subscribersByEntity.get(id) || new Set<SessionPort>();
+                this.subscribersByEntity.set(id, subscribers);
+                subscribers.add(session);
+                subscriptions.set(id,options);
+                this.sessionSubscribedEvent.raiseEvent({session, id, options});
+                
+                return this.permissionServiceProvider.handlePermissionRequest(session, id, options).then(()=>{});
             }
 
             session.on['ar.entity.unsubscribe'] = session.on['ar.context.unsubscribe'] = ({id}:{id:string}) => {
