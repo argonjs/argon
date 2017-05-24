@@ -26489,7 +26489,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.2.0-20-refactor-y-up-28");
+            _export('version', version = "1.2.0-20-refactor-y-up-29");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -30224,6 +30224,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                             uri: _this.uri,
                             title: 'Empty',
                             version: _this.sessionService.configuration.version,
+                            supportsCustomProtocols: true,
                             protocols: ['argon.configureStage@v1']
                         });
                     });
