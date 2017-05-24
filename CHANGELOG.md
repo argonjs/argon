@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.2.0-20-refactor-y-up-31.0"></a>
+# [1.2.0-20-refactor-y-up-31.0](https://github.com/argonjs/argon/compare/v1.2.0-20...v1.2.0-20-refactor-y-up-31.0) (2017-05-24)
+
+
+### Features
+
+* Added `stringIdentifierFromReferenceFrame` and `jsonEquals` to utils ([bdb24d4](https://github.com/argonjs/argon/commit/bdb24d4))
+
+
+
 <a name="1.2.0-20"></a>
 # [1.2.0-20](https://github.com/argonjs/argon/compare/v1.2.0-19...v1.2.0-20) (2017-05-15)
 
