@@ -42,6 +42,7 @@ import { EntityService, EntityServiceProvider, EntityPose } from './entity'
 import { DeviceService } from './device'
 import { eastUpSouthToFixedFrame } from './utils'
 import { ViewService } from './view'
+import { PermissionState, PermissionType, PermissionServiceProvider } from './permission'
 
 /**
  * Provides a means of querying the current state of reality.
@@ -713,7 +714,8 @@ export class ContextServiceProvider {
     constructor(
         protected sessionService:SessionService,
         protected contextService:ContextService,
-        protected entityServiceProvider:EntityServiceProvider
+        protected entityServiceProvider:EntityServiceProvider,
+        protected permissionServiceProvider:PermissionServiceProvider
     ) {
         this.entityServiceProvider.targetReferenceFrameMap.set(this.contextService.stage.id, ReferenceFrame.FIXED);
 
@@ -787,6 +789,10 @@ export class ContextServiceProvider {
             sessionEntities[id] = entityServiceProvider.getCachedSerializedEntityState(entity, state.time);
         }
 
+        // remove stage updates if geolocation permission is not granted
+        if (this.permissionServiceProvider.getPermissionState(session, <PermissionType>contextStageId) != PermissionState.GRANTED)
+            delete sessionEntities[contextStageId];
+             
         // recycle the frame state object, but with the session entities
         const parentEntities = state.entities;
         state.entities = sessionEntities;

@@ -379,7 +379,7 @@ export class EntityServiceProvider {
                 const currentOptions = subscriptions.get(id);
                 if (currentOptions && jsonEquals(currentOptions,options)) return;
 
-                return this.permissionServiceProvider.handlePermissionRequest(session, id).then(()=>{
+                return this.permissionServiceProvider.handlePermissionRequest(session, id, options).then(()=>{
                     const subscribers = this.subscribersByEntity.get(id) || new Set<SessionPort>();
                     this.subscribersByEntity.set(id, subscribers);
                     subscribers.add(session);
