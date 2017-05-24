@@ -18822,6 +18822,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
         }
         this._credit = credit;
         this._readyPromise = Promise.resolve(true);
+        this._terrainPromises = {};
     }
 
     function getEventSynthesizier() {
@@ -20554,15 +20555,24 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
              *          returns undefined instead of a promise, it is an indication that too many requests are already
              *          pending and the request will be retried later.
              */
-            MapzenTerrariumTerrainProvider.prototype.requestTileGeometry = function (x, y, level) {
+            MapzenTerrariumTerrainProvider.prototype.requestTileGeometry = function (x, y, level, throttleRequests) {
                 var url = this._url + level + '/' + x + '/' + y + '.png';
                 var proxy = this._proxy;
                 if (defined(proxy)) {
                     url = proxy.getURL(url);
                 }
-                var promise = throttleRequestByServer(url, loadImage);
-                if (!defined(promise)) {
-                    return undefined;
+                var promise = this._terrainPromises[url];
+                if (!promise) {
+                    throttleRequests = defaultValue(throttleRequests, true);
+                    if (throttleRequests) {
+                        promise = throttleRequestByServer(url, loadImage);
+                        if (!defined(promise)) {
+                            return undefined;
+                        }
+                    } else {
+                        promise = loadImage(url);
+                    }
+                    this._terrainPromises[url] = promise;
                 }
                 var that = this;
                 return promise.then(function (image) {
@@ -20909,7 +20919,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.2.0-20-refactor-y-up-30");
+            _export('version', version = "1.2.0-20-refactor-y-up-31");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
