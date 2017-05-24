@@ -323,6 +323,7 @@ export class EmptyRealityViewer extends RealityViewer {
                 uri: this.uri,
                 title: 'Empty',
                 version: this.sessionService.configuration.version,
+                supportsCustomProtocols: true,
                 protocols: ['argon.configureStage@v1']
             });
         });
