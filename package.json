@@ -1,6 +1,6 @@
 {
   "name": "@argonjs/argon",
-  "version": "1.2.0-20-refactor-y-up-29",
+  "version": "1.2.0-20-refactor-y-up-30",
   "main": "dist/argon.core.js",
   "browser": "dist/argon.js",
   "typings": "index.d.ts",
