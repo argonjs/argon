@@ -55,16 +55,16 @@ export declare class DeviceService {
     screenOrientationChangeEvent: Event<void>;
     suggestedGeolocationSubscriptionChangeEvent: Event<void>;
     /**
-     * An entity representing the origin of the device coordinate system, +Y up.
-     */
-    origin: Entity;
-    /**
      * A coordinate system representing the physical space in which the user is free to
      * move around, positioned on the surface the user is standing on,
      * where +X is east, +Y is up, and +Z is south (East-Up-South), if geolocation is known.
      * If the stage is not geolocated, then the +X and +Z directions are arbitrary.
      */
     stage: Entity;
+    /**
+     * An entity representing the origin of the device coordinate system, +Y up.
+     */
+    origin: Entity;
     /**
      * An entity representing the physical pose of the user,
      * where +X is right, +Y is up, and -Z is forward
