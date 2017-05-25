@@ -134,9 +134,11 @@ export class SynchronousMessageChannel {
         messageChannel.port1 = {
             get onmessage() { return onmessage1 },
             set onmessage(func) {
-                onmessage1 = func;
-                pendingMessages1.forEach((data) => func(data))
-                pendingMessages1 = [];
+                setTimeout(()=>{
+                    onmessage1 = func;
+                    pendingMessages1.forEach((data) => func(data))
+                    pendingMessages1 = [];
+                },0);
             },
             postMessage(data: any) {
                 if (messageChannel.port2.onmessage)
