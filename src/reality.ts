@@ -312,6 +312,8 @@ export class RealityServiceProvider {
 
             viewer.connectEvent.addEventListener((viewerSession)=>{
 
+                if (this.sessionService.manager.isClosed) return;
+
                 if (!Role.isRealityViewer(viewerSession.info.role)) {
                     viewerSession.sendError({ message: "Expected a reality viewer" });
                     viewerSession.close();
