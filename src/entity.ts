@@ -154,21 +154,9 @@ export enum PoseStatus {
 @autoinject()
 export class EntityService {
 
-    constructor(public collection:EntityCollection, protected sessionService: SessionService) {
-        // sessionService.manager.on['ar.entity.state'] = ({id, state}: { id:string, state:SerializedEntityState }) => {
-        //     this.updateEntityFromSerializedState(id, state);
-        // }
-        
-        sessionService.manager.on['ar.context.subscribe'] = 
-        sessionService.manager.on['ar.entity.subscribed'] = (event: { id: string, options:any }) => {
-            this._handleSubscribed(event);
-        }
-        
-        sessionService.manager.on['ar.context.unsubscribe'] = 
-        sessionService.manager.on['ar.entity.unsubscribed'] = ({id}: { id: string }) => {
-            this._handleUnsubscribed(id);
-        }
-    }
+    constructor(protected sessionService: SessionService) {}
+
+    public collection = new EntityCollection;
 
     public subscribedEvent = new Event<{id:string, options?:{}}>();
     public unsubscribedEvent = new Event<{id:string}>();

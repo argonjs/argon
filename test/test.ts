@@ -133,7 +133,7 @@ describe('EntityService', () => {
                 new Argon.SessionPortFactory,
                 new Argon.MessageChannelFactory
             );
-            const entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
+            const entityService = new Argon.EntityService(sessionService);
             expect(entityService).to.be.instanceOf(Argon.EntityService);
             expect(entityService.collection).to.be.instanceOf(Argon.Cesium.EntityCollection);
         });
@@ -149,7 +149,7 @@ describe('EntityService', () => {
                 new Argon.MessageChannelFactory
             );
 
-            const entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
+            const entityService = new Argon.EntityService(sessionService);
             const permissionServiceProvider = new Argon.PermissionServiceProvider(sessionService);
             new Argon.EntityServiceProvider(sessionService, entityService, permissionServiceProvider);
 
@@ -167,7 +167,7 @@ describe('EntityService', () => {
             );
             // const permissionService = new Argon.PermissionService(sessionService);
             const permissionServiceProvider = new Argon.PermissionServiceProvider(sessionService);
-            const entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
+            const entityService = new Argon.EntityService(sessionService);
             const entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService, permissionServiceProvider);
 
 
@@ -192,7 +192,7 @@ describe('EntityService', () => {
                 new Argon.MessageChannelFactory
             );
             const permissionServiceProvider = new Argon.PermissionServiceProvider(sessionService);
-            const entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
+            const entityService = new Argon.EntityService(sessionService);
             const entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService, permissionServiceProvider);
 
             const testId = Argon.Cesium.createGuid();
@@ -219,7 +219,7 @@ describe('EntityService', () => {
                 new Argon.MessageChannelFactory
             );
             const permissionServiceProvider = new Argon.PermissionServiceProvider(sessionService);
-            const entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
+            const entityService = new Argon.EntityService(sessionService);
             new Argon.EntityServiceProvider(sessionService, entityService, permissionServiceProvider);
 
             const testId = Argon.Cesium.createGuid();
@@ -255,7 +255,7 @@ describe('EntityService', () => {
                 new Argon.MessageChannelFactory
             );
             const permissionServiceProvider = new Argon.PermissionServiceProvider(sessionService);
-            const entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
+            const entityService = new Argon.EntityService(sessionService);
             const entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService, permissionServiceProvider);
 
 
@@ -284,7 +284,7 @@ describe('EntityService', () => {
                 new Argon.MessageChannelFactory
             );
             const permissionServiceProvider = new Argon.PermissionServiceProvider(sessionService);
-            const entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
+            const entityService = new Argon.EntityService(sessionService);
             const entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService, permissionServiceProvider);
 
 

@@ -102,7 +102,7 @@ describe('EntityService', function () {
     describe('new EntityService()', function () {
         it('should create an EntityService instance', function () {
             var sessionService = new Argon.SessionService({ role: Argon.Role.REALITY_MANAGER }, new Argon.LoopbackConnectService, new Argon.SessionPortFactory, new Argon.MessageChannelFactory);
-            var entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
+            var entityService = new Argon.EntityService(sessionService);
             expect(entityService).to.be.instanceOf(Argon.EntityService);
             expect(entityService.collection).to.be.instanceOf(Argon.Cesium.EntityCollection);
         });
@@ -110,7 +110,7 @@ describe('EntityService', function () {
     describe('subscribe', function () {
         it('should return resolved promise after success', function () {
             var sessionService = new Argon.SessionService({ role: Argon.Role.REALITY_MANAGER }, new Argon.LoopbackConnectService, new Argon.SessionPortFactory, new Argon.MessageChannelFactory);
-            var entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
+            var entityService = new Argon.EntityService(sessionService);
             var permissionServiceProvider = new Argon.PermissionServiceProvider(sessionService);
             new Argon.EntityServiceProvider(sessionService, entityService, permissionServiceProvider);
             sessionService.connect();
@@ -121,7 +121,7 @@ describe('EntityService', function () {
             var sessionService = new Argon.SessionService({ role: Argon.Role.REALITY_MANAGER }, new Argon.LoopbackConnectService, new Argon.SessionPortFactory, new Argon.MessageChannelFactory);
             // const permissionService = new Argon.PermissionService(sessionService);
             var permissionServiceProvider = new Argon.PermissionServiceProvider(sessionService);
-            var entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
+            var entityService = new Argon.EntityService(sessionService);
             var entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService, permissionServiceProvider);
             var testId = Argon.Cesium.createGuid();
             entityService.subscribedEvent.addEventListener(function (_a) {
@@ -138,7 +138,7 @@ describe('EntityService', function () {
         it('should emit sessionSubscribedEvent on provider after success', function (done) {
             var sessionService = new Argon.SessionService({ role: Argon.Role.REALITY_MANAGER }, new Argon.LoopbackConnectService, new Argon.SessionPortFactory, new Argon.MessageChannelFactory);
             var permissionServiceProvider = new Argon.PermissionServiceProvider(sessionService);
-            var entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
+            var entityService = new Argon.EntityService(sessionService);
             var entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService, permissionServiceProvider);
             var testId = Argon.Cesium.createGuid();
             entityServiceProvider.sessionSubscribedEvent.addEventListener(function (_a) {
@@ -158,7 +158,7 @@ describe('EntityService', function () {
         it('should return a rejected promise after rejection', function (done) {
             var sessionService = new Argon.SessionService({ role: Argon.Role.REALITY_MANAGER }, new Argon.LoopbackConnectService, new Argon.SessionPortFactory, new Argon.MessageChannelFactory);
             var permissionServiceProvider = new Argon.PermissionServiceProvider(sessionService);
-            var entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
+            var entityService = new Argon.EntityService(sessionService);
             new Argon.EntityServiceProvider(sessionService, entityService, permissionServiceProvider);
             var testId = Argon.Cesium.createGuid();
             permissionServiceProvider.handlePermissionRequest = function (session, id) {
@@ -183,7 +183,7 @@ describe('EntityService', function () {
         it('should emit unsubscribedEvent', function (done) {
             var sessionService = new Argon.SessionService({ role: Argon.Role.REALITY_MANAGER }, new Argon.LoopbackConnectService, new Argon.SessionPortFactory, new Argon.MessageChannelFactory);
             var permissionServiceProvider = new Argon.PermissionServiceProvider(sessionService);
-            var entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
+            var entityService = new Argon.EntityService(sessionService);
             var entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService, permissionServiceProvider);
             var testId = Argon.Cesium.createGuid();
             entityService.subscribedEvent.addEventListener(function (_a) {
@@ -204,7 +204,7 @@ describe('EntityService', function () {
         it('should emit sessionUnsubscribedEvent on provider', function (done) {
             var sessionService = new Argon.SessionService({ role: Argon.Role.REALITY_MANAGER }, new Argon.LoopbackConnectService, new Argon.SessionPortFactory, new Argon.MessageChannelFactory);
             var permissionServiceProvider = new Argon.PermissionServiceProvider(sessionService);
-            var entityService = new Argon.EntityService(new Argon.Cesium.EntityCollection, sessionService);
+            var entityService = new Argon.EntityService(sessionService);
             var entityServiceProvider = new Argon.EntityServiceProvider(sessionService, entityService, permissionServiceProvider);
             var testId = Argon.Cesium.createGuid();
             entityServiceProvider.sessionSubscribedEvent.addEventListener(function (_a) {

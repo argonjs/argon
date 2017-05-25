@@ -1,5 +1,5 @@
 
-import { inject } from 'aurelia-dependency-injection'
+import { inject, Container } from 'aurelia-dependency-injection'
 import { 
     CameraEventAggregator,
     CameraEventType,
@@ -12,18 +12,25 @@ import {
     Quaternion,
     Matrix3,
     Matrix4,
-    Transforms,
     PerspectiveFrustum,
     CesiumMath
 } from '../cesium/cesium-imports'
-import { Role, SerializedSubviewList } from '../common'
-import { SessionService } from '../session'
-import { decomposePerspectiveProjectionMatrix, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame } from '../utils'
+import { Configuration, Role, SerializedSubviewList } from '../common'
+import { SessionService, ConnectService, SessionConnectService } from '../session'
+import { 
+    eastUpSouthToFixedFrame, 
+    decomposePerspectiveProjectionMatrix, 
+    getEntityPositionInReferenceFrame, 
+    getEntityOrientationInReferenceFrame 
+} from '../utils'
+import { EntityService } from '../entity'
 import { ContextService } from '../context'
 import { DeviceService } from '../device'
 import { ViewService } from '../view'
 import { PoseStatus } from '../entity'
 import { RealityViewer } from './base'
+import { RealityService } from '../reality'
+import { VisibilityService } from '../visibility'
 
 interface Movement {
     startPosition:Cartesian2; 
@@ -35,7 +42,7 @@ interface PinchMovement {
     angleAndHeight: Movement;
 }
 
-@inject(SessionService, ContextService, ViewService, DeviceService)
+@inject(SessionService, ViewService, Container)
 export class EmptyRealityViewer extends RealityViewer {
 
     public type = 'empty';
@@ -52,9 +59,8 @@ export class EmptyRealityViewer extends RealityViewer {
 
     constructor(
         private sessionService: SessionService,
-        private contextService: ContextService,
         private viewService: ViewService,
-        private deviceService: DeviceService,
+        private container: Container,
         public uri:string) {
         super(uri);
 
@@ -117,34 +123,68 @@ export class EmptyRealityViewer extends RealityViewer {
     private _scratchMatrix4 = new Matrix4;
 
     public load(): void {
+        // Create a child container so that we can conveniently setup all the services
+        // that would exist in a normal hosted reality viewer 
+        const child = this.container.createChild();
+
+        // Create the session instance that will be used by the manager to talk to the reality 
         const session = this.sessionService.addManagedSessionPort(this.uri);
         session.connectEvent.addEventListener(()=>{
-            this.connectEvent.raiseEvent(session);
+            this.connectEvent.raiseEvent(session); // let the manager know the session is ready
         });
 
-        const internalSession = this.sessionService.createSessionPort(this.uri);
-        internalSession.suppressErrorOnUnknownTopic = true;
+        // use a SessionConnectService to create a connection via the session instance we created
+        child.registerInstance(ConnectService, 
+            new SessionConnectService(session, this.sessionService.configuration)
+        );
 
+        // setup the configuration for our empty reality
+        child.registerInstance(Configuration, { 
+            role: Role.REALITY_VIEWER, 
+            uri: this.uri,
+            title: 'Empty',
+            version: this.sessionService.configuration.version,
+            supportsCustomProtocols: true,
+            protocols: ['ar.configureStage@v1']
+        });
+
+        // Create the basic services that we need to use. 
+        // Note: we won't create a child ViewService here,
+        // as we are already managing the DOM with the
+        // ViewService that exists in the root container. 
+        child.autoRegisterAll([SessionService, EntityService, VisibilityService, ContextService, DeviceService, RealityService]);
+        const childContextService = child.get(ContextService) as ContextService;
+        const childDeviceService = child.get(DeviceService) as DeviceService;
+        const childSessionService = child.get(SessionService) as SessionService;
+        const childRealityService = child.get(RealityService) as RealityService;
+        
         let customStagePosition:Cartesian3|undefined;
         let customStageOrientation:Quaternion|undefined;
 
-        internalSession.on['argon.configureStage.setStageGeolocation'] = ({geolocation}:{geolocation:Cartographic}) => {
-            customStagePosition = Cartesian3.fromRadians(geolocation.longitude, geolocation.latitude, geolocation.height, undefined, customStagePosition);
+        // Create protocol handlers for `ar.configureStage` protocol
+        childRealityService.connectEvent.addEventListener((session)=>{
 
+            session.on['ar.configureStage.setStageGeolocation'] = ({geolocation}:{geolocation:Cartographic}) => {
+                customStagePosition = Cartesian3.fromRadians(geolocation.longitude, geolocation.latitude, geolocation.height, undefined, customStagePosition);
+                const transformMatrix = eastUpSouthToFixedFrame(customStagePosition, undefined, this._scratchMatrix4);
+                const rotationMatrix = Matrix4.getRotation(transformMatrix, this._scratchMatrix3);
+                customStageOrientation = Quaternion.fromRotationMatrix(rotationMatrix, customStageOrientation);
+            }
 
-//            const transformMatrix = eastUpSouthToFixedFrame(customStagePosition, undefined, this._scratchMatrix4);
-            const transformMatrix = Transforms.eastNorthUpToFixedFrame(customStagePosition, undefined, this._scratchMatrix4);
-            const rotationMatrix = Matrix4.getRotation(transformMatrix, this._scratchMatrix3);
-            customStageOrientation = Quaternion.fromRotationMatrix(rotationMatrix, customStageOrientation);
-        }
+            session.on['ar.configureStage.resetStageGeolocation'] = () => {
+                customStagePosition = undefined;
+                customStageOrientation = undefined;
+            }
 
-        internalSession.on['argon.configureStage.resetStageGeolocation'] = () => {
-            customStagePosition = undefined;
-            customStageOrientation = undefined;
-        }
+        });
 
-        internalSession.connectEvent.addEventListener(() => {
+        // Setup everything after connected to the manager. The manager only connects once.
+        childSessionService.manager.connectEvent.addEventListener(()=>{
 
+            // since we aren't create a child view service and viewport service, 
+            // suppress any errors from not handling these messages
+            childSessionService.manager.suppressErrorOnUnknownTopic = true;
+            
             const scratchQuaternion = new Quaternion;
             const scratchQuaternionDragYaw = new Quaternion;
             // const pitchQuat = new Quaternion;
@@ -156,31 +196,31 @@ export class EmptyRealityViewer extends RealityViewer {
             const forward = new Cartesian3(0,-1,0);
             const scratchFrustum = new PerspectiveFrustum();
 
-            const deviceStage = this.deviceService.stage;
-            const deviceUser = this.deviceService.user;
+            const deviceStage = childDeviceService.stage;
+            const deviceUser = childDeviceService.user;
 
             const NEGATIVE_UNIT_Z = new Cartesian3(0,0,-1);
             // const X_90ROT = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, CesiumMath.PI_OVER_TWO);
 
             const subviews:SerializedSubviewList = [];
 
-            const deviceUserPose = this.contextService.createEntityPose(deviceUser, deviceStage);
+            const deviceUserPose = childContextService.createEntityPose(deviceUser, deviceStage);
 
 
             const checkSuggestedGeolocationSubscription = () => {
-                if (this.deviceService.suggestedGeolocationSubscription) {
-                    this.deviceService.subscribeGeolocation(this.deviceService.suggestedGeolocationSubscription, internalSession);
+                if (childDeviceService.suggestedGeolocationSubscription) {
+                    childDeviceService.subscribeGeolocation(childDeviceService.suggestedGeolocationSubscription);
                 } else {
-                    this.deviceService.unsubscribeGeolocation();
+                    childDeviceService.unsubscribeGeolocation();
                 }
             }
 
             checkSuggestedGeolocationSubscription();
             
-            const remove1 = this.deviceService.suggestedGeolocationSubscriptionChangeEvent.addEventListener(checkSuggestedGeolocationSubscription);
+            const remove1 = childDeviceService.suggestedGeolocationSubscriptionChangeEvent.addEventListener(checkSuggestedGeolocationSubscription);
 
-            const remove2 = this.deviceService.frameStateEvent.addEventListener((frameState) => {
-                if (internalSession.isClosed) return;
+            const remove2 = childDeviceService.frameStateEvent.addEventListener((frameState) => {
+                if (childSessionService.manager.isClosed) return;
                 
                 const aggregator = this._aggregator;
                 const flags = this._moveFlags;
@@ -193,7 +233,7 @@ export class EmptyRealityViewer extends RealityViewer {
                 SerializedSubviewList.clone(frameState.subviews, subviews);
                 
                 // provide fov controls
-                if (!this.deviceService.strict) {                    
+                if (!childDeviceService.strict) {                    
                     decomposePerspectiveProjectionMatrix(subviews[0].projectionMatrix, scratchFrustum);
                     scratchFrustum.fov = this.viewService.subviews[0] && this.viewService.subviews[0].frustum.fov || CesiumMath.PI_OVER_THREE;
 
@@ -225,12 +265,12 @@ export class EmptyRealityViewer extends RealityViewer {
                 // provide controls if the device does not have a physical pose
                 if (overrideUser) {
                     
-                    const contextUser = this.contextService.user;
-                    const contextStage = this.contextService.stage;
+                    const contextUser = childContextService.user;
+                    const contextStage = childContextService.stage;
 
                     const position = 
                         getEntityPositionInReferenceFrame(contextUser, time, contextStage, positionScratchCartesian) || 
-                        Cartesian3.fromElements(0, this.deviceService.suggestedUserHeight, 0, positionScratchCartesian);
+                        Cartesian3.fromElements(0, childDeviceService.suggestedUserHeight, 0, positionScratchCartesian);
 
                     let orientation = getEntityOrientationInReferenceFrame(contextUser, time, contextStage, scratchQuaternion) ||
                         Quaternion.clone(Quaternion.IDENTITY, scratchQuaternion);
@@ -286,12 +326,12 @@ export class EmptyRealityViewer extends RealityViewer {
                 const overrideStage = customStagePosition && customStageOrientation ? true : false;
 
                 if (overrideStage) {
-                    const contextStage = this.contextService.stage;
+                    const contextStage = childContextService.stage;
                     (contextStage.position as ConstantPositionProperty).setValue(customStagePosition, ReferenceFrame.FIXED);
                     (contextStage.orientation as ConstantProperty).setValue(customStageOrientation);
                 }
 
-                const contextFrameState = this.contextService.createFrameState(
+                const contextFrameState = childContextService.createFrameState(
                     time,
                     frameState.viewport,
                     subviews,
@@ -300,32 +340,19 @@ export class EmptyRealityViewer extends RealityViewer {
                         overrideStage
                     }
                 );
-
-                internalSession.send('ar.reality.frameState', contextFrameState);
+                childContextService.submitFrameState(contextFrameState);
 
                 aggregator && aggregator.reset();
             });
 
-            internalSession.closeEvent.addEventListener(()=>{
+            childSessionService.manager.closeEvent.addEventListener(()=>{
                 remove1();
                 remove2();
             });
 
-        });
+        })
 
-        // Only connect after the caller is able to attach connectEvent handlers
-        Promise.resolve().then(()=>{
-            if (this.sessionService.manager.isClosed) return;
-            const messageChannel = this.sessionService.createSynchronousMessageChannel();
-            session.open(messageChannel.port1, this.sessionService.configuration);
-            internalSession.open(messageChannel.port2, { 
-                role: Role.REALITY_VIEWER, 
-                uri: this.uri,
-                title: 'Empty',
-                version: this.sessionService.configuration.version,
-                supportsCustomProtocols: true,
-                protocols: ['argon.configureStage@v1']
-            });
-        });
+
+        childSessionService.connect();
     }
 }

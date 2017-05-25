@@ -119,7 +119,7 @@ export declare class ViewService {
 }
 export declare class ViewServiceProvider {
     private sessionService;
-    private viewportService;
+    private viewService;
     private focusServiceProvider;
     sessionViewportMode: WeakMap<SessionPort, ViewportMode>;
     /**
@@ -130,7 +130,7 @@ export declare class ViewServiceProvider {
      * A UI event being forwarded from a managed session
      */
     forwardedUIEvent: Event<UIEvent>;
-    constructor(sessionService: SessionService, viewportService: ViewService, focusServiceProvider: FocusServiceProvider, visibilityServiceProvider: VisibilityServiceProvider);
+    constructor(sessionService: SessionService, viewService: ViewService, focusServiceProvider: FocusServiceProvider, visibilityServiceProvider: VisibilityServiceProvider);
     sendUIEventToSession(uievent: UIEvent, session: SessionPort): void;
     private _publishViewportModes();
 }

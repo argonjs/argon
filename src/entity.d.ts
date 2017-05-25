@@ -57,9 +57,9 @@ export declare enum PoseStatus {
  * A service for subscribing/unsubscribing to entities
  */
 export declare class EntityService {
-    collection: EntityCollection;
     protected sessionService: SessionService;
-    constructor(collection: EntityCollection, sessionService: SessionService);
+    constructor(sessionService: SessionService);
+    collection: EntityCollection;
     subscribedEvent: Event<{
         id: string;
         options?: {} | undefined;
