@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.2.0-21"></a>
+# [1.2.0-21](https://github.com/argonjs/argon/compare/v1.2.0-20-refactor-y-up-31.1...v1.2.0-21) (2017-05-25)
+
+
+### Features
+
+* Added `sessions` property to `RealityService` ([bfb21e2](https://github.com/argonjs/argon/commit/bfb21e2))
+
+
+
 <a name="1.2.0-20-refactor-y-up-31.1"></a>
 # [1.2.0-20-refactor-y-up-31.1](https://github.com/argonjs/argon/compare/v1.2.0-20-refactor-y-up-31.0...v1.2.0-20-refactor-y-up-31.1) (2017-05-25)
 
