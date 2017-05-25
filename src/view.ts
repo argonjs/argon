@@ -444,7 +444,7 @@ export class ViewServiceProvider {
 
     constructor(
         private sessionService:SessionService,
-        private viewportService:ViewService,
+        private viewService:ViewService,
         private focusServiceProvider:FocusServiceProvider,
         visibilityServiceProvider:VisibilityServiceProvider
     ) {
@@ -454,7 +454,7 @@ export class ViewServiceProvider {
 
             this.sessionViewportMode.set(session, 
                 session === this.sessionService.manager ? 
-                    this.viewportService.desiredViewportMode : 
+                    this.viewService.desiredViewportMode : 
                     ViewportMode.IMMERSIVE
             );
             
