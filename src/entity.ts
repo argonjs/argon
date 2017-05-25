@@ -245,9 +245,7 @@ export class EntityService {
 
     /**
      * Subscribe to pose updates for the given entity id
-     * 
-     * @returns A Promise that resolves to a new or existing entity 
-     * instance matching the given id, if the subscription is successful
+     * @returns A Promise that resolves to a new or existing entity
      */
     public subscribe(idOrEntity: string|Entity) : Promise<Entity>;
     public subscribe(idOrEntity: string|Entity, options?:{}, session?:SessionPort) : Promise<Entity>;
@@ -265,7 +263,7 @@ export class EntityService {
     }
 
     /**
-     * Unsubscribe to pose updates for the given entity id
+     * Unsubscribe from pose updates for the given entity id
      */
     public unsubscribe(idOrEntity) : void;
     public unsubscribe(idOrEntity: string|Entity, session?:SessionPort) : void;
@@ -366,14 +364,14 @@ export class EntityServiceProvider {
             session.on['ar.entity.subscribe'] = session.on['ar.context.subscribe'] = ({id, options}:{id:string, options:any}) => {
                 const currentOptions = subscriptions.get(id);
                 if (currentOptions && jsonEquals(currentOptions,options)) return;
-
-                return this.permissionServiceProvider.handlePermissionRequest(session, id).then(()=>{
-                    const subscribers = this.subscribersByEntity.get(id) || new Set<SessionPort>();
-                    this.subscribersByEntity.set(id, subscribers);
-                    subscribers.add(session);
-                    subscriptions.set(id,options);
-                    this.sessionSubscribedEvent.raiseEvent({session, id, options});
-                });
+                
+                const subscribers = this.subscribersByEntity.get(id) || new Set<SessionPort>();
+                this.subscribersByEntity.set(id, subscribers);
+                subscribers.add(session);
+                subscriptions.set(id,options);
+                this.sessionSubscribedEvent.raiseEvent({session, id, options});
+                
+                return this.permissionServiceProvider.handlePermissionRequest(session, id, options).then(()=>{});
             }
 
             session.on['ar.entity.unsubscribe'] = session.on['ar.context.unsubscribe'] = ({id}:{id:string}) => {

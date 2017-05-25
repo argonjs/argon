@@ -92,19 +92,14 @@ export class PermissionServiceProvider {
         this.sessionService.ensureIsRealityManager();
         this.sessionService.connectEvent.addEventListener((session: SessionPort) => {
 
-            /**
-             * Browsers should override this to check their locally stored permissions.
-             * @param type
-             * @returns The current state of the permission
-             */
             session.on['ar.permission.query'] = ({type}: {type: PermissionType}) => {
-                return Promise.resolve({state: PermissionState.GRANTED});
+                return Promise.resolve({state: this.getPermissionState(session, type)});
             }
 
             /**
              * Browswer should override this if they want to allow revoking permissions.
              * @param type
-             * @returns The state of the permission after revoking
+             * @returns A promise that resolves to the state of the permission after revoking
              */
             session.on['ar.permission.revoke'] = ({type}: {type: PermissionType}) => {
                 return Promise.reject(new Error("Revoking permission is not supported on this browser."));
@@ -120,7 +115,16 @@ export class PermissionServiceProvider {
      * @returns A resolved promise if subscription is permitted.
      * @returns A rejected promise if subscription is not permitted.
      */
-    public handlePermissionRequest(session: SessionPort, id: string) {
+    public handlePermissionRequest(session: SessionPort, id: string, options: any) {
         return Promise.resolve();
+    }
+
+    /**
+     * Browsers should override this to check their locally stored permissions.
+     * @param type
+     * @returns The current state of the permission
+     */
+    public getPermissionState(session: SessionPort, type: PermissionType){
+        return PermissionState.GRANTED;
     }
 }
