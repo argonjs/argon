@@ -55,5 +55,11 @@ export declare class PermissionServiceProvider {
      * @returns A resolved promise if subscription is permitted.
      * @returns A rejected promise if subscription is not permitted.
      */
-    handlePermissionRequest(session: SessionPort, id: string): Promise<void>;
+    handlePermissionRequest(session: SessionPort, id: string, options: any): Promise<void>;
+    /**
+     * Browsers should override this to check their locally stored permissions.
+     * @param type
+     * @returns The current state of the permission
+     */
+    getPermissionState(session: SessionPort, type: PermissionType): PermissionState;
 }

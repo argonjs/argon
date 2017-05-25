@@ -107,14 +107,12 @@ export declare class EntityService {
     createFixed(cartographic: Cartographic, localToFixed: typeof Transforms.northUpEastToFixedFrame): Entity;
     /**
      * Subscribe to pose updates for the given entity id
-     *
      * @returns A Promise that resolves to a new or existing entity
-     * instance matching the given id, if the subscription is successful
      */
     subscribe(idOrEntity: string | Entity): Promise<Entity>;
     subscribe(idOrEntity: string | Entity, options?: {}, session?: SessionPort): Promise<Entity>;
     /**
-     * Unsubscribe to pose updates for the given entity id
+     * Unsubscribe from pose updates for the given entity id
      */
     unsubscribe(idOrEntity: any): void;
     unsubscribe(idOrEntity: string | Entity, session?: SessionPort): void;

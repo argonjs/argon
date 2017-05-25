@@ -6,6 +6,7 @@ import { Event } from './utils';
 import { EntityService, EntityServiceProvider, EntityPose } from './entity';
 import { DeviceService } from './device';
 import { ViewService } from './view';
+import { PermissionServiceProvider } from './permission';
 /**
  * Provides a means of querying the current state of reality.
  */
@@ -231,8 +232,9 @@ export declare class ContextServiceProvider {
     protected sessionService: SessionService;
     protected contextService: ContextService;
     protected entityServiceProvider: EntityServiceProvider;
+    protected permissionServiceProvider: PermissionServiceProvider;
     private _cacheTime;
-    constructor(sessionService: SessionService, contextService: ContextService, entityServiceProvider: EntityServiceProvider);
+    constructor(sessionService: SessionService, contextService: ContextService, entityServiceProvider: EntityServiceProvider, permissionServiceProvider: PermissionServiceProvider);
     private _publishUpdates();
     private _sessionEntities;
     private _temp;
