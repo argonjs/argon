@@ -26501,7 +26501,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.2.0-20-refactor-y-up-31.1");
+            _export('version', version = "1.2.0-21");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -30558,6 +30558,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     this.sessionService = sessionService;
                     this.contextService = contextService;
                     this._connectEvent = new Event$1();
+                    this._sessions = [];
                     this._changeEvent = new Event$1();
                     /**
                      * The default Reality Viewer.
@@ -30580,7 +30581,12 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                             realityControlSession.close();
                         };
                         realityControlSession.connectEvent.addEventListener(function () {
+                            _this.sessions.push(realityControlSession);
                             _this.connectEvent.raiseEvent(realityControlSession);
+                            realityControlSession.closeEvent.addEventListener(function () {
+                                var idx = _this.sessions.indexOf(realityControlSession);
+                                _this.sessions.splice(idx, 1);
+                            });
                         });
                         _this.sessionService.manager.closeEvent.addEventListener(function () {
                             realityControlSession.close();
@@ -30616,11 +30622,37 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 }
                 Object.defineProperty(RealityService.prototype, "connectEvent", {
                     /**
-                     * An event that is raised when a reality viewer provides a session
-                     * for sending and receiving application commands.
+                     * An event that provides a session for sending / receiving
+                     * commands to / from a reality.
+                     *
+                     * The session passed via this event can represent either endpoint of
+                     * a connection between RealityViewer <--> RealityAugmenter/RealityManager.
+                     *
+                     * If running in a RealityAugmenter, the session
+                     * represents a connection to a RealityViewer.
+                     *
+                     * If running in a RealityViewer, the session
+                     * represents a connection to a RealityAugmenter.
                      */
                     get: function () {
                         return this._connectEvent;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+
+                Object.defineProperty(RealityService.prototype, "sessions", {
+                    /**
+                     * A collection of connected sessions.
+                     *
+                     * If running in a RealityAugmenter, this collection
+                     * represents connections to any loaded RealityViewers.
+                     *
+                     * If running in a RealityViewer, this collection
+                     * represents connections to any RealityAugmenters.
+                     */
+                    get: function () {
+                        return this._sessions;
                     },
                     enumerable: true,
                     configurable: true

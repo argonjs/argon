@@ -22,11 +22,31 @@ export declare class RealityService {
     private sessionService;
     private contextService;
     /**
-     * An event that is raised when a reality viewer provides a session
-     * for sending and receiving application commands.
+     * An event that provides a session for sending / receiving
+     * commands to / from a reality.
+     *
+     * The session passed via this event can represent either endpoint of
+     * a connection between RealityViewer <--> RealityAugmenter/RealityManager.
+     *
+     * If running in a RealityAugmenter, the session
+     * represents a connection to a RealityViewer.
+     *
+     * If running in a RealityViewer, the session
+     * represents a connection to a RealityAugmenter.
      */
     readonly connectEvent: Event<SessionPort>;
     private _connectEvent;
+    /**
+     * A collection of connected sessions.
+     *
+     * If running in a RealityAugmenter, this collection
+     * represents connections to any loaded RealityViewers.
+     *
+     * If running in a RealityViewer, this collection
+     * represents connections to any RealityAugmenters.
+     */
+    readonly sessions: SessionPort[];
+    private _sessions;
     /**
      * An event that is raised when the presenting reality viewer is changed.
      */
