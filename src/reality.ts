@@ -55,11 +55,32 @@ export abstract class RealityViewerFactory {
 export class RealityService {
 
     /**
-     * An event that is raised when a reality viewer provides a session 
-     * for sending and receiving application commands.
+     * An event that provides a session for sending / receiving 
+     * commands to / from a reality. 
+     * 
+     * The session passed via this event can represent either endpoint of
+     * a connection between RealityViewer <--> RealityAugmenter/RealityManager.
+     * 
+     * If running in a RealityAugmenter, the session
+     * represents a connection to a RealityViewer.
+     * 
+     * If running in a RealityViewer, the session
+     * represents a connection to a RealityAugmenter.
      */
     public get connectEvent() { return this._connectEvent };
     private _connectEvent = new Event<SessionPort>();
+
+    /**
+     * A collection of connected sessions. 
+     * 
+     * If running in a RealityAugmenter, this collection
+     * represents connections to any loaded RealityViewers.
+     * 
+     * If running in a RealityViewer, this collection
+     * represents connections to any RealityAugmenters.
+     */
+    public get sessions() { return this._sessions };
+    private _sessions:SessionPort[] = [];
 
     /**
      * An event that is raised when the presenting reality viewer is changed.
@@ -110,7 +131,12 @@ export class RealityService {
             }
 
             realityControlSession.connectEvent.addEventListener(() => {
+                this.sessions.push(realityControlSession);
                 this.connectEvent.raiseEvent(realityControlSession);
+                realityControlSession.closeEvent.addEventListener(()=>{
+                    const idx = this.sessions.indexOf(realityControlSession);
+                    this.sessions.splice(idx,1);
+                });
             })
 
             this.sessionService.manager.closeEvent.addEventListener(() => {
