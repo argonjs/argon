@@ -274,6 +274,22 @@ export declare class DebugConnectService extends ConnectService {
     connect({manager, configuration}: SessionService): void;
 }
 /**
+ * Connect this system via a specified MessagePort.
+ */
+export declare class SessionConnectService extends ConnectService {
+    session: SessionPort;
+    private parentConfiguration;
+    constructor(session: SessionPort, parentConfiguration: Configuration);
+    /**
+     * Check whether this connect method is available or not.
+     */
+    static isAvailable(): boolean;
+    /**
+     * Connect to the manager.
+     */
+    connect(sessionService: SessionService): void;
+}
+/**
  * A service which connects this system to the [[REALITY_MANAGER]] via a WKWebview message handler.
  */
 export declare class WKWebViewConnectService extends ConnectService {

@@ -621,6 +621,32 @@ export class DebugConnectService extends ConnectService {
     }
 }
 
+/**
+ * Connect this system via a specified MessagePort.
+ */
+export class SessionConnectService extends ConnectService {
+
+    constructor(public session:SessionPort, private parentConfiguration:Configuration) {
+        super();
+    }
+
+    /**
+     * Check whether this connect method is available or not.
+     */
+    public static isAvailable(): boolean {
+        return true;
+    }
+
+    /**
+     * Connect to the manager.
+     */
+    connect(sessionService: SessionService) {
+        const messageChannel = sessionService.createSynchronousMessageChannel();
+        this.session.open(messageChannel.port1, this.parentConfiguration);
+        sessionService.manager.open(messageChannel.port2, sessionService.configuration);
+    }
+}
+
 declare const webkit: any;
 
 /**
