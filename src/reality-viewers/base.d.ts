@@ -21,5 +21,6 @@ export declare abstract class RealityViewer {
     static DEFAULT: string;
     static EMPTY: string;
     static LIVE: string;
+    static WEBRTC: string;
     static getType(uri?: string): string | undefined;
 }

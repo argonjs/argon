@@ -24067,7 +24067,7 @@ $__System.registerDynamic('98', ['82', '97'], true, function ($__require, export
 $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', '13', '14', '18', '1e', '24', '15', '5', '7', '42', '1a', '1b', '8', '39', '3c', '51', '6e', '2d', '17', 'd', '27', '28', '2e', '2f', '30', '21', '26', '29', '35', '20', '36', '37', '38', 'e', 'f', '2a', '3d', '44', '7c', '46', '49', '4c', '4f', '7d', '7e', '7f', '81', '98'], function (_export, _context) {
     "use strict";
 
-    var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, cesium_Source_Core_Clock_js, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, defaultValue, defined, cesium_Source_Core_DeveloperError_js, Ellipsoid, Entity, EntityCollection, Event, cesium_Source_Core_ExtrapolationType_js, cesium_Source_Core_FeatureDetection_js, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HeadingPitchRoll_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, ReferenceEntity, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, TerrainProvider, throttleRequestByServer, loadImage, WebMercatorTilingScheme, getImagePixels, HeightmapTerrainData, Credit, sampleTerrain, CardboardUI, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, DI, after, lut, i, cesiumImports, kButtonWidthDp, kTouchSlopFactor, __extends$1, AVERAGE_EYE_HEIGHT, DEFAULT_NEAR_PLANE, DEFAULT_FAR_PLANE, Role, Configuration, Viewport, CanvasViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event$1, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, getEventSynthesizier$1, cloneTouch, cloneTouches, eastUpSouthToFixedFrame, scratchAncestorCartesian, scratchAncestorQuaternion, getEntityPosition, getEntityOrientation, _scratchFramesArray, _entityStateCache, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, lastTime, rAF, cAF, defaultTerrainProvider, version, __extends, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, SessionConnectService, WKWebViewConnectService, AndroidWebViewConnectService, _a$1, _b$1, __decorate$5, __metadata$5, PermissionNames, PermissionDescriptions, Permission, PermissionState, PermissionService, PermissionServiceProvider, _a$5, _b$5, __decorate$4, __metadata$4, EntityPose, PoseStatus, EntityService, EntityServiceProvider, _a$4, _b$4, _c$3, __decorate$7, __metadata$7, FocusService, FocusServiceProvider, _a$7, _b$7, __decorate$8, __metadata$8, VisibilityService, VisibilityServiceProvider, _a$8, _b$8, __decorate$6, __metadata$6, Subview, ViewportMode, ViewElement, ViewService, ViewServiceProvider, viewportMetaTag, argonMetaTag, style, sheet, _a$6, _b$6, _c$4, _d$3, _e$3, __decorate$3, __metadata$3, DeviceStableState$$1, DeviceFrameState$$1, DeviceService, DeviceServiceProvider, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, _h$1, _j$1, _k$1, _l$1, __decorate$10, __metadata$10, ContextService, ContextServiceProvider, _a$10, _b$10, _c$6, _d$5, _e$5, _f$3, _g$3, _h$3, _j$2, _k$2, _l$2, _m$1, RealityViewer, __extends$2, __decorate$11, __metadata$11, EmptyRealityViewer, _a$11, _b$11, _c$7, __extends$3, __decorate$12, __metadata$12, LiveRealityViewer, _a$12, _b$12, _c$8, _d$6, __extends$4, __decorate$13, __metadata$13, HostedRealityViewer, _a$13, _b$13, __decorate$9, __metadata$9, RealityViewerFactory, RealityService, RealityServiceProvider, _a$9, _b$9, _c$5, _d$4, _e$4, _f$2, _g$2, _h$2, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __extends$5, __decorate$14, __metadata$14, VuforiaServiceProvider, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$14, _b$14, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, ArgonConfigurationManager, initReality, _a, _b, _c, _d, _e, _f, _g, _h, _j, ArgonSystem_1, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
+    var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, cesium_Source_Core_Clock_js, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, defaultValue, defined, cesium_Source_Core_DeveloperError_js, Ellipsoid, Entity, EntityCollection, Event, cesium_Source_Core_ExtrapolationType_js, cesium_Source_Core_FeatureDetection_js, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HeadingPitchRoll_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, ReferenceEntity, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, TerrainProvider, throttleRequestByServer, loadImage, WebMercatorTilingScheme, getImagePixels, HeightmapTerrainData, Credit, sampleTerrain, CardboardUI, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, DI, after, lut, i, cesiumImports, kButtonWidthDp, kTouchSlopFactor, __extends$1, AVERAGE_EYE_HEIGHT, DEFAULT_NEAR_PLANE, DEFAULT_FAR_PLANE, Role, Configuration, Viewport, CanvasViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event$1, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, getEventSynthesizier$1, cloneTouch, cloneTouches, eastUpSouthToFixedFrame, scratchAncestorCartesian, scratchAncestorQuaternion, getEntityPosition, getEntityOrientation, _scratchFramesArray, _entityStateCache, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, lastTime, rAF, cAF, defaultTerrainProvider, version, __extends, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, SessionConnectService, WKWebViewConnectService, AndroidWebViewConnectService, _a$1, _b$1, __decorate$5, __metadata$5, PermissionNames, PermissionDescriptions, Permission, PermissionState, PermissionService, PermissionServiceProvider, _a$5, _b$5, __decorate$4, __metadata$4, EntityPose, PoseStatus, EntityService, EntityServiceProvider, _a$4, _b$4, _c$3, __decorate$7, __metadata$7, FocusService, FocusServiceProvider, _a$7, _b$7, __decorate$8, __metadata$8, VisibilityService, VisibilityServiceProvider, _a$8, _b$8, __decorate$6, __metadata$6, Subview, ViewportMode, ViewElement, ViewService, ViewServiceProvider, viewportMetaTag, argonMetaTag, style, sheet, _a$6, _b$6, _c$4, _d$3, _e$3, __decorate$3, __metadata$3, DeviceStableState$$1, DeviceFrameState$$1, DeviceService, DeviceServiceProvider, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, _h$1, _j$1, _k$1, _l$1, __decorate$10, __metadata$10, ContextService, ContextServiceProvider, _a$10, _b$10, _c$6, _d$5, _e$5, _f$3, _g$3, _h$3, _j$2, _k$2, _l$2, _m$1, RealityViewer, __extends$2, __decorate$11, __metadata$11, EmptyRealityViewer, _a$11, _b$11, _c$7, __extends$3, __decorate$12, __metadata$12, LiveRealityViewer, _a$12, _b$12, _c$8, _d$6, __extends$4, __decorate$13, __metadata$13, WebRTCRealityViewer, integrateCustomARToolKit, _a$13, _b$13, _c$9, _d$7, __extends$5, __decorate$14, __metadata$14, HostedRealityViewer, _a$14, _b$14, __decorate$9, __metadata$9, RealityViewerFactory, RealityService, RealityServiceProvider, _a$9, _b$9, _c$5, _d$4, _e$4, _f$2, _g$2, _h$2, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __extends$6, __decorate$15, __metadata$15, VuforiaServiceProvider, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$15, _b$15, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, ArgonConfigurationManager, initReality, _a, _b, _c, _d, _e, _f, _g, _h, _j, ArgonSystem_1, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
 
     function alwaysValid() {
         return true;
@@ -30007,6 +30007,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
             RealityViewer.DEFAULT = 'reality:default';
             RealityViewer.EMPTY = 'reality:empty';
             RealityViewer.LIVE = 'reality:live';
+            RealityViewer.WEBRTC = 'reality:webrtc';
 
             __extends$2 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -30454,8 +30455,701 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
             };
 
+            WebRTCRealityViewer = function (_super) {
+                __extends$4(WebRTCRealityViewer, _super);
+                function WebRTCRealityViewer(sessionService, contextService, viewService, deviceService, uri) {
+                    var _this = _super.call(this, uri) || this;
+                    _this.sessionService = sessionService;
+                    _this.contextService = contextService;
+                    _this.viewService = viewService;
+                    _this.deviceService = deviceService;
+                    _this.uri = uri;
+                    _this.type = 'webrtc';
+                    _this._moveFlags = {
+                        moveForward: false,
+                        moveBackward: false,
+                        moveUp: false,
+                        moveDown: false,
+                        moveLeft: false,
+                        moveRight: false
+                    };
+                    _this._scratchMatrix3 = new Matrix3();
+                    _this._scratchMatrix4 = new Matrix4();
+                    function getFlagForKeyCode(keyCode) {
+                        switch (keyCode) {
+                            case 'W'.charCodeAt(0):
+                                return 'moveForward';
+                            case 'S'.charCodeAt(0):
+                                return 'moveBackward';
+                            case 'E'.charCodeAt(0):
+                                return 'moveUp';
+                            case 'R'.charCodeAt(0):
+                                return 'moveDown';
+                            case 'D'.charCodeAt(0):
+                                return 'moveRight';
+                            case 'A'.charCodeAt(0):
+                                return 'moveLeft';
+                            default:
+                                return undefined;
+                        }
+                    }
+                    var keydownListener = function (e) {
+                        var flagName = getFlagForKeyCode(e.keyCode);
+                        if (typeof flagName !== 'undefined') {
+                            _this._moveFlags[flagName] = true;
+                        }
+                    };
+                    var keyupListener = function (e) {
+                        var flagName = getFlagForKeyCode(e.keyCode);
+                        if (typeof flagName !== 'undefined') {
+                            _this._moveFlags[flagName] = false;
+                        }
+                    };
+                    if (typeof document !== 'undefined') {
+                        _this.presentChangeEvent.addEventListener(function () {
+                            if (_this.isPresenting) {
+                                if (!_this._aggregator && _this.viewService.element) {
+                                    _this.viewService.element['disableRootEvents'] = true;
+                                    _this._aggregator = new CameraEventAggregator(_this.viewService.element);
+                                    document.addEventListener('keydown', keydownListener, false);
+                                    document && document.addEventListener('keyup', keyupListener, false);
+                                }
+                            } else {
+                                _this._aggregator && _this._aggregator.destroy();
+                                _this._aggregator = undefined;
+                                document && document.removeEventListener('keydown', keydownListener);
+                                document && document.removeEventListener('keyup', keyupListener);
+                                for (var k in _this._moveFlags) {
+                                    _this._moveFlags[k] = false;
+                                }
+                            }
+                        });
+                        _this.viewService.viewportChangeEvent.addEventListener(function (viewport) {
+                            _this.updateViewport(viewport);
+                        });
+                        _this.initARToolKit();
+                    }
+                    return _this;
+                }
+                WebRTCRealityViewer.prototype.load = function () {
+                    var _this = this;
+                    var session = this.sessionService.addManagedSessionPort(this.uri);
+                    session.connectEvent.addEventListener(function () {
+                        _this.connectEvent.raiseEvent(session);
+                    });
+                    var internalSession = this.sessionService.createSessionPort(this.uri);
+                    internalSession.suppressErrorOnUnknownTopic = true;
+                    var customStagePosition;
+                    var customStageOrientation;
+                    internalSession.on['argon.configureStage.setStageGeolocation'] = function (_a) {
+                        var geolocation = _a.geolocation;
+                        customStagePosition = Cartesian3.fromRadians(geolocation.longitude, geolocation.latitude, geolocation.height, undefined, customStagePosition);
+                        //            const transformMatrix = eastUpSouthToFixedFrame(customStagePosition, undefined, this._scratchMatrix4);
+                        var transformMatrix = Transforms.eastNorthUpToFixedFrame(customStagePosition, undefined, _this._scratchMatrix4);
+                        var rotationMatrix = Matrix4.getRotation(transformMatrix, _this._scratchMatrix3);
+                        customStageOrientation = Quaternion.fromRotationMatrix(rotationMatrix, customStageOrientation);
+                    };
+                    internalSession.on['argon.configureStage.resetStageGeolocation'] = function () {
+                        customStagePosition = undefined;
+                        customStageOrientation = undefined;
+                    };
+                    internalSession.connectEvent.addEventListener(function () {
+                        var scratchQuaternion = new Quaternion();
+                        var scratchQuaternionDragYaw = new Quaternion();
+                        // const pitchQuat = new Quaternion;
+                        var positionScratchCartesian = new Cartesian3();
+                        var movementScratchCartesian = new Cartesian3();
+                        var orientationMatrix = new Matrix3();
+                        var up = new Cartesian3(0, 0, 1);
+                        var right = new Cartesian3(1, 0, 0);
+                        var forward = new Cartesian3(0, -1, 0);
+                        var scratchFrustum = new PerspectiveFrustum();
+                        var deviceStage = _this.deviceService.stage;
+                        var deviceUser = _this.deviceService.user;
+                        var NEGATIVE_UNIT_Z = new Cartesian3(0, 0, -1);
+                        // const X_90ROT = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, CesiumMath.PI_OVER_TWO);
+                        var subviews = [];
+                        var deviceUserPose = _this.contextService.createEntityPose(deviceUser, deviceStage);
+                        var checkSuggestedGeolocationSubscription = function () {
+                            if (_this.deviceService.suggestedGeolocationSubscription) {
+                                _this.deviceService.subscribeGeolocation(_this.deviceService.suggestedGeolocationSubscription, internalSession);
+                            } else {
+                                _this.deviceService.unsubscribeGeolocation();
+                            }
+                        };
+                        checkSuggestedGeolocationSubscription();
+                        var remove1 = _this.deviceService.suggestedGeolocationSubscriptionChangeEvent.addEventListener(checkSuggestedGeolocationSubscription);
+                        var remove2 = _this.deviceService.frameStateEvent.addEventListener(function (frameState) {
+                            if (internalSession.isClosed) return;
+                            var aggregator = _this._aggregator;
+                            var flags = _this._moveFlags;
+                            if (!_this.isPresenting) {
+                                aggregator && aggregator.reset();
+                                return;
+                            }
+                            SerializedSubviewList.clone(frameState.subviews, subviews);
+                            // provide fov controls
+                            if (!_this.deviceService.strict) {
+                                decomposePerspectiveProjectionMatrix(subviews[0].projectionMatrix, scratchFrustum);
+                                scratchFrustum.fov = _this.viewService.subviews[0] && _this.viewService.subviews[0].frustum.fov || CesiumMath.PI_OVER_THREE;
+                                if (aggregator && aggregator.isMoving(CameraEventType.WHEEL)) {
+                                    var wheelMovement = aggregator.getMovement(CameraEventType.WHEEL);
+                                    var diff = wheelMovement.endPosition.y;
+                                    scratchFrustum.fov = Math.min(Math.max(scratchFrustum.fov - diff * 0.02, Math.PI / 8), Math.PI - Math.PI / 8);
+                                }
+                                if (aggregator && aggregator.isMoving(CameraEventType.PINCH)) {
+                                    var pinchMovement = aggregator.getMovement(CameraEventType.PINCH);
+                                    var diff = pinchMovement.distance.endPosition.y - pinchMovement.distance.startPosition.y;
+                                    scratchFrustum.fov = Math.min(Math.max(scratchFrustum.fov - diff * 0.02, Math.PI / 8), Math.PI - Math.PI / 8);
+                                }
+                                subviews.forEach(function (s) {
+                                    var aspect = s.viewport.width / s.viewport.height;
+                                    scratchFrustum.aspectRatio = isFinite(aspect) ? aspect : 1;
+                                    Matrix4.clone(scratchFrustum.projectionMatrix, s.projectionMatrix);
+                                });
+                            }
+                            var time = frameState.time;
+                            deviceUserPose.update(time);
+                            var overrideUser = !(deviceUserPose.status & PoseStatus.KNOWN);
+                            // provide controls if the device does not have a physical pose
+                            if (overrideUser) {
+                                var contextUser = _this.contextService.user;
+                                var contextStage = _this.contextService.stage;
+                                var position = getEntityPositionInReferenceFrame(contextUser, time, contextStage, positionScratchCartesian) || Cartesian3.fromElements(0, _this.deviceService.suggestedUserHeight, 0, positionScratchCartesian);
+                                var orientation = getEntityOrientationInReferenceFrame(contextUser, time, contextStage, scratchQuaternion) || Quaternion.clone(Quaternion.IDENTITY, scratchQuaternion);
+                                if (aggregator && aggregator.isMoving(CameraEventType.LEFT_DRAG)) {
+                                    var dragMovement = aggregator.getMovement(CameraEventType.LEFT_DRAG);
+                                    if (orientation) {
+                                        // const dragPitch = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, frustum.fov * (dragMovement.endPosition.y - dragMovement.startPosition.y) / app.view.getViewport().height, scratchQuaternionDragPitch);
+                                        var dragYaw = Quaternion.fromAxisAngle(Cartesian3.UNIT_Y, scratchFrustum.fov * (dragMovement.endPosition.x - dragMovement.startPosition.x) / frameState.viewport.width, scratchQuaternionDragYaw);
+                                        // const drag = Quaternion.multiply(dragPitch, dragYaw, dragYaw);
+                                        orientation = Quaternion.multiply(orientation, dragYaw, dragYaw);
+                                        contextUser.orientation.setValue(orientation);
+                                    }
+                                }
+                                Matrix3.fromQuaternion(orientation, orientationMatrix);
+                                Matrix3.multiplyByVector(orientationMatrix, Cartesian3.UNIT_Y, up);
+                                Matrix3.multiplyByVector(orientationMatrix, Cartesian3.UNIT_X, right);
+                                Matrix3.multiplyByVector(orientationMatrix, NEGATIVE_UNIT_Z, forward);
+                                var moveRate = 0.02;
+                                if (flags.moveForward) {
+                                    Cartesian3.multiplyByScalar(forward, moveRate, movementScratchCartesian);
+                                    Cartesian3.add(position, movementScratchCartesian, position);
+                                }
+                                if (flags.moveBackward) {
+                                    Cartesian3.multiplyByScalar(forward, -moveRate, movementScratchCartesian);
+                                    Cartesian3.add(position, movementScratchCartesian, position);
+                                }
+                                if (flags.moveUp) {
+                                    Cartesian3.multiplyByScalar(up, moveRate, movementScratchCartesian);
+                                    Cartesian3.add(position, movementScratchCartesian, position);
+                                }
+                                if (flags.moveDown) {
+                                    Cartesian3.multiplyByScalar(up, -moveRate, movementScratchCartesian);
+                                    Cartesian3.add(position, movementScratchCartesian, position);
+                                }
+                                if (flags.moveLeft) {
+                                    Cartesian3.multiplyByScalar(right, -moveRate, movementScratchCartesian);
+                                    Cartesian3.add(position, movementScratchCartesian, position);
+                                }
+                                if (flags.moveRight) {
+                                    Cartesian3.multiplyByScalar(right, moveRate, movementScratchCartesian);
+                                    Cartesian3.add(position, movementScratchCartesian, position);
+                                }
+                                contextUser.position.setValue(position, contextStage);
+                                contextUser.orientation.setValue(orientation);
+                            }
+                            var overrideStage = customStagePosition && customStageOrientation ? true : false;
+                            if (overrideStage) {
+                                var contextStage = _this.contextService.stage;
+                                contextStage.position.setValue(customStagePosition, ReferenceFrame.FIXED);
+                                contextStage.orientation.setValue(customStageOrientation);
+                            }
+                            if (_this._arScene) {
+                                _this._arScene.process();
+                                _this._arScene.renderOn(_this._renderer);
+                            }
+                            var contextFrameState = _this.contextService.createFrameState(time, frameState.viewport, subviews, {
+                                overrideUser: overrideUser,
+                                overrideStage: overrideStage
+                            });
+                            internalSession.send('ar.reality.frameState', contextFrameState);
+                            aggregator && aggregator.reset();
+                        });
+                        internalSession.closeEvent.addEventListener(function () {
+                            remove1();
+                            remove2();
+                        });
+                    });
+                    // Only connect after the caller is able to attach connectEvent handlers
+                    Promise.resolve().then(function () {
+                        if (_this.sessionService.manager.isClosed) return;
+                        var messageChannel = _this.sessionService.createSynchronousMessageChannel();
+                        session.open(messageChannel.port1, _this.sessionService.configuration);
+                        internalSession.open(messageChannel.port2, {
+                            role: Role.REALITY_VIEWER,
+                            uri: _this.uri,
+                            title: 'WebRTC',
+                            version: _this.sessionService.configuration.version,
+                            supportsCustomProtocols: true,
+                            protocols: ['argon.configureStage@v1']
+                        });
+                    });
+                };
+                WebRTCRealityViewer.prototype.initARToolKit = function () {
+                    var _this = this;
+                    // for now we're dynamically loading these scripts
+                    var script = document.createElement('script');
+                    script.src = 'https://rawgit.com/artoolkit/jsartoolkit5/master/build/artoolkit.min.js';
+                    script.onload = function () {
+                        console.log("*** artoolkit.min.js loaded ***");
+                        var script2 = document.createElement('script');
+                        script2.src = 'https://rawgit.com/artoolkit/jsartoolkit5/master/js/artoolkit.api.js';
+                        script2.onload = function () {
+                            console.log("*** artoolkit.api.js loaded ***");
+                            integrateCustomARToolKit();
+                            _this.initARController();
+                        };
+                        document.head.appendChild(script2);
+                    };
+                    document.head.appendChild(script);
+                };
+                WebRTCRealityViewer.prototype.initARController = function () {
+                    var _this = this;
+                    ARController.getUserMediaThreeScene({ maxARVideoSize: 320, width: 320, height: 240, cameraParam: '../resources/artoolkit/camera_para.dat',
+                        onSuccess: function (arScene, arController, arCamera) {
+                            console.log("*** getUserMediaThreeScene success ***");
+                            _this._arScene = arScene;
+                            _this._arController = arController;
+                            _this.updateViewport(_this.viewService.viewport);
+                            document.body.className = arController.orientation;
+                            var argonCanvas;
+                            for (var _i = 0, _a = _this.viewService.layers; _i < _a.length; _i++) {
+                                var layer = _a[_i];
+                                if (layer.source instanceof HTMLCanvasElement) {
+                                    argonCanvas = layer.source;
+                                }
+                            }
+                            if (argonCanvas) {
+                                // found an existing canvas, use it
+                                console.log("Found argon canvas, video background is sharing its context");
+                                _this._renderer = new THREE.WebGLRenderer({ canvas: argonCanvas, antialias: false });
+                            } else {
+                                // no canvas, create a new one
+                                console.log("No argon canvas, creating one for video background");
+                                var renderer = new THREE.WebGLRenderer({ antialias: false });
+                                // Note: This code will need to be updated, we want the canvas to fill the screen
+                                if (arController.orientation === 'portrait') {
+                                    var w = window.innerWidth / arController.videoHeight * arController.videoWidth;
+                                    var h = window.innerWidth;
+                                    renderer.setSize(w, h);
+                                    renderer.domElement.style.paddingBottom = w - h + 'px';
+                                } else {
+                                    if (/Android|mobile|iPad|iPhone/i.test(navigator.userAgent)) {
+                                        renderer.setSize(window.innerWidth, window.innerWidth / arController.videoWidth * arController.videoHeight);
+                                    } else {
+                                        renderer.setSize(arController.videoWidth, arController.videoHeight);
+                                        document.body.className += ' desktop';
+                                    }
+                                }
+                                document.body.insertBefore(renderer.domElement, document.body.firstChild);
+                                _this._renderer = renderer;
+                            }
+                            // objects for debugging
+                            var sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 8, 8), new THREE.MeshNormalMaterial());
+                            sphere.material.shading = THREE.FlatShading;
+                            sphere.position.z = 0.5;
+                            var torus = new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.2, 8, 8), new THREE.MeshNormalMaterial());
+                            torus.material.shading = THREE.FlatShading;
+                            torus.position.z = 0.5;
+                            torus.rotation.x = Math.PI / 2;
+                            // we may want to hardcode these two markers for the first pass
+                            arController.loadMarker('../resources/artoolkit/patt.hiro', function (markerId) {
+                                var markerRoot = arController.createThreeMarker(markerId);
+                                markerRoot.add(sphere);
+                                arScene.scene.add(markerRoot);
+                            });
+                            arController.loadMarker('../resources/artoolkit/patt.kanji', function (markerId) {
+                                var markerRoot = arController.createThreeMarker(markerId);
+                                markerRoot.add(torus);
+                                arScene.scene.add(markerRoot);
+                            });
+                        } });
+                };
+                WebRTCRealityViewer.prototype.updateViewport = function (viewport) {
+                    if (!this._arController) return;
+                    console.log("updateViewport: " + viewport.width + ", " + viewport.height);
+                    var canvasAspect = viewport.width / viewport.height;
+                    var cameraAspect = this._arController.videoWidth / this._arController.videoHeight;
+                    console.log("canvasAspect: " + canvasAspect);
+                    console.log("cameraAspect: " + cameraAspect);
+                    // Scale the video plane to aspect fill the screen
+                    // TODO: This logic works in the browser and on the phone in portrait mode
+                    // It does not seem to work correctly in landscape mode, investigate this
+                    if (canvasAspect > cameraAspect) {
+                        // canvas is wider than camera image
+                        this._arScene.videoPlane.scale.x = 1;
+                        this._arScene.videoPlane.scale.y = canvasAspect / cameraAspect;
+                    } else {
+                        // camera image is wider than canvas
+                        this._arScene.videoPlane.scale.x = cameraAspect / canvasAspect;
+                        this._arScene.videoPlane.scale.y = 1;
+                    }
+                    // Note: We still need to fix tracking to work with this new "camera viewport"
+                };
+                return WebRTCRealityViewer;
+            }(RealityViewer);
+
+            WebRTCRealityViewer = __decorate$13([inject(SessionService, ContextService, ViewService, DeviceService), __metadata$13("design:paramtypes", [typeof (_a$13 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$13 || Object, typeof (_b$13 = typeof ContextService !== "undefined" && ContextService) === "function" && _b$13 || Object, typeof (_c$9 = typeof ViewService !== "undefined" && ViewService) === "function" && _c$9 || Object, typeof (_d$7 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _d$7 || Object, String])], WebRTCRealityViewer);
+
+            integrateCustomARToolKit = function () {
+                /**
+                 *  Override the artoolkit.api.js getUserMedia function (it is out of date)
+                 *  This is taken from AR.js (THREEx.ArToolkitSource.prototype._initSourceWebcam)
+                 * */
+                ARController.getUserMedia = function (configuration) {
+                    var onSuccess = configuration.onSuccess;
+                    var onError = configuration.onError || function (err) {
+                        console.error("ARController.getUserMedia", err);
+                    };
+                    // TODO make it static
+                    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+                    var domElement = document.createElement('video');
+                    domElement.style.width = configuration.width + 'px';
+                    domElement.style.height = configuration.height + 'px';
+                    if (navigator.getUserMedia === undefined) {
+                        alert("WebRTC issue! navigator.getUserMedia not present in your browser");
+                    }
+                    if (navigator.mediaDevices === undefined || navigator.mediaDevices.enumerateDevices === undefined) {
+                        alert("WebRTC issue! navigator.mediaDevices.enumerateDevices not present in your browser");
+                    }
+                    navigator.mediaDevices.enumerateDevices().then(function (devices) {
+                        // define getUserMedia() constraints
+                        var constraints = {
+                            audio: false,
+                            video: {
+                                mandatory: {
+                                    maxWidth: configuration.width,
+                                    maxHeight: configuration.height
+                                }
+                            }
+                        };
+                        devices.forEach(function (device) {
+                            if (device.kind !== 'videoinput') return;
+                            // TODO super unclear how to get the backward facing camera...
+                            // Note: this code grabs the last camera in the list (not guaranteed to be the back-facing one, but it seems to work)
+                            //if( constraints.video.optional !== undefined )	return
+                            constraints.video.optional = [{ sourceId: device.deviceId }];
+                        });
+                        // OLD API
+                        // it it finds the videoSource 'environment', modify constraints.video
+                        // for (var i = 0; i != sourceInfos.length; ++i) {
+                        //         var sourceInfo = sourceInfos[i];
+                        //         if(sourceInfo.kind == "video" && sourceInfo.facing == "environment") {
+                        //                 constraints.video.optional = [{sourceId: sourceInfo.id}]
+                        //         }
+                        // }
+                        navigator.getUserMedia(constraints, function success(stream) {
+                            // console.log('success', stream);
+                            domElement.src = window.URL.createObjectURL(stream);
+                            // to start the video, when it is possible to start it only on userevent. like in android
+                            document.body.addEventListener('click', function () {
+                                domElement.play();
+                            });
+                            // domElement.play();
+                            //wait until the video stream is ready
+                            var interval = setInterval(function () {
+                                if (!domElement.videoWidth) return;
+                                //onReady()
+                                onSuccess(domElement);
+                                clearInterval(interval);
+                            }, 1000 / 50);
+                        }, function (error) {
+                            console.log("Can't access user media", error);
+                            alert("Can't access user media :()");
+                            onError("Can't access user media", error);
+                        });
+                    }).catch(function (err) {
+                        console.log(err.name + ": " + err.message);
+                        onError(err.name + ": " + err.message);
+                    });
+                    return domElement;
+                };
+                /**
+                 * The rest of these functions are taken directly from artoolkit.three.js
+                 * This is a quick way to play with the code, but we should move it when finished
+                 * Changes:
+                 *   - matrix.elements.set -> matrix.fromArray (to be compatible with newer versions of THREE)
+                 *   - Added renderer.resetGLState() to the beginning of the render pass
+                 *   - Changed the orthographic camera to have a unit sized viewport
+                 *   - Changed video plane to a unit size plane
+                 *
+                 *  Note: We should remove the logic for converting markers to threejs objects
+                 */
+                /**
+                    Helper for setting up a Three.js AR scene using the device camera as input.
+                    Pass in the maximum dimensions of the video you want to process and onSuccess and onError callbacks.
+                     On a successful initialization, the onSuccess callback is called with an ThreeARScene object.
+                    The ThreeARScene object contains two THREE.js scenes (one for the video image and other for the 3D scene)
+                    and a couple of helper functions for doing video frame processing and AR rendering.
+                     Here's the structure of the ThreeARScene object:
+                    {
+                        scene: THREE.Scene, // The 3D scene. Put your AR objects here.
+                        camera: THREE.Camera, // The 3D scene camera.
+                         arController: ARController,
+                         video: HTMLVideoElement, // The userMedia video element.
+                         videoScene: THREE.Scene, // The userMedia video image scene. Shows the video feed.
+                        videoCamera: THREE.Camera, // Camera for the userMedia video scene.
+                         process: function(), // Process the current video frame and update the markers in the scene.
+                        renderOn: function( THREE.WebGLRenderer ) // Render the AR scene and video background on the given Three.js renderer.
+                    }
+                     You should use the arScene.video.videoWidth and arScene.video.videoHeight to set the width and height of your renderer.
+                     In your frame loop, use arScene.process() and arScene.renderOn(renderer) to do frame processing and 3D rendering, respectively.
+                     @param {number} width - The maximum width of the userMedia video to request.
+                    @param {number} height - The maximum height of the userMedia video to request.
+                    @param {function} onSuccess - Called on successful initialization with an ThreeARScene object.
+                    @param {function} onError - Called if the initialization fails with the error encountered.
+                */
+                ARController.getUserMediaThreeScene = function (configuration) {
+                    var obj = {};
+                    for (var i in configuration) {
+                        obj[i] = configuration[i];
+                    }
+                    var onSuccess = configuration.onSuccess;
+                    obj.onSuccess = function (arController, arCameraParam) {
+                        var scenes = arController.createThreeScene();
+                        onSuccess(scenes, arController, arCameraParam);
+                    };
+                    var video = this.getUserMediaARController(obj);
+                    return video;
+                };
+                /**
+                    Creates a Three.js scene for use with this ARController.
+                     Returns a ThreeARScene object that contains two THREE.js scenes (one for the video image and other for the 3D scene)
+                    and a couple of helper functions for doing video frame processing and AR rendering.
+                     Here's the structure of the ThreeARScene object:
+                    {
+                        scene: THREE.Scene, // The 3D scene. Put your AR objects here.
+                        camera: THREE.Camera, // The 3D scene camera.
+                         arController: ARController,
+                         video: HTMLVideoElement, // The userMedia video element.
+                         videoScene: THREE.Scene, // The userMedia video image scene. Shows the video feed.
+                        videoCamera: THREE.Camera, // Camera for the userMedia video scene.
+                         process: function(), // Process the current video frame and update the markers in the scene.
+                        renderOn: function( THREE.WebGLRenderer ) // Render the AR scene and video background on the given Three.js renderer.
+                    }
+                     You should use the arScene.video.videoWidth and arScene.video.videoHeight to set the width and height of your renderer.
+                     In your frame loop, use arScene.process() and arScene.renderOn(renderer) to do frame processing and 3D rendering, respectively.
+                     @param video Video image to use as scene background. Defaults to this.image
+                */
+                ARController.prototype.createThreeScene = function (video) {
+                    video = video || this.image;
+                    this.setupThree();
+                    // To display the video, first create a texture from it.
+                    var videoTex = new THREE.Texture(video);
+                    videoTex.minFilter = THREE.LinearFilter;
+                    videoTex.flipY = false;
+                    // Then create a plane textured with the video.
+                    var plane = new THREE.Mesh(new THREE.PlaneBufferGeometry(1, 1), new THREE.MeshBasicMaterial({ map: videoTex, side: THREE.DoubleSide }));
+                    // The video plane shouldn't care about the z-buffer.
+                    plane.material.depthTest = false;
+                    plane.material.depthWrite = false;
+                    // Create a camera and a scene for the video plane and
+                    // add the camera and the video plane to the scene.
+                    var videoCamera = new THREE.OrthographicCamera(-0.5, 0.5, -0.5, 0.5, -0.5, 0.5);
+                    var videoScene = new THREE.Scene();
+                    videoScene.add(plane);
+                    videoScene.add(videoCamera);
+                    if (this.orientation === 'portrait') {
+                        plane.rotation.z = Math.PI / 2;
+                    }
+                    var scene = new THREE.Scene();
+                    var camera = new THREE.Camera();
+                    camera.matrixAutoUpdate = false;
+                    camera.projectionMatrix.fromArray(this.getCameraMatrix());
+                    scene.add(camera);
+                    var self = this;
+                    return {
+                        scene: scene,
+                        videoScene: videoScene,
+                        camera: camera,
+                        videoCamera: videoCamera,
+                        arController: this,
+                        video: video,
+                        videoPlane: plane,
+                        process: function () {
+                            for (var i in self.threePatternMarkers) {
+                                self.threePatternMarkers[i].visible = false;
+                            }
+                            for (var i in self.threeBarcodeMarkers) {
+                                self.threeBarcodeMarkers[i].visible = false;
+                            }
+                            for (var i in self.threeMultiMarkers) {
+                                self.threeMultiMarkers[i].visible = false;
+                                for (var j = 0; j < self.threeMultiMarkers[i].markers.length; j++) {
+                                    if (self.threeMultiMarkers[i].markers[j]) {
+                                        self.threeMultiMarkers[i].markers[j].visible = false;
+                                    }
+                                }
+                            }
+                            self.process(video);
+                        },
+                        renderOn: function (renderer) {
+                            renderer.resetGLState();
+                            videoTex.needsUpdate = true;
+                            var ac = renderer.autoClear;
+                            renderer.autoClear = false;
+                            renderer.clear();
+                            renderer.render(this.videoScene, this.videoCamera);
+                            renderer.render(this.scene, this.camera);
+                            renderer.autoClear = ac;
+                        }
+                    };
+                };
+                /**
+                    Creates a Three.js marker Object3D for the given marker UID.
+                    The marker Object3D tracks the marker pattern when it's detected in the video.
+                     Use this after a successful artoolkit.loadMarker call:
+                     arController.loadMarker('/bin/Data/patt.hiro', function(markerUID) {
+                        var markerRoot = arController.createThreeMarker(markerUID);
+                        markerRoot.add(myFancyHiroModel);
+                        arScene.scene.add(markerRoot);
+                    });
+                     @param {number} markerUID The UID of the marker to track.
+                    @param {number} markerWidth The width of the marker, defaults to 1.
+                    @return {THREE.Object3D} Three.Object3D that tracks the given marker.
+                */
+                ARController.prototype.createThreeMarker = function (markerUID, markerWidth) {
+                    this.setupThree();
+                    var obj = new THREE.Object3D();
+                    obj.markerTracker = this.trackPatternMarkerId(markerUID, markerWidth);
+                    obj.matrixAutoUpdate = false;
+                    this.threePatternMarkers[markerUID] = obj;
+                    return obj;
+                };
+                /**
+                    Creates a Three.js marker Object3D for the given multimarker UID.
+                    The marker Object3D tracks the multimarker when it's detected in the video.
+                     Use this after a successful arController.loadMarker call:
+                     arController.loadMultiMarker('/bin/Data/multi-barcode-4x3.dat', function(markerUID) {
+                        var markerRoot = arController.createThreeMultiMarker(markerUID);
+                        markerRoot.add(myFancyMultiMarkerModel);
+                        arScene.scene.add(markerRoot);
+                    });
+                     @param {number} markerUID The UID of the marker to track.
+                    @return {THREE.Object3D} Three.Object3D that tracks the given marker.
+                */
+                ARController.prototype.createThreeMultiMarker = function (markerUID) {
+                    this.setupThree();
+                    var obj = new THREE.Object3D();
+                    obj.matrixAutoUpdate = false;
+                    obj.markers = [];
+                    this.threeMultiMarkers[markerUID] = obj;
+                    return obj;
+                };
+                /**
+                    Creates a Three.js marker Object3D for the given barcode marker UID.
+                    The marker Object3D tracks the marker pattern when it's detected in the video.
+                     var markerRoot20 = arController.createThreeBarcodeMarker(20);
+                    markerRoot20.add(myFancyNumber20Model);
+                    arScene.scene.add(markerRoot20);
+                     var markerRoot5 = arController.createThreeBarcodeMarker(5);
+                    markerRoot5.add(myFancyNumber5Model);
+                    arScene.scene.add(markerRoot5);
+                     @param {number} markerUID The UID of the barcode marker to track.
+                    @param {number} markerWidth The width of the marker, defaults to 1.
+                    @return {THREE.Object3D} Three.Object3D that tracks the given marker.
+                */
+                ARController.prototype.createThreeBarcodeMarker = function (markerUID, markerWidth) {
+                    this.setupThree();
+                    var obj = new THREE.Object3D();
+                    obj.markerTracker = this.trackBarcodeMarkerId(markerUID, markerWidth);
+                    obj.matrixAutoUpdate = false;
+                    this.threeBarcodeMarkers[markerUID] = obj;
+                    return obj;
+                };
+                ARController.prototype.setupThree = function () {
+                    if (this.THREE_JS_ENABLED) {
+                        return;
+                    }
+                    this.THREE_JS_ENABLED = true;
+                    /*
+                        Listen to getMarker events to keep track of Three.js markers.
+                    */
+                    this.addEventListener('getMarker', function (ev) {
+                        var marker = ev.data.marker;
+                        var obj;
+                        if (ev.data.type === artoolkit.PATTERN_MARKER) {
+                            obj = this.threePatternMarkers[ev.data.marker.idPatt];
+                        } else if (ev.data.type === artoolkit.BARCODE_MARKER) {
+                            obj = this.threeBarcodeMarkers[ev.data.marker.idMatrix];
+                        }
+                        if (obj) {
+                            obj.matrix.fromArray(ev.data.matrix);
+                            obj.visible = true;
+                        }
+                    });
+                    /*
+                        Listen to getMultiMarker events to keep track of Three.js multimarkers.
+                    */
+                    this.addEventListener('getMultiMarker', function (ev) {
+                        var obj = this.threeMultiMarkers[ev.data.multiMarkerId];
+                        if (obj) {
+                            obj.matrix.fromArray(ev.data.matrix);
+                            obj.visible = true;
+                        }
+                    });
+                    /*
+                        Listen to getMultiMarkerSub events to keep track of Three.js multimarker submarkers.
+                    */
+                    this.addEventListener('getMultiMarkerSub', function (ev) {
+                        var marker = ev.data.multiMarkerId;
+                        var subMarkerID = ev.data.markerIndex;
+                        var subMarker = ev.data.marker;
+                        var obj = this.threeMultiMarkers[marker];
+                        if (obj && obj.markers && obj.markers[subMarkerID]) {
+                            var sub = obj.markers[subMarkerID];
+                            sub.matrix.fromArray(ev.data.matrix);
+                            sub.visible = subMarker.visible >= 0;
+                        }
+                    });
+                    /**
+                        Index of Three.js pattern markers, maps markerID -> THREE.Object3D.
+                    */
+                    this.threePatternMarkers = {};
+                    /**
+                        Index of Three.js barcode markers, maps markerID -> THREE.Object3D.
+                    */
+                    this.threeBarcodeMarkers = {};
+                    /**
+                        Index of Three.js multimarkers, maps markerID -> THREE.Object3D.
+                    */
+                    this.threeMultiMarkers = {};
+                };
+            };
+
+            __extends$5 = undefined && undefined.__extends || function (d, b) {
+                for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+                function __() {
+                    this.constructor = d;
+                }
+                d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+            };
+
+            __decorate$14 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
+                var c = arguments.length,
+                    r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+                    d;
+                if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+                return c > 3 && r && Object.defineProperty(target, key, r), r;
+            };
+
+            __metadata$14 = undefined && undefined.__metadata || function (k, v) {
+                if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+            };
+
             _export('HostedRealityViewer', HostedRealityViewer = function (_super) {
-                __extends$4(HostedRealityViewer, _super);
+                __extends$5(HostedRealityViewer, _super);
                 function HostedRealityViewer(sessionService, viewService, uri) {
                     var _this = _super.call(this, uri) || this;
                     _this.sessionService = sessionService;
@@ -30511,7 +31205,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return HostedRealityViewer;
             }(RealityViewer));
 
-            _export('HostedRealityViewer', HostedRealityViewer = __decorate$13([inject(SessionService, ViewService), __metadata$13("design:paramtypes", [typeof (_a$13 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$13 || Object, typeof (_b$13 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$13 || Object, String])], HostedRealityViewer));
+            _export('HostedRealityViewer', HostedRealityViewer = __decorate$14([inject(SessionService, ViewService), __metadata$14("design:paramtypes", [typeof (_a$14 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$14 || Object, typeof (_b$14 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$14 || Object, String])], HostedRealityViewer));
 
             __decorate$9 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
                 var c = arguments.length,
@@ -30526,9 +31220,10 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
             };
 
             _export('RealityViewerFactory', RealityViewerFactory = function () {
-                function RealityViewerFactory(_createEmptyReality, _createLiveReality, _createHostedReality) {
+                function RealityViewerFactory(_createEmptyReality, _createLiveReality, _createWebRTCReality, _createHostedReality) {
                     this._createEmptyReality = _createEmptyReality;
                     this._createLiveReality = _createLiveReality;
+                    this._createWebRTCReality = _createWebRTCReality;
                     this._createHostedReality = _createHostedReality;
                 }
                 RealityViewerFactory.prototype.createRealityViewer = function (uri) {
@@ -30537,6 +31232,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                             return this._createEmptyReality(uri);
                         case RealityViewer.LIVE:
                             return this._createLiveReality(uri);
+                        case RealityViewer.WEBRTC:
+                            return this._createWebRTCReality(uri);
                         case 'hosted':
                             return this._createHostedReality(uri);
                         default:
@@ -30546,7 +31243,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return RealityViewerFactory;
             }());
 
-            _export('RealityViewerFactory', RealityViewerFactory = __decorate$9([inject(Factory.of(EmptyRealityViewer), Factory.of(LiveRealityViewer), Factory.of(HostedRealityViewer)), __metadata$9("design:paramtypes", [Object, Object, Object])], RealityViewerFactory));
+            _export('RealityViewerFactory', RealityViewerFactory = __decorate$9([inject(Factory.of(EmptyRealityViewer), Factory.of(LiveRealityViewer), Factory.of(WebRTCRealityViewer), Factory.of(HostedRealityViewer)), __metadata$9("design:paramtypes", [Object, Object, Object, Object])], RealityViewerFactory));
             /**
             * A service which makes requests to manage the reality viewer.
             */
@@ -30703,6 +31400,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                  * - Pass a url to request a (custum) hosted reality viewer
                  * - [[RealityViewer.DEFAULT]] to request the system default reality viewer
                  * - [[RealityViewer.LIVE]] to request a live reality viewer
+                 * - [[RealityViewer.WEBTRC]] to request a webrtc reality viewer
                  * - [[RealityViewer.EMPTY]] to request an empty reality viewer
                  */
                 RealityService.prototype.request = function (uri) {
@@ -31248,7 +31946,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _export('DefaultUIService', DefaultUIService = __decorate$2([autoinject(), __metadata$2("design:paramtypes", [typeof (_a$2 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$2 || Object, typeof (_b$2 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$2 || Object, typeof (_c$1 = typeof RealityService !== "undefined" && RealityService) === "function" && _c$1 || Object, typeof (_d$1 = typeof RealityServiceProvider !== "undefined" && RealityServiceProvider) === "function" && _d$1 || Object, typeof (_e$1 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _e$1 || Object])], DefaultUIService));
 
-            __extends$5 = undefined && undefined.__extends || function (d, b) {
+            __extends$6 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
                 function __() {
                     this.constructor = d;
@@ -31256,7 +31954,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
             };
 
-            __decorate$14 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
+            __decorate$15 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
                 var c = arguments.length,
                     r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
                     d;
@@ -31264,7 +31962,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return c > 3 && r && Object.defineProperty(target, key, r), r;
             };
 
-            __metadata$14 = undefined && undefined.__metadata || function (k, v) {
+            __metadata$15 = undefined && undefined.__metadata || function (k, v) {
                 if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
             };
 
@@ -31286,7 +31984,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return VuforiaServiceProvider;
             }());
 
-            _export('VuforiaServiceProvider', VuforiaServiceProvider = __decorate$14([inject(SessionService), __metadata$14("design:paramtypes", [typeof (_a$14 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$14 || Object])], VuforiaServiceProvider));
+            _export('VuforiaServiceProvider', VuforiaServiceProvider = __decorate$15([inject(SessionService), __metadata$15("design:paramtypes", [typeof (_a$15 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$15 || Object])], VuforiaServiceProvider));
             /**
              * A service for interacting with the Vuforia API
              */
@@ -31331,7 +32029,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return VuforiaService;
             }());
 
-            _export('VuforiaService', VuforiaService = __decorate$14([inject(SessionService, VuforiaServiceProvider), __metadata$14("design:paramtypes", [typeof (_b$14 = typeof SessionService !== "undefined" && SessionService) === "function" && _b$14 || Object])], VuforiaService));
+            _export('VuforiaService', VuforiaService = __decorate$15([inject(SessionService, VuforiaServiceProvider), __metadata$15("design:paramtypes", [typeof (_b$15 = typeof SessionService !== "undefined" && SessionService) === "function" && _b$15 || Object])], VuforiaService));
 
             _export('VuforiaAPI', VuforiaAPI = function () {
                 function VuforiaAPI(manager) {
@@ -31346,7 +32044,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
             }());
 
             _export('VuforiaObjectTracker', VuforiaObjectTracker = function (_super) {
-                __extends$5(VuforiaObjectTracker, _super);
+                __extends$6(VuforiaObjectTracker, _super);
                 function VuforiaObjectTracker(managerSession) {
                     var _this = _super.call(this) || this;
                     _this.managerSession = managerSession;
@@ -31454,8 +32152,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return VuforiaObjectTracker;
             }(VuforiaTracker));
 
-            __decorate$14([deprecated$1('createDataSetFromURL'), __metadata$14("design:type", Function), __metadata$14("design:paramtypes", [String]), __metadata$14("design:returntype", Object)], VuforiaObjectTracker.prototype, "createDataSet", null);
-            __decorate$14([deprecated$1('createDataSetFromURL'), __metadata$14("design:type", Object), __metadata$14("design:paramtypes", [])], VuforiaObjectTracker.prototype, "createDataSetFromURI", null);
+            __decorate$15([deprecated$1('createDataSetFromURL'), __metadata$15("design:type", Function), __metadata$15("design:paramtypes", [String]), __metadata$15("design:returntype", Object)], VuforiaObjectTracker.prototype, "createDataSet", null);
+            __decorate$15([deprecated$1('createDataSetFromURL'), __metadata$15("design:type", Object), __metadata$15("design:paramtypes", [])], VuforiaObjectTracker.prototype, "createDataSetFromURI", null);
             /**
              * @deprecated To be removed.
              */
