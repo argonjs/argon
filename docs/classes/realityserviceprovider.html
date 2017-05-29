@@ -85,8 +85,10 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="realityserviceprovider.html#_installersbyuri" class="tsd-kind-icon">_installers<wbr>ByURI</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="realityserviceprovider.html#_presentingrealityviewer" class="tsd-kind-icon">_presenting<wbr>Reality<wbr>Viewer</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="realityserviceprovider.html#_scratchfrustum" class="tsd-kind-icon">_scratch<wbr>Frustum</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="realityserviceprovider.html#_viewerbyuri" class="tsd-kind-icon">_viewer<wbr>ByURI</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="realityserviceprovider.html#contextservice" class="tsd-kind-icon">context<wbr>Service</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="realityserviceprovider.html#deviceservice" class="tsd-kind-icon">device<wbr>Service</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="realityserviceprovider.html#focusserviceprovider" class="tsd-kind-icon">focus<wbr>Service<wbr>Provider</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="realityserviceprovider.html#installedevent" class="tsd-kind-icon">installed<wbr>Event</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="realityserviceprovider.html#realityservice" class="tsd-kind-icon">reality<wbr>Service</a></li>
@@ -112,6 +114,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="realityserviceprovider.html#_handleuninstall" class="tsd-kind-icon">_handle<wbr>Uninstall</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="realityserviceprovider.html#_setpresentingrealityviewer" class="tsd-kind-icon">_set<wbr>Presenting<wbr>Reality<wbr>Viewer</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="realityserviceprovider.html#getviewerbyuri" class="tsd-kind-icon">get<wbr>Viewer<wbr>ByURI</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="realityserviceprovider.html#removeinstaller" class="tsd-kind-icon">remove<wbr>Installer</a></li>
 							</ul>
 						</section>
 					</div>
@@ -123,13 +126,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Reality<wbr>Service<wbr>Provider<span class="tsd-signature-symbol">(</span>sessionService<span class="tsd-signature-symbol">: </span><a href="sessionservice.html" class="tsd-signature-type">SessionService</a>, realityService<span class="tsd-signature-symbol">: </span><a href="realityservice.html" class="tsd-signature-type">RealityService</a>, contextService<span class="tsd-signature-symbol">: </span><a href="contextservice.html" class="tsd-signature-type">ContextService</a>, viewServiceProvider<span class="tsd-signature-symbol">: </span><a href="viewserviceprovider.html" class="tsd-signature-type">ViewServiceProvider</a>, visibilityServiceProvider<span class="tsd-signature-symbol">: </span><a href="visibilityserviceprovider.html" class="tsd-signature-type">VisibilityServiceProvider</a>, focusServiceProvider<span class="tsd-signature-symbol">: </span><a href="focusserviceprovider.html" class="tsd-signature-type">FocusServiceProvider</a>, realityViewerFactory<span class="tsd-signature-symbol">: </span><a href="realityviewerfactory.html" class="tsd-signature-type">RealityViewerFactory</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="realityserviceprovider.html" class="tsd-signature-type">RealityServiceProvider</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Reality<wbr>Service<wbr>Provider<span class="tsd-signature-symbol">(</span>sessionService<span class="tsd-signature-symbol">: </span><a href="sessionservice.html" class="tsd-signature-type">SessionService</a>, realityService<span class="tsd-signature-symbol">: </span><a href="realityservice.html" class="tsd-signature-type">RealityService</a>, contextService<span class="tsd-signature-symbol">: </span><a href="contextservice.html" class="tsd-signature-type">ContextService</a>, deviceService<span class="tsd-signature-symbol">: </span><a href="deviceservice.html" class="tsd-signature-type">DeviceService</a>, viewServiceProvider<span class="tsd-signature-symbol">: </span><a href="viewserviceprovider.html" class="tsd-signature-type">ViewServiceProvider</a>, visibilityServiceProvider<span class="tsd-signature-symbol">: </span><a href="visibilityserviceprovider.html" class="tsd-signature-type">VisibilityServiceProvider</a>, focusServiceProvider<span class="tsd-signature-symbol">: </span><a href="focusserviceprovider.html" class="tsd-signature-type">FocusServiceProvider</a>, realityViewerFactory<span class="tsd-signature-symbol">: </span><a href="realityviewerfactory.html" class="tsd-signature-type">RealityViewerFactory</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="realityserviceprovider.html" class="tsd-signature-type">RealityServiceProvider</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/reality.ts#L224">src/reality.ts:224</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/reality.ts#L263">src/reality.ts:263</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -142,6 +145,9 @@
 								</li>
 								<li>
 									<h5>contextService: <a href="contextservice.html" class="tsd-signature-type">ContextService</a></h5>
+								</li>
+								<li>
+									<h5>deviceService: <a href="deviceservice.html" class="tsd-signature-type">DeviceService</a></h5>
 								</li>
 								<li>
 									<h5>viewServiceProvider: <a href="viewserviceprovider.html" class="tsd-signature-type">ViewServiceProvider</a></h5>
@@ -169,7 +175,7 @@
 					<div class="tsd-signature tsd-kind-icon">_installers<wbr>ByURI<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Set</span><span class="tsd-signature-symbol">&lt;</span><a href="sessionport.html" class="tsd-signature-type">SessionPort</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Map&lt;string, Set&lt;SessionPort&gt;&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/reality.ts#L224">src/reality.ts:224</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/reality.ts#L263">src/reality.ts:263</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -179,7 +185,17 @@
 					<div class="tsd-signature tsd-kind-icon">_presenting<wbr>Reality<wbr>Viewer<span class="tsd-signature-symbol">:</span> <a href="realityviewer.html" class="tsd-signature-type">RealityViewer</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/reality.ts#L221">src/reality.ts:221</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/reality.ts#L260">src/reality.ts:260</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="_scratchfrustum" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _scratch<wbr>Frustum</h3>
+					<div class="tsd-signature tsd-kind-icon">_scratch<wbr>Frustum<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">PerspectiveFrustum</span><span class="tsd-signature-symbol"> =&nbsp;new PerspectiveFrustum</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/reality.ts#L324">src/reality.ts:324</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -189,7 +205,7 @@
 					<div class="tsd-signature tsd-kind-icon">_viewer<wbr>ByURI<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="realityviewer.html" class="tsd-signature-type">RealityViewer</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Map&lt;string, RealityViewer&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/reality.ts#L223">src/reality.ts:223</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/reality.ts#L262">src/reality.ts:262</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -199,7 +215,17 @@
 					<div class="tsd-signature tsd-kind-icon">context<wbr>Service<span class="tsd-signature-symbol">:</span> <a href="contextservice.html" class="tsd-signature-type">ContextService</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/reality.ts#L229">src/reality.ts:229</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/reality.ts#L268">src/reality.ts:268</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="deviceservice" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> device<wbr>Service</h3>
+					<div class="tsd-signature tsd-kind-icon">device<wbr>Service<span class="tsd-signature-symbol">:</span> <a href="deviceservice.html" class="tsd-signature-type">DeviceService</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/reality.ts#L269">src/reality.ts:269</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -209,7 +235,7 @@
 					<div class="tsd-signature tsd-kind-icon">focus<wbr>Service<wbr>Provider<span class="tsd-signature-symbol">:</span> <a href="focusserviceprovider.html" class="tsd-signature-type">FocusServiceProvider</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/reality.ts#L232">src/reality.ts:232</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/reality.ts#L272">src/reality.ts:272</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -219,7 +245,7 @@
 					<div class="tsd-signature tsd-kind-icon">installed<wbr>Event<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;{ viewer:RealityViewer }&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/reality.ts#L213">src/reality.ts:213</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/reality.ts#L252">src/reality.ts:252</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -234,7 +260,7 @@
 					<div class="tsd-signature tsd-kind-icon">reality<wbr>Service<span class="tsd-signature-symbol">:</span> <a href="realityservice.html" class="tsd-signature-type">RealityService</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/reality.ts#L228">src/reality.ts:228</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/reality.ts#L267">src/reality.ts:267</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -244,7 +270,7 @@
 					<div class="tsd-signature tsd-kind-icon">reality<wbr>Viewer<wbr>Factory<span class="tsd-signature-symbol">:</span> <a href="realityviewerfactory.html" class="tsd-signature-type">RealityViewerFactory</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/reality.ts#L233">src/reality.ts:233</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/reality.ts#L273">src/reality.ts:273</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -254,7 +280,7 @@
 					<div class="tsd-signature tsd-kind-icon">session<wbr>Service<span class="tsd-signature-symbol">:</span> <a href="sessionservice.html" class="tsd-signature-type">SessionService</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/reality.ts#L227">src/reality.ts:227</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/reality.ts#L266">src/reality.ts:266</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -264,7 +290,7 @@
 					<div class="tsd-signature tsd-kind-icon">uninstalled<wbr>Event<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;{ viewer:RealityViewer }&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/reality.ts#L218">src/reality.ts:218</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/reality.ts#L257">src/reality.ts:257</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -279,7 +305,7 @@
 					<div class="tsd-signature tsd-kind-icon">view<wbr>Service<wbr>Provider<span class="tsd-signature-symbol">:</span> <a href="viewserviceprovider.html" class="tsd-signature-type">ViewServiceProvider</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/reality.ts#L230">src/reality.ts:230</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/reality.ts#L270">src/reality.ts:270</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -289,7 +315,7 @@
 					<div class="tsd-signature tsd-kind-icon">visibility<wbr>Service<wbr>Provider<span class="tsd-signature-symbol">:</span> <a href="visibilityserviceprovider.html" class="tsd-signature-type">VisibilityServiceProvider</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/reality.ts#L231">src/reality.ts:231</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/reality.ts#L271">src/reality.ts:271</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -306,7 +332,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/reality.ts#L220">src/reality.ts:220</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/reality.ts#L259">src/reality.ts:259</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="realityviewer.html" class="tsd-signature-type">RealityViewer</a></h4>
@@ -326,7 +352,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/reality.ts#L344">src/reality.ts:344</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/reality.ts#L405">src/reality.ts:405</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -352,7 +378,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/reality.ts#L284">src/reality.ts:284</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/reality.ts#L326">src/reality.ts:326</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -378,7 +404,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/reality.ts#L386">src/reality.ts:386</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/reality.ts#L446">src/reality.ts:446</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -406,7 +432,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/reality.ts#L373">src/reality.ts:373</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/reality.ts#L433">src/reality.ts:433</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -432,7 +458,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/reality.ts#L408">src/reality.ts:408</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/reality.ts#L465">src/reality.ts:465</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -455,7 +481,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/reality.ts#L420">src/reality.ts:420</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/reality.ts#L477">src/reality.ts:477</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -465,6 +491,29 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="realityviewer.html" class="tsd-signature-type">RealityViewer</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="removeinstaller" class="tsd-anchor"></a>
+					<h3>remove<wbr>Installer</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">remove<wbr>Installer<span class="tsd-signature-symbol">(</span>installerSession<span class="tsd-signature-symbol">: </span><a href="sessionport.html" class="tsd-signature-type">SessionPort</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/reality.ts#L481">src/reality.ts:481</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>installerSession: <a href="sessionport.html" class="tsd-signature-type">SessionPort</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -495,10 +544,16 @@
 								<a href="realityserviceprovider.html#_presentingrealityviewer" class="tsd-kind-icon">_presenting<wbr>Reality<wbr>Viewer</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="realityserviceprovider.html#_scratchfrustum" class="tsd-kind-icon">_scratch<wbr>Frustum</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="realityserviceprovider.html#_viewerbyuri" class="tsd-kind-icon">_viewer<wbr>ByURI</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="realityserviceprovider.html#contextservice" class="tsd-kind-icon">context<wbr>Service</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="realityserviceprovider.html#deviceservice" class="tsd-kind-icon">device<wbr>Service</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="realityserviceprovider.html#focusserviceprovider" class="tsd-kind-icon">focus<wbr>Service<wbr>Provider</a>
@@ -544,6 +599,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="realityserviceprovider.html#getviewerbyuri" class="tsd-kind-icon">get<wbr>Viewer<wbr>ByURI</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="realityserviceprovider.html#removeinstaller" class="tsd-kind-icon">remove<wbr>Installer</a>
 							</li>
 						</ul>
 					</li>

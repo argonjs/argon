@@ -88,7 +88,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="viewserviceprovider.html#sessionembeddedviewport" class="tsd-kind-icon">session<wbr>Embedded<wbr>Viewport</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="viewserviceprovider.html#sessionservice" class="tsd-kind-icon">session<wbr>Service</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="viewserviceprovider.html#sessionviewportmode" class="tsd-kind-icon">session<wbr>Viewport<wbr>Mode</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="viewserviceprovider.html#viewportservice" class="tsd-kind-icon">viewport<wbr>Service</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="viewserviceprovider.html#viewservice" class="tsd-kind-icon">view<wbr>Service</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -107,13 +107,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>View<wbr>Service<wbr>Provider<span class="tsd-signature-symbol">(</span>sessionService<span class="tsd-signature-symbol">: </span><a href="sessionservice.html" class="tsd-signature-type">SessionService</a>, viewportService<span class="tsd-signature-symbol">: </span><a href="viewservice.html" class="tsd-signature-type">ViewService</a>, focusServiceProvider<span class="tsd-signature-symbol">: </span><a href="focusserviceprovider.html" class="tsd-signature-type">FocusServiceProvider</a>, visibilityServiceProvider<span class="tsd-signature-symbol">: </span><a href="visibilityserviceprovider.html" class="tsd-signature-type">VisibilityServiceProvider</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="viewserviceprovider.html" class="tsd-signature-type">ViewServiceProvider</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>View<wbr>Service<wbr>Provider<span class="tsd-signature-symbol">(</span>sessionService<span class="tsd-signature-symbol">: </span><a href="sessionservice.html" class="tsd-signature-type">SessionService</a>, viewService<span class="tsd-signature-symbol">: </span><a href="viewservice.html" class="tsd-signature-type">ViewService</a>, focusServiceProvider<span class="tsd-signature-symbol">: </span><a href="focusserviceprovider.html" class="tsd-signature-type">FocusServiceProvider</a>, visibilityServiceProvider<span class="tsd-signature-symbol">: </span><a href="visibilityserviceprovider.html" class="tsd-signature-type">VisibilityServiceProvider</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="viewserviceprovider.html" class="tsd-signature-type">ViewServiceProvider</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/view.ts#L357">src/view.ts:357</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/view.ts#L443">src/view.ts:443</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -122,7 +122,7 @@
 									<h5>sessionService: <a href="sessionservice.html" class="tsd-signature-type">SessionService</a></h5>
 								</li>
 								<li>
-									<h5>viewportService: <a href="viewservice.html" class="tsd-signature-type">ViewService</a></h5>
+									<h5>viewService: <a href="viewservice.html" class="tsd-signature-type">ViewService</a></h5>
 								</li>
 								<li>
 									<h5>focusServiceProvider: <a href="focusserviceprovider.html" class="tsd-signature-type">FocusServiceProvider</a></h5>
@@ -144,7 +144,7 @@
 					<div class="tsd-signature tsd-kind-icon">focus<wbr>Service<wbr>Provider<span class="tsd-signature-symbol">:</span> <a href="focusserviceprovider.html" class="tsd-signature-type">FocusServiceProvider</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/view.ts#L362">src/view.ts:362</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/view.ts#L448">src/view.ts:448</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -154,7 +154,7 @@
 					<div class="tsd-signature tsd-kind-icon">forwardedUIEvent<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">UIEvent</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;UIEvent&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/view.ts#L357">src/view.ts:357</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/view.ts#L443">src/view.ts:443</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -169,7 +169,7 @@
 					<div class="tsd-signature tsd-kind-icon">session<wbr>Embedded<wbr>Viewport<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">WeakMap</span><span class="tsd-signature-symbol">&lt;</span><a href="sessionport.html" class="tsd-signature-type">SessionPort</a><span class="tsd-signature-symbol">, </span><a href="viewport.html" class="tsd-signature-type">Viewport</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new WeakMap&lt;SessionPort, Viewport&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/view.ts#L352">src/view.ts:352</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/view.ts#L438">src/view.ts:438</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -184,7 +184,7 @@
 					<div class="tsd-signature tsd-kind-icon">session<wbr>Service<span class="tsd-signature-symbol">:</span> <a href="sessionservice.html" class="tsd-signature-type">SessionService</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/view.ts#L360">src/view.ts:360</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/view.ts#L446">src/view.ts:446</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -194,17 +194,17 @@
 					<div class="tsd-signature tsd-kind-icon">session<wbr>Viewport<wbr>Mode<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">WeakMap</span><span class="tsd-signature-symbol">&lt;</span><a href="sessionport.html" class="tsd-signature-type">SessionPort</a><span class="tsd-signature-symbol">, </span><a href="../enums/viewportmode.html" class="tsd-signature-type">ViewportMode</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new WeakMap&lt;SessionPort, ViewportMode&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/view.ts#L347">src/view.ts:347</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/view.ts#L433">src/view.ts:433</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="viewportservice" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> viewport<wbr>Service</h3>
-					<div class="tsd-signature tsd-kind-icon">viewport<wbr>Service<span class="tsd-signature-symbol">:</span> <a href="viewservice.html" class="tsd-signature-type">ViewService</a></div>
+					<a name="viewservice" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> view<wbr>Service</h3>
+					<div class="tsd-signature tsd-kind-icon">view<wbr>Service<span class="tsd-signature-symbol">:</span> <a href="viewservice.html" class="tsd-signature-type">ViewService</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/view.ts#L361">src/view.ts:361</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/view.ts#L447">src/view.ts:447</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -221,7 +221,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/view.ts#L402">src/view.ts:402</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/view.ts#L488">src/view.ts:488</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -238,7 +238,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/view.ts#L398">src/view.ts:398</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/view.ts#L484">src/view.ts:484</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -290,7 +290,7 @@
 								<a href="viewserviceprovider.html#sessionviewportmode" class="tsd-kind-icon">session<wbr>Viewport<wbr>Mode</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="viewserviceprovider.html#viewportservice" class="tsd-kind-icon">viewport<wbr>Service</a>
+								<a href="viewserviceprovider.html#viewservice" class="tsd-kind-icon">view<wbr>Service</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
 								<a href="viewserviceprovider.html#_publishviewportmodes" class="tsd-kind-icon">_publish<wbr>Viewport<wbr>Modes</a>

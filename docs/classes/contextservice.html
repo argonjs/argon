@@ -67,24 +67,6 @@
 					<div class="lead">
 						<p>Provides a means of querying the current state of reality.</p>
 					</div>
-					<p>This class adds the following message handlers to any sessions
-					managed by the session service:</p>
-					<ul>
-						<li><code>ar.context.subscribe</code> - Subscribes the session to updates from an
-							entity with the provided id.<ul>
-								<li>Parameters:<ul>
-										<li>id: string - The id of an entity the session wishes to recieve
-										updates on.</li>
-									</ul>
-								</li>
-							</ul>
-						</li>
-					</ul>
-					<p>This service sends the following messages to managed sessions</p>
-					<ul>
-						<li><code>ar.context.update</code> - Indicates to this context that the session wants
-						to be focused on.</li>
-					</ul>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
@@ -110,44 +92,57 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="contextservice.html#_entityposemap" class="tsd-kind-icon">_entity<wbr>Pose<wbr>Map</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="contextservice.html#_frameindex" class="tsd-kind-icon">_frame<wbr>Index</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="contextservice.html#_getentityorientationinreferenceframe" class="tsd-kind-icon">_get<wbr>Entity<wbr>Orientation<wbr>InReference<wbr>Frame</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="contextservice.html#_getentitypositioninreferenceframe" class="tsd-kind-icon">_get<wbr>Entity<wbr>Position<wbr>InReference<wbr>Frame</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="contextservice.html#_getserializedentitystate" class="tsd-kind-icon">_get<wbr>Serialized<wbr>Entity<wbr>State</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="contextservice.html#_knownentities" class="tsd-kind-icon">_known<wbr>Entities</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="contextservice.html#_localorigin" class="tsd-kind-icon">_local<wbr>Origin</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="contextservice.html#_localorigineastnorthup" class="tsd-kind-icon">_local<wbr>Origin<wbr>East<wbr>North<wbr>Up</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="contextservice.html#_originchanged" class="tsd-kind-icon">_origin<wbr>Changed</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="contextservice.html#_scratchcartesian" class="tsd-kind-icon">_scratch<wbr>Cartesian</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="contextservice.html#_scratchfrustum" class="tsd-kind-icon">_scratch<wbr>Frustum</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="contextservice.html#_scratchmatrix3" class="tsd-kind-icon">_scratch<wbr>Matrix3</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="contextservice.html#_scratchmatrix4" class="tsd-kind-icon">_scratch<wbr>Matrix4</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="contextservice.html#_scratchquaternion" class="tsd-kind-icon">_scratch<wbr>Quaternion</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="contextservice.html#_serializedframestate" class="tsd-kind-icon">_serialized<wbr>Frame<wbr>State</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="contextservice.html#_stringidentifierfromreferenceframe" class="tsd-kind-icon">_string<wbr>Identifier<wbr>From<wbr>Reference<wbr>Frame</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="contextservice.html#_updatingentities" class="tsd-kind-icon">_updating<wbr>Entities</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="contextservice.html#defaultreferenceframe" class="tsd-kind-icon">default<wbr>Reference<wbr>Frame</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="contextservice.html#deltatime" class="tsd-kind-icon">delta<wbr>Time</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="contextservice.html#entities" class="tsd-kind-icon">entities</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="contextservice.html#framestateevent" class="tsd-kind-icon">frame<wbr>State<wbr>Event</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="contextservice.html#ground" class="tsd-kind-icon">ground</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="contextservice.html#localorigin" class="tsd-kind-icon">local<wbr>Origin</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="contextservice.html#localoriginchangeevent" class="tsd-kind-icon">local<wbr>Origin<wbr>Change<wbr>Event</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="contextservice.html#localorigineastnorthup" class="tsd-kind-icon">local<wbr>Origin<wbr>East<wbr>North<wbr>Up</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="contextservice.html#localorigineastupsouth" class="tsd-kind-icon">local<wbr>Origin<wbr>East<wbr>UpSouth</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="contextservice.html#deviceservice" class="tsd-kind-icon">device<wbr>Service</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="contextservice.html#entityservice" class="tsd-kind-icon">entity<wbr>Service</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="contextservice.html#floor" class="tsd-kind-icon">floor</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="contextservice.html#maxdeltatime" class="tsd-kind-icon">max<wbr>Delta<wbr>Time</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="contextservice.html#origin" class="tsd-kind-icon">origin</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="contextservice.html#originchangeevent" class="tsd-kind-icon">origin<wbr>Change<wbr>Event</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="contextservice.html#postrenderevent" class="tsd-kind-icon">post<wbr>Render<wbr>Event</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="contextservice.html#renderevent" class="tsd-kind-icon">render<wbr>Event</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="contextservice.html#sessionservice" class="tsd-kind-icon">session<wbr>Service</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="contextservice.html#sessionservice" class="tsd-kind-icon">session<wbr>Service</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="contextservice.html#stage" class="tsd-kind-icon">stage</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="contextservice.html#subscribe" class="tsd-kind-icon">subscribe</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="contextservice.html#time" class="tsd-kind-icon">time</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="contextservice.html#timestamp" class="tsd-kind-icon">timestamp</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="contextservice.html#unsubscribe" class="tsd-kind-icon">unsubscribe</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="contextservice.html#updateevent" class="tsd-kind-icon">update<wbr>Event</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="contextservice.html#user" class="tsd-kind-icon">user</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="contextservice.html#view" class="tsd-kind-icon">view</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="contextservice.html#viewservice" class="tsd-kind-icon">view<wbr>Service</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Accessors</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="contextservice.html#entities" class="tsd-kind-icon">entities</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="contextservice.html#geoheadingaccuracy" class="tsd-kind-icon">geo<wbr>Heading<wbr>Accuracy</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="contextservice.html#geohorizontalaccuracy" class="tsd-kind-icon">geo<wbr>Horizontal<wbr>Accuracy</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="contextservice.html#geoverticalaccuracy" class="tsd-kind-icon">geo<wbr>Vertical<wbr>Accuracy</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="contextservice.html#geoposeheadingaccuracy" class="tsd-kind-icon">geopose<wbr>Heading<wbr>Accuracy</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="contextservice.html#geoposehorizontalaccuracy" class="tsd-kind-icon">geopose<wbr>Horizontal<wbr>Accuracy</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="contextservice.html#geoposeverticalaccuracy" class="tsd-kind-icon">geopose<wbr>Vertical<wbr>Accuracy</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="contextservice.html#localorigin" class="tsd-kind-icon">local<wbr>Origin</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="contextservice.html#localoriginchangeevent" class="tsd-kind-icon">local<wbr>Origin<wbr>Change<wbr>Event</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="contextservice.html#localorigineastnorthup" class="tsd-kind-icon">local<wbr>Origin<wbr>East<wbr>North<wbr>Up</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="contextservice.html#localorigineastupsouth" class="tsd-kind-icon">local<wbr>Origin<wbr>East<wbr>UpSouth</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="contextservice.html#serializedframestate" class="tsd-kind-icon">serialized<wbr>Frame<wbr>State</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-private"><a href="contextservice.html#systemtime" class="tsd-kind-icon">system<wbr>Time</a></li>
 							</ul>
@@ -158,6 +153,8 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="contextservice.html#_update" class="tsd-kind-icon">_update</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="contextservice.html#_updatebackwardscompatability" class="tsd-kind-icon">_update<wbr>Backwards<wbr>Compatability</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="contextservice.html#createentitypose" class="tsd-kind-icon">create<wbr>Entity<wbr>Pose</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="contextservice.html#createframestate" class="tsd-kind-icon">create<wbr>Frame<wbr>State</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="contextservice.html#creategeoentity" class="tsd-kind-icon">create<wbr>Geo<wbr>Entity</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="contextservice.html#getdefaultreferenceframe" class="tsd-kind-icon">get<wbr>Default<wbr>Reference<wbr>Frame</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="contextservice.html#getentitycartographic" class="tsd-kind-icon">get<wbr>Entity<wbr>Cartographic</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="contextservice.html#getentitypose" class="tsd-kind-icon">get<wbr>Entity<wbr>Pose</a></li>
@@ -165,12 +162,15 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="contextservice.html#gettime" class="tsd-kind-icon">get<wbr>Time</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="contextservice.html#setdefaultreferenceframe" class="tsd-kind-icon">set<wbr>Default<wbr>Reference<wbr>Frame</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="contextservice.html#submitframestate" class="tsd-kind-icon">submit<wbr>Frame<wbr>State</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="contextservice.html#subscribe" class="tsd-kind-icon">subscribe</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="contextservice.html#subscribegeolocation" class="tsd-kind-icon">subscribe<wbr>Geolocation</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="contextservice.html#subscribetoentitybyid" class="tsd-kind-icon">subscribe<wbr>ToEntity<wbr>ById</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="contextservice.html#unsubscribe" class="tsd-kind-icon">unsubscribe</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="contextservice.html#unsubscribegeolocation" class="tsd-kind-icon">unsubscribe<wbr>Geolocation</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="contextservice.html#updateentityfromserializedstate" class="tsd-kind-icon">update<wbr>Entity<wbr>From<wbr>Serialized<wbr>State</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
+							<h3>Object literals</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-object-literal tsd-parent-kind-class tsd-is-private"><a href="contextservice.html#_scratchframestate" class="tsd-kind-icon">_scratch<wbr>Frame<wbr>State</a></li>
 							</ul>
 						</section>
 					</div>
@@ -182,19 +182,28 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Context<wbr>Service<span class="tsd-signature-symbol">(</span>sessionService<span class="tsd-signature-symbol">: </span><a href="sessionservice.html" class="tsd-signature-type">SessionService</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="contextservice.html" class="tsd-signature-type">ContextService</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Context<wbr>Service<span class="tsd-signature-symbol">(</span>entityService<span class="tsd-signature-symbol">: </span><a href="entityservice.html" class="tsd-signature-type">EntityService</a>, sessionService<span class="tsd-signature-symbol">: </span><a href="sessionservice.html" class="tsd-signature-type">SessionService</a>, deviceService<span class="tsd-signature-symbol">: </span><a href="deviceservice.html" class="tsd-signature-type">DeviceService</a>, viewService<span class="tsd-signature-symbol">: </span><a href="viewservice.html" class="tsd-signature-type">ViewService</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="contextservice.html" class="tsd-signature-type">ContextService</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L176">src/context.ts:176</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L51">src/context.ts:51</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
+									<h5>entityService: <a href="entityservice.html" class="tsd-signature-type">EntityService</a></h5>
+								</li>
+								<li>
 									<h5>sessionService: <a href="sessionservice.html" class="tsd-signature-type">SessionService</a></h5>
+								</li>
+								<li>
+									<h5>deviceService: <a href="deviceservice.html" class="tsd-signature-type">DeviceService</a></h5>
+								</li>
+								<li>
+									<h5>viewService: <a href="viewservice.html" class="tsd-signature-type">ViewService</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="contextservice.html" class="tsd-signature-type">ContextService</a></h4>
@@ -210,7 +219,7 @@
 					<div class="tsd-signature tsd-kind-icon">_entity<wbr>Pose<wbr>Map<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="entitypose.html" class="tsd-signature-type">EntityPose</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Map&lt;string, EntityPose | undefined&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L385">src/context.ts:385</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L303">src/context.ts:303</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -220,7 +229,17 @@
 					<div class="tsd-signature tsd-kind-icon">_frame<wbr>Index<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;-1</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L512">src/context.ts:512</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L422">src/context.ts:422</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="_getentityorientationinreferenceframe" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _get<wbr>Entity<wbr>Orientation<wbr>InReference<wbr>Frame</h3>
+					<div class="tsd-signature tsd-kind-icon">_get<wbr>Entity<wbr>Orientation<wbr>InReference<wbr>Frame<span class="tsd-signature-symbol">:</span> <a href="../globals.html#getentityorientationinreferenceframe" class="tsd-signature-type">getEntityOrientationInReferenceFrame</a><span class="tsd-signature-symbol"> =&nbsp;getEntityOrientationInReferenceFrame</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L441">src/context.ts:441</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -230,7 +249,17 @@
 					<div class="tsd-signature tsd-kind-icon">_get<wbr>Entity<wbr>Position<wbr>InReference<wbr>Frame<span class="tsd-signature-symbol">:</span> <a href="../globals.html#getentitypositioninreferenceframe" class="tsd-signature-type">getEntityPositionInReferenceFrame</a><span class="tsd-signature-symbol"> =&nbsp;getEntityPositionInReferenceFrame</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L522">src/context.ts:522</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L440">src/context.ts:440</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="_getserializedentitystate" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _get<wbr>Serialized<wbr>Entity<wbr>State</h3>
+					<div class="tsd-signature tsd-kind-icon">_get<wbr>Serialized<wbr>Entity<wbr>State<span class="tsd-signature-symbol">:</span> <a href="../globals.html#getserializedentitystate" class="tsd-signature-type">getSerializedEntityState</a><span class="tsd-signature-symbol"> =&nbsp;getSerializedEntityState</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L439">src/context.ts:439</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -240,7 +269,37 @@
 					<div class="tsd-signature tsd-kind-icon">_known<wbr>Entities<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Set</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Set&lt;string&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L387">src/context.ts:387</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L305">src/context.ts:305</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="_localorigin" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _local<wbr>Origin</h3>
+					<div class="tsd-signature tsd-kind-icon">_local<wbr>Origin<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Entity</span><span class="tsd-signature-symbol"> =&nbsp;this.entities.add(new Entity({id: &#x27;ar.localOrigin&#x27;,name: &#x27;Local Origin&#x27;,position: new ConstantPositionProperty(Cartesian3.ZERO, this.origin),orientation: new ConstantProperty(Quaternion.IDENTITY)}))</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L198">src/context.ts:198</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="_localorigineastnorthup" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _local<wbr>Origin<wbr>East<wbr>North<wbr>Up</h3>
+					<div class="tsd-signature tsd-kind-icon">_local<wbr>Origin<wbr>East<wbr>North<wbr>Up<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Entity</span><span class="tsd-signature-symbol"> =&nbsp;this.entities.add(new Entity({id: &#x27;ar.localOriginENU&#x27;,name: &#x27;Local Origin (ENU)&#x27;,position: new ConstantPositionProperty(Cartesian3.ZERO, this.localOriginEastNorthUp),orientation: new ConstantProperty(Quaternion.fromAxisAngle(Cartesian3.UNIT_X, -Math.PI / 2))}))</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L212">src/context.ts:212</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="_originchanged" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _origin<wbr>Changed</h3>
+					<div class="tsd-signature tsd-kind-icon">_origin<wbr>Changed<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L147">src/context.ts:147</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -250,7 +309,7 @@
 					<div class="tsd-signature tsd-kind-icon">_scratch<wbr>Cartesian<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Cartesian3</span><span class="tsd-signature-symbol"> =&nbsp;new Cartesian3</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L389">src/context.ts:389</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L307">src/context.ts:307</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -260,7 +319,7 @@
 					<div class="tsd-signature tsd-kind-icon">_scratch<wbr>Frustum<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">PerspectiveFrustum</span><span class="tsd-signature-symbol"> =&nbsp;new PerspectiveFrustum()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L391">src/context.ts:391</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L309">src/context.ts:309</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -270,7 +329,7 @@
 					<div class="tsd-signature tsd-kind-icon">_scratch<wbr>Matrix3<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Matrix3</span><span class="tsd-signature-symbol"> =&nbsp;new Matrix3</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L523">src/context.ts:523</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L517">src/context.ts:517</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -280,7 +339,7 @@
 					<div class="tsd-signature tsd-kind-icon">_scratch<wbr>Matrix4<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Matrix4</span><span class="tsd-signature-symbol"> =&nbsp;new Matrix4</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L524">src/context.ts:524</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L518">src/context.ts:518</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -290,17 +349,27 @@
 					<div class="tsd-signature tsd-kind-icon">_scratch<wbr>Quaternion<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Quaternion</span><span class="tsd-signature-symbol"> =&nbsp;new Quaternion</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L390">src/context.ts:390</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L308">src/context.ts:308</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="_serializedframestate" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _serialized<wbr>Frame<wbr>State</h3>
-					<div class="tsd-signature tsd-kind-icon">_serialized<wbr>Frame<wbr>State<span class="tsd-signature-symbol">:</span> <a href="../interfaces/framestate.html" class="tsd-signature-type">FrameState</a></div>
+					<div class="tsd-signature tsd-kind-icon">_serialized<wbr>Frame<wbr>State<span class="tsd-signature-symbol">:</span> <a href="../interfaces/contextframestate.html" class="tsd-signature-type">ContextFrameState</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L383">src/context.ts:383</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L301">src/context.ts:301</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="_stringidentifierfromreferenceframe" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _string<wbr>Identifier<wbr>From<wbr>Reference<wbr>Frame</h3>
+					<div class="tsd-signature tsd-kind-icon">_string<wbr>Identifier<wbr>From<wbr>Reference<wbr>Frame<span class="tsd-signature-symbol">:</span> <a href="../globals.html#stringidentifierfromreferenceframe" class="tsd-signature-type">stringIdentifierFromReferenceFrame</a><span class="tsd-signature-symbol"> =&nbsp;stringIdentifierFromReferenceFrame</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L400">src/context.ts:400</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -310,23 +379,23 @@
 					<div class="tsd-signature tsd-kind-icon">_updating<wbr>Entities<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Set</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Set&lt;string&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L386">src/context.ts:386</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L304">src/context.ts:304</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="defaultreferenceframe" class="tsd-anchor"></a>
 					<h3>default<wbr>Reference<wbr>Frame</h3>
-					<div class="tsd-signature tsd-kind-icon">default<wbr>Reference<wbr>Frame<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Entity</span><span class="tsd-signature-symbol"> =&nbsp;this.localOriginEastNorthUp</span></div>
+					<div class="tsd-signature tsd-kind-icon">default<wbr>Reference<wbr>Frame<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Entity</span><span class="tsd-signature-symbol"> =&nbsp;this.origin</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L331">src/context.ts:331</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L270">src/context.ts:270</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The default origin to use when calling <code>getEntityPose</code>.
-							By default, this is the <code>localOriginEastNorthUp</code> reference frame.</p>
+							<p>The default reference frame to use when calling <code>getEntityPose</code>.
+							By default, this is the <code>origin</code> reference frame.</p>
 						</div>
 					</div>
 				</section>
@@ -336,7 +405,7 @@
 					<div class="tsd-signature tsd-kind-icon">delta<wbr>Time<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;0</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L272">src/context.ts:272</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L167">src/context.ts:167</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -346,114 +415,40 @@
 						</div>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="entities" class="tsd-anchor"></a>
-					<h3>entities</h3>
-					<div class="tsd-signature tsd-kind-icon">entities<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">EntityCollection</span><span class="tsd-signature-symbol"> =&nbsp;new EntityCollection()</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+					<a name="deviceservice" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> device<wbr>Service</h3>
+					<div class="tsd-signature tsd-kind-icon">device<wbr>Service<span class="tsd-signature-symbol">:</span> <a href="deviceservice.html" class="tsd-signature-type">DeviceService</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L289">src/context.ts:289</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L56">src/context.ts:56</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The collection of all entities this application is aware of.</p>
-						</div>
-					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+					<a name="entityservice" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> entity<wbr>Service</h3>
+					<div class="tsd-signature tsd-kind-icon">entity<wbr>Service<span class="tsd-signature-symbol">:</span> <a href="entityservice.html" class="tsd-signature-type">EntityService</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L54">src/context.ts:54</a></li>
+						</ul>
+					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="framestateevent" class="tsd-anchor"></a>
-					<h3>frame<wbr>State<wbr>Event</h3>
-					<div class="tsd-signature tsd-kind-icon">frame<wbr>State<wbr>Event<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/framestate.html" class="tsd-signature-type">FrameState</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;FrameState&gt;()</span></div>
+					<a name="floor" class="tsd-anchor"></a>
+					<h3>floor</h3>
+					<div class="tsd-signature tsd-kind-icon">floor<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Entity</span><span class="tsd-signature-symbol"> =&nbsp;this.entities.add(new Entity({id: &#x27;ar.floor&#x27;,name: &#x27;Floor&#x27;,position: new ConstantPositionProperty(Cartesian3.ZERO, this.stage),orientation: new ConstantProperty(Quaternion.IDENTITY)}))</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L236">src/context.ts:236</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L237">src/context.ts:237</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>An event that is raised when the next frame state is available.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="ground" class="tsd-anchor"></a>
-					<h3>ground</h3>
-					<div class="tsd-signature tsd-kind-icon">ground<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Entity</span><span class="tsd-signature-symbol"> =&nbsp;this.entities.add(new Entity({id: &#x27;ar.ground&#x27;,name: &#x27;Ground&#x27;,position: new ConstantPositionProperty(Cartesian3.ZERO, this.stage),orientation: new ConstantProperty(Quaternion.IDENTITY)}))</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L368">src/context.ts:368</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>An entity representing a ground-level plane below the user</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="localorigin" class="tsd-anchor"></a>
-					<h3>local<wbr>Origin</h3>
-					<div class="tsd-signature tsd-kind-icon">local<wbr>Origin<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Entity</span><span class="tsd-signature-symbol"> =&nbsp;this.entities.add(new Entity({id: &#x27;ar.localOrigin&#x27;,name: &#x27;Local Origin (ENU)&#x27;,position: new ConstantPositionProperty(undefined, undefined),orientation: new ConstantProperty(Quaternion.IDENTITY)}))</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L296">src/context.ts:296</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>An entity representing the local origin, which is oriented
-								East-North-Up if geolocation is known, otherwise an arbitrary
-							frame with +Z up</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="localoriginchangeevent" class="tsd-anchor"></a>
-					<h3>local<wbr>Origin<wbr>Change<wbr>Event</h3>
-					<div class="tsd-signature tsd-kind-icon">local<wbr>Origin<wbr>Change<wbr>Event<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;void&gt;()</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L258">src/context.ts:258</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>An event that fires when the local origin changes.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="localorigineastnorthup" class="tsd-anchor"></a>
-					<h3>local<wbr>Origin<wbr>East<wbr>North<wbr>Up</h3>
-					<div class="tsd-signature tsd-kind-icon">local<wbr>Origin<wbr>East<wbr>North<wbr>Up<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Entity</span><span class="tsd-signature-symbol"> =&nbsp;this.entities.add(new Entity({id: &#x27;ar.localOriginENU&#x27;,name: &#x27;Local Origin (ENU)&#x27;,position: new ConstantPositionProperty(Cartesian3.ZERO, this.localOrigin),orientation: new ConstantProperty(Quaternion.IDENTITY)}))</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L308">src/context.ts:308</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Alias for <code>localOrigin</code>. An entity representing the local origin,
-								which is oriented East-North-Up if geolocation is known,
-							otherwise an arbitrary frame with +Z up</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="localorigineastupsouth" class="tsd-anchor"></a>
-					<h3>local<wbr>Origin<wbr>East<wbr>UpSouth</h3>
-					<div class="tsd-signature tsd-kind-icon">local<wbr>Origin<wbr>East<wbr>UpSouth<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Entity</span><span class="tsd-signature-symbol"> =&nbsp;this.entities.add(new Entity({id: &#x27;ar.localOriginEUS&#x27;,name: &#x27;Local Origin (EUS)&#x27;,position: new ConstantPositionProperty(Cartesian3.ZERO, this.localOriginEastNorthUp),orientation: new ConstantProperty(Quaternion.fromAxisAngle(Cartesian3.UNIT_X, Math.PI / 2))}))</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L320">src/context.ts:320</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>An entity representing the same origin as <code>localOriginEastNorthUp</code>, but rotated
-								90deg around X-axis to create an East-Up-South coordinate system.
-							Useful for maintaining a scene-graph where +Y is up.</p>
+							<p>A coordinate system representing the floor.
+								While the <code>stage</code> always represents a physical surface,
+							the <code>floor</code> entity may represent a virtual floor.</p>
 						</div>
 					</div>
 				</section>
@@ -463,7 +458,7 @@
 					<div class="tsd-signature tsd-kind-icon">max<wbr>Delta<wbr>Time<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;1 / 3 * 1000</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L278">src/context.ts:278</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L173">src/context.ts:173</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -474,12 +469,45 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="origin" class="tsd-anchor"></a>
+					<h3>origin</h3>
+					<div class="tsd-signature tsd-kind-icon">origin<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Entity</span><span class="tsd-signature-symbol"> =&nbsp;this.entities.add(new Entity({id: &#x27;ar.origin&#x27;,name: &#x27;Origin&#x27;,position: new ConstantPositionProperty(undefined, ReferenceFrame.FIXED),orientation: new ConstantProperty(undefined)}))</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L188">src/context.ts:188</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>An entity representing the local origin, which is oriented
+								with +Y up. The local origin changes infrequently, is platform dependent,
+							and is the suggested origin for a rendering scenegraph.</p>
+						</div>
+						<p>Any time the local origin changes, the localOriginChange event is raised.</p>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="originchangeevent" class="tsd-anchor"></a>
+					<h3>origin<wbr>Change<wbr>Event</h3>
+					<div class="tsd-signature tsd-kind-icon">origin<wbr>Change<wbr>Event<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;void&gt;()</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L146">src/context.ts:146</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>An event that fires when the origin changes.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="postrenderevent" class="tsd-anchor"></a>
 					<h3>post<wbr>Render<wbr>Event</h3>
 					<div class="tsd-signature tsd-kind-icon">post<wbr>Render<wbr>Event<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><a href="contextservice.html" class="tsd-signature-type">ContextService</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;ContextService&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L253">src/context.ts:253</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L141">src/context.ts:141</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -494,7 +522,7 @@
 					<div class="tsd-signature tsd-kind-icon">render<wbr>Event<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><a href="contextservice.html" class="tsd-signature-type">ContextService</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;ContextService&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L248">src/context.ts:248</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L136">src/context.ts:136</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -504,29 +532,53 @@
 						</div>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
 					<a name="sessionservice" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> session<wbr>Service</h3>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> session<wbr>Service</h3>
 					<div class="tsd-signature tsd-kind-icon">session<wbr>Service<span class="tsd-signature-symbol">:</span> <a href="sessionservice.html" class="tsd-signature-type">SessionService</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L179">src/context.ts:179</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L55">src/context.ts:55</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="stage" class="tsd-anchor"></a>
 					<h3>stage</h3>
-					<div class="tsd-signature tsd-kind-icon">stage<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Entity</span><span class="tsd-signature-symbol"> =&nbsp;this.entities.add(new Entity({id: &#x27;ar.stage&#x27;,name: &#x27;Stage&#x27;,position: new ConstantPositionProperty(undefined, undefined),orientation: new ConstantProperty(Quaternion.IDENTITY)}))</span></div>
+					<div class="tsd-signature tsd-kind-icon">stage<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Entity</span><span class="tsd-signature-symbol"> =&nbsp;this.entities.add(new Entity({id: &#x27;ar.stage&#x27;,name: &#x27;Stage&#x27;,position: new ConstantPositionProperty(undefined, ReferenceFrame.FIXED),orientation: new ConstantProperty(undefined)}))</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L358">src/context.ts:358</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L225">src/context.ts:225</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>An entity representing the physical floor-level plane below the user</p>
+							<p>A coordinate system representing the physical space in which the user is free to
+								move around, positioned on the surface the user is standing on,
+								where +X is east, +Y is up, and +Z is south (East-Up-South), if geolocation is known.
+							If the stage is not geolocated, then the +X and +Z directions are arbitrary.</p>
 						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="subscribe" class="tsd-anchor"></a>
+					<h3>subscribe</h3>
+					<div class="tsd-signature tsd-kind-icon">subscribe<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;this.entityService.subscribe.bind(this.entityService)</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L366">src/context.ts:366</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Subscribe to pose updates for the given entity id</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>returns</dt>
+							<dd><p>A Promise that resolves to a new or existing entity
+								instance matching the given id, if the subscription is successful</p>
+							</dd>
+						</dl>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
@@ -535,7 +587,7 @@
 					<div class="tsd-signature tsd-kind-icon">time<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">JulianDate</span><span class="tsd-signature-symbol"> =&nbsp;new JulianDate(0,0)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L284">src/context.ts:284</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L179">src/context.ts:179</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -551,7 +603,7 @@
 					<div class="tsd-signature tsd-kind-icon">timestamp<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;-1</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L266">src/context.ts:266</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L161">src/context.ts:161</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -564,12 +616,27 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="unsubscribe" class="tsd-anchor"></a>
+					<h3>unsubscribe</h3>
+					<div class="tsd-signature tsd-kind-icon">unsubscribe<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;this.entityService.unsubscribe.bind(this.entityService)</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L371">src/context.ts:371</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Unsubscribe to pose updates for the given entity id</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="updateevent" class="tsd-anchor"></a>
 					<h3>update<wbr>Event</h3>
 					<div class="tsd-signature tsd-kind-icon">update<wbr>Event<span class="tsd-signature-symbol">:</span> <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><a href="contextservice.html" class="tsd-signature-type">ContextService</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Event&lt;ContextService&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L242">src/context.ts:242</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L130">src/context.ts:130</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -582,21 +649,65 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="user" class="tsd-anchor"></a>
 					<h3>user</h3>
-					<div class="tsd-signature tsd-kind-icon">user<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Entity</span><span class="tsd-signature-symbol"> =&nbsp;this.entities.add(new Entity({id: &#x27;ar.user&#x27;,name: &#x27;User&#x27;,position: new ConstantPositionProperty(undefined, undefined),orientation: new ConstantProperty(Quaternion.IDENTITY)}))</span></div>
+					<div class="tsd-signature tsd-kind-icon">user<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Entity</span><span class="tsd-signature-symbol"> =&nbsp;this.entities.add(new Entity({id: &#x27;ar.user&#x27;,name: &#x27;User&#x27;,position: new ConstantPositionProperty(undefined, this.stage),orientation: new ConstantProperty(undefined)}))</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L336">src/context.ts:336</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L248">src/context.ts:248</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>An entity representing the user.</p>
+							<p>An coordinate system representing the user,
+							where +X is right, +Y is up, and -Z is the direction the user is facing</p>
 						</div>
 					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="view" class="tsd-anchor"></a>
+					<h3>view</h3>
+					<div class="tsd-signature tsd-kind-icon">view<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Entity</span><span class="tsd-signature-symbol"> =&nbsp;this.entities.add(new Entity({id: &#x27;ar.view&#x27;,name: &#x27;View&#x27;,position: new ConstantPositionProperty(Cartesian3.ZERO, this.user),orientation: new ConstantProperty(Quaternion.IDENTITY)}))</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L259">src/context.ts:259</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>An coordinate system representing the rendering view,
+							where +X is right, +Y is up, and -Z is the direction of the view.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+					<a name="viewservice" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> view<wbr>Service</h3>
+					<div class="tsd-signature tsd-kind-icon">view<wbr>Service<span class="tsd-signature-symbol">:</span> <a href="viewservice.html" class="tsd-signature-type">ViewService</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L57">src/context.ts:57</a></li>
+						</ul>
+					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Accessors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="entities" class="tsd-anchor"></a>
+					<h3>entities</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> entities<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">EntityCollection</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L124">src/context.ts:124</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">EntityCollection</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
 					<a name="geoheadingaccuracy" class="tsd-anchor"></a>
 					<h3>geo<wbr>Heading<wbr>Accuracy</h3>
@@ -607,7 +718,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L667">src/context.ts:667</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L693">src/context.ts:693</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span>
@@ -627,7 +738,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L671">src/context.ts:671</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L697">src/context.ts:697</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span>
@@ -647,7 +758,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L676">src/context.ts:676</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L702">src/context.ts:702</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span>
@@ -667,9 +778,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L343">src/context.ts:343</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L275">src/context.ts:275</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>If geopose is available, this is the accuracy of the user&#39;s heading</p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span>
 								<span class="tsd-signature-symbol"> | </span>
 								<span class="tsd-signature-type">undefined</span>
@@ -687,9 +803,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L347">src/context.ts:347</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L282">src/context.ts:282</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>If geopose is available, this is the accuracy of the user&#39;s cartographic location</p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span>
 								<span class="tsd-signature-symbol"> | </span>
 								<span class="tsd-signature-type">undefined</span>
@@ -707,9 +828,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L351">src/context.ts:351</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L289">src/context.ts:289</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>If geopose is available, this is the accuracy of the user&#39;s elevation</p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span>
 								<span class="tsd-signature-symbol"> | </span>
 								<span class="tsd-signature-type">undefined</span>
@@ -718,16 +844,94 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
-					<a name="serializedframestate" class="tsd-anchor"></a>
-					<h3>serialized<wbr>Frame<wbr>State</h3>
+					<a name="localorigin" class="tsd-anchor"></a>
+					<h3>local<wbr>Origin</h3>
 					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> serializedFrameState<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/framestate.html" class="tsd-signature-type">FrameState</a></li>
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> localOrigin<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Entity</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L378">src/context.ts:378</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L197">src/context.ts:197</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>alias for origin</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Entity</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="localoriginchangeevent" class="tsd-anchor"></a>
+					<h3>local<wbr>Origin<wbr>Change<wbr>Event</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> localOriginChangeEvent<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L153">src/context.ts:153</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>An event that fires when the local origin changes.</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="localorigineastnorthup" class="tsd-anchor"></a>
+					<h3>local<wbr>Origin<wbr>East<wbr>North<wbr>Up</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> localOriginEastNorthUp<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Entity</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L211">src/context.ts:211</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Entity</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="localorigineastupsouth" class="tsd-anchor"></a>
+					<h3>local<wbr>Origin<wbr>East<wbr>UpSouth</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> localOriginEastUpSouth<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Entity</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L207">src/context.ts:207</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Entity</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="serializedframestate" class="tsd-anchor"></a>
+					<h3>serialized<wbr>Frame<wbr>State</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> serializedFrameState<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/contextframestate.html" class="tsd-signature-type">ContextFrameState</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L296">src/context.ts:296</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -735,7 +939,7 @@
 									<p>The serialized frame state for this frame</p>
 								</div>
 							</div>
-							<h4 class="tsd-returns-title">Returns <a href="../interfaces/framestate.html" class="tsd-signature-type">FrameState</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/contextframestate.html" class="tsd-signature-type">ContextFrameState</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -749,7 +953,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L398">src/context.ts:398</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L316">src/context.ts:316</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -768,19 +972,19 @@
 					<a name="_update" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _update</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">_update<span class="tsd-signature-symbol">(</span>frameState<span class="tsd-signature-symbol">: </span><a href="../interfaces/framestate.html" class="tsd-signature-type">FrameState</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">_update<span class="tsd-signature-symbol">(</span>frameState<span class="tsd-signature-symbol">: </span><a href="../interfaces/contextframestate.html" class="tsd-signature-type">ContextFrameState</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L576">src/context.ts:576</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L566">src/context.ts:566</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>frameState: <a href="../interfaces/framestate.html" class="tsd-signature-type">FrameState</a></h5>
+									<h5>frameState: <a href="../interfaces/contextframestate.html" class="tsd-signature-type">ContextFrameState</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -791,19 +995,19 @@
 					<a name="_updatebackwardscompatability" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _update<wbr>Backwards<wbr>Compatability</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">_update<wbr>Backwards<wbr>Compatability<span class="tsd-signature-symbol">(</span>frameState<span class="tsd-signature-symbol">: </span><a href="../interfaces/framestate.html" class="tsd-signature-type">FrameState</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">_update<wbr>Backwards<wbr>Compatability<span class="tsd-signature-symbol">(</span>frameState<span class="tsd-signature-symbol">: </span><a href="../interfaces/contextframestate.html" class="tsd-signature-type">ContextFrameState</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L527">src/context.ts:527</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L521">src/context.ts:521</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>frameState: <a href="../interfaces/framestate.html" class="tsd-signature-type">FrameState</a></h5>
+									<h5>frameState: <a href="../interfaces/contextframestate.html" class="tsd-signature-type">ContextFrameState</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -820,7 +1024,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L488">src/context.ts:488</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L396">src/context.ts:396</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -834,15 +1038,88 @@
 							<ul class="tsd-parameters">
 								<li>
 									<h5>entityOrId: <span class="tsd-signature-type">Entity</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the entity to track</p>
+									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> referenceFrameOrId: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ReferenceFrame</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Entity</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> referenceFrameOrId: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ReferenceFrame</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Entity</span><span class="tsd-signature-symbol"> =&nbsp;this.defaultReferenceFrame</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>the reference frame to use</p>
+										<p>The intended reference frame. Defaults to <code>this.defaultReferenceFrame</code>.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="entitypose.html" class="tsd-signature-type">EntityPose</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="createframestate" class="tsd-anchor"></a>
+					<h3>create<wbr>Frame<wbr>State</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Frame<wbr>State<span class="tsd-signature-symbol">(</span>time<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">JulianDate</span>, viewport<span class="tsd-signature-symbol">: </span><a href="canvasviewport.html" class="tsd-signature-type">CanvasViewport</a>, subviewList<span class="tsd-signature-symbol">: </span><a href="serializedsubviewlist.html" class="tsd-signature-type">SerializedSubviewList</a>, options<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/contextframestate.html" class="tsd-signature-type">ContextFrameState</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L452">src/context.ts:452</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Create a frame state.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>time: <span class="tsd-signature-type">JulianDate</span></h5>
+								</li>
+								<li>
+									<h5>viewport: <a href="canvasviewport.html" class="tsd-signature-type">CanvasViewport</a></h5>
+								</li>
+								<li>
+									<h5>subviewList: <a href="serializedsubviewlist.html" class="tsd-signature-type">SerializedSubviewList</a></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> options: <span class="tsd-signature-type">object</span></h5>
+									<ul class="tsd-parameters">
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/contextframestate.html" class="tsd-signature-type">ContextFrameState</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="creategeoentity" class="tsd-anchor"></a>
+					<h3>create<wbr>Geo<wbr>Entity</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Geo<wbr>Entity<span class="tsd-signature-symbol">(</span>cartographic<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Cartographic</span>, localToFixed<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">eastNorthUpToFixedFrame</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Entity</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L384">src/context.ts:384</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Deprecated. Use <code>EntityService.createFixed</code> (<code>app.entity.createFixed</code>);</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>cartographic: <span class="tsd-signature-type">Cartographic</span></h5>
+								</li>
+								<li>
+									<h5>localToFixed: <span class="tsd-signature-type">eastNorthUpToFixedFrame</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Entity</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -856,7 +1133,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L425">src/context.ts:425</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L343">src/context.ts:343</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -872,27 +1149,27 @@
 					<a name="getentitycartographic" class="tsd-anchor"></a>
 					<h3>get<wbr>Entity<wbr>Cartographic</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Entity<wbr>Cartographic<span class="tsd-signature-symbol">(</span>entity<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Entity</span>, cartographic<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Cartographic</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Cartographic</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Entity<wbr>Cartographic<span class="tsd-signature-symbol">(</span>entity<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Entity</span>, result<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Cartographic</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Cartographic</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L466">src/context.ts:466</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L376">src/context.ts:376</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Get the cartographic position of an Entity</p>
+									<p>Get the cartographic position of an Entity for the current context time</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> entity: <span class="tsd-signature-type">Entity</span></h5>
+									<h5>entity: <span class="tsd-signature-type">Entity</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> cartographic: <span class="tsd-signature-type">Cartographic</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> result: <span class="tsd-signature-type">Cartographic</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Cartographic</span>
@@ -912,7 +1189,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L499">src/context.ts:499</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L409">src/context.ts:409</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -928,9 +1205,15 @@
 							<ul class="tsd-parameters">
 								<li>
 									<h5>entityOrId: <span class="tsd-signature-type">Entity</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The entity whose state is to be queried.</p>
+									</div>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> referenceFrameOrId: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ReferenceFrame</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Entity</span><span class="tsd-signature-symbol"> =&nbsp;this.defaultReferenceFrame</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The intended reference frame. Defaults to <code>this.defaultReferenceFrame</code>.</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="entitypose.html" class="tsd-signature-type">EntityPose</a></h4>
@@ -947,7 +1230,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L644">src/context.ts:644</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L673">src/context.ts:673</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -970,7 +1253,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L407">src/context.ts:407</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L325">src/context.ts:325</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -992,12 +1275,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L416">src/context.ts:416</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L334">src/context.ts:334</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Deprecated. To be removed. Use the defaultReferenceFrame property.</p>
+									<p>Deprecated. To be removed. Use the defaultReferenceFrame property if necessary.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1014,13 +1297,13 @@
 					<a name="submitframestate" class="tsd-anchor"></a>
 					<h3>submit<wbr>Frame<wbr>State</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">submit<wbr>Frame<wbr>State<span class="tsd-signature-symbol">(</span>frameState<span class="tsd-signature-symbol">: </span><a href="../interfaces/framestate.html" class="tsd-signature-type">FrameState</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">submit<wbr>Frame<wbr>State<span class="tsd-signature-symbol">(</span>frameState<span class="tsd-signature-symbol">: </span><a href="../interfaces/contextframestate.html" class="tsd-signature-type">ContextFrameState</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L517">src/context.ts:517</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L427">src/context.ts:427</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1031,43 +1314,10 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>frameState: <a href="../interfaces/framestate.html" class="tsd-signature-type">FrameState</a></h5>
+									<h5>frameState: <a href="../interfaces/contextframestate.html" class="tsd-signature-type">ContextFrameState</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="subscribe" class="tsd-anchor"></a>
-					<h3>subscribe</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">subscribe<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Entity</span>, session<span class="tsd-signature-symbol">?: </span><a href="sessionport.html" class="tsd-signature-type">SessionPort</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Entity</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L448">src/context.ts:448</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Subscribe to pose updates for the given entity id</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>id: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Entity</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> session: <a href="sessionport.html" class="tsd-signature-type">SessionPort</a><span class="tsd-signature-symbol"> =&nbsp;this.sessionService.manager</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Entity</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>A Promise that resolves to a new or existing entity
-							instance matching the given id, if the subscription is successful</p>
 						</li>
 					</ul>
 				</section>
@@ -1081,7 +1331,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L655">src/context.ts:655</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L685">src/context.ts:685</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1104,7 +1354,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L437">src/context.ts:437</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L355">src/context.ts:355</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1132,37 +1382,6 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="unsubscribe" class="tsd-anchor"></a>
-					<h3>unsubscribe</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">unsubscribe<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Entity</span>, session<span class="tsd-signature-symbol">?: </span><a href="sessionport.html" class="tsd-signature-type">SessionPort</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L458">src/context.ts:458</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Unsubscribe to pose updates for the given entity id</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>id: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Entity</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> session: <a href="sessionport.html" class="tsd-signature-type">SessionPort</a><span class="tsd-signature-symbol"> =&nbsp;this.sessionService.manager</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="unsubscribegeolocation" class="tsd-anchor"></a>
 					<h3>unsubscribe<wbr>Geolocation</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -1172,38 +1391,70 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L663">src/context.ts:663</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L689">src/context.ts:689</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="updateentityfromserializedstate" class="tsd-anchor"></a>
-					<h3>update<wbr>Entity<wbr>From<wbr>Serialized<wbr>State</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">update<wbr>Entity<wbr>From<wbr>Serialized<wbr>State<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, entityState<span class="tsd-signature-symbol">: </span><a href="../modules/serializedentitystate.html" class="tsd-signature-type">SerializedEntityState</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Entity</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/context.ts#L607">src/context.ts:607</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>id: <span class="tsd-signature-type">string</span></h5>
-								</li>
-								<li>
-									<h5>entityState: <a href="../modules/serializedentitystate.html" class="tsd-signature-type">SerializedEntityState</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h5>
-								</li>
+			</section>
+			<section class="tsd-panel-group tsd-member-group tsd-is-private tsd-is-private-protected">
+				<h2>Object literals</h2>
+				<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-class tsd-is-private">
+					<a name="_scratchframestate" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _scratch<wbr>Frame<wbr>State</h3>
+					<div class="tsd-signature tsd-kind-icon">_scratch<wbr>Frame<wbr>State<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L432">src/context.ts:432</a></li>
+						</ul>
+					</aside>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="_scratchframestate.entities-1" class="tsd-anchor"></a>
+						<h3>entities</h3>
+						<div class="tsd-signature tsd-kind-icon">entities<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L434">src/context.ts:434</a></li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Entity</span></h4>
-						</li>
-					</ul>
+						</aside>
+						<div class="tsd-type-declaration">
+							<h4>Type declaration</h4>
+							<ul class="tsd-parameters">
+							</ul>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="_scratchframestate.subviews" class="tsd-anchor"></a>
+						<h3>subviews</h3>
+						<div class="tsd-signature tsd-kind-icon">subviews<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L436">src/context.ts:436</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="_scratchframestate.time-1" class="tsd-anchor"></a>
+						<h3>time</h3>
+						<div class="tsd-signature tsd-kind-icon">time<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;&lt;any&gt;{}</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L433">src/context.ts:433</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="_scratchframestate.viewport" class="tsd-anchor"></a>
+						<h3>viewport</h3>
+						<div class="tsd-signature tsd-kind-icon">viewport<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;&lt;any&gt;{}</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/context.ts#L435">src/context.ts:435</a></li>
+							</ul>
+						</aside>
+					</section>
 				</section>
 			</section>
 		</div>
@@ -1232,10 +1483,25 @@
 								<a href="contextservice.html#_frameindex" class="tsd-kind-icon">_frame<wbr>Index</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="contextservice.html#_getentityorientationinreferenceframe" class="tsd-kind-icon">_get<wbr>Entity<wbr>Orientation<wbr>InReference<wbr>Frame</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="contextservice.html#_getentitypositioninreferenceframe" class="tsd-kind-icon">_get<wbr>Entity<wbr>Position<wbr>InReference<wbr>Frame</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="contextservice.html#_getserializedentitystate" class="tsd-kind-icon">_get<wbr>Serialized<wbr>Entity<wbr>State</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="contextservice.html#_knownentities" class="tsd-kind-icon">_known<wbr>Entities</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="contextservice.html#_localorigin" class="tsd-kind-icon">_local<wbr>Origin</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="contextservice.html#_localorigineastnorthup" class="tsd-kind-icon">_local<wbr>Origin<wbr>East<wbr>North<wbr>Up</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="contextservice.html#_originchanged" class="tsd-kind-icon">_origin<wbr>Changed</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="contextservice.html#_scratchcartesian" class="tsd-kind-icon">_scratch<wbr>Cartesian</a>
@@ -1256,6 +1522,9 @@
 								<a href="contextservice.html#_serializedframestate" class="tsd-kind-icon">_serialized<wbr>Frame<wbr>State</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="contextservice.html#_stringidentifierfromreferenceframe" class="tsd-kind-icon">_string<wbr>Identifier<wbr>From<wbr>Reference<wbr>Frame</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="contextservice.html#_updatingentities" class="tsd-kind-icon">_updating<wbr>Entities</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
@@ -1264,29 +1533,23 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="contextservice.html#deltatime" class="tsd-kind-icon">delta<wbr>Time</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="contextservice.html#entities" class="tsd-kind-icon">entities</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+								<a href="contextservice.html#deviceservice" class="tsd-kind-icon">device<wbr>Service</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+								<a href="contextservice.html#entityservice" class="tsd-kind-icon">entity<wbr>Service</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="contextservice.html#framestateevent" class="tsd-kind-icon">frame<wbr>State<wbr>Event</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="contextservice.html#ground" class="tsd-kind-icon">ground</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="contextservice.html#localorigin" class="tsd-kind-icon">local<wbr>Origin</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="contextservice.html#localoriginchangeevent" class="tsd-kind-icon">local<wbr>Origin<wbr>Change<wbr>Event</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="contextservice.html#localorigineastnorthup" class="tsd-kind-icon">local<wbr>Origin<wbr>East<wbr>North<wbr>Up</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="contextservice.html#localorigineastupsouth" class="tsd-kind-icon">local<wbr>Origin<wbr>East<wbr>UpSouth</a>
+								<a href="contextservice.html#floor" class="tsd-kind-icon">floor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="contextservice.html#maxdeltatime" class="tsd-kind-icon">max<wbr>Delta<wbr>Time</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="contextservice.html#origin" class="tsd-kind-icon">origin</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="contextservice.html#originchangeevent" class="tsd-kind-icon">origin<wbr>Change<wbr>Event</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="contextservice.html#postrenderevent" class="tsd-kind-icon">post<wbr>Render<wbr>Event</a>
@@ -1294,11 +1557,14 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="contextservice.html#renderevent" class="tsd-kind-icon">render<wbr>Event</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
 								<a href="contextservice.html#sessionservice" class="tsd-kind-icon">session<wbr>Service</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="contextservice.html#stage" class="tsd-kind-icon">stage</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="contextservice.html#subscribe" class="tsd-kind-icon">subscribe</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="contextservice.html#time" class="tsd-kind-icon">time</a>
@@ -1307,10 +1573,22 @@
 								<a href="contextservice.html#timestamp" class="tsd-kind-icon">timestamp</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="contextservice.html#unsubscribe" class="tsd-kind-icon">unsubscribe</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="contextservice.html#updateevent" class="tsd-kind-icon">update<wbr>Event</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="contextservice.html#user" class="tsd-kind-icon">user</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="contextservice.html#view" class="tsd-kind-icon">view</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+								<a href="contextservice.html#viewservice" class="tsd-kind-icon">view<wbr>Service</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="contextservice.html#entities" class="tsd-kind-icon">entities</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="contextservice.html#geoheadingaccuracy" class="tsd-kind-icon">geo<wbr>Heading<wbr>Accuracy</a>
@@ -1331,6 +1609,18 @@
 								<a href="contextservice.html#geoposeverticalaccuracy" class="tsd-kind-icon">geopose<wbr>Vertical<wbr>Accuracy</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="contextservice.html#localorigin" class="tsd-kind-icon">local<wbr>Origin</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="contextservice.html#localoriginchangeevent" class="tsd-kind-icon">local<wbr>Origin<wbr>Change<wbr>Event</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="contextservice.html#localorigineastnorthup" class="tsd-kind-icon">local<wbr>Origin<wbr>East<wbr>North<wbr>Up</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="contextservice.html#localorigineastupsouth" class="tsd-kind-icon">local<wbr>Origin<wbr>East<wbr>UpSouth</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="contextservice.html#serializedframestate" class="tsd-kind-icon">serialized<wbr>Frame<wbr>State</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-private">
@@ -1344,6 +1634,12 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="contextservice.html#createentitypose" class="tsd-kind-icon">create<wbr>Entity<wbr>Pose</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="contextservice.html#createframestate" class="tsd-kind-icon">create<wbr>Frame<wbr>State</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="contextservice.html#creategeoentity" class="tsd-kind-icon">create<wbr>Geo<wbr>Entity</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
 								<a href="contextservice.html#getdefaultreferenceframe" class="tsd-kind-icon">get<wbr>Default<wbr>Reference<wbr>Frame</a>
@@ -1367,22 +1663,16 @@
 								<a href="contextservice.html#submitframestate" class="tsd-kind-icon">submit<wbr>Frame<wbr>State</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="contextservice.html#subscribe" class="tsd-kind-icon">subscribe</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="contextservice.html#subscribegeolocation" class="tsd-kind-icon">subscribe<wbr>Geolocation</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="contextservice.html#subscribetoentitybyid" class="tsd-kind-icon">subscribe<wbr>ToEntity<wbr>ById</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="contextservice.html#unsubscribe" class="tsd-kind-icon">unsubscribe</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="contextservice.html#unsubscribegeolocation" class="tsd-kind-icon">unsubscribe<wbr>Geolocation</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="contextservice.html#updateentityfromserializedstate" class="tsd-kind-icon">update<wbr>Entity<wbr>From<wbr>Serialized<wbr>State</a>
+							<li class=" tsd-kind-object-literal tsd-parent-kind-class tsd-is-private">
+								<a href="contextservice.html#_scratchframestate" class="tsd-kind-icon">_scratch<wbr>Frame<wbr>State</a>
 							</li>
 						</ul>
 					</li>
