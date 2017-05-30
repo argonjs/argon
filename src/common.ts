@@ -118,6 +118,7 @@ export class Viewport {
  * at the bottom left corner.
  */
 export class CanvasViewport extends Viewport {
+    pixelRatio: number = 1;
     renderWidthScaleFactor: number = 1;
     renderHeightScaleFactor: number = 1;
 

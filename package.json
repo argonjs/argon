@@ -220,7 +220,7 @@
     "build:browser": "jspm build src/argon.ts .tmp/argon-build.js --format umd --global-name Argon --skip-source-maps && derequire .tmp/argon-build.js > dist/argon.js",
     "build:core": "jspm build src/argon.ts .tmp/argon-build.js --node --format umd --global-name Argon --skip-source-maps && derequire .tmp/argon-build.js > dist/argon.core.js",
     "prebuild": "npm run build:core && npm run build:browser",
-    "build": "uglifyjs dist/argon.js -m -c warnings=false -o dist/argon.min.js",
+    "build": "uglifyjs dist/argon.js -m -c -o dist/argon.min.js",
     "browser-sync": "browser-sync  start --server --directory --startPath \"index.html\" --files \"src/**\"",
     "test": "jspm run test/runner.js",
     "static": "static -p 3000",
@@ -252,6 +252,6 @@
     "typedoc": "^0.5.7",
     "typescript": "^2.2.1",
     "typescript-formatter": "^2.3.0",
-    "uglify-js": "^2.8.27"
+    "uglify-js": "^3.0.13"
   }
 }

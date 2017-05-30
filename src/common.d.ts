@@ -83,6 +83,7 @@ export declare class Viewport {
  * at the bottom left corner.
  */
 export declare class CanvasViewport extends Viewport {
+    pixelRatio: number;
     renderWidthScaleFactor: number;
     renderHeightScaleFactor: number;
     static clone(viewport?: CanvasViewport, result?: CanvasViewport): CanvasViewport | undefined;

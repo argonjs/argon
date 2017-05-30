@@ -1,6 +1,9 @@
 /// <reference types="mocha"/>
 import * as chai from 'chai';
+// To test the source:
 import * as Argon from '../src/argon';
+// To test the build:
+// import * as Argon from '@argonjs/argon'
 if (typeof window !== 'undefined')
     window['Argon'] = Argon;
 var expect = chai.expect;
