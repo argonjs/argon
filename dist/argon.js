@@ -25926,6 +25926,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 __extends$1(CanvasViewport, _super);
                 function CanvasViewport() {
                     var _this = _super.apply(this, arguments) || this;
+                    _this.pixelRatio = 1;
                     _this.renderWidthScaleFactor = 1;
                     _this.renderHeightScaleFactor = 1;
                     return _this;
@@ -26501,7 +26502,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.2.0");
+            _export('version', version = "1.2.1");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
