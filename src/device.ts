@@ -337,6 +337,7 @@ export class DeviceService {
      * Start emmitting frameState events
      */
     private _startUpdates() : void {
+        if (!this.sessionService.isRealityViewer) return; 
         if (!this._updatingFrameState) this.requestAnimationFrame(this._updateFrameState);
         this._updatingFrameState = true;
         this.sessionService.manager.whenConnected().then(()=>{
