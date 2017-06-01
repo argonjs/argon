@@ -157,6 +157,9 @@ export class EmptyRealityViewer extends RealityViewer {
         const childDeviceService = child.get(DeviceService) as DeviceService;
         const childSessionService = child.get(SessionService) as SessionService;
         const childRealityService = child.get(RealityService) as RealityService;
+
+        // the child device service should *not* submit frames to the vrdisplay. 
+        childDeviceService.autoSubmitFrame = false;
         
         let customStagePosition:Cartesian3|undefined;
         let customStageOrientation:Quaternion|undefined;
