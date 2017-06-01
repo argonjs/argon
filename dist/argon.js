@@ -26502,7 +26502,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.2.2-0");
+            _export('version', version = "1.2.2-1");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -28590,6 +28590,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                  */
                 DeviceService$$1.prototype._startUpdates = function () {
                     var _this = this;
+                    if (!this.sessionService.isRealityViewer) return;
                     if (!this._updatingFrameState) this.requestAnimationFrame(this._updateFrameState);
                     this._updatingFrameState = true;
                     this.sessionService.manager.whenConnected().then(function () {
