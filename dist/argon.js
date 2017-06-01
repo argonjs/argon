@@ -26502,7 +26502,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.2.1");
+            _export('version', version = "1.2.2-0");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -30130,6 +30130,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     var childDeviceService = child.get(DeviceService);
                     var childSessionService = child.get(SessionService);
                     var childRealityService = child.get(RealityService);
+                    // the child device service should *not* submit frames to the vrdisplay. 
+                    childDeviceService.autoSubmitFrame = false;
                     var customStagePosition;
                     var customStageOrientation;
                     // Create protocol handlers for `ar.configureStage` protocol
