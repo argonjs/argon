@@ -2,24 +2,22 @@ import { autoinject } from 'aurelia-dependency-injection';
 import { SessionService, SessionPort } from './session';
 
 export type PermissionType = 
-    'ar.stage'          //Geolocation
-    | 'ar.camera'       //Camera
-    | 'ar.3dmesh';      //3D Structural mesh
+    'location'          //Geolocation
+    | 'camera'          //Camera
+    | 'depthmesh';      //3D Structural mesh
 
-export const PermissionNames = {
-        'ar.stage': 'Location',
-        'ar.camera': 'Camera',
-        'ar.3dmesh': 'Structural mesh'
-    };
+export const EntityIdByPermissionType = {
+    'location' : ['ar.stage'],
+    'camera' : [],
+    'depthmesh' : []
+}
 
-const PermissionDescriptions = {
-        'ar.stage': 'your location', 
-        'ar.camera': 'your camera',
-        'ar.3dmesh': 'the structure of your surroundings'
-    };
-/**
- * 
- */
+export const PermissionTypeByEntityId = {};
+for (let type in EntityIdByPermissionType) {
+    for (let id of EntityIdByPermissionType[type])
+        PermissionTypeByEntityId[id] = type;
+}
+
 export class Permission {
     readonly type: PermissionType;
     readonly state: PermissionState;
@@ -27,14 +25,6 @@ export class Permission {
     constructor(type: PermissionType, state?: PermissionState) {
         this.type = type;
         this.state = state || PermissionState.NOT_REQUIRED;
-    }
-
-    get name() {
-        return PermissionNames[this.type];
-    }
-
-    get description() {
-        return PermissionDescriptions[this.type];
     }
 }
 

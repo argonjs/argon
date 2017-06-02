@@ -42,7 +42,7 @@ import { EntityService, EntityServiceProvider, EntityPose } from './entity'
 import { DeviceService } from './device'
 import { eastUpSouthToFixedFrame } from './utils'
 import { ViewService } from './view'
-import { PermissionState, PermissionType, PermissionServiceProvider } from './permission'
+import { PermissionState, PermissionServiceProvider, PermissionTypeByEntityId } from './permission'
 
 /**
  * Provides a means of querying the current state of reality.
@@ -790,7 +790,7 @@ export class ContextServiceProvider {
         }
 
         // remove stage updates if geolocation permission is not granted
-        if (this.permissionServiceProvider.getPermissionState(session, <PermissionType>contextStageId) != PermissionState.GRANTED)
+        if (this.permissionServiceProvider.getPermissionState(session, PermissionTypeByEntityId[contextStageId]) != PermissionState.GRANTED)
             delete sessionEntities[contextStageId];
              
         // recycle the frame state object, but with the session entities
