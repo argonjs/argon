@@ -547,12 +547,6 @@ if (typeof document !== 'undefined' && document.createElement) {
             margin: 0;
             border: 0;
             padding: 0;
-            visibility: visible;
-        }
-    `, sheet.cssRules.length);
-    sheet.insertRule(`
-        .argon-immersive body {
-            visibility: hidden;
         }
     `, sheet.cssRules.length);
     sheet.insertRule(`
