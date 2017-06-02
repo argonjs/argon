@@ -233,7 +233,6 @@ export class ViewService {
     private _currentViewportJSON: string;
 
     private _subviews: Subview[] = [];
-    private _subviewPose: EntityPose[] = [];
     private _subviewFrustum: PerspectiveFrustum[] = [];
 
     public get subviews() {
@@ -284,8 +283,7 @@ export class ViewService {
             decomposePerspectiveProjectionMatrix(serializedSubview.projectionMatrix, subview.frustum);
             subview['projectionMatrix'] = <Matrix4>subview.frustum.projectionMatrix;
 
-            subview.pose = this._subviewPose[index] = 
-                this._subviewPose[index] || contextService.createEntityPose(contextService.getSubviewEntity(index));
+            subview.pose = contextService.getEntityPose(contextService.getSubviewEntity(index));
             subview.pose.update(state.time);
             
             index++;
