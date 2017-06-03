@@ -28,6 +28,14 @@ export * from './utils/message-channel';
 export {default as getEventSynthesizier} from './utils/ui-event-synthesizer';
 export {default as createEventForwarder} from './utils/ui-event-forwarder';
 
+const reNative = /\{\s*\[native code\]\s*\}/;
+export function isNativeFunction(f:Function) {
+    return typeof f === 'function' && reNative.test(Function.prototype.toString.call(f))
+}
+
+export const hasNativeWebVRImplementation = typeof navigator !== 'undefined' && isNativeFunction(navigator.getVRDisplays);
+
+export const suggestedWebGLContextAntialiasAttribute = hasNativeWebVRImplementation;
 
 export function stringIdentifierFromReferenceFrame(referenceFrame: string | ReferenceFrame | Entity): string {
     const rf = referenceFrame as Entity;
