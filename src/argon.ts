@@ -197,6 +197,18 @@ export class ArgonSystem {
             }
         }
     }
+
+    public get suggestedPixelRatio() {
+        if (this.device.isPresentingHMD && hasNativeWebVRImplementation) return 1;
+
+        const devicePixelRatio = typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1
+        if (this.focus.hasFocus) {
+            return devicePixelRatio;
+        } else {
+            return devicePixelRatio * 0.5;
+        }
+    }
+
     public _provider:ArgonSystemProvider;
     public get provider() {
         this.session.ensureIsRealityManager();
