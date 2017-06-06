@@ -26474,7 +26474,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             reNative = /\{\s*\[native code\]\s*\}/;
 
-            _export('hasNativeWebVRImplementation', hasNativeWebVRImplementation = typeof navigator !== 'undefined' && isNativeFunction(navigator.getVRDisplays));
+            _export('hasNativeWebVRImplementation', hasNativeWebVRImplementation = typeof navigator !== 'undefined' && isNativeFunction(navigator.getVRDisplays) && !Object.getOwnPropertyDescriptor(navigator, "getVRDisplays"));
 
             _export('suggestedWebGLContextAntialiasAttribute', suggestedWebGLContextAntialiasAttribute = hasNativeWebVRImplementation);
 
@@ -26516,7 +26516,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.3.0");
+            _export('version', version = "1.3.1");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
