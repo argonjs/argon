@@ -6,47 +6,16 @@ All notable changes to this project will be documented in this file. See [standa
 # [1.3.0](https://github.com/argonjs/argon/compare/v1.3.0-1...v1.3.0) (2017-06-06)
 
 
-
-<a name="1.3.0-1"></a>
-# [1.3.0-1](https://github.com/argonjs/argon/compare/v1.3.0-0...v1.3.0-1) (2017-06-06)
-
-
 ### Bug Fixes
 
 * **ArgonSystem:** fix regression in passing container element to Argon.init ([a36611a](https://github.com/argonjs/argon/commit/a36611a))
-
-
-
-<a name="1.3.0-0"></a>
-# [1.3.0-0](https://github.com/argonjs/argon/compare/v1.2.2-2...v1.3.0-0) (2017-06-06)
-
-
-### Bug Fixes
-
 * **view:** fixed subview.pose value ([12b884d](https://github.com/argonjs/argon/commit/12b884d))
 * **view:** fixed ViewService subview poses ([b418e74](https://github.com/argonjs/argon/commit/b418e74))
-
 
 ### Features
 
 * **utils:** added “suggestedWebGLContextAntialiasAttribute” ([6f94577](https://github.com/argonjs/argon/commit/6f94577))
 * added `suggestedPixelRatio` to `ArgonSystem` ([47e3049](https://github.com/argonjs/argon/commit/47e3049))
-
-
-
-<a name="1.2.2-2"></a>
-## [1.2.2-2](https://github.com/argonjs/argon/compare/v1.2.2-1...v1.2.2-2) (2017-06-02)
-
-
-
-<a name="1.2.2-1"></a>
-## [1.2.2-1](https://github.com/argonjs/argon/compare/v1.2.2-0...v1.2.2-1) (2017-06-01)
-
-
-
-<a name="1.2.2-0"></a>
-## [1.2.2-0](https://github.com/argonjs/argon/compare/v1.2.1...v1.2.2-0) (2017-06-01)
-
 
 
 <a name="1.2.1"></a>
@@ -56,7 +25,6 @@ All notable changes to this project will be documented in this file. See [standa
 ### Bug Fixes
 
 * Fixed argon.min.js build ([0e459d2](https://github.com/argonjs/argon/commit/0e459d2))
-
 
 
 <a name="1.2.0"></a>
