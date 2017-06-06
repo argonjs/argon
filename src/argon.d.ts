@@ -69,6 +69,8 @@ export declare class ArgonSystem {
      */
     static instance?: ArgonSystem;
     constructor(container: DI.Container, entity: EntityService, context: ContextService, device: DeviceService, focus: FocusService, reality: RealityService, session: SessionService, view: ViewService, visibility: VisibilityService, vuforia: VuforiaService, permission: PermissionService);
+    private _setupDOM();
+    readonly suggestedPixelRatio: number;
     _provider: ArgonSystemProvider;
     readonly provider: ArgonSystemProvider;
     readonly updateEvent: Event<any>;
@@ -80,8 +82,9 @@ export declare class ArgonSystem {
 export declare class ArgonConfigurationManager {
     configuration: Configuration;
     container: DI.Container;
+    elementOrSelector: HTMLElement | string | null;
     static configure(configurationManager: ArgonConfigurationManager): void;
-    constructor(configuration: Configuration, container?: DI.Container);
+    constructor(configuration: Configuration, container?: DI.Container, elementOrSelector?: HTMLElement | string | null);
     standardConfiguration(): void;
     defaultConnect(): void;
     defaultUI(): void;

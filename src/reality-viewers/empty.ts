@@ -157,6 +157,7 @@ export class EmptyRealityViewer extends RealityViewer {
         const childDeviceService = child.get(DeviceService) as DeviceService;
         const childSessionService = child.get(SessionService) as SessionService;
         const childRealityService = child.get(RealityService) as RealityService;
+        const childViewService = child.get(ViewService) as ViewService;
 
         // the child device service should *not* submit frames to the vrdisplay. 
         childDeviceService.autoSubmitFrame = false;
@@ -238,7 +239,7 @@ export class EmptyRealityViewer extends RealityViewer {
                 // provide fov controls
                 if (!childDeviceService.strict) {                    
                     decomposePerspectiveProjectionMatrix(subviews[0].projectionMatrix, scratchFrustum);
-                    scratchFrustum.fov = this.viewService.subviews[0] && this.viewService.subviews[0].frustum.fov || CesiumMath.PI_OVER_THREE;
+                    scratchFrustum.fov = childViewService.subviews[0] && childViewService.subviews[0].frustum.fov || CesiumMath.PI_OVER_THREE;
 
                     if (aggregator && aggregator.isMoving(CameraEventType.WHEEL)) {
                         const wheelMovement = aggregator.getMovement(CameraEventType.WHEEL);

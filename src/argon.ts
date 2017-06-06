@@ -15,14 +15,14 @@ import {
 
 import { Configuration, Role } from './common'
 import { DefaultUIService } from './ui'
-import { Event } from './utils'
+import { Event, isIOS, getEventSynthesizier, createEventForwarder, hasNativeWebVRImplementation } from './utils'
 
 import { EntityService, EntityServiceProvider } from './entity'
 import { ContextService, ContextServiceProvider } from './context'
 import { FocusService, FocusServiceProvider } from './focus'
 import { DeviceService, DeviceServiceProvider } from './device'
 import { RealityService, RealityServiceProvider } from './reality'
-import { ViewService, ViewServiceProvider, ViewElement } from './view'
+import { ViewService, ViewServiceProvider, ViewItems, ViewportMode } from './view'
 import { VisibilityService, VisibilityServiceProvider } from './visibility'
 import { VuforiaService, VuforiaServiceProvider } from './vuforia'
 import { PermissionService, PermissionServiceProvider } from './permission'
@@ -101,10 +101,102 @@ export class ArgonSystem {
 
         if (this.container.hasResolver(ArgonSystemProvider)) 
             this._provider = this.container.get(ArgonSystemProvider);
+
+        this._setupDOM();
         
         this.session.connect();
     }
 
+    private _setupDOM() {
+        const viewItems:ViewItems = this.container.get(ViewItems);
+        const element = viewItems.element;
+
+        if (element && typeof document !== 'undefined' && document.createElement) {
+            
+            element.classList.add('argon-view');
+
+            // prevent pinch-zoom of the page in ios 10.
+            if (isIOS) {
+                const touchMoveListener = (event) => {
+                    if (event.touches.length > 1)
+                        event.preventDefault();
+                }
+                element.addEventListener('touchmove', touchMoveListener, true);
+                this.session.manager.closeEvent.addEventListener(()=>{
+                    element.removeEventListener('touchmove', touchMoveListener)
+                });
+            }
+
+            // add/remove document-level css classes
+            this.focus.focusEvent.addEventListener(() => {
+                document.documentElement.classList.remove('argon-no-focus');
+                document.documentElement.classList.remove('argon-blur');
+                document.documentElement.classList.add('argon-focus');
+            });
+
+            this.focus.blurEvent.addEventListener(() => {
+                document.documentElement.classList.remove('argon-focus');
+                document.documentElement.classList.add('argon-blur');
+                document.documentElement.classList.add('argon-no-focus');
+            });
+
+            this.view.viewportModeChangeEvent.addEventListener((mode)=>{
+                switch (mode) {
+                    case ViewportMode.EMBEDDED:
+                        document.documentElement.classList.remove('argon-immersive');
+                        break;
+                    case ViewportMode.IMMERSIVE:
+                        document.documentElement.classList.add('argon-immersive');
+                        break;
+                }
+            });
+
+            // Setup event forwarding / synthesizing
+            if (this.session.isRealityViewer) {
+                this.session.manager.on['ar.view.uievent'] = getEventSynthesizier()!;
+            } else {
+                createEventForwarder(this.view, (event)=>{
+                    if (this.session.manager.isConnected && this.session.manager.version[0] >= 1)
+                        this.session.manager.send('ar.view.forwardUIEvent', event);
+                });
+                this.view._watchEmbeddedViewport();
+            }
+
+            this.context.renderEvent.addEventListener(()=>{
+                if (this.view.autoStyleLayerElements) {
+                    const layers = this.view.layers;
+                    if (!layers) return;
+
+                    const viewport = this.view.viewport;
+                    let zIndex = -layers.length;
+                    for (const layer of layers) {
+                        const layerStyle = layer.source.style;
+                        layerStyle.position = 'absolute';
+                        layerStyle.left = viewport.x + 'px';
+                        layerStyle.bottom = viewport.y + 'px';
+                        layerStyle.width = viewport.width + 'px';
+                        layerStyle.height = viewport.height + 'px';
+                        layerStyle.zIndex = '' + zIndex;
+                        zIndex++;
+                    }
+                }
+            });
+
+            if (!this.session.isRealityAugmenter) {
+                this.view.viewportChangeEvent.addEventListener((viewport)=>{
+                    if (this.view.element && this.view.autoLayoutImmersiveMode && 
+                        this.view.viewportMode === ViewportMode.IMMERSIVE) {
+                        const elementStyle = this.view.element.style;
+                        elementStyle.position = 'fixed';
+                        elementStyle.left = viewport.x + 'px';
+                        elementStyle.bottom = viewport.y + 'px';
+                        elementStyle.width = viewport.width + 'px';
+                        elementStyle.height = viewport.height + 'px';
+                    }
+                })
+            }
+        }
+    }
     public _provider:ArgonSystemProvider;
     public get provider() {
         this.session.ensureIsRealityManager();
@@ -145,12 +237,38 @@ export class ArgonConfigurationManager {
 
     constructor(
         public configuration:Configuration, 
-        public container:DI.Container = new DI.Container
+        public container:DI.Container = new DI.Container,
+        public elementOrSelector?:HTMLElement|string|null,
     ) {
         container.registerInstance(Configuration, configuration);
         
         if (Role.isRealityManager(configuration.role)) 
             container.registerSingleton(ArgonSystemProvider);
+
+        let element = elementOrSelector;
+        if (!element || typeof element === 'string') {
+            if (typeof document !== 'undefined') {
+                const selector = element;
+                element = selector ? <HTMLElement>document.querySelector(selector) : undefined;
+                if (!element && !selector) {
+                    element = document.querySelector('#argon') as HTMLElement;
+                    if (!element) {
+                        element = document.createElement('div');
+                        element.id = 'argon';
+                        document.body.appendChild(element);
+                    }
+                } else if (!element) {
+                    throw new Error('Unable to find element with selector: ' + selector);
+                }
+            } else {
+                console.warn('No DOM environment is available');
+                element = undefined;
+            }
+        }
+
+        const viewItems = new ViewItems();
+        viewItems.element = element;
+        container.registerInstance(ViewItems, viewItems);
 
         ArgonConfigurationManager.configure(this);
     }
@@ -254,7 +372,6 @@ export function init(
     }
 
     if (!dependencyInjectionContainer) dependencyInjectionContainer = new DI.Container();
-    dependencyInjectionContainer.registerInstance(ViewElement, element || null);
 
     return new ArgonConfigurationManager(configuration, dependencyInjectionContainer).container.get(ArgonSystem);
 }

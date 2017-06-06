@@ -23,7 +23,11 @@ export declare const enum ViewportMode {
     PAGE = 0,
     IMMERSIVE = 1,
 }
-export declare abstract class ViewElement {
+export declare class ViewItems {
+    element?: HTMLElement;
+    layers?: {
+        source: HTMLElement;
+    }[];
 }
 /**
  * Manages the view state
@@ -31,6 +35,7 @@ export declare abstract class ViewElement {
 export declare class ViewService {
     private sessionService;
     private focusService;
+    private viewItems;
     /**
      * UI events that occur within this view. To handle an event (and prevent it from
      * being forwarded to another layer) call event.stopImmediatePropagation().
@@ -81,21 +86,22 @@ export declare class ViewService {
      * Automatically publish the viewport of the element during PresentationMode.EMBEDDED
      */
     autoPublishEmbeddedMode: boolean;
-    /**
-     * The DOM element associated with this viewport
-     */
-    element: HTMLElement;
-    constructor(sessionService: SessionService, focusService: FocusService, elementOrSelector?: Element | string | null);
-    private _layers;
+    constructor(sessionService: SessionService, focusService: FocusService, viewItems: ViewItems);
     setLayers(layers: {
         source: HTMLElement;
     }[]): void;
+    /**
+    * The DOM element associated with this view
+    */
+    readonly element: HTMLElement | undefined;
+    /**
+     * The layers composing this view.
+     */
     readonly layers: {
         source: HTMLElement;
-    }[];
+    }[] | undefined;
     private _currentViewportJSON;
     private _subviews;
-    private _subviewPose;
     private _subviewFrustum;
     readonly subviews: Subview[];
     /**
@@ -115,7 +121,10 @@ export declare class ViewService {
     private _updateViewport(viewport);
     sendUIEventToSession(uievent: UIEvent, session?: SessionPort): void;
     private _embeddedViewport;
-    private _watchEmbeddedViewport();
+    /**
+     * @private
+     */
+    _watchEmbeddedViewport(): void;
 }
 export declare class ViewServiceProvider {
     private sessionService;
