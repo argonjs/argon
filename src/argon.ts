@@ -385,7 +385,7 @@ export function init(
 
     if (!dependencyInjectionContainer) dependencyInjectionContainer = new DI.Container();
 
-    return new ArgonConfigurationManager(configuration, dependencyInjectionContainer).container.get(ArgonSystem);
+    return new ArgonConfigurationManager(configuration, dependencyInjectionContainer, element).container.get(ArgonSystem);
 }
 
 /**
