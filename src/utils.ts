@@ -33,7 +33,9 @@ export function isNativeFunction(f:Function) {
     return typeof f === 'function' && reNative.test(Function.prototype.toString.call(f))
 }
 
-export const hasNativeWebVRImplementation = typeof navigator !== 'undefined' && isNativeFunction(navigator.getVRDisplays);
+export const hasNativeWebVRImplementation = typeof navigator !== 'undefined' && 
+    isNativeFunction(navigator.getVRDisplays) && 
+    !Object.getOwnPropertyDescriptor(navigator, "getVRDisplays");
 
 export const suggestedWebGLContextAntialiasAttribute = hasNativeWebVRImplementation;
 
