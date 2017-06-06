@@ -25048,7 +25048,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
             configuration.role = role;
         }
         if (!dependencyInjectionContainer) dependencyInjectionContainer = new Container();
-        return new ArgonConfigurationManager(configuration, dependencyInjectionContainer).container.get(ArgonSystem);
+        return new ArgonConfigurationManager(configuration, dependencyInjectionContainer, element).container.get(ArgonSystem);
     }
     /**
      * Initialize an [[ArgonSystem]] with the [[REALITY_VIEWER]] role
@@ -26516,7 +26516,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.3.0-0");
+            _export('version', version = "1.3.0-1");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
