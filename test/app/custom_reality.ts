@@ -17,7 +17,8 @@ scene.add(userLocation);
 
 const renderer = new THREE.WebGLRenderer({
     alpha: true, 
-    logarithmicDepthBuffer: true
+    logarithmicDepthBuffer: true,
+    antialias: Argon.suggestedWebGLContextAntialiasAttribute
 });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 app.view.element.appendChild(renderer.domElement);
@@ -98,6 +99,7 @@ app.updateEvent.addEventListener(() => {
 app.renderEvent.addEventListener(() => {
     const viewport = app.view.viewport;
     renderer.setSize(viewport.width, viewport.height);
+    renderer.setPixelRatio(app.suggestedPixelRatio);
     
     for (let subview of app.view.subviews) {
         camera.position.copy(subview.pose.position);

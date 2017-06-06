@@ -155,7 +155,7 @@ export class ViewService {
      * The DOM element associated with this view
      */
     public get element() {
-        return this.viewItems.element;
+        return this.viewItems.element!;
     }
 
     /**
