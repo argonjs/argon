@@ -1,19 +1,9 @@
 import { SessionService, SessionPort } from './session';
-export declare type PermissionType = 'ar.stage' | 'ar.camera' | 'ar.3dmesh';
-export declare const PermissionNames: {
-    'ar.stage': string;
-    'ar.camera': string;
-    'ar.3dmesh': string;
-};
-/**
- *
- */
+export declare type PermissionType = 'geolocation' | 'camera' | 'world-structure';
 export declare class Permission {
     readonly type: PermissionType;
     readonly state: PermissionState;
     constructor(type: PermissionType, state?: PermissionState);
-    readonly name: string;
-    readonly description: string;
 }
 export declare enum PermissionState {
     NOT_REQUIRED,
