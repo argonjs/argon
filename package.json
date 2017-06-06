@@ -1,6 +1,6 @@
 {
   "name": "@argonjs/argon",
-  "version": "1.3.0-0",
+  "version": "1.3.0-1",
   "main": "dist/argon.core.js",
   "browser": "dist/argon.js",
   "typings": "index.d.ts",
