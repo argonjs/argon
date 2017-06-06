@@ -24067,7 +24067,7 @@ $__System.registerDynamic('98', ['82', '97'], true, function ($__require, export
 $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', '13', '14', '18', '1e', '24', '15', '5', '7', '42', '1a', '1b', '8', '39', '3c', '51', '6e', '2d', '17', 'd', '27', '28', '2e', '2f', '30', '21', '26', '29', '35', '20', '36', '37', '38', 'e', 'f', '2a', '3d', '44', '7c', '46', '49', '4c', '4f', '7d', '7e', '7f', '81', '98'], function (_export, _context) {
     "use strict";
 
-    var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, cesium_Source_Core_Clock_js, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, defaultValue, defined, cesium_Source_Core_DeveloperError_js, Ellipsoid, Entity, EntityCollection, Event, cesium_Source_Core_ExtrapolationType_js, cesium_Source_Core_FeatureDetection_js, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HeadingPitchRoll_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, ReferenceEntity, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, TerrainProvider, throttleRequestByServer, loadImage, WebMercatorTilingScheme, getImagePixels, HeightmapTerrainData, Credit, sampleTerrain, CardboardUI, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, DI, after, lut, i, cesiumImports, kButtonWidthDp, kTouchSlopFactor, __extends$1, AVERAGE_EYE_HEIGHT, DEFAULT_NEAR_PLANE, DEFAULT_FAR_PLANE, Role, Configuration, Viewport, CanvasViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event$1, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, getEventSynthesizier$1, cloneTouch, cloneTouches, eastUpSouthToFixedFrame, scratchAncestorCartesian, scratchAncestorQuaternion, getEntityPosition, getEntityOrientation, _scratchFramesArray, _entityStateCache, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, lastTime, rAF, cAF, defaultTerrainProvider, version, __extends, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, SessionConnectService, WKWebViewConnectService, AndroidWebViewConnectService, _a$1, _b$1, __decorate$5, __metadata$5, PermissionNames, PermissionDescriptions, Permission, PermissionState, PermissionService, PermissionServiceProvider, _a$5, _b$5, __decorate$4, __metadata$4, EntityPose, PoseStatus, EntityService, EntityServiceProvider, _a$4, _b$4, _c$3, __decorate$7, __metadata$7, FocusService, FocusServiceProvider, _a$7, _b$7, __decorate$8, __metadata$8, VisibilityService, VisibilityServiceProvider, _a$8, _b$8, __decorate$6, __metadata$6, Subview, ViewportMode, ViewElement, ViewService, ViewServiceProvider, viewportMetaTag, argonMetaTag, style, sheet, _a$6, _b$6, _c$4, _d$3, _e$3, __decorate$3, __metadata$3, DeviceStableState$$1, DeviceFrameState$$1, DeviceService, DeviceServiceProvider, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, _h$1, _j$1, _k$1, _l$1, __decorate$10, __metadata$10, ContextService, ContextServiceProvider, _a$10, _b$10, _c$6, _d$5, _e$5, _f$3, _g$3, _h$3, _j$2, _k$2, _l$2, _m$1, RealityViewer, __extends$2, __decorate$11, __metadata$11, EmptyRealityViewer, _a$11, _b$11, _c$7, __extends$3, __decorate$12, __metadata$12, LiveRealityViewer, _a$12, _b$12, _c$8, _d$6, __extends$4, __decorate$13, __metadata$13, HostedRealityViewer, _a$13, _b$13, __decorate$9, __metadata$9, RealityViewerFactory, RealityService, RealityServiceProvider, _a$9, _b$9, _c$5, _d$4, _e$4, _f$2, _g$2, _h$2, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __extends$5, __decorate$14, __metadata$14, VuforiaServiceProvider, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$14, _b$14, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, ArgonConfigurationManager, initReality, _a, _b, _c, _d, _e, _f, _g, _h, _j, ArgonSystem_1, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
+    var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, cesium_Source_Core_Clock_js, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, defaultValue, defined, cesium_Source_Core_DeveloperError_js, Ellipsoid, Entity, EntityCollection, Event, cesium_Source_Core_ExtrapolationType_js, cesium_Source_Core_FeatureDetection_js, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HeadingPitchRoll_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, ReferenceEntity, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, TerrainProvider, throttleRequestByServer, loadImage, WebMercatorTilingScheme, getImagePixels, HeightmapTerrainData, Credit, sampleTerrain, CardboardUI, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, DI, after, lut, i, cesiumImports, kButtonWidthDp, kTouchSlopFactor, __extends$1, AVERAGE_EYE_HEIGHT, DEFAULT_NEAR_PLANE, DEFAULT_FAR_PLANE, Role, Configuration, Viewport, CanvasViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event$1, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, getEventSynthesizier$1, cloneTouch, cloneTouches, reNative, hasNativeWebVRImplementation, suggestedWebGLContextAntialiasAttribute, eastUpSouthToFixedFrame, scratchAncestorCartesian, scratchAncestorQuaternion, getEntityPosition, getEntityOrientation, _scratchFramesArray, _entityStateCache, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, lastTime, rAF, cAF, defaultTerrainProvider, version, __extends, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, SessionConnectService, WKWebViewConnectService, AndroidWebViewConnectService, _a$1, _b$1, __decorate$5, __metadata$5, Permission, PermissionState, PermissionService, PermissionServiceProvider, _a$5, _b$5, __decorate$4, __metadata$4, EntityPose, PoseStatus, EntityService, EntityServiceProvider, _a$4, _b$4, _c$3, __decorate$7, __metadata$7, FocusService, FocusServiceProvider, _a$7, _b$7, __decorate$8, __metadata$8, VisibilityService, VisibilityServiceProvider, _a$8, _b$8, __decorate$6, __metadata$6, Subview, ViewportMode, ViewItems, ViewService, ViewServiceProvider, viewportMetaTag, argonMetaTag, style, sheet, _a$6, _b$6, _c$4, _d$3, _e$3, __decorate$3, __metadata$3, DeviceStableState$$1, DeviceFrameState$$1, DeviceService, DeviceServiceProvider, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, _h$1, _j$1, _k$1, _l$1, __decorate$10, __metadata$10, ContextService, ContextServiceProvider, _a$10, _b$10, _c$6, _d$5, _e$5, _f$3, _g$3, _h$3, _j$2, _k$2, _l$2, _m$1, RealityViewer, __extends$2, __decorate$11, __metadata$11, EmptyRealityViewer, _a$11, _b$11, _c$7, __extends$3, __decorate$12, __metadata$12, LiveRealityViewer, _a$12, _b$12, _c$8, _d$6, __extends$4, __decorate$13, __metadata$13, HostedRealityViewer, _a$13, _b$13, __decorate$9, __metadata$9, RealityViewerFactory, RealityService, RealityServiceProvider, _a$9, _b$9, _c$5, _d$4, _e$4, _f$2, _g$2, _h$2, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __extends$5, __decorate$14, __metadata$14, VuforiaServiceProvider, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$14, _b$14, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, ArgonConfigurationManager, initReality, _a, _b, _c, _d, _e, _f, _g, _h, _j, ArgonSystem_1, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
 
     function alwaysValid() {
         return true;
@@ -24710,6 +24710,10 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
         });
     }
 
+    function isNativeFunction(f) {
+        return typeof f === 'function' && reNative.test(Function.prototype.toString.call(f));
+    }
+
     function stringIdentifierFromReferenceFrame(referenceFrame) {
         var rf = referenceFrame;
         return defined(rf.id) ? rf.id : '' + rf;
@@ -25044,7 +25048,6 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
             configuration.role = role;
         }
         if (!dependencyInjectionContainer) dependencyInjectionContainer = new Container();
-        dependencyInjectionContainer.registerInstance(ViewElement, element || null);
         return new ArgonConfigurationManager(configuration, dependencyInjectionContainer).container.get(ArgonSystem);
     }
     /**
@@ -25811,14 +25814,19 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             CardboardUI.prototype.listen = function (optionsCallback, backCallback) {
                 var canvas = this.gl.canvas;
+                var hasTouchEventClass = typeof TouchEvent !== 'undefined';
                 this.listener = function (event) {
                     var midline = canvas.clientWidth / 2;
                     var buttonSize = kButtonWidthDp * kTouchSlopFactor;
+                    var e = hasTouchEventClass && event instanceof TouchEvent ? event.changedTouches[0] : event;
                     // Check to see if the user clicked on (or around) the gear icon
-                    var e = event instanceof TouchEvent ? event.changedTouches[0] : event;
                     if (e.clientX > midline - buttonSize && e.clientX < midline + buttonSize && e.clientY > canvas.clientHeight - buttonSize) {
+                        event.preventDefault();
+                        event.stopImmediatePropagation();
                         optionsCallback(event);
                     } else if (e.clientX < buttonSize && e.clientY < buttonSize) {
+                        event.preventDefault();
+                        event.stopImmediatePropagation();
                         backCallback(event);
                     }
                 };
@@ -26464,6 +26472,12 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return touchList;
             };
 
+            reNative = /\{\s*\[native code\]\s*\}/;
+
+            _export('hasNativeWebVRImplementation', hasNativeWebVRImplementation = typeof navigator !== 'undefined' && isNativeFunction(navigator.getVRDisplays));
+
+            _export('suggestedWebGLContextAntialiasAttribute', suggestedWebGLContextAntialiasAttribute = hasNativeWebVRImplementation);
+
             _export('eastUpSouthToFixedFrame', eastUpSouthToFixedFrame = Transforms.localFrameToFixedFrameGenerator('east', 'up'));
 
             scratchAncestorCartesian = new Cartesian3();
@@ -26502,7 +26516,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.2.2-2");
+            _export('version', version = "1.3.0-0");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -27194,37 +27208,11 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
             };
 
-            _export('PermissionNames', PermissionNames = {
-                'ar.stage': 'Location',
-                'ar.camera': 'Camera',
-                'ar.3dmesh': 'Structural mesh'
-            });
-
-            PermissionDescriptions = {
-                'ar.stage': 'your location',
-                'ar.camera': 'your camera',
-                'ar.3dmesh': 'the structure of your surroundings'
-            };
-
             _export('Permission', Permission = function () {
                 function Permission(type, state) {
                     this.type = type;
                     this.state = state || PermissionState.NOT_REQUIRED;
                 }
-                Object.defineProperty(Permission.prototype, "name", {
-                    get: function () {
-                        return PermissionNames[this.type];
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(Permission.prototype, "description", {
-                    get: function () {
-                        return PermissionDescriptions[this.type];
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
                 return Permission;
             }());
 
@@ -27877,16 +27865,22 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 ViewportMode[ViewportMode["IMMERSIVE"] = 1] = "IMMERSIVE";
             })(ViewportMode || _export('ViewportMode', ViewportMode = {}));
 
-            _export('ViewElement', ViewElement = function () {
-                function ViewElement() {}
-                return ViewElement;
+            _export('ViewItems', ViewItems = function () {
+                function ViewItems() {}
+                return ViewItems;
             }());
 
+            _export('ViewItems', ViewItems = __decorate$6([singleton(), __metadata$6("design:paramtypes", [])], ViewItems));
+            /**
+             * Manages the view state
+             */
+
             _export('ViewService', ViewService = function () {
-                function ViewService(sessionService, focusService, elementOrSelector) {
+                function ViewService(sessionService, focusService, viewItems) {
                     var _this = this;
                     this.sessionService = sessionService;
                     this.focusService = focusService;
+                    this.viewItems = viewItems;
                     /**
                      * UI events that occur within this view. To handle an event (and prevent it from
                      * being forwarded to another layer) call event.stopImmediatePropagation().
@@ -27916,70 +27910,10 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                      * Automatically publish the viewport of the element during PresentationMode.EMBEDDED
                      */
                     this.autoPublishEmbeddedMode = true;
-                    this._layers = [];
                     this._subviews = [];
-                    this._subviewPose = [];
                     this._subviewFrustum = [];
                     this._desiredViewportMode = this.viewportMode;
                     this._embeddedViewport = new Viewport();
-                    if (typeof document !== 'undefined' && document.createElement) {
-                        var element = elementOrSelector;
-                        if (!element || typeof element === 'string') {
-                            var selector = element;
-                            element = selector ? document.querySelector(selector) : undefined;
-                            if (!element && !selector) {
-                                element = document.querySelector('#argon');
-                                if (!element) {
-                                    element = document.createElement('div');
-                                    element.id = 'argon';
-                                    document.body.appendChild(element);
-                                }
-                            } else if (!element) {
-                                throw new Error('Unable to find element with selector: ' + selector);
-                            }
-                        }
-                        this.element = element;
-                        element.classList.add('argon-view');
-                        // prevent pinch-zoom of the page in ios 10.
-                        if (isIOS) {
-                            var touchMoveListener_1 = function (event) {
-                                if (event.touches.length > 1) event.preventDefault();
-                            };
-                            this.element.addEventListener('touchmove', touchMoveListener_1, true);
-                            this.sessionService.manager.closeEvent.addEventListener(function () {
-                                _this.element.removeEventListener('touchmove', touchMoveListener_1);
-                            });
-                        }
-                        this.focusService.focusEvent.addEventListener(function () {
-                            document.documentElement.classList.remove('argon-no-focus');
-                            document.documentElement.classList.remove('argon-blur');
-                            document.documentElement.classList.add('argon-focus');
-                        });
-                        this.focusService.blurEvent.addEventListener(function () {
-                            document.documentElement.classList.remove('argon-focus');
-                            document.documentElement.classList.add('argon-blur');
-                            document.documentElement.classList.add('argon-no-focus');
-                        });
-                        this.viewportModeChangeEvent.addEventListener(function (mode) {
-                            switch (mode) {
-                                case ViewportMode.EMBEDDED:
-                                    document.documentElement.classList.remove('argon-immersive');
-                                    break;
-                                case ViewportMode.IMMERSIVE:
-                                    document.documentElement.classList.add('argon-immersive');
-                                    break;
-                            }
-                        });
-                        if (this.sessionService.isRealityViewer) {
-                            this.sessionService.manager.on['ar.view.uievent'] = getEventSynthesizier$1();
-                        }
-                        if (!this.sessionService.isRealityViewer) {
-                            createEventForwarder$$1(this, function (event) {
-                                if (_this.sessionService.manager.isConnected && _this.sessionService.manager.version[0] >= 1) _this.sessionService.manager.send('ar.view.forwardUIEvent', event);
-                            });
-                            this._watchEmbeddedViewport();
-                        }
-                    }
                     sessionService.manager.on['ar.view.viewportMode'] = function (_a) {
                         var mode = _a.mode;
                         _this._updateViewportMode(mode);
@@ -28045,21 +27979,35 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     return this.viewport;
                 };
                 ViewService.prototype.setLayers = function (layers) {
-                    if (this._layers) {
-                        for (var _i = 0, _a = this._layers; _i < _a.length; _i++) {
-                            var l = _a[_i];
+                    var currentLayers = this.viewItems.layers;
+                    if (currentLayers) {
+                        for (var _i = 0, currentLayers_1 = currentLayers; _i < currentLayers_1.length; _i++) {
+                            var l = currentLayers_1[_i];
                             this.element.removeChild(l.source);
                         }
                     }
-                    this._layers = layers;
-                    for (var _b = 0, layers_1 = layers; _b < layers_1.length; _b++) {
-                        var l = layers_1[_b];
+                    this.viewItems.layers = layers;
+                    for (var _a = 0, layers_1 = layers; _a < layers_1.length; _a++) {
+                        var l = layers_1[_a];
                         this.element.appendChild(l.source);
                     }
                 };
-                Object.defineProperty(ViewService.prototype, "layers", {
+                Object.defineProperty(ViewService.prototype, "element", {
+                    /**
+                    * The DOM element associated with this view
+                    */
                     get: function () {
-                        return this._layers;
+                        return this.viewItems.element;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(ViewService.prototype, "layers", {
+                    /**
+                     * The layers composing this view.
+                     */
+                    get: function () {
+                        return this.viewItems.layers;
                     },
                     enumerable: true,
                     configurable: true
@@ -28106,7 +28054,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         subview.frustum = this._subviewFrustum[index] = this._subviewFrustum[index] || new PerspectiveFrustum();
                         decomposePerspectiveProjectionMatrix(serializedSubview.projectionMatrix, subview.frustum);
                         subview['projectionMatrix'] = subview.frustum.projectionMatrix;
-                        subview.pose = this._subviewPose[index] = this._subviewPose[index] || contextService.createEntityPose(contextService.getSubviewEntity(index));
+                        subview.pose = contextService.getEntityPose(contextService.getSubviewEntity(index));
                         subview.pose.update(state.time);
                         index++;
                     }
@@ -28147,11 +28095,13 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 ViewService.prototype._updateViewport = function (viewport) {
                     var _this = this;
                     var viewportJSON = JSON.stringify(viewport);
-                    if (this._layers.length && this.autoStyleLayerElements) {
+                    if (this.layers && this.layers.length && this.autoStyleLayerElements) {
                         requestAnimationFrame(function () {
-                            var zIndex = -_this._layers.length;
-                            for (var _i = 0, _a = _this._layers; _i < _a.length; _i++) {
-                                var layer = _a[_i];
+                            var layers = _this.layers;
+                            if (!layers) return;
+                            var zIndex = -layers.length;
+                            for (var _i = 0, layers_2 = layers; _i < layers_2.length; _i++) {
+                                var layer = layers_2[_i];
                                 var layerStyle = layer.source.style;
                                 layerStyle.position = 'absolute';
                                 layerStyle.left = viewport.x + 'px';
@@ -28166,22 +28116,15 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     if (!this._currentViewportJSON || this._currentViewportJSON !== viewportJSON) {
                         this._currentViewportJSON = viewportJSON;
                         this._viewport = Viewport.clone(viewport, this._viewport);
-                        if (this.element && !this.sessionService.isRealityManager && this.autoLayoutImmersiveMode && this.viewportMode === ViewportMode.IMMERSIVE) {
-                            requestAnimationFrame(function () {
-                                var elementStyle = _this.element.style;
-                                elementStyle.position = 'fixed';
-                                elementStyle.left = viewport.x + 'px';
-                                elementStyle.bottom = viewport.y + 'px';
-                                elementStyle.width = viewport.width + 'px';
-                                elementStyle.height = viewport.height + 'px';
-                            });
-                        }
                         this.viewportChangeEvent.raiseEvent(viewport);
                     }
                 };
                 ViewService.prototype.sendUIEventToSession = function (uievent, session) {
                     if (session && session.isConnected) session.send('ar.view.uievent', uievent);
                 };
+                /**
+                 * @private
+                 */
                 ViewService.prototype._watchEmbeddedViewport = function () {
                     var _this = this;
                     var publish = function () {
@@ -28226,7 +28169,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
             __decorate$6([deprecated$1('viewport'), __metadata$6("design:type", Function), __metadata$6("design:paramtypes", []), __metadata$6("design:returntype", void 0)], ViewService.prototype, "getViewport", null);
             __decorate$6([deprecated$1('subviews'), __metadata$6("design:type", Function), __metadata$6("design:paramtypes", []), __metadata$6("design:returntype", void 0)], ViewService.prototype, "getSubviews", null);
             __decorate$6([deprecated$1('desiredViewportMode'), __metadata$6("design:type", Function), __metadata$6("design:paramtypes", [Number]), __metadata$6("design:returntype", Object)], ViewService.prototype, "requestPresentationMode", null);
-            _export('ViewService', ViewService = __decorate$6([inject(SessionService, FocusService, Optional.of(ViewElement)), __metadata$6("design:paramtypes", [typeof (_a$6 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$6 || Object, typeof (_b$6 = typeof FocusService !== "undefined" && FocusService) === "function" && _b$6 || Object, Object])], ViewService));
+            _export('ViewService', ViewService = __decorate$6([autoinject, __metadata$6("design:paramtypes", [typeof (_a$6 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$6 || Object, typeof (_b$6 = typeof FocusService !== "undefined" && FocusService) === "function" && _b$6 || Object, ViewItems])], ViewService));
 
             _export('ViewServiceProvider', ViewServiceProvider = function () {
                 function ViewServiceProvider(sessionService, viewService, focusServiceProvider, visibilityServiceProvider) {
@@ -28302,8 +28245,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
                 sheet.insertRule("\n        #argon {\n            position: fixed;\n            width: 100%;\n            height: 100%;\n            left: 0;\n            bottom: 0;\n            margin: 0;\n            border: 0;\n            padding: 0;\n        }\n    ", sheet.cssRules.length);
                 sheet.insertRule("\n        .argon-view {\n            -webkit-tap-highlight-color: transparent;\n            -webkit-user-select: none;\n            user-select: none;\n        }\n    ", sheet.cssRules.length);
-                sheet.insertRule("\n        .argon-immersive .argon-view {\n            position: fixed !important;\n            width: 100% !important;\n            height: 100% !important;\n            max-width: 100% !important;\n            max-height: 100% !important;\n            left: 0;\n            bottom: 0;\n            margin: 0;\n            border: 0;\n            padding: 0;\n            visibility: visible;\n        }\n    ", sheet.cssRules.length);
-                sheet.insertRule("\n        .argon-immersive body {\n            visibility: hidden;\n        }\n    ", sheet.cssRules.length);
+                sheet.insertRule("\n        .argon-immersive .argon-view {\n            position: fixed !important;\n            width: 100% !important;\n            height: 100% !important;\n            max-width: 100% !important;\n            max-height: 100% !important;\n            left: 0;\n            bottom: 0;\n            margin: 0;\n            border: 0;\n            padding: 0;\n        }\n    ", sheet.cssRules.length);
                 sheet.insertRule("\n        .argon-interactive {\n            pointer-events: auto;\n        }\n    ", sheet.cssRules.length);
             }
 
@@ -28590,7 +28532,6 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                  */
                 DeviceService$$1.prototype._startUpdates = function () {
                     var _this = this;
-                    if (!this.sessionService.isRealityViewer) return;
                     if (!this._updatingFrameState) this.requestAnimationFrame(this._updateFrameState);
                     this._updatingFrameState = true;
                     this.sessionService.manager.whenConnected().then(function () {
@@ -28805,8 +28746,9 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 DeviceService$$1.prototype.onRequestPresentHMD = function () {
                     if (this._vrDisplay) {
                         var element = this.viewService.element;
+                        var viewLayers = this.viewService.layers;
                         var layers = [{
-                            source: this.viewService.layers[0] && this.viewService.layers[0].source || element.querySelector('canvas') || element.lastElementChild
+                            source: viewLayers && viewLayers[0] && viewLayers[0].source || element.querySelector('canvas') || element.lastElementChild
                         }];
                         return this._vrDisplay.requestPresent(layers).catch(function (e) {
                             throw e;
@@ -29897,7 +29839,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         sessionEntities[id_1] = entityServiceProvider.getCachedSerializedEntityState(entity, state.time);
                     }
                     // remove stage updates if geolocation permission is not granted
-                    if (this.permissionServiceProvider.getPermissionState(session, contextStageId) != PermissionState.GRANTED) delete sessionEntities[contextStageId];
+                    if (this.permissionServiceProvider.getPermissionState(session, 'geolocation') != PermissionState.GRANTED) delete sessionEntities[contextStageId];
                     // recycle the frame state object, but with the session entities
                     var parentEntities = state.entities;
                     state.entities = sessionEntities;
@@ -30131,6 +30073,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     var childDeviceService = child.get(DeviceService);
                     var childSessionService = child.get(SessionService);
                     var childRealityService = child.get(RealityService);
+                    var childViewService = child.get(ViewService);
                     // the child device service should *not* submit frames to the vrdisplay. 
                     childDeviceService.autoSubmitFrame = false;
                     var customStagePosition;
@@ -30191,7 +30134,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                             // provide fov controls
                             if (!childDeviceService.strict) {
                                 decomposePerspectiveProjectionMatrix(subviews[0].projectionMatrix, scratchFrustum);
-                                scratchFrustum.fov = _this.viewService.subviews[0] && _this.viewService.subviews[0].frustum.fov || CesiumMath.PI_OVER_THREE;
+                                scratchFrustum.fov = childViewService.subviews[0] && childViewService.subviews[0].frustum.fov || CesiumMath.PI_OVER_THREE;
                                 if (aggregator && aggregator.isMoving(CameraEventType.WHEEL)) {
                                     var wheelMovement = aggregator.getMovement(CameraEventType.WHEEL);
                                     var diff = wheelMovement.endPosition.y;
@@ -31547,8 +31490,101 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     this.permission = permission;
                     if (!ArgonSystem_1.instance) ArgonSystem_1.instance = this;
                     if (this.container.hasResolver(ArgonSystemProvider)) this._provider = this.container.get(ArgonSystemProvider);
+                    this._setupDOM();
                     this.session.connect();
                 }
+                ArgonSystem.prototype._setupDOM = function () {
+                    var _this = this;
+                    var viewItems = this.container.get(ViewItems);
+                    var element = viewItems.element;
+                    if (element && typeof document !== 'undefined' && document.createElement) {
+                        element.classList.add('argon-view');
+                        // prevent pinch-zoom of the page in ios 10.
+                        if (isIOS) {
+                            var touchMoveListener_1 = function (event) {
+                                if (event.touches.length > 1) event.preventDefault();
+                            };
+                            element.addEventListener('touchmove', touchMoveListener_1, true);
+                            this.session.manager.closeEvent.addEventListener(function () {
+                                element.removeEventListener('touchmove', touchMoveListener_1);
+                            });
+                        }
+                        // add/remove document-level css classes
+                        this.focus.focusEvent.addEventListener(function () {
+                            document.documentElement.classList.remove('argon-no-focus');
+                            document.documentElement.classList.remove('argon-blur');
+                            document.documentElement.classList.add('argon-focus');
+                        });
+                        this.focus.blurEvent.addEventListener(function () {
+                            document.documentElement.classList.remove('argon-focus');
+                            document.documentElement.classList.add('argon-blur');
+                            document.documentElement.classList.add('argon-no-focus');
+                        });
+                        this.view.viewportModeChangeEvent.addEventListener(function (mode) {
+                            switch (mode) {
+                                case ViewportMode.EMBEDDED:
+                                    document.documentElement.classList.remove('argon-immersive');
+                                    break;
+                                case ViewportMode.IMMERSIVE:
+                                    document.documentElement.classList.add('argon-immersive');
+                                    break;
+                            }
+                        });
+                        // Setup event forwarding / synthesizing
+                        if (this.session.isRealityViewer) {
+                            this.session.manager.on['ar.view.uievent'] = getEventSynthesizier$1();
+                        } else {
+                            createEventForwarder$$1(this.view, function (event) {
+                                if (_this.session.manager.isConnected && _this.session.manager.version[0] >= 1) _this.session.manager.send('ar.view.forwardUIEvent', event);
+                            });
+                            this.view._watchEmbeddedViewport();
+                        }
+                        this.context.renderEvent.addEventListener(function () {
+                            if (_this.view.autoStyleLayerElements) {
+                                var layers = _this.view.layers;
+                                if (!layers) return;
+                                var viewport = _this.view.viewport;
+                                var zIndex = -layers.length;
+                                for (var _i = 0, layers_1 = layers; _i < layers_1.length; _i++) {
+                                    var layer = layers_1[_i];
+                                    var layerStyle = layer.source.style;
+                                    layerStyle.position = 'absolute';
+                                    layerStyle.left = viewport.x + 'px';
+                                    layerStyle.bottom = viewport.y + 'px';
+                                    layerStyle.width = viewport.width + 'px';
+                                    layerStyle.height = viewport.height + 'px';
+                                    layerStyle.zIndex = '' + zIndex;
+                                    zIndex++;
+                                }
+                            }
+                        });
+                        if (!this.session.isRealityAugmenter) {
+                            this.view.viewportChangeEvent.addEventListener(function (viewport) {
+                                if (_this.view.element && _this.view.autoLayoutImmersiveMode && _this.view.viewportMode === ViewportMode.IMMERSIVE) {
+                                    var elementStyle = _this.view.element.style;
+                                    elementStyle.position = 'fixed';
+                                    elementStyle.left = viewport.x + 'px';
+                                    elementStyle.bottom = viewport.y + 'px';
+                                    elementStyle.width = viewport.width + 'px';
+                                    elementStyle.height = viewport.height + 'px';
+                                }
+                            });
+                        }
+                    }
+                };
+                Object.defineProperty(ArgonSystem.prototype, "suggestedPixelRatio", {
+                    get: function () {
+                        if (this.device.isPresentingHMD && hasNativeWebVRImplementation) return 1;
+                        var devicePixelRatio = typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1;
+                        if (this.focus.hasFocus) {
+                            return devicePixelRatio;
+                        } else {
+                            return devicePixelRatio * 0.5;
+                        }
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 Object.defineProperty(ArgonSystem.prototype, "provider", {
                     get: function () {
                         this.session.ensureIsRealityManager();
@@ -31598,14 +31634,38 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
             _export('ArgonSystem', ArgonSystem = ArgonSystem_1 = __decorate([autoinject, __metadata("design:paramtypes", [typeof (_k = (typeof DI !== "undefined" && DI).Container) === "function" && _k || Object, typeof (_l = typeof EntityService !== "undefined" && EntityService) === "function" && _l || Object, typeof (_m = typeof ContextService !== "undefined" && ContextService) === "function" && _m || Object, typeof (_o = typeof DeviceService !== "undefined" && DeviceService) === "function" && _o || Object, typeof (_p = typeof FocusService !== "undefined" && FocusService) === "function" && _p || Object, typeof (_q = typeof RealityService !== "undefined" && RealityService) === "function" && _q || Object, typeof (_r = typeof SessionService !== "undefined" && SessionService) === "function" && _r || Object, typeof (_s = typeof ViewService !== "undefined" && ViewService) === "function" && _s || Object, typeof (_t = typeof VisibilityService !== "undefined" && VisibilityService) === "function" && _t || Object, typeof (_u = typeof VuforiaService !== "undefined" && VuforiaService) === "function" && _u || Object, typeof (_v = typeof PermissionService !== "undefined" && PermissionService) === "function" && _v || Object])], ArgonSystem));
 
             _export('ArgonConfigurationManager', ArgonConfigurationManager = function () {
-                function ArgonConfigurationManager(configuration, container) {
+                function ArgonConfigurationManager(configuration, container, elementOrSelector) {
                     if (container === void 0) {
                         container = new Container();
                     }
                     this.configuration = configuration;
                     this.container = container;
+                    this.elementOrSelector = elementOrSelector;
                     container.registerInstance(Configuration, configuration);
                     if (Role.isRealityManager(configuration.role)) container.registerSingleton(ArgonSystemProvider);
+                    var element = elementOrSelector;
+                    if (!element || typeof element === 'string') {
+                        if (typeof document !== 'undefined') {
+                            var selector = element;
+                            element = selector ? document.querySelector(selector) : undefined;
+                            if (!element && !selector) {
+                                element = document.querySelector('#argon');
+                                if (!element) {
+                                    element = document.createElement('div');
+                                    element.id = 'argon';
+                                    document.body.appendChild(element);
+                                }
+                            } else if (!element) {
+                                throw new Error('Unable to find element with selector: ' + selector);
+                            }
+                        } else {
+                            console.warn('No DOM environment is available');
+                            element = undefined;
+                        }
+                    }
+                    var viewItems = new ViewItems();
+                    viewItems.element = element;
+                    container.registerInstance(ViewItems, viewItems);
                     ArgonConfigurationManager.configure(this);
                 }
                 ArgonConfigurationManager.configure = function (configurationManager) {
@@ -31742,6 +31802,12 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _export('DefaultUIService', DefaultUIService);
 
+            _export('isNativeFunction', isNativeFunction);
+
+            _export('hasNativeWebVRImplementation', hasNativeWebVRImplementation);
+
+            _export('suggestedWebGLContextAntialiasAttribute', suggestedWebGLContextAntialiasAttribute);
+
             _export('stringIdentifierFromReferenceFrame', stringIdentifierFromReferenceFrame);
 
             _export('jsonEquals', jsonEquals);
@@ -31808,7 +31874,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _export('ViewportMode', ViewportMode);
 
-            _export('ViewElement', ViewElement);
+            _export('ViewItems', ViewItems);
 
             _export('ViewService', ViewService);
 
@@ -31829,8 +31895,6 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
             _export('VuforiaObjectTracker', VuforiaObjectTracker);
 
             _export('DeprecatedVuforiaDataSet', DeprecatedVuforiaDataSet);
-
-            _export('PermissionNames', PermissionNames);
 
             _export('Permission', Permission);
 

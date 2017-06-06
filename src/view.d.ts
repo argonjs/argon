@@ -93,7 +93,7 @@ export declare class ViewService {
     /**
     * The DOM element associated with this view
     */
-    readonly element: HTMLElement | undefined;
+    readonly element: HTMLElement;
     /**
      * The layers composing this view.
      */
