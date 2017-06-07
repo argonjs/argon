@@ -20,6 +20,15 @@ export abstract class VuforiaServiceProvider {
 }
 
 /**
+ * Enum for the setHint function
+ */
+export enum VuforiaHint {
+    MaxSimultaneousImageTargets = 0,
+    MaxSimultaneousObjectTargets = 1,
+    DelayedLoadingObjectDatasets = 2
+}
+
+/**
  * A service for interacting with the Vuforia API
  */
 @inject(SessionService, VuforiaServiceProvider)
@@ -64,10 +73,18 @@ export class VuforiaService {
 }
 
 export class VuforiaAPI {
-    constructor(manager: SessionPort) {
+    constructor(private manager: SessionPort) {
         this.objectTracker = new VuforiaObjectTracker(manager);
     }
     public objectTracker: VuforiaObjectTracker;
+
+    // setHint should be called after Vuforia is initialized
+    public setHint(hint: VuforiaHint, value: number) {
+        let options = {hint:hint, value:value};
+        return this.manager.request('ar.vuforia.setHint', options).then((message: { result: boolean }) => {
+            return message.result;
+        });
+    }
 }
 
 export abstract class VuforiaTracker {
