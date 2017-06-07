@@ -22595,9 +22595,9 @@ $__System.registerDynamic('93', ['92', '88', '82'], true, function ($__require, 
         return;
       }
       // loop with requestAnimationFrame
-      this.angleAnimation_ = requestAnimationFrame(animate.bind(this));
+      this.angleAnimation_ = requestAnimationFrame(animate.bind(this)
       // Linearly interpolate the angle some amount.
-      var percent = elapsed / KEY_ANIMATION_DURATION;
+      );var percent = elapsed / KEY_ANIMATION_DURATION;
       this[angleName] = startAngle + (targetAngle - startAngle) * percent;
     }.bind(this));
   };
@@ -24067,7 +24067,7 @@ $__System.registerDynamic('98', ['82', '97'], true, function ($__require, export
 $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', '13', '14', '18', '1e', '24', '15', '5', '7', '42', '1a', '1b', '8', '39', '3c', '51', '6e', '2d', '17', 'd', '27', '28', '2e', '2f', '30', '21', '26', '29', '35', '20', '36', '37', '38', 'e', 'f', '2a', '3d', '44', '7c', '46', '49', '4c', '4f', '7d', '7e', '7f', '81', '98'], function (_export, _context) {
     "use strict";
 
-    var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, cesium_Source_Core_Clock_js, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, defaultValue, defined, cesium_Source_Core_DeveloperError_js, Ellipsoid, Entity, EntityCollection, Event, cesium_Source_Core_ExtrapolationType_js, cesium_Source_Core_FeatureDetection_js, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HeadingPitchRoll_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, ReferenceEntity, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, TerrainProvider, throttleRequestByServer, loadImage, WebMercatorTilingScheme, getImagePixels, HeightmapTerrainData, Credit, sampleTerrain, CardboardUI, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, DI, after, lut, i, cesiumImports, kButtonWidthDp, kTouchSlopFactor, __extends$1, AVERAGE_EYE_HEIGHT, DEFAULT_NEAR_PLANE, DEFAULT_FAR_PLANE, Role, Configuration, Viewport, CanvasViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event$1, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, getEventSynthesizier$1, cloneTouch, cloneTouches, reNative, hasNativeWebVRImplementation, suggestedWebGLContextAntialiasAttribute, eastUpSouthToFixedFrame, scratchAncestorCartesian, scratchAncestorQuaternion, getEntityPosition, getEntityOrientation, _scratchFramesArray, _entityStateCache, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, lastTime, rAF, cAF, defaultTerrainProvider, version, __extends, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, SessionConnectService, WKWebViewConnectService, AndroidWebViewConnectService, _a$1, _b$1, __decorate$5, __metadata$5, Permission, PermissionState, PermissionService, PermissionServiceProvider, _a$5, _b$5, __decorate$4, __metadata$4, EntityPose, PoseStatus, EntityService, EntityServiceProvider, _a$4, _b$4, _c$3, __decorate$7, __metadata$7, FocusService, FocusServiceProvider, _a$7, _b$7, __decorate$8, __metadata$8, VisibilityService, VisibilityServiceProvider, _a$8, _b$8, __decorate$6, __metadata$6, Subview, ViewportMode, ViewItems, ViewService, ViewServiceProvider, viewportMetaTag, argonMetaTag, style, sheet, _a$6, _b$6, _c$4, _d$3, _e$3, __decorate$3, __metadata$3, DeviceStableState$$1, DeviceFrameState$$1, DeviceService, DeviceServiceProvider, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, _h$1, _j$1, _k$1, _l$1, __decorate$10, __metadata$10, ContextService, ContextServiceProvider, _a$10, _b$10, _c$6, _d$5, _e$5, _f$3, _g$3, _h$3, _j$2, _k$2, _l$2, _m$1, RealityViewer, __extends$2, __decorate$11, __metadata$11, EmptyRealityViewer, _a$11, _b$11, _c$7, __extends$3, __decorate$12, __metadata$12, LiveRealityViewer, _a$12, _b$12, _c$8, _d$6, __extends$4, __decorate$13, __metadata$13, HostedRealityViewer, _a$13, _b$13, __decorate$9, __metadata$9, RealityViewerFactory, RealityService, RealityServiceProvider, _a$9, _b$9, _c$5, _d$4, _e$4, _f$2, _g$2, _h$2, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __extends$5, __decorate$14, __metadata$14, VuforiaServiceProvider, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$14, _b$14, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, ArgonConfigurationManager, initReality, _a, _b, _c, _d, _e, _f, _g, _h, _j, ArgonSystem_1, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
+    var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, cesium_Source_Core_Clock_js, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, defaultValue, defined, cesium_Source_Core_DeveloperError_js, Ellipsoid, Entity, EntityCollection, Event, cesium_Source_Core_ExtrapolationType_js, cesium_Source_Core_FeatureDetection_js, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HeadingPitchRoll_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, ReferenceEntity, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, TerrainProvider, throttleRequestByServer, loadImage, WebMercatorTilingScheme, getImagePixels, HeightmapTerrainData, Credit, sampleTerrain, CardboardUI, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, DI, after, lut, i, cesiumImports, kButtonWidthDp, kTouchSlopFactor, __extends$1, AVERAGE_EYE_HEIGHT, DEFAULT_NEAR_PLANE, DEFAULT_FAR_PLANE, Role, Configuration, Viewport, CanvasViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event$1, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, getEventSynthesizier$1, cloneTouch, cloneTouches, reNative, hasNativeWebVRImplementation, suggestedWebGLContextAntialiasAttribute, eastUpSouthToFixedFrame, scratchAncestorCartesian, scratchAncestorQuaternion, getEntityPosition, getEntityOrientation, _scratchFramesArray, _entityStateCache, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, lastTime, rAF, cAF, defaultTerrainProvider, version, __extends, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, SessionConnectService, WKWebViewConnectService, AndroidWebViewConnectService, _a$1, _b$1, __decorate$5, __metadata$5, Permission, PermissionState, PermissionService, PermissionServiceProvider, _a$5, _b$5, __decorate$4, __metadata$4, EntityPose, PoseStatus, EntityService, EntityServiceProvider, _a$4, _b$4, _c$3, __decorate$7, __metadata$7, FocusService, FocusServiceProvider, _a$7, _b$7, __decorate$8, __metadata$8, VisibilityService, VisibilityServiceProvider, _a$8, _b$8, __decorate$6, __metadata$6, Subview, ViewportMode, ViewItems, ViewService, ViewServiceProvider, viewportMetaTag, argonMetaTag, style, sheet, _a$6, _b$6, _c$4, _d$3, _e$3, __decorate$3, __metadata$3, DeviceStableState$$1, DeviceFrameState$$1, DeviceService, DeviceServiceProvider, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, _h$1, _j$1, _k$1, _l$1, __decorate$10, __metadata$10, ContextService, ContextServiceProvider, _a$10, _b$10, _c$6, _d$5, _e$5, _f$3, _g$3, _h$3, _j$2, _k$2, _l$2, _m$1, RealityViewer, __extends$2, __decorate$11, __metadata$11, EmptyRealityViewer, _a$11, _b$11, _c$7, __extends$3, __decorate$12, __metadata$12, LiveRealityViewer, _a$12, _b$12, _c$8, _d$6, __extends$4, __decorate$13, __metadata$13, HostedRealityViewer, _a$13, _b$13, __decorate$9, __metadata$9, RealityViewerFactory, RealityService, RealityServiceProvider, _a$9, _b$9, _c$5, _d$4, _e$4, _f$2, _g$2, _h$2, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __extends$5, __decorate$14, __metadata$14, VuforiaServiceProvider, VuforiaHint, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$14, _b$14, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, ArgonConfigurationManager, initReality, _a, _b, _c, _d, _e, _f, _g, _h, _j, ArgonSystem_1, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
 
     function alwaysValid() {
         return true;
@@ -26516,7 +26516,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.3.1");
+            _export('version', version = "1.3.2-0");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -31236,6 +31236,15 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _export('VuforiaServiceProvider', VuforiaServiceProvider = __decorate$14([inject(SessionService), __metadata$14("design:paramtypes", [typeof (_a$14 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$14 || Object])], VuforiaServiceProvider));
             /**
+             * Enum for the setHint function
+             */
+
+            (function (VuforiaHint) {
+                VuforiaHint[VuforiaHint["MaxSimultaneousImageTargets"] = 0] = "MaxSimultaneousImageTargets";
+                VuforiaHint[VuforiaHint["MaxSimultaneousObjectTargets"] = 1] = "MaxSimultaneousObjectTargets";
+                VuforiaHint[VuforiaHint["DelayedLoadingObjectDatasets"] = 2] = "DelayedLoadingObjectDatasets";
+            })(VuforiaHint || _export('VuforiaHint', VuforiaHint = {}));
+            /**
              * A service for interacting with the Vuforia API
              */
 
@@ -31283,8 +31292,16 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _export('VuforiaAPI', VuforiaAPI = function () {
                 function VuforiaAPI(manager) {
+                    this.manager = manager;
                     this.objectTracker = new VuforiaObjectTracker(manager);
                 }
+                // setHint should be called after Vuforia is initialized
+                VuforiaAPI.prototype.setHint = function (hint, value) {
+                    var options = { hint: hint, value: value };
+                    return this.manager.request('ar.vuforia.setHint', options).then(function (message) {
+                        return message.result;
+                    });
+                };
                 return VuforiaAPI;
             }());
 
@@ -31885,6 +31902,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
             _export('VisibilityServiceProvider', VisibilityServiceProvider);
 
             _export('VuforiaServiceProvider', VuforiaServiceProvider);
+
+            _export('VuforiaHint', VuforiaHint);
 
             _export('VuforiaService', VuforiaService);
 
