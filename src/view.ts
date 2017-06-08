@@ -128,14 +128,9 @@ export class ViewService {
         if (!sessionService.isRealityManager)
             this._updateViewportMode(ViewportMode.IMMERSIVE);
 
-        // if we are loaded in an older manager which does not support embedded mode,
-        // then switch to immersive mode
         sessionService.manager.connectEvent.addEventListener(()=>{
-            if (sessionService.manager.version[0] === 0 ||
-                !sessionService.isRealityManager) {
-                this._updateViewportMode(ViewportMode.IMMERSIVE);
-            }
-        });
+            this.viewportModeChangeEvent.raiseEvent(this.viewportMode);
+        })
     }
 
     public setLayers(layers:{source:HTMLElement}[]) {
@@ -472,6 +467,12 @@ if (typeof document !== 'undefined' && document.createElement) {
             margin: 0;
             border: 0;
             padding: 0;
+            visibility: visible;
+        }
+    `, sheet.cssRules.length);
+    sheet.insertRule(`
+        :not(.argon-reality-manager).argon-immersive body {
+            visibility: hidden;
         }
     `, sheet.cssRules.length);
     sheet.insertRule(`

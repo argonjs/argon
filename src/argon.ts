@@ -127,6 +127,17 @@ export class ArgonSystem {
                 });
             }
 
+            // add styles describing the type of the current session
+            if (this.session.isRealityViewer) {
+                document.documentElement.classList.add('argon-reality-viewer');
+            }
+            if (this.session.isRealityAugmenter) {
+                document.documentElement.classList.add('argon-reality-augmenter');
+            }
+            if (this.session.isRealityManager) {
+                document.documentElement.classList.add('argon-reality-manager');
+            }
+
             // add/remove document-level css classes
             this.focus.focusEvent.addEventListener(() => {
                 document.documentElement.classList.remove('argon-no-focus');
@@ -143,6 +154,12 @@ export class ArgonSystem {
             this.view.viewportModeChangeEvent.addEventListener((mode)=>{
                 switch (mode) {
                     case ViewportMode.EMBEDDED:
+                        const elementStyle = this.view.element.style;
+                        elementStyle.position = 'relative';
+                        elementStyle.left = '0px';
+                        elementStyle.bottom = '0px';
+                        elementStyle.width = '100%';
+                        elementStyle.height = '100%';
                         document.documentElement.classList.remove('argon-immersive');
                         break;
                     case ViewportMode.IMMERSIVE:
@@ -182,10 +199,10 @@ export class ArgonSystem {
                 }
             });
 
-            if (!this.session.isRealityAugmenter) {
+            if (!this.session.isRealityManager) {
                 this.view.viewportChangeEvent.addEventListener((viewport)=>{
                     if (this.view.element && this.view.autoLayoutImmersiveMode && 
-                        this.view.viewportMode === ViewportMode.IMMERSIVE) {
+                    this.view.viewportMode === ViewportMode.IMMERSIVE) {
                         const elementStyle = this.view.element.style;
                         elementStyle.position = 'fixed';
                         elementStyle.left = viewport.x + 'px';
@@ -193,7 +210,7 @@ export class ArgonSystem {
                         elementStyle.width = viewport.width + 'px';
                         elementStyle.height = viewport.height + 'px';
                     }
-                })
+                });
             }
         }
     }

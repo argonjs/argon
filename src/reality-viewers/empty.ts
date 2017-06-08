@@ -100,6 +100,7 @@ export class EmptyRealityViewer extends RealityViewer {
         if (typeof document !== 'undefined') {
             this.presentChangeEvent.addEventListener(()=>{
                 if (this.isPresenting) {
+                    this.viewService.element.style.backgroundColor = 'white';
                     if (!this._aggregator && this.viewService.element) {
                         this.viewService.element['disableRootEvents'] = true; 
                         this._aggregator = new CameraEventAggregator(<any>this.viewService.element);
@@ -107,6 +108,7 @@ export class EmptyRealityViewer extends RealityViewer {
                         document && document.addEventListener('keyup', keyupListener, false);
                     }
                 } else {
+                    delete this.viewService.element.style.backgroundColor;
                     this._aggregator && this._aggregator.destroy();
                     this._aggregator = undefined;
                     document && document.removeEventListener('keydown', keydownListener);
