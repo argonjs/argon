@@ -185,7 +185,7 @@ export class ArgonSystem {
                     if (!layers) return;
 
                     const viewport = this.view.viewport;
-                    let zIndex = -layers.length;
+                    let zIndex = 0;
                     for (const layer of layers) {
                         const layerStyle = layer.source.style;
                         layerStyle.position = 'absolute';
