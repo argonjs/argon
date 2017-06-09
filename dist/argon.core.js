@@ -20931,7 +20931,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.3.4");
+            _export('version', version = "1.3.5");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -22504,26 +22504,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 };
                 // Updates the element, if necessary, and raise a view change event
                 ViewService.prototype._updateViewport = function (viewport) {
-                    var _this = this;
                     var viewportJSON = JSON.stringify(viewport);
-                    if (this.layers && this.layers.length && this.autoStyleLayerElements) {
-                        requestAnimationFrame(function () {
-                            var layers = _this.layers;
-                            if (!layers) return;
-                            var zIndex = -layers.length;
-                            for (var _i = 0, layers_2 = layers; _i < layers_2.length; _i++) {
-                                var layer = layers_2[_i];
-                                var layerStyle = layer.source.style;
-                                layerStyle.position = 'absolute';
-                                layerStyle.left = viewport.x + 'px';
-                                layerStyle.bottom = viewport.y + 'px';
-                                layerStyle.width = viewport.width + 'px';
-                                layerStyle.height = viewport.height + 'px';
-                                layerStyle.zIndex = '' + zIndex;
-                                zIndex++;
-                            }
-                        });
-                    }
                     if (!this._currentViewportJSON || this._currentViewportJSON !== viewportJSON) {
                         this._currentViewportJSON = viewportJSON;
                         this._viewport = Viewport.clone(viewport, this._viewport);
