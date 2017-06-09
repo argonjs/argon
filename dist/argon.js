@@ -26516,7 +26516,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.3.2");
+            _export('version', version = "1.3.3");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -31550,7 +31550,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                             switch (mode) {
                                 case ViewportMode.EMBEDDED:
                                     var elementStyle = _this.view.element.style;
-                                    elementStyle.position = 'relative';
+                                    elementStyle.position = '';
                                     elementStyle.left = '0px';
                                     elementStyle.bottom = '0px';
                                     elementStyle.width = '100%';
