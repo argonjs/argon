@@ -155,7 +155,7 @@ export class ArgonSystem {
                 switch (mode) {
                     case ViewportMode.EMBEDDED:
                         const elementStyle = this.view.element.style;
-                        elementStyle.position = 'relative';
+                        elementStyle.position = '';
                         elementStyle.left = '0px';
                         elementStyle.bottom = '0px';
                         elementStyle.width = '100%';
