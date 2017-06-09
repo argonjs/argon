@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.3.2-1"></a>
+## [1.3.2-1](https://github.com/argonjs/argon/compare/v1.3.2-0...v1.3.2-1) (2017-06-09)
+
+
+### Bug Fixes
+
+* **dom:** fixed dom styles for immersive / embedded modes ([36b7864](https://github.com/argonjs/argon/commit/36b7864))
+
+
+
 <a name="1.3.2-0"></a>
 ## [1.3.2-0](https://github.com/argonjs/argon/compare/v1.3.1...v1.3.2-0) (2017-06-07)
 
