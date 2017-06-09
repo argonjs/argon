@@ -20931,7 +20931,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.3.3");
+            _export('version', version = "1.3.4");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -25991,7 +25991,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                                 var layers = _this.view.layers;
                                 if (!layers) return;
                                 var viewport = _this.view.viewport;
-                                var zIndex = -layers.length;
+                                var zIndex = 0;
                                 for (var _i = 0, layers_1 = layers; _i < layers_1.length; _i++) {
                                     var layer = layers_1[_i];
                                     var layerStyle = layer.source.style;
