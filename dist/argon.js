@@ -22595,9 +22595,9 @@ $__System.registerDynamic('93', ['92', '88', '82'], true, function ($__require, 
         return;
       }
       // loop with requestAnimationFrame
-      this.angleAnimation_ = requestAnimationFrame(animate.bind(this)
+      this.angleAnimation_ = requestAnimationFrame(animate.bind(this));
       // Linearly interpolate the angle some amount.
-      );var percent = elapsed / KEY_ANIMATION_DURATION;
+      var percent = elapsed / KEY_ANIMATION_DURATION;
       this[angleName] = startAngle + (targetAngle - startAngle) * percent;
     }.bind(this));
   };
@@ -26516,7 +26516,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.3.2-0");
+            _export('version', version = "1.3.2-1");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -27920,12 +27920,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     };
                     // if we are not the manager, we must start in immersive mode
                     if (!sessionService.isRealityManager) this._updateViewportMode(ViewportMode.IMMERSIVE);
-                    // if we are loaded in an older manager which does not support embedded mode,
-                    // then switch to immersive mode
                     sessionService.manager.connectEvent.addEventListener(function () {
-                        if (sessionService.manager.version[0] === 0 || !sessionService.isRealityManager) {
-                            _this._updateViewportMode(ViewportMode.IMMERSIVE);
-                        }
+                        _this.viewportModeChangeEvent.raiseEvent(_this.viewportMode);
                     });
                 }
                 Object.defineProperty(ViewService.prototype, "viewportMode", {
@@ -28245,7 +28241,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
                 sheet.insertRule("\n        #argon {\n            position: fixed;\n            width: 100%;\n            height: 100%;\n            left: 0;\n            bottom: 0;\n            margin: 0;\n            border: 0;\n            padding: 0;\n        }\n    ", sheet.cssRules.length);
                 sheet.insertRule("\n        .argon-view {\n            -webkit-tap-highlight-color: transparent;\n            -webkit-user-select: none;\n            user-select: none;\n        }\n    ", sheet.cssRules.length);
-                sheet.insertRule("\n        .argon-immersive .argon-view {\n            position: fixed !important;\n            width: 100% !important;\n            height: 100% !important;\n            max-width: 100% !important;\n            max-height: 100% !important;\n            left: 0;\n            bottom: 0;\n            margin: 0;\n            border: 0;\n            padding: 0;\n        }\n    ", sheet.cssRules.length);
+                sheet.insertRule("\n        .argon-immersive .argon-view {\n            position: fixed !important;\n            width: 100% !important;\n            height: 100% !important;\n            max-width: 100% !important;\n            max-height: 100% !important;\n            left: 0;\n            bottom: 0;\n            margin: 0;\n            border: 0;\n            padding: 0;\n            visibility: visible;\n        }\n    ", sheet.cssRules.length);
+                sheet.insertRule("\n        :not(.argon-reality-manager).argon-immersive body {\n            visibility: hidden;\n        }\n    ", sheet.cssRules.length);
                 sheet.insertRule("\n        .argon-interactive {\n            pointer-events: auto;\n        }\n    ", sheet.cssRules.length);
             }
 
@@ -30024,6 +30021,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     if (typeof document !== 'undefined') {
                         _this.presentChangeEvent.addEventListener(function () {
                             if (_this.isPresenting) {
+                                _this.viewService.element.style.backgroundColor = 'white';
                                 if (!_this._aggregator && _this.viewService.element) {
                                     _this.viewService.element['disableRootEvents'] = true;
                                     _this._aggregator = new CameraEventAggregator(_this.viewService.element);
@@ -30031,6 +30029,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                                     document && document.addEventListener('keyup', keyupListener, false);
                                 }
                             } else {
+                                delete _this.viewService.element.style.backgroundColor;
                                 _this._aggregator && _this._aggregator.destroy();
                                 _this._aggregator = undefined;
                                 document && document.removeEventListener('keydown', keydownListener);
@@ -31526,6 +31525,16 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                                 element.removeEventListener('touchmove', touchMoveListener_1);
                             });
                         }
+                        // add styles describing the type of the current session
+                        if (this.session.isRealityViewer) {
+                            document.documentElement.classList.add('argon-reality-viewer');
+                        }
+                        if (this.session.isRealityAugmenter) {
+                            document.documentElement.classList.add('argon-reality-augmenter');
+                        }
+                        if (this.session.isRealityManager) {
+                            document.documentElement.classList.add('argon-reality-manager');
+                        }
                         // add/remove document-level css classes
                         this.focus.focusEvent.addEventListener(function () {
                             document.documentElement.classList.remove('argon-no-focus');
@@ -31540,6 +31549,12 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         this.view.viewportModeChangeEvent.addEventListener(function (mode) {
                             switch (mode) {
                                 case ViewportMode.EMBEDDED:
+                                    var elementStyle = _this.view.element.style;
+                                    elementStyle.position = 'relative';
+                                    elementStyle.left = '0px';
+                                    elementStyle.bottom = '0px';
+                                    elementStyle.width = '100%';
+                                    elementStyle.height = '100%';
                                     document.documentElement.classList.remove('argon-immersive');
                                     break;
                                 case ViewportMode.IMMERSIVE:
@@ -31575,7 +31590,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                                 }
                             }
                         });
-                        if (!this.session.isRealityAugmenter) {
+                        if (!this.session.isRealityManager) {
                             this.view.viewportChangeEvent.addEventListener(function (viewport) {
                                 if (_this.view.element && _this.view.autoLayoutImmersiveMode && _this.view.viewportMode === ViewportMode.IMMERSIVE) {
                                     var elementStyle = _this.view.element.style;
