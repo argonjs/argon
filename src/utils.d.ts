@@ -107,6 +107,7 @@ export declare function decomposePerspectiveProjectionMatrix(mat: Matrix4, resul
  */
 export declare function convertEntityReferenceFrame(entity: Entity, time: JulianDate, frame: ReferenceFrame | Entity): boolean;
 export declare const isIOS: boolean;
+export declare const isAndroid: boolean;
 export declare function installArgonApp(): void;
 export declare function openInArgonApp(): void;
 declare const rAF: any;
