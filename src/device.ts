@@ -677,11 +677,12 @@ export class DeviceService {
 
     protected onRequestPresentHMD() : Promise<void> {
         if (this._vrDisplay) {
-            const element = this.viewService.element;
+            const element = this.viewService.element!;
+            const viewLayers = this.viewService.layers;
             const layers:VRLayer&{}[] = 
                 [{
                     source:
-                        this.viewService.layers[0] && this.viewService.layers[0].source || 
+                        viewLayers && viewLayers[0] && viewLayers[0].source || 
                         element.querySelector('canvas') || 
                         <HTMLCanvasElement>element.lastElementChild
                 }];

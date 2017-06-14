@@ -97,7 +97,9 @@
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="argonsystem.html#container" class="tsd-kind-icon">container</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="argonsystem.html#context" class="tsd-kind-icon">context</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="argonsystem.html#device" class="tsd-kind-icon">device</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="argonsystem.html#entity" class="tsd-kind-icon">entity</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="argonsystem.html#focus" class="tsd-kind-icon">focus</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="argonsystem.html#permission" class="tsd-kind-icon">permission</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="argonsystem.html#reality" class="tsd-kind-icon">reality</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="argonsystem.html#session" class="tsd-kind-icon">session</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="argonsystem.html#view" class="tsd-kind-icon">view</a></li>
@@ -131,19 +133,22 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Argon<wbr>System<span class="tsd-signature-symbol">(</span>container<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Container</span>, context<span class="tsd-signature-symbol">: </span><a href="contextservice.html" class="tsd-signature-type">ContextService</a>, device<span class="tsd-signature-symbol">: </span><a href="deviceservice.html" class="tsd-signature-type">DeviceService</a>, focus<span class="tsd-signature-symbol">: </span><a href="focusservice.html" class="tsd-signature-type">FocusService</a>, reality<span class="tsd-signature-symbol">: </span><a href="realityservice.html" class="tsd-signature-type">RealityService</a>, session<span class="tsd-signature-symbol">: </span><a href="sessionservice.html" class="tsd-signature-type">SessionService</a>, view<span class="tsd-signature-symbol">: </span><a href="viewservice.html" class="tsd-signature-type">ViewService</a>, visibility<span class="tsd-signature-symbol">: </span><a href="visibilityservice.html" class="tsd-signature-type">VisibilityService</a>, vuforia<span class="tsd-signature-symbol">: </span><a href="vuforiaservice.html" class="tsd-signature-type">VuforiaService</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="argonsystem.html" class="tsd-signature-type">ArgonSystem</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Argon<wbr>System<span class="tsd-signature-symbol">(</span>container<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Container</span>, entity<span class="tsd-signature-symbol">: </span><a href="entityservice.html" class="tsd-signature-type">EntityService</a>, context<span class="tsd-signature-symbol">: </span><a href="contextservice.html" class="tsd-signature-type">ContextService</a>, device<span class="tsd-signature-symbol">: </span><a href="deviceservice.html" class="tsd-signature-type">DeviceService</a>, focus<span class="tsd-signature-symbol">: </span><a href="focusservice.html" class="tsd-signature-type">FocusService</a>, reality<span class="tsd-signature-symbol">: </span><a href="realityservice.html" class="tsd-signature-type">RealityService</a>, session<span class="tsd-signature-symbol">: </span><a href="sessionservice.html" class="tsd-signature-type">SessionService</a>, view<span class="tsd-signature-symbol">: </span><a href="viewservice.html" class="tsd-signature-type">ViewService</a>, visibility<span class="tsd-signature-symbol">: </span><a href="visibilityservice.html" class="tsd-signature-type">VisibilityService</a>, vuforia<span class="tsd-signature-symbol">: </span><a href="vuforiaservice.html" class="tsd-signature-type">VuforiaService</a>, permission<span class="tsd-signature-symbol">: </span><a href="permissionservice.html" class="tsd-signature-type">PermissionService</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="argonsystem.html" class="tsd-signature-type">ArgonSystem</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L77">src/argon.ts:77</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/argon.ts#L85">src/argon.ts:85</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>container: <span class="tsd-signature-type">Container</span></h5>
+								</li>
+								<li>
+									<h5>entity: <a href="entityservice.html" class="tsd-signature-type">EntityService</a></h5>
 								</li>
 								<li>
 									<h5>context: <a href="contextservice.html" class="tsd-signature-type">ContextService</a></h5>
@@ -169,6 +174,9 @@
 								<li>
 									<h5>vuforia: <a href="vuforiaservice.html" class="tsd-signature-type">VuforiaService</a></h5>
 								</li>
+								<li>
+									<h5>permission: <a href="permissionservice.html" class="tsd-signature-type">PermissionService</a></h5>
+								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="argonsystem.html" class="tsd-signature-type">ArgonSystem</a></h4>
 						</li>
@@ -183,7 +191,7 @@
 					<div class="tsd-signature tsd-kind-icon">_provider<span class="tsd-signature-symbol">:</span> <a href="argonsystemprovider.html" class="tsd-signature-type">ArgonSystemProvider</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L98">src/argon.ts:98</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/argon.ts#L108">src/argon.ts:108</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -193,7 +201,7 @@
 					<div class="tsd-signature tsd-kind-icon">container<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Container</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L80">src/argon.ts:80</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/argon.ts#L88">src/argon.ts:88</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -203,7 +211,7 @@
 					<div class="tsd-signature tsd-kind-icon">context<span class="tsd-signature-symbol">:</span> <a href="contextservice.html" class="tsd-signature-type">ContextService</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L81">src/argon.ts:81</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/argon.ts#L90">src/argon.ts:90</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -213,7 +221,17 @@
 					<div class="tsd-signature tsd-kind-icon">device<span class="tsd-signature-symbol">:</span> <a href="deviceservice.html" class="tsd-signature-type">DeviceService</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L82">src/argon.ts:82</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/argon.ts#L91">src/argon.ts:91</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="entity" class="tsd-anchor"></a>
+					<h3>entity</h3>
+					<div class="tsd-signature tsd-kind-icon">entity<span class="tsd-signature-symbol">:</span> <a href="entityservice.html" class="tsd-signature-type">EntityService</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/argon.ts#L89">src/argon.ts:89</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -223,7 +241,17 @@
 					<div class="tsd-signature tsd-kind-icon">focus<span class="tsd-signature-symbol">:</span> <a href="focusservice.html" class="tsd-signature-type">FocusService</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L83">src/argon.ts:83</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/argon.ts#L92">src/argon.ts:92</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="permission" class="tsd-anchor"></a>
+					<h3>permission</h3>
+					<div class="tsd-signature tsd-kind-icon">permission<span class="tsd-signature-symbol">:</span> <a href="permissionservice.html" class="tsd-signature-type">PermissionService</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/argon.ts#L98">src/argon.ts:98</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -233,7 +261,7 @@
 					<div class="tsd-signature tsd-kind-icon">reality<span class="tsd-signature-symbol">:</span> <a href="realityservice.html" class="tsd-signature-type">RealityService</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L84">src/argon.ts:84</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/argon.ts#L93">src/argon.ts:93</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -243,7 +271,7 @@
 					<div class="tsd-signature tsd-kind-icon">session<span class="tsd-signature-symbol">:</span> <a href="sessionservice.html" class="tsd-signature-type">SessionService</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L85">src/argon.ts:85</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/argon.ts#L94">src/argon.ts:94</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -253,7 +281,7 @@
 					<div class="tsd-signature tsd-kind-icon">view<span class="tsd-signature-symbol">:</span> <a href="viewservice.html" class="tsd-signature-type">ViewService</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L86">src/argon.ts:86</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/argon.ts#L95">src/argon.ts:95</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -263,7 +291,7 @@
 					<div class="tsd-signature tsd-kind-icon">visibility<span class="tsd-signature-symbol">:</span> <a href="visibilityservice.html" class="tsd-signature-type">VisibilityService</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L87">src/argon.ts:87</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/argon.ts#L96">src/argon.ts:96</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -273,7 +301,7 @@
 					<div class="tsd-signature tsd-kind-icon">vuforia<span class="tsd-signature-symbol">:</span> <a href="vuforiaservice.html" class="tsd-signature-type">VuforiaService</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L88">src/argon.ts:88</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/argon.ts#L97">src/argon.ts:97</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -283,7 +311,7 @@
 					<div class="tsd-signature tsd-kind-icon">instance<span class="tsd-signature-symbol">:</span> <a href="argonsystem.html" class="tsd-signature-type">ArgonSystem</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L77">src/argon.ts:77</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/argon.ts#L85">src/argon.ts:85</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -305,7 +333,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L118">src/argon.ts:118</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/argon.ts#L128">src/argon.ts:128</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -322,7 +350,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L114">src/argon.ts:114</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/argon.ts#L124">src/argon.ts:124</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -339,7 +367,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L99">src/argon.ts:99</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/argon.ts#L109">src/argon.ts:109</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="argonsystemprovider.html" class="tsd-signature-type">ArgonSystemProvider</a></h4>
@@ -356,7 +384,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L110">src/argon.ts:110</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/argon.ts#L120">src/argon.ts:120</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -373,7 +401,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L106">src/argon.ts:106</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/argon.ts#L116">src/argon.ts:116</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="event.html" class="tsd-signature-type">Event</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -393,7 +421,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/argonjs/argon/blob/2ce0501/src/argon.ts#L122">src/argon.ts:122</a></li>
+									<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/argon.ts#L132">src/argon.ts:132</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -433,7 +461,13 @@
 								<a href="argonsystem.html#device" class="tsd-kind-icon">device</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="argonsystem.html#entity" class="tsd-kind-icon">entity</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="argonsystem.html#focus" class="tsd-kind-icon">focus</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="argonsystem.html#permission" class="tsd-kind-icon">permission</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="argonsystem.html#reality" class="tsd-kind-icon">reality</a>

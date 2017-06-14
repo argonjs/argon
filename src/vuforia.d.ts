@@ -7,6 +7,14 @@ export declare abstract class VuforiaServiceProvider {
     constructor(sessionService: SessionService);
 }
 /**
+ * Enum for the setHint function
+ */
+export declare enum VuforiaHint {
+    MaxSimultaneousImageTargets = 0,
+    MaxSimultaneousObjectTargets = 1,
+    DelayedLoadingObjectDatasets = 2,
+}
+/**
  * A service for interacting with the Vuforia API
  */
 export declare class VuforiaService {
@@ -34,8 +42,10 @@ export declare class VuforiaService {
     }): Promise<VuforiaAPI>;
 }
 export declare class VuforiaAPI {
+    private manager;
     constructor(manager: SessionPort);
     objectTracker: VuforiaObjectTracker;
+    setHint(hint: VuforiaHint, value: number): Promise<boolean>;
 }
 export declare abstract class VuforiaTracker {
     constructor();

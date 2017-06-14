@@ -7,18 +7,25 @@ var kButtonWidthDp = 28;
 var kTouchSlopFactor = 1.5;
 CardboardUI.prototype.listen = function(optionsCallback, backCallback) {
   var canvas = this.gl.canvas;
+  var hasTouchEventClass = typeof TouchEvent !== 'undefined';
   this.listener = function(event:MouseEvent|TouchEvent) {
     var midline = canvas.clientWidth / 2;
     var buttonSize = kButtonWidthDp * kTouchSlopFactor;
+    var e:MouseEvent|Touch = hasTouchEventClass && event instanceof TouchEvent ? 
+      event.changedTouches[0] : 
+      <MouseEvent>event;
     // Check to see if the user clicked on (or around) the gear icon
-    var e = event instanceof TouchEvent ? event.changedTouches[0] : event;
     if (e.clientX > midline - buttonSize &&
         e.clientX < midline + buttonSize &&
         e.clientY > canvas.clientHeight - buttonSize) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
       optionsCallback(event);
     }
     // Check to see if the user clicked on (or around) the back icon
     else if (e.clientX < buttonSize && e.clientY < buttonSize) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
       backCallback(event);
     }
   };

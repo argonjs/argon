@@ -216,17 +216,25 @@ export class DefaultUIService {
 
             this.openInArgonMenuItem = this._createMenuItem(openIcon, 'Open in Argon');
 
-            this.openInArgonMenuItem.addEventListener('touchstart', ()=>{
-                utils.openInArgonApp();
-            });
-            
-            this.openInArgonMenuItem.addEventListener('touchend', ()=>{
-                if (confirm('Oops, it looks like you are still here! You may not have the Argon Browser installed. Would you like to install it now?')) {
-                    utils.installArgonApp();
-                }
-                this.menuOpen = false;
-                this.updateMenu();
-            });
+            if (utils.isIOS) {
+                this.openInArgonMenuItem.addEventListener('touchstart', ()=>{
+                    utils.openInArgonApp();
+                });
+                
+                this.openInArgonMenuItem.addEventListener('touchend', ()=>{
+                    if (confirm('Oops, it looks like you are still here! You may not have the Argon Browser installed. Would you like to install it now?')) {
+                        utils.installArgonApp();
+                    }
+                    this.menuOpen = false;
+                    this.updateMenu();
+                });
+            } else if (utils.isAndroid) {
+                this.openInArgonMenuItem.onclick = function() {
+                    // on Android an intent must be launched from a click event
+                    // the intent will automatically redirect to the Google Play store if the app is not installed
+                    utils.openInArgonApp();
+                };
+            }
 
             this.hmdMenuItem = this._createMenuItem(vrIcon, 'Toggle HMD', ()=>{
                 this.menuOpen = false;
@@ -338,7 +346,7 @@ export class DefaultUIService {
 
         this.menuItems = [];
         this.menuItems.push(null);
-        if (utils.isIOS) this.menuItems.push(this.openInArgonMenuItem);
+        if (utils.isIOS || utils.isAndroid) this.menuItems.push(this.openInArgonMenuItem);
         else this._hideMenuItem(this.openInArgonMenuItem);
 
         const parentElement = this.viewService.element.parentElement;

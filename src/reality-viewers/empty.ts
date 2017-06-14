@@ -100,6 +100,7 @@ export class EmptyRealityViewer extends RealityViewer {
         if (typeof document !== 'undefined') {
             this.presentChangeEvent.addEventListener(()=>{
                 if (this.isPresenting) {
+                    this.viewService.element.style.backgroundColor = 'white';
                     if (!this._aggregator && this.viewService.element) {
                         this.viewService.element['disableRootEvents'] = true; 
                         this._aggregator = new CameraEventAggregator(<any>this.viewService.element);
@@ -107,6 +108,7 @@ export class EmptyRealityViewer extends RealityViewer {
                         document && document.addEventListener('keyup', keyupListener, false);
                     }
                 } else {
+                    delete this.viewService.element.style.backgroundColor;
                     this._aggregator && this._aggregator.destroy();
                     this._aggregator = undefined;
                     document && document.removeEventListener('keydown', keydownListener);
@@ -157,6 +159,10 @@ export class EmptyRealityViewer extends RealityViewer {
         const childDeviceService = child.get(DeviceService) as DeviceService;
         const childSessionService = child.get(SessionService) as SessionService;
         const childRealityService = child.get(RealityService) as RealityService;
+        const childViewService = child.get(ViewService) as ViewService;
+
+        // the child device service should *not* submit frames to the vrdisplay. 
+        childDeviceService.autoSubmitFrame = false;
         
         let customStagePosition:Cartesian3|undefined;
         let customStageOrientation:Quaternion|undefined;
@@ -235,7 +241,7 @@ export class EmptyRealityViewer extends RealityViewer {
                 // provide fov controls
                 if (!childDeviceService.strict) {                    
                     decomposePerspectiveProjectionMatrix(subviews[0].projectionMatrix, scratchFrustum);
-                    scratchFrustum.fov = this.viewService.subviews[0] && this.viewService.subviews[0].frustum.fov || CesiumMath.PI_OVER_THREE;
+                    scratchFrustum.fov = childViewService.subviews[0] && childViewService.subviews[0].frustum.fov || CesiumMath.PI_OVER_THREE;
 
                     if (aggregator && aggregator.isMoving(CameraEventType.WHEEL)) {
                         const wheelMovement = aggregator.getMovement(CameraEventType.WHEEL);

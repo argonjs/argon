@@ -1,4 +1,4 @@
-import { autoinject, inject, Optional } from 'aurelia-dependency-injection'
+import { autoinject, singleton } from 'aurelia-dependency-injection'
 import { CanvasViewport, Viewport, ContextFrameState, SubviewType } from './common'
 import { SessionService, SessionPort } from './session'
 import { ContextService } from './context'
@@ -8,9 +8,6 @@ import { PerspectiveFrustum, Matrix4 } from './cesium/cesium-imports'
 
 import { 
     Event,
-    isIOS,
-    createEventForwarder,
-    getEventSynthesizier,
     decomposePerspectiveProjectionMatrix,
     deprecated
 } from './utils'
@@ -36,13 +33,16 @@ export const enum ViewportMode {
     IMMERSIVE
 }
 
-export abstract class ViewElement {};
-
+@singleton()
+export class ViewItems {
+    public element?: HTMLElement;
+    public layers?: {source: HTMLElement}[];
+}
 
 /**
  * Manages the view state
  */
-@inject(SessionService, FocusService, Optional.of(ViewElement))
+@autoinject
 export class ViewService {
     
     /**
@@ -114,85 +114,11 @@ export class ViewService {
      */
     public autoPublishEmbeddedMode = true;
 
-    /**
-     * The DOM element associated with this viewport
-     */
-    public element:HTMLElement;
-
     constructor(
         private sessionService: SessionService,
         private focusService: FocusService,
-        elementOrSelector?: Element|string|null) {
-
-        if (typeof document !== 'undefined' && document.createElement) {
-
-            let element = elementOrSelector;
-            if (!element || typeof element === 'string') {
-                const selector = element;
-                element = selector ? <Element>document.querySelector(selector) : undefined;
-                if (!element && !selector) {
-                    element = document.querySelector('#argon');
-                    if (!element) {
-                        element = document.createElement('div');
-                        element.id = 'argon';
-                        document.body.appendChild(element);
-                    }
-                } else if (!element) {
-                    throw new Error('Unable to find element with selector: ' + selector);
-                }
-            }
-
-            this.element = <HTMLElement>element;
-            element.classList.add('argon-view');
-
-            // prevent pinch-zoom of the page in ios 10.
-            if (isIOS) {
-                const touchMoveListener = (event) => {
-                    if (event.touches.length > 1)
-                        event.preventDefault();
-                }
-                this.element.addEventListener('touchmove', touchMoveListener, true);
-                this.sessionService.manager.closeEvent.addEventListener(()=>{
-                    this.element.removeEventListener('touchmove', touchMoveListener)
-                });
-            }
-
-            this.focusService.focusEvent.addEventListener(() => {
-                document.documentElement.classList.remove('argon-no-focus');
-                document.documentElement.classList.remove('argon-blur');
-                document.documentElement.classList.add('argon-focus');
-            });
-
-            this.focusService.blurEvent.addEventListener(() => {
-                document.documentElement.classList.remove('argon-focus');
-                document.documentElement.classList.add('argon-blur');
-                document.documentElement.classList.add('argon-no-focus');
-            });
-
-            this.viewportModeChangeEvent.addEventListener((mode)=>{
-                switch (mode) {
-                    case ViewportMode.EMBEDDED:
-                        document.documentElement.classList.remove('argon-immersive');
-                        break;
-                    case ViewportMode.IMMERSIVE:
-                        document.documentElement.classList.add('argon-immersive');
-                        break;
-                }
-            });
-
-            if (this.sessionService.isRealityViewer) {
-                this.sessionService.manager.on['ar.view.uievent'] = getEventSynthesizier()!;
-            }
-
-            if (!this.sessionService.isRealityViewer) {
-                createEventForwarder(this, (event)=>{
-                    if (this.sessionService.manager.isConnected && this.sessionService.manager.version[0] >= 1)
-                        this.sessionService.manager.send('ar.view.forwardUIEvent', event);
-                });
-                this._watchEmbeddedViewport();
-            }
-        }
-
+        private viewItems: ViewItems
+       ) {
         sessionService.manager.on['ar.view.viewportMode'] = 
             ({mode}:{mode:ViewportMode}) => {
                 this._updateViewportMode(mode);
@@ -202,38 +128,41 @@ export class ViewService {
         if (!sessionService.isRealityManager)
             this._updateViewportMode(ViewportMode.IMMERSIVE);
 
-        // if we are loaded in an older manager which does not support embedded mode,
-        // then switch to immersive mode
         sessionService.manager.connectEvent.addEventListener(()=>{
-            if (sessionService.manager.version[0] === 0 ||
-                !sessionService.isRealityManager) {
-                this._updateViewportMode(ViewportMode.IMMERSIVE);
-            }
-        });
+            this.viewportModeChangeEvent.raiseEvent(this.viewportMode);
+        })
     }
-
-    private _layers:{source:HTMLElement}[] = [];
 
     public setLayers(layers:{source:HTMLElement}[]) {
-        if (this._layers) { 
-            for (const l of this._layers) {
-                this.element.removeChild(l.source);
+        const currentLayers = this.viewItems.layers;
+        if (currentLayers) { 
+            for (const l of currentLayers) {
+                this.element!.removeChild(l.source);
             }
         }
-        this._layers = layers;
+        this.viewItems.layers = layers;
         for (const l of layers) {
-            this.element.appendChild(l.source);
+            this.element!.appendChild(l.source);
         }
+    }    
+    
+     /**
+     * The DOM element associated with this view
+     */
+    public get element() {
+        return this.viewItems.element!;
     }
 
+    /**
+     * The layers composing this view. 
+     */
     public get layers() {
-        return this._layers;
+        return this.viewItems.layers;
     }
 
     private _currentViewportJSON: string;
 
     private _subviews: Subview[] = [];
-    private _subviewPose: EntityPose[] = [];
     private _subviewFrustum: PerspectiveFrustum[] = [];
 
     public get subviews() {
@@ -284,8 +213,7 @@ export class ViewService {
             decomposePerspectiveProjectionMatrix(serializedSubview.projectionMatrix, subview.frustum);
             subview['projectionMatrix'] = <Matrix4>subview.frustum.projectionMatrix;
 
-            subview.pose = this._subviewPose[index] = 
-                this._subviewPose[index] || contextService.createEntityPose(contextService.getSubviewEntity(index));
+            subview.pose = contextService.getEntityPose(contextService.getSubviewEntity(index));
             subview.pose.update(state.time);
             
             index++;
@@ -335,40 +263,10 @@ export class ViewService {
     private _updateViewport(viewport:CanvasViewport) {
         const viewportJSON = JSON.stringify(viewport);
         
-        if (this._layers.length && this.autoStyleLayerElements) {
-            requestAnimationFrame(() => {
-                let zIndex = -this._layers.length;
-                for (const layer of this._layers) {
-                    const layerStyle = layer.source.style;
-                    layerStyle.position = 'absolute';
-                    layerStyle.left = viewport.x + 'px';
-                    layerStyle.bottom = viewport.y + 'px';
-                    layerStyle.width = viewport.width + 'px';
-                    layerStyle.height = viewport.height + 'px';
-                    layerStyle.zIndex = '' + zIndex;
-                    zIndex++;
-                }
-            })
-        }
-
         if (!this._currentViewportJSON || this._currentViewportJSON !== viewportJSON) {
             this._currentViewportJSON = viewportJSON;
 
             this._viewport = Viewport.clone(viewport, this._viewport)!;
-
-            if (this.element && 
-                !this.sessionService.isRealityManager && 
-                this.autoLayoutImmersiveMode && 
-                this.viewportMode === ViewportMode.IMMERSIVE) {
-                requestAnimationFrame(() => {
-                    const elementStyle = this.element.style;
-                    elementStyle.position = 'fixed';
-                    elementStyle.left = viewport.x + 'px';
-                    elementStyle.bottom = viewport.y + 'px';
-                    elementStyle.width = viewport.width + 'px';
-                    elementStyle.height = viewport.height + 'px';
-                })
-            }
 
             this.viewportChangeEvent.raiseEvent(viewport);
         }
@@ -380,7 +278,10 @@ export class ViewService {
 
     private _embeddedViewport = new Viewport; 
 
-    private _watchEmbeddedViewport() {
+    /**
+     * @private
+     */
+    public _watchEmbeddedViewport() {
         const publish = () => {
             if (this.element && this.autoPublishEmbeddedMode) {
                 const parentElement = this.element.parentElement;
@@ -551,7 +452,7 @@ if (typeof document !== 'undefined' && document.createElement) {
         }
     `, sheet.cssRules.length);
     sheet.insertRule(`
-        .argon-immersive body {
+        :not(.argon-reality-manager).argon-immersive body {
             visibility: hidden;
         }
     `, sheet.cssRules.length);

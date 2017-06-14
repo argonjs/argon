@@ -6,6 +6,9 @@ export * from './utils/event';
 export * from './utils/message-channel';
 export { default as getEventSynthesizier } from './utils/ui-event-synthesizer';
 export { default as createEventForwarder } from './utils/ui-event-forwarder';
+export declare function isNativeFunction(f: Function): boolean;
+export declare const hasNativeWebVRImplementation: boolean;
+export declare const suggestedWebGLContextAntialiasAttribute: boolean;
 export declare function stringIdentifierFromReferenceFrame(referenceFrame: string | ReferenceFrame | Entity): string;
 export declare function jsonEquals(left?: {}, right?: {}): boolean;
 /**
@@ -104,6 +107,7 @@ export declare function decomposePerspectiveProjectionMatrix(mat: Matrix4, resul
  */
 export declare function convertEntityReferenceFrame(entity: Entity, time: JulianDate, frame: ReferenceFrame | Entity): boolean;
 export declare const isIOS: boolean;
+export declare const isAndroid: boolean;
 export declare function installArgonApp(): void;
 export declare function openInArgonApp(): void;
 declare const rAF: any;

@@ -24,12 +24,12 @@ SystemJS.config({
                 }
             }
         },
-        'dist/src': {
+        'dist': {
             'defaultExtension': 'js'
         },
         'test': {
             'map': {
-                '@argonjs/argon': 'src/dist/argon.js'
+                '@argonjs/argon': 'dist/argon.core'
             }
         }
     },

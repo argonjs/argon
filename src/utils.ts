@@ -28,6 +28,16 @@ export * from './utils/message-channel';
 export {default as getEventSynthesizier} from './utils/ui-event-synthesizer';
 export {default as createEventForwarder} from './utils/ui-event-forwarder';
 
+const reNative = /\{\s*\[native code\]\s*\}/;
+export function isNativeFunction(f:Function) {
+    return typeof f === 'function' && reNative.test(Function.prototype.toString.call(f))
+}
+
+export const hasNativeWebVRImplementation = typeof navigator !== 'undefined' && 
+    isNativeFunction(navigator.getVRDisplays) && 
+    !Object.getOwnPropertyDescriptor(navigator, "getVRDisplays");
+
+export const suggestedWebGLContextAntialiasAttribute = hasNativeWebVRImplementation;
 
 export function stringIdentifierFromReferenceFrame(referenceFrame: string | ReferenceFrame | Entity): string {
     const rf = referenceFrame as Entity;
@@ -351,15 +361,22 @@ export function convertEntityReferenceFrame(entity:Entity, time:JulianDate, fram
 export const isIOS = typeof navigator !== 'undefined' &&  typeof window !== 'undefined' &&
     /iPad|iPhone|iPod/.test(navigator.userAgent) && !window['MSStream'];
 
+export const isAndroid = typeof navigator !== 'undefined' &&  typeof window !== 'undefined' &&
+    /Android/.test(navigator.userAgent) && !window['MSStream'];
+
 export function installArgonApp() {
     if (isIOS) {
         window.location.href = "https://itunes.apple.com/us/app/argon4/id1089308600?mt=8";
+    } else if (isAndroid) {
+        window.location.href = "http://play.google.com/store/apps/details?id=edu.gatech.argon4"
     }
 }
 
 export function openInArgonApp() {
     if (isIOS) {
         window.location.href = `argon4://open?url=${encodeURIComponent(window.location.href)}`;
+    } else if (isAndroid) {
+        window.location.href = `intent:/#Intent;scheme=argon4;package=edu.gatech.argon4;S.url=${encodeURIComponent(window.location.href)};end`;
     }
 }
 

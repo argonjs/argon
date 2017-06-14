@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ReadonlySerializedSubview | argon.js</title>
+	<title>PermissionState | argon.js</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -52,87 +52,73 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="readonlyserializedsubview.html">ReadonlySerializedSubview</a>
+					<a href="permissionstate.html">PermissionState</a>
 				</li>
 			</ul>
-			<h1>Interface ReadonlySerializedSubview</h1>
+			<h1>Enumeration PermissionState</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>The serialized rendering parameters for a particular subview</p>
-					</div>
-				</div>
-			</section>
-			<section class="tsd-panel tsd-hierarchy">
-				<h3>Hierarchy</h3>
-				<ul class="tsd-hierarchy">
-					<li>
-						<span class="target">ReadonlySerializedSubview</span>
-					</li>
-				</ul>
-			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Properties</h3>
+							<h3>Enumeration members</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="readonlyserializedsubview.html#projectionmatrix" class="tsd-kind-icon">projection<wbr>Matrix</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="readonlyserializedsubview.html#type" class="tsd-kind-icon">type</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="readonlyserializedsubview.html#viewport" class="tsd-kind-icon">viewport</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="permissionstate.html#denied" class="tsd-kind-icon">DENIED</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="permissionstate.html#granted" class="tsd-kind-icon">GRANTED</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="permissionstate.html#not_required" class="tsd-kind-icon">NOT_<wbr>REQUIRED</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="permissionstate.html#prompt" class="tsd-kind-icon">PROMPT</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="projectionmatrix" class="tsd-anchor"></a>
-					<h3>projection<wbr>Matrix</h3>
-					<div class="tsd-signature tsd-kind-icon">projection<wbr>Matrix<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Readonly</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Matrix4</span><span class="tsd-signature-symbol">&gt;</span></div>
+				<h2>Enumeration members</h2>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="denied" class="tsd-anchor"></a>
+					<h3>DENIED</h3>
+					<div class="tsd-signature tsd-kind-icon">DENIED<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> =&nbsp;&#x27;denied&#x27; as any</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/common.ts#L221">src/common.ts:221</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The projection matrix for this subview</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="type" class="tsd-anchor"></a>
-					<h3>type</h3>
-					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <a href="../enums/subviewtype.html" class="tsd-signature-type">SubviewType</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/common.ts#L217">src/common.ts:217</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/permission.ts#L45">src/permission.ts:45</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="viewport" class="tsd-anchor"></a>
-					<h3>viewport</h3>
-					<div class="tsd-signature tsd-kind-icon">viewport<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Readonly</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/canvasviewport.html" class="tsd-signature-type">CanvasViewport</a><span class="tsd-signature-symbol">&gt;</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="granted" class="tsd-anchor"></a>
+					<h3>GRANTED</h3>
+					<div class="tsd-signature tsd-kind-icon">GRANTED<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> =&nbsp;&#x27;granted&#x27; as any</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/common.ts#L225">src/common.ts:225</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/permission.ts#L44">src/permission.ts:44</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The viewport for this subview (relative to the primary viewport)</p>
-						</div>
-					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="not_required" class="tsd-anchor"></a>
+					<h3>NOT_<wbr>REQUIRED</h3>
+					<div class="tsd-signature tsd-kind-icon">NOT_<wbr>REQUIRED<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> =&nbsp;&#x27;not_required&#x27; as any</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/permission.ts#L42">src/permission.ts:42</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="prompt" class="tsd-anchor"></a>
+					<h3>PROMPT</h3>
+					<div class="tsd-signature tsd-kind-icon">PROMPT<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> =&nbsp;&#x27;prompt&#x27; as any</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/permission.ts#L43">src/permission.ts:43</a></li>
+						</ul>
+					</aside>
 				</section>
 			</section>
 		</div>
@@ -148,17 +134,20 @@
 				<ul class="before-current">
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface">
-						<a href="readonlyserializedsubview.html" class="tsd-kind-icon">Readonly<wbr>Serialized<wbr>Subview</a>
+					<li class="current tsd-kind-enum">
+						<a href="permissionstate.html" class="tsd-kind-icon">Permission<wbr>State</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="readonlyserializedsubview.html#projectionmatrix" class="tsd-kind-icon">projection<wbr>Matrix</a>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="permissionstate.html#denied" class="tsd-kind-icon">DENIED</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="readonlyserializedsubview.html#type" class="tsd-kind-icon">type</a>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="permissionstate.html#granted" class="tsd-kind-icon">GRANTED</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="readonlyserializedsubview.html#viewport" class="tsd-kind-icon">viewport</a>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="permissionstate.html#not_required" class="tsd-kind-icon">NOT_<wbr>REQUIRED</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="permissionstate.html#prompt" class="tsd-kind-icon">PROMPT</a>
 							</li>
 						</ul>
 					</li>

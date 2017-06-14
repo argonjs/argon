@@ -152,7 +152,7 @@ export class RealityService {
             realityControlSession.open(messageChannel.port2, this.sessionService.configuration);
         };
         
-        let i = 0;
+        // let i = 0;
 
         this.contextService.updateEvent.addEventListener(()=>{
             const frameState = this.contextService.serializedFrameState;
@@ -164,7 +164,8 @@ export class RealityService {
                     eye.viewport = Viewport.clone(frameState.subviews[0].viewport, eye.viewport);
                     delete frameState.entities['ar.user'];
                     // throttle for 30fps
-                    i++ % 2 === 0 && sessionService.manager.send('ar.reality.frameState', frameState);
+                    // i++ % 2 === 0 && 
+                    sessionService.manager.send('ar.reality.frameState', frameState);
                     frameState.entities['ar.user'] = eye.pose;
                 } else {
                     sessionService.manager.send('ar.reality.frameState', frameState);

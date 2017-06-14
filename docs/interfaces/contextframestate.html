@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ReadonlySerializedSubview | argon.js</title>
+	<title>ContextFrameState | argon.js</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -52,10 +52,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="readonlyserializedsubview.html">ReadonlySerializedSubview</a>
+					<a href="contextframestate.html">ContextFrameState</a>
 				</li>
 			</ul>
-			<h1>Interface ReadonlySerializedSubview</h1>
+			<h1>Interface ContextFrameState</h1>
 		</div>
 	</div>
 </header>
@@ -65,7 +65,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>The serialized rendering parameters for a particular subview</p>
+						<p>Describes a complete frame state which is sent to child sessions</p>
 					</div>
 				</div>
 			</section>
@@ -73,7 +73,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ReadonlySerializedSubview</span>
+						<span class="target">ContextFrameState</span>
 					</li>
 				</ul>
 			</section>
@@ -84,9 +84,13 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="readonlyserializedsubview.html#projectionmatrix" class="tsd-kind-icon">projection<wbr>Matrix</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="readonlyserializedsubview.html#type" class="tsd-kind-icon">type</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="readonlyserializedsubview.html#viewport" class="tsd-kind-icon">viewport</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="contextframestate.html#entities" class="tsd-kind-icon">entities</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="contextframestate.html#index" class="tsd-kind-icon">index</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="contextframestate.html#reality" class="tsd-kind-icon">reality</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="contextframestate.html#sendtime" class="tsd-kind-icon">send<wbr>Time</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="contextframestate.html#subviews" class="tsd-kind-icon">subviews</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="contextframestate.html#time" class="tsd-kind-icon">time</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="contextframestate.html#viewport" class="tsd-kind-icon">viewport</a></li>
 							</ul>
 						</section>
 					</div>
@@ -95,44 +99,74 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="projectionmatrix" class="tsd-anchor"></a>
-					<h3>projection<wbr>Matrix</h3>
-					<div class="tsd-signature tsd-kind-icon">projection<wbr>Matrix<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Readonly</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Matrix4</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<a name="entities" class="tsd-anchor"></a>
+					<h3>entities</h3>
+					<div class="tsd-signature tsd-kind-icon">entities<span class="tsd-signature-symbol">:</span> <a href="serializedentitystatemap.html" class="tsd-signature-type">SerializedEntityStateMap</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/common.ts#L221">src/common.ts:221</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/common.ts#L364">src/common.ts:364</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The projection matrix for this subview</p>
-						</div>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="type" class="tsd-anchor"></a>
-					<h3>type</h3>
-					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <a href="../enums/subviewtype.html" class="tsd-signature-type">SubviewType</a></div>
+					<a name="index" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> index</h3>
+					<div class="tsd-signature tsd-kind-icon">index<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/common.ts#L217">src/common.ts:217</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/common.ts#L363">src/common.ts:363</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="reality" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> reality</h3>
+					<div class="tsd-signature tsd-kind-icon">reality<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/common.ts#L362">src/common.ts:362</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="sendtime" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> send<wbr>Time</h3>
+					<div class="tsd-signature tsd-kind-icon">send<wbr>Time<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">JulianDate</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/common.ts#L365">src/common.ts:365</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="subviews" class="tsd-anchor"></a>
+					<h3>subviews</h3>
+					<div class="tsd-signature tsd-kind-icon">subviews<span class="tsd-signature-symbol">:</span> <a href="../classes/serializedsubviewlist.html" class="tsd-signature-type">SerializedSubviewList</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/common.ts#L361">src/common.ts:361</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="time" class="tsd-anchor"></a>
+					<h3>time</h3>
+					<div class="tsd-signature tsd-kind-icon">time<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">JulianDate</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/common.ts#L359">src/common.ts:359</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="viewport" class="tsd-anchor"></a>
 					<h3>viewport</h3>
-					<div class="tsd-signature tsd-kind-icon">viewport<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Readonly</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/canvasviewport.html" class="tsd-signature-type">CanvasViewport</a><span class="tsd-signature-symbol">&gt;</span></div>
+					<div class="tsd-signature tsd-kind-icon">viewport<span class="tsd-signature-symbol">:</span> <a href="../classes/canvasviewport.html" class="tsd-signature-type">CanvasViewport</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/common.ts#L225">src/common.ts:225</a></li>
+							<li>Defined in <a href="https://github.com/argonjs/argon/blob/0cf2afe/src/common.ts#L360">src/common.ts:360</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The viewport for this subview (relative to the primary viewport)</p>
-						</div>
-					</div>
 				</section>
 			</section>
 		</div>
@@ -149,16 +183,28 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="readonlyserializedsubview.html" class="tsd-kind-icon">Readonly<wbr>Serialized<wbr>Subview</a>
+						<a href="contextframestate.html" class="tsd-kind-icon">Context<wbr>Frame<wbr>State</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="readonlyserializedsubview.html#projectionmatrix" class="tsd-kind-icon">projection<wbr>Matrix</a>
+								<a href="contextframestate.html#entities" class="tsd-kind-icon">entities</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="readonlyserializedsubview.html#type" class="tsd-kind-icon">type</a>
+								<a href="contextframestate.html#index" class="tsd-kind-icon">index</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="readonlyserializedsubview.html#viewport" class="tsd-kind-icon">viewport</a>
+								<a href="contextframestate.html#reality" class="tsd-kind-icon">reality</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="contextframestate.html#sendtime" class="tsd-kind-icon">send<wbr>Time</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="contextframestate.html#subviews" class="tsd-kind-icon">subviews</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="contextframestate.html#time" class="tsd-kind-icon">time</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="contextframestate.html#viewport" class="tsd-kind-icon">viewport</a>
 							</li>
 						</ul>
 					</li>
