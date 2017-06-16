@@ -44,6 +44,10 @@ interface PinchMovement {
  *   - Have a canvas element
  *   - Do not clear the canvas (e.g. set renderer.autoClear=false in three.js)
  *   - Rebind your GL state before rendering (e.g. renderer.resetGLState() in three.js)
+ *   - Currently depends on the following relative files:
+ *      - ../resources/artoolkit/camera_para.dat
+ *      - ../resources/artoolkit/patt.hiro
+ *      - ../resources/artoolkit/patt.kanji
  */
 
 @inject(SessionService, ContextService, ViewService, DeviceService)
@@ -375,7 +379,7 @@ export class WebRTCRealityViewer extends RealityViewer {
     }
 
     protected initARController() {
-        ARController.getUserMediaThreeScene({maxARVideoSize: 320, width: 320, height: 240, cameraParam: '../resources/artoolkit/camera_para.dat', 
+        ARController.getUserMediaThreeScene({width: 320, height: 240, cameraParam: '../resources/artoolkit/camera_para.dat', 
             onSuccess: (arScene, arController, arCamera) => {
                 console.log("*** getUserMediaThreeScene success ***");
 
@@ -454,28 +458,98 @@ export class WebRTCRealityViewer extends RealityViewer {
 
     protected updateViewport(viewport:CanvasViewport) {
         if (!this._arController) return;
-        console.log("updateViewport: " + viewport.width + ", " + viewport.height);
+        console.log("updateViewport size: " + viewport.width + ", " + viewport.height);
+        console.log("camera image size: " + this._arController.image.videoWidth + ", " + this._arController.image.videoHeight);
         let canvasAspect = viewport.width / viewport.height;
-        let cameraAspect = this._arController.videoWidth / this._arController.videoHeight;
+        let cameraAspect = this._arController.image.videoWidth / this._arController.image.videoHeight;
         console.log("canvasAspect: " + canvasAspect);
         console.log("cameraAspect: " + cameraAspect);
         // Scale the video plane to aspect fill the screen
-        // TODO: This logic works in the browser and on the phone in portrait mode
-        // It does not seem to work correctly in landscape mode, investigate this
         if (canvasAspect > cameraAspect) {
             // canvas is wider than camera image
+            console.log("canvas is wider than camera image");
             this._arScene.videoPlane.scale.x = 1;
             this._arScene.videoPlane.scale.y = canvasAspect/cameraAspect;
         } else {
             // camera image is wider than canvas
+            console.log("camera image is wider than canvas");
             this._arScene.videoPlane.scale.x = cameraAspect/canvasAspect;
             this._arScene.videoPlane.scale.y = 1;
         }
         // Note: We still need to fix tracking to work with this new "camera viewport"
+        this.updateProjection(viewport);
+    }
+
+    protected updateProjection(viewport:CanvasViewport) {
+        const scratchFrustum = new PerspectiveFrustum();
+        var projMatrix = Matrix4.fromArray(this._arController.getCameraMatrix());
+
+        console.log("ARToolKit projection:")
+        console.log(Matrix4.toArray(projMatrix)); // toString method gives a transposed matrix! this is a safer way to print
+
+        // this is required for Cesium to accept this matrix
+        projMatrix[4] *= -1; // x
+        projMatrix[5] *= -1; // y
+        projMatrix[6] *= -1; // z
+        projMatrix[7] *= -1; // w
+
+        projMatrix[8] *= -1;  // x
+        projMatrix[9] *= -1;  // y
+        projMatrix[10] *= -1; // z
+        projMatrix[11] *= -1; // w
+
+        console.log("Cesium-ready projection:");
+        console.log(Matrix4.toArray(projMatrix));
+
+        try {
+            console.log("BEFORE:");
+            decomposePerspectiveProjectionMatrix(projMatrix, scratchFrustum);
+            console.log("projMatrix aspect: " + scratchFrustum.aspectRatio);
+            console.log("projMatrix fov: " + scratchFrustum.fov);
+            console.log("projMatrix near: " + scratchFrustum.near);
+            console.log("projMatrix far: " + scratchFrustum.far);
+            console.log("projMatrix fovy: " + scratchFrustum.fovy);
+        } catch(e) {
+            console.log("*** error: " + e);
+        }
+
+        // TDOD: adjust the ARToolKit projection matrix to work with our new viewport
+
+        projMatrix = scratchFrustum.projectionMatrix;
+
+        try {
+            console.log("AFTER:");
+            decomposePerspectiveProjectionMatrix(projMatrix, scratchFrustum);
+            console.log("projMatrix aspect: " + scratchFrustum.aspectRatio);
+            console.log("projMatrix fov: " + scratchFrustum.fov);
+            console.log("projMatrix near: " + scratchFrustum.near);
+            console.log("projMatrix far: " + scratchFrustum.far);
+            console.log("projMatrix fovy: " + scratchFrustum.fovy);
+        } catch(e) {
+            console.log("*** error: " + e);
+        }
+
+        // undo what we did earlier
+        // Note: to make this work with argon we won't want to undo these changes
+        // BUT, we'll have to figure out how to modify the target poses to work with this new projection
+        projMatrix[4] *= -1; // x
+        projMatrix[5] *= -1; // y
+        projMatrix[6] *= -1; // z
+        projMatrix[7] *= -1; // w
+
+        projMatrix[8] *= -1;  // x
+        projMatrix[9] *= -1;  // y
+        projMatrix[10] *= -1; // z
+        projMatrix[11] *= -1; // w
+
+        // threejs fromArray creates a column-major matrix
+        console.log("Original Camera Matrix:");
+        console.log(this._arController.getCameraMatrix());
+        this._arScene.camera.projectionMatrix.fromArray(projMatrix);
+        console.log("Final Projection Matrix:");
+        console.log(this._arScene.camera.projectionMatrix);
     }
 }
-
-
 
 var integrateCustomARToolKit = function() {
 
@@ -547,6 +621,7 @@ var integrateCustomARToolKit = function() {
                 //wait until the video stream is ready
                 var interval = setInterval(function() {
                     if (!domElement.videoWidth)	return;
+                    console.log("video element: " + domElement.videoWidth + ", " + domElement.videoHeight);
                     //onReady()
                     onSuccess(domElement);
                     clearInterval(interval)
@@ -618,11 +693,13 @@ var integrateCustomARToolKit = function() {
         var onSuccess = configuration.onSuccess;
 
         obj.onSuccess = function(arController, arCameraParam) {
+            arController.setProjectionNearPlane(0.01); // this does nothing...
+            arController.setProjectionFarPlane(100000); // this does nothing...
             var scenes = arController.createThreeScene();
             onSuccess(scenes, arController, arCameraParam);
         };
 
-        var video = this.getUserMediaARController(obj);
+        var video = this.getUserMediaARController(obj); // this is in artoolkit.api.js
         return video;
     };
 
@@ -655,7 +732,7 @@ var integrateCustomARToolKit = function() {
         @param video Video image to use as scene background. Defaults to this.image
     */
     ARController.prototype.createThreeScene = function(video) {
-        video = video || this.image;
+        video = video || this.image; // we're using this.image (set in ARController.getUserMediaARController)
 
         this.setupThree();
 
@@ -834,7 +911,23 @@ var integrateCustomARToolKit = function() {
 
             }
             if (obj) {
-                obj.matrix.fromArray(ev.data.matrix);
+                var pose = ev.data.matrix;
+
+                // I think we need to modify the pose to work with the Cesium-ready projection
+                // But this naive approach does not work
+                /*
+                pose[4] *= -1; // x
+                pose[5] *= -1; // y
+                pose[6] *= -1; // z
+                pose[7] *= -1; // w
+
+                pose[8] *= -1;  // x
+                pose[9] *= -1;  // y
+                pose[10] *= -1; // z
+                pose[11] *= -1; // w
+                */
+
+                obj.matrix.fromArray(pose);
                 obj.visible = true;
             }
         });

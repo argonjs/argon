@@ -10,6 +10,10 @@ import { RealityViewer } from './base';
  *   - Have a canvas element
  *   - Do not clear the canvas (e.g. set renderer.autoClear=false in three.js)
  *   - Rebind your GL state before rendering (e.g. renderer.resetGLState() in three.js)
+ *   - Currently depends on the following relative files:
+ *      - ../resources/artoolkit/camera_para.dat
+ *      - ../resources/artoolkit/patt.hiro
+ *      - ../resources/artoolkit/patt.kanji
  */
 export declare class WebRTCRealityViewer extends RealityViewer {
     private sessionService;
@@ -30,4 +34,5 @@ export declare class WebRTCRealityViewer extends RealityViewer {
     protected initARToolKit(): void;
     protected initARController(): void;
     protected updateViewport(viewport: CanvasViewport): void;
+    protected updateProjection(viewport: CanvasViewport): void;
 }
