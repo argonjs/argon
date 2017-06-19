@@ -59,6 +59,7 @@ export abstract class RealityViewer {
     static EMPTY = 'reality:empty';
     static LIVE = 'reality:live';
     static WEBRTC = 'reality:webrtc';
+    static TANGO = 'reality:tango';
     
     static getType(uri?: string) {
         if (uri === undefined) return undefined;

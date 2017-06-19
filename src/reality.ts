@@ -23,19 +23,21 @@ import { EmptyRealityViewer } from './reality-viewers/empty'
 import { LiveRealityViewer } from './reality-viewers/live'
 import { WebRTCRealityViewer } from './reality-viewers/webrtc'
 import { HostedRealityViewer } from './reality-viewers/hosted'
+import { TangoRealityViewer } from './reality-viewers/tango'
 
 import {ViewServiceProvider} from './view'
 import {DeviceService} from './device'
 
 import * as utils from './utils'
 
-@inject(Factory.of(EmptyRealityViewer), Factory.of(LiveRealityViewer), Factory.of(WebRTCRealityViewer), Factory.of(HostedRealityViewer))
+@inject(Factory.of(EmptyRealityViewer), Factory.of(LiveRealityViewer), Factory.of(WebRTCRealityViewer), Factory.of(HostedRealityViewer), Factory.of(TangoRealityViewer))
 export abstract class RealityViewerFactory {
     constructor(
         private _createEmptyReality, 
         private _createLiveReality, 
         private _createWebRTCReality, 
-        private _createHostedReality) {
+        private _createHostedReality,
+        private _createTangoReality) {
     }
 
     createRealityViewer(uri:string) : RealityViewer {
@@ -48,6 +50,8 @@ export abstract class RealityViewerFactory {
                 return this._createWebRTCReality(uri);
             case 'hosted':
                 return this._createHostedReality(uri);
+            case RealityViewer.TANGO:
+                return this._createTangoReality(uri);
             default:
                 throw new Error('Unsupported Reality Viewer: ' + uri)
         }
@@ -218,6 +222,7 @@ export class RealityService {
      * - [[RealityViewer.LIVE]] to request a live reality viewer 
      * - [[RealityViewer.WEBTRC]] to request a webrtc reality viewer
      * - [[RealityViewer.EMPTY]] to request an empty reality viewer
+     * - [[RealityViewer.TANGO]] to request a Tango reality viewer
      */
     public request(uri:string): Promise<void> {
         return this.sessionService.manager.whenConnected().then(()=>{
