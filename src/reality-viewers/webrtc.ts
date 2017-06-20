@@ -363,11 +363,11 @@ export class WebRTCRealityViewer extends RealityViewer {
     protected initARToolKit() {
         // for now we're dynamically loading these scripts
         var script = document.createElement('script');
-        script.src = 'https://rawgit.com/artoolkit/jsartoolkit5/master/build/artoolkit.min.js';
+        script.src = 'https://rawgit.com/blairmacintyre/jsartoolkit5/master/build/artoolkit.min.js';
         script.onload = () => {
             console.log("*** artoolkit.min.js loaded ***");
             var script2 = document.createElement('script');
-            script2.src = 'https://rawgit.com/artoolkit/jsartoolkit5/master/js/artoolkit.api.js';
+            script2.src = 'https://rawgit.com/blairmacintyre/jsartoolkit5/master/js/artoolkit.api.js';
             script2.onload = () => {
                 console.log("*** artoolkit.api.js loaded ***");
                 integrateCustomARToolKit();
@@ -379,7 +379,7 @@ export class WebRTCRealityViewer extends RealityViewer {
     }
 
     protected initARController() {
-        ARController.getUserMediaThreeScene({width: 320, height: 240, cameraParam: '../resources/artoolkit/camera_para.dat', 
+        ARController.getUserMediaThreeScene({width: 240, height: 240, cameraParam: 45 * Math.PI / 180,
             onSuccess: (arScene, arController, arCamera) => {
                 console.log("*** getUserMediaThreeScene success ***");
 
@@ -446,12 +446,16 @@ export class WebRTCRealityViewer extends RealityViewer {
                     var markerRoot = arController.createThreeMarker(markerId);
                     markerRoot.add(sphere);
                     arScene.scene.add(markerRoot);
+                }, function(error) {
+                    console.log(error.name + ": " + error.message);
                 });
 
                 arController.loadMarker('../resources/artoolkit/patt.kanji', function(markerId) {
                     var markerRoot = arController.createThreeMarker(markerId);
                     markerRoot.add(torus);
                     arScene.scene.add(markerRoot);
+                }, function(error) {
+                    console.log(error.name + ": " + error.message);
                 });
             }});
     }
@@ -513,7 +517,10 @@ export class WebRTCRealityViewer extends RealityViewer {
             console.log("*** error: " + e);
         }
 
-        // TDOD: adjust the ARToolKit projection matrix to work with our new viewport
+        // TDOD: adjust the fov in case the camera image is not square
+
+        var viewportAspect = viewport.width / viewport.height;
+        scratchFrustum.aspectRatio = viewportAspect;
 
         projMatrix = scratchFrustum.projectionMatrix;
 
