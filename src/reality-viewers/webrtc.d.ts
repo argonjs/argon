@@ -1,7 +1,6 @@
+import { Container } from 'aurelia-dependency-injection';
 import { CanvasViewport } from '../common';
 import { SessionService } from '../session';
-import { ContextService } from '../context';
-import { DeviceService } from '../device';
 import { ViewService } from '../view';
 import { RealityViewer } from './base';
 /**
@@ -17,9 +16,8 @@ import { RealityViewer } from './base';
  */
 export declare class WebRTCRealityViewer extends RealityViewer {
     private sessionService;
-    private contextService;
     private viewService;
-    private deviceService;
+    private container;
     uri: string;
     type: string;
     private _arScene;
@@ -27,7 +25,7 @@ export declare class WebRTCRealityViewer extends RealityViewer {
     private _renderer;
     private _aggregator;
     private _moveFlags;
-    constructor(sessionService: SessionService, contextService: ContextService, viewService: ViewService, deviceService: DeviceService, uri: string);
+    constructor(sessionService: SessionService, viewService: ViewService, container: Container, uri: string);
     private _scratchMatrix3;
     private _scratchMatrix4;
     load(): void;
