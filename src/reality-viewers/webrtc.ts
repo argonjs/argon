@@ -165,14 +165,15 @@ export class WebRTCRealityViewer extends RealityViewer {
             new SessionConnectService(session, this.sessionService.configuration)
         );
 
-        // setup the configuration for our empty reality
+        // setup the configuration for our webrtc reality
         child.registerInstance(Configuration, { 
             role: Role.REALITY_VIEWER, 
             uri: this.uri,
-            title: 'Empty',
+            title: 'WebRTC',
             version: this.sessionService.configuration.version,
             supportsCustomProtocols: true,
-            protocols: ['ar.configureStage@v1']
+            protocols: ['ar.configureStage@v1'],
+            sharedCanvas: true
         });
 
         // Create the basic services that we need to use. 

@@ -87,6 +87,7 @@ export abstract class Configuration {
         disable?: boolean
     };
     'supportsCustomProtocols'?: boolean;
+    'sharedCanvas'?: boolean;
 }
 
 export class Viewport {

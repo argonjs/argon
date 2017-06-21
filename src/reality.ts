@@ -107,6 +107,12 @@ export class RealityService {
      */
     public default = RealityViewer.EMPTY;
 
+    /**
+     * Whether the current reality viewer shares a canvas with the reality augmenter.
+     */
+    public get isSharedCanvas() { return this._sharedCanvas };
+    public _sharedCanvas: boolean;
+
     // private _scratchFrustum = new PerspectiveFrustum();
 
     constructor(
@@ -372,6 +378,7 @@ export class RealityServiceProvider {
                             }
                         }
                         frame.reality = viewer.uri;
+                        this.realityService._sharedCanvas = !!(this.sessionService.configuration['sharedCanvas'] && viewer.session!.info['sharedCanvas']);
                         this.contextService.submitFrameState(frame);
                     }
                 }

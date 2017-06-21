@@ -65,6 +65,11 @@ export declare class RealityService {
      * The default Reality Viewer.
      */
     default: string;
+    /**
+     * Whether the current reality viewer shares a canvas with the reality augmenter.
+     */
+    readonly isSharedCanvas: boolean;
+    _sharedCanvas: boolean;
     constructor(sessionService: SessionService, contextService: ContextService);
     /**
      * Install the specified reality viewer
