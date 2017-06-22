@@ -13,10 +13,11 @@ import {
     Matrix3,
     Matrix4,
     PerspectiveFrustum,
-    CesiumMath
+    CesiumMath,
+    Entity
 } from '../cesium/cesium-imports'
 import { Configuration, Role, SerializedSubviewList, CanvasViewport } from '../common'
-import { SessionService, ConnectService, SessionConnectService } from '../session'
+import { SessionService, ConnectService, SessionConnectService, Message } from '../session'
 import { 
     eastUpSouthToFixedFrame, 
     decomposePerspectiveProjectionMatrix, 
@@ -57,7 +58,7 @@ interface PinchMovement {
  *      - ../resources/artoolkit/patt.kanji
  */
 
-@inject(SessionService, ViewService, Container)
+@inject(SessionService, ViewService, ContextService, Container)
 export class WebRTCRealityViewer extends RealityViewer {
 
     public type = 'webrtc';
@@ -65,6 +66,16 @@ export class WebRTCRealityViewer extends RealityViewer {
     private _arScene;
     private _arController;
     private _renderer;
+
+    private _scratchCartesian = new Cartesian3();
+    private _scratchQuaternion = new Quaternion();
+
+    private _artoolkitTrackerEntity = new Entity({
+        position: new ConstantPositionProperty(Cartesian3.ZERO, this.contextService.user),
+        orientation: new ConstantProperty(Quaternion.IDENTITY)
+    });
+
+    private _artoolkitProjection:Matrix4|undefined;
 
     private _aggregator:CameraEventAggregator|undefined;
     private _moveFlags = {
@@ -79,6 +90,7 @@ export class WebRTCRealityViewer extends RealityViewer {
     constructor(
         private sessionService: SessionService,
         private viewService: ViewService,
+        private contextService: ContextService,
         private container: Container,
         public uri:string) {
         super(uri);
@@ -142,8 +154,6 @@ export class WebRTCRealityViewer extends RealityViewer {
         this.viewService.viewportChangeEvent.addEventListener((viewport:CanvasViewport)=>{
             this.updateViewport(viewport);
         });
-
-        this.initARToolKit();
     }
 
     private _scratchMatrix3 = new Matrix3;
@@ -172,7 +182,7 @@ export class WebRTCRealityViewer extends RealityViewer {
             title: 'WebRTC',
             version: this.sessionService.configuration.version,
             supportsCustomProtocols: true,
-            protocols: ['ar.configureStage@v1'],
+            protocols: ['ar.configureStage@v1', 'ar.jsartoolkit'],
             sharedCanvas: true
         });
 
@@ -207,6 +217,72 @@ export class WebRTCRealityViewer extends RealityViewer {
                 customStagePosition = undefined;
                 customStageOrientation = undefined;
             }
+
+            session.on['ar.jsartoolkit.init'] = () => {
+                console.log("*** ar.jsartoolkit.init ***");
+                return new Promise<void>((resolve, reject)=>{
+                    this.initARToolKit().then(()=>{
+
+                        /**
+                         * _artoolkitTrackerEntity matches the user position but does not rotate as the device rotates
+                         * it also rotates the artoolkit content to match our preferred coordinate system,
+                         * where +X is right, +Y is down, and +Z is in the camera direction
+                         */
+                        const x180 = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, CesiumMath.PI);
+                        (this._artoolkitTrackerEntity.orientation as ConstantProperty).setValue(x180);
+
+                        this._arController.addEventListener('getMarker', (ev) => {
+                            const marker = ev.data.marker;
+                            const id = this._getIdForMarker(marker.id);
+                            const entity:Entity|undefined = this.contextService.entities.getById(id);
+
+                            if (entity) {
+                                const pose = ev.data.matrix;
+                                const position = Matrix4.getTranslation(pose, this._scratchCartesian);
+                                const rotationMatrix = Matrix4.getRotation(pose, this._scratchMatrix3);
+                                const orientation = Quaternion.fromRotationMatrix(rotationMatrix, this._scratchQuaternion);
+
+                                if (entity.position instanceof ConstantPositionProperty) {
+                                    entity.position.setValue(position, this._artoolkitTrackerEntity);
+                                } else {
+                                    entity.position = new ConstantPositionProperty(position, this._artoolkitTrackerEntity);
+                                }
+
+                                if (entity.orientation instanceof ConstantProperty) {
+                                    entity.orientation.setValue(orientation);
+                                } else {
+                                    entity.orientation = new ConstantProperty(orientation);
+                                }
+                            }
+                        });
+                        
+                        resolve();
+                    }, (error) => {
+                        console.log(error.name + ": " + error.message);
+                        reject(error);
+                    });
+                });
+            }
+
+            session.on['ar.jsartoolkit.addMarker'] = (msg) => {
+                console.log("*** ar.jsartoolkit.addMarker ***");
+                console.log("*** url: " + msg.url);
+                const promise = new Promise<Message>((resolve, reject)=>{
+                    this._arController.loadMarker(msg.url, (markerId) => {
+                        // TODO: handle size of markers
+                        var id = this._getIdForMarker(markerId);
+                        var entity = new Entity({id});
+                        this.contextService.entities.add(entity);
+                        resolve({id: id});
+                    }, (error) => {
+                        console.log(error.name + ": " + error.message);
+                        reject(error);
+                    });
+                });
+                return promise;
+            }
+
+            // TODO: add support for barcode markers and multimarkers
 
         });
 
@@ -285,6 +361,8 @@ export class WebRTCRealityViewer extends RealityViewer {
                         const aspect = s.viewport.width / s.viewport.height;
                         scratchFrustum.aspectRatio = isFinite(aspect) ? aspect : 1;
                         Matrix4.clone(scratchFrustum.projectionMatrix, s.projectionMatrix);
+                        // TODO: remove logic above, but note that _artoolkitProjection is not immediately ready
+                        if (this._artoolkitProjection) Matrix4.clone(this._artoolkitProjection, s.projectionMatrix);
                     });
                 }
 
@@ -394,104 +472,86 @@ export class WebRTCRealityViewer extends RealityViewer {
     }
 
 
-    protected initARToolKit() {
-        // for now we're dynamically loading these scripts
-        var script = document.createElement('script');
-        script.src = 'https://rawgit.com/blairmacintyre/jsartoolkit5/master/build/artoolkit.min.js';
-        script.onload = () => {
-            console.log("*** artoolkit.min.js loaded ***");
-            var script2 = document.createElement('script');
-            script2.src = 'https://rawgit.com/blairmacintyre/jsartoolkit5/master/js/artoolkit.api.js';
-            script2.onload = () => {
-                console.log("*** artoolkit.api.js loaded ***");
-                integrateCustomARToolKit();
-                this.initARController();
-            }
-            document.head.appendChild(script2);
-        }
-        document.head.appendChild(script);
+    private _getIdForMarker(markerUID): string {
+        return "jsartoolkit_marker_" + markerUID;
     }
 
-    protected initARController() {
-        ARController.getUserMediaThreeScene({width: 240, height: 240, cameraParam: 45 * Math.PI / 180,
-            onSuccess: (arScene, arController, arCamera) => {
-                console.log("*** getUserMediaThreeScene success ***");
-
-                this._arScene = arScene;
-                this._arController = arController;
-                this.updateViewport(<any>this.viewService.viewport);
-
-                document.body.className = arController.orientation;
-                
-                var argonCanvas;
-                for (const layer of this.viewService.layers) {
-                    if (layer.source instanceof HTMLCanvasElement) {
-                        argonCanvas = layer.source;
-                    }
+    protected initARToolKit():Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            // for now we're dynamically loading these scripts
+            var script = document.createElement('script');
+            script.src = 'https://rawgit.com/blairmacintyre/jsartoolkit5/master/build/artoolkit.min.js';
+            script.onload = () => {
+                console.log("*** artoolkit.min.js loaded ***");
+                var script2 = document.createElement('script');
+                script2.src = 'https://rawgit.com/blairmacintyre/jsartoolkit5/master/js/artoolkit.api.js';
+                script2.onload = () => {
+                    console.log("*** artoolkit.api.js loaded ***");
+                    integrateCustomARToolKit();
+                    this.initARController().then(()=>{
+                        resolve();
+                    }, (error) => {
+                        console.log(error.name + ": " + error.message);
+                        reject(error);
+                    });
                 }
+                document.head.appendChild(script2);
+            }
+            document.head.appendChild(script);
+        });
+    }
 
-                if (argonCanvas) {
-                    // found an existing canvas, use it
-                    console.log("Found argon canvas, video background is sharing its context");
-                    this._renderer = new THREE.WebGLRenderer({canvas: argonCanvas, antialias: false});
+    protected initARController():Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            ARController.getUserMediaThreeScene({width: 240, height: 240, cameraParam: 45 * Math.PI / 180,
+                onSuccess: (arScene, arController, arCamera) => {
+                    console.log("*** getUserMediaThreeScene success ***");
 
-                } else {
-                    // no canvas, create a new one
-                    console.log("No argon canvas, creating one for video background");
-                    var renderer = new THREE.WebGLRenderer({antialias: false});
+                    this._arScene = arScene;
+                    this._arController = arController;
+                    this.updateViewport(<any>this.viewService.viewport);
 
-                    // Note: This code will need to be updated, we want the canvas to fill the screen
-                    if (arController.orientation === 'portrait') {
-                        var w = (window.innerWidth / arController.videoHeight) * arController.videoWidth;
-                        var h = window.innerWidth;
-                        renderer.setSize(w, h);
-                        renderer.domElement.style.paddingBottom = (w-h) + 'px';
-                    } else {
-                        if (/Android|mobile|iPad|iPhone/i.test(navigator.userAgent)) {
-                            renderer.setSize(window.innerWidth, (window.innerWidth / arController.videoWidth) * arController.videoHeight);
-                        } else {
-                            renderer.setSize(arController.videoWidth, arController.videoHeight);
-                            document.body.className += ' desktop';
+                    document.body.className = arController.orientation;
+                    
+                    var argonCanvas;
+                    for (const layer of this.viewService.layers) {
+                        if (layer.source instanceof HTMLCanvasElement) {
+                            argonCanvas = layer.source;
                         }
                     }
 
-                    document.body.insertBefore(renderer.domElement, document.body.firstChild);
-                    this._renderer = renderer;
-                }
+                    if (argonCanvas) {
+                        // found an existing canvas, use it
+                        console.log("Found argon canvas, video background is sharing its context");
+                        this._renderer = new THREE.WebGLRenderer({canvas: argonCanvas, antialias: false});
 
-                // objects for debugging
-                var sphere = new THREE.Mesh(
-                    new THREE.SphereGeometry(0.5, 8, 8),
-                    new THREE.MeshNormalMaterial()
-                );
-                sphere.material.shading = THREE.FlatShading;
-                sphere.position.z = 0.5;
+                    } else {
+                        // no canvas, create a new one
+                        console.log("No argon canvas, creating one for video background");
+                        var renderer = new THREE.WebGLRenderer({antialias: false});
 
-                var torus = new THREE.Mesh(
-                    new THREE.TorusGeometry(0.3, 0.2, 8, 8),
-                    new THREE.MeshNormalMaterial()
-                );
-                torus.material.shading = THREE.FlatShading;
-                torus.position.z = 0.5;
-                torus.rotation.x = Math.PI/2;
+                        // Note: This code will need to be updated, we want the canvas to fill the screen
+                        if (arController.orientation === 'portrait') {
+                            var w = (window.innerWidth / arController.videoHeight) * arController.videoWidth;
+                            var h = window.innerWidth;
+                            renderer.setSize(w, h);
+                            renderer.domElement.style.paddingBottom = (w-h) + 'px';
+                        } else {
+                            if (/Android|mobile|iPad|iPhone/i.test(navigator.userAgent)) {
+                                renderer.setSize(window.innerWidth, (window.innerWidth / arController.videoWidth) * arController.videoHeight);
+                            } else {
+                                renderer.setSize(arController.videoWidth, arController.videoHeight);
+                                document.body.className += ' desktop';
+                            }
+                        }
 
-                // we may want to hardcode these two markers for the first pass
-                arController.loadMarker('../resources/artoolkit/patt.hiro', function(markerId) {
-                    var markerRoot = arController.createThreeMarker(markerId);
-                    markerRoot.add(sphere);
-                    arScene.scene.add(markerRoot);
-                }, function(error) {
-                    console.log(error.name + ": " + error.message);
-                });
+                        document.body.insertBefore(renderer.domElement, document.body.firstChild);
+                        this._renderer = renderer;
+                    }
 
-                arController.loadMarker('../resources/artoolkit/patt.kanji', function(markerId) {
-                    var markerRoot = arController.createThreeMarker(markerId);
-                    markerRoot.add(torus);
-                    arScene.scene.add(markerRoot);
-                }, function(error) {
-                    console.log(error.name + ": " + error.message);
-                });
-            }});
+                    resolve();
+                }});
+        });
     }
 
     protected updateViewport(viewport:CanvasViewport) {
@@ -558,6 +618,8 @@ export class WebRTCRealityViewer extends RealityViewer {
 
         projMatrix = scratchFrustum.projectionMatrix;
 
+        this._artoolkitProjection = Matrix4.clone(projMatrix);
+
         try {
             console.log("AFTER:");
             decomposePerspectiveProjectionMatrix(projMatrix, scratchFrustum);
@@ -569,26 +631,6 @@ export class WebRTCRealityViewer extends RealityViewer {
         } catch(e) {
             console.log("*** error: " + e);
         }
-
-        // undo what we did earlier
-        // Note: to make this work with argon we won't want to undo these changes
-        // BUT, we'll have to figure out how to modify the target poses to work with this new projection
-        projMatrix[4] *= -1; // x
-        projMatrix[5] *= -1; // y
-        projMatrix[6] *= -1; // z
-        projMatrix[7] *= -1; // w
-
-        projMatrix[8] *= -1;  // x
-        projMatrix[9] *= -1;  // y
-        projMatrix[10] *= -1; // z
-        projMatrix[11] *= -1; // w
-
-        // threejs fromArray creates a column-major matrix
-        console.log("Original Camera Matrix:");
-        console.log(this._arController.getCameraMatrix());
-        this._arScene.camera.projectionMatrix.fromArray(projMatrix);
-        console.log("Final Projection Matrix:");
-        console.log(this._arScene.camera.projectionMatrix);
     }
 }
 
@@ -689,8 +731,6 @@ var integrateCustomARToolKit = function() {
      *   - Added renderer.resetGLState() to the beginning of the render pass
      *   - Changed the orthographic camera to have a unit sized viewport
      *   - Changed video plane to a unit size plane
-     * 
-     *  Note: We should remove the logic for converting markers to threejs objects
      */
 
     /**
@@ -775,8 +815,6 @@ var integrateCustomARToolKit = function() {
     ARController.prototype.createThreeScene = function(video) {
         video = video || this.image; // we're using this.image (set in ARController.getUserMediaARController)
 
-        this.setupThree();
-
         // To display the video, first create a texture from it.
         var videoTex = new THREE.Texture(video);
 
@@ -826,20 +864,6 @@ var integrateCustomARToolKit = function() {
             videoPlane: plane,
 
             process: function() {
-                for (var i in self.threePatternMarkers) {
-                    self.threePatternMarkers[i].visible = false;
-                }
-                for (var i in self.threeBarcodeMarkers) {
-                    self.threeBarcodeMarkers[i].visible = false;
-                }
-                for (var i in self.threeMultiMarkers) {
-                    self.threeMultiMarkers[i].visible = false;
-                    for (var j=0; j<self.threeMultiMarkers[i].markers.length; j++) {
-                        if (self.threeMultiMarkers[i].markers[j]) {
-                            self.threeMultiMarkers[i].markers[j].visible = false;
-                        }
-                    }
-                }
                 self.process(video);
             },
 
@@ -855,163 +879,5 @@ var integrateCustomARToolKit = function() {
                 renderer.autoClear = ac;
             }
         };
-    };
-
-
-    /**
-        Creates a Three.js marker Object3D for the given marker UID.
-        The marker Object3D tracks the marker pattern when it's detected in the video.
-
-        Use this after a successful artoolkit.loadMarker call:
-
-        arController.loadMarker('/bin/Data/patt.hiro', function(markerUID) {
-            var markerRoot = arController.createThreeMarker(markerUID);
-            markerRoot.add(myFancyHiroModel);
-            arScene.scene.add(markerRoot);
-        });
-
-        @param {number} markerUID The UID of the marker to track.
-        @param {number} markerWidth The width of the marker, defaults to 1.
-        @return {THREE.Object3D} Three.Object3D that tracks the given marker.
-    */
-    ARController.prototype.createThreeMarker = function(markerUID, markerWidth) {
-        this.setupThree();
-        var obj = new THREE.Object3D();
-        obj.markerTracker = this.trackPatternMarkerId(markerUID, markerWidth);
-        obj.matrixAutoUpdate = false;
-        this.threePatternMarkers[markerUID] = obj;
-        return obj;
-    };
-
-    /**
-        Creates a Three.js marker Object3D for the given multimarker UID.
-        The marker Object3D tracks the multimarker when it's detected in the video.
-
-        Use this after a successful arController.loadMarker call:
-
-        arController.loadMultiMarker('/bin/Data/multi-barcode-4x3.dat', function(markerUID) {
-            var markerRoot = arController.createThreeMultiMarker(markerUID);
-            markerRoot.add(myFancyMultiMarkerModel);
-            arScene.scene.add(markerRoot);
-        });
-
-        @param {number} markerUID The UID of the marker to track.
-        @return {THREE.Object3D} Three.Object3D that tracks the given marker.
-    */
-    ARController.prototype.createThreeMultiMarker = function(markerUID) {
-        this.setupThree();
-        var obj = new THREE.Object3D();
-        obj.matrixAutoUpdate = false;
-        obj.markers = [];
-        this.threeMultiMarkers[markerUID] = obj;
-        return obj;
-    };
-
-    /**
-        Creates a Three.js marker Object3D for the given barcode marker UID.
-        The marker Object3D tracks the marker pattern when it's detected in the video.
-
-        var markerRoot20 = arController.createThreeBarcodeMarker(20);
-        markerRoot20.add(myFancyNumber20Model);
-        arScene.scene.add(markerRoot20);
-
-        var markerRoot5 = arController.createThreeBarcodeMarker(5);
-        markerRoot5.add(myFancyNumber5Model);
-        arScene.scene.add(markerRoot5);
-
-        @param {number} markerUID The UID of the barcode marker to track.
-        @param {number} markerWidth The width of the marker, defaults to 1.
-        @return {THREE.Object3D} Three.Object3D that tracks the given marker.
-    */
-    ARController.prototype.createThreeBarcodeMarker = function(markerUID, markerWidth) {
-        this.setupThree();
-        var obj = new THREE.Object3D();
-        obj.markerTracker = this.trackBarcodeMarkerId(markerUID, markerWidth);
-        obj.matrixAutoUpdate = false;
-        this.threeBarcodeMarkers[markerUID] = obj;
-        return obj;
-    };
-
-    ARController.prototype.setupThree = function() {
-        if (this.THREE_JS_ENABLED) {
-            return;
-        }
-        this.THREE_JS_ENABLED = true;
-
-        /*
-            Listen to getMarker events to keep track of Three.js markers.
-        */
-        this.addEventListener('getMarker', function(ev) {
-            var marker = ev.data.marker;
-            var obj;
-            if (ev.data.type === artoolkit.PATTERN_MARKER) {
-                obj = this.threePatternMarkers[ev.data.marker.idPatt];
-
-            } else if (ev.data.type === artoolkit.BARCODE_MARKER) {
-                obj = this.threeBarcodeMarkers[ev.data.marker.idMatrix];
-
-            }
-            if (obj) {
-                var pose = ev.data.matrix;
-
-                // I think we need to modify the pose to work with the Cesium-ready projection
-                // But this naive approach does not work
-                /*
-                pose[4] *= -1; // x
-                pose[5] *= -1; // y
-                pose[6] *= -1; // z
-                pose[7] *= -1; // w
-
-                pose[8] *= -1;  // x
-                pose[9] *= -1;  // y
-                pose[10] *= -1; // z
-                pose[11] *= -1; // w
-                */
-
-                obj.matrix.fromArray(pose);
-                obj.visible = true;
-            }
-        });
-
-        /*
-            Listen to getMultiMarker events to keep track of Three.js multimarkers.
-        */
-        this.addEventListener('getMultiMarker', function(ev) {
-            var obj = this.threeMultiMarkers[ev.data.multiMarkerId];
-            if (obj) {
-                obj.matrix.fromArray(ev.data.matrix);
-                obj.visible = true;
-            }
-        });
-
-        /*
-            Listen to getMultiMarkerSub events to keep track of Three.js multimarker submarkers.
-        */
-        this.addEventListener('getMultiMarkerSub', function(ev) {
-            var marker = ev.data.multiMarkerId;
-            var subMarkerID = ev.data.markerIndex;
-            var subMarker = ev.data.marker;
-            var obj = this.threeMultiMarkers[marker];
-            if (obj && obj.markers && obj.markers[subMarkerID]) {
-                var sub = obj.markers[subMarkerID];
-                sub.matrix.fromArray(ev.data.matrix);
-                sub.visible = (subMarker.visible >= 0);
-            }
-        });
-
-        /**
-            Index of Three.js pattern markers, maps markerID -> THREE.Object3D.
-        */
-        this.threePatternMarkers = {};
-
-        /**
-            Index of Three.js barcode markers, maps markerID -> THREE.Object3D.
-        */
-        this.threeBarcodeMarkers = {};
-
-        /**
-            Index of Three.js multimarkers, maps markerID -> THREE.Object3D.
-        */
-        this.threeMultiMarkers = {};
     };
 };
