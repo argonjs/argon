@@ -543,9 +543,11 @@ export class WebRTCRealityViewer extends RealityViewer {
                     document.body.className = arController.orientation;
                     
                     var argonCanvas;
-                    for (const layer of this.viewService.layers) {
-                        if (layer.source instanceof HTMLCanvasElement) {
-                            argonCanvas = layer.source;
+                    if (this.viewService.layers) {
+                        for (const layer of this.viewService.layers) {
+                            if (layer.source instanceof HTMLCanvasElement) {
+                                argonCanvas = layer.source;
+                            }
                         }
                     }
 
@@ -886,6 +888,7 @@ var integrateCustomARToolKit = function() {
             },
 
             renderOn: function(renderer) {
+                if (!renderer) return;
                 renderer.resetGLState();
                 videoTex.needsUpdate = true;
 
