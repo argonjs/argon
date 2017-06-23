@@ -77,6 +77,8 @@ export class WebRTCRealityViewer extends RealityViewer {
 
     private _artoolkitProjection:Matrix4|undefined;
 
+    private _markerEntities = new Map<string,Entity>();
+
     private _aggregator:CameraEventAggregator|undefined;
     private _moveFlags = {
         moveForward : false,
@@ -231,6 +233,7 @@ export class WebRTCRealityViewer extends RealityViewer {
                         const x180 = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, CesiumMath.PI);
                         (this._artoolkitTrackerEntity.orientation as ConstantProperty).setValue(x180);
 
+                        // this is only called when markers are visible
                         this._arController.addEventListener('getMarker', (ev) => {
                             const marker = ev.data.marker;
                             const id = this._getIdForMarker(marker.id);
@@ -273,6 +276,7 @@ export class WebRTCRealityViewer extends RealityViewer {
                         var id = this._getIdForMarker(markerId);
                         var entity = new Entity({id});
                         this.contextService.entities.add(entity);
+                        this._markerEntities.set(id, entity);
                         resolve({id: id});
                     }, (error) => {
                         console.log(error.name + ": " + error.message);
@@ -442,6 +446,7 @@ export class WebRTCRealityViewer extends RealityViewer {
                 }
 
                 if (this._arScene) {
+                    this._resetMarkers();
                     this._arScene.process();
                     this._arScene.renderOn(this._renderer);
                 }
@@ -474,6 +479,15 @@ export class WebRTCRealityViewer extends RealityViewer {
 
     private _getIdForMarker(markerUID): string {
         return "jsartoolkit_marker_" + markerUID;
+    }
+
+    private _resetMarkers() {
+        // jsartoolkit does not currently have a marker lost event
+        // for now, clear poses each frame before processing
+        this._markerEntities.forEach((entity, id, map) => {
+            entity.position = undefined;
+            entity.orientation = undefined;
+        });
     }
 
     protected initARToolKit():Promise<void> {

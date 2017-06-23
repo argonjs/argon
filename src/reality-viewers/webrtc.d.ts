@@ -29,6 +29,7 @@ export declare class WebRTCRealityViewer extends RealityViewer {
     private _scratchQuaternion;
     private _artoolkitTrackerEntity;
     private _artoolkitProjection;
+    private _markerEntities;
     private _aggregator;
     private _moveFlags;
     constructor(sessionService: SessionService, viewService: ViewService, contextService: ContextService, container: Container, uri: string);
@@ -36,6 +37,7 @@ export declare class WebRTCRealityViewer extends RealityViewer {
     private _scratchMatrix4;
     load(): void;
     private _getIdForMarker(markerUID);
+    private _resetMarkers();
     protected initARToolKit(): Promise<void>;
     protected initARController(): Promise<void>;
     protected updateViewport(viewport: CanvasViewport): void;
