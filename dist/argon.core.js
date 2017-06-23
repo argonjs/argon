@@ -21057,9 +21057,11 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     var protocols = this.info.protocols;
                     if (!protocols) return false;
                     var supported = false;
+                    var foundAny = false;
                     var foundVersions = new Set();
                     protocols.forEach(function (p) {
                         if (p.indexOf(name$$1) !== -1) {
+                            foundAny = true;
                             var v = +p.split('@v')[1] || 0;
                             foundVersions.add(v);
                         }
@@ -21077,7 +21079,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                             }
                         }
                     } else if (!versions) {
-                        supported = true;
+                        supported = foundAny;
                     }
                     return supported;
                 };
@@ -24324,6 +24326,13 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     enumerable: true,
                     configurable: true
                 });
+                Object.defineProperty(RealityViewer.prototype, "isSharedCanvas", {
+                    get: function () {
+                        return this._sharedCanvas;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 RealityViewer.prototype.destroy = function () {
                     this.setPresenting(false);
                     if (this.session) {
@@ -24819,6 +24828,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         position: new ConstantPositionProperty(Cartesian3.ZERO, _this.contextService.user),
                         orientation: new ConstantProperty(Quaternion.IDENTITY)
                     });
+                    _this._markerEntities = new Map();
                     _this._moveFlags = {
                         moveForward: false,
                         moveBackward: false,
@@ -24829,6 +24839,9 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     };
                     _this._scratchMatrix3 = new Matrix3();
                     _this._scratchMatrix4 = new Matrix4();
+                    _this._artoolkitReady = new Promise(function (resolve) {
+                        _this._resolveReady = resolve;
+                    });
                     function getFlagForKeyCode(keyCode) {
                         switch (keyCode) {
                             case 'W'.charCodeAt(0):
@@ -24884,6 +24897,12 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     _this.viewService.viewportChangeEvent.addEventListener(function (viewport) {
                         _this.updateViewport(viewport);
                     });
+                    // for now, initialize artoolkit here
+                    // eventually we want to decouple video setup from artoolkit setup
+                    // and only initialize the video here
+                    _this.initARToolKit().then(function () {
+                        _this._resolveReady();
+                    });
                     return _this;
                 }
                 WebRTCRealityViewer.prototype.load = function () {
@@ -24938,7 +24957,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         session.on['ar.jsartoolkit.init'] = function () {
                             console.log("*** ar.jsartoolkit.init ***");
                             return new Promise(function (resolve, reject) {
-                                _this.initARToolKit().then(function () {
+                                //this.initARToolKit().then(()=>{  // use this once video and artoolkit are decoupled
+                                _this._artoolkitReady.then(function () {
                                     /**
                                      * _artoolkitTrackerEntity matches the user position but does not rotate as the device rotates
                                      * it also rotates the artoolkit content to match our preferred coordinate system,
@@ -24946,6 +24966,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                                      */
                                     var x180 = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, CesiumMath.PI);
                                     _this._artoolkitTrackerEntity.orientation.setValue(x180);
+                                    // this is only called when markers are visible
                                     _this._arController.addEventListener('getMarker', function (ev) {
                                         var marker = ev.data.marker;
                                         var id = _this._getIdForMarker(marker.id);
@@ -24983,6 +25004,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                                     var id = _this._getIdForMarker(markerId);
                                     var entity = new Entity({ id: id });
                                     _this.contextService.entities.add(entity);
+                                    _this._markerEntities.set(id, entity);
                                     resolve({ id: id });
                                 }, function (error) {
                                     console.log(error.name + ": " + error.message);
@@ -25112,6 +25134,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                                 contextStage.orientation.setValue(customStageOrientation);
                             }
                             if (_this._arScene) {
+                                _this._resetMarkers();
                                 _this._arScene.process();
                                 _this._arScene.renderOn(_this._renderer);
                             }
@@ -25131,6 +25154,14 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 };
                 WebRTCRealityViewer.prototype._getIdForMarker = function (markerUID) {
                     return "jsartoolkit_marker_" + markerUID;
+                };
+                WebRTCRealityViewer.prototype._resetMarkers = function () {
+                    // jsartoolkit does not currently have a marker lost event
+                    // for now, clear poses each frame before processing
+                    this._markerEntities.forEach(function (entity, id, map) {
+                        entity.position = undefined;
+                        entity.orientation = undefined;
+                    });
                 };
                 WebRTCRealityViewer.prototype.initARToolKit = function () {
                     var _this = this;
@@ -25168,35 +25199,25 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                                 _this.updateViewport(_this.viewService.viewport);
                                 document.body.className = arController.orientation;
                                 var argonCanvas;
-                                for (var _i = 0, _a = _this.viewService.layers; _i < _a.length; _i++) {
-                                    var layer = _a[_i];
-                                    if (layer.source instanceof HTMLCanvasElement) {
-                                        argonCanvas = layer.source;
+                                if (_this.viewService.layers) {
+                                    for (var _i = 0, _a = _this.viewService.layers; _i < _a.length; _i++) {
+                                        var layer = _a[_i];
+                                        if (layer.source instanceof HTMLCanvasElement) {
+                                            argonCanvas = layer.source;
+                                        }
                                     }
                                 }
-                                if (argonCanvas) {
+                                if (_this.isSharedCanvas && argonCanvas) {
                                     // found an existing canvas, use it
                                     console.log("Found argon canvas, video background is sharing its context");
                                     _this._renderer = new THREE.WebGLRenderer({ canvas: argonCanvas, antialias: false });
                                 } else {
                                     // no canvas, create a new one
-                                    console.log("No argon canvas, creating one for video background");
+                                    console.log("No argon shared canvas, creating one for video background");
                                     var renderer = new THREE.WebGLRenderer({ antialias: false });
-                                    // Note: This code will need to be updated, we want the canvas to fill the screen
-                                    if (arController.orientation === 'portrait') {
-                                        var w = window.innerWidth / arController.videoHeight * arController.videoWidth;
-                                        var h = window.innerWidth;
-                                        renderer.setSize(w, h);
-                                        renderer.domElement.style.paddingBottom = w - h + 'px';
-                                    } else {
-                                        if (/Android|mobile|iPad|iPhone/i.test(navigator.userAgent)) {
-                                            renderer.setSize(window.innerWidth, window.innerWidth / arController.videoWidth * arController.videoHeight);
-                                        } else {
-                                            renderer.setSize(arController.videoWidth, arController.videoHeight);
-                                            document.body.className += ' desktop';
-                                        }
-                                    }
-                                    document.body.insertBefore(renderer.domElement, document.body.firstChild);
+                                    renderer.setSize(_this.viewService.renderWidth, _this.viewService.renderHeight, true);
+                                    _this.viewService.element.insertBefore(renderer.domElement, _this.viewService.element.firstChild);
+                                    renderer.domElement.style.zIndex = '0';
                                     _this._renderer = renderer;
                                 }
                                 resolve();
@@ -25223,7 +25244,10 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         this._arScene.videoPlane.scale.x = cameraAspect / canvasAspect;
                         this._arScene.videoPlane.scale.y = 1;
                     }
-                    // Note: We still need to fix tracking to work with this new "camera viewport"
+                    // Resize the canvas if we own it
+                    if (!this.isSharedCanvas && this._renderer) {
+                        this._renderer.setSize(this.viewService.renderWidth, this.viewService.renderHeight, true);
+                    }
                     this.updateProjection(viewport);
                 };
                 WebRTCRealityViewer.prototype.updateProjection = function (viewport) {
@@ -25454,6 +25478,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                             self.process(video);
                         },
                         renderOn: function (renderer) {
+                            if (!renderer) return;
                             renderer.resetGLState();
                             videoTex.needsUpdate = true;
                             var ac = renderer.autoClear;
@@ -25599,7 +25624,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     /**
                      * The default Reality Viewer.
                      */
-                    this.default = RealityViewer.EMPTY;
+                    this.default = (isIOS || isAndroid) && navigator.getUserMedia && navigator.mediaDevices ? RealityViewer.WEBRTC : RealityViewer.EMPTY;
                     sessionService.manager.on['ar.reality.connect'] = function (_a) {
                         var id = _a.id;
                         var realityControlSession = _this.sessionService.createSessionPort(id);
@@ -25902,6 +25927,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                                     }
                                     frame.reality = viewer_1.uri;
                                     _this.realityService._sharedCanvas = !!(_this.sessionService.configuration['sharedCanvas'] && viewer_1.session.info['sharedCanvas']);
+                                    viewer_1._sharedCanvas = _this.realityService._sharedCanvas;
                                     _this.contextService.submitFrameState(frame);
                                 }
                             };
@@ -26687,7 +26713,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                                 var layers = _this.view.layers;
                                 if (!layers) return;
                                 var viewport = _this.view.viewport;
-                                var zIndex = 0;
+                                var zIndex = 1;
                                 for (var _i = 0, layers_1 = layers; _i < layers_1.length; _i++) {
                                     var layer = layers_1[_i];
                                     var layerStyle = layer.source.style;
