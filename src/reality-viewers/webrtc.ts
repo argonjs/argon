@@ -79,6 +79,9 @@ export class WebRTCRealityViewer extends RealityViewer {
 
     private _markerEntities = new Map<string,Entity>();
 
+    private _resolveReady:Function;
+    private _artoolkitReady:Promise<void>;
+
     private _aggregator:CameraEventAggregator|undefined;
     private _moveFlags = {
         moveForward : false,
@@ -96,6 +99,10 @@ export class WebRTCRealityViewer extends RealityViewer {
         private container: Container,
         public uri:string) {
         super(uri);
+
+        this._artoolkitReady = new Promise<void>((resolve) => {
+            this._resolveReady = resolve;
+        });
 
         function getFlagForKeyCode(keyCode) {
             switch (keyCode) {
@@ -155,6 +162,13 @@ export class WebRTCRealityViewer extends RealityViewer {
 
         this.viewService.viewportChangeEvent.addEventListener((viewport:CanvasViewport)=>{
             this.updateViewport(viewport);
+        });
+
+        // for now, initialize artoolkit here
+        // eventually we want to decouple video setup from artoolkit setup
+        // and only initialize the video here
+        this.initARToolKit().then(()=>{
+            this._resolveReady();
         });
     }
 
@@ -223,7 +237,8 @@ export class WebRTCRealityViewer extends RealityViewer {
             session.on['ar.jsartoolkit.init'] = () => {
                 console.log("*** ar.jsartoolkit.init ***");
                 return new Promise<void>((resolve, reject)=>{
-                    this.initARToolKit().then(()=>{
+                    //this.initARToolKit().then(()=>{  // use this once video and artoolkit are decoupled
+                    this._artoolkitReady.then(()=>{
 
                         /**
                          * _artoolkitTrackerEntity matches the user position but does not rotate as the device rotates
