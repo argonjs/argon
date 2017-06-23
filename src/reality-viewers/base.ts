@@ -22,6 +22,11 @@ export abstract class RealityViewer {
         return this._session;
     }
 
+    public _sharedCanvas: boolean;
+    public get isSharedCanvas() {
+        return this._sharedCanvas
+    }
+
     constructor(
         public uri:string
     ){

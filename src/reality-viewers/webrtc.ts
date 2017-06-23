@@ -549,32 +549,18 @@ export class WebRTCRealityViewer extends RealityViewer {
                         }
                     }
 
-                    if (argonCanvas) {
+                    if (this.isSharedCanvas && argonCanvas) {
                         // found an existing canvas, use it
                         console.log("Found argon canvas, video background is sharing its context");
                         this._renderer = new THREE.WebGLRenderer({canvas: argonCanvas, antialias: false});
 
                     } else {
                         // no canvas, create a new one
-                        console.log("No argon canvas, creating one for video background");
+                        console.log("No argon shared canvas, creating one for video background");
                         var renderer = new THREE.WebGLRenderer({antialias: false});
-
-                        // Note: This code will need to be updated, we want the canvas to fill the screen
-                        if (arController.orientation === 'portrait') {
-                            var w = (window.innerWidth / arController.videoHeight) * arController.videoWidth;
-                            var h = window.innerWidth;
-                            renderer.setSize(w, h);
-                            renderer.domElement.style.paddingBottom = (w-h) + 'px';
-                        } else {
-                            if (/Android|mobile|iPad|iPhone/i.test(navigator.userAgent)) {
-                                renderer.setSize(window.innerWidth, (window.innerWidth / arController.videoWidth) * arController.videoHeight);
-                            } else {
-                                renderer.setSize(arController.videoWidth, arController.videoHeight);
-                                document.body.className += ' desktop';
-                            }
-                        }
-
-                        document.body.insertBefore(renderer.domElement, document.body.firstChild);
+                        renderer.setSize(this.viewService.renderWidth, this.viewService.renderHeight, true);
+                        this.viewService.element.insertBefore(renderer.domElement, this.viewService.element.firstChild);
+                        renderer.domElement.style.zIndex = '0';
                         this._renderer = renderer;
                     }
 
@@ -603,7 +589,10 @@ export class WebRTCRealityViewer extends RealityViewer {
             this._arScene.videoPlane.scale.x = cameraAspect/canvasAspect;
             this._arScene.videoPlane.scale.y = 1;
         }
-        // Note: We still need to fix tracking to work with this new "camera viewport"
+        // Resize the canvas if we own it
+        if (!this.isSharedCanvas && this._renderer) {
+            this._renderer.setSize(this.viewService.renderWidth, this.viewService.renderHeight, true);
+        }
         this.updateProjection(viewport);
     }
 

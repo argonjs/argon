@@ -379,6 +379,7 @@ export class RealityServiceProvider {
                         }
                         frame.reality = viewer.uri;
                         this.realityService._sharedCanvas = !!(this.sessionService.configuration['sharedCanvas'] && viewer.session!.info['sharedCanvas']);
+                        viewer._sharedCanvas = this.realityService._sharedCanvas;
                         this.contextService.submitFrameState(frame);
                     }
                 }
