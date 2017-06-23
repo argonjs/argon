@@ -27,6 +27,8 @@ import { HostedRealityViewer } from './reality-viewers/hosted'
 import {ViewServiceProvider} from './view'
 import {DeviceService} from './device'
 
+import * as utils from './utils'
+
 @inject(Factory.of(EmptyRealityViewer), Factory.of(LiveRealityViewer), Factory.of(WebRTCRealityViewer), Factory.of(HostedRealityViewer))
 export abstract class RealityViewerFactory {
     constructor(
@@ -105,7 +107,7 @@ export class RealityService {
     /**
      * The default Reality Viewer.
      */
-    public default = RealityViewer.EMPTY;
+    public default = ((utils.isIOS || utils.isAndroid) && navigator.getUserMedia && navigator.mediaDevices) ? RealityViewer.WEBRTC : RealityViewer.EMPTY;
 
     /**
      * Whether the current reality viewer shares a canvas with the reality augmenter.
