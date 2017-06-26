@@ -14,6 +14,8 @@ export declare abstract class RealityViewer {
     readonly isPresenting: boolean;
     private _session?;
     readonly session: SessionPort | undefined;
+    _sharedCanvas: boolean;
+    readonly isSharedCanvas: boolean;
     constructor(uri: string);
     destroy(): void;
     setPresenting(flag: boolean): void;
@@ -21,5 +23,6 @@ export declare abstract class RealityViewer {
     static DEFAULT: string;
     static EMPTY: string;
     static LIVE: string;
+    static WEBRTC: string;
     static getType(uri?: string): string | undefined;
 }

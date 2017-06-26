@@ -11,8 +11,9 @@ import { DeviceService } from './device';
 export declare abstract class RealityViewerFactory {
     private _createEmptyReality;
     private _createLiveReality;
+    private _createWebRTCReality;
     private _createHostedReality;
-    constructor(_createEmptyReality: any, _createLiveReality: any, _createHostedReality: any);
+    constructor(_createEmptyReality: any, _createLiveReality: any, _createWebRTCReality: any, _createHostedReality: any);
     createRealityViewer(uri: string): RealityViewer;
 }
 /**
@@ -64,6 +65,11 @@ export declare class RealityService {
      * The default Reality Viewer.
      */
     default: string;
+    /**
+     * Whether the current reality viewer shares a canvas with the reality augmenter.
+     */
+    readonly isSharedCanvas: boolean;
+    _sharedCanvas: boolean;
     constructor(sessionService: SessionService, contextService: ContextService);
     /**
      * Install the specified reality viewer
@@ -78,6 +84,7 @@ export declare class RealityService {
      * - Pass a url to request a (custum) hosted reality viewer
      * - [[RealityViewer.DEFAULT]] to request the system default reality viewer
      * - [[RealityViewer.LIVE]] to request a live reality viewer
+     * - [[RealityViewer.WEBTRC]] to request a webrtc reality viewer
      * - [[RealityViewer.EMPTY]] to request an empty reality viewer
      */
     request(uri: string): Promise<void>;

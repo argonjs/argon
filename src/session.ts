@@ -153,9 +153,11 @@ export class SessionPort {
         const protocols = this.info.protocols;
         if (!protocols) return false;
         let supported = false;
+        let foundAny = false;
         const foundVersions = new Set<number>();
         protocols.forEach((p) => {
             if (p.indexOf(name) !== -1) {
+                foundAny = true;
                 const v = (+p.split('@v')[1]) || 0;
                 foundVersions.add(v);
             }
@@ -173,7 +175,7 @@ export class SessionPort {
                 }
             }
         } else if (!versions) {
-            supported = true;
+            supported = foundAny;
         }
         return supported;
     }

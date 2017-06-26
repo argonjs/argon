@@ -21,16 +21,20 @@ import { VisibilityServiceProvider } from './visibility'
 import { RealityViewer } from './reality-viewers/base'
 import { EmptyRealityViewer } from './reality-viewers/empty'
 import { LiveRealityViewer } from './reality-viewers/live'
+import { WebRTCRealityViewer } from './reality-viewers/webrtc'
 import { HostedRealityViewer } from './reality-viewers/hosted'
 
 import {ViewServiceProvider} from './view'
 import {DeviceService} from './device'
 
-@inject(Factory.of(EmptyRealityViewer), Factory.of(LiveRealityViewer), Factory.of(HostedRealityViewer))
+import * as utils from './utils'
+
+@inject(Factory.of(EmptyRealityViewer), Factory.of(LiveRealityViewer), Factory.of(WebRTCRealityViewer), Factory.of(HostedRealityViewer))
 export abstract class RealityViewerFactory {
     constructor(
         private _createEmptyReality, 
         private _createLiveReality, 
+        private _createWebRTCReality, 
         private _createHostedReality) {
     }
 
@@ -40,6 +44,8 @@ export abstract class RealityViewerFactory {
                 return this._createEmptyReality(uri);
             case RealityViewer.LIVE:
                 return this._createLiveReality(uri);
+            case RealityViewer.WEBRTC:
+                return this._createWebRTCReality(uri);
             case 'hosted':
                 return this._createHostedReality(uri);
             default:
@@ -101,7 +107,13 @@ export class RealityService {
     /**
      * The default Reality Viewer.
      */
-    public default = RealityViewer.EMPTY;
+    public default = ((utils.isIOS || utils.isAndroid) && navigator.getUserMedia && navigator.mediaDevices) ? RealityViewer.WEBRTC : RealityViewer.EMPTY;
+
+    /**
+     * Whether the current reality viewer shares a canvas with the reality augmenter.
+     */
+    public get isSharedCanvas() { return this._sharedCanvas };
+    public _sharedCanvas: boolean;
 
     // private _scratchFrustum = new PerspectiveFrustum();
 
@@ -204,6 +216,7 @@ export class RealityService {
      * - Pass a url to request a (custum) hosted reality viewer
      * - [[RealityViewer.DEFAULT]] to request the system default reality viewer
      * - [[RealityViewer.LIVE]] to request a live reality viewer 
+     * - [[RealityViewer.WEBTRC]] to request a webrtc reality viewer
      * - [[RealityViewer.EMPTY]] to request an empty reality viewer
      */
     public request(uri:string): Promise<void> {
@@ -367,6 +380,8 @@ export class RealityServiceProvider {
                             }
                         }
                         frame.reality = viewer.uri;
+                        this.realityService._sharedCanvas = !!(this.sessionService.configuration['sharedCanvas'] && viewer.session!.info['sharedCanvas']);
+                        viewer._sharedCanvas = this.realityService._sharedCanvas;
                         this.contextService.submitFrameState(frame);
                     }
                 }
