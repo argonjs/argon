@@ -666,7 +666,7 @@ var integrateCustomARToolKit = function() {
 		var onError = configuration.onError || function(err) { console.error("ARController.getUserMedia", err); };
 
         // TODO make it static
-        navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+        navigator.getUserMedia  = navigator.getUserMedia || (<any>navigator).webkitGetUserMedia || (<any>navigator).mozGetUserMedia || (<any>navigator).msGetUserMedia;
 
         var domElement = document.createElement('video');
         domElement.style.width = configuration.width+'px'
@@ -700,7 +700,7 @@ var integrateCustomARToolKit = function() {
                 // Note: this code grabs the last camera in the list (not guaranteed to be the back-facing one, but it seems to work)
 
                 //if( constraints.video.optional !== undefined )	return
-                constraints.video.optional = [{sourceId: device.deviceId}]
+                (<any>constraints.video).optional = [{sourceId: device.deviceId}]
             });
 
             // OLD API
@@ -793,7 +793,7 @@ var integrateCustomARToolKit = function() {
         }
         var onSuccess = configuration.onSuccess;
 
-        obj.onSuccess = function(arController, arCameraParam) {
+        (<any>obj).onSuccess = function(arController, arCameraParam) {
             arController.setProjectionNearPlane(0.01); // this does nothing...
             arController.setProjectionFarPlane(100000); // this does nothing...
             var scenes = arController.createThreeScene();
