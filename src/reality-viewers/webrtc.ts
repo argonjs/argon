@@ -16,7 +16,7 @@ import {
     CesiumMath,
     Entity
 } from '../cesium/cesium-imports'
-import { Configuration, Role, SerializedSubviewList, CanvasViewport } from '../common'
+import { Configuration, Role, SerializedSubviewList, CanvasViewport, DEFAULT_NEAR_PLANE, DEFAULT_FAR_PLANE } from '../common'
 import { SessionService, ConnectService, SessionConnectService, Message } from '../session'
 import { 
     eastUpSouthToFixedFrame, 
@@ -635,6 +635,8 @@ export class WebRTCRealityViewer extends RealityViewer {
 
         var viewportAspect = viewport.width / viewport.height;
         scratchFrustum.aspectRatio = viewportAspect;
+        scratchFrustum.near = DEFAULT_NEAR_PLANE;
+        scratchFrustum.far = DEFAULT_FAR_PLANE;
 
         projMatrix = scratchFrustum.projectionMatrix;
 
