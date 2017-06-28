@@ -26522,7 +26522,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-1");
+            _export('version', version = "1.4.0-2");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -30407,6 +30407,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     _this.container = container;
                     _this.uri = uri;
                     _this.type = 'webrtc';
+                    _this._sharedCanvasFinal = false;
                     _this._scratchCartesian = new Cartesian3();
                     _this._scratchQuaternion = new Quaternion();
                     _this._artoolkitTrackerEntity = new Entity({
@@ -30794,10 +30795,14 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                                         }
                                     }
                                 }
+                                if (_this.isSharedCanvas && !argonCanvas) {
+                                    console.log("sharedCanvas is true but no canvas registered with setLayers");
+                                }
                                 if (_this.isSharedCanvas && argonCanvas) {
                                     // found an existing canvas, use it
                                     console.log("Found argon canvas, video background is sharing its context");
                                     _this._renderer = new THREE.WebGLRenderer({ canvas: argonCanvas, antialias: false });
+                                    _this._sharedCanvasFinal = true;
                                 } else {
                                     // no canvas, create a new one
                                     console.log("No argon shared canvas, creating one for video background");
@@ -30806,6 +30811,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                                     _this.viewService.element.insertBefore(renderer.domElement, _this.viewService.element.firstChild);
                                     renderer.domElement.style.zIndex = '0';
                                     _this._renderer = renderer;
+                                    _this._sharedCanvasFinal = false;
                                 }
                                 resolve();
                             },
@@ -30836,7 +30842,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         this._arScene.videoPlane.scale.y = 1;
                     }
                     // Resize the canvas if we own it
-                    if (!this.isSharedCanvas && this._renderer) {
+                    if (!this._sharedCanvasFinal && this._renderer) {
                         this._renderer.setSize(this.viewService.renderWidth, this.viewService.renderHeight, true);
                     }
                     this.updateProjection(viewport);
