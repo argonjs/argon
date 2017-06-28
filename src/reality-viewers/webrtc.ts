@@ -80,6 +80,7 @@ export class WebRTCRealityViewer extends RealityViewer {
     private _markerEntities = new Map<string,Entity>();
 
     private _resolveReady:Function;
+    private _rejectReady:Function;
     private _artoolkitReady:Promise<void>;
 
     private _aggregator:CameraEventAggregator|undefined;
@@ -100,8 +101,9 @@ export class WebRTCRealityViewer extends RealityViewer {
         public uri:string) {
         super(uri);
 
-        this._artoolkitReady = new Promise<void>((resolve) => {
+        this._artoolkitReady = new Promise<void>((resolve, reject) => {
             this._resolveReady = resolve;
+            this._rejectReady = reject;
         });
 
         function getFlagForKeyCode(keyCode) {
@@ -169,6 +171,8 @@ export class WebRTCRealityViewer extends RealityViewer {
         // and only initialize the video here
         this.initARToolKit().then(()=>{
             this._resolveReady();
+        }, (error) => {
+            this._rejectReady(error);
         });
     }
 
@@ -276,7 +280,7 @@ export class WebRTCRealityViewer extends RealityViewer {
                         
                         resolve();
                     }, (error) => {
-                        console.log(error.name + ": " + error.message);
+                        console.log(error);
                         reject(error);
                     });
                 });
@@ -294,7 +298,7 @@ export class WebRTCRealityViewer extends RealityViewer {
                         this._markerEntities.set(id, entity);
                         resolve({id: id});
                     }, (error) => {
-                        console.log(error.name + ": " + error.message);
+                        console.log(error);
                         reject(error);
                     });
                 });
@@ -520,7 +524,6 @@ export class WebRTCRealityViewer extends RealityViewer {
                     this.initARController().then(()=>{
                         resolve();
                     }, (error) => {
-                        console.log(error.name + ": " + error.message);
                         reject(error);
                     });
                 }
@@ -567,7 +570,11 @@ export class WebRTCRealityViewer extends RealityViewer {
                     }
 
                     resolve();
-                }});
+                },
+                onError: (error) => {
+                    reject(error);
+                }
+            });
         });
     }
 
@@ -676,10 +683,12 @@ var integrateCustomARToolKit = function() {
 
 
         if (navigator.getUserMedia === undefined ){
-            alert("WebRTC issue! navigator.getUserMedia not present in your browser");		
+            onError('browser does not support navigator.getUserMedia');
+            return;
         }
         if (navigator.mediaDevices === undefined || navigator.mediaDevices.enumerateDevices === undefined ){
-            alert("WebRTC issue! navigator.mediaDevices.enumerateDevices not present in your browser");		
+            onError('browser does not support navigator.mediaDevices.enumerateDevices');
+            return;
         }
 
         navigator.mediaDevices.enumerateDevices().then(function(devices) {

@@ -31,6 +31,7 @@ export declare class WebRTCRealityViewer extends RealityViewer {
     private _artoolkitProjection;
     private _markerEntities;
     private _resolveReady;
+    private _rejectReady;
     private _artoolkitReady;
     private _aggregator;
     private _moveFlags;
