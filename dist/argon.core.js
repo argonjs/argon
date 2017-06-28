@@ -20937,7 +20937,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-0");
+            _export('version', version = "1.4.0-1");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -24839,8 +24839,9 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     };
                     _this._scratchMatrix3 = new Matrix3();
                     _this._scratchMatrix4 = new Matrix4();
-                    _this._artoolkitReady = new Promise(function (resolve) {
+                    _this._artoolkitReady = new Promise(function (resolve, reject) {
                         _this._resolveReady = resolve;
+                        _this._rejectReady = reject;
                     });
                     function getFlagForKeyCode(keyCode) {
                         switch (keyCode) {
@@ -24902,6 +24903,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     // and only initialize the video here
                     _this.initARToolKit().then(function () {
                         _this._resolveReady();
+                    }, function (error) {
+                        _this._rejectReady(error);
                     });
                     return _this;
                 }
@@ -24990,7 +24993,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                                     });
                                     resolve();
                                 }, function (error) {
-                                    console.log(error.name + ": " + error.message);
+                                    console.log(error);
                                     reject(error);
                                 });
                             });
@@ -25007,7 +25010,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                                     _this._markerEntities.set(id, entity);
                                     resolve({ id: id });
                                 }, function (error) {
-                                    console.log(error.name + ": " + error.message);
+                                    console.log(error);
                                     reject(error);
                                 });
                             });
@@ -25179,7 +25182,6 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                                 _this.initARController().then(function () {
                                     resolve();
                                 }, function (error) {
-                                    console.log(error.name + ": " + error.message);
                                     reject(error);
                                 });
                             };
@@ -25221,7 +25223,11 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                                     _this._renderer = renderer;
                                 }
                                 resolve();
-                            } });
+                            },
+                            onError: function (error) {
+                                reject(error);
+                            }
+                        });
                     });
                 };
                 WebRTCRealityViewer.prototype.updateViewport = function (viewport) {
@@ -25280,6 +25286,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     // TDOD: adjust the fov in case the camera image is not square
                     var viewportAspect = viewport.width / viewport.height;
                     scratchFrustum.aspectRatio = viewportAspect;
+                    scratchFrustum.near = DEFAULT_NEAR_PLANE;
+                    scratchFrustum.far = DEFAULT_FAR_PLANE;
                     projMatrix = scratchFrustum.projectionMatrix;
                     this._artoolkitProjection = Matrix4.clone(projMatrix);
                     try {
@@ -25315,10 +25323,12 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     domElement.style.width = configuration.width + 'px';
                     domElement.style.height = configuration.height + 'px';
                     if (navigator.getUserMedia === undefined) {
-                        alert("WebRTC issue! navigator.getUserMedia not present in your browser");
+                        onError('browser does not support navigator.getUserMedia');
+                        return;
                     }
                     if (navigator.mediaDevices === undefined || navigator.mediaDevices.enumerateDevices === undefined) {
-                        alert("WebRTC issue! navigator.mediaDevices.enumerateDevices not present in your browser");
+                        onError('browser does not support navigator.mediaDevices.enumerateDevices');
+                        return;
                     }
                     navigator.mediaDevices.enumerateDevices().then(function (devices) {
                         // define getUserMedia() constraints
