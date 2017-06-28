@@ -111,7 +111,7 @@ export class RealityService {
     /**
      * The default Reality Viewer.
      */
-    public default = ((utils.isIOS || utils.isAndroid) && navigator.getUserMedia && navigator.mediaDevices) ? RealityViewer.WEBRTC : RealityViewer.EMPTY;
+    public default = RealityViewer.EMPTY;
 
     /**
      * Whether the current reality viewer shares a canvas with the reality augmenter.
@@ -125,6 +125,13 @@ export class RealityService {
         private sessionService: SessionService,
         private contextService: ContextService
     ) {
+        if ((utils.isIOS || utils.isAndroid) && navigator.getUserMedia && navigator.mediaDevices) {
+            if (navigator.getVRDisplays) {
+                this.default = RealityViewer.TANGO;
+            } else {
+                this.default = RealityViewer.WEBRTC;
+            }
+        }
 
         sessionService.manager.on['ar.reality.connect'] = ({id}: { id: string }) => {
             const realityControlSession = this.sessionService.createSessionPort(id);
