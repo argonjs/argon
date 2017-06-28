@@ -47,15 +47,14 @@ interface PinchMovement {
 }
 
 /**
- * Note: To use this reality, an app must do the following:
- *   - Load three.js
+ * Note: To use this reality, an app must load three.js
+ * 
+ * To share a canvas, an app must do the following:
  *   - Have a canvas element
+ *   - Call Argon.init with sharedCanvas=true
+ *   - Register the canvas element via setLayers
  *   - Do not clear the canvas (e.g. set renderer.autoClear=false in three.js)
- *   - Rebind your GL state before rendering (e.g. renderer.resetGLState() in three.js)
- *   - Currently depends on the following relative files:
- *      - ../resources/artoolkit/camera_para.dat
- *      - ../resources/artoolkit/patt.hiro
- *      - ../resources/artoolkit/patt.kanji
+ *   - Rebind GL state before rendering (e.g. renderer.resetGLState() in three.js)
  */
 
 @inject(SessionService, ViewService, ContextService, Container)
@@ -66,6 +65,7 @@ export class WebRTCRealityViewer extends RealityViewer {
     private _arScene;
     private _arController;
     private _renderer;
+    private _sharedCanvasFinal = false;
 
     private _scratchCartesian = new Cartesian3();
     private _scratchQuaternion = new Quaternion();
@@ -554,10 +554,16 @@ export class WebRTCRealityViewer extends RealityViewer {
                         }
                     }
 
+                    if (this.isSharedCanvas && !argonCanvas) {
+                        console.log("sharedCanvas is true but no canvas registered with setLayers");
+                        //this._sharedCanvas = false; // currently the RealityServiceProvider overwrites this each frame
+                    }
+
                     if (this.isSharedCanvas && argonCanvas) {
                         // found an existing canvas, use it
                         console.log("Found argon canvas, video background is sharing its context");
                         this._renderer = new THREE.WebGLRenderer({canvas: argonCanvas, antialias: false});
+                        this._sharedCanvasFinal = true;
 
                     } else {
                         // no canvas, create a new one
@@ -567,6 +573,7 @@ export class WebRTCRealityViewer extends RealityViewer {
                         this.viewService.element.insertBefore(renderer.domElement, this.viewService.element.firstChild);
                         renderer.domElement.style.zIndex = '0';
                         this._renderer = renderer;
+                        this._sharedCanvasFinal = false;
                     }
 
                     resolve();
@@ -599,7 +606,7 @@ export class WebRTCRealityViewer extends RealityViewer {
             this._arScene.videoPlane.scale.y = 1;
         }
         // Resize the canvas if we own it
-        if (!this.isSharedCanvas && this._renderer) {
+        if (!this._sharedCanvasFinal && this._renderer) {
             this._renderer.setSize(this.viewService.renderWidth, this.viewService.renderHeight, true);
         }
         this.updateProjection(viewport);

@@ -5,15 +5,14 @@ import { ContextService } from '../context';
 import { ViewService } from '../view';
 import { RealityViewer } from './base';
 /**
- * Note: To use this reality, an app must do the following:
- *   - Load three.js
+ * Note: To use this reality, an app must load three.js
+ *
+ * To share a canvas, an app must do the following:
  *   - Have a canvas element
+ *   - Call Argon.init with sharedCanvas=true
+ *   - Register the canvas element via setLayers
  *   - Do not clear the canvas (e.g. set renderer.autoClear=false in three.js)
- *   - Rebind your GL state before rendering (e.g. renderer.resetGLState() in three.js)
- *   - Currently depends on the following relative files:
- *      - ../resources/artoolkit/camera_para.dat
- *      - ../resources/artoolkit/patt.hiro
- *      - ../resources/artoolkit/patt.kanji
+ *   - Rebind GL state before rendering (e.g. renderer.resetGLState() in three.js)
  */
 export declare class WebRTCRealityViewer extends RealityViewer {
     private sessionService;
@@ -25,6 +24,7 @@ export declare class WebRTCRealityViewer extends RealityViewer {
     private _arScene;
     private _arController;
     private _renderer;
+    private _sharedCanvasFinal;
     private _scratchCartesian;
     private _scratchQuaternion;
     private _artoolkitTrackerEntity;
