@@ -126,10 +126,20 @@ export class RealityService {
         private contextService: ContextService
     ) {
         if ((utils.isIOS || utils.isAndroid) && navigator.getUserMedia && navigator.mediaDevices) {
+            let vrDisplay:any = null;
             if (navigator.getVRDisplays) {
-                this.default = RealityViewer.TANGO;
-            } else {
-                this.default = RealityViewer.WEBRTC;
+                navigator.getVRDisplays().then(function(vrDisplays) {
+                    if (vrDisplays && vrDisplays.length > 0) {
+                        for (var i = 0; !vrDisplay && i < vrDisplays.length; i++) {
+                            vrDisplay = vrDisplays[i];
+                            if (vrDisplay.displayName !== "Tango VR Device") {
+                                vrDisplay = null;
+                            }
+                        }
+                    }
+                }).then(() => {
+                    this.default = vrDisplay ? RealityViewer.TANGO : RealityViewer.WEBRTC;
+                });
             }
         }
 

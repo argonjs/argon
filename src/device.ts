@@ -123,6 +123,11 @@ export class DeviceService {
      */
     public suggestedGeolocationSubscriptionChangeEvent = new Event<void>();
 
+    /*
+     * An event that fires when getVRDisplay() is finished
+     */
+    public getVRDisplayFinishedEvent = new Event<void>();
+
     /**
      * A coordinate system representing the physical space in which the user is free to 
      * move around, positioned on the surface the user is standing on,
@@ -219,6 +224,10 @@ export class DeviceService {
         return this._vrDisplay;
     }
 
+    public get vrDisplays() : any {
+        return this._vrDisplays;
+    }
+
     constructor(
         protected sessionService:SessionService,
         protected entityService:EntityService,
@@ -236,6 +245,7 @@ export class DeviceService {
             navigator.getVRDisplays().then(displays => {
                 this._vrDisplays = displays;
                 this._vrDisplay = displays[0];
+                this.getVRDisplayFinishedEvent.raiseEvent(undefined);
             });
 
         }
