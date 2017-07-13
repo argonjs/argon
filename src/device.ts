@@ -167,7 +167,7 @@ export class DeviceService {
     }
 
     public get geoHorizontalAccuracy() : number|undefined {
-        return this.stage['meta'] ? this.stage['meta'].geoHorizonatalAccuracy : undefined;
+        return this.stage['meta'] ? this.stage['meta'].geoHorizontalAccuracy : undefined;
     }
     
     public get geoVerticalAccuracy() : number|undefined {
