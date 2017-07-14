@@ -1,5 +1,5 @@
 import { inject } from 'aurelia-dependency-injection'
-import { SessionService, SessionPort } from './session'
+import { SessionService, SessionPort, Message } from './session'
 import { Event, resolveURL, deprecated } from './utils'
 
 /**
@@ -194,7 +194,7 @@ export class VuforiaObjectTracker extends VuforiaTracker {
     /**
      * Unload a dataset from memory (deactivating it if necessary)
      */
-    public unloadDataSet(id: VuforiaDataSetId) : Promise<void> {
+    public unloadDataSet(id: VuforiaDataSetId) : Promise<void | Message> {
         return this.managerSession.whenConnected().then(()=>{
             if (this.managerSession.version[0] == 0) {
                 return this.deactivateDataSet(id);
@@ -206,7 +206,7 @@ export class VuforiaObjectTracker extends VuforiaTracker {
     /**
      * Load (if necessary) and activate a dataset to enable tracking of the contained trackables
      */
-    public activateDataSet(id: VuforiaDataSetId|DeprecatedVuforiaDataSet): Promise<void> {
+    public activateDataSet(id: VuforiaDataSetId|DeprecatedVuforiaDataSet): Promise<void | Message> {
         id = (id instanceof DeprecatedVuforiaDataSet) ? id.id : id; // backwards compatability
         return this.managerSession.request('ar.vuforia.objectTrackerActivateDataSet', { id });
     }
@@ -214,7 +214,7 @@ export class VuforiaObjectTracker extends VuforiaTracker {
     /**
      * Deactivate a loaded dataset to disable tracking of the contained trackables
      */
-    public deactivateDataSet(id: VuforiaDataSetId|DeprecatedVuforiaDataSet): Promise<void> {
+    public deactivateDataSet(id: VuforiaDataSetId|DeprecatedVuforiaDataSet): Promise<void | Message> {
         id = (id instanceof DeprecatedVuforiaDataSet) ? id.id : id; // backwards compatability
         return this.managerSession.request('ar.vuforia.objectTrackerDeactivateDataSet', { id });
     }
@@ -250,7 +250,7 @@ export class DeprecatedVuforiaDataSet {
         this._isActive = false;
     }
 
-    public fetch(): Promise<void> {
+    public fetch(): Promise<void | Message> {
         return this.managerSession.request('ar.vuforia.dataSetFetch', { id: this.id });
     }
 

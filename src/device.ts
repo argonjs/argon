@@ -16,7 +16,7 @@ import {
 
 import {autoinject} from 'aurelia-dependency-injection';
 import {EntityService, EntityServiceProvider, PoseStatus} from './entity'
-import {SessionService, SessionPort} from './session'
+import {SessionService, SessionPort, Message} from './session'
 
 import {ArgonSystem} from './argon'
 
@@ -757,7 +757,7 @@ export class DeviceService {
             false;
     }
 
-    requestPresentHMD() : Promise<void> {
+    requestPresentHMD() : Promise<void | Message> {
         if (!this.sessionService.manager.isConnected) 
             throw new Error('Session must be connected');
         if (this.sessionService.isRealityManager) {
@@ -766,7 +766,7 @@ export class DeviceService {
         return this.sessionService.manager.request('ar.device.requestPresentHMD');
     }
 
-    exitPresentHMD() : Promise<void> {
+    exitPresentHMD() : Promise<void | Message> {
         if (!this.sessionService.manager.isConnected) 
             throw new Error('Session must be connected');
         if (this.sessionService.isRealityManager) {
@@ -1012,11 +1012,11 @@ export class DeviceServiceProvider {
         });
     }
 
-    protected handleRequestPresentHMD(session:SessionPort) : Promise<void> {
+    protected handleRequestPresentHMD(session:SessionPort) : Promise<void | Message> {
         return this.deviceService.requestPresentHMD();
     }
 
-    protected handleExitPresentHMD(session:SessionPort) : Promise<void> {
+    protected handleExitPresentHMD(session:SessionPort) : Promise<void | Message> {
         return this.deviceService.exitPresentHMD();
     }
 

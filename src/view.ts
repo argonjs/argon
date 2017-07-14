@@ -1,6 +1,6 @@
 import { autoinject, singleton } from 'aurelia-dependency-injection'
 import { CanvasViewport, Viewport, ContextFrameState, SubviewType } from './common'
-import { SessionService, SessionPort } from './session'
+import { SessionService, SessionPort, Message } from './session'
 import { ContextService } from './context'
 import { EntityPose } from './entity'
 
@@ -223,7 +223,7 @@ export class ViewService {
     }
 
     @deprecated('desiredViewportMode')
-    public requestPresentationMode(mode:ViewportMode) : Promise<void> {
+    public requestPresentationMode(mode:ViewportMode) : Promise<void | Message> {
         return this.sessionService.manager.request('ar.view.desiredViewportMode', {mode});
     }
 

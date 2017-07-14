@@ -730,7 +730,7 @@ var integrateCustomARToolKit = function() {
                     //         }
                     // }
 
-            navigator.getUserMedia(constraints, function success(stream) {
+            navigator.getUserMedia(<any>constraints, function success(stream) {
                 // console.log('success', stream);
                 domElement.src = window.URL.createObjectURL(stream);
                 // to start the video, when it is possible to start it only on userevent. like in android
