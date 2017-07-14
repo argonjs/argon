@@ -84,7 +84,8 @@ export class TangoRealityViewer extends RealityViewer {
 
     private _lastGeoHorizontalAccuracy: number = -99;
 
-    // private _scratchCartesian = new Cartesian3();
+    private _tangoOriginLost = true;
+
     // private _scratchQuaternion = new Quaternion();
 
     // private _artoolkitTrackerEntity = new Entity({
@@ -140,6 +141,7 @@ export class TangoRealityViewer extends RealityViewer {
 
     private _scratchMatrix3 = new Matrix3;
     private _scratchMatrix4 = new Matrix4;
+    private _scratchCartesian = new Cartesian3;
 
     public load(): void {
 
@@ -283,40 +285,50 @@ export class TangoRealityViewer extends RealityViewer {
                     
                 const contextUser = childContextService.user;
                 const contextStage = childContextService.stage;
-                if (overrideUser) {
 
-                    // const position = 
-                    //     getEntityPositionInReferenceFrame(contextUser, time, contextStage, positionScratchCartesian) || 
-                    //     Cartesian3.fromElements(0, childDeviceService.suggestedUserHeight, 0, positionScratchCartesian);
-                    (<VRDisplay>this._vrDisplay).getFrameData(_scratchFrameData);
-                    const tangoPos = _scratchFrameData.pose.position;
-                    const position = new Cartesian3(tangoPos[0], tangoPos[1], tangoPos[2]);
-                    // let orientation = getEntityOrientationInReferenceFrame(contextUser, time, contextStage, scratchQuaternion) ||
-                    //     Quaternion.clone(Quaternion.IDENTITY, scratchQuaternion);
-                    const tangoRot = _scratchFrameData.pose.orientation;
-                    let orientation = new Quaternion(tangoRot[0], tangoRot[1], tangoRot[2], tangoRot[3]);
+                var userPosition: Cartesian3;
 
-                    Matrix3.fromQuaternion(orientation, orientationMatrix);
-                    Matrix3.multiplyByVector(orientationMatrix, Cartesian3.UNIT_Y, up);
-                    Matrix3.multiplyByVector(orientationMatrix, Cartesian3.UNIT_X, right);
-                    Matrix3.multiplyByVector(orientationMatrix, NEGATIVE_UNIT_Z, forward);
+                // OverrideUser
+                // const position = 
+                //     getEntityPositionInReferenceFrame(contextUser, time, contextStage, positionScratchCartesian) || 
+                //     Cartesian3.fromElements(0, childDeviceService.suggestedUserHeight, 0, positionScratchCartesian);
+                (<VRDisplay>this._vrDisplay).getFrameData(_scratchFrameData);
+                const tangoPos = _scratchFrameData.pose.position;
+                userPosition = new Cartesian3(tangoPos[0], tangoPos[1], tangoPos[2]);
+                // let orientation = getEntityOrientationInReferenceFrame(contextUser, time, contextStage, scratchQuaternion) ||
+                //     Quaternion.clone(Quaternion.IDENTITY, scratchQuaternion);
+                const tangoRot = _scratchFrameData.pose.orientation;
+                let orientation = new Quaternion(tangoRot[0], tangoRot[1], tangoRot[2], tangoRot[3]);
 
-                    (contextUser.position as ConstantPositionProperty).setValue(position, contextStage);
-                    (contextUser.orientation as ConstantProperty).setValue(orientation);
-                }
+                Matrix3.fromQuaternion(orientation, orientationMatrix);
+                Matrix3.multiplyByVector(orientationMatrix, Cartesian3.UNIT_Y, up);
+                Matrix3.multiplyByVector(orientationMatrix, Cartesian3.UNIT_X, right);
+                Matrix3.multiplyByVector(orientationMatrix, NEGATIVE_UNIT_Z, forward);
 
-                // Update stage geopose when GPS accuracy improves or {TODO: Tango origin is repositioned}
+                (contextUser.position as ConstantPositionProperty).setValue(userPosition, contextStage);
+                (contextUser.orientation as ConstantProperty).setValue(orientation);
+
+                if (!this._tangoOriginLost) this._tangoOriginLost = userPosition.equals(Cartesian3.ZERO);
+                // Update stage geopose when GPS accuracy improves or Tango origin is repositioned
                 const gpsAccuracyHasImproved = this._lastGeoHorizontalAccuracy < (this.deviceService.geoHorizontalAccuracy || 0);
-                const tangoOriginRepositioned = false;
-                const overrideStage = gpsAccuracyHasImproved || tangoOriginRepositioned;
+                const tangoOriginRepositioned = this._tangoOriginLost && !userPosition.equals(Cartesian3.ZERO);
+                const geopositionStage = gpsAccuracyHasImproved || tangoOriginRepositioned;
+                const overrideStage = true;
 
-                if (overrideStage) {
-                    if (!tangoOriginRepositioned)
+                if (geopositionStage) {
+                    if (tangoOriginRepositioned) {
+                        console.log("Tango origin was reset. Updating stage geopose.")
+                        this._tangoOriginLost = false;
+                    }
+                    else {
+                        console.log("Updating stage geopose. Current horizontal accuracy is " + this.deviceService.geoHorizontalAccuracy)
                         this._lastGeoHorizontalAccuracy = this.deviceService.geoHorizontalAccuracy || 0;
+                    }
+
                     const deviceStage = this.deviceService.stage;
-                    console.log("Updating stage geopose. Current horizontal accuracy is " + this.deviceService.geoHorizontalAccuracy)
                     // customStagePosition = getEntityPositionInReferenceFrame(childDeviceService.user, time, childDeviceService.stage, this._scratchCartesian) || positionScratchCartesian;
                     customStagePosition = deviceStage.position && deviceStage.position.getValue(time) || positionScratchCartesian;
+                    customStagePosition = Cartesian3.subtract(customStagePosition, userPosition, this._scratchCartesian);
                     let transformMatrix = eastUpSouthToFixedFrame(customStagePosition, undefined, this._scratchMatrix4);
                     let rotationMatrix = Matrix4.getRotation(transformMatrix, this._scratchMatrix3);
                     customStageOrientation = Quaternion.fromRotationMatrix(rotationMatrix, customStageOrientation);

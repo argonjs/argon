@@ -37,9 +37,11 @@ export declare class TangoRealityViewer extends RealityViewer {
     private _sharedCanvasFinal;
     private _vrDisplay;
     private _lastGeoHorizontalAccuracy;
+    private _tangoOriginLost;
     constructor(sessionService: SessionService, viewService: ViewService, container: Container, deviceService: DeviceService, uri: string, vrDisplay: any);
     private _scratchMatrix3;
     private _scratchMatrix4;
+    private _scratchCartesian;
     load(): void;
     protected initTango(): void;
     protected loadScripts(): Promise<void>;
