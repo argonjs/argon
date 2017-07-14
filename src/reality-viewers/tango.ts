@@ -73,7 +73,7 @@ export class TangoRealityViewer extends RealityViewer {
     private _pointsToSkip = 1;
 
     private _frameData = new VRFrameData();
-    private _renderPointCloud = true;
+    private _renderPointCloud = false;
     private _initFinished = false;
 
     // private _arScene;
@@ -603,7 +603,7 @@ export class TangoRealityViewer extends RealityViewer {
         // volume is not very convenient.
         this._points.frustumCulled = false;
         this._points.renderDepth = 0;
-        this._scene.add(this._points);
+        // this._scene.add(this._points);
 
         // this._vrControls = new THREE.VRControls(this._cameraPersp);
         // Correctly handle window resize events
