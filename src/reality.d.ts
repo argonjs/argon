@@ -1,6 +1,6 @@
 /// <reference types="cesium" />
 import { Cartographic } from './cesium/cesium-imports';
-import { SessionPort, SessionService } from './session';
+import { SessionPort, SessionService, Message } from './session';
 import { Event } from './utils';
 import { ContextService } from './context';
 import { FocusServiceProvider } from './focus';
@@ -13,7 +13,8 @@ export declare abstract class RealityViewerFactory {
     private _createLiveReality;
     private _createWebRTCReality;
     private _createHostedReality;
-    constructor(_createEmptyReality: any, _createLiveReality: any, _createWebRTCReality: any, _createHostedReality: any);
+    private _createTangoReality;
+    constructor(_createEmptyReality: any, _createLiveReality: any, _createWebRTCReality: any, _createHostedReality: any, _createTangoReality: any);
     createRealityViewer(uri: string): RealityViewer;
 }
 /**
@@ -74,11 +75,11 @@ export declare class RealityService {
     /**
      * Install the specified reality viewer
      */
-    install(uri: string): Promise<void>;
+    install(uri: string): Promise<void | Message>;
     /**
      * Uninstall the specified reality viewer
      */
-    uninstall(uri: string): Promise<void>;
+    uninstall(uri: string): Promise<void | Message>;
     /**
      * Request a reality viewer to be presented.
      * - Pass a url to request a (custum) hosted reality viewer
@@ -86,8 +87,9 @@ export declare class RealityService {
      * - [[RealityViewer.LIVE]] to request a live reality viewer
      * - [[RealityViewer.WEBTRC]] to request a webrtc reality viewer
      * - [[RealityViewer.EMPTY]] to request an empty reality viewer
+     * - [[RealityViewer.TANGO]] to request a Tango reality viewer
      */
-    request(uri: string): Promise<void>;
+    request(uri: string): Promise<void | Message>;
     /**
      * Deprecated. Use [[RealityService#request]]
      * @deprecated
@@ -98,11 +100,11 @@ export declare class RealityService {
     /**
      * Ask a reality to move the stage to the given geolocation
      */
-    setStageGeolocation(realitySession: SessionPort, geolocation: Cartographic): Promise<void>;
+    setStageGeolocation(realitySession: SessionPort, geolocation: Cartographic): Promise<void | Message>;
     /**
      * Ask a reality to move the stage to the given geolocation
      */
-    resetStageGeolocation(realitySession: SessionPort): Promise<void>;
+    resetStageGeolocation(realitySession: SessionPort): Promise<void | Message>;
 }
 export declare class RealityServiceProvider {
     private sessionService;

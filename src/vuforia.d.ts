@@ -1,4 +1,4 @@
-import { SessionService, SessionPort } from './session';
+import { SessionService, SessionPort, Message } from './session';
 import { Event } from './utils';
 /**
  * A service which handles requests from a VuforiaService
@@ -88,15 +88,15 @@ export declare class VuforiaObjectTracker extends VuforiaTracker {
     /**
      * Unload a dataset from memory (deactivating it if necessary)
      */
-    unloadDataSet(id: VuforiaDataSetId): Promise<void>;
+    unloadDataSet(id: VuforiaDataSetId): Promise<void | Message>;
     /**
      * Load (if necessary) and activate a dataset to enable tracking of the contained trackables
      */
-    activateDataSet(id: VuforiaDataSetId | DeprecatedVuforiaDataSet): Promise<void>;
+    activateDataSet(id: VuforiaDataSetId | DeprecatedVuforiaDataSet): Promise<void | Message>;
     /**
      * Deactivate a loaded dataset to disable tracking of the contained trackables
      */
-    deactivateDataSet(id: VuforiaDataSetId | DeprecatedVuforiaDataSet): Promise<void>;
+    deactivateDataSet(id: VuforiaDataSetId | DeprecatedVuforiaDataSet): Promise<void | Message>;
 }
 /**
  * A map from names of trackable data sets to their ids, names, and sizes TODO
@@ -122,7 +122,7 @@ export declare class DeprecatedVuforiaDataSet {
     constructor(id: string, managerSession: SessionPort);
     _onActivate(): void;
     _onDeactivate(): void;
-    fetch(): Promise<void>;
+    fetch(): Promise<void | Message>;
     load(): Promise<VuforiaTrackables>;
     isActive(): boolean;
     getTrackables(): VuforiaTrackables;

@@ -1,7 +1,7 @@
 /// <reference types="cesium" />
 import { Entity, Cartesian3, JulianDate, PerspectiveFrustum, Cartographic } from './cesium/cesium-imports';
 import { EntityService, EntityServiceProvider } from './entity';
-import { SessionService, SessionPort } from './session';
+import { SessionService, SessionPort, Message } from './session';
 import { CanvasViewport, SerializedSubviewList, SerializedEntityStateMap, GeolocationOptions } from './common';
 import { Event } from './utils';
 import { ViewService } from './view';
@@ -54,6 +54,7 @@ export declare class DeviceService {
     presentHMDChangeEvent: Event<void>;
     screenOrientationChangeEvent: Event<void>;
     suggestedGeolocationSubscriptionChangeEvent: Event<void>;
+    getVRDisplayFinishedEvent: Event<void>;
     /**
      * A coordinate system representing the physical space in which the user is free to
      * move around, positioned on the surface the user is standing on,
@@ -92,6 +93,7 @@ export declare class DeviceService {
     private _vrDisplays;
     private _vrDisplay;
     readonly vrDisplay: any;
+    readonly vrDisplays: any;
     constructor(sessionService: SessionService, entityService: EntityService, viewService: ViewService, visibilityService: VisibilityService);
     protected _parentState: DeviceStableState | undefined;
     private _updatingFrameState;
@@ -151,8 +153,8 @@ export declare class DeviceService {
      * Is the current reality presenting to an HMD
      */
     readonly isPresentingRealityHMD: boolean;
-    requestPresentHMD(): Promise<void>;
-    exitPresentHMD(): Promise<void>;
+    requestPresentHMD(): Promise<void | Message>;
+    exitPresentHMD(): Promise<void | Message>;
     private _deviceOrientationListener;
     private _deviceOrientation;
     private _deviceOrientationHeadingAccuracy;
@@ -171,8 +173,8 @@ export declare class DeviceServiceProvider {
     protected entityServiceProvider: EntityServiceProvider;
     private _subscribers;
     constructor(sessionService: SessionService, deviceService: DeviceService, viewService: ViewService, entityService: EntityService, entityServiceProvider: EntityServiceProvider);
-    protected handleRequestPresentHMD(session: SessionPort): Promise<void>;
-    protected handleExitPresentHMD(session: SessionPort): Promise<void>;
+    protected handleRequestPresentHMD(session: SessionPort): Promise<void | Message>;
+    protected handleExitPresentHMD(session: SessionPort): Promise<void | Message>;
     private _needsPublish;
     private _publishTime;
     private _stableState;
