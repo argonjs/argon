@@ -12,7 +12,7 @@ import {
     Viewport,
     SerializedSubviewList
 } from './common'
-import { SessionPort, SessionService, Message } from './session'
+import { SessionPort, SessionService } from './session'
 import { Event, deprecated, decomposePerspectiveProjectionMatrix } from './utils'
 import { ContextService } from './context'
 import { FocusServiceProvider } from './focus'
@@ -213,7 +213,7 @@ export class RealityService {
     /**
      * Install the specified reality viewer
      */
-    public install(uri: string) : Promise<void | Message> {
+    public install(uri: string) : Promise<void> {
         return this.sessionService.manager.whenConnected().then(()=>{
             if (this.sessionService.manager.version[0] >= 1 !== true)
                 return Promise.reject(new Error('Not supported'))
@@ -224,7 +224,7 @@ export class RealityService {
     /**
      * Uninstall the specified reality viewer
      */
-    public uninstall(uri: string): Promise<void | Message> {
+    public uninstall(uri: string): Promise<void> {
         return this.sessionService.manager.whenConnected().then(()=>{
             if (this.sessionService.manager.version[0] >= 1 !== true)
                 return Promise.reject(new Error('Not supported'))
@@ -241,7 +241,7 @@ export class RealityService {
      * - [[RealityViewer.EMPTY]] to request an empty reality viewer
      * - [[RealityViewer.TANGO]] to request a Tango reality viewer
      */
-    public request(uri:string): Promise<void | Message> {
+    public request(uri:string): Promise<void> {
         return this.sessionService.manager.whenConnected().then(()=>{
             if (this.sessionService.manager.version[0] >= 1 !== true)
                 return this.sessionService.manager.request('ar.reality.desired', {reality:{uri}});
@@ -262,7 +262,7 @@ export class RealityService {
     /**
      * Ask a reality to move the stage to the given geolocation
      */
-    public setStageGeolocation(realitySession:SessionPort, geolocation:Cartographic) : Promise<void | Message> {
+    public setStageGeolocation(realitySession:SessionPort, geolocation:Cartographic) : Promise<void> {
         if (!realitySession.supportsProtocol('ar.configureStage')) 
             return Promise.reject('Protocol `ar.configureStage` is not supported'); 
         return realitySession.request('ar.configureStage.setStageGeolocation', {geolocation});
@@ -271,7 +271,7 @@ export class RealityService {
     /**
      * Ask a reality to move the stage to the given geolocation
      */
-    public resetStageGeolocation(realitySession:SessionPort) : Promise<void | Message> {
+    public resetStageGeolocation(realitySession:SessionPort) : Promise<void> {
         if (!realitySession.supportsProtocol('ar.configureStage')) 
             return Promise.reject('Protocol `ar.configureStage` is not supported'); 
         return realitySession.request('ar.configureStage.resetStageGeolocation');
