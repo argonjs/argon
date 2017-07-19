@@ -74,7 +74,7 @@ export declare class DeviceService {
     readonly geoHorizontalAccuracy: number | undefined;
     readonly geoVerticalAccuracy: number | undefined;
     _geolocationDesired: boolean;
-    readonly geolocationDesired: {
+    readonly geolocationDesired: boolean | {
         enableHighAccuracy?: boolean | undefined;
     };
     _geolocationOptions: GeolocationOptions | undefined;

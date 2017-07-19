@@ -76,16 +76,15 @@ axisHelper.position.y = -50;
 var perspectiveProjection = new Argon.Cesium.PerspectiveFrustum();
 perspectiveProjection.fov = Math.PI / 2;
 
-const processFrameState = (suggestedFrameState:Argon.DeviceFrameState) => {
+app.device.frameStateEvent.addEventListener((suggestedFrameState:Argon.DeviceFrameState) => {
     const frameState = app.device.createContextFrameState(
         suggestedFrameState.time,
         suggestedFrameState.viewport,
         suggestedFrameState.subviews,
-        app.context.user
+        {overrideUser: true}
     );
     app.context.submitFrameState(frameState);
-}
-app.device.frameStateEvent.addEventListener(processFrameState);
+});
 
 app.updateEvent.addEventListener(() => {
     const userPose = app.context.getEntityPose(app.context.user);

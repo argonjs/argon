@@ -40,7 +40,7 @@ export class VuforiaService {
      * Resolves to a boolean indicating whether or not the Vuforia API is available on this system
      */
     public isAvailable(): Promise<boolean> {
-        return this.sessionService.manager.request('ar.vuforia.isAvailable').then((message: { available: boolean }) => {
+        return this.sessionService.manager.request<{ available: boolean }>('ar.vuforia.isAvailable').then((message) => {
             return message.available;
         });
     }
@@ -81,7 +81,7 @@ export class VuforiaAPI {
     // setHint should be called after Vuforia is initialized
     public setHint(hint: VuforiaHint, value: number) {
         let options = {hint:hint, value:value};
-        return this.manager.request('ar.vuforia.setHint', options).then((message: { result: boolean }) => {
+        return this.manager.request<{ result: boolean }>('ar.vuforia.setHint', options).then((message) => {
             return message.result;
         });
     }
@@ -154,7 +154,7 @@ export class VuforiaObjectTracker extends VuforiaTracker {
         if (url && window.document) {
             url = resolveURL(url);
         }
-        return this.managerSession.request('ar.vuforia.objectTrackerCreateDataSet', { url }).then((message: { id: string }) => {
+        return this.managerSession.request<{ id: string }>('ar.vuforia.objectTrackerCreateDataSet', { url }).then((message) => {
             const dataSet = new DeprecatedVuforiaDataSet(message.id, this.managerSession);
             this._deprecatedDataSetInstanceMap.set(message.id, dataSet);
             return dataSet;
@@ -169,8 +169,8 @@ export class VuforiaObjectTracker extends VuforiaTracker {
         if (url && window.document) {
             url = resolveURL(url);
         }
-        return this.managerSession.request('ar.vuforia.objectTrackerCreateDataSet', { url })
-            .then((message: { id: VuforiaDataSetId }) => {
+        return this.managerSession.request<{ id: VuforiaDataSetId }>('ar.vuforia.objectTrackerCreateDataSet', { url })
+            .then((message) => {
                 return message.id;
             });
     }
@@ -185,9 +185,9 @@ export class VuforiaObjectTracker extends VuforiaTracker {
     public loadDataSet(id: VuforiaDataSetId) : Promise<VuforiaTrackables> {
         return this.managerSession.whenConnected().then(()=>{
             if (this.managerSession.version[0] == 0) {
-                return <Promise<VuforiaTrackables>>this.managerSession.request('ar.vuforia.dataSetLoad', { id });
+                return this.managerSession.request<VuforiaTrackables>('ar.vuforia.dataSetLoad', { id });
             }
-            return <Promise<VuforiaTrackables>>this.managerSession.request('ar.vuforia.objectTrackerLoadDataSet', { id });
+            return this.managerSession.request<VuforiaTrackables>('ar.vuforia.objectTrackerLoadDataSet', { id });
         });
     }
 
@@ -255,7 +255,7 @@ export class DeprecatedVuforiaDataSet {
     }
 
     public load(): Promise<VuforiaTrackables> {
-        return this.managerSession.request('ar.vuforia.dataSetLoad', { id: this.id }).then((trackables: VuforiaTrackables) => {
+        return this.managerSession.request<VuforiaTrackables>('ar.vuforia.dataSetLoad', { id: this.id }).then((trackables) => {
             this._trackables = trackables;
             return trackables;
         });

@@ -40,7 +40,7 @@ export class PermissionService {
     // public query() : Promise<Permission[]>;
     public query(type: PermissionType, session = this.sessionService.manager) : Promise<PermissionState> {
         // let permissionMaps: Permission[] = [];
-        return session.request('ar.permission.query', {type}).then(({state}:{state: PermissionState}) => {
+        return session.request<{state: PermissionState}>('ar.permission.query', {type}).then(({state}) => {
             return state || PermissionState.NOT_REQUIRED;
         });
     }
@@ -53,7 +53,7 @@ export class PermissionService {
      */
     public revoke(type: PermissionType) : Promise<PermissionState> {
         const session = this.sessionService.manager;
-        return session.request('ar.permission.revoke', {type}).then(({state}:{state: PermissionState}) => {
+        return session.request<{state: PermissionState}>('ar.permission.revoke', {type}).then(({state}) => {
             return state;
         });
     }

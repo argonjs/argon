@@ -212,7 +212,7 @@ export class ContextService {
     private _localOriginEastNorthUp: Entity = this.entities.add(new Entity({
         id: 'ar.localOriginENU',
         name: 'Local Origin (ENU)',
-        position: new ConstantPositionProperty(Cartesian3.ZERO, this.localOriginEastNorthUp),
+        position: new ConstantPositionProperty(Cartesian3.ZERO, this.origin),
         orientation: new ConstantProperty(Quaternion.fromAxisAngle(Cartesian3.UNIT_X, -Math.PI / 2))
     }));
 

@@ -82,9 +82,9 @@ export declare class ArgonSystem {
 export declare class ArgonConfigurationManager {
     configuration: Configuration;
     container: DI.Container;
-    elementOrSelector: HTMLElement | string | null;
+    elementOrSelector: string | HTMLElement | null | undefined;
     static configure(configurationManager: ArgonConfigurationManager): void;
-    constructor(configuration: Configuration, container?: DI.Container, elementOrSelector?: HTMLElement | string | null);
+    constructor(configuration: Configuration, container?: DI.Container, elementOrSelector?: string | HTMLElement | null | undefined);
     standardConfiguration(): void;
     defaultConnect(): void;
     defaultUI(): void;

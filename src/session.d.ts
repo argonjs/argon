@@ -26,7 +26,7 @@ export interface ErrorMessage {
  * Provides two-way communication between two [[SessionPort]] instances.
  */
 export declare class SessionPort {
-    uri: string;
+    uri: string | undefined;
     id: string;
     /**
      * An event which fires when a connection has been
@@ -71,7 +71,7 @@ export declare class SessionPort {
     private _isOpened;
     private _isConnected;
     private _isClosed;
-    constructor(uri?: string);
+    constructor(uri?: string | undefined);
     /**
      * Check if a protocol is supported by this session.
      */
@@ -105,7 +105,8 @@ export declare class SessionPort {
      * @return if the session is not opened or is closed, return a rejected promise,
      * Otherwise, the returned promise is resolved or rejected based on the response.
      */
-    request(topic: string, message?: Message): Promise<void | Message>;
+    request(topic: string, message?: Message): Promise<void>;
+    request<T extends Message>(topic: string, message?: Message): Promise<T>;
     /**
      * Close the connection to the remote session.
      */

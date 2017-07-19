@@ -282,8 +282,10 @@ export class SessionPort {
      * @param message the message to be sent.
      * @return if the session is not opened or is closed, return a rejected promise,
      * Otherwise, the returned promise is resolved or rejected based on the response.
-     */
-    request(topic: string, message?: Message): Promise<void | Message> {
+     */    
+    request(topic: string, message?: Message): Promise<void>
+    request<T extends Message>(topic: string, message?: Message) : Promise<T>;
+    request(topic: string, message?: Message) : Promise<void|Message> {
         if (!this._isOpened || this._isClosed)
             throw new Error('Session must be open to make requests');
         const id = createGuid();

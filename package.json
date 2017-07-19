@@ -250,7 +250,7 @@
     "standard-version": "^4.0.0",
     "tsconfig-glob": "^0.2.1",
     "typedoc": "^0.5.7",
-    "typescript": "^2.2.1",
+    "typescript": "^2.4.1",
     "typescript-formatter": "^2.3.0",
     "uglify-js": "^3.0.13"
   }

@@ -21167,13 +21167,6 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     }
                     return this.send(SessionPort.ERROR, errorMessage);
                 };
-                /**
-                 * Send a request and return a promise for the result.
-                 * @param topic the message topic.
-                 * @param message the message to be sent.
-                 * @return if the session is not opened or is closed, return a rejected promise,
-                 * Otherwise, the returned promise is resolved or rejected based on the response.
-                 */
                 SessionPort.prototype.request = function (topic, message) {
                     var _this = this;
                     if (!this._isOpened || this._isClosed) throw new Error('Session must be open to make requests');
@@ -23602,7 +23595,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     this._localOriginEastNorthUp = this.entities.add(new Entity({
                         id: 'ar.localOriginENU',
                         name: 'Local Origin (ENU)',
-                        position: new ConstantPositionProperty(Cartesian3.ZERO, this.localOriginEastNorthUp),
+                        position: new ConstantPositionProperty(Cartesian3.ZERO, this.origin),
                         orientation: new ConstantProperty(Quaternion.fromAxisAngle(Cartesian3.UNIT_X, -Math.PI / 2))
                     }));
                     /**
