@@ -22,6 +22,11 @@ export abstract class RealityViewer {
         return this._session;
     }
 
+    public _sharedCanvas: boolean;
+    public get isSharedCanvas() {
+        return this._sharedCanvas
+    }
+
     constructor(
         public uri:string
     ){
@@ -53,6 +58,7 @@ export abstract class RealityViewer {
     static DEFAULT = 'reality:default';
     static EMPTY = 'reality:empty';
     static LIVE = 'reality:live';
+    static WEBRTC = 'reality:webrtc';
     
     static getType(uri?: string) {
         if (uri === undefined) return undefined;
