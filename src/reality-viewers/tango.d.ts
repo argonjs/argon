@@ -29,9 +29,11 @@ export declare class TangoRealityViewer extends RealityViewer {
     private _cameraScene;
     private _pointCloud;
     private _points;
+    private _pointsMaterial;
     private _pointsToSkip;
     private _frameData;
     private _renderPointCloud;
+    private _usePointCloudForOcclusion;
     private _initFinished;
     private _renderer;
     private _sharedCanvasFinal;

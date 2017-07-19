@@ -70,10 +70,11 @@ export class TangoRealityViewer extends RealityViewer {
     // private _vrControls;
     private _pointCloud;
     private _points;
-    private _pointsToSkip = 1;
+    private _pointsToSkip = 0;
 
     private _frameData = new VRFrameData();
-    private _renderPointCloud = false;
+    private _renderPointCloud = true;
+    private _usePointCloudForOcclusion = true;
     private _initFinished = false;
 
     // private _arScene;
@@ -223,6 +224,12 @@ export class TangoRealityViewer extends RealityViewer {
                 }
             }
 
+            session.on['ar.tango.toggleOcclusion'] = () => {
+                this._usePointCloudForOcclusion = !this._usePointCloudForOcclusion;
+                // if (this._usePointCloudForOcclusion) this._scene.add(this._points); else this._scene.remove(this._points);
+                return Promise.resolve({result: this._usePointCloudForOcclusion});
+            }
+
         });
 
         // Setup everything after connected to the manager. The manager only connects once.
@@ -242,7 +249,7 @@ export class TangoRealityViewer extends RealityViewer {
             const right = new Cartesian3(1,0,0);
             const forward = new Cartesian3(0,-1,0);
             // const scratchFrustum = new PerspectiveFrustum();
-            const _scratchFrameData = new VRFrameData();
+            // const _scratchFrameData = new VRFrameData();
 
             // const deviceStage = childDeviceService.stage;
             // const deviceUser = childDeviceService.user;
@@ -292,12 +299,12 @@ export class TangoRealityViewer extends RealityViewer {
                 // const position = 
                 //     getEntityPositionInReferenceFrame(contextUser, time, contextStage, positionScratchCartesian) || 
                 //     Cartesian3.fromElements(0, childDeviceService.suggestedUserHeight, 0, positionScratchCartesian);
-                (<VRDisplay>this._vrDisplay).getFrameData(_scratchFrameData);
-                const tangoPos = _scratchFrameData.pose.position;
+                (<VRDisplay>this._vrDisplay).getFrameData(this._frameData);
+                const tangoPos = this._frameData.pose.position;
                 userPosition = new Cartesian3(tangoPos[0], tangoPos[1], tangoPos[2]);
                 // let orientation = getEntityOrientationInReferenceFrame(contextUser, time, contextStage, scratchQuaternion) ||
                 //     Quaternion.clone(Quaternion.IDENTITY, scratchQuaternion);
-                const tangoRot = _scratchFrameData.pose.orientation;
+                const tangoRot = this._frameData.pose.orientation;
                 let orientation = new Quaternion(tangoRot[0], tangoRot[1], tangoRot[2], tangoRot[3]);
 
                 Matrix3.fromQuaternion(orientation, orientationMatrix);
@@ -338,16 +345,10 @@ export class TangoRealityViewer extends RealityViewer {
 
                 if (this._initFinished && this._vrDisplay) {
                     (THREE as any).WebAR.updateCameraMeshOrientation(this._vrDisplay, this._cameraMesh);
-                    (THREE as any).WebAR.resizeVRSeeThroughCamera(this._vrDisplay, this._cameraPersp);
+                    
                     //update cameraPersp
-                    let pose;
-                    if ( (<any>this._vrDisplay).getFrameData ) {
-                        (<any>this._vrDisplay).getFrameData( this._frameData );
-                        pose = this._frameData.pose;
-                    } else if ( this._vrDisplay.getPose ) {
-                        pose = this._vrDisplay.getPose();
-                    }
-
+                    let pose = this._frameData.pose;
+                    
                     if ( pose.orientation ) {
                         this._cameraPersp.quaternion.fromArray( pose.orientation );
                     }
@@ -359,20 +360,22 @@ export class TangoRealityViewer extends RealityViewer {
                     }
                     
                     // if (this._vrDisplay) console.log(this._vrDisplay.getPose().position)
-                    this._pointCloud.update(this._renderPointCloud, this._pointsToSkip);
-                    this._renderer.resetGLState();
+                    this._pointCloud.update(this._renderPointCloud, this._pointsToSkip, this._usePointCloudForOcclusion);
+                    // this._renderer.resetGLState();
 
-                    var ac = this._renderer.autoClear;
+                    // var ac = this._renderer.autoClear;
                     this._renderer.autoClear = false;
                     this._renderer.clear();
                     this._renderer.render(this._cameraScene, this._cameraOrtho);
                     this._renderer.clearDepth();
 
+                    this._renderer.context.colorMask( false, false, false, false );
                     if (this._renderPointCloud) {
                         this._renderer.render(this._scene, this._cameraPersp);
                     }
-                    
-                    this._renderer.autoClear = ac;
+                    this._renderer.context.colorMask( true, true, true, true );
+
+                    // this._renderer.autoClear = ac;
 
                 }
 
@@ -464,15 +467,15 @@ export class TangoRealityViewer extends RealityViewer {
 
         let pointsMaterial = new THREE.PointsMaterial(
             { size: 0.01, vertexColors: THREE.VertexColors });
-        pointsMaterial.depthWrite = false;
+        // pointsMaterial.depthWrite = false;
         this._pointCloud = new (THREE as any).WebAR.VRPointCloud(this._vrDisplay, true);
         this._points = new THREE.Points(this._pointCloud.getBufferGeometry(),
             pointsMaterial);
         // Points are changing all the time so calculating the frustum culling
         // volume is not very convenient.
         this._points.frustumCulled = false;
-        this._points.renderDepth = 0;
-        // this._scene.add(this._points);
+        // this._points.renderDepth = 0;
+        this._scene.add(this._points);
 
         // this._vrControls = new THREE.VRControls(this._cameraPersp);
         // Correctly handle window resize events
@@ -519,6 +522,7 @@ export class TangoRealityViewer extends RealityViewer {
 
     protected updateViewport(viewport:CanvasViewport) {
         if (!this._sharedCanvasFinal && this._renderer) {
+            (THREE as any).WebAR.resizeVRSeeThroughCamera(this._vrDisplay, this._cameraPersp);
             this._renderer.setSize(this.viewService.renderWidth, this.viewService.renderHeight, true);
         }
     }
