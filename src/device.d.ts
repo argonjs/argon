@@ -1,7 +1,7 @@
 /// <reference types="cesium" />
 import { Entity, Cartesian3, JulianDate, PerspectiveFrustum, Cartographic } from './cesium/cesium-imports';
 import { EntityService, EntityServiceProvider } from './entity';
-import { SessionService, SessionPort, Message } from './session';
+import { SessionService, SessionPort } from './session';
 import { CanvasViewport, SerializedSubviewList, SerializedEntityStateMap, GeolocationOptions } from './common';
 import { Event } from './utils';
 import { ViewService } from './view';
@@ -153,8 +153,8 @@ export declare class DeviceService {
      * Is the current reality presenting to an HMD
      */
     readonly isPresentingRealityHMD: boolean;
-    requestPresentHMD(): Promise<void | Message>;
-    exitPresentHMD(): Promise<void | Message>;
+    requestPresentHMD(): Promise<void>;
+    exitPresentHMD(): Promise<void>;
     private _deviceOrientationListener;
     private _deviceOrientation;
     private _deviceOrientationHeadingAccuracy;
@@ -173,8 +173,8 @@ export declare class DeviceServiceProvider {
     protected entityServiceProvider: EntityServiceProvider;
     private _subscribers;
     constructor(sessionService: SessionService, deviceService: DeviceService, viewService: ViewService, entityService: EntityService, entityServiceProvider: EntityServiceProvider);
-    protected handleRequestPresentHMD(session: SessionPort): Promise<void | Message>;
-    protected handleExitPresentHMD(session: SessionPort): Promise<void | Message>;
+    protected handleRequestPresentHMD(session: SessionPort): Promise<void>;
+    protected handleExitPresentHMD(session: SessionPort): Promise<void>;
     private _needsPublish;
     private _publishTime;
     private _stableState;

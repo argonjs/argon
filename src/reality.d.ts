@@ -1,6 +1,6 @@
 /// <reference types="cesium" />
 import { Cartographic } from './cesium/cesium-imports';
-import { SessionPort, SessionService, Message } from './session';
+import { SessionPort, SessionService } from './session';
 import { Event } from './utils';
 import { ContextService } from './context';
 import { FocusServiceProvider } from './focus';
@@ -75,11 +75,11 @@ export declare class RealityService {
     /**
      * Install the specified reality viewer
      */
-    install(uri: string): Promise<void | Message>;
+    install(uri: string): Promise<void>;
     /**
      * Uninstall the specified reality viewer
      */
-    uninstall(uri: string): Promise<void | Message>;
+    uninstall(uri: string): Promise<void>;
     /**
      * Request a reality viewer to be presented.
      * - Pass a url to request a (custum) hosted reality viewer
@@ -89,7 +89,7 @@ export declare class RealityService {
      * - [[RealityViewer.EMPTY]] to request an empty reality viewer
      * - [[RealityViewer.TANGO]] to request a Tango reality viewer
      */
-    request(uri: string): Promise<void | Message>;
+    request(uri: string): Promise<void>;
     /**
      * Deprecated. Use [[RealityService#request]]
      * @deprecated
@@ -100,11 +100,11 @@ export declare class RealityService {
     /**
      * Ask a reality to move the stage to the given geolocation
      */
-    setStageGeolocation(realitySession: SessionPort, geolocation: Cartographic): Promise<void | Message>;
+    setStageGeolocation(realitySession: SessionPort, geolocation: Cartographic): Promise<void>;
     /**
      * Ask a reality to move the stage to the given geolocation
      */
-    resetStageGeolocation(realitySession: SessionPort): Promise<void | Message>;
+    resetStageGeolocation(realitySession: SessionPort): Promise<void>;
 }
 export declare class RealityServiceProvider {
     private sessionService;
