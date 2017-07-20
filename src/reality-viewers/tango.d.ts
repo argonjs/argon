@@ -29,7 +29,6 @@ export declare class TangoRealityViewer extends RealityViewer {
     private _cameraScene;
     private _pointCloud;
     private _points;
-    private _pointsMaterial;
     private _pointsToSkip;
     private _frameData;
     private _renderPointCloud;
@@ -40,6 +39,7 @@ export declare class TangoRealityViewer extends RealityViewer {
     private _vrDisplay;
     private _lastGeoHorizontalAccuracy;
     private _tangoOriginLost;
+    private _tangoOriginLostPreviousFrame;
     constructor(sessionService: SessionService, viewService: ViewService, container: Container, deviceService: DeviceService, uri: string, vrDisplay: any);
     private _scratchMatrix3;
     private _scratchMatrix4;
