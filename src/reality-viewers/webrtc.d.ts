@@ -21,6 +21,7 @@ export declare class WebRTCRealityViewer extends RealityViewer {
     private container;
     uri: string;
     type: string;
+    userTracking: 'none' | '3DOF' | '6DOF';
     private _arScene;
     private _arController;
     private _renderer;

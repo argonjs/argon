@@ -1,4 +1,3 @@
-
 import { inject, Container } from 'aurelia-dependency-injection'
 import { 
     // CameraEventAggregator,
@@ -33,34 +32,13 @@ import { RealityViewer } from './base'
 import { RealityService } from '../reality'
 import { VisibilityService } from '../visibility'
 
-// declare var ARController;
 declare var THREE;
-
-// interface Movement {
-//     startPosition:Cartesian2; 
-//     endPosition:Cartesian2;
-// }
-
-// interface PinchMovement {
-//     distance: Movement;
-//     angleAndHeight: Movement;
-// }
-
-/**
- * Note: To use this reality, an app must load three.js
- * 
- * To share a canvas, an app must do the following:
- *   - Have a canvas element
- *   - Call Argon.init with sharedCanvas=true
- *   - Register the canvas element via setLayers
- *   - Do not clear the canvas (e.g. set renderer.autoClear=false in three.js)
- *   - Rebind GL state before rendering (e.g. renderer.resetGLState() in three.js)
- */
 
 @inject(SessionService, ViewService, Container, DeviceService)
 export class TangoRealityViewer extends RealityViewer {
 
     public type = 'tango';
+    public userTracking: 'none'|'3DOF'|'6DOF' = '6DOF';
 
     private _scene;
     private _cameraOrtho;
@@ -408,6 +386,7 @@ export class TangoRealityViewer extends RealityViewer {
                     time,
                     frameState.viewport,
                     subviews,
+                    this.userTracking,
                     {
                         overrideUser,  
                         overrideStage,

@@ -10,6 +10,7 @@ import { RealityViewer } from './base'
 export class LiveRealityViewer extends RealityViewer {
 
     public videoElement: HTMLVideoElement;
+    public userTracking: 'none'|'3DOF'|'6DOF' = '3DOF';
 
     private canvas: HTMLCanvasElement;
     private context: CanvasRenderingContext2D;
@@ -124,7 +125,8 @@ export class LiveRealityViewer extends RealityViewer {
                         const contextFrameState = this.contextService.createFrameState(
                             frameState.time,
                             frameState.viewport,
-                            frameState.subviews
+                            frameState.subviews,
+                            this.userTracking
                         );
                         
                         internalSession.send('ar.reality.frameState', contextFrameState);

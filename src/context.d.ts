@@ -70,6 +70,11 @@ export declare class ContextService {
     * Any time the local origin changes, the localOriginChange event is raised.
     */
     origin: Entity;
+    /**
+     * Returns the DOF support of the reality.
+     * "none"|"3DOF"|"6DOF"
+     */
+    readonly userTracking: "none" | "3DOF" | "6DOF";
     /** alias for origin */
     readonly localOrigin: Entity;
     private _localOrigin;
@@ -207,10 +212,10 @@ export declare class ContextService {
      * @param time
      * @param viewport
      * @param subviewList
-     * @param user
+     * @param userTracking
      * @param entityOptions
      */
-    createFrameState(time: JulianDate, viewport: CanvasViewport, subviewList: SerializedSubviewList, options?: {
+    createFrameState(time: JulianDate, viewport: CanvasViewport, subviewList: SerializedSubviewList, userTracking: "none" | "3DOF" | "6DOF", options?: {
         overrideStage?: boolean;
         overrideUser?: boolean;
         overrideView?: boolean;

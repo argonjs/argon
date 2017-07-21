@@ -118,6 +118,7 @@ export class ContextService {
                 viewport: new Viewport,
                 projectionMatrix: this._scratchFrustum.projectionMatrix
             }],
+            userTracking: 'none',
         };
     }
 
@@ -191,6 +192,14 @@ export class ContextService {
         position: new ConstantPositionProperty(undefined, ReferenceFrame.FIXED),
         orientation: new ConstantProperty(undefined)
     }));
+
+    /**
+     * Returns the DOF support of the reality.
+     * "none"|"3DOF"|"6DOF"
+     */
+    public get userTracking() {
+        return this._serializedFrameState && this._serializedFrameState.userTracking || '3DOF';
+    }
 
     /** alias for origin */
     @deprecated('origin')
@@ -433,7 +442,8 @@ export class ContextService {
         time:<any>{},
         entities: {},
         viewport: <any>{},
-        subviews: []
+        subviews: [],
+        userTracking: 'none'
     }
 
     private _getSerializedEntityState = getSerializedEntityState;
@@ -446,13 +456,14 @@ export class ContextService {
      * @param time 
      * @param viewport 
      * @param subviewList 
-     * @param user 
+     * @param userTracking
      * @param entityOptions 
      */
     public createFrameState(
         time:JulianDate,
         viewport:CanvasViewport,
         subviewList:SerializedSubviewList,
+        userTracking:"none"|"3DOF"|"6DOF",
         options?: {overrideStage?:boolean, overrideUser?:boolean, overrideView?:boolean, overrideSubviews?:boolean, floorOffset?:number}
     ) : ContextFrameState {
 
@@ -468,6 +479,7 @@ export class ContextService {
         frameState.time = JulianDate.clone(time, frameState.time);
         frameState.viewport = CanvasViewport.clone(viewport, frameState.viewport)!;
         frameState.subviews = SerializedSubviewList.clone(subviewList, frameState.subviews)!;
+        frameState.userTracking = userTracking;
         const entities = frameState.entities = {};
 
         const getSerializedEntityState = this._getSerializedEntityState;
@@ -510,7 +522,7 @@ export class ContextService {
         if (floorOffset !== 0) {
             frameState.entities[this.floor.id] = getSerializedEntityState(floor, time, stage);
         }
-        
+
         return frameState;
     }
 

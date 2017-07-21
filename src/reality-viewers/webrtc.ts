@@ -61,6 +61,7 @@ interface PinchMovement {
 export class WebRTCRealityViewer extends RealityViewer {
 
     public type = 'webrtc';
+    public userTracking: 'none'|'3DOF'|'6DOF' = '3DOF';
 
     private _arScene;
     private _arController;
@@ -474,6 +475,7 @@ export class WebRTCRealityViewer extends RealityViewer {
                     time,
                     frameState.viewport,
                     subviews,
+                    this.userTracking,
                     {
                         overrideUser,
                         overrideStage

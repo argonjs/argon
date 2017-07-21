@@ -25,6 +25,7 @@ export declare class DeviceFrameState {
     time: JulianDate;
     viewport: CanvasViewport;
     subviews: SerializedSubviewList;
+    userTracking: 'none' | '3DOF' | '6DOF';
 }
 /**
  * The DeviceService provides the current device state
@@ -88,6 +89,12 @@ export declare class DeviceService {
     defaultUserHeight: number;
     readonly suggestedUserHeight: number;
     readonly strict: boolean;
+    /**
+     * Returns the DOF support of the device.
+     * "none"|"3DOF"|"6DOF"
+     */
+    readonly userTracking: "none" | "3DOF" | "6DOF";
+    private _userTracking;
     protected _scratchCartesian: Cartesian3;
     protected _scratchFrustum: PerspectiveFrustum;
     private _vrDisplays;
@@ -136,7 +143,7 @@ export declare class DeviceService {
     private _hasPolyfillWebVRDisplay();
     protected onRequestPresentHMD(): Promise<void>;
     protected onExitPresentHMD(): Promise<void>;
-    createContextFrameState(time: JulianDate, viewport: CanvasViewport, subviewList: SerializedSubviewList, options?: {
+    createContextFrameState(time: JulianDate, viewport: CanvasViewport, subviewList: SerializedSubviewList, userTracking: 'none' | '3DOF' | '6DOF', options?: {
         overrideStage?: boolean;
         overrideUser?: boolean;
         overrideView?: boolean;

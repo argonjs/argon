@@ -52,6 +52,8 @@ import {
 
 import { VisibilityService } from './visibility'
 
+import { isAndroid, isIOS } from './utils'
+
 export class DeviceStableState {
     viewport?:CanvasViewport;
     subviews?:SerializedSubviewList;
@@ -83,6 +85,8 @@ export class DeviceFrameState {
             Matrix4.clone(this._scratchFrustum.projectionMatrix)
         )
     }];
+
+    userTracking:'none'|'3DOF'|'6DOF' = 'none';
 };
 
 /**
@@ -214,6 +218,15 @@ export class DeviceService {
             this.isPresentingHMD && !this._hasPolyfillWebVRDisplay() || false;
     }
 
+    /**
+     * Returns the DOF support of the device.
+     * "none"|"3DOF"|"6DOF"
+     */
+    public get userTracking() {
+        return this._userTracking;
+    }
+    private _userTracking : "none"|"3DOF"|"6DOF" = "3DOF";
+
     protected _scratchCartesian = new Cartesian3;
     protected _scratchFrustum = new PerspectiveFrustum();
 
@@ -237,6 +250,11 @@ export class DeviceService {
         this.visibilityService.showEvent.addEventListener(() => this._startUpdates());
         this.visibilityService.hideEvent.addEventListener(() => this._stopUpdates());
 
+        // On iOS or Android, we have 3DOF
+        if (isIOS || isAndroid) {
+            this._userTracking = "3DOF";
+        }
+        
         if (typeof navigator !== 'undefined' && 
             navigator.getVRDisplays && 
             navigator.userAgent.indexOf('Argon') > 0 === false) { // for now, only use webvr when not in argon-app
@@ -245,9 +263,13 @@ export class DeviceService {
             navigator.getVRDisplays().then(displays => {
                 this._vrDisplays = displays;
                 this._vrDisplay = displays[0];
+                // Tango devices have 6DOF
+                if (this._vrDisplay.displayName === "Tango VR Device")
+                    this._userTracking = "6DOF";
                 this.getVRDisplayFinishedEvent.raiseEvent(undefined);
             });
-
+            // VR has 6DOF
+            this._userTracking = 'none';
         }
 
         if (typeof window !== 'undefined' && window.addEventListener) {
@@ -715,9 +737,10 @@ export class DeviceService {
         time:JulianDate,
         viewport:CanvasViewport,
         subviewList:SerializedSubviewList,
+        userTracking:'none'|'3DOF'|'6DOF',
         options?: {overrideStage?:boolean, overrideUser?:boolean, overrideView?:boolean, floorOffset?:number}
     ) : any {
-        return ArgonSystem.instance!.context.createFrameState(time, viewport, subviewList, options);
+        return ArgonSystem.instance!.context.createFrameState(time, viewport, subviewList, userTracking, options);
     }
 
     getSubviewEntity(index:number) {
@@ -877,6 +900,7 @@ export class DeviceService {
                 const display:VRDisplay|undefined = e.display || e.detail.vrdisplay || e.detail.display;
                 if (display) {
                     if (display.isPresenting) {
+                        this._userTracking = '6DOF';
                         this._vrDisplay = display;
                         if (display.displayName.match(/polyfill/g)) {
                             currentCanvas = display.getLayers()[0].source;
@@ -885,6 +909,7 @@ export class DeviceService {
                             viewService.desiredViewportMode = ViewportMode.IMMERSIVE;
                         }
                     } else {
+                        this._userTracking = 'none';
                         if (currentCanvas && display.displayName.match(/polyfill/g)) {
                             currentCanvas.classList.remove('argon-interactive'); // for now, only use webvr when not in Argon
                             currentCanvas = undefined;

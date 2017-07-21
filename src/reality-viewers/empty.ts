@@ -46,6 +46,7 @@ interface PinchMovement {
 export class EmptyRealityViewer extends RealityViewer {
 
     public type = 'empty';
+    public userTracking: 'none'|'3DOF'|'6DOF' = '6DOF';
 
     private _aggregator:CameraEventAggregator|undefined;
     private _moveFlags = {
@@ -341,6 +342,7 @@ export class EmptyRealityViewer extends RealityViewer {
                     time,
                     frameState.viewport,
                     subviews,
+                    this.userTracking,
                     {
                         overrideUser,
                         overrideStage

@@ -10,6 +10,7 @@ export declare class LiveRealityViewer extends RealityViewer {
     private deviceService;
     uri: string;
     videoElement: HTMLVideoElement;
+    userTracking: 'none' | '3DOF' | '6DOF';
     private canvas;
     private context;
     private videoFov;

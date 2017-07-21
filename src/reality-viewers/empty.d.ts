@@ -8,6 +8,7 @@ export declare class EmptyRealityViewer extends RealityViewer {
     private container;
     uri: string;
     type: string;
+    userTracking: 'none' | '3DOF' | '6DOF';
     private _aggregator;
     private _moveFlags;
     constructor(sessionService: SessionService, viewService: ViewService, container: Container, uri: string);
