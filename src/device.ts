@@ -737,10 +737,9 @@ export class DeviceService {
         time:JulianDate,
         viewport:CanvasViewport,
         subviewList:SerializedSubviewList,
-        userTracking:'none'|'3DOF'|'6DOF',
-        options?: {overrideStage?:boolean, overrideUser?:boolean, overrideView?:boolean, floorOffset?:number}
+        options?: {overrideStage?:boolean, overrideUser?:boolean, overrideView?:boolean, floorOffset?:number, userTracking?:'none'|'3DOF'|'6DOF'}
     ) : any {
-        return ArgonSystem.instance!.context.createFrameState(time, viewport, subviewList, userTracking, options);
+        return ArgonSystem.instance!.context.createFrameState(time, viewport, subviewList, options);
     }
 
     getSubviewEntity(index:number) {

@@ -342,10 +342,10 @@ export class EmptyRealityViewer extends RealityViewer {
                     time,
                     frameState.viewport,
                     subviews,
-                    this.userTracking,
                     {
                         overrideUser,
-                        overrideStage
+                        overrideStage,
+                        userTracking: this.userTracking
                     }
                 );
                 childContextService.submitFrameState(contextFrameState);

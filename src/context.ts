@@ -118,7 +118,6 @@ export class ContextService {
                 viewport: new Viewport,
                 projectionMatrix: this._scratchFrustum.projectionMatrix
             }],
-            userTracking: 'none',
         };
     }
 
@@ -442,8 +441,7 @@ export class ContextService {
         time:<any>{},
         entities: {},
         viewport: <any>{},
-        subviews: [],
-        userTracking: 'none'
+        subviews: []
     }
 
     private _getSerializedEntityState = getSerializedEntityState;
@@ -463,8 +461,7 @@ export class ContextService {
         time:JulianDate,
         viewport:CanvasViewport,
         subviewList:SerializedSubviewList,
-        userTracking:"none"|"3DOF"|"6DOF",
-        options?: {overrideStage?:boolean, overrideUser?:boolean, overrideView?:boolean, overrideSubviews?:boolean, floorOffset?:number}
+        options?: {overrideStage?:boolean, overrideUser?:boolean, overrideView?:boolean, overrideSubviews?:boolean, floorOffset?:number, userTracking?:"none"|"3DOF"|"6DOF"}
     ) : ContextFrameState {
 
         let overrideUser = options && options.overrideUser;
@@ -479,7 +476,6 @@ export class ContextService {
         frameState.time = JulianDate.clone(time, frameState.time);
         frameState.viewport = CanvasViewport.clone(viewport, frameState.viewport)!;
         frameState.subviews = SerializedSubviewList.clone(subviewList, frameState.subviews)!;
-        frameState.userTracking = userTracking;
         const entities = frameState.entities = {};
 
         const getSerializedEntityState = this._getSerializedEntityState;
@@ -521,6 +517,11 @@ export class ContextService {
         (floor.position as ConstantPositionProperty).setValue(Cartesian3.fromElements(0,floorOffset,0, this._scratchCartesian), stage);
         if (floorOffset !== 0) {
             frameState.entities[this.floor.id] = getSerializedEntityState(floor, time, stage);
+        }
+
+        // user tracking
+        if (options && options.userTracking) {
+            frameState.userTracking = options.userTracking;
         }
 
         return frameState;

@@ -215,12 +215,13 @@ export declare class ContextService {
      * @param userTracking
      * @param entityOptions
      */
-    createFrameState(time: JulianDate, viewport: CanvasViewport, subviewList: SerializedSubviewList, userTracking: "none" | "3DOF" | "6DOF", options?: {
+    createFrameState(time: JulianDate, viewport: CanvasViewport, subviewList: SerializedSubviewList, options?: {
         overrideStage?: boolean;
         overrideUser?: boolean;
         overrideView?: boolean;
         overrideSubviews?: boolean;
         floorOffset?: number;
+        userTracking?: "none" | "3DOF" | "6DOF";
     }): ContextFrameState;
     private _scratchMatrix3;
     private _scratchMatrix4;

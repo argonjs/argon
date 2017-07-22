@@ -361,11 +361,11 @@ export interface ContextFrameState {
     time: JulianDate,
     viewport: CanvasViewport,
     subviews: SerializedSubviewList,
-    userTracking: 'none'|'3DOF'|'6DOF',
     reality?: string,
     index?: number,
     entities: SerializedEntityStateMap,
     sendTime?: JulianDate, // the time this state was sent
+    userTracking?: 'none'|'3DOF'|'6DOF'
 }
 
 export interface GeolocationOptions {

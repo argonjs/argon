@@ -81,8 +81,10 @@ app.device.frameStateEvent.addEventListener((suggestedFrameState:Argon.DeviceFra
         suggestedFrameState.time,
         suggestedFrameState.viewport,
         suggestedFrameState.subviews,
-        suggestedFrameState.userTracking,
-        {overrideUser: true}
+        {
+            overrideUser: true, 
+            userTracking: suggestedFrameState.userTracking
+        }
     );
     app.context.submitFrameState(frameState);
 });

@@ -143,11 +143,12 @@ export declare class DeviceService {
     private _hasPolyfillWebVRDisplay();
     protected onRequestPresentHMD(): Promise<void>;
     protected onExitPresentHMD(): Promise<void>;
-    createContextFrameState(time: JulianDate, viewport: CanvasViewport, subviewList: SerializedSubviewList, userTracking: 'none' | '3DOF' | '6DOF', options?: {
+    createContextFrameState(time: JulianDate, viewport: CanvasViewport, subviewList: SerializedSubviewList, options?: {
         overrideStage?: boolean;
         overrideUser?: boolean;
         overrideView?: boolean;
         floorOffset?: number;
+        userTracking?: 'none' | '3DOF' | '6DOF';
     }): any;
     getSubviewEntity(index: number): Entity;
     subscribeGeolocation(options?: GeolocationOptions, session?: SessionPort): Promise<void>;

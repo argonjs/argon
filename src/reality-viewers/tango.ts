@@ -386,11 +386,11 @@ export class TangoRealityViewer extends RealityViewer {
                     time,
                     frameState.viewport,
                     subviews,
-                    this.userTracking,
                     {
                         overrideUser,  
                         overrideStage,
-                        floorOffset: AVERAGE_EYE_HEIGHT/2
+                        floorOffset: AVERAGE_EYE_HEIGHT/2,
+                        userTracking: this.userTracking
                     }
                 );
                 childContextService.submitFrameState(contextFrameState);

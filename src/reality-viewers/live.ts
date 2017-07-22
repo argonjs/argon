@@ -126,7 +126,9 @@ export class LiveRealityViewer extends RealityViewer {
                             frameState.time,
                             frameState.viewport,
                             frameState.subviews,
-                            this.userTracking
+                            {
+                                userTracking: this.userTracking
+                            }
                         );
                         
                         internalSession.send('ar.reality.frameState', contextFrameState);
