@@ -26,7 +26,7 @@ export interface ErrorMessage {
  * Provides two-way communication between two [[SessionPort]] instances.
  */
 export declare class SessionPort {
-    uri: string | undefined;
+    uri: string;
     id: string;
     /**
      * An event which fires when a connection has been
@@ -71,7 +71,7 @@ export declare class SessionPort {
     private _isOpened;
     private _isConnected;
     private _isClosed;
-    constructor(uri?: string | undefined);
+    constructor(uri?: string);
     /**
      * Check if a protocol is supported by this session.
      */

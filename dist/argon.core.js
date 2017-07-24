@@ -18509,7 +18509,7 @@ define("7f", ["48", "5", "7"], function(when, defined, DeveloperError) {
 $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', '13', '14', '18', '1e', '24', '15', '5', '7', '42', '1a', '1b', '8', '39', '3c', '51', '6e', '2d', '17', 'd', '27', '28', '2e', '2f', '30', '21', '26', '29', '35', '20', '36', '37', '38', 'e', 'f', '2a', '3d', '44', '7c', '46', '49', '4c', '4f', '7d', '7e', '7f', '@empty'], function (_export, _context) {
     "use strict";
 
-    var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, cesium_Source_Core_Clock_js, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, defaultValue, defined, cesium_Source_Core_DeveloperError_js, Ellipsoid, Entity, EntityCollection, Event, cesium_Source_Core_ExtrapolationType_js, cesium_Source_Core_FeatureDetection_js, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HeadingPitchRoll_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, ReferenceEntity, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, TerrainProvider, throttleRequestByServer, loadImage, WebMercatorTilingScheme, getImagePixels, HeightmapTerrainData, Credit, sampleTerrain, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, DI, after, lut, i, cesiumImports, __extends$1, AVERAGE_EYE_HEIGHT, DEFAULT_NEAR_PLANE, DEFAULT_FAR_PLANE, Role, Configuration, Viewport, CanvasViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event$1, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, getEventSynthesizier$1, cloneTouch, cloneTouches, reNative, hasNativeWebVRImplementation, suggestedWebGLContextAntialiasAttribute, eastUpSouthToFixedFrame, scratchAncestorCartesian, scratchAncestorQuaternion, getEntityPosition, getEntityOrientation, _scratchFramesArray, _entityStateCache, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, isAndroid, lastTime, rAF, cAF, defaultTerrainProvider, version, __extends, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, SessionConnectService, WKWebViewConnectService, AndroidWebViewConnectService, _a$1, _b$1, __decorate$5, __metadata$5, Permission, PermissionState, PermissionService, PermissionServiceProvider, _a$5, _b$5, __decorate$4, __metadata$4, EntityPose, PoseStatus, EntityService, EntityServiceProvider, _a$4, _b$4, _c$3, __decorate$7, __metadata$7, FocusService, FocusServiceProvider, _a$7, _b$7, __decorate$8, __metadata$8, VisibilityService, VisibilityServiceProvider, _a$8, _b$8, __decorate$6, __metadata$6, Subview, ViewportMode, ViewItems, ViewService, ViewServiceProvider, viewportMetaTag, argonMetaTag, style, sheet, _a$6, _b$6, _c$4, _d$3, _e$3, __decorate$3, __metadata$3, DeviceStableState$$1, DeviceFrameState$$1, DeviceService, DeviceServiceProvider, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, _h$1, _j$1, _k$1, _l$1, __decorate$10, __metadata$10, ContextService, ContextServiceProvider, _a$10, _b$10, _c$6, _d$5, _e$5, _f$3, _g$3, _h$3, _j$2, _k$2, _l$2, _m$1, RealityViewer, __extends$2, __decorate$11, __metadata$11, EmptyRealityViewer, _a$11, _b$11, _c$7, __extends$3, __decorate$12, __metadata$12, LiveRealityViewer, _a$12, _b$12, _c$8, _d$6, __extends$4, __decorate$13, __metadata$13, WebRTCRealityViewer, integrateCustomARToolKit, _a$13, _b$13, _c$9, _d$7, __extends$5, __decorate$14, __metadata$14, HostedRealityViewer, _a$14, _b$14, __decorate$9, __metadata$9, RealityViewerFactory, RealityService, RealityServiceProvider, _a$9, _b$9, _c$5, _d$4, _e$4, _f$2, _g$2, _h$2, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __extends$6, __decorate$15, __metadata$15, VuforiaServiceProvider, VuforiaHint, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$15, _b$15, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, ArgonConfigurationManager, initReality, _a, _b, _c, _d, _e, _f, _g, _h, _j, ArgonSystem_1, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
+    var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, cesium_Source_Core_Clock_js, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, defaultValue, defined, cesium_Source_Core_DeveloperError_js, Ellipsoid, Entity, EntityCollection, Event, cesium_Source_Core_ExtrapolationType_js, cesium_Source_Core_FeatureDetection_js, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HeadingPitchRoll_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, ReferenceEntity, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, TerrainProvider, throttleRequestByServer, loadImage, WebMercatorTilingScheme, getImagePixels, HeightmapTerrainData, Credit, sampleTerrain, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, DI, after, lut, i, cesiumImports, __extends$1, AVERAGE_EYE_HEIGHT, DEFAULT_NEAR_PLANE, DEFAULT_FAR_PLANE, Role, Configuration, Viewport, CanvasViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event$1, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, getEventSynthesizier$1, cloneTouch, cloneTouches, reNative, hasNativeWebVRImplementation, suggestedWebGLContextAntialiasAttribute, eastUpSouthToFixedFrame, scratchAncestorCartesian, scratchAncestorQuaternion, getEntityPosition, getEntityOrientation, _scratchFramesArray, _entityStateCache, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, isAndroid, lastTime, rAF, cAF, defaultTerrainProvider, version, __extends, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, SessionConnectService, WKWebViewConnectService, AndroidWebViewConnectService, _a$1, _b$1, __decorate$5, __metadata$5, Permission, PermissionState, PermissionService, PermissionServiceProvider, _a$5, _b$5, __decorate$4, __metadata$4, EntityPose, PoseStatus, EntityService, EntityServiceProvider, _a$4, _b$4, _c$3, __decorate$7, __metadata$7, FocusService, FocusServiceProvider, _a$7, _b$7, __decorate$8, __metadata$8, VisibilityService, VisibilityServiceProvider, _a$8, _b$8, __decorate$6, __metadata$6, Subview, ViewportMode, ViewItems, ViewService, ViewServiceProvider, viewportMetaTag, argonMetaTag, style, sheet, _a$6, _b$6, _c$4, _d$3, _e$3, __decorate$3, __metadata$3, DeviceStableState$$1, DeviceFrameState$$1, DeviceService, DeviceServiceProvider, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, _h$1, _j$1, _k$1, _l$1, __decorate$10, __metadata$10, ContextService, ContextServiceProvider, _a$10, _b$10, _c$6, _d$5, _e$5, _f$3, _g$3, _h$3, _j$2, _k$2, _l$2, _m$1, RealityViewer, __extends$2, __decorate$11, __metadata$11, EmptyRealityViewer, _a$11, _b$11, _c$7, __extends$3, __decorate$12, __metadata$12, LiveRealityViewer, _a$12, _b$12, _c$8, _d$6, __extends$4, __decorate$13, __metadata$13, WebRTCRealityViewer, integrateCustomARToolKit, _a$13, _b$13, _c$9, _d$7, __extends$5, __decorate$14, __metadata$14, HostedRealityViewer, _a$14, _b$14, __extends$6, __decorate$15, __metadata$15, TangoRealityViewer, _a$15, _b$15, _c$10, _d$8, __decorate$9, __metadata$9, RealityViewerFactory, RealityService, RealityServiceProvider, _a$9, _b$9, _c$5, _d$4, _e$4, _f$2, _g$2, _h$2, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __extends$7, __decorate$16, __metadata$16, VuforiaServiceProvider, VuforiaHint, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$16, _b$16, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, ArgonConfigurationManager, initReality, _a, _b, _c, _d, _e, _f, _g, _h, _j, ArgonSystem_1, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
 
     function alwaysValid() {
         return true;
@@ -20937,7 +20937,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-2");
+            _export('version', version = "1.4.0-4");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -22679,6 +22679,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         viewport: new Viewport(),
                         projectionMatrix: (this._scratchFrustum.near = DEFAULT_NEAR_PLANE, this._scratchFrustum.far = DEFAULT_FAR_PLANE, this._scratchFrustum.fov = CesiumMath.PI_OVER_THREE, this._scratchFrustum.aspectRatio = 1, Matrix4.clone(this._scratchFrustum.projectionMatrix))
                     }];
+                    this.userTracking = 'none';
                 }
                 return DeviceFrameState$$1;
             }());
@@ -22716,6 +22717,10 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                      * An event that fires when the screen orientation changes
                      */
                     this.suggestedGeolocationSubscriptionChangeEvent = new Event$1();
+                    /*
+                     * An event that fires when getVRDisplay() is finished
+                     */
+                    this.getVRDisplayFinishedEvent = new Event$1();
                     /**
                      * A coordinate system representing the physical space in which the user is free to
                      * move around, positioned on the surface the user is standing on,
@@ -22749,6 +22754,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     }));
                     this._geolocationDesired = false;
                     this.defaultUserHeight = AVERAGE_EYE_HEIGHT;
+                    this._userTracking = "3DOF";
                     this._scratchCartesian = new Cartesian3();
                     this._scratchFrustum = new PerspectiveFrustum();
                     this._updatingFrameState = false;
@@ -22803,12 +22809,21 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     this.visibilityService.hideEvent.addEventListener(function () {
                         return _this._stopUpdates();
                     });
+                    // On iOS or Android, we have 3DOF
+                    if (isIOS || isAndroid) {
+                        this._userTracking = "3DOF";
+                    }
                     if (typeof navigator !== 'undefined' && navigator.getVRDisplays && navigator.userAgent.indexOf('Argon') > 0 === false) {
                         this._setupVRPresentChangeHandler();
                         navigator.getVRDisplays().then(function (displays) {
                             _this._vrDisplays = displays;
                             _this._vrDisplay = displays[0];
+                            // Tango devices have 6DOF
+                            if (_this._vrDisplay.displayName === "Tango VR Device") _this._userTracking = "6DOF";
+                            _this.getVRDisplayFinishedEvent.raiseEvent(undefined);
                         });
+                        // VR has 6DOF
+                        this._userTracking = 'none';
                     }
                     if (typeof window !== 'undefined' && window.addEventListener) {
                         var orientationChangeListener_1 = function () {
@@ -22851,7 +22866,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 });
                 Object.defineProperty(DeviceService$$1.prototype, "geoHorizontalAccuracy", {
                     get: function () {
-                        return this.stage['meta'] ? this.stage['meta'].geoHorizonatalAccuracy : undefined;
+                        return this.stage['meta'] ? this.stage['meta'].geoHorizontalAccuracy : undefined;
                     },
                     enumerable: true,
                     configurable: true
@@ -22904,9 +22919,27 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     enumerable: true,
                     configurable: true
                 });
+                Object.defineProperty(DeviceService$$1.prototype, "userTracking", {
+                    /**
+                     * Returns the DOF support of the device.
+                     * "none"|"3DOF"|"6DOF"
+                     */
+                    get: function () {
+                        return this._userTracking;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 Object.defineProperty(DeviceService$$1.prototype, "vrDisplay", {
                     get: function () {
                         return this._vrDisplay;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(DeviceService$$1.prototype, "vrDisplays", {
+                    get: function () {
+                        return this._vrDisplays;
                     },
                     enumerable: true,
                     configurable: true
@@ -23284,6 +23317,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                             var display = e.display || e.detail.vrdisplay || e.detail.display;
                             if (display) {
                                 if (display.isPresenting) {
+                                    _this._userTracking = '6DOF';
                                     _this._vrDisplay = display;
                                     if (display.displayName.match(/polyfill/g)) {
                                         currentCanvas_1 = display.getLayers()[0].source;
@@ -23292,6 +23326,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                                         viewService.desiredViewportMode = ViewportMode.IMMERSIVE;
                                     }
                                 } else {
+                                    _this._userTracking = 'none';
                                     if (currentCanvas_1 && display.displayName.match(/polyfill/g)) {
                                         currentCanvas_1.classList.remove('argon-interactive'); // for now, only use webvr when not in Argon
                                         currentCanvas_1 = undefined;
@@ -23762,6 +23797,17 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     configurable: true
                 });
 
+                Object.defineProperty(ContextService.prototype, "userTracking", {
+                    /**
+                     * Returns the DOF support of the reality.
+                     * "none"|"3DOF"|"6DOF"
+                     */
+                    get: function () {
+                        return this._serializedFrameState && this._serializedFrameState.userTracking || '3DOF';
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 Object.defineProperty(ContextService.prototype, "localOrigin", {
                     /** alias for origin */
                     get: function () {
@@ -23928,7 +23974,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                  * @param time
                  * @param viewport
                  * @param subviewList
-                 * @param user
+                 * @param userTracking
                  * @param entityOptions
                  */
                 ContextService.prototype.createFrameState = function (time, viewport, subviewList, options) {
@@ -23976,6 +24022,10 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     floor.position.setValue(Cartesian3.fromElements(0, floorOffset, 0, this._scratchCartesian), stage);
                     if (floorOffset !== 0) {
                         frameState.entities[this.floor.id] = getSerializedEntityState$$1(floor, time, stage);
+                    }
+                    // user tracking
+                    if (options && options.userTracking) {
+                        frameState.userTracking = options.userTracking;
                     }
                     return frameState;
                 };
@@ -24353,6 +24403,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
             RealityViewer.EMPTY = 'reality:empty';
             RealityViewer.LIVE = 'reality:live';
             RealityViewer.WEBRTC = 'reality:webrtc';
+            RealityViewer.TANGO = 'reality:tango';
 
             __extends$2 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -24383,6 +24434,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     _this.container = container;
                     _this.uri = uri;
                     _this.type = 'empty';
+                    _this.userTracking = '6DOF';
                     _this._moveFlags = {
                         moveForward: false,
                         moveBackward: false,
@@ -24614,7 +24666,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                             }
                             var contextFrameState = childContextService.createFrameState(time, frameState.viewport, subviews, {
                                 overrideUser: overrideUser,
-                                overrideStage: overrideStage
+                                overrideStage: overrideStage,
+                                userTracking: _this.userTracking
                             });
                             childContextService.submitFrameState(contextFrameState);
                             aggregator && aggregator.reset();
@@ -24660,6 +24713,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     _this.contextService = contextService;
                     _this.deviceService = deviceService;
                     _this.uri = uri;
+                    _this.userTracking = '3DOF';
                     if (typeof document !== 'undefined') {
                         _this.settingsIframe = document.createElement('iframe');
                         _this.settingsIframe.width = '0';
@@ -24738,7 +24792,9 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                                     lastFrameTime_1 = videoElement_1.currentTime;
                                     // const videoWidth = videoElement.videoWidth;
                                     // const videoHeight = videoElement.videoHeight;
-                                    var contextFrameState = _this.contextService.createFrameState(frameState.time, frameState.viewport, frameState.subviews);
+                                    var contextFrameState = _this.contextService.createFrameState(frameState.time, frameState.viewport, frameState.subviews, {
+                                        userTracking: _this.userTracking
+                                    });
                                     internalSession.send('ar.reality.frameState', contextFrameState);
                                 }
                             });
@@ -24815,6 +24871,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     _this.container = container;
                     _this.uri = uri;
                     _this.type = 'webrtc';
+                    _this.userTracking = '3DOF';
                     _this._sharedCanvasFinal = false;
                     _this._scratchCartesian = new Cartesian3();
                     _this._scratchQuaternion = new Quaternion();
@@ -25137,7 +25194,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                             }
                             var contextFrameState = childContextService.createFrameState(time, frameState.viewport, subviews, {
                                 overrideUser: overrideUser,
-                                overrideStage: overrideStage
+                                overrideStage: overrideStage,
+                                userTracking: _this.userTracking
                             });
                             childContextService.submitFrameState(contextFrameState);
                             aggregator && aggregator.reset();
@@ -25580,6 +25638,412 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _export('HostedRealityViewer', HostedRealityViewer = __decorate$14([inject(SessionService, ViewService), __metadata$14("design:paramtypes", [typeof (_a$14 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$14 || Object, typeof (_b$14 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$14 || Object, String])], HostedRealityViewer));
 
+            __extends$6 = undefined && undefined.__extends || function (d, b) {
+                for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+                function __() {
+                    this.constructor = d;
+                }
+                d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+            };
+
+            __decorate$15 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
+                var c = arguments.length,
+                    r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+                    d;
+                if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+                return c > 3 && r && Object.defineProperty(target, key, r), r;
+            };
+
+            __metadata$15 = undefined && undefined.__metadata || function (k, v) {
+                if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+            };
+
+            TangoRealityViewer = function (_super) {
+                __extends$6(TangoRealityViewer, _super);
+                // private _scratchQuaternion = new Quaternion();
+                // private _artoolkitTrackerEntity = new Entity({
+                //     position: new ConstantPositionProperty(Cartesian3.ZERO, this.contextService.user),
+                //     orientation: new ConstantProperty(Quaternion.IDENTITY)
+                // });
+                // private _artoolkitProjection:Matrix4|undefined;
+                // private _markerEntities = new Map<string,Entity>();
+                // private _resolveReady:Function;
+                // private _rejectReady:Function;
+                // private _artoolkitReady:Promise<void>;
+                // private _aggregator:CameraEventAggregator|undefined;
+                // private _moveFlags = {
+                //     moveForward : false,
+                //     moveBackward : false,
+                //     moveUp : false,
+                //     moveDown : false,
+                //     moveLeft : false,
+                //     moveRight : false
+                // }
+                function TangoRealityViewer(sessionService, viewService,
+                // private contextService: ContextService,
+                container, deviceService, uri, vrDisplay) {
+                    var _this = _super.call(this, uri) || this;
+                    _this.sessionService = sessionService;
+                    _this.viewService = viewService;
+                    _this.container = container;
+                    _this.deviceService = deviceService;
+                    _this.uri = uri;
+                    _this.vrDisplay = vrDisplay;
+                    _this.type = 'tango';
+                    _this.userTracking = '6DOF';
+                    _this._pointsToSkip = 0;
+                    _this._frameData = new VRFrameData();
+                    _this._renderPointCloud = true;
+                    _this._usePointCloudForOcclusion = true;
+                    _this._initFinished = false;
+                    _this._sharedCanvasFinal = false;
+                    _this._vrDisplay = undefined;
+                    _this._lastGeoHorizontalAccuracy = -99;
+                    _this._tangoOriginLost = true;
+                    _this._scratchMatrix3 = new Matrix3();
+                    _this._scratchMatrix4 = new Matrix4();
+                    _this._scratchCartesian = new Cartesian3();
+                    // this._artoolkitReady = new Promise<void>((resolve, reject) => {
+                    //     this._resolveReady = resolve;
+                    //     this._rejectReady = reject;
+                    // });
+                    _this.viewService.viewportChangeEvent.addEventListener(function (viewport) {
+                        _this.updateViewport(viewport);
+                    });
+                    return _this;
+                    // for now, initialize artoolkit here
+                    // eventually we want to decouple video setup from artoolkit setup
+                    // and only initialize the video here
+                    // this.initARToolKit().then(()=>{
+                    //     this._resolveReady();
+                    // }, (error) => {
+                    //     this._rejectReady(error);
+                    // });
+                }
+                TangoRealityViewer.prototype.load = function () {
+                    var _this = this;
+                    // Create a child container so that we can conveniently setup all the services
+                    // that would exist in a normal hosted reality viewer 
+                    var child = this.container.createChild();
+                    // Create the session instance that will be used by the manager to talk to the reality 
+                    var session = this.sessionService.addManagedSessionPort(this.uri);
+                    session.connectEvent.addEventListener(function () {
+                        _this.connectEvent.raiseEvent(session); // let the manager know the session is ready
+                    });
+                    // use a SessionConnectService to create a connection via the session instance we created
+                    child.registerInstance(ConnectService, new SessionConnectService(session, this.sessionService.configuration));
+                    // setup the configuration for our tango reality
+                    child.registerInstance(Configuration, {
+                        role: Role.REALITY_VIEWER,
+                        uri: this.uri,
+                        title: 'Tango',
+                        version: this.sessionService.configuration.version,
+                        supportsCustomProtocols: true,
+                        protocols: ['ar.configureStage@v1', 'ar.tango'],
+                        sharedCanvas: true
+                    });
+                    // Create the basic services that we need to use. 
+                    // Note: we won't create a child ViewService here,
+                    // as we are already managing the DOM with the
+                    // ViewService that exists in the root container. 
+                    child.autoRegisterAll([SessionService, EntityService, VisibilityService, ContextService, DeviceService, RealityService]);
+                    var childContextService = child.get(ContextService);
+                    var childDeviceService = child.get(DeviceService);
+                    var childSessionService = child.get(SessionService);
+                    var childRealityService = child.get(RealityService);
+                    // const childViewService = child.get(ViewService) as ViewService;
+                    // the child device service should *not* submit frames to the vrdisplay. 
+                    childDeviceService.autoSubmitFrame = false;
+                    var customStagePosition;
+                    var customStageOrientation;
+                    // Create protocol handlers for `ar.configureStage` protocol
+                    childRealityService.connectEvent.addEventListener(function (session) {
+                        session.on['ar.configureStage.setStageGeolocation'] = function (_a) {
+                            var geolocation = _a.geolocation;
+                            customStagePosition = Cartesian3.fromRadians(geolocation.longitude, geolocation.latitude, geolocation.height, undefined, customStagePosition);
+                            var transformMatrix = eastUpSouthToFixedFrame(customStagePosition, undefined, _this._scratchMatrix4);
+                            var rotationMatrix = Matrix4.getRotation(transformMatrix, _this._scratchMatrix3);
+                            customStageOrientation = Quaternion.fromRotationMatrix(rotationMatrix, customStageOrientation);
+                        };
+                        session.on['ar.configureStage.resetStageGeolocation'] = function () {
+                            customStagePosition = undefined;
+                            customStageOrientation = undefined;
+                        };
+                        session.on['ar.tango.togglePointCloud'] = function () {
+                            _this._renderPointCloud = !_this._renderPointCloud;
+                            if (_this._renderPointCloud) _this._scene.add(_this._points);else _this._scene.remove(_this._points);
+                            return Promise.resolve({ result: _this._renderPointCloud });
+                        };
+                        session.on['ar.tango.getPickingPointAndPlaneInPointCloud'] = function (_a) {
+                            var x = _a.x,
+                                y = _a.y;
+                            if (_this._vrDisplay) {
+                                // console.log("Get p&p on"+x +"," + y)
+                                var pointAndPlane = _this._vrDisplay.getPickingPointAndPlaneInPointCloud(x, y);
+                                if (pointAndPlane) {
+                                    return Promise.resolve({ point: pointAndPlane.point, plane: pointAndPlane.plane });
+                                } else {
+                                    return Promise.reject(new Error("Tango reality could not find a point and plane"));
+                                }
+                            } else {
+                                return Promise.reject(new Error("vrDisplay not configured yet"));
+                            }
+                        };
+                        session.on['ar.tango.toggleOcclusion'] = function () {
+                            _this._usePointCloudForOcclusion = !_this._usePointCloudForOcclusion;
+                            // if (this._usePointCloudForOcclusion) this._scene.add(this._points); else this._scene.remove(this._points);
+                            return Promise.resolve({ result: _this._usePointCloudForOcclusion });
+                        };
+                    });
+                    // Setup everything after connected to the manager. The manager only connects once.
+                    childSessionService.manager.connectEvent.addEventListener(function () {
+                        // since we aren't create a child view service and viewport service, 
+                        // suppress any errors from not handling these messages
+                        childSessionService.manager.suppressErrorOnUnknownTopic = true;
+                        // const scratchQuaternion = new Quaternion;
+                        // const scratchQuaternionDragYaw = new Quaternion;
+                        // const pitchQuat = new Quaternion;
+                        var positionScratchCartesian = new Cartesian3();
+                        // const movementScratchCartesian = new Cartesian3;
+                        // const orientationMatrix = new Matrix3;
+                        // const up = new Cartesian3(0,0,1);
+                        // const right = new Cartesian3(1,0,0);
+                        // const forward = new Cartesian3(0,-1,0);
+                        // const scratchFrustum = new PerspectiveFrustum();
+                        // const _scratchFrameData = new VRFrameData();
+                        // const deviceStage = childDeviceService.stage;
+                        // const deviceUser = childDeviceService.user;
+                        // const NEGATIVE_UNIT_Z = new Cartesian3(0,0,-1);
+                        // const X_90ROT = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, CesiumMath.PI_OVER_TWO);
+                        var subviews = [];
+                        // const deviceUserPose = childContextService.createEntityPose(deviceUser, deviceStage);
+                        var checkSuggestedGeolocationSubscription = function () {
+                            if (childDeviceService.suggestedGeolocationSubscription) {
+                                childDeviceService.subscribeGeolocation(childDeviceService.suggestedGeolocationSubscription);
+                            } else {
+                                childDeviceService.unsubscribeGeolocation();
+                            }
+                        };
+                        checkSuggestedGeolocationSubscription();
+                        var remove1 = childDeviceService.suggestedGeolocationSubscriptionChangeEvent.addEventListener(checkSuggestedGeolocationSubscription);
+                        var remove2 = childDeviceService.frameStateEvent.addEventListener(function (frameState) {
+                            if (childSessionService.manager.isClosed) return;
+                            // const aggregator = this._aggregator;
+                            SerializedSubviewList.clone(frameState.subviews, subviews);
+                            var time = frameState.time;
+                            // deviceUserPose.update(time);
+                            // override user pos to tango pos
+                            var overrideUser = true; //!(deviceUserPose.status & PoseStatus.KNOWN);
+                            // originally provide controls if the device does not have a physical pose
+                            var contextUser = childContextService.user;
+                            var contextStage = childContextService.stage;
+                            var userPosition;
+                            // OverrideUser
+                            // const position = 
+                            //     getEntityPositionInReferenceFrame(contextUser, time, contextStage, positionScratchCartesian) || 
+                            //     Cartesian3.fromElements(0, childDeviceService.suggestedUserHeight, 0, positionScratchCartesian);
+                            _this._vrDisplay.getFrameData(_this._frameData);
+                            var tangoPos = _this._frameData.pose.position;
+                            userPosition = new Cartesian3(tangoPos[0], tangoPos[1], tangoPos[2]);
+                            // Check if tango tracking is lost
+                            _this._tangoOriginLostPreviousFrame = _this._tangoOriginLost;
+                            _this._tangoOriginLost = userPosition.equals(Cartesian3.ZERO);
+                            var orientation;
+                            // If tango tracking is lost, use the device orientation only
+                            if (_this._tangoOriginLost) {
+                                // userPosition = this._lastKnownPosition.clone();
+                                userPosition = Cartesian3.ZERO;
+                                if (_this.deviceService.user.orientation) orientation = _this.deviceService.user.orientation.getValue(time);
+                            } else {
+                                // this._lastKnownPosition = userPosition.clone();
+                                var tangoRot = _this._frameData.pose.orientation;
+                                orientation = new Quaternion(tangoRot[0], tangoRot[1], tangoRot[2], tangoRot[3]);
+                            }
+                            // Matrix3.fromQuaternion(orientation, orientationMatrix);
+                            // Matrix3.multiplyByVector(orientationMatrix, Cartesian3.UNIT_Y, up);
+                            // Matrix3.multiplyByVector(orientationMatrix, Cartesian3.UNIT_X, right);
+                            // Matrix3.multiplyByVector(orientationMatrix, NEGATIVE_UNIT_Z, forward);
+                            contextUser.position.setValue(userPosition, contextStage);
+                            contextUser.orientation.setValue(orientation);
+                            // console.log(userPosition + " // " + orientation);
+                            // Update stage geopose when GPS accuracy improves or Tango origin is repositioned
+                            var gpsAccuracyHasImproved = _this._lastGeoHorizontalAccuracy < (_this.deviceService.geoHorizontalAccuracy || 0);
+                            var tangoOriginRepositioned = _this._tangoOriginLostPreviousFrame && !_this._tangoOriginLost;
+                            var geopositionStage = gpsAccuracyHasImproved || tangoOriginRepositioned;
+                            var overrideStage = true;
+                            if (geopositionStage) {
+                                if (tangoOriginRepositioned) {
+                                    console.log("Tango origin was reset. Updating stage geopose.");
+                                    _this._tangoOriginLost = false;
+                                } else {
+                                    console.log("Updating stage geopose. Current horizontal accuracy is " + _this.deviceService.geoHorizontalAccuracy);
+                                    _this._lastGeoHorizontalAccuracy = _this.deviceService.geoHorizontalAccuracy || 0;
+                                }
+                                // TODO: orient stage to align with north
+                                var deviceStage = _this.deviceService.stage;
+                                // customStagePosition = getEntityPositionInReferenceFrame(childDeviceService.user, time, childDeviceService.stage, this._scratchCartesian) || positionScratchCartesian;
+                                customStagePosition = deviceStage.position && deviceStage.position.getValue(time) || positionScratchCartesian;
+                                customStagePosition = Cartesian3.subtract(customStagePosition, userPosition, _this._scratchCartesian);
+                                var transformMatrix = eastUpSouthToFixedFrame(customStagePosition, undefined, _this._scratchMatrix4);
+                                var rotationMatrix = Matrix4.getRotation(transformMatrix, _this._scratchMatrix3);
+                                customStageOrientation = Quaternion.fromRotationMatrix(rotationMatrix);
+                                contextStage.position.setValue(customStagePosition, ReferenceFrame.FIXED);
+                                contextStage.orientation.setValue(customStageOrientation);
+                            }
+                            if (_this._initFinished && _this._vrDisplay) {
+                                THREE.WebAR.updateCameraMeshOrientation(_this._vrDisplay, _this._cameraMesh);
+                                //update cameraPersp
+                                var pose = _this._frameData.pose;
+                                if (pose.orientation) {
+                                    _this._cameraPersp.quaternion.fromArray(pose.orientation);
+                                }
+                                if (pose.position) {
+                                    _this._cameraPersp.position.fromArray(pose.position);
+                                } else {
+                                    _this._cameraPersp.position.set(0, 0, 0);
+                                }
+                                // if (this._vrDisplay) console.log(this._vrDisplay.getPose().position)
+                                _this._pointCloud.update(_this._renderPointCloud, _this._pointsToSkip, _this._usePointCloudForOcclusion);
+                                // this._renderer.resetGLState();
+                                // var ac = this._renderer.autoClear;
+                                _this._renderer.autoClear = false;
+                                _this._renderer.clear();
+                                _this._renderer.render(_this._cameraScene, _this._cameraOrtho);
+                                _this._renderer.clearDepth();
+                                _this._renderer.context.colorMask(false, false, false, false);
+                                if (_this._renderPointCloud) {
+                                    _this._renderer.render(_this._scene, _this._cameraPersp);
+                                }
+                                _this._renderer.context.colorMask(true, true, true, true);
+                            }
+                            var contextFrameState = childContextService.createFrameState(time, frameState.viewport, subviews, {
+                                overrideUser: overrideUser,
+                                overrideStage: overrideStage,
+                                floorOffset: AVERAGE_EYE_HEIGHT / 2,
+                                userTracking: _this.userTracking
+                            });
+                            childContextService.submitFrameState(contextFrameState);
+                            // aggregator && aggregator.reset();
+                        });
+                        childSessionService.manager.closeEvent.addEventListener(function () {
+                            remove1();
+                            remove2();
+                        });
+                    });
+                    // Check if the browser supports Tango    
+                    var remove = childDeviceService.getVRDisplayFinishedEvent.addEventListener(function () {
+                        var vrDisplays = childDeviceService.vrDisplays;
+                        if (vrDisplays && vrDisplays.length > 0) {
+                            for (var i = 0; !_this._vrDisplay && i < vrDisplays.length; i++) {
+                                _this._vrDisplay = vrDisplays[i];
+                                if (_this._vrDisplay.displayName !== "Tango VR Device") {
+                                    _this._vrDisplay = undefined;
+                                }
+                            }
+                        }
+                        if (!_this._vrDisplay) {
+                            console.error("This browser does not support Tango.");
+                            return;
+                        } else {
+                            remove();
+                            _this.initTango();
+                        }
+                    });
+                    childSessionService.connect();
+                };
+                TangoRealityViewer.prototype.initTango = function () {
+                    var _this = this;
+                    this.loadScripts().then(function () {
+                        _this.initCameraAndPointcloud();
+                        _this.initViewportAndCanvas();
+                        // alert("scripts loaded");
+                        _this._initFinished = true;
+                    });
+                };
+                TangoRealityViewer.prototype.loadScripts = function () {
+                    return new Promise(function (resolve, reject) {
+                        // for now we're dynamically loading these scripts
+                        var script = document.createElement('script');
+                        script.src = 'https://bionictk.github.io/website/resources/three.js';
+                        script.onload = function () {
+                            console.log("*** custom three.js loaded ***");
+                            var script2 = document.createElement('script');
+                            script2.src = 'https://bionictk.github.io/website/resources/THREE.WebAR.js';
+                            script2.onload = function () {
+                                console.log("*** THREE.WebAR.js loaded ***");
+                                resolve();
+                            };
+                            document.head.appendChild(script2);
+                        };
+                        document.head.appendChild(script);
+                    });
+                };
+                TangoRealityViewer.prototype.initCameraAndPointcloud = function () {
+                    this._scene = new THREE.Scene();
+                    this._cameraScene = new THREE.Scene();
+                    // Use an orthographic camera to render the video quad
+                    this._cameraOrtho = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1000);
+                    // Use the THREE.WebAR helper function to create a quad mesh for the
+                    // camera with the right geometry and material.
+                    this._cameraMesh = THREE.WebAR.createVRSeeThroughCameraMesh(this._vrDisplay);
+                    this._cameraScene.add(this._cameraMesh);
+                    this._cameraPersp = THREE.WebAR.createVRSeeThroughCamera(this._vrDisplay, 0.1, 100);
+                    var pointsMaterial = new THREE.PointsMaterial({ size: 0.01, vertexColors: THREE.VertexColors });
+                    // pointsMaterial.depthWrite = false;
+                    this._pointCloud = new THREE.WebAR.VRPointCloud(this._vrDisplay, true);
+                    this._points = new THREE.Points(this._pointCloud.getBufferGeometry(), pointsMaterial);
+                    // Points are changing all the time so calculating the frustum culling
+                    // volume is not very convenient.
+                    this._points.frustumCulled = false;
+                    // this._points.renderDepth = 0;
+                    this._scene.add(this._points);
+                    // this._vrControls = new THREE.VRControls(this._cameraPersp);
+                    // Correctly handle window resize events
+                    // window.addEventListener( 'resize', onWindowResize, false );
+                    // THREE.WebAR.resizeVRSeeThroughCamera(vrDisplay, cameraOrtho);
+                };
+                TangoRealityViewer.prototype.initViewportAndCanvas = function () {
+                    this.updateViewport(this.viewService.viewport);
+                    // document.body.className = arController.orientation;
+                    var argonCanvas;
+                    if (this.viewService.layers) {
+                        for (var _i = 0, _a = this.viewService.layers; _i < _a.length; _i++) {
+                            var layer = _a[_i];
+                            if (layer.source instanceof HTMLCanvasElement) {
+                                argonCanvas = layer.source;
+                            }
+                        }
+                    }
+                    if (this.isSharedCanvas && !argonCanvas) {
+                        console.log("sharedCanvas is true but no canvas registered with setLayers");
+                    }
+                    if (this.isSharedCanvas && argonCanvas) {
+                        // found an existing canvas, use it
+                        console.log("Found argon canvas, video background is sharing its context");
+                        this._renderer = new THREE.WebGLRenderer({ canvas: argonCanvas, antialias: false, alpha: true, logarithmicDepthBuffer: true });
+                        this._sharedCanvasFinal = true;
+                    } else {
+                        // no canvas, create a new one
+                        console.log("No argon shared canvas, creating one for video background");
+                        var renderer = new THREE.WebGLRenderer({ antialias: false });
+                        renderer.setSize(this.viewService.renderWidth, this.viewService.renderHeight, true);
+                        this.viewService.element.insertBefore(renderer.domElement, this.viewService.element.firstChild);
+                        renderer.domElement.style.zIndex = '0';
+                        this._renderer = renderer;
+                        this._sharedCanvasFinal = false;
+                    }
+                };
+                TangoRealityViewer.prototype.updateViewport = function (viewport) {
+                    if (!this._sharedCanvasFinal && this._renderer) {
+                        THREE.WebAR.resizeVRSeeThroughCamera(this._vrDisplay, this._cameraPersp);
+                        this._renderer.setSize(this.viewService.renderWidth, this.viewService.renderHeight, true);
+                    }
+                };
+                return TangoRealityViewer;
+            }(RealityViewer);
+
+            TangoRealityViewer = __decorate$15([inject(SessionService, ViewService, Container, DeviceService), __metadata$15("design:paramtypes", [typeof (_a$15 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$15 || Object, typeof (_b$15 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$15 || Object, typeof (_c$10 = typeof Container !== "undefined" && Container) === "function" && _c$10 || Object, typeof (_d$8 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _d$8 || Object, String, Object])], TangoRealityViewer);
+
             __decorate$9 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
                 var c = arguments.length,
                     r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
@@ -25593,11 +26057,12 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
             };
 
             _export('RealityViewerFactory', RealityViewerFactory = function () {
-                function RealityViewerFactory(_createEmptyReality, _createLiveReality, _createWebRTCReality, _createHostedReality) {
+                function RealityViewerFactory(_createEmptyReality, _createLiveReality, _createWebRTCReality, _createHostedReality, _createTangoReality) {
                     this._createEmptyReality = _createEmptyReality;
                     this._createLiveReality = _createLiveReality;
                     this._createWebRTCReality = _createWebRTCReality;
                     this._createHostedReality = _createHostedReality;
+                    this._createTangoReality = _createTangoReality;
                 }
                 RealityViewerFactory.prototype.createRealityViewer = function (uri) {
                     switch (RealityViewer.getType(uri)) {
@@ -25609,6 +26074,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                             return this._createWebRTCReality(uri);
                         case 'hosted':
                             return this._createHostedReality(uri);
+                        case RealityViewer.TANGO:
+                            return this._createTangoReality(uri);
                         default:
                             throw new Error('Unsupported Reality Viewer: ' + uri);
                     }
@@ -25616,7 +26083,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return RealityViewerFactory;
             }());
 
-            _export('RealityViewerFactory', RealityViewerFactory = __decorate$9([inject(Factory.of(EmptyRealityViewer), Factory.of(LiveRealityViewer), Factory.of(WebRTCRealityViewer), Factory.of(HostedRealityViewer)), __metadata$9("design:paramtypes", [Object, Object, Object, Object])], RealityViewerFactory));
+            _export('RealityViewerFactory', RealityViewerFactory = __decorate$9([inject(Factory.of(EmptyRealityViewer), Factory.of(LiveRealityViewer), Factory.of(WebRTCRealityViewer), Factory.of(HostedRealityViewer), Factory.of(TangoRealityViewer)), __metadata$9("design:paramtypes", [Object, Object, Object, Object, Object])], RealityViewerFactory));
             /**
             * A service which makes requests to manage the reality viewer.
             */
@@ -25633,7 +26100,24 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     /**
                      * The default Reality Viewer.
                      */
-                    this.default = (isIOS || isAndroid) && navigator.getUserMedia && navigator.mediaDevices ? RealityViewer.WEBRTC : RealityViewer.EMPTY;
+                    this.default = RealityViewer.EMPTY;
+                    if ((isIOS || isAndroid) && navigator.getUserMedia && navigator.mediaDevices) {
+                        var vrDisplay_1 = null;
+                        if (navigator.getVRDisplays) {
+                            navigator.getVRDisplays().then(function (vrDisplays) {
+                                if (vrDisplays && vrDisplays.length > 0) {
+                                    for (var i = 0; !vrDisplay_1 && i < vrDisplays.length; i++) {
+                                        vrDisplay_1 = vrDisplays[i];
+                                        if (vrDisplay_1.displayName !== "Tango VR Device") {
+                                            vrDisplay_1 = null;
+                                        }
+                                    }
+                                }
+                            }).then(function () {
+                                _this.default = vrDisplay_1 ? RealityViewer.TANGO : RealityViewer.WEBRTC;
+                            });
+                        }
+                    }
                     sessionService.manager.on['ar.reality.connect'] = function (_a) {
                         var id = _a.id;
                         var realityControlSession = _this.sessionService.createSessionPort(id);
@@ -25787,6 +26271,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                  * - [[RealityViewer.LIVE]] to request a live reality viewer
                  * - [[RealityViewer.WEBTRC]] to request a webrtc reality viewer
                  * - [[RealityViewer.EMPTY]] to request an empty reality viewer
+                 * - [[RealityViewer.TANGO]] to request a Tango reality viewer
                  */
                 RealityService.prototype.request = function (uri) {
                     var _this = this;
@@ -26341,7 +26826,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _export('DefaultUIService', DefaultUIService = __decorate$2([autoinject(), __metadata$2("design:paramtypes", [typeof (_a$2 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$2 || Object, typeof (_b$2 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$2 || Object, typeof (_c$1 = typeof RealityService !== "undefined" && RealityService) === "function" && _c$1 || Object, typeof (_d$1 = typeof RealityServiceProvider !== "undefined" && RealityServiceProvider) === "function" && _d$1 || Object, typeof (_e$1 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _e$1 || Object])], DefaultUIService));
 
-            __extends$6 = undefined && undefined.__extends || function (d, b) {
+            __extends$7 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
                 function __() {
                     this.constructor = d;
@@ -26349,7 +26834,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
             };
 
-            __decorate$15 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
+            __decorate$16 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
                 var c = arguments.length,
                     r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
                     d;
@@ -26357,7 +26842,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return c > 3 && r && Object.defineProperty(target, key, r), r;
             };
 
-            __metadata$15 = undefined && undefined.__metadata || function (k, v) {
+            __metadata$16 = undefined && undefined.__metadata || function (k, v) {
                 if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
             };
 
@@ -26379,7 +26864,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return VuforiaServiceProvider;
             }());
 
-            _export('VuforiaServiceProvider', VuforiaServiceProvider = __decorate$15([inject(SessionService), __metadata$15("design:paramtypes", [typeof (_a$15 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$15 || Object])], VuforiaServiceProvider));
+            _export('VuforiaServiceProvider', VuforiaServiceProvider = __decorate$16([inject(SessionService), __metadata$16("design:paramtypes", [typeof (_a$16 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$16 || Object])], VuforiaServiceProvider));
             /**
              * Enum for the setHint function
              */
@@ -26433,7 +26918,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return VuforiaService;
             }());
 
-            _export('VuforiaService', VuforiaService = __decorate$15([inject(SessionService, VuforiaServiceProvider), __metadata$15("design:paramtypes", [typeof (_b$15 = typeof SessionService !== "undefined" && SessionService) === "function" && _b$15 || Object])], VuforiaService));
+            _export('VuforiaService', VuforiaService = __decorate$16([inject(SessionService, VuforiaServiceProvider), __metadata$16("design:paramtypes", [typeof (_b$16 = typeof SessionService !== "undefined" && SessionService) === "function" && _b$16 || Object])], VuforiaService));
 
             _export('VuforiaAPI', VuforiaAPI = function () {
                 function VuforiaAPI(manager) {
@@ -26456,7 +26941,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
             }());
 
             _export('VuforiaObjectTracker', VuforiaObjectTracker = function (_super) {
-                __extends$6(VuforiaObjectTracker, _super);
+                __extends$7(VuforiaObjectTracker, _super);
                 function VuforiaObjectTracker(managerSession) {
                     var _this = _super.call(this) || this;
                     _this.managerSession = managerSession;
@@ -26564,8 +27049,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return VuforiaObjectTracker;
             }(VuforiaTracker));
 
-            __decorate$15([deprecated$1('createDataSetFromURL'), __metadata$15("design:type", Function), __metadata$15("design:paramtypes", [String]), __metadata$15("design:returntype", Object)], VuforiaObjectTracker.prototype, "createDataSet", null);
-            __decorate$15([deprecated$1('createDataSetFromURL'), __metadata$15("design:type", Object), __metadata$15("design:paramtypes", [])], VuforiaObjectTracker.prototype, "createDataSetFromURI", null);
+            __decorate$16([deprecated$1('createDataSetFromURL'), __metadata$16("design:type", Function), __metadata$16("design:paramtypes", [String]), __metadata$16("design:returntype", Object)], VuforiaObjectTracker.prototype, "createDataSet", null);
+            __decorate$16([deprecated$1('createDataSetFromURL'), __metadata$16("design:type", Object), __metadata$16("design:paramtypes", [])], VuforiaObjectTracker.prototype, "createDataSetFromURI", null);
             /**
              * @deprecated To be removed.
              */
