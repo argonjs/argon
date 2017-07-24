@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.4.0-3"></a>
+# [1.4.0-3](https://github.com/argonjs/argon/compare/v1.4.0-2...v1.4.0-3) (2017-07-24)
+
+
+### Bug Fixes
+
+* **device:** correct typo ([62fd8a6](https://github.com/argonjs/argon/commit/62fd8a6))
+* **package.json:** update web-vr typings ([e6e569e](https://github.com/argonjs/argon/commit/e6e569e))
+* **tango:** add "tango origin lost" logic ([77f718a](https://github.com/argonjs/argon/commit/77f718a))
+* **tango:** file cleanup & stage geopose init ([9617e0f](https://github.com/argonjs/argon/commit/9617e0f))
+* **tango:** show pointcloud default is now 'off' ([1ca8d77](https://github.com/argonjs/argon/commit/1ca8d77))
+* **tango:** update stage geopose on tango origin reset ([dc3a3d7](https://github.com/argonjs/argon/commit/dc3a3d7))
+* **webrtc:** type error ([eaca4f5](https://github.com/argonjs/argon/commit/eaca4f5))
+* Backwards compatibility for app.context.userTracking ([84a191c](https://github.com/argonjs/argon/commit/84a191c))
+* fix files for typescript[@2](https://github.com/2).4.1 upgrade ([1fdd6f8](https://github.com/argonjs/argon/commit/1fdd6f8))
+* revert "chore: update typings" ([fe092f3](https://github.com/argonjs/argon/commit/fe092f3))
+
+
+### Features
+
+* **tango:** attemp to add occlusion. depth buffer issue remains ([8e0698f](https://github.com/argonjs/argon/commit/8e0698f))
+* add app.context.userTracking & app.device.userTracking to indicate the DOF of reality or devcice ([eeff86b](https://github.com/argonjs/argon/commit/eeff86b))
+
+
+
 <a name="1.4.0-2"></a>
 # [1.4.0-2](https://github.com/argonjs/argon/compare/v1.4.0-1...v1.4.0-2) (2017-06-28)
 
