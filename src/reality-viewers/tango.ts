@@ -389,7 +389,7 @@ export class TangoRealityViewer extends RealityViewer {
                     {
                         overrideUser,  
                         overrideStage,
-                        floorOffset: AVERAGE_EYE_HEIGHT/2,
+                        floorOffset: -AVERAGE_EYE_HEIGHT/2,
                         userTracking: this.userTracking
                     }
                 );
