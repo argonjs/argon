@@ -51,8 +51,8 @@ export class TangoRealityViewer extends RealityViewer {
     private _pointsToSkip = 0;
 
     private _frameData = new VRFrameData();
-    private _renderPointCloud = true;
-    private _usePointCloudForOcclusion = true;
+    private _renderPointCloud = false;
+    private _usePointCloudForOcclusion = false;
     private _initFinished = false;
 
     // private _lastKnownPosition = new Cartesian3();
@@ -188,7 +188,7 @@ export class TangoRealityViewer extends RealityViewer {
 
             session.on['ar.tango.togglePointCloud'] = () => {
                 this._renderPointCloud = !this._renderPointCloud;
-                if (this._renderPointCloud) this._scene.add(this._points); else this._scene.remove(this._points);
+                // if (this._renderPointCloud) this._scene.add(this._points); else this._scene.remove(this._points);
                 return Promise.resolve({result: this._renderPointCloud});
             }
 
@@ -302,6 +302,8 @@ export class TangoRealityViewer extends RealityViewer {
                 } else {
                     // this._lastKnownPosition = userPosition.clone();
                     const tangoRot = this._frameData.pose.orientation;
+                    // if (this.deviceService.user.orientation) 
+                        // orientation = this.deviceService.user.orientation.getValue(time);
                     orientation = new Quaternion(tangoRot[0], tangoRot[1], tangoRot[2], tangoRot[3]);
                     // this._lastKnownOrientation = orientation.clone();
                     // if (this.deviceService.user.orientation)
@@ -342,13 +344,13 @@ export class TangoRealityViewer extends RealityViewer {
                     let transformMatrix = eastUpSouthToFixedFrame(customStagePosition, undefined, this._scratchMatrix4);
                     let rotationMatrix = Matrix4.getRotation(transformMatrix, this._scratchMatrix3);
                     customStageOrientation = Quaternion.fromRotationMatrix(rotationMatrix);
+                    // if (this.deviceService.user.orientation) 
+                        // customStageOrientation = this.deviceService.user.orientation.getValue(time);
                     (contextStage.position as ConstantPositionProperty).setValue(customStagePosition, ReferenceFrame.FIXED);
                     (contextStage.orientation as ConstantProperty).setValue(customStageOrientation);
                 }
 
                 if (this._initFinished && this._vrDisplay) {
-                    (THREE as any).WebAR.updateCameraMeshOrientation(this._vrDisplay, this._cameraMesh);
-                    
                     //update cameraPersp
                     let pose = this._frameData.pose;
                     
@@ -363,22 +365,29 @@ export class TangoRealityViewer extends RealityViewer {
                     }
                     
                     // if (this._vrDisplay) console.log(this._vrDisplay.getPose().position)
-                    this._pointCloud.update(this._renderPointCloud, this._pointsToSkip, this._usePointCloudForOcclusion);
-                    // this._renderer.resetGLState();
+                    this._pointCloud.update(this._renderPointCloud || this._usePointCloudForOcclusion, this._pointsToSkip, true);
 
-                    // var ac = this._renderer.autoClear;
+                    // Make sure that the camera is correctly displayed depending on the
+                    // device and camera orientations.
+                    (THREE as any).WebAR.updateCameraMeshOrientation(this._vrDisplay, this._cameraMesh);
+
+                    // RENDER
+
+                    this._renderer.resetGLState();
+
+                    var ac = this._renderer.autoClear;
                     this._renderer.autoClear = false;
                     this._renderer.clear();
                     this._renderer.render(this._cameraScene, this._cameraOrtho);
                     this._renderer.clearDepth();
 
-                    this._renderer.context.colorMask( false, false, false, false );
-                    if (this._renderPointCloud) {
+                    if (!this._renderPointCloud && this._usePointCloudForOcclusion) this._renderer.context.colorMask( false, false, false, false );
+                    if (this._renderPointCloud || this._usePointCloudForOcclusion) {
                         this._renderer.render(this._scene, this._cameraPersp);
+                        this._renderer.context.colorMask( true, true, true, true );
                     }
-                    this._renderer.context.colorMask( true, true, true, true );
 
-                    // this._renderer.autoClear = ac;
+                    this._renderer.autoClear = ac;
 
                 }
 
@@ -458,11 +467,38 @@ export class TangoRealityViewer extends RealityViewer {
         });
     }
 
+    private points_vertexShader =
+        "attribute vec3 position;\n" +
+        "uniform float size;\n" +
+        "uniform mat4 modelViewMatrix;\n" +
+        "uniform mat4 projectionMatrix;\n" +
+        "uniform vec4 plane;\n" +
+        "uniform float distance;\n" +
+        "varying float v_discard;\n" +
+        "void main(void) {\n" +
+        "  vec4 v4Position = vec4(position, 1.0);\n" +
+        "  float d = dot(plane, v4Position);\n" +
+        "  v_discard = 0.0;\n" +
+        "  if (abs(d) < distance) v_discard = 1.0;\n" +
+        "  gl_PointSize = size;\n" +
+        "  gl_Position = projectionMatrix * modelViewMatrix * v4Position;\n" +
+        "}";
+
+    private points_fragmentShader =
+        "precision mediump float;\n" +
+        "uniform vec3 color;\n" +
+        "uniform float opacity;\n" +
+        "varying float v_discard;\n" +
+        "void main(void) {\n" +
+        "  if (v_discard > 0.0) discard;\n" +
+        "  gl_FragColor = vec4( color, opacity );\n" +
+        "}";
+    
     protected initCameraAndPointcloud() {
         this._scene = new THREE.Scene();
         this._cameraScene = new THREE.Scene();
         // Use an orthographic camera to render the video quad
-        this._cameraOrtho = new THREE.OrthographicCamera( -1, 1, 1, -1, 0, 1000 );
+        this._cameraOrtho = new THREE.OrthographicCamera( -1, 1, 1, -1, 0, 100 );
         // Use the THREE.WebAR helper function to create a quad mesh for the
         // camera with the right geometry and material.
         this._cameraMesh = (THREE as any).WebAR.createVRSeeThroughCameraMesh(this._vrDisplay);
@@ -470,8 +506,20 @@ export class TangoRealityViewer extends RealityViewer {
 
         this._cameraPersp = (THREE as any).WebAR.createVRSeeThroughCamera(this._vrDisplay, 0.1, 100);
 
-        let pointsMaterial = new THREE.PointsMaterial(
-            { size: 0.01, vertexColors: THREE.VertexColors });
+        let pointsMaterial = new THREE.RawShaderMaterial({
+          uniforms: {
+            size: { value: 30 },
+            opacity: { value: 0.1 },
+            color: { value: new THREE.Color(0xffffff) },
+            plane: { value: new THREE.Vector4() },
+            distance: { value: 0.05 }
+          },
+          vertexShader: this.points_vertexShader,
+          fragmentShader: this.points_fragmentShader
+        });
+        
+        // new THREE.PointsMaterial(
+        //     { size: 0.01, vertexColors: THREE.VertexColors });
         // pointsMaterial.depthWrite = false;
         this._pointCloud = new (THREE as any).WebAR.VRPointCloud(this._vrDisplay, true);
         this._points = new THREE.Points(this._pointCloud.getBufferGeometry(),
@@ -481,18 +529,11 @@ export class TangoRealityViewer extends RealityViewer {
         this._points.frustumCulled = false;
         // this._points.renderDepth = 0;
         this._scene.add(this._points);
-
-        // this._vrControls = new THREE.VRControls(this._cameraPersp);
-        // Correctly handle window resize events
-        // window.addEventListener( 'resize', onWindowResize, false );
-        // THREE.WebAR.resizeVRSeeThroughCamera(vrDisplay, cameraOrtho);
     }
     
     protected initViewportAndCanvas() {
        this.updateViewport(<any>this.viewService.viewport);
 
-        // document.body.className = arController.orientation;
-        
         var argonCanvas;
         if (this.viewService.layers) {
             for (const layer of this.viewService.layers) {

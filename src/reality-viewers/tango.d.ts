@@ -38,6 +38,8 @@ export declare class TangoRealityViewer extends RealityViewer {
     load(): void;
     protected initTango(): void;
     protected loadScripts(): Promise<void>;
+    private points_vertexShader;
+    private points_fragmentShader;
     protected initCameraAndPointcloud(): void;
     protected initViewportAndCanvas(): void;
     protected updateViewport(viewport: CanvasViewport): void;
