@@ -26522,7 +26522,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-4");
+            _export('version', version = "1.4.0-5");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -31278,8 +31278,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     _this.userTracking = '6DOF';
                     _this._pointsToSkip = 0;
                     _this._frameData = new VRFrameData();
-                    _this._renderPointCloud = true;
-                    _this._usePointCloudForOcclusion = true;
+                    _this._renderPointCloud = false;
+                    _this._usePointCloudForOcclusion = false;
                     _this._initFinished = false;
                     _this._sharedCanvasFinal = false;
                     _this._vrDisplay = undefined;
@@ -31288,6 +31288,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     _this._scratchMatrix3 = new Matrix3();
                     _this._scratchMatrix4 = new Matrix4();
                     _this._scratchCartesian = new Cartesian3();
+                    _this.points_vertexShader = "attribute vec3 position;\n" + "uniform float size;\n" + "uniform mat4 modelViewMatrix;\n" + "uniform mat4 projectionMatrix;\n" + "uniform vec4 plane;\n" + "uniform float distance;\n" + "varying float v_discard;\n" + "void main(void) {\n" + "  vec4 v4Position = vec4(position, 1.0);\n" + "  float d = dot(plane, v4Position);\n" + "  v_discard = 0.0;\n" + "  if (abs(d) < distance) v_discard = 1.0;\n" + "  gl_PointSize = size;\n" + "  gl_Position = projectionMatrix * modelViewMatrix * v4Position;\n" + "}";
+                    _this.points_fragmentShader = "precision mediump float;\n" + "uniform vec3 color;\n" + "uniform float opacity;\n" + "varying float v_discard;\n" + "void main(void) {\n" + "  if (v_discard > 0.0) discard;\n" + "  gl_FragColor = vec4( color, opacity );\n" + "}";
                     // this._artoolkitReady = new Promise<void>((resolve, reject) => {
                     //     this._resolveReady = resolve;
                     //     this._rejectReady = reject;
@@ -31356,7 +31358,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         };
                         session.on['ar.tango.togglePointCloud'] = function () {
                             _this._renderPointCloud = !_this._renderPointCloud;
-                            if (_this._renderPointCloud) _this._scene.add(_this._points);else _this._scene.remove(_this._points);
+                            // if (this._renderPointCloud) this._scene.add(this._points); else this._scene.remove(this._points);
                             return Promise.resolve({ result: _this._renderPointCloud });
                         };
                         session.on['ar.tango.getPickingPointAndPlaneInPointCloud'] = function (_a) {
@@ -31442,6 +31444,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                             } else {
                                 // this._lastKnownPosition = userPosition.clone();
                                 var tangoRot = _this._frameData.pose.orientation;
+                                // if (this.deviceService.user.orientation) 
+                                // orientation = this.deviceService.user.orientation.getValue(time);
                                 orientation = new Quaternion(tangoRot[0], tangoRot[1], tangoRot[2], tangoRot[3]);
                             }
                             // Matrix3.fromQuaternion(orientation, orientationMatrix);
@@ -31472,11 +31476,12 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                                 var transformMatrix = eastUpSouthToFixedFrame(customStagePosition, undefined, _this._scratchMatrix4);
                                 var rotationMatrix = Matrix4.getRotation(transformMatrix, _this._scratchMatrix3);
                                 customStageOrientation = Quaternion.fromRotationMatrix(rotationMatrix);
+                                // if (this.deviceService.user.orientation) 
+                                // customStageOrientation = this.deviceService.user.orientation.getValue(time);
                                 contextStage.position.setValue(customStagePosition, ReferenceFrame.FIXED);
                                 contextStage.orientation.setValue(customStageOrientation);
                             }
                             if (_this._initFinished && _this._vrDisplay) {
-                                THREE.WebAR.updateCameraMeshOrientation(_this._vrDisplay, _this._cameraMesh);
                                 //update cameraPersp
                                 var pose = _this._frameData.pose;
                                 if (pose.orientation) {
@@ -31488,23 +31493,28 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                                     _this._cameraPersp.position.set(0, 0, 0);
                                 }
                                 // if (this._vrDisplay) console.log(this._vrDisplay.getPose().position)
-                                _this._pointCloud.update(_this._renderPointCloud, _this._pointsToSkip, _this._usePointCloudForOcclusion);
-                                // this._renderer.resetGLState();
-                                // var ac = this._renderer.autoClear;
+                                _this._pointCloud.update(_this._renderPointCloud || _this._usePointCloudForOcclusion, _this._pointsToSkip, true);
+                                // Make sure that the camera is correctly displayed depending on the
+                                // device and camera orientations.
+                                THREE.WebAR.updateCameraMeshOrientation(_this._vrDisplay, _this._cameraMesh);
+                                // RENDER
+                                _this._renderer.resetGLState();
+                                var ac = _this._renderer.autoClear;
                                 _this._renderer.autoClear = false;
                                 _this._renderer.clear();
                                 _this._renderer.render(_this._cameraScene, _this._cameraOrtho);
                                 _this._renderer.clearDepth();
-                                _this._renderer.context.colorMask(false, false, false, false);
-                                if (_this._renderPointCloud) {
+                                if (!_this._renderPointCloud && _this._usePointCloudForOcclusion) _this._renderer.context.colorMask(false, false, false, false);
+                                if (_this._renderPointCloud || _this._usePointCloudForOcclusion) {
                                     _this._renderer.render(_this._scene, _this._cameraPersp);
+                                    _this._renderer.context.colorMask(true, true, true, true);
                                 }
-                                _this._renderer.context.colorMask(true, true, true, true);
+                                _this._renderer.autoClear = ac;
                             }
                             var contextFrameState = childContextService.createFrameState(time, frameState.viewport, subviews, {
                                 overrideUser: overrideUser,
                                 overrideStage: overrideStage,
-                                floorOffset: AVERAGE_EYE_HEIGHT / 2,
+                                floorOffset: -AVERAGE_EYE_HEIGHT / 2,
                                 userTracking: _this.userTracking
                             });
                             childContextService.submitFrameState(contextFrameState);
@@ -31567,13 +31577,25 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     this._scene = new THREE.Scene();
                     this._cameraScene = new THREE.Scene();
                     // Use an orthographic camera to render the video quad
-                    this._cameraOrtho = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1000);
+                    this._cameraOrtho = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 100);
                     // Use the THREE.WebAR helper function to create a quad mesh for the
                     // camera with the right geometry and material.
                     this._cameraMesh = THREE.WebAR.createVRSeeThroughCameraMesh(this._vrDisplay);
                     this._cameraScene.add(this._cameraMesh);
                     this._cameraPersp = THREE.WebAR.createVRSeeThroughCamera(this._vrDisplay, 0.1, 100);
-                    var pointsMaterial = new THREE.PointsMaterial({ size: 0.01, vertexColors: THREE.VertexColors });
+                    var pointsMaterial = new THREE.RawShaderMaterial({
+                        uniforms: {
+                            size: { value: 30 },
+                            opacity: { value: 0.1 },
+                            color: { value: new THREE.Color(0xffffff) },
+                            plane: { value: new THREE.Vector4() },
+                            distance: { value: 0.05 }
+                        },
+                        vertexShader: this.points_vertexShader,
+                        fragmentShader: this.points_fragmentShader
+                    });
+                    // new THREE.PointsMaterial(
+                    //     { size: 0.01, vertexColors: THREE.VertexColors });
                     // pointsMaterial.depthWrite = false;
                     this._pointCloud = new THREE.WebAR.VRPointCloud(this._vrDisplay, true);
                     this._points = new THREE.Points(this._pointCloud.getBufferGeometry(), pointsMaterial);
@@ -31582,14 +31604,9 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     this._points.frustumCulled = false;
                     // this._points.renderDepth = 0;
                     this._scene.add(this._points);
-                    // this._vrControls = new THREE.VRControls(this._cameraPersp);
-                    // Correctly handle window resize events
-                    // window.addEventListener( 'resize', onWindowResize, false );
-                    // THREE.WebAR.resizeVRSeeThroughCamera(vrDisplay, cameraOrtho);
                 };
                 TangoRealityViewer.prototype.initViewportAndCanvas = function () {
                     this.updateViewport(this.viewService.viewport);
-                    // document.body.className = arController.orientation;
                     var argonCanvas;
                     if (this.viewService.layers) {
                         for (var _i = 0, _a = this.viewService.layers; _i < _a.length; _i++) {
