@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.4.0-5"></a>
+# [1.4.0-5](https://github.com/argonjs/argon/compare/v1.4.0-4...v1.4.0-5) (2017-07-28)
+
+
+### Bug Fixes
+
+* **tango:** Define context.floor beneath the user using half of suggested height. ([3784090](https://github.com/argonjs/argon/commit/3784090))
+* **tango:** Occlusion attempt. Issue with point cloud being always on top of the user's scene. ([d55881a](https://github.com/argonjs/argon/commit/d55881a))
+
+
+
 <a name="1.4.0-4"></a>
 # [1.4.0-4](https://github.com/argonjs/argon/compare/v1.4.0-3...v1.4.0-4) (2017-07-24)
 
