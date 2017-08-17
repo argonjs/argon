@@ -278,27 +278,6 @@ export class ContextService {
     public defaultReferenceFrame = this.origin;
 
     /**
-     * If geopose is available, this is the accuracy of the user's heading
-     */
-    public get geoposeHeadingAccuracy() : number|undefined {
-        return this.stage['meta'].geoposeHeadingAccuracy;
-    }
-
-    /**
-     * If geopose is available, this is the accuracy of the user's cartographic location
-     */
-    public get geoposeHorizontalAccuracy() : number|undefined {
-        return this.stage['meta'].geoposeHorizontalAccuracy;
-    }
-
-    /**
-     * If geopose is available, this is the accuracy of the user's elevation
-     */
-    public get geoposeVerticalAccuracy() : number|undefined {
-        return this.stage['meta'].geoposeVerticalAccuracy;
-    }
-
-    /**
      * The serialized frame state for this frame
      */
     public get serializedFrameState() {
@@ -703,18 +682,49 @@ export class ContextService {
         this.entityService.unsubscribe(this.stage.id);
     }
 
+    /**
+     * If geopose is available, this is the accuracy of the user's heading
+     */
     public get geoHeadingAccuracy() : number|undefined {
         return this.user['meta'] && this.user['meta'].geoHeadingAccuracy;
     }
 
+    /**
+     * If geopose is available, this is the horizontal accuracy of the stage geolocation
+     */
     public get geoHorizontalAccuracy() : number|undefined {
         return this.user['meta'] && this.user['meta'].geoHorizontalAccuracy ||
             this.stage['meta'] && this.stage['meta'].geoHorizontalAccuracy;
     }
     
+    /**
+     * If geopose is available, this is the vertical accuracy of the stage geolocation
+     */
     public get geoVerticalAccuracy() : number|undefined {
         return this.user['meta'] && this.user['meta'].geoVerticalAccuracy ||
             this.stage['meta'] && this.stage['meta'].geoVerticalAccuracy;
+    }
+
+
+    /**
+     * @deprecated
+     */
+    private get geoposeHeadingAccuracy() : number|undefined {
+        return this.geoHeadingAccuracy;
+    }
+
+    /**
+     * @deprecated
+     */
+    private get geoposeHorizontalAccuracy() : number|undefined {
+        return this.geoHorizontalAccuracy;
+    }
+
+    /**
+     * @deprecated
+     */
+    private get geoposeVerticalAccuracy() : number|undefined {
+        return this.geoVerticalAccuracy;
     }
 
 }

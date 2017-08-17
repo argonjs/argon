@@ -60,8 +60,12 @@ export class DeviceStableState {
     entities:SerializedEntityStateMap = {};
     suggestedGeolocationSubscription?:{enableHighAccuracy?:boolean} = undefined;
     suggestedUserHeight = AVERAGE_EYE_HEIGHT;
+
+    /** @deprecated */
     geolocationDesired = false;
-    geolocationOptions?:GeolocationOptions = {};
+    /** @deprecated */
+    geolocationOptions?:GeolocationOptions = undefined;
+
     isPresentingHMD = false;
     isPresentingRealityHMD = false;
     strict = false;
@@ -178,20 +182,22 @@ export class DeviceService {
         return this.stage['meta'] ? this.stage['meta'].geoVerticalAccuracy : undefined;
     }
 
-    public _geolocationDesired = false;
+    /**
+     * To be removed.
+     */
     @deprecated()
-    public get geolocationDesired() {
+    private get geolocationDesired() {
         return this._parentState ? 
             this._parentState.suggestedGeolocationSubscription || this._parentState.geolocationDesired : 
-            this._geolocationDesired;
+            false;
     }
 
-    public _geolocationOptions:GeolocationOptions|undefined; 
+    /**
+     * To be removed.
+     */
     @deprecated()
-    public get geolocationOptions() {
-        return this._parentState ? 
-            this._parentState.suggestedGeolocationSubscription || this._parentState.geolocationOptions : 
-            this._geolocationOptions;
+    private get geolocationOptions() {
+        return this._suggestedGeolocationSubscription;
     }
 
     private _suggestedGeolocationSubscription:{enableHighAccuracy?:boolean}|undefined;
