@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.4.0-6"></a>
+# [1.4.0-6](https://github.com/argonjs/argon/compare/v1.4.0-5...v1.4.0-6) (2017-08-18)
+
+
+### Bug Fixes
+
+* **context:** Fixed metadata serialization when reality does not override stage ([89bd384](https://github.com/argonjs/argon/commit/89bd384))
+* **tango:** Fix typescript error ([b7b2390](https://github.com/argonjs/argon/commit/b7b2390))
+
+
+
 <a name="1.4.0-5"></a>
 # [1.4.0-5](https://github.com/argonjs/argon/compare/v1.4.0-4...v1.4.0-5) (2017-07-28)
 
