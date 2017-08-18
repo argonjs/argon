@@ -281,7 +281,7 @@ export class TangoRealityViewer extends RealityViewer {
                 // const position = 
                 //     getEntityPositionInReferenceFrame(contextUser, time, contextStage, positionScratchCartesian) || 
                 //     Cartesian3.fromElements(0, childDeviceService.suggestedUserHeight, 0, positionScratchCartesian);
-                (<VRDisplay>this._vrDisplay).getFrameData(this._frameData);
+                (<VRDisplay>this._vrDisplay)['getFrameData'](this._frameData);
                 const tangoPos = this._frameData.pose.position;
                 userPosition = new Cartesian3(tangoPos[0], tangoPos[1], tangoPos[2]);
 
