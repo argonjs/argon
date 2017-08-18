@@ -20937,7 +20937,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-5");
+            _export('version', version = "1.4.0-6");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -22660,8 +22660,10 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     this.entities = {};
                     this.suggestedGeolocationSubscription = undefined;
                     this.suggestedUserHeight = AVERAGE_EYE_HEIGHT;
+                    /** @deprecated */
                     this.geolocationDesired = false;
-                    this.geolocationOptions = {};
+                    /** @deprecated */
+                    this.geolocationOptions = undefined;
                     this.isPresentingHMD = false;
                     this.isPresentingRealityHMD = false;
                     this.strict = false;
@@ -22752,7 +22754,6 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         position: undefined,
                         orientation: undefined
                     }));
-                    this._geolocationDesired = false;
                     this.defaultUserHeight = AVERAGE_EYE_HEIGHT;
                     this._userTracking = "3DOF";
                     this._scratchCartesian = new Cartesian3();
@@ -22879,15 +22880,21 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     configurable: true
                 });
                 Object.defineProperty(DeviceService$$1.prototype, "geolocationDesired", {
+                    /**
+                     * To be removed.
+                     */
                     get: function () {
-                        return this._parentState ? this._parentState.suggestedGeolocationSubscription || this._parentState.geolocationDesired : this._geolocationDesired;
+                        return this._parentState ? this._parentState.suggestedGeolocationSubscription || this._parentState.geolocationDesired : false;
                     },
                     enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(DeviceService$$1.prototype, "geolocationOptions", {
+                    /**
+                     * To be removed.
+                     */
                     get: function () {
-                        return this._parentState ? this._parentState.suggestedGeolocationSubscription || this._parentState.geolocationOptions : this._geolocationOptions;
+                        return this._suggestedGeolocationSubscription;
                     },
                     enumerable: true,
                     configurable: true
@@ -23832,36 +23839,6 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     enumerable: true,
                     configurable: true
                 });
-                Object.defineProperty(ContextService.prototype, "geoposeHeadingAccuracy", {
-                    /**
-                     * If geopose is available, this is the accuracy of the user's heading
-                     */
-                    get: function () {
-                        return this.stage['meta'].geoposeHeadingAccuracy;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(ContextService.prototype, "geoposeHorizontalAccuracy", {
-                    /**
-                     * If geopose is available, this is the accuracy of the user's cartographic location
-                     */
-                    get: function () {
-                        return this.stage['meta'].geoposeHorizontalAccuracy;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(ContextService.prototype, "geoposeVerticalAccuracy", {
-                    /**
-                     * If geopose is available, this is the accuracy of the user's elevation
-                     */
-                    get: function () {
-                        return this.stage['meta'].geoposeVerticalAccuracy;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
                 Object.defineProperty(ContextService.prototype, "serializedFrameState", {
                     /**
                      * The serialized frame state for this frame
@@ -24085,7 +24062,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                             entityService.updateEntityFromSerializedState(id, entities[id]);
                         }
                     }
-                    // update stage entity
+                    // update stage entity based on device (if the reality did override it)
                     var deviceStage = this.deviceService.stage;
                     var contextStage = this.stage;
                     if (entities[contextStage.id] === undefined) {
@@ -24093,8 +24070,9 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         var contextStageOrientation = contextStage.orientation;
                         contextStagePosition.setValue(Cartesian3.ZERO, deviceStage);
                         contextStageOrientation.setValue(Quaternion.IDENTITY);
+                        contextStage['meta'] = this.deviceService['meta']; // We want to serialize geo metadata as well. 
                     }
-                    // update user entity
+                    // update user entity based on device (if the reality did override it)
                     var deviceUser = this.deviceService.user;
                     var contextUser = this.user;
                     if (entities[contextUser.id] === undefined) {
@@ -24105,7 +24083,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         contextUserPosition.setValue(userPositionValue, contextStage);
                         contextUserOrientation.setValue(userOrientationValue);
                     }
-                    // update view entity
+                    // update view entity (if the reality did not set it)
                     var contextView = this.view;
                     if (entities[contextView.id] === undefined) {
                         var contextViewPosition = contextView.position;
@@ -24113,7 +24091,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         contextViewPosition.setValue(Cartesian3.ZERO, contextUser);
                         contextViewOrientation.setValue(Quaternion.IDENTITY);
                     }
-                    // update subview entities
+                    // update subview entities (if the reality did not set them)
                     for (var i = 0; i < frameState.subviews.length; i++) {
                         if (entities['ar.view_' + i] === undefined) {
                             var deviceSubview = this.deviceService.getSubviewEntity(i);
@@ -24126,12 +24104,12 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                             contextSubviewOrientation.setValue(subviewOrientationValue);
                         }
                     }
-                    // update floor entity
+                    // update floor entity (if the reality did not set it)
                     if (entities[this.floor.id] === undefined) {
                         var floorPosition = this.floor.position;
                         floorPosition.setValue(Cartesian3.ZERO, contextStage);
                     }
-                    // update origin entity
+                    // update origin (relative to stage) to match device origin (relative to device stage)
                     if (entities[this.origin.id] === undefined) {
                         var deviceOrigin = this.deviceService.origin;
                         var contextOrigin = this.origin;
@@ -24178,6 +24156,9 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     this.entityService.unsubscribe(this.stage.id);
                 };
                 Object.defineProperty(ContextService.prototype, "geoHeadingAccuracy", {
+                    /**
+                     * If geopose is available, this is the accuracy of the user's heading
+                     */
                     get: function () {
                         return this.user['meta'] && this.user['meta'].geoHeadingAccuracy;
                     },
@@ -24185,6 +24166,9 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     configurable: true
                 });
                 Object.defineProperty(ContextService.prototype, "geoHorizontalAccuracy", {
+                    /**
+                     * If geopose is available, this is the horizontal accuracy of the stage geolocation
+                     */
                     get: function () {
                         return this.user['meta'] && this.user['meta'].geoHorizontalAccuracy || this.stage['meta'] && this.stage['meta'].geoHorizontalAccuracy;
                     },
@@ -24192,8 +24176,41 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     configurable: true
                 });
                 Object.defineProperty(ContextService.prototype, "geoVerticalAccuracy", {
+                    /**
+                     * If geopose is available, this is the vertical accuracy of the stage geolocation
+                     */
                     get: function () {
                         return this.user['meta'] && this.user['meta'].geoVerticalAccuracy || this.stage['meta'] && this.stage['meta'].geoVerticalAccuracy;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(ContextService.prototype, "geoposeHeadingAccuracy", {
+                    /**
+                     * @deprecated
+                     */
+                    get: function () {
+                        return this.geoHeadingAccuracy;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(ContextService.prototype, "geoposeHorizontalAccuracy", {
+                    /**
+                     * @deprecated
+                     */
+                    get: function () {
+                        return this.geoHorizontalAccuracy;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(ContextService.prototype, "geoposeVerticalAccuracy", {
+                    /**
+                     * @deprecated
+                     */
+                    get: function () {
+                        return this.geoVerticalAccuracy;
                     },
                     enumerable: true,
                     configurable: true
@@ -25844,7 +25861,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                             // const position = 
                             //     getEntityPositionInReferenceFrame(contextUser, time, contextStage, positionScratchCartesian) || 
                             //     Cartesian3.fromElements(0, childDeviceService.suggestedUserHeight, 0, positionScratchCartesian);
-                            _this._vrDisplay.getFrameData(_this._frameData);
+                            _this._vrDisplay['getFrameData'](_this._frameData);
                             var tangoPos = _this._frameData.pose.position;
                             userPosition = new Cartesian3(tangoPos[0], tangoPos[1], tangoPos[2]);
                             // Check if tango tracking is lost
