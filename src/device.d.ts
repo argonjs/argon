@@ -14,7 +14,9 @@ export declare class DeviceStableState {
         enableHighAccuracy?: boolean;
     };
     suggestedUserHeight: number;
+    /** @deprecated */
     geolocationDesired: boolean;
+    /** @deprecated */
     geolocationOptions?: GeolocationOptions;
     isPresentingHMD: boolean;
     isPresentingRealityHMD: boolean;
@@ -75,12 +77,14 @@ export declare class DeviceService {
     readonly geoHeadingAccuracy: number | undefined;
     readonly geoHorizontalAccuracy: number | undefined;
     readonly geoVerticalAccuracy: number | undefined;
-    _geolocationDesired: boolean;
-    readonly geolocationDesired: {
-        enableHighAccuracy?: boolean | undefined;
-    };
-    _geolocationOptions: GeolocationOptions | undefined;
-    readonly geolocationOptions: GeolocationOptions | undefined;
+    /**
+     * To be removed.
+     */
+    private readonly geolocationDesired;
+    /**
+     * To be removed.
+     */
+    private readonly geolocationOptions;
     private _suggestedGeolocationSubscription;
     private _setSuggestedGeolocationSubscription(options?);
     readonly suggestedGeolocationSubscription: {

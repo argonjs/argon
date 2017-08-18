@@ -577,7 +577,7 @@ export class ContextService {
             }
         }
 
-        // update stage entity
+        // update stage entity based on device (if the reality did override it)
         const deviceStage = this.deviceService.stage;
         const contextStage = this.stage;
         if (entities[contextStage.id] === undefined) {
@@ -588,7 +588,7 @@ export class ContextService {
             contextStage['meta'] = this.deviceService['meta']; // We want to serialize geo metadata as well. 
         }
 
-        // update user entity
+        // update user entity based on device (if the reality did override it)
         const deviceUser = this.deviceService.user;
         const contextUser = this.user;
         if (entities[contextUser.id] === undefined) {
@@ -600,7 +600,7 @@ export class ContextService {
             contextUserOrientation.setValue(userOrientationValue);
         }
 
-        // update view entity
+        // update view entity (if the reality did not set it)
         const contextView = this.view;
         if (entities[contextView.id] === undefined) {
             const contextViewPosition = contextView.position as ConstantPositionProperty;
@@ -609,7 +609,7 @@ export class ContextService {
             contextViewOrientation.setValue(Quaternion.IDENTITY);
         }
 
-        // update subview entities
+        // update subview entities (if the reality did not set them)
         for (let i=0; i<frameState.subviews.length; i++) {
             if (entities['ar.view_' + i] === undefined) {
                 const deviceSubview = this.deviceService.getSubviewEntity(i);
@@ -623,14 +623,14 @@ export class ContextService {
             }
         }
 
-        // update floor entity
+        // update floor entity (if the reality did not set it)
         if (entities[this.floor.id] === undefined) {
             const floorPosition = this.floor.position as ConstantPositionProperty;
             floorPosition.setValue(Cartesian3.ZERO, contextStage);
         }
 
-        // update origin entity
-        if (entities[this.origin.id] === undefined) {
+        // update origin (relative to stage) to match device origin (relative to device stage)
+        if (entities[this.origin.id] === undefined) { // TODO: this if statement may be unecessary
             const deviceOrigin = this.deviceService.origin;
             const contextOrigin = this.origin;
             const deviceOriginPositionValue = this._getEntityPositionInReferenceFrame(deviceOrigin, time, deviceStage, this._scratchCartesian);

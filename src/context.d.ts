@@ -110,18 +110,6 @@ export declare class ContextService {
      */
     defaultReferenceFrame: Entity;
     /**
-     * If geopose is available, this is the accuracy of the user's heading
-     */
-    readonly geoposeHeadingAccuracy: number | undefined;
-    /**
-     * If geopose is available, this is the accuracy of the user's cartographic location
-     */
-    readonly geoposeHorizontalAccuracy: number | undefined;
-    /**
-     * If geopose is available, this is the accuracy of the user's elevation
-     */
-    readonly geoposeVerticalAccuracy: number | undefined;
-    /**
      * The serialized frame state for this frame
      */
     readonly serializedFrameState: ContextFrameState;
@@ -230,9 +218,30 @@ export declare class ContextService {
     getSubviewEntity(index: number): Entity;
     subscribeGeolocation(options?: GeolocationOptions): Promise<void>;
     unsubscribeGeolocation(): void;
+    /**
+     * If geopose is available, this is the accuracy of the user's heading
+     */
     readonly geoHeadingAccuracy: number | undefined;
+    /**
+     * If geopose is available, this is the horizontal accuracy of the stage geolocation
+     */
     readonly geoHorizontalAccuracy: number | undefined;
+    /**
+     * If geopose is available, this is the vertical accuracy of the stage geolocation
+     */
     readonly geoVerticalAccuracy: number | undefined;
+    /**
+     * @deprecated
+     */
+    private readonly geoposeHeadingAccuracy;
+    /**
+     * @deprecated
+     */
+    private readonly geoposeHorizontalAccuracy;
+    /**
+     * @deprecated
+     */
+    private readonly geoposeVerticalAccuracy;
 }
 export declare class ContextServiceProvider {
     protected sessionService: SessionService;
