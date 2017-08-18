@@ -585,6 +585,7 @@ export class ContextService {
             const contextStageOrientation = contextStage.orientation as ConstantProperty;
             contextStagePosition.setValue(Cartesian3.ZERO, deviceStage);
             contextStageOrientation.setValue(Quaternion.IDENTITY);
+            contextStage['meta'] = this.deviceService['meta']; // We want to serialize geo metadata as well. 
         }
 
         // update user entity
