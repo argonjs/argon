@@ -20937,7 +20937,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-9");
+            _export('version', version = "1.4.0-10");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -24070,7 +24070,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         var contextStageOrientation = contextStage.orientation;
                         contextStagePosition.setValue(Cartesian3.ZERO, deviceStage);
                         contextStageOrientation.setValue(Quaternion.IDENTITY);
-                        contextStage['meta'] = this.deviceService['meta']; // We want to serialize geo metadata as well. 
+                        contextStage['meta'] = this.deviceService.stage['meta']; // We want to serialize geo metadata as well. 
                     }
                     // update user entity based on device (if the reality did override it)
                     var deviceUser = this.deviceService.user;
