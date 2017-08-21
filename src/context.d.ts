@@ -154,11 +154,11 @@ export declare class ContextService {
      * @returns A Promise that resolves to a new or existing entity
      * instance matching the given id, if the subscription is successful
      */
-    subscribe: any;
+    subscribe: (idOrEntity: string | Entity, options?: {}, session?: SessionPort) => Promise<Entity>;
     /**
      * Unsubscribe to pose updates for the given entity id
      */
-    unsubscribe: any;
+    unsubscribe: (idOrEntity: string | Entity, session?: SessionPort) => void;
     /**
      * Get the cartographic position of an Entity for the current context time
      */

@@ -350,12 +350,12 @@ export class ContextService {
      * @returns A Promise that resolves to a new or existing entity 
      * instance matching the given id, if the subscription is successful
      */
-    public subscribe = this.entityService.subscribe.bind(this.entityService);
+    public subscribe: (idOrEntity: string|Entity, options?:{}, session?:SessionPort) => Promise<Entity> = this.entityService.subscribe.bind(this.entityService);
 
     /**
      * Unsubscribe to pose updates for the given entity id
      */
-    public unsubscribe = this.entityService.unsubscribe.bind(this.entityService);
+    public unsubscribe: (idOrEntity: string|Entity, session?:SessionPort) => void = this.entityService.unsubscribe.bind(this.entityService);
 
     /**
      * Get the cartographic position of an Entity for the current context time
