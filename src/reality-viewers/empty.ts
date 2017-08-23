@@ -151,10 +151,7 @@ export class EmptyRealityViewer extends RealityViewer {
             protocols: ['ar.configureStage@v1']
         });
 
-        // Create the basic services that we need to use. 
-        // Note: we won't create a child ViewService here,
-        // as we are already managing the DOM with the
-        // ViewService that exists in the root container. 
+        // Create the basic services that we need to use.
         child.autoRegisterAll([SessionService, EntityService, VisibilityService, ContextService, DeviceService, RealityService]);
         const childContextService = child.get(ContextService) as ContextService;
         const childDeviceService = child.get(DeviceService) as DeviceService;
