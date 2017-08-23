@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.4.0-11"></a>
+# [1.4.0-11](https://github.com/argonjs/argon/compare/v1.4.0-10...v1.4.0-11) (2017-08-23)
+
+
+### Bug Fixes
+
+* **context:** Add typings ([a969b29](https://github.com/argonjs/argon/commit/a969b29))
+* **context:** change type of defaultReferenceFrame ([9e56f93](https://github.com/argonjs/argon/commit/9e56f93))
+* **tango:** Fix compass heading & code clean up ([6432746](https://github.com/argonjs/argon/commit/6432746))
+
+
+
 <a name="1.4.0-6"></a>
 # [1.4.0-6](https://github.com/argonjs/argon/compare/v1.4.0-5...v1.4.0-6) (2017-08-18)
 
