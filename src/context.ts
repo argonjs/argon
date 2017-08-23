@@ -275,7 +275,7 @@ export class ContextService {
      * The default reference frame to use when calling `getEntityPose`.
      * By default, this is the `origin` reference frame.
      */
-    public defaultReferenceFrame = this.origin;
+    public defaultReferenceFrame: Entity|ReferenceFrame = this.origin;
 
     /**
      * The serialized frame state for this frame
@@ -318,7 +318,7 @@ export class ContextService {
      * @private
      */
     @deprecated()
-    public setDefaultReferenceFrame(origin: Entity) {
+    public setDefaultReferenceFrame(origin: Entity|ReferenceFrame) {
         this.defaultReferenceFrame = origin;
     }
 
@@ -327,7 +327,7 @@ export class ContextService {
      * @private
      */
     @deprecated('defaultReferenceFrame')
-    public getDefaultReferenceFrame(): Entity {
+    public getDefaultReferenceFrame(): Entity|ReferenceFrame {
         return this.defaultReferenceFrame;
     }
 

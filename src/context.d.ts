@@ -108,7 +108,7 @@ export declare class ContextService {
      * The default reference frame to use when calling `getEntityPose`.
      * By default, this is the `origin` reference frame.
      */
-    defaultReferenceFrame: Entity;
+    defaultReferenceFrame: Entity | ReferenceFrame;
     /**
      * The serialized frame state for this frame
      */
@@ -134,12 +134,12 @@ export declare class ContextService {
      * Deprecated. To be removed. Use the defaultReferenceFrame property if necessary.
      * @private
      */
-    setDefaultReferenceFrame(origin: Entity): void;
+    setDefaultReferenceFrame(origin: Entity | ReferenceFrame): void;
     /**
      * Deprecated. To be removed.  Use the defaultReferenceFrame property.
      * @private
      */
-    getDefaultReferenceFrame(): Entity;
+    getDefaultReferenceFrame(): Entity | ReferenceFrame;
     /**
      * Subscribe to pose updates for an entity specified by the given id
      *
