@@ -1,28 +1,19 @@
 import { inject, Container } from 'aurelia-dependency-injection'
 import { 
-    // CameraEventAggregator,
-    // CameraEventType,
     ConstantPositionProperty,
     ConstantProperty,
     ReferenceFrame,
     Cartographic,
-    // Cartesian2,
     Cartesian3,
     Quaternion,
     Matrix3,
     Matrix4,
-    // PerspectiveFrustum
     // CesiumMath
     // Entity
 } from '../cesium/cesium-imports'
-import { Configuration, Role, SerializedSubviewList, CanvasViewport, AVERAGE_EYE_HEIGHT /*DEFAULT_NEAR_PLANE, DEFAULT_FAR_PLANE*/ } from '../common'
-import { SessionService, ConnectService, SessionConnectService, /*Message*/ } from '../session'
-import { 
-    eastUpSouthToFixedFrame,
-    // decomposePerspectiveProjectionMatrix, 
-    // getEntityPositionInReferenceFrame,
-    // getEntityOrientationInReferenceFrame 
-} from '../utils'
+import { Configuration, Role, SerializedSubviewList, CanvasViewport, AVERAGE_EYE_HEIGHT } from '../common'
+import { SessionService, ConnectService, SessionConnectService, Message } from '../session'
+import { eastUpSouthToFixedFrame } from '../utils'
 import { EntityService } from '../entity'
 import { ContextService } from '../context'
 import { DeviceService } from '../device'
@@ -34,7 +25,7 @@ import { VisibilityService } from '../visibility'
 
 declare var THREE;
 
-@inject(SessionService, ViewService, Container, DeviceService)
+@inject(SessionService, ViewService, ContextService, Container, DeviceService)
 export class TangoRealityViewer extends RealityViewer {
 
     public type = 'tango';
@@ -55,11 +46,6 @@ export class TangoRealityViewer extends RealityViewer {
     private _usePointCloudForOcclusion = false;
     private _initFinished = false;
 
-    // private _lastKnownPosition = new Cartesian3();
-    // private _lastKnownOrientation = new Quaternion();
-    // private _lastKnownDeviceOrientation = new Quaternion();
-    // private _arScene;
-    // private _arController;
     private _renderer;
     private _sharedCanvasFinal = false;
     private _vrDisplay : VRDisplay | undefined = undefined;
@@ -69,57 +55,19 @@ export class TangoRealityViewer extends RealityViewer {
     private _tangoOriginLost = true;
     private _tangoOriginLostPreviousFrame;
 
-    // private _scratchQuaternion = new Quaternion();
-
-    // private _artoolkitTrackerEntity = new Entity({
-    //     position: new ConstantPositionProperty(Cartesian3.ZERO, this.contextService.user),
-    //     orientation: new ConstantProperty(Quaternion.IDENTITY)
-    // });
-
-    // private _artoolkitProjection:Matrix4|undefined;
-
-    // private _markerEntities = new Map<string,Entity>();
-
-    // private _resolveReady:Function;
-    // private _rejectReady:Function;
-    // private _artoolkitReady:Promise<void>;
-
-    // private _aggregator:CameraEventAggregator|undefined;
-    // private _moveFlags = {
-    //     moveForward : false,
-    //     moveBackward : false,
-    //     moveUp : false,
-    //     moveDown : false,
-    //     moveLeft : false,
-    //     moveRight : false
-    // }
-
     constructor(
         private sessionService: SessionService,
         private viewService: ViewService,
-        // private contextService: ContextService,
+        private contextService: ContextService,
         private container: Container,
         private deviceService: DeviceService,
         public uri:string,
         public vrDisplay) {
         super(uri);
-
-        // this._artoolkitReady = new Promise<void>((resolve, reject) => {
-        //     this._resolveReady = resolve;
-        //     this._rejectReady = reject;
-        // });
         
         this.viewService.viewportChangeEvent.addEventListener((viewport:CanvasViewport)=>{
             this.updateViewport(viewport);
         });
-        // for now, initialize artoolkit here
-        // eventually we want to decouple video setup from artoolkit setup
-        // and only initialize the video here
-        // this.initARToolKit().then(()=>{
-        //     this._resolveReady();
-        // }, (error) => {
-        //     this._rejectReady(error);
-        // });
     }
 
     private _scratchMatrix3 = new Matrix3;
@@ -212,6 +160,24 @@ export class TangoRealityViewer extends RealityViewer {
                 return Promise.resolve({result: this._usePointCloudForOcclusion});
             }
 
+            // TODO: handle marker tracking for Tango
+            session.on['ar.tango.addMarker'] = (msg) => {
+                return new Promise<Message>((resolve, reject)=>{
+                    // this._arController.loadMarker(msg.url, (markerId) => {
+                    //     // TODO: handle size of markers
+                    //     var id = this._getIdForMarker(markerId);
+                    //     var entity = new Entity({id});
+                    //     this.contextService.entities.add(entity);
+                    //     this._markerEntities.set(id, entity);
+                    //     resolve({id: id});
+                    // }, (error) => {
+                    //     console.log(error);
+                    //     reject(error);
+                    // });
+                    console.log(this.contextService);//dummy
+                });
+            }            
+
         });
 
         // Setup everything after connected to the manager. The manager only connects once.
@@ -220,29 +186,8 @@ export class TangoRealityViewer extends RealityViewer {
             // since we aren't create a child view service and viewport service, 
             // suppress any errors from not handling these messages
             childSessionService.manager.suppressErrorOnUnknownTopic = true;
-            
-            // const scratchQuaternion = new Quaternion;
-            // const scratchQuaternionDragYaw = new Quaternion;
-            // const pitchQuat = new Quaternion;
-            const positionScratchCartesian = new Cartesian3;
-            // const movementScratchCartesian = new Cartesian3;
-            // const orientationMatrix = new Matrix3;
-            // const up = new Cartesian3(0,0,1);
-            // const right = new Cartesian3(1,0,0);
-            // const forward = new Cartesian3(0,-1,0);
-            // const scratchFrustum = new PerspectiveFrustum();
-            // const _scratchFrameData = new VRFrameData();
-
-            // const deviceStage = childDeviceService.stage;
-            // const deviceUser = childDeviceService.user;
-
-            // const NEGATIVE_UNIT_Z = new Cartesian3(0,0,-1);
-            // const X_90ROT = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, CesiumMath.PI_OVER_TWO);
 
             const subviews:SerializedSubviewList = [];
-
-            // const deviceUserPose = childContextService.createEntityPose(deviceUser, deviceStage);
-
 
             const checkSuggestedGeolocationSubscription = () => {
                 if (childDeviceService.suggestedGeolocationSubscription) {
@@ -258,29 +203,22 @@ export class TangoRealityViewer extends RealityViewer {
 
             const remove2 = childDeviceService.frameStateEvent.addEventListener((frameState) => {
                 if (childSessionService.manager.isClosed) return;
-                
-                // const aggregator = this._aggregator;
 
                 SerializedSubviewList.clone(frameState.subviews, subviews);
 
                 const time = frameState.time;
-
-                // deviceUserPose.update(time);
                 
                 // override user pos to tango pos
+                // Was originally used to provide control over userpose if the device does not have a physical pose
                 const overrideUser = true; //!(deviceUserPose.status & PoseStatus.KNOWN);
-                // originally provide controls if the device does not have a physical pose
-
-                    
+                                
                 const contextUser = childContextService.user;
                 const contextStage = childContextService.stage;
 
-                var userPosition: Cartesian3;
+                var userPosition: Cartesian3 | undefined;
+                var userOrientation: Quaternion | undefined;
 
-                // OverrideUser
-                // const position = 
-                //     getEntityPositionInReferenceFrame(contextUser, time, contextStage, positionScratchCartesian) || 
-                //     Cartesian3.fromElements(0, childDeviceService.suggestedUserHeight, 0, positionScratchCartesian);
+                // Override user
                 (<VRDisplay>this._vrDisplay)['getFrameData'](this._frameData);
                 const tangoPos = this._frameData.pose.position;
                 userPosition = new Cartesian3(tangoPos[0], tangoPos[1], tangoPos[2]);
@@ -289,37 +227,22 @@ export class TangoRealityViewer extends RealityViewer {
                 this._tangoOriginLostPreviousFrame = this._tangoOriginLost;
                 this._tangoOriginLost = userPosition.equals(Cartesian3.ZERO);
 
-                let orientation;
-                // If tango tracking is lost, use the device orientation only
+                // Position user at half of eye height AFTER TangoTrackingLost is checked
+                userPosition.y += AVERAGE_EYE_HEIGHT/2;
+
+                
+                // If tango tracking is lost, set userPosition to undefined -> results in user pose status LOST
                 if (this._tangoOriginLost) {
-                    // userPosition = this._lastKnownPosition.clone();
-                    userPosition = Cartesian3.ZERO;
-                    if (this.deviceService.user.orientation) 
-                        orientation = this.deviceService.user.orientation.getValue(time);
-                    // let d1 = Quaternion.conjugate(this._lastKnownDeviceOrientation, scratchQuaternion);
-                    // let x = Quaternion.multiply(this._lastKnownOrientation, d1, scratchQuaternion);
-                    // orientation = Quaternion.multiply(orientation, x, scratchQuaternion);
+                    userPosition = undefined;
+                    userOrientation = undefined;
                 } else {
-                    // this._lastKnownPosition = userPosition.clone();
                     const tangoRot = this._frameData.pose.orientation;
-                    // if (this.deviceService.user.orientation) 
-                        // orientation = this.deviceService.user.orientation.getValue(time);
-                    orientation = new Quaternion(tangoRot[0], tangoRot[1], tangoRot[2], tangoRot[3]);
-                    // this._lastKnownOrientation = orientation.clone();
-                    // if (this.deviceService.user.orientation)
-                        // this._lastKnownDeviceOrientation = this.deviceService.user.orientation.getValue(time);
-                    // console.log(orientation);console.log(this._lastKnownDeviceOrientation)
+                    userOrientation = new Quaternion(tangoRot[0], tangoRot[1], tangoRot[2], tangoRot[3]);
                 }
 
-                // Matrix3.fromQuaternion(orientation, orientationMatrix);
-                // Matrix3.multiplyByVector(orientationMatrix, Cartesian3.UNIT_Y, up);
-                // Matrix3.multiplyByVector(orientationMatrix, Cartesian3.UNIT_X, right);
-                // Matrix3.multiplyByVector(orientationMatrix, NEGATIVE_UNIT_Z, forward);
-
                 (contextUser.position as ConstantPositionProperty).setValue(userPosition, contextStage);
-                (contextUser.orientation as ConstantProperty).setValue(orientation);
+                (contextUser.orientation as ConstantProperty).setValue(userOrientation);
 
-                // console.log(userPosition + " // " + orientation);
                 // Update stage geopose when GPS accuracy improves or Tango origin is repositioned
                 const gpsAccuracyHasImproved = this._lastGeoHorizontalAccuracy < (this.deviceService.geoHorizontalAccuracy || 0);
                 const tangoOriginRepositioned = this._tangoOriginLostPreviousFrame && !this._tangoOriginLost;
@@ -328,27 +251,53 @@ export class TangoRealityViewer extends RealityViewer {
 
                 if (geopositionStage) {
                     if (tangoOriginRepositioned) {
-                        console.log("Tango origin was reset. Updating stage geopose.")
+                        console.log("Tango origin has been reset. Updating stage geopose.")
                         this._tangoOriginLost = false;
                     }
-                    else {
+                    else if (gpsAccuracyHasImproved) {
                         console.log("Updating stage geopose. Current horizontal accuracy is " + this.deviceService.geoHorizontalAccuracy)
                         this._lastGeoHorizontalAccuracy = this.deviceService.geoHorizontalAccuracy || 0;
                     }
 
-                    // TODO: orient stage to align with north
                     const deviceStage = this.deviceService.stage;
-                    // customStagePosition = getEntityPositionInReferenceFrame(childDeviceService.user, time, childDeviceService.stage, this._scratchCartesian) || positionScratchCartesian;
-                    customStagePosition = deviceStage.position && deviceStage.position.getValue(time) || positionScratchCartesian;
-                    customStagePosition = Cartesian3.subtract(customStagePosition, userPosition, this._scratchCartesian);
-                    let transformMatrix = eastUpSouthToFixedFrame(customStagePosition, undefined, this._scratchMatrix4);
-                    let rotationMatrix = Matrix4.getRotation(transformMatrix, this._scratchMatrix3);
-                    customStageOrientation = Quaternion.fromRotationMatrix(rotationMatrix);
-                    // if (this.deviceService.user.orientation) 
-                        // customStageOrientation = this.deviceService.user.orientation.getValue(time);
-                    (contextStage.position as ConstantPositionProperty).setValue(customStagePosition, ReferenceFrame.FIXED);
-                    (contextStage.orientation as ConstantProperty).setValue(customStageOrientation);
+
+                    if (deviceStage.position) { // If GPS info is provided
+                        // this.contextService.defaultReferenceFrame = ReferenceFrame.FIXED;
+
+                        // Get GPS coordinates of phone and subtract local tango coordinates to get the GPS coord of Stage origin
+                        customStagePosition = deviceStage.position.getValue(time);
+                        customStagePosition = Cartesian3.subtract(customStagePosition, userPosition || Cartesian3.ZERO, this._scratchCartesian);
+                        // Set the height of the stage origin to the floor height
+                        customStagePosition.y -= AVERAGE_EYE_HEIGHT/2;
+
+                        let customStageOrientation: Quaternion = this.deviceService.user.orientation ? 
+                            this.deviceService.user.orientation.getValue(time) : new Quaternion(0, 0, 0, 1);
+
+                        // Use only yaw as in a compass
+                        customStageOrientation.x = 0;
+                        customStageOrientation.y = -customStageOrientation.y;
+                        customStageOrientation.z = 0;
+                        Quaternion.normalize(customStageOrientation, customStageOrientation);
+
+                        let userOrientationYaw = userOrientation || new Quaternion(0, 0, 0, 1);
+                        userOrientationYaw.x = 0;
+                        userOrientationYaw.z = 0;
+                        Quaternion.normalize(userOrientationYaw, userOrientationYaw);
+
+                        Quaternion.multiply(customStageOrientation, userOrientationYaw, customStageOrientation);
+
+                        (contextStage.position as ConstantPositionProperty).setValue(customStagePosition, ReferenceFrame.FIXED);
+                        (contextStage.orientation as ConstantProperty).setValue(customStageOrientation);
+                    } else {
+                        // this.contextService.defaultReferenceFrame = this.contextService.origin;
+                        (contextStage.position as ConstantPositionProperty).setValue(undefined, undefined);
+                        (contextStage.orientation as ConstantProperty).setValue(undefined);
+                    }
                 }
+
+                // Use this to check the device rotation. Result is in (pitch, yaw, roll, -) format
+                // if (this.deviceService.user.orientation) 
+                //     console.log(this.deviceService.user.orientation.getValue(time));
 
                 if (this._initFinished && this._vrDisplay) {
                     //update cameraPersp
@@ -364,7 +313,6 @@ export class TangoRealityViewer extends RealityViewer {
                         this._cameraPersp.position.set( 0, 0, 0 );
                     }
                     
-                    // if (this._vrDisplay) console.log(this._vrDisplay.getPose().position)
                     this._pointCloud.update(this._renderPointCloud || this._usePointCloudForOcclusion, this._pointsToSkip, true);
 
                     // Make sure that the camera is correctly displayed depending on the
@@ -398,13 +346,11 @@ export class TangoRealityViewer extends RealityViewer {
                     {
                         overrideUser,  
                         overrideStage,
-                        floorOffset: -AVERAGE_EYE_HEIGHT/2,
                         userTracking: this.userTracking
                     }
                 );
                 childContextService.submitFrameState(contextFrameState);
 
-                // aggregator && aggregator.reset();
             });
 
             childSessionService.manager.closeEvent.addEventListener(()=>{
