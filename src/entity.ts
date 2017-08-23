@@ -420,7 +420,7 @@ export class EntityServiceProvider {
             const referenceFrameId = this.targetReferenceFrameMap.get(id);
             const referenceFrame = defined(referenceFrameId) && typeof referenceFrameId === 'string' ? 
                 this.entityService.collection.getById(referenceFrameId) :
-                defined(referenceFrameId) ? referenceFrameId : this.entityService.collection.getById('ar.stage');
+                defined(referenceFrameId) ? referenceFrameId : this.entityService.collection.getById('ar.origin');
             this._entityPoseCache[id] = this._getSerializedEntityState(entity, time, referenceFrame);
         }
 

@@ -577,7 +577,7 @@ export class ContextService {
             }
         }
 
-        // update stage entity based on device (if the reality did override it)
+        // update stage entity based on device if the reality did not override it
         const deviceStage = this.deviceService.stage;
         const contextStage = this.stage;
         if (entities[contextStage.id] === undefined) {
@@ -585,19 +585,32 @@ export class ContextService {
             const contextStageOrientation = contextStage.orientation as ConstantProperty;
             contextStagePosition.setValue(Cartesian3.ZERO, deviceStage);
             contextStageOrientation.setValue(Quaternion.IDENTITY);
-            contextStage['meta'] = this.deviceService.stage['meta']; // We want to serialize geo metadata as well. 
+            contextStage['meta'] = this.deviceService.stage['meta']; // To serialize the user geopose metadata
         }
 
-        // update user entity based on device (if the reality did override it)
+        // update origin (relative to stage) to match device origin (relative to device stage)
+        const deviceOrigin = this.deviceService.origin;
+        const contextOrigin = this.origin;
+        if (entities[this.origin.id] === undefined) {
+            const deviceOriginPositionValue = this._getEntityPositionInReferenceFrame(deviceOrigin, time, deviceStage, this._scratchCartesian);
+            const deviceOriginOrientationValue =  this._getEntityOrientationInReferenceFrame(deviceOrigin, time, deviceStage, this._scratchQuaternion);
+            const contextOriginPosition = contextOrigin.position as ConstantPositionProperty;
+            const contextOriginOrientation = contextOrigin.orientation as ConstantProperty;
+            contextOriginPosition.setValue(deviceOriginPositionValue, contextStage);
+            contextOriginOrientation.setValue(deviceOriginOrientationValue);
+        }
+
+        // update user entity based on device if the reality did not override it
         const deviceUser = this.deviceService.user;
         const contextUser = this.user;
         if (entities[contextUser.id] === undefined) {
-            const userPositionValue = this._getEntityPositionInReferenceFrame(deviceUser, time, deviceStage, this._scratchCartesian);
-            const userOrientationValue =  this._getEntityOrientationInReferenceFrame(deviceUser, time, deviceStage, this._scratchQuaternion);
+            const userPositionValue = this._getEntityPositionInReferenceFrame(deviceUser, time, deviceOrigin, this._scratchCartesian);
+            const userOrientationValue =  this._getEntityOrientationInReferenceFrame(deviceUser, time, deviceOrigin, this._scratchQuaternion);
             const contextUserPosition = contextUser.position as ConstantPositionProperty;
             const contextUserOrientation = contextUser.orientation as ConstantProperty;
-            contextUserPosition.setValue(userPositionValue, contextStage);
+            contextUserPosition.setValue(userPositionValue, contextOrigin);
             contextUserOrientation.setValue(userOrientationValue);
+            contextUser['meta'] = this.deviceService.user['meta'];
         }
 
         // update view entity (if the reality did not set it)
@@ -627,18 +640,6 @@ export class ContextService {
         if (entities[this.floor.id] === undefined) {
             const floorPosition = this.floor.position as ConstantPositionProperty;
             floorPosition.setValue(Cartesian3.ZERO, contextStage);
-        }
-
-        // update origin (relative to stage) to match device origin (relative to device stage)
-        if (entities[this.origin.id] === undefined) { // TODO: this if statement may be unecessary
-            const deviceOrigin = this.deviceService.origin;
-            const contextOrigin = this.origin;
-            const deviceOriginPositionValue = this._getEntityPositionInReferenceFrame(deviceOrigin, time, deviceStage, this._scratchCartesian);
-            const deviceOriginOrientationValue =  this._getEntityOrientationInReferenceFrame(deviceOrigin, time, deviceStage, this._scratchQuaternion);
-            const contextOriginPosition = contextOrigin.position as ConstantPositionProperty;
-            const contextOriginOrientation = contextOrigin.orientation as ConstantProperty;
-            contextOriginPosition.setValue(deviceOriginPositionValue, contextStage);
-            contextOriginOrientation.setValue(deviceOriginOrientationValue);
         }
 
         // update view
@@ -684,26 +685,24 @@ export class ContextService {
     }
 
     /**
-     * If geopose is available, this is the accuracy of the user's heading
+     * If geopose is available, this is the accuracy of the user heading
      */
     public get geoHeadingAccuracy() : number|undefined {
-        return this.user['meta'] && this.user['meta'].geoHeadingAccuracy;
+        return this.stage['meta'] && this.stage['meta'].geoHeadingAccuracy;
     }
 
     /**
-     * If geopose is available, this is the horizontal accuracy of the stage geolocation
+     * If geopose is available, this is the horizontal accuracy of the user geolocation
      */
     public get geoHorizontalAccuracy() : number|undefined {
-        return this.user['meta'] && this.user['meta'].geoHorizontalAccuracy ||
-            this.stage['meta'] && this.stage['meta'].geoHorizontalAccuracy;
+        return this.stage['meta'] && this.stage['meta'].geoHorizontalAccuracy;
     }
     
     /**
-     * If geopose is available, this is the vertical accuracy of the stage geolocation
+     * If geopose is available, this is the vertical accuracy of the user geolocation
      */
     public get geoVerticalAccuracy() : number|undefined {
-        return this.user['meta'] && this.user['meta'].geoVerticalAccuracy ||
-            this.stage['meta'] && this.stage['meta'].geoVerticalAccuracy;
+        return this.stage['meta'] && this.stage['meta'].geoVerticalAccuracy;
     }
 
 
@@ -742,6 +741,7 @@ export class ContextServiceProvider {
         protected permissionServiceProvider:PermissionServiceProvider
     ) {
         this.entityServiceProvider.targetReferenceFrameMap.set(this.contextService.stage.id, ReferenceFrame.FIXED);
+        this.entityServiceProvider.targetReferenceFrameMap.set(this.contextService.origin.id, this.contextService.stage.id);
 
         // subscribe to context geolocation if any child sessions have subscribed
         this.entityServiceProvider.sessionSubscribedEvent.addEventListener((evt)=>{
@@ -792,17 +792,20 @@ export class ContextServiceProvider {
                 sessionEntities[id] = state.entities[id];
             }
         }
-
-        // always send the origin state
-        sessionEntities[this.contextService.origin.id] = entityServiceProvider.getCachedSerializedEntityState(this.contextService.origin, state.time)
-
-        // get subscribed entities for the session
-        const subscriptions = entityServiceProvider.subscriptionsBySubscriber.get(session)!;
         
-        // exclude the stage state unless it is explicitly subscribed 
+        const subscriptions = entityServiceProvider.subscriptionsBySubscriber.get(session)!;
         const contextService = this.contextService;
         const contextStageId = contextService.stage.id;
-        if (!subscriptions[contextStageId]) delete sessionEntities[contextStageId];
+        
+        // always send the origin and user state
+        sessionEntities[contextService.origin.id] = entityServiceProvider.getCachedSerializedEntityState(contextService.origin, state.time)        
+        sessionEntities[contextService.user.id] = entityServiceProvider.getCachedSerializedEntityState(contextService.user, state.time)
+
+        // exclude the stage state unless it is explicitly subscribed with permission granted
+        if (!subscriptions[contextStageId]) 
+            delete sessionEntities[contextStageId];
+        if (this.permissionServiceProvider.getPermissionState(session, 'geolocation') != PermissionState.GRANTED)
+            delete sessionEntities[contextStageId];
         
         // add the entity states for all subscribed entities
         const iter = subscriptions.keys();
@@ -812,10 +815,6 @@ export class ContextServiceProvider {
             const entity = contextService.entities.getById(id);
             sessionEntities[id] = entityServiceProvider.getCachedSerializedEntityState(entity, state.time);
         }
-
-        // remove stage updates if geolocation permission is not granted
-        if (this.permissionServiceProvider.getPermissionState(session, 'geolocation') != PermissionState.GRANTED)
-            delete sessionEntities[contextStageId];
              
         // recycle the frame state object, but with the session entities
         const parentEntities = state.entities;

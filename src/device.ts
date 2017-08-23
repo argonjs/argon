@@ -170,14 +170,23 @@ export class DeviceService {
         orientation: undefined
     }));    
     
+    /**
+     * The heading accuracy of the user's geopose
+     */
     public get geoHeadingAccuracy() : number|undefined {
-        return this.user['meta'] ? this.user['meta'].geoHeadingAccuracy : undefined;
+        return this.stage['meta'] ? this.stage['meta'].geoHeadingAccuracy : undefined;
     }
-
+    
+    /**
+     * The horizontal accuracy of the user's geopose
+     */
     public get geoHorizontalAccuracy() : number|undefined {
         return this.stage['meta'] ? this.stage['meta'].geoHorizontalAccuracy : undefined;
     }
     
+    /**
+     * The horizontal accuracy of the user's geopose
+     */
     public get geoVerticalAccuracy() : number|undefined {
         return this.stage['meta'] ? this.stage['meta'].geoVerticalAccuracy : undefined;
     }
@@ -567,8 +576,8 @@ export class DeviceService {
             )
         );
 
-        deviceUser['meta'] = deviceUser['meta'] || {};
-        deviceUser['meta'].geoHeadingAccuracy = this._deviceOrientationHeadingAccuracy;
+        deviceStage['meta'] = deviceStage['meta'] || {};
+        deviceStage['meta'].geoHeadingAccuracy = this._deviceOrientationHeadingAccuracy;
     }
 
     private _vrFrameData?:any;
@@ -1147,10 +1156,9 @@ export class DeviceServiceProvider {
             eusOrientation
         );
 
-        stage['meta'] = {
-            geoHorizontalAccuracy,
-            geoVerticalAccuracy
-        };
+        const stageMeta = stage['meta'] = stage['meta'] || {}; 
+        stageMeta.geoHorizontalAccuracy = geoHorizontalAccuracy;
+        stageMeta.geoVerticalAccuracy = geoVerticalAccuracy;
     }
 
     private _geolocationWatchId?:number;
