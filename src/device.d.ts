@@ -74,8 +74,17 @@ export declare class DeviceService {
      * where +X is right, +Y is up, and -Z is forward
      */
     user: Entity;
+    /**
+     * The heading accuracy of the user's geopose
+     */
     readonly geoHeadingAccuracy: number | undefined;
+    /**
+     * The horizontal accuracy of the user's geopose
+     */
     readonly geoHorizontalAccuracy: number | undefined;
+    /**
+     * The horizontal accuracy of the user's geopose
+     */
     readonly geoVerticalAccuracy: number | undefined;
     /**
      * To be removed.

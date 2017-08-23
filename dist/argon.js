@@ -24067,7 +24067,7 @@ $__System.registerDynamic('98', ['82', '97'], true, function ($__require, export
 $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', '13', '14', '18', '1e', '24', '15', '5', '7', '42', '1a', '1b', '8', '39', '3c', '51', '6e', '2d', '17', 'd', '27', '28', '2e', '2f', '30', '21', '26', '29', '35', '20', '36', '37', '38', 'e', 'f', '2a', '3d', '44', '7c', '46', '49', '4c', '4f', '7d', '7e', '7f', '81', '98'], function (_export, _context) {
     "use strict";
 
-    var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, cesium_Source_Core_Clock_js, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, defaultValue, defined, cesium_Source_Core_DeveloperError_js, Ellipsoid, Entity, EntityCollection, Event, cesium_Source_Core_ExtrapolationType_js, cesium_Source_Core_FeatureDetection_js, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HeadingPitchRoll_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, ReferenceEntity, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, TerrainProvider, throttleRequestByServer, loadImage, WebMercatorTilingScheme, getImagePixels, HeightmapTerrainData, Credit, sampleTerrain, CardboardUI, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, DI, after, lut, i, cesiumImports, kButtonWidthDp, kTouchSlopFactor, __extends$1, AVERAGE_EYE_HEIGHT, DEFAULT_NEAR_PLANE, DEFAULT_FAR_PLANE, Role, Configuration, Viewport, CanvasViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event$1, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, getEventSynthesizier$1, cloneTouch, cloneTouches, reNative, hasNativeWebVRImplementation, suggestedWebGLContextAntialiasAttribute, eastUpSouthToFixedFrame, scratchAncestorCartesian, scratchAncestorQuaternion, getEntityPosition, getEntityOrientation, _scratchFramesArray, _entityStateCache, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, isAndroid, lastTime, rAF, cAF, defaultTerrainProvider, version, __extends, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, SessionConnectService, WKWebViewConnectService, AndroidWebViewConnectService, _a$1, _b$1, __decorate$5, __metadata$5, Permission, PermissionState, PermissionService, PermissionServiceProvider, _a$5, _b$5, __decorate$4, __metadata$4, EntityPose, PoseStatus, EntityService, EntityServiceProvider, _a$4, _b$4, _c$3, __decorate$7, __metadata$7, FocusService, FocusServiceProvider, _a$7, _b$7, __decorate$8, __metadata$8, VisibilityService, VisibilityServiceProvider, _a$8, _b$8, __decorate$6, __metadata$6, Subview, ViewportMode, ViewItems, ViewService, ViewServiceProvider, viewportMetaTag, argonMetaTag, style, sheet, _a$6, _b$6, _c$4, _d$3, _e$3, __decorate$3, __metadata$3, DeviceStableState$$1, DeviceFrameState$$1, DeviceService, DeviceServiceProvider, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, _h$1, _j$1, _k$1, _l$1, __decorate$10, __metadata$10, ContextService, ContextServiceProvider, _a$10, _b$10, _c$6, _d$5, _e$5, _f$3, _g$3, _h$3, _j$2, _k$2, _l$2, _m$1, RealityViewer, __extends$2, __decorate$11, __metadata$11, EmptyRealityViewer, _a$11, _b$11, _c$7, __extends$3, __decorate$12, __metadata$12, LiveRealityViewer, _a$12, _b$12, _c$8, _d$6, __extends$4, __decorate$13, __metadata$13, WebRTCRealityViewer, integrateCustomARToolKit, _a$13, _b$13, _c$9, _d$7, __extends$5, __decorate$14, __metadata$14, HostedRealityViewer, _a$14, _b$14, __extends$6, __decorate$15, __metadata$15, TangoRealityViewer, _a$15, _b$15, _c$10, _d$8, __decorate$9, __metadata$9, RealityViewerFactory, RealityService, RealityServiceProvider, _a$9, _b$9, _c$5, _d$4, _e$4, _f$2, _g$2, _h$2, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __extends$7, __decorate$16, __metadata$16, VuforiaServiceProvider, VuforiaHint, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$16, _b$16, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, ArgonConfigurationManager, initReality, _a, _b, _c, _d, _e, _f, _g, _h, _j, ArgonSystem_1, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
+    var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, cesium_Source_Core_Clock_js, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, defaultValue, defined, cesium_Source_Core_DeveloperError_js, Ellipsoid, Entity, EntityCollection, Event, cesium_Source_Core_ExtrapolationType_js, cesium_Source_Core_FeatureDetection_js, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HeadingPitchRoll_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, ReferenceEntity, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, TerrainProvider, throttleRequestByServer, loadImage, WebMercatorTilingScheme, getImagePixels, HeightmapTerrainData, Credit, sampleTerrain, CardboardUI, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, DI, after, lut, i, cesiumImports, kButtonWidthDp, kTouchSlopFactor, __extends$1, AVERAGE_EYE_HEIGHT, DEFAULT_NEAR_PLANE, DEFAULT_FAR_PLANE, Role, Configuration, Viewport, CanvasViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event$1, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, getEventSynthesizier$1, cloneTouch, cloneTouches, reNative, hasNativeWebVRImplementation, suggestedWebGLContextAntialiasAttribute, eastUpSouthToFixedFrame, scratchAncestorCartesian, scratchAncestorQuaternion, getEntityPosition, getEntityOrientation, _scratchFramesArray, _entityStateCache, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, isAndroid, lastTime, rAF, cAF, defaultTerrainProvider, version, __extends, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, SessionConnectService, WKWebViewConnectService, AndroidWebViewConnectService, _a$1, _b$1, __decorate$5, __metadata$5, Permission, PermissionState, PermissionService, PermissionServiceProvider, _a$5, _b$5, __decorate$4, __metadata$4, EntityPose, PoseStatus, EntityService, EntityServiceProvider, _a$4, _b$4, _c$3, __decorate$7, __metadata$7, FocusService, FocusServiceProvider, _a$7, _b$7, __decorate$8, __metadata$8, VisibilityService, VisibilityServiceProvider, _a$8, _b$8, __decorate$6, __metadata$6, Subview, ViewportMode, ViewItems, ViewService, ViewServiceProvider, viewportMetaTag, argonMetaTag, style, sheet, _a$6, _b$6, _c$4, _d$3, _e$3, __decorate$3, __metadata$3, DeviceStableState$$1, DeviceFrameState$$1, DeviceService, DeviceServiceProvider, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, _h$1, _j$1, _k$1, _l$1, __decorate$10, __metadata$10, ContextService, ContextServiceProvider, _a$10, _b$10, _c$6, _d$5, _e$5, _f$3, _g$3, _h$3, _j$2, _k$2, RealityViewer, __extends$2, __decorate$11, __metadata$11, EmptyRealityViewer, _a$11, _b$11, _c$7, __extends$3, __decorate$12, __metadata$12, LiveRealityViewer, _a$12, _b$12, _c$8, _d$6, __extends$4, __decorate$13, __metadata$13, WebRTCRealityViewer, integrateCustomARToolKit, _a$13, _b$13, _c$9, _d$7, __extends$5, __decorate$14, __metadata$14, HostedRealityViewer, _a$14, _b$14, __extends$6, __decorate$15, __metadata$15, TangoRealityViewer, _a$15, _b$15, _c$10, _d$8, _e$6, __decorate$9, __metadata$9, RealityViewerFactory, RealityService, RealityServiceProvider, _a$9, _b$9, _c$5, _d$4, _e$4, _f$2, _g$2, _h$2, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __extends$7, __decorate$16, __metadata$16, VuforiaServiceProvider, VuforiaHint, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$16, _b$16, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, ArgonConfigurationManager, initReality, _a, _b, _c, _d, _e, _f, _g, _h, _j, ArgonSystem_1, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
 
     function alwaysValid() {
         return true;
@@ -26522,7 +26522,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-10");
+            _export('version', version = "1.4.0-13");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -27647,7 +27647,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     var id = entity.id;
                     if (!defined(this._entityPoseCache[id]) || !this._cacheTime.equalsEpsilon(time, 0.000001)) {
                         var referenceFrameId = this.targetReferenceFrameMap.get(id);
-                        var referenceFrame = defined(referenceFrameId) && typeof referenceFrameId === 'string' ? this.entityService.collection.getById(referenceFrameId) : defined(referenceFrameId) ? referenceFrameId : this.entityService.collection.getById('ar.stage');
+                        var referenceFrame = defined(referenceFrameId) && typeof referenceFrameId === 'string' ? this.entityService.collection.getById(referenceFrameId) : defined(referenceFrameId) ? referenceFrameId : this.entityService.collection.getById('ar.origin');
                         this._entityPoseCache[id] = this._getSerializedEntityState(entity, time, referenceFrame);
                     }
                     return this._entityPoseCache[id];
@@ -28444,13 +28444,19 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     }
                 }
                 Object.defineProperty(DeviceService$$1.prototype, "geoHeadingAccuracy", {
+                    /**
+                     * The heading accuracy of the user's geopose
+                     */
                     get: function () {
-                        return this.user['meta'] ? this.user['meta'].geoHeadingAccuracy : undefined;
+                        return this.stage['meta'] ? this.stage['meta'].geoHeadingAccuracy : undefined;
                     },
                     enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(DeviceService$$1.prototype, "geoHorizontalAccuracy", {
+                    /**
+                     * The horizontal accuracy of the user's geopose
+                     */
                     get: function () {
                         return this.stage['meta'] ? this.stage['meta'].geoHorizontalAccuracy : undefined;
                     },
@@ -28458,6 +28464,9 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     configurable: true
                 });
                 Object.defineProperty(DeviceService$$1.prototype, "geoVerticalAccuracy", {
+                    /**
+                     * The horizontal accuracy of the user's geopose
+                     */
                     get: function () {
                         return this.stage['meta'] ? this.stage['meta'].geoVerticalAccuracy : undefined;
                     },
@@ -28675,8 +28684,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     if (!deviceUser.orientation) deviceUser.orientation = new ConstantProperty();
                     deviceUser.position.setValue(Cartesian3.fromElements(0, 0, this.suggestedUserHeight, this._scratchCartesian), deviceStage);
                     deviceUser.orientation.setValue(Quaternion.multiply(deviceOrientation, screenOrientation, this._scratchQuaternion));
-                    deviceUser['meta'] = deviceUser['meta'] || {};
-                    deviceUser['meta'].geoHeadingAccuracy = this._deviceOrientationHeadingAccuracy;
+                    deviceStage['meta'] = deviceStage['meta'] || {};
+                    deviceStage['meta'].geoHeadingAccuracy = this._deviceOrientationHeadingAccuracy;
                 };
                 DeviceService$$1.prototype._updateForWebVR = function () {
                     var vrDisplay = this._vrDisplay;
@@ -29111,10 +29120,9 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     stage.orientation = stage.orientation || new ConstantProperty();
                     stage.position.setValue(fixedPosition, ReferenceFrame.FIXED);
                     stage.orientation.setValue(eusOrientation);
-                    stage['meta'] = {
-                        geoHorizontalAccuracy: geoHorizontalAccuracy,
-                        geoVerticalAccuracy: geoVerticalAccuracy
-                    };
+                    var stageMeta = stage['meta'] = stage['meta'] || {};
+                    stageMeta.geoHorizontalAccuracy = geoHorizontalAccuracy;
+                    stageMeta.geoVerticalAccuracy = geoVerticalAccuracy;
                 };
                 /**
                  * Overridable. Should call configureStage when new geolocation is available
@@ -29647,7 +29655,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                             entityService.updateEntityFromSerializedState(id, entities[id]);
                         }
                     }
-                    // update stage entity based on device (if the reality did override it)
+                    // update stage entity based on device if the reality did not override it
                     var deviceStage = this.deviceService.stage;
                     var contextStage = this.stage;
                     if (entities[contextStage.id] === undefined) {
@@ -29655,18 +29663,30 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         var contextStageOrientation = contextStage.orientation;
                         contextStagePosition.setValue(Cartesian3.ZERO, deviceStage);
                         contextStageOrientation.setValue(Quaternion.IDENTITY);
-                        contextStage['meta'] = this.deviceService.stage['meta']; // We want to serialize geo metadata as well. 
+                        contextStage['meta'] = this.deviceService.stage['meta']; // To serialize the user geopose metadata
                     }
-                    // update user entity based on device (if the reality did override it)
+                    // update origin (relative to stage) to match device origin (relative to device stage)
+                    var deviceOrigin = this.deviceService.origin;
+                    var contextOrigin = this.origin;
+                    if (entities[this.origin.id] === undefined) {
+                        var deviceOriginPositionValue = this._getEntityPositionInReferenceFrame(deviceOrigin, time, deviceStage, this._scratchCartesian);
+                        var deviceOriginOrientationValue = this._getEntityOrientationInReferenceFrame(deviceOrigin, time, deviceStage, this._scratchQuaternion);
+                        var contextOriginPosition = contextOrigin.position;
+                        var contextOriginOrientation = contextOrigin.orientation;
+                        contextOriginPosition.setValue(deviceOriginPositionValue, contextStage);
+                        contextOriginOrientation.setValue(deviceOriginOrientationValue);
+                    }
+                    // update user entity based on device if the reality did not override it
                     var deviceUser = this.deviceService.user;
                     var contextUser = this.user;
                     if (entities[contextUser.id] === undefined) {
-                        var userPositionValue = this._getEntityPositionInReferenceFrame(deviceUser, time, deviceStage, this._scratchCartesian);
-                        var userOrientationValue = this._getEntityOrientationInReferenceFrame(deviceUser, time, deviceStage, this._scratchQuaternion);
+                        var userPositionValue = this._getEntityPositionInReferenceFrame(deviceUser, time, deviceOrigin, this._scratchCartesian);
+                        var userOrientationValue = this._getEntityOrientationInReferenceFrame(deviceUser, time, deviceOrigin, this._scratchQuaternion);
                         var contextUserPosition = contextUser.position;
                         var contextUserOrientation = contextUser.orientation;
-                        contextUserPosition.setValue(userPositionValue, contextStage);
+                        contextUserPosition.setValue(userPositionValue, contextOrigin);
                         contextUserOrientation.setValue(userOrientationValue);
+                        contextUser['meta'] = this.deviceService.user['meta'];
                     }
                     // update view entity (if the reality did not set it)
                     var contextView = this.view;
@@ -29693,17 +29713,6 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     if (entities[this.floor.id] === undefined) {
                         var floorPosition = this.floor.position;
                         floorPosition.setValue(Cartesian3.ZERO, contextStage);
-                    }
-                    // update origin (relative to stage) to match device origin (relative to device stage)
-                    if (entities[this.origin.id] === undefined) {
-                        var deviceOrigin = this.deviceService.origin;
-                        var contextOrigin = this.origin;
-                        var deviceOriginPositionValue = this._getEntityPositionInReferenceFrame(deviceOrigin, time, deviceStage, this._scratchCartesian);
-                        var deviceOriginOrientationValue = this._getEntityOrientationInReferenceFrame(deviceOrigin, time, deviceStage, this._scratchQuaternion);
-                        var contextOriginPosition = contextOrigin.position;
-                        var contextOriginOrientation = contextOrigin.orientation;
-                        contextOriginPosition.setValue(deviceOriginPositionValue, contextStage);
-                        contextOriginOrientation.setValue(deviceOriginOrientationValue);
                     }
                     // update view
                     this.viewService._processContextFrameState(frameState, this);
@@ -29742,30 +29751,30 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 };
                 Object.defineProperty(ContextService.prototype, "geoHeadingAccuracy", {
                     /**
-                     * If geopose is available, this is the accuracy of the user's heading
+                     * If geopose is available, this is the accuracy of the user heading
                      */
                     get: function () {
-                        return this.user['meta'] && this.user['meta'].geoHeadingAccuracy;
+                        return this.stage['meta'] && this.stage['meta'].geoHeadingAccuracy;
                     },
                     enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(ContextService.prototype, "geoHorizontalAccuracy", {
                     /**
-                     * If geopose is available, this is the horizontal accuracy of the stage geolocation
+                     * If geopose is available, this is the horizontal accuracy of the user geolocation
                      */
                     get: function () {
-                        return this.user['meta'] && this.user['meta'].geoHorizontalAccuracy || this.stage['meta'] && this.stage['meta'].geoHorizontalAccuracy;
+                        return this.stage['meta'] && this.stage['meta'].geoHorizontalAccuracy;
                     },
                     enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(ContextService.prototype, "geoVerticalAccuracy", {
                     /**
-                     * If geopose is available, this is the vertical accuracy of the stage geolocation
+                     * If geopose is available, this is the vertical accuracy of the user geolocation
                      */
                     get: function () {
-                        return this.user['meta'] && this.user['meta'].geoVerticalAccuracy || this.stage['meta'] && this.stage['meta'].geoVerticalAccuracy;
+                        return this.stage['meta'] && this.stage['meta'].geoVerticalAccuracy;
                     },
                     enumerable: true,
                     configurable: true
@@ -29809,11 +29818,11 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
             __decorate$10([deprecated$1(), __metadata$10("design:type", Object), __metadata$10("design:paramtypes", [])], ContextService.prototype, "localOriginEastNorthUp", null);
             __decorate$10([deprecated$1('timestamp'), __metadata$10("design:type", Object), __metadata$10("design:paramtypes", [])], ContextService.prototype, "systemTime", null);
             __decorate$10([deprecated$1('time'), __metadata$10("design:type", Function), __metadata$10("design:paramtypes", []), __metadata$10("design:returntype", typeof (_a$10 = typeof JulianDate !== "undefined" && JulianDate) === "function" && _a$10 || Object)], ContextService.prototype, "getTime", null);
-            __decorate$10([deprecated$1(), __metadata$10("design:type", Function), __metadata$10("design:paramtypes", [typeof (_b$10 = typeof Entity !== "undefined" && Entity) === "function" && _b$10 || Object]), __metadata$10("design:returntype", void 0)], ContextService.prototype, "setDefaultReferenceFrame", null);
-            __decorate$10([deprecated$1('defaultReferenceFrame'), __metadata$10("design:type", Function), __metadata$10("design:paramtypes", []), __metadata$10("design:returntype", typeof (_c$6 = typeof Entity !== "undefined" && Entity) === "function" && _c$6 || Object)], ContextService.prototype, "getDefaultReferenceFrame", null);
-            __decorate$10([deprecated$1('subscribe'), __metadata$10("design:type", Function), __metadata$10("design:paramtypes", [String]), __metadata$10("design:returntype", typeof (_d$5 = typeof Entity !== "undefined" && Entity) === "function" && _d$5 || Object)], ContextService.prototype, "subscribeToEntityById", null);
-            __decorate$10([deprecated$1('EntityService.createFixed'), __metadata$10("design:type", Function), __metadata$10("design:paramtypes", [typeof (_e$5 = typeof Cartographic !== "undefined" && Cartographic) === "function" && _e$5 || Object, Object]), __metadata$10("design:returntype", void 0)], ContextService.prototype, "createGeoEntity", null);
-            _export('ContextService', ContextService = __decorate$10([autoinject(), __metadata$10("design:paramtypes", [typeof (_f$3 = typeof EntityService !== "undefined" && EntityService) === "function" && _f$3 || Object, typeof (_g$3 = typeof SessionService !== "undefined" && SessionService) === "function" && _g$3 || Object, typeof (_h$3 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _h$3 || Object, typeof (_j$2 = typeof ViewService !== "undefined" && ViewService) === "function" && _j$2 || Object])], ContextService));
+            __decorate$10([deprecated$1(), __metadata$10("design:type", Function), __metadata$10("design:paramtypes", [Object]), __metadata$10("design:returntype", void 0)], ContextService.prototype, "setDefaultReferenceFrame", null);
+            __decorate$10([deprecated$1('defaultReferenceFrame'), __metadata$10("design:type", Function), __metadata$10("design:paramtypes", []), __metadata$10("design:returntype", Object)], ContextService.prototype, "getDefaultReferenceFrame", null);
+            __decorate$10([deprecated$1('subscribe'), __metadata$10("design:type", Function), __metadata$10("design:paramtypes", [String]), __metadata$10("design:returntype", typeof (_b$10 = typeof Entity !== "undefined" && Entity) === "function" && _b$10 || Object)], ContextService.prototype, "subscribeToEntityById", null);
+            __decorate$10([deprecated$1('EntityService.createFixed'), __metadata$10("design:type", Function), __metadata$10("design:paramtypes", [typeof (_c$6 = typeof Cartographic !== "undefined" && Cartographic) === "function" && _c$6 || Object, Object]), __metadata$10("design:returntype", void 0)], ContextService.prototype, "createGeoEntity", null);
+            _export('ContextService', ContextService = __decorate$10([autoinject(), __metadata$10("design:paramtypes", [typeof (_d$5 = typeof EntityService !== "undefined" && EntityService) === "function" && _d$5 || Object, typeof (_e$5 = typeof SessionService !== "undefined" && SessionService) === "function" && _e$5 || Object, typeof (_f$3 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _f$3 || Object, typeof (_g$3 = typeof ViewService !== "undefined" && ViewService) === "function" && _g$3 || Object])], ContextService));
 
             _export('ContextServiceProvider', ContextServiceProvider = function () {
                 function ContextServiceProvider(sessionService, contextService, entityServiceProvider, permissionServiceProvider) {
@@ -29828,6 +29837,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     this.desiredGeolocationOptions = {};
                     this.sessionGeolocationOptions = new Map();
                     this.entityServiceProvider.targetReferenceFrameMap.set(this.contextService.stage.id, ReferenceFrame.FIXED);
+                    this.entityServiceProvider.targetReferenceFrameMap.set(this.contextService.origin.id, this.contextService.stage.id);
                     // subscribe to context geolocation if any child sessions have subscribed
                     this.entityServiceProvider.sessionSubscribedEvent.addEventListener(function (evt) {
                         if (evt.id === _this.contextService.stage.id && evt.session !== _this.sessionService.manager) {
@@ -29868,14 +29878,15 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                             sessionEntities[id] = state.entities[id];
                         }
                     }
-                    // always send the origin state
-                    sessionEntities[this.contextService.origin.id] = entityServiceProvider.getCachedSerializedEntityState(this.contextService.origin, state.time);
-                    // get subscribed entities for the session
                     var subscriptions = entityServiceProvider.subscriptionsBySubscriber.get(session);
-                    // exclude the stage state unless it is explicitly subscribed 
                     var contextService = this.contextService;
                     var contextStageId = contextService.stage.id;
+                    // always send the origin and user state
+                    sessionEntities[contextService.origin.id] = entityServiceProvider.getCachedSerializedEntityState(contextService.origin, state.time);
+                    sessionEntities[contextService.user.id] = entityServiceProvider.getCachedSerializedEntityState(contextService.user, state.time);
+                    // exclude the stage state unless it is explicitly subscribed with permission granted
                     if (!subscriptions[contextStageId]) delete sessionEntities[contextStageId];
+                    if (this.permissionServiceProvider.getPermissionState(session, 'geolocation') != PermissionState.GRANTED) delete sessionEntities[contextStageId];
                     // add the entity states for all subscribed entities
                     var iter = subscriptions.keys();
                     var item;
@@ -29884,8 +29895,6 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         var entity = contextService.entities.getById(id_1);
                         sessionEntities[id_1] = entityServiceProvider.getCachedSerializedEntityState(entity, state.time);
                     }
-                    // remove stage updates if geolocation permission is not granted
-                    if (this.permissionServiceProvider.getPermissionState(session, 'geolocation') != PermissionState.GRANTED) delete sessionEntities[contextStageId];
                     // recycle the frame state object, but with the session entities
                     var parentEntities = state.entities;
                     state.entities = sessionEntities;
@@ -29939,7 +29948,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return ContextServiceProvider;
             }());
 
-            _export('ContextServiceProvider', ContextServiceProvider = __decorate$10([autoinject(), __metadata$10("design:paramtypes", [typeof (_k$2 = typeof SessionService !== "undefined" && SessionService) === "function" && _k$2 || Object, ContextService, typeof (_l$2 = typeof EntityServiceProvider !== "undefined" && EntityServiceProvider) === "function" && _l$2 || Object, typeof (_m$1 = typeof PermissionServiceProvider !== "undefined" && PermissionServiceProvider) === "function" && _m$1 || Object])], ContextServiceProvider));
+            _export('ContextServiceProvider', ContextServiceProvider = __decorate$10([autoinject(), __metadata$10("design:paramtypes", [typeof (_h$3 = typeof SessionService !== "undefined" && SessionService) === "function" && _h$3 || Object, ContextService, typeof (_j$2 = typeof EntityServiceProvider !== "undefined" && EntityServiceProvider) === "function" && _j$2 || Object, typeof (_k$2 = typeof PermissionServiceProvider !== "undefined" && PermissionServiceProvider) === "function" && _k$2 || Object])], ContextServiceProvider));
 
             _export('RealityViewer', RealityViewer = function () {
                 function RealityViewer(uri) {
@@ -30122,10 +30131,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         supportsCustomProtocols: true,
                         protocols: ['ar.configureStage@v1']
                     });
-                    // Create the basic services that we need to use. 
-                    // Note: we won't create a child ViewService here,
-                    // as we are already managing the DOM with the
-                    // ViewService that exists in the root container. 
+                    // Create the basic services that we need to use.
                     child.autoRegisterAll([SessionService, EntityService, VisibilityService, ContextService, DeviceService, RealityService]);
                     var childContextService = child.get(ContextService);
                     var childDeviceService = child.get(DeviceService);
@@ -31262,31 +31268,11 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             TangoRealityViewer = function (_super) {
                 __extends$6(TangoRealityViewer, _super);
-                // private _scratchQuaternion = new Quaternion();
-                // private _artoolkitTrackerEntity = new Entity({
-                //     position: new ConstantPositionProperty(Cartesian3.ZERO, this.contextService.user),
-                //     orientation: new ConstantProperty(Quaternion.IDENTITY)
-                // });
-                // private _artoolkitProjection:Matrix4|undefined;
-                // private _markerEntities = new Map<string,Entity>();
-                // private _resolveReady:Function;
-                // private _rejectReady:Function;
-                // private _artoolkitReady:Promise<void>;
-                // private _aggregator:CameraEventAggregator|undefined;
-                // private _moveFlags = {
-                //     moveForward : false,
-                //     moveBackward : false,
-                //     moveUp : false,
-                //     moveDown : false,
-                //     moveLeft : false,
-                //     moveRight : false
-                // }
-                function TangoRealityViewer(sessionService, viewService,
-                // private contextService: ContextService,
-                container, deviceService, uri, vrDisplay) {
+                function TangoRealityViewer(sessionService, viewService, contextService, container, deviceService, uri, vrDisplay) {
                     var _this = _super.call(this, uri) || this;
                     _this.sessionService = sessionService;
                     _this.viewService = viewService;
+                    _this.contextService = contextService;
                     _this.container = container;
                     _this.deviceService = deviceService;
                     _this.uri = uri;
@@ -31307,22 +31293,10 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     _this._scratchCartesian = new Cartesian3();
                     _this.points_vertexShader = "attribute vec3 position;\n" + "uniform float size;\n" + "uniform mat4 modelViewMatrix;\n" + "uniform mat4 projectionMatrix;\n" + "uniform vec4 plane;\n" + "uniform float distance;\n" + "varying float v_discard;\n" + "void main(void) {\n" + "  vec4 v4Position = vec4(position, 1.0);\n" + "  float d = dot(plane, v4Position);\n" + "  v_discard = 0.0;\n" + "  if (abs(d) < distance) v_discard = 1.0;\n" + "  gl_PointSize = size;\n" + "  gl_Position = projectionMatrix * modelViewMatrix * v4Position;\n" + "}";
                     _this.points_fragmentShader = "precision mediump float;\n" + "uniform vec3 color;\n" + "uniform float opacity;\n" + "varying float v_discard;\n" + "void main(void) {\n" + "  if (v_discard > 0.0) discard;\n" + "  gl_FragColor = vec4( color, opacity );\n" + "}";
-                    // this._artoolkitReady = new Promise<void>((resolve, reject) => {
-                    //     this._resolveReady = resolve;
-                    //     this._rejectReady = reject;
-                    // });
                     _this.viewService.viewportChangeEvent.addEventListener(function (viewport) {
                         _this.updateViewport(viewport);
                     });
                     return _this;
-                    // for now, initialize artoolkit here
-                    // eventually we want to decouple video setup from artoolkit setup
-                    // and only initialize the video here
-                    // this.initARToolKit().then(()=>{
-                    //     this._resolveReady();
-                    // }, (error) => {
-                    //     this._rejectReady(error);
-                    // });
                 }
                 TangoRealityViewer.prototype.load = function () {
                     var _this = this;
@@ -31398,29 +31372,30 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                             // if (this._usePointCloudForOcclusion) this._scene.add(this._points); else this._scene.remove(this._points);
                             return Promise.resolve({ result: _this._usePointCloudForOcclusion });
                         };
+                        // TODO: handle marker tracking for Tango
+                        session.on['ar.tango.addMarker'] = function (msg) {
+                            return new Promise(function (resolve, reject) {
+                                // this._arController.loadMarker(msg.url, (markerId) => {
+                                //     // TODO: handle size of markers
+                                //     var id = this._getIdForMarker(markerId);
+                                //     var entity = new Entity({id});
+                                //     this.contextService.entities.add(entity);
+                                //     this._markerEntities.set(id, entity);
+                                //     resolve({id: id});
+                                // }, (error) => {
+                                //     console.log(error);
+                                //     reject(error);
+                                // });
+                                console.log(_this.contextService); //dummy
+                            });
+                        };
                     });
                     // Setup everything after connected to the manager. The manager only connects once.
                     childSessionService.manager.connectEvent.addEventListener(function () {
                         // since we aren't create a child view service and viewport service, 
                         // suppress any errors from not handling these messages
                         childSessionService.manager.suppressErrorOnUnknownTopic = true;
-                        // const scratchQuaternion = new Quaternion;
-                        // const scratchQuaternionDragYaw = new Quaternion;
-                        // const pitchQuat = new Quaternion;
-                        var positionScratchCartesian = new Cartesian3();
-                        // const movementScratchCartesian = new Cartesian3;
-                        // const orientationMatrix = new Matrix3;
-                        // const up = new Cartesian3(0,0,1);
-                        // const right = new Cartesian3(1,0,0);
-                        // const forward = new Cartesian3(0,-1,0);
-                        // const scratchFrustum = new PerspectiveFrustum();
-                        // const _scratchFrameData = new VRFrameData();
-                        // const deviceStage = childDeviceService.stage;
-                        // const deviceUser = childDeviceService.user;
-                        // const NEGATIVE_UNIT_Z = new Cartesian3(0,0,-1);
-                        // const X_90ROT = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, CesiumMath.PI_OVER_TWO);
                         var subviews = [];
-                        // const deviceUserPose = childContextService.createEntityPose(deviceUser, deviceStage);
                         var checkSuggestedGeolocationSubscription = function () {
                             if (childDeviceService.suggestedGeolocationSubscription) {
                                 childDeviceService.subscribeGeolocation(childDeviceService.suggestedGeolocationSubscription);
@@ -31432,46 +31407,34 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         var remove1 = childDeviceService.suggestedGeolocationSubscriptionChangeEvent.addEventListener(checkSuggestedGeolocationSubscription);
                         var remove2 = childDeviceService.frameStateEvent.addEventListener(function (frameState) {
                             if (childSessionService.manager.isClosed) return;
-                            // const aggregator = this._aggregator;
                             SerializedSubviewList.clone(frameState.subviews, subviews);
                             var time = frameState.time;
-                            // deviceUserPose.update(time);
                             // override user pos to tango pos
+                            // Was originally used to provide control over userpose if the device does not have a physical pose
                             var overrideUser = true; //!(deviceUserPose.status & PoseStatus.KNOWN);
-                            // originally provide controls if the device does not have a physical pose
                             var contextUser = childContextService.user;
                             var contextStage = childContextService.stage;
                             var userPosition;
-                            // OverrideUser
-                            // const position = 
-                            //     getEntityPositionInReferenceFrame(contextUser, time, contextStage, positionScratchCartesian) || 
-                            //     Cartesian3.fromElements(0, childDeviceService.suggestedUserHeight, 0, positionScratchCartesian);
+                            var userOrientation;
+                            // Override user
                             _this._vrDisplay['getFrameData'](_this._frameData);
                             var tangoPos = _this._frameData.pose.position;
                             userPosition = new Cartesian3(tangoPos[0], tangoPos[1], tangoPos[2]);
                             // Check if tango tracking is lost
                             _this._tangoOriginLostPreviousFrame = _this._tangoOriginLost;
                             _this._tangoOriginLost = userPosition.equals(Cartesian3.ZERO);
-                            var orientation;
-                            // If tango tracking is lost, use the device orientation only
+                            // Position user at half of eye height AFTER TangoTrackingLost is checked
+                            userPosition.y += AVERAGE_EYE_HEIGHT / 2;
+                            // If tango tracking is lost, set userPosition to undefined -> results in user pose status LOST
                             if (_this._tangoOriginLost) {
-                                // userPosition = this._lastKnownPosition.clone();
-                                userPosition = Cartesian3.ZERO;
-                                if (_this.deviceService.user.orientation) orientation = _this.deviceService.user.orientation.getValue(time);
+                                userPosition = undefined;
+                                userOrientation = undefined;
                             } else {
-                                // this._lastKnownPosition = userPosition.clone();
                                 var tangoRot = _this._frameData.pose.orientation;
-                                // if (this.deviceService.user.orientation) 
-                                // orientation = this.deviceService.user.orientation.getValue(time);
-                                orientation = new Quaternion(tangoRot[0], tangoRot[1], tangoRot[2], tangoRot[3]);
+                                userOrientation = new Quaternion(tangoRot[0], tangoRot[1], tangoRot[2], tangoRot[3]);
                             }
-                            // Matrix3.fromQuaternion(orientation, orientationMatrix);
-                            // Matrix3.multiplyByVector(orientationMatrix, Cartesian3.UNIT_Y, up);
-                            // Matrix3.multiplyByVector(orientationMatrix, Cartesian3.UNIT_X, right);
-                            // Matrix3.multiplyByVector(orientationMatrix, NEGATIVE_UNIT_Z, forward);
                             contextUser.position.setValue(userPosition, contextStage);
-                            contextUser.orientation.setValue(orientation);
-                            // console.log(userPosition + " // " + orientation);
+                            contextUser.orientation.setValue(userOrientation);
                             // Update stage geopose when GPS accuracy improves or Tango origin is repositioned
                             var gpsAccuracyHasImproved = _this._lastGeoHorizontalAccuracy < (_this.deviceService.geoHorizontalAccuracy || 0);
                             var tangoOriginRepositioned = _this._tangoOriginLostPreviousFrame && !_this._tangoOriginLost;
@@ -31479,25 +31442,42 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                             var overrideStage = true;
                             if (geopositionStage) {
                                 if (tangoOriginRepositioned) {
-                                    console.log("Tango origin was reset. Updating stage geopose.");
+                                    console.log("Tango origin has been reset. Updating stage geopose.");
                                     _this._tangoOriginLost = false;
-                                } else {
+                                } else if (gpsAccuracyHasImproved) {
                                     console.log("Updating stage geopose. Current horizontal accuracy is " + _this.deviceService.geoHorizontalAccuracy);
                                     _this._lastGeoHorizontalAccuracy = _this.deviceService.geoHorizontalAccuracy || 0;
                                 }
-                                // TODO: orient stage to align with north
                                 var deviceStage = _this.deviceService.stage;
-                                // customStagePosition = getEntityPositionInReferenceFrame(childDeviceService.user, time, childDeviceService.stage, this._scratchCartesian) || positionScratchCartesian;
-                                customStagePosition = deviceStage.position && deviceStage.position.getValue(time) || positionScratchCartesian;
-                                customStagePosition = Cartesian3.subtract(customStagePosition, userPosition, _this._scratchCartesian);
-                                var transformMatrix = eastUpSouthToFixedFrame(customStagePosition, undefined, _this._scratchMatrix4);
-                                var rotationMatrix = Matrix4.getRotation(transformMatrix, _this._scratchMatrix3);
-                                customStageOrientation = Quaternion.fromRotationMatrix(rotationMatrix);
-                                // if (this.deviceService.user.orientation) 
-                                // customStageOrientation = this.deviceService.user.orientation.getValue(time);
-                                contextStage.position.setValue(customStagePosition, ReferenceFrame.FIXED);
-                                contextStage.orientation.setValue(customStageOrientation);
+                                if (deviceStage.position) {
+                                    // this.contextService.defaultReferenceFrame = ReferenceFrame.FIXED;
+                                    // Get GPS coordinates of phone and subtract local tango coordinates to get the GPS coord of Stage origin
+                                    customStagePosition = deviceStage.position.getValue(time);
+                                    customStagePosition = Cartesian3.subtract(customStagePosition, userPosition || Cartesian3.ZERO, _this._scratchCartesian);
+                                    // Set the height of the stage origin to the floor height
+                                    customStagePosition.y -= AVERAGE_EYE_HEIGHT / 2;
+                                    var customStageOrientation_1 = _this.deviceService.user.orientation ? _this.deviceService.user.orientation.getValue(time) : new Quaternion(0, 0, 0, 1);
+                                    // Use only yaw as in a compass
+                                    customStageOrientation_1.x = 0;
+                                    customStageOrientation_1.y = -customStageOrientation_1.y;
+                                    customStageOrientation_1.z = 0;
+                                    Quaternion.normalize(customStageOrientation_1, customStageOrientation_1);
+                                    var userOrientationYaw = userOrientation || new Quaternion(0, 0, 0, 1);
+                                    userOrientationYaw.x = 0;
+                                    userOrientationYaw.z = 0;
+                                    Quaternion.normalize(userOrientationYaw, userOrientationYaw);
+                                    Quaternion.multiply(customStageOrientation_1, userOrientationYaw, customStageOrientation_1);
+                                    contextStage.position.setValue(customStagePosition, ReferenceFrame.FIXED);
+                                    contextStage.orientation.setValue(customStageOrientation_1);
+                                } else {
+                                    // this.contextService.defaultReferenceFrame = this.contextService.origin;
+                                    contextStage.position.setValue(undefined, undefined);
+                                    contextStage.orientation.setValue(undefined);
+                                }
                             }
+                            // Use this to check the device rotation. Result is in (pitch, yaw, roll, -) format
+                            // if (this.deviceService.user.orientation) 
+                            //     console.log(this.deviceService.user.orientation.getValue(time));
                             if (_this._initFinished && _this._vrDisplay) {
                                 //update cameraPersp
                                 var pose = _this._frameData.pose;
@@ -31509,7 +31489,6 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                                 } else {
                                     _this._cameraPersp.position.set(0, 0, 0);
                                 }
-                                // if (this._vrDisplay) console.log(this._vrDisplay.getPose().position)
                                 _this._pointCloud.update(_this._renderPointCloud || _this._usePointCloudForOcclusion, _this._pointsToSkip, true);
                                 // Make sure that the camera is correctly displayed depending on the
                                 // device and camera orientations.
@@ -31531,11 +31510,9 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                             var contextFrameState = childContextService.createFrameState(time, frameState.viewport, subviews, {
                                 overrideUser: overrideUser,
                                 overrideStage: overrideStage,
-                                floorOffset: -AVERAGE_EYE_HEIGHT / 2,
                                 userTracking: _this.userTracking
                             });
                             childContextService.submitFrameState(contextFrameState);
-                            // aggregator && aggregator.reset();
                         });
                         childSessionService.manager.closeEvent.addEventListener(function () {
                             remove1();
@@ -31661,7 +31638,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return TangoRealityViewer;
             }(RealityViewer);
 
-            TangoRealityViewer = __decorate$15([inject(SessionService, ViewService, Container, DeviceService), __metadata$15("design:paramtypes", [typeof (_a$15 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$15 || Object, typeof (_b$15 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$15 || Object, typeof (_c$10 = typeof Container !== "undefined" && Container) === "function" && _c$10 || Object, typeof (_d$8 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _d$8 || Object, String, Object])], TangoRealityViewer);
+            TangoRealityViewer = __decorate$15([inject(SessionService, ViewService, ContextService, Container, DeviceService), __metadata$15("design:paramtypes", [typeof (_a$15 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$15 || Object, typeof (_b$15 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$15 || Object, typeof (_c$10 = typeof ContextService !== "undefined" && ContextService) === "function" && _c$10 || Object, typeof (_d$8 = typeof Container !== "undefined" && Container) === "function" && _d$8 || Object, typeof (_e$6 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _e$6 || Object, String, Object])], TangoRealityViewer);
 
             __decorate$9 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
                 var c = arguments.length,

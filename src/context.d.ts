@@ -219,15 +219,15 @@ export declare class ContextService {
     subscribeGeolocation(options?: GeolocationOptions): Promise<void>;
     unsubscribeGeolocation(): void;
     /**
-     * If geopose is available, this is the accuracy of the user's heading
+     * If geopose is available, this is the accuracy of the user heading
      */
     readonly geoHeadingAccuracy: number | undefined;
     /**
-     * If geopose is available, this is the horizontal accuracy of the stage geolocation
+     * If geopose is available, this is the horizontal accuracy of the user geolocation
      */
     readonly geoHorizontalAccuracy: number | undefined;
     /**
-     * If geopose is available, this is the vertical accuracy of the stage geolocation
+     * If geopose is available, this is the vertical accuracy of the user geolocation
      */
     readonly geoVerticalAccuracy: number | undefined;
     /**
