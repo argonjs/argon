@@ -13,7 +13,8 @@ import {
     Transforms,
     JulianDate,
     ReferenceFrame,
-    PerspectiveFrustum
+    PerspectiveFrustum,
+    defined
 } from './cesium/cesium-imports'
 import {
     DEFAULT_NEAR_PLANE,
@@ -680,7 +681,7 @@ export class ContextService {
         // TODO: realityService._processContextFrameState(frameState); 
 
         // raise origin change event if necessary
-        const originReferenceFrame = this._getReachableAncestorReferenceFrames(this.origin, time, this._scratchArray)[0];
+        const originReferenceFrame = this._getReachableAncestorReferenceFrames(this.origin, time, this._scratchArray)[0] || ReferenceFrame.FIXED;
         const originPosition = this._getEntityPositionInReferenceFrame(this.origin, time, originReferenceFrame, this._scratchCartesian);
         const originOrientation = this._getEntityOrientationInReferenceFrame(this.origin, time, originReferenceFrame, this._scratchQuaternion);
         if (originReferenceFrame !== this._previousOriginReferenceFrame || 

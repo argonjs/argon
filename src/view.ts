@@ -119,6 +119,11 @@ export class ViewService {
         private focusService: FocusService,
         private viewItems: ViewItems
        ) {
+
+        if (typeof document !== 'undefined' && document.createElement && !viewItems.element) {
+            viewItems.element = document.createElement('div');
+        }
+
         sessionService.manager.on['ar.view.viewportMode'] = 
             ({mode}:{mode:ViewportMode}) => {
                 this._updateViewportMode(mode);
