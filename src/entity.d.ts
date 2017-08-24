@@ -118,8 +118,7 @@ export declare class EntityService {
     unsubscribe(idOrEntity: string | Entity, session?: SessionPort): void;
     /**
      * Create a new EntityPose instance to represent the pose of an entity
-     * relative to a given reference frame. If no reference frame is specified,
-     * then the pose is based on the context's defaultReferenceFrame.
+     * relative to a given reference frame.
      *
      * @param entity - the entity to track
      * @param referenceFrameOrId - the reference frame to use
