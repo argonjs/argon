@@ -478,7 +478,7 @@ export class ContextService {
         // user
         const user = this.user;
         if (overrideUser) {
-            entities[user.id] = getSerializedEntityState(user, time, undefined);
+            entities[user.id] = getSerializedEntityState(user, time, stage);
         }
 
         // view
