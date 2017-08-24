@@ -686,8 +686,8 @@ export class ContextService {
         if (originReferenceFrame !== this._previousOriginReferenceFrame || 
             !originPosition || !this._previousOriginPosition ||
             !originOrientation || !this._previousOriginOrientation ||
-            !Cartesian3.equalsEpsilon(originPosition, this._previousOriginPosition, CesiumMath.EPSILON20) ||
-            !Quaternion.equalsEpsilon(originOrientation, this._previousOriginOrientation, CesiumMath.EPSILON20)) {
+            !Cartesian3.equalsEpsilon(originPosition, this._previousOriginPosition, CesiumMath.EPSILON10) ||
+            !Quaternion.equalsEpsilon(originOrientation, this._previousOriginOrientation, CesiumMath.EPSILON10)) {
             this._previousOriginReferenceFrame = originReferenceFrame;
             this._previousOriginPosition = originPosition && Cartesian3.clone(originPosition, this._previousOriginPosition);
             this._previousOriginOrientation = originOrientation && Quaternion.clone(originOrientation, this._previousOriginOrientation);
