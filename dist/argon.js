@@ -26522,7 +26522,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-17");
+            _export('version', version = "1.4.0-18");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -27915,6 +27915,9 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     this._subviewFrustum = [];
                     this._desiredViewportMode = this.viewportMode;
                     this._embeddedViewport = new Viewport();
+                    if (typeof document !== 'undefined' && document.createElement && !viewItems.element) {
+                        viewItems.element = document.createElement('div');
+                    }
                     sessionService.manager.on['ar.view.viewportMode'] = function (_a) {
                         var mode = _a.mode;
                         _this._updateViewportMode(mode);
@@ -29747,7 +29750,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     this.viewService._processContextFrameState(frameState, this);
                     // TODO: realityService._processContextFrameState(frameState); 
                     // raise origin change event if necessary
-                    var originReferenceFrame = this._getReachableAncestorReferenceFrames(this.origin, time, this._scratchArray)[0];
+                    var originReferenceFrame = this._getReachableAncestorReferenceFrames(this.origin, time, this._scratchArray)[0] || ReferenceFrame.FIXED;
                     var originPosition = this._getEntityPositionInReferenceFrame(this.origin, time, originReferenceFrame, this._scratchCartesian);
                     var originOrientation = this._getEntityOrientationInReferenceFrame(this.origin, time, originReferenceFrame, this._scratchQuaternion);
                     if (originReferenceFrame !== this._previousOriginReferenceFrame || !originPosition || !this._previousOriginPosition || !originOrientation || !this._previousOriginOrientation || !Cartesian3.equalsEpsilon(originPosition, this._previousOriginPosition, CesiumMath.EPSILON10) || !Quaternion.equalsEpsilon(originOrientation, this._previousOriginOrientation, CesiumMath.EPSILON10)) {
