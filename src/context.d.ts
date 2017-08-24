@@ -35,7 +35,6 @@ export declare class ContextService {
      * An event that fires when the origin changes.
      */
     originChangeEvent: Event<void>;
-    private _originChanged;
     /**
      * An event that fires when the local origin changes.
      */
@@ -63,11 +62,11 @@ export declare class ContextService {
      */
     time: JulianDate;
     /**
-    * An entity representing the local origin, which is oriented
-    * with +Y up. The local origin changes infrequently, is platform dependent,
+    * An entity representing the origin, which is oriented
+    * with +Y up. The origin changes infrequently, is platform dependent,
     * and is the suggested origin for a rendering scenegraph.
     *
-    * Any time the local origin changes, the localOriginChange event is raised.
+    * Any time the origin changes, the originChange event is raised.
     */
     origin: Entity;
     /**
@@ -207,6 +206,8 @@ export declare class ContextService {
     private _getEntityOrientationInReferenceFrame;
     private _eastUpSouthToFixedFrame;
     private _eastNorthUpToFixedFrame;
+    private _getReachableAncestorReferenceFrames;
+    private _scratchArray;
     /**
      * Create a frame state.
      *
@@ -227,6 +228,9 @@ export declare class ContextService {
     private _scratchMatrix3;
     private _scratchMatrix4;
     private _updateBackwardsCompatability(frameState);
+    private _previousOriginReferenceFrame?;
+    private _previousOriginPosition?;
+    private _previousOriginOrientation?;
     private _update(frameState);
     getSubviewEntity(index: number): Entity;
     subscribeGeolocation(options?: GeolocationOptions): Promise<void>;

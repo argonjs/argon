@@ -26522,7 +26522,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-14");
+            _export('version', version = "1.4.0-15");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -29193,7 +29193,6 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                      * An event that fires when the origin changes.
                      */
                     this.originChangeEvent = new Event$1();
-                    this._originChanged = false;
                     /**
                      * A monotonically increasing value (in milliseconds) for the current frame state.
                      * This value is useful only for doing accurate *timing*, not for determining
@@ -29217,11 +29216,11 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                      */
                     this.time = new JulianDate(0, 0);
                     /**
-                    * An entity representing the local origin, which is oriented
-                    * with +Y up. The local origin changes infrequently, is platform dependent,
+                    * An entity representing the origin, which is oriented
+                    * with +Y up. The origin changes infrequently, is platform dependent,
                     * and is the suggested origin for a rendering scenegraph.
                     *
-                    * Any time the local origin changes, the localOriginChange event is raised.
+                    * Any time the origin changes, the originChange event is raised.
                     */
                     this.origin = this.entities.add(new Entity({
                         id: 'ar.origin',
@@ -29340,8 +29339,12 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     this._getEntityOrientationInReferenceFrame = getEntityOrientationInReferenceFrame;
                     this._eastUpSouthToFixedFrame = eastUpSouthToFixedFrame;
                     this._eastNorthUpToFixedFrame = Transforms.eastNorthUpToFixedFrame;
+                    this._getReachableAncestorReferenceFrames = getReachableAncestorReferenceFrames;
+                    this._scratchArray = [];
                     this._scratchMatrix3 = new Matrix3();
                     this._scratchMatrix4 = new Matrix4();
+                    this._previousOriginPosition = undefined;
+                    this._previousOriginOrientation = undefined;
                     this.sessionService.manager.on['ar.context.update'] = function (state) {
                         var scratchFrustum = _this._scratchFrustum;
                         // backwards-compat
@@ -29371,21 +29374,6 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         // end backwards-compat
                         _this._update(state);
                     };
-                    this.origin.definitionChanged.addEventListener(function (origin, property) {
-                        if (property === 'position' || property === 'orientation') {
-                            if (origin.position) {
-                                origin.position.definitionChanged.addEventListener(function () {
-                                    _this._originChanged = true;
-                                });
-                            }
-                            if (origin.orientation) {
-                                origin.orientation.definitionChanged.addEventListener(function () {
-                                    _this._originChanged = true;
-                                });
-                            }
-                            _this._originChanged = true;
-                        }
-                    });
                     this._scratchFrustum.near = DEFAULT_NEAR_PLANE;
                     this._scratchFrustum.far = DEFAULT_FAR_PLANE;
                     this._scratchFrustum.fov = CesiumMath.PI_OVER_THREE;
@@ -29758,13 +29746,18 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     // update view
                     this.viewService._processContextFrameState(frameState, this);
                     // TODO: realityService._processContextFrameState(frameState); 
-                    // raise events for the user to update and render the scene
-                    if (this._originChanged) {
-                        this._originChanged = false;
-                        var originPosition = this.origin.position;
-                        console.log('Updated context origin to ' + JSON.stringify(originPosition['_value']) + " at " + this._stringIdentifierFromReferenceFrame(originPosition.referenceFrame));
+                    // raise origin change event if necessary
+                    var originReferenceFrame = this._getReachableAncestorReferenceFrames(this.origin, time, this._scratchArray)[0];
+                    var originPosition = this._getEntityPositionInReferenceFrame(this.origin, time, originReferenceFrame, this._scratchCartesian);
+                    var originOrientation = this._getEntityOrientationInReferenceFrame(this.origin, time, originReferenceFrame, this._scratchQuaternion);
+                    if (originReferenceFrame !== this._previousOriginReferenceFrame || !originPosition || !this._previousOriginPosition || !originOrientation || !this._previousOriginOrientation || !Cartesian3.equalsEpsilon(originPosition, this._previousOriginPosition, CesiumMath.EPSILON16) || !Quaternion.equalsEpsilon(originOrientation, this._previousOriginOrientation, CesiumMath.EPSILON16)) {
+                        this._previousOriginReferenceFrame = originReferenceFrame;
+                        this._previousOriginPosition = originPosition && Cartesian3.clone(originPosition, this._previousOriginPosition);
+                        this._previousOriginOrientation = originOrientation && Quaternion.clone(originOrientation, this._previousOriginOrientation);
+                        console.log('Updated context origin to ' + JSON.stringify(originPosition) + " at " + this._stringIdentifierFromReferenceFrame(originReferenceFrame));
                         this.originChangeEvent.raiseEvent(undefined);
                     }
+                    // raise events for the user to update and render the scene
                     this.updateEvent.raiseEvent(this);
                     this.renderEvent.raiseEvent(this);
                     this.postRenderEvent.raiseEvent(this);
