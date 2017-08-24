@@ -468,7 +468,7 @@ export class ContextService {
         // user
         const user = this.user;
         if (overrideUser) {
-            entities[user.id] = getSerializedEntityState(user, time, stage);
+            entities[user.id] = getSerializedEntityState(user, time, undefined);
         }
 
         // view
@@ -574,7 +574,7 @@ export class ContextService {
                 entityService.updateEntityFromSerializedState(id, entities[id]);
             }
         }
-
+        
         // update stage entity based on device if the reality did not override it
         const deviceStage = this.deviceService.stage;
         const contextStage = this.stage;
@@ -586,29 +586,28 @@ export class ContextService {
             contextStage['meta'] = this.deviceService.stage['meta']; // To serialize the user geopose metadata
         }
 
-        // update origin (relative to stage) to match device origin (relative to device stage)
-        const deviceOrigin = this.deviceService.origin;
-        const contextOrigin = this.origin;
-        if (entities[this.origin.id] === undefined) {
-            const deviceOriginPositionValue = this._getEntityPositionInReferenceFrame(deviceOrigin, time, deviceStage, this._scratchCartesian);
-            const deviceOriginOrientationValue =  this._getEntityOrientationInReferenceFrame(deviceOrigin, time, deviceStage, this._scratchQuaternion);
-            const contextOriginPosition = contextOrigin.position as ConstantPositionProperty;
-            const contextOriginOrientation = contextOrigin.orientation as ConstantProperty;
-            contextOriginPosition.setValue(deviceOriginPositionValue, contextStage);
-            contextOriginOrientation.setValue(deviceOriginOrientationValue);
-        }
-
-        // update user entity based on device if the reality did not override it
+        // update user entity (relative to stage) based on device (relative to stage) if the reality did not override it
         const deviceUser = this.deviceService.user;
         const contextUser = this.user;
         if (entities[contextUser.id] === undefined) {
-            const userPositionValue = this._getEntityPositionInReferenceFrame(deviceUser, time, deviceOrigin, this._scratchCartesian);
-            const userOrientationValue =  this._getEntityOrientationInReferenceFrame(deviceUser, time, deviceOrigin, this._scratchQuaternion);
+            const userPositionValue = this._getEntityPositionInReferenceFrame(deviceUser, time, deviceStage, this._scratchCartesian);
+            const userOrientationValue =  this._getEntityOrientationInReferenceFrame(deviceUser, time, deviceStage, this._scratchQuaternion);
             const contextUserPosition = contextUser.position as ConstantPositionProperty;
             const contextUserOrientation = contextUser.orientation as ConstantProperty;
-            contextUserPosition.setValue(userPositionValue, contextOrigin);
+            contextUserPosition.setValue(userPositionValue, contextStage);
             contextUserOrientation.setValue(userOrientationValue);
-            contextUser['meta'] = this.deviceService.user['meta'];
+        }
+        
+        // update origin (relative to user) to match device origin (relative to user)
+        const deviceOrigin = this.deviceService.origin;
+        const contextOrigin = this.origin;
+        if (entities[this.origin.id] === undefined) {
+            const deviceOriginPositionValue = this._getEntityPositionInReferenceFrame(deviceOrigin, time, deviceUser, this._scratchCartesian);
+            const deviceOriginOrientationValue =  this._getEntityOrientationInReferenceFrame(deviceOrigin, time, deviceUser, this._scratchQuaternion);
+            const contextOriginPosition = contextOrigin.position as ConstantPositionProperty;
+            const contextOriginOrientation = contextOrigin.orientation as ConstantProperty;
+            contextOriginPosition.setValue(deviceOriginPositionValue, contextUser);
+            contextOriginOrientation.setValue(deviceOriginOrientationValue);
         }
 
         // update view entity (if the reality did not set it)
