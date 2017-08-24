@@ -13,8 +13,7 @@ import {
     Transforms,
     JulianDate,
     ReferenceFrame,
-    PerspectiveFrustum,
-    defined
+    PerspectiveFrustum
 } from './cesium/cesium-imports'
 import {
     DEFAULT_NEAR_PLANE,
