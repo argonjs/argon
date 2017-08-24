@@ -499,9 +499,7 @@ export class ContextService {
         }
 
         // user tracking
-        if (options && options.userTracking) {
-            frameState.userTracking = options.userTracking;
-        }
+        frameState.userTracking = options && options.userTracking;
 
         return frameState;
     }
