@@ -36,11 +36,11 @@ import {
     getEntityPositionInReferenceFrame,
     getEntityOrientationInReferenceFrame,
     deprecated,
-    decomposePerspectiveProjectionMatrix 
+    decomposePerspectiveProjectionMatrix ,
+    eastUpSouthToFixedFrame
 } from './utils'
 import { EntityService, EntityServiceProvider, EntityPose } from './entity'
 import { DeviceService } from './device'
-import { eastUpSouthToFixedFrame } from './utils'
 import { ViewService } from './view'
 import { PermissionState, PermissionServiceProvider } from './permission'
 
@@ -225,10 +225,9 @@ export class ContextService {
     }));
 
     /**
-     * A coordinate system representing the physical space in which the user is free to 
-     * move around, positioned on the surface the user is standing on,
-     * where +X is east, +Y is up, and +Z is south (East-Up-South), if geolocation is known.
-     * If the stage is not geolocated, then the +X and +Z directions are arbitrary. 
+     * A coordinate system representing the physical space in which the user is free to move 
+     * around with high-precision tracking, and positioned on the surface the user is standing on. 
+     * This space is oriented such that a platform-dependent "forward" corresponds to -Z.
      */
     public stage: Entity = this.entities.add(new Entity({
         id: 'ar.stage',
@@ -236,6 +235,30 @@ export class ContextService {
         position: new ConstantPositionProperty(undefined, ReferenceFrame.FIXED),
         orientation: new ConstantProperty(undefined)
     }));
+
+    /**
+     * A coordinate system positioned at the stage, 
+     * where +X is east, +Y is up, and +Z is south (East-Up-South), if geolocation is known.
+     * If geolocation is unknown, this entity has an undefined pose. 
+     */
+    public stageEUS: Entity = this.entities.add(new Entity({
+        id: 'ar.stageEUS',
+        name: 'Stage (EUS)',
+        position: new ConstantPositionProperty(undefined, this.stage),
+        orientation: new ConstantProperty(undefined)
+    }))
+
+    /**
+     * A coordinate system positioned at the stage, 
+     * where +X is east, +Y is north, and +Z is up (East-North-Up), if geolocation is known.
+     * If geolocation is unknown, this entity has an undefined pose. 
+     */
+    public stageENU: Entity = this.entities.add(new Entity({
+        id: 'ar.stageENU',
+        name: 'Stage (ENU)',
+        position: new ConstantPositionProperty(undefined, this.stage),
+        orientation: new ConstantProperty(undefined)
+    }))
 
     /**
      * A coordinate system representing the floor.
@@ -426,6 +449,8 @@ export class ContextService {
     private _getSerializedEntityState = getSerializedEntityState;
     private _getEntityPositionInReferenceFrame = getEntityPositionInReferenceFrame;
     private _getEntityOrientationInReferenceFrame = getEntityOrientationInReferenceFrame;
+    private _eastUpSouthToFixedFrame = eastUpSouthToFixedFrame;
+    private _eastNorthUpToFixedFrame = Transforms.eastNorthUpToFixedFrame;
 
     /**
      * Create a frame state.
@@ -637,6 +662,28 @@ export class ContextService {
         if (entities[this.floor.id] === undefined) {
             const floorPosition = this.floor.position as ConstantPositionProperty;
             floorPosition.setValue(Cartesian3.ZERO, contextStage);
+        }
+
+        // update stageEUS and stageENU
+        const stageFixedPosition = this._getEntityPositionInReferenceFrame(contextStage, time, ReferenceFrame.FIXED, this._scratchCartesian);
+        if (stageFixedPosition) { // TODO: only do this math if fixed position differs from previous frame
+            // EUS
+            const eusTransform = this._eastUpSouthToFixedFrame(stageFixedPosition, undefined, this._scratchMatrix4);
+            const eusRotation = Matrix4.getRotation(eusTransform, this._scratchMatrix3);
+            const eusOrientation = Quaternion.fromRotationMatrix(eusRotation, this._scratchQuaternion);
+            (this.stageEUS.position as ConstantPositionProperty).setValue(stageFixedPosition, ReferenceFrame.FIXED);
+            (this.stageEUS.orientation as ConstantProperty).setValue(eusOrientation);
+            // ENU
+            const enuTransform = this._eastNorthUpToFixedFrame(stageFixedPosition, undefined, this._scratchMatrix4);
+            const enuRotation = Matrix4.getRotation(enuTransform, this._scratchMatrix3);
+            const enuOrientation = Quaternion.fromRotationMatrix(enuRotation, this._scratchQuaternion);
+            (this.stageENU.position as ConstantPositionProperty).setValue(stageFixedPosition, ReferenceFrame.FIXED);
+            (this.stageENU.orientation as ConstantProperty).setValue(enuOrientation);
+        } else {
+            (this.stageEUS.position as ConstantPositionProperty).setValue(undefined, ReferenceFrame.FIXED);
+            (this.stageEUS.orientation as ConstantProperty).setValue(undefined);
+            (this.stageENU.position as ConstantPositionProperty).setValue(undefined, ReferenceFrame.FIXED);
+            (this.stageENU.orientation as ConstantProperty).setValue(undefined);
         }
 
         // update view
