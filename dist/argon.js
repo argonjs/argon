@@ -26522,7 +26522,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-13");
+            _export('version', version = "1.4.0-14");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -29242,15 +29242,36 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         orientation: new ConstantProperty(Quaternion.fromAxisAngle(Cartesian3.UNIT_X, -Math.PI / 2))
                     }));
                     /**
-                     * A coordinate system representing the physical space in which the user is free to
-                     * move around, positioned on the surface the user is standing on,
-                     * where +X is east, +Y is up, and +Z is south (East-Up-South), if geolocation is known.
-                     * If the stage is not geolocated, then the +X and +Z directions are arbitrary.
+                     * A coordinate system representing the physical space in which the user is free to move
+                     * around with high-precision tracking, and positioned on the surface the user is standing on.
+                     * This space is oriented such that a platform-dependent "forward" corresponds to -Z.
                      */
                     this.stage = this.entities.add(new Entity({
                         id: 'ar.stage',
                         name: 'Stage',
                         position: new ConstantPositionProperty(undefined, ReferenceFrame.FIXED),
+                        orientation: new ConstantProperty(undefined)
+                    }));
+                    /**
+                     * A coordinate system positioned at the stage,
+                     * where +X is east, +Y is up, and +Z is south (East-Up-South), if geolocation is known.
+                     * If geolocation is unknown, this entity has an undefined pose.
+                     */
+                    this.stageEUS = this.entities.add(new Entity({
+                        id: 'ar.stageEUS',
+                        name: 'Stage (EUS)',
+                        position: new ConstantPositionProperty(undefined, this.stage),
+                        orientation: new ConstantProperty(undefined)
+                    }));
+                    /**
+                     * A coordinate system positioned at the stage,
+                     * where +X is east, +Y is north, and +Z is up (East-North-Up), if geolocation is known.
+                     * If geolocation is unknown, this entity has an undefined pose.
+                     */
+                    this.stageENU = this.entities.add(new Entity({
+                        id: 'ar.stageENU',
+                        name: 'Stage (ENU)',
+                        position: new ConstantPositionProperty(undefined, this.stage),
                         orientation: new ConstantProperty(undefined)
                     }));
                     /**
@@ -29317,6 +29338,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     this._getSerializedEntityState = getSerializedEntityState;
                     this._getEntityPositionInReferenceFrame = getEntityPositionInReferenceFrame;
                     this._getEntityOrientationInReferenceFrame = getEntityOrientationInReferenceFrame;
+                    this._eastUpSouthToFixedFrame = eastUpSouthToFixedFrame;
+                    this._eastNorthUpToFixedFrame = Transforms.eastNorthUpToFixedFrame;
                     this._scratchMatrix3 = new Matrix3();
                     this._scratchMatrix4 = new Matrix4();
                     this.sessionService.manager.on['ar.context.update'] = function (state) {
@@ -29569,7 +29592,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     // user
                     var user = this.user;
                     if (overrideUser) {
-                        entities[user.id] = getSerializedEntityState$$1(user, time, stage);
+                        entities[user.id] = getSerializedEntityState$$1(user, time, undefined);
                     }
                     // view
                     var view = this.view;
@@ -29594,9 +29617,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         frameState.entities[this.floor.id] = getSerializedEntityState$$1(floor, time, stage);
                     }
                     // user tracking
-                    if (options && options.userTracking) {
-                        frameState.userTracking = options.userTracking;
-                    }
+                    frameState.userTracking = options && options.userTracking;
                     return frameState;
                 };
                 // All of the following work is only necessary when running in an old manager (version === 0)
@@ -29665,28 +29686,27 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         contextStageOrientation.setValue(Quaternion.IDENTITY);
                         contextStage['meta'] = this.deviceService.stage['meta']; // To serialize the user geopose metadata
                     }
-                    // update origin (relative to stage) to match device origin (relative to device stage)
-                    var deviceOrigin = this.deviceService.origin;
-                    var contextOrigin = this.origin;
-                    if (entities[this.origin.id] === undefined) {
-                        var deviceOriginPositionValue = this._getEntityPositionInReferenceFrame(deviceOrigin, time, deviceStage, this._scratchCartesian);
-                        var deviceOriginOrientationValue = this._getEntityOrientationInReferenceFrame(deviceOrigin, time, deviceStage, this._scratchQuaternion);
-                        var contextOriginPosition = contextOrigin.position;
-                        var contextOriginOrientation = contextOrigin.orientation;
-                        contextOriginPosition.setValue(deviceOriginPositionValue, contextStage);
-                        contextOriginOrientation.setValue(deviceOriginOrientationValue);
-                    }
-                    // update user entity based on device if the reality did not override it
+                    // update user entity (relative to stage) based on device (relative to stage) if the reality did not override it
                     var deviceUser = this.deviceService.user;
                     var contextUser = this.user;
                     if (entities[contextUser.id] === undefined) {
-                        var userPositionValue = this._getEntityPositionInReferenceFrame(deviceUser, time, deviceOrigin, this._scratchCartesian);
-                        var userOrientationValue = this._getEntityOrientationInReferenceFrame(deviceUser, time, deviceOrigin, this._scratchQuaternion);
+                        var userPositionValue = this._getEntityPositionInReferenceFrame(deviceUser, time, deviceStage, this._scratchCartesian);
+                        var userOrientationValue = this._getEntityOrientationInReferenceFrame(deviceUser, time, deviceStage, this._scratchQuaternion);
                         var contextUserPosition = contextUser.position;
                         var contextUserOrientation = contextUser.orientation;
-                        contextUserPosition.setValue(userPositionValue, contextOrigin);
+                        contextUserPosition.setValue(userPositionValue, contextStage);
                         contextUserOrientation.setValue(userOrientationValue);
-                        contextUser['meta'] = this.deviceService.user['meta'];
+                    }
+                    // update origin (relative to user) to match device origin (relative to user)
+                    var deviceOrigin = this.deviceService.origin;
+                    var contextOrigin = this.origin;
+                    if (entities[this.origin.id] === undefined) {
+                        var deviceOriginPositionValue = this._getEntityPositionInReferenceFrame(deviceOrigin, time, deviceUser, this._scratchCartesian);
+                        var deviceOriginOrientationValue = this._getEntityOrientationInReferenceFrame(deviceOrigin, time, deviceUser, this._scratchQuaternion);
+                        var contextOriginPosition = contextOrigin.position;
+                        var contextOriginOrientation = contextOrigin.orientation;
+                        contextOriginPosition.setValue(deviceOriginPositionValue, contextUser);
+                        contextOriginOrientation.setValue(deviceOriginOrientationValue);
                     }
                     // update view entity (if the reality did not set it)
                     var contextView = this.view;
@@ -29713,6 +29733,27 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     if (entities[this.floor.id] === undefined) {
                         var floorPosition = this.floor.position;
                         floorPosition.setValue(Cartesian3.ZERO, contextStage);
+                    }
+                    // update stageEUS and stageENU
+                    var stageFixedPosition = this._getEntityPositionInReferenceFrame(contextStage, time, ReferenceFrame.FIXED, this._scratchCartesian);
+                    if (stageFixedPosition) {
+                        // EUS
+                        var eusTransform = this._eastUpSouthToFixedFrame(stageFixedPosition, undefined, this._scratchMatrix4);
+                        var eusRotation = Matrix4.getRotation(eusTransform, this._scratchMatrix3);
+                        var eusOrientation = Quaternion.fromRotationMatrix(eusRotation, this._scratchQuaternion);
+                        this.stageEUS.position.setValue(stageFixedPosition, ReferenceFrame.FIXED);
+                        this.stageEUS.orientation.setValue(eusOrientation);
+                        // ENU
+                        var enuTransform = this._eastNorthUpToFixedFrame(stageFixedPosition, undefined, this._scratchMatrix4);
+                        var enuRotation = Matrix4.getRotation(enuTransform, this._scratchMatrix3);
+                        var enuOrientation = Quaternion.fromRotationMatrix(enuRotation, this._scratchQuaternion);
+                        this.stageENU.position.setValue(stageFixedPosition, ReferenceFrame.FIXED);
+                        this.stageENU.orientation.setValue(enuOrientation);
+                    } else {
+                        this.stageEUS.position.setValue(undefined, ReferenceFrame.FIXED);
+                        this.stageEUS.orientation.setValue(undefined);
+                        this.stageENU.position.setValue(undefined, ReferenceFrame.FIXED);
+                        this.stageENU.orientation.setValue(undefined);
                     }
                     // update view
                     this.viewService._processContextFrameState(frameState, this);

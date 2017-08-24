@@ -82,12 +82,23 @@ export declare class ContextService {
     readonly localOriginEastNorthUp: Entity;
     private _localOriginEastNorthUp;
     /**
-     * A coordinate system representing the physical space in which the user is free to
-     * move around, positioned on the surface the user is standing on,
-     * where +X is east, +Y is up, and +Z is south (East-Up-South), if geolocation is known.
-     * If the stage is not geolocated, then the +X and +Z directions are arbitrary.
+     * A coordinate system representing the physical space in which the user is free to move
+     * around with high-precision tracking, and positioned on the surface the user is standing on.
+     * This space is oriented such that a platform-dependent "forward" corresponds to -Z.
      */
     stage: Entity;
+    /**
+     * A coordinate system positioned at the stage,
+     * where +X is east, +Y is up, and +Z is south (East-Up-South), if geolocation is known.
+     * If geolocation is unknown, this entity has an undefined pose.
+     */
+    stageEUS: Entity;
+    /**
+     * A coordinate system positioned at the stage,
+     * where +X is east, +Y is north, and +Z is up (East-North-Up), if geolocation is known.
+     * If geolocation is unknown, this entity has an undefined pose.
+     */
+    stageENU: Entity;
     /**
      * A coordinate system representing the floor.
      * While the `stage` always represents a physical surface,
@@ -194,6 +205,8 @@ export declare class ContextService {
     private _getSerializedEntityState;
     private _getEntityPositionInReferenceFrame;
     private _getEntityOrientationInReferenceFrame;
+    private _eastUpSouthToFixedFrame;
+    private _eastNorthUpToFixedFrame;
     /**
      * Create a frame state.
      *
