@@ -26522,7 +26522,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-18");
+            _export('version', version = "1.4.0-19");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -29753,7 +29753,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     var originReferenceFrame = this._getReachableAncestorReferenceFrames(this.origin, time, this._scratchArray)[0] || ReferenceFrame.FIXED;
                     var originPosition = this._getEntityPositionInReferenceFrame(this.origin, time, originReferenceFrame, this._scratchCartesian);
                     var originOrientation = this._getEntityOrientationInReferenceFrame(this.origin, time, originReferenceFrame, this._scratchQuaternion);
-                    if (originReferenceFrame !== this._previousOriginReferenceFrame || !originPosition || !this._previousOriginPosition || !originOrientation || !this._previousOriginOrientation || !Cartesian3.equalsEpsilon(originPosition, this._previousOriginPosition, CesiumMath.EPSILON10) || !Quaternion.equalsEpsilon(originOrientation, this._previousOriginOrientation, CesiumMath.EPSILON10)) {
+                    if (originReferenceFrame !== this._previousOriginReferenceFrame || !originPosition && this._previousOriginPosition || !originOrientation && this._previousOriginOrientation || originPosition && !this._previousOriginPosition || originOrientation && !this._previousOriginOrientation || originPosition && this._previousOriginPosition && !Cartesian3.equalsEpsilon(originPosition, this._previousOriginPosition, CesiumMath.EPSILON10) || originOrientation && this._previousOriginOrientation && !Quaternion.equalsEpsilon(originOrientation, this._previousOriginOrientation, CesiumMath.EPSILON10)) {
                         this._previousOriginReferenceFrame = originReferenceFrame;
                         this._previousOriginPosition = originPosition && Cartesian3.clone(originPosition, this._previousOriginPosition);
                         this._previousOriginOrientation = originOrientation && Quaternion.clone(originOrientation, this._previousOriginOrientation);
