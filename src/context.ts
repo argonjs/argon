@@ -31,7 +31,7 @@ import { SessionService, SessionPort } from './session'
 import { 
     Event,
     stringIdentifierFromReferenceFrame,
-    // getReachableAncestorReferenceFrames,
+    getReachableAncestorReferenceFrames,
     getSerializedEntityState,
     getEntityPositionInReferenceFrame,
     getEntityOrientationInReferenceFrame,
@@ -86,23 +86,7 @@ export class ContextService {
 
             this._update(state);
         }
-
-        this.origin.definitionChanged.addEventListener((origin, property)=>{
-            if (property === 'position' || property === 'orientation') {
-                if (origin.position) {
-                    origin.position.definitionChanged.addEventListener(()=>{
-                        this._originChanged = true;
-                    });
-                }
-                if (origin.orientation) {
-                    origin.orientation.definitionChanged.addEventListener(()=>{
-                        this._originChanged = true;
-                    });
-                }
-                this._originChanged = true;
-            }
-        });
-
+        
         this._scratchFrustum.near = DEFAULT_NEAR_PLANE;
         this._scratchFrustum.far = DEFAULT_FAR_PLANE;
         this._scratchFrustum.fov = CesiumMath.PI_OVER_THREE;
@@ -144,7 +128,6 @@ export class ContextService {
      * An event that fires when the origin changes.
      */
     public originChangeEvent = new Event<void>();
-    private _originChanged = false;
 
     /**
      * An event that fires when the local origin changes.
@@ -179,11 +162,11 @@ export class ContextService {
     public time = new JulianDate(0,0);
 
      /**
-     * An entity representing the local origin, which is oriented 
-     * with +Y up. The local origin changes infrequently, is platform dependent,
+     * An entity representing the origin, which is oriented 
+     * with +Y up. The origin changes infrequently, is platform dependent,
      * and is the suggested origin for a rendering scenegraph. 
      * 
-     * Any time the local origin changes, the localOriginChange event is raised. 
+     * Any time the origin changes, the originChange event is raised. 
      */
     public origin: Entity = this.entities.add(new Entity({
         id: 'ar.origin',
@@ -451,6 +434,8 @@ export class ContextService {
     private _getEntityOrientationInReferenceFrame = getEntityOrientationInReferenceFrame;
     private _eastUpSouthToFixedFrame = eastUpSouthToFixedFrame;
     private _eastNorthUpToFixedFrame = Transforms.eastNorthUpToFixedFrame;
+    private _getReachableAncestorReferenceFrames = getReachableAncestorReferenceFrames;
+    private _scratchArray = [];
 
     /**
      * Create a frame state.
@@ -577,6 +562,10 @@ export class ContextService {
         frameState.entities[this.stage.id] = <any>true; // assume overriden for _update
     }
 
+    private _previousOriginReferenceFrame? : ReferenceFrame|Entity;
+    private _previousOriginPosition? : Cartesian3 = undefined;
+    private _previousOriginOrientation? : Quaternion = undefined;
+
     // TODO: This function is called a lot. Potential for optimization. 
     private _update(frameState: ContextFrameState) {
 
@@ -690,13 +679,23 @@ export class ContextService {
         this.viewService._processContextFrameState(frameState, this);
         // TODO: realityService._processContextFrameState(frameState); 
 
-        // raise events for the user to update and render the scene
-        if (this._originChanged) {
-            this._originChanged = false;
-            const originPosition = this.origin.position as ConstantPositionProperty;
-            console.log('Updated context origin to ' + JSON.stringify(originPosition['_value']) + " at " + this._stringIdentifierFromReferenceFrame(originPosition.referenceFrame));
+        // raise origin change event if necessary
+        const originReferenceFrame = this._getReachableAncestorReferenceFrames(this.origin, time, this._scratchArray)[0];
+        const originPosition = this._getEntityPositionInReferenceFrame(this.origin, time, originReferenceFrame, this._scratchCartesian);
+        const originOrientation = this._getEntityOrientationInReferenceFrame(this.origin, time, originReferenceFrame, this._scratchQuaternion);
+        if (originReferenceFrame !== this._previousOriginReferenceFrame || 
+            !originPosition || !this._previousOriginPosition ||
+            !originOrientation || !this._previousOriginOrientation ||
+            !Cartesian3.equalsEpsilon(originPosition, this._previousOriginPosition, CesiumMath.EPSILON16) ||
+            !Quaternion.equalsEpsilon(originOrientation, this._previousOriginOrientation, CesiumMath.EPSILON16)) {
+            this._previousOriginReferenceFrame = originReferenceFrame;
+            this._previousOriginPosition = originPosition && Cartesian3.clone(originPosition, this._previousOriginPosition);
+            this._previousOriginOrientation = originOrientation && Quaternion.clone(originOrientation, this._previousOriginOrientation);
+            console.log('Updated context origin to ' + JSON.stringify(originPosition) + " at " + this._stringIdentifierFromReferenceFrame(originReferenceFrame));
             this.originChangeEvent.raiseEvent(undefined);
         }
+
+        // raise events for the user to update and render the scene
         this.updateEvent.raiseEvent(this);
         this.renderEvent.raiseEvent(this);
         this.postRenderEvent.raiseEvent(this);
