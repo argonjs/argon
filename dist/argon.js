@@ -26522,7 +26522,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-21");
+            _export('version', version = "1.4.0-22");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -27531,8 +27531,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 };
                 /**
                  * Create a new EntityPose instance to represent the pose of an entity
-                 * relative to a given reference frame. If no reference frame is specified,
-                 * then the pose is based on the context's defaultReferenceFrame.
+                 * relative to a given reference frame.
                  *
                  * @param entity - the entity to track
                  * @param referenceFrameOrId - the reference frame to use
@@ -31323,13 +31322,15 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     _this._initFinished = false;
                     _this._sharedCanvasFinal = false;
                     _this._vrDisplay = undefined;
-                    _this._lastGeoHorizontalAccuracy = -99;
+                    _this._lastGeoHorizontalAccuracy = 999;
+                    _this._lastGeoHeadingAccuracy = 999;
                     _this._tangoOriginLost = true;
                     _this._scratchMatrix3 = new Matrix3();
                     _this._scratchMatrix4 = new Matrix4();
                     _this._scratchCartesian = new Cartesian3();
-                    _this.points_vertexShader = "attribute vec3 position;\n" + "uniform float size;\n" + "uniform mat4 modelViewMatrix;\n" + "uniform mat4 projectionMatrix;\n" + "uniform vec4 plane;\n" + "uniform float distance;\n" + "varying float v_discard;\n" + "void main(void) {\n" + "  vec4 v4Position = vec4(position, 1.0);\n" + "  float d = dot(plane, v4Position);\n" + "  v_discard = 0.0;\n" + "  if (abs(d) < distance) v_discard = 1.0;\n" + "  gl_PointSize = size;\n" + "  gl_Position = projectionMatrix * modelViewMatrix * v4Position;\n" + "}";
-                    _this.points_fragmentShader = "precision mediump float;\n" + "uniform vec3 color;\n" + "uniform float opacity;\n" + "varying float v_discard;\n" + "void main(void) {\n" + "  if (v_discard > 0.0) discard;\n" + "  gl_FragColor = vec4( color, opacity );\n" + "}";
+                    _this._scratchQuaternion = new Quaternion();
+                    _this.points_vertexShader = "attribute vec3 position;\nuniform float size;\nuniform mat4 modelViewMatrix;\nuniform mat4 projectionMatrix;\nuniform vec4 plane;\nuniform float distance;\nuniform float cameraNear;\nuniform float cameraFar;\nvarying float v_discard;\nvarying vec3 color;\nvoid main(void) {\n    vec4 v4Position = vec4(position, 1.0);\n    float d = dot(plane, v4Position);\n    v_discard = 0.0;\n    if (abs(d) < distance) v_discard = 1.0;\n    gl_PointSize = size;\n    gl_Position = projectionMatrix * modelViewMatrix * v4Position;\n    float depth = 1.0 - ((gl_Position.z - cameraNear) / (cameraFar - cameraNear));\n    color = vec3(depth);\n}";
+                    _this.points_fragmentShader = "precision mediump float;\nvarying vec3 color;\nuniform float opacity;\nvarying float v_discard;\nvoid main(void) {\n    if (v_discard > 0.0) discard;\n    gl_FragColor = vec4( color, opacity );\n}";
                     _this.viewService.viewportChangeEvent.addEventListener(function (viewport) {
                         _this.updateViewport(viewport);
                     });
@@ -31358,15 +31359,18 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         sharedCanvas: true
                     });
                     // Create the basic services that we need to use. 
-                    // Note: we won't create a child ViewService here,
-                    // as we are already managing the DOM with the
-                    // ViewService that exists in the root container. 
                     child.autoRegisterAll([SessionService, EntityService, VisibilityService, ContextService, DeviceService, RealityService]);
                     var childContextService = child.get(ContextService);
                     var childDeviceService = child.get(DeviceService);
                     var childSessionService = child.get(SessionService);
                     var childRealityService = child.get(RealityService);
+                    // const childEntityService = child.get(EntityService) as EntityService;
                     // const childViewService = child.get(ViewService) as ViewService;
+                    var tangoOrigin = new Entity({
+                        id: 'tango',
+                        position: new ConstantPositionProperty(undefined, childContextService.stage),
+                        orientation: new ConstantProperty(Quaternion.IDENTITY)
+                    });
                     // the child device service should *not* submit frames to the vrdisplay. 
                     childDeviceService.autoSubmitFrame = false;
                     var customStagePosition;
@@ -31451,70 +31455,61 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                             var overrideUser = true; //!(deviceUserPose.status & PoseStatus.KNOWN);
                             var contextUser = childContextService.user;
                             var contextStage = childContextService.stage;
-                            var userPosition;
-                            var userOrientation;
+                            var tangoUserPosition;
+                            var tangoUserOrientation;
                             // Override user
                             _this._vrDisplay['getFrameData'](_this._frameData);
                             var tangoPos = _this._frameData.pose.position;
-                            userPosition = new Cartesian3(tangoPos[0], tangoPos[1], tangoPos[2]);
+                            tangoUserPosition = new Cartesian3(tangoPos[0], tangoPos[1], tangoPos[2]);
                             // Check if tango tracking is lost
                             _this._tangoOriginLostPreviousFrame = _this._tangoOriginLost;
-                            _this._tangoOriginLost = userPosition.equals(Cartesian3.ZERO);
-                            // Position user at half of eye height AFTER TangoTrackingLost is checked
-                            userPosition.y += AVERAGE_EYE_HEIGHT / 2;
+                            _this._tangoOriginLost = tangoUserPosition.equals(Cartesian3.ZERO) || tangoUserPosition.x === NaN;
                             // If tango tracking is lost, set userPosition to undefined -> results in user pose status LOST
                             if (_this._tangoOriginLost) {
-                                userPosition = undefined;
-                                userOrientation = undefined;
+                                tangoUserPosition = undefined;
+                                tangoUserOrientation = undefined;
                             } else {
                                 var tangoRot = _this._frameData.pose.orientation;
-                                userOrientation = new Quaternion(tangoRot[0], tangoRot[1], tangoRot[2], tangoRot[3]);
+                                tangoUserOrientation = new Quaternion(tangoRot[0], tangoRot[1], tangoRot[2], tangoRot[3]);
                             }
-                            contextUser.position.setValue(userPosition, contextStage);
-                            contextUser.orientation.setValue(userOrientation);
+                            contextUser.position.setValue(tangoUserPosition, tangoOrigin);
+                            contextUser.orientation.setValue(tangoUserOrientation);
                             // Update stage geopose when GPS accuracy improves or Tango origin is repositioned
-                            var gpsAccuracyHasImproved = _this._lastGeoHorizontalAccuracy < (_this.deviceService.geoHorizontalAccuracy || 0);
+                            var gpsAccuracyHasImproved = _this._lastGeoHorizontalAccuracy > (_this.deviceService.geoHorizontalAccuracy || 0);
+                            var compassAccuracyHasImproved = _this._lastGeoHeadingAccuracy > (_this.deviceService.geoHeadingAccuracy || 0);
                             var tangoOriginRepositioned = _this._tangoOriginLostPreviousFrame && !_this._tangoOriginLost;
-                            var geopositionStage = gpsAccuracyHasImproved || tangoOriginRepositioned;
+                            var tangoOriginNeedsUpdate = gpsAccuracyHasImproved || tangoOriginRepositioned || compassAccuracyHasImproved;
                             var overrideStage = true;
-                            if (geopositionStage) {
-                                if (tangoOriginRepositioned) {
-                                    console.log("Tango origin has been reset. Updating stage geopose.");
-                                    _this._tangoOriginLost = false;
-                                } else if (gpsAccuracyHasImproved) {
-                                    console.log("Updating stage geopose. Current horizontal accuracy is " + _this.deviceService.geoHorizontalAccuracy);
-                                    _this._lastGeoHorizontalAccuracy = _this.deviceService.geoHorizontalAccuracy || 0;
-                                }
-                                var deviceStage = _this.deviceService.stage;
-                                if (deviceStage.position) {
-                                    // this.contextService.defaultReferenceFrame = ReferenceFrame.FIXED;
-                                    // Get GPS coordinates of phone and subtract local tango coordinates to get the GPS coord of Stage origin
-                                    customStagePosition = deviceStage.position.getValue(time);
-                                    customStagePosition = Cartesian3.subtract(customStagePosition, userPosition || Cartesian3.ZERO, _this._scratchCartesian);
-                                    // Set the height of the stage origin to the floor height
-                                    customStagePosition.y -= AVERAGE_EYE_HEIGHT / 2;
-                                    var customStageOrientation_1 = _this.deviceService.user.orientation ? _this.deviceService.user.orientation.getValue(time) : new Quaternion(0, 0, 0, 1);
-                                    // Use only yaw as in a compass
-                                    customStageOrientation_1.x = 0;
-                                    customStageOrientation_1.y = -customStageOrientation_1.y;
-                                    customStageOrientation_1.z = 0;
-                                    Quaternion.normalize(customStageOrientation_1, customStageOrientation_1);
-                                    var userOrientationYaw = userOrientation || new Quaternion(0, 0, 0, 1);
-                                    userOrientationYaw.x = 0;
-                                    userOrientationYaw.z = 0;
-                                    Quaternion.normalize(userOrientationYaw, userOrientationYaw);
-                                    Quaternion.multiply(customStageOrientation_1, userOrientationYaw, customStageOrientation_1);
-                                    contextStage.position.setValue(customStagePosition, ReferenceFrame.FIXED);
-                                    contextStage.orientation.setValue(customStageOrientation_1);
-                                } else {
-                                    // this.contextService.defaultReferenceFrame = this.contextService.origin;
-                                    contextStage.position.setValue(undefined, undefined);
-                                    contextStage.orientation.setValue(undefined);
-                                }
+                            if (tangoOriginRepositioned) {
+                                console.log("Tango origin has been reset.");
+                                _this._lastGeoHeadingAccuracy = _this._lastGeoHorizontalAccuracy = 999;
+                                _this._tangoOriginLost = false;
+                            } else if (gpsAccuracyHasImproved) {
+                                console.log("Current horizontal accuracy has been inproved to:" + _this.deviceService.geoHorizontalAccuracy);
+                                _this._lastGeoHorizontalAccuracy = _this.deviceService.geoHorizontalAccuracy || 0;
+                            } else if (compassAccuracyHasImproved) {
+                                console.log("Current heading accuracy has been inproved to:" + _this.deviceService.geoHeadingAccuracy);
+                                _this._lastGeoHeadingAccuracy = _this.deviceService.geoHeadingAccuracy || 0;
                             }
-                            // Use this to check the device rotation. Result is in (pitch, yaw, roll, -) format
-                            // if (this.deviceService.user.orientation) 
-                            //     console.log(this.deviceService.user.orientation.getValue(time));
+                            if (tangoUserPosition && tangoUserOrientation && tangoOriginNeedsUpdate) {
+                                // Get tango origin relative to context user.
+                                // First two lines should be removed after bugfix of not being able to get transform of an entity with an undefined position|orientation relative to one of it's children
+                                tangoOrigin.position.setValue(Cartesian3.ZERO, ReferenceFrame.FIXED);
+                                tangoOrigin.orientation.setValue(Quaternion.IDENTITY);
+                                var tangoOriginPosition = getEntityPosition(tangoOrigin, time, contextUser, _this._scratchCartesian);
+                                var tangoOriginOrientation = getEntityOrientation(tangoOrigin, time, contextUser, _this._scratchQuaternion);
+                                // Set tango origin relative to device user (which has geopose)
+                                tangoOrigin.position.setValue(tangoOriginPosition, _this.deviceService.user);
+                                tangoOrigin.orientation.setValue(tangoOriginOrientation);
+                                // Redefine tango origin relative to fixed
+                                var tangoOriginPositionFixed = getEntityPosition(tangoOrigin, time, ReferenceFrame.FIXED, _this._scratchCartesian);
+                                var tangoOriginOrientationFixed = getEntityOrientation(tangoOrigin, time, ReferenceFrame.FIXED, _this._scratchQuaternion);
+                                tangoOrigin.position.setValue(tangoOriginPositionFixed, ReferenceFrame.FIXED);
+                                tangoOrigin.orientation.setValue(tangoOriginOrientationFixed);
+                            }
+                            // Set stage at floor of tango origin using user height assumption
+                            contextStage.position.setValue(Cartesian3.fromElements(0, -_this.deviceService.suggestedUserHeight, 0, _this._scratchCartesian), tangoOrigin);
+                            contextStage.orientation.setValue(Quaternion.IDENTITY);
                             if (_this._initFinished && _this._vrDisplay) {
                                 //update cameraPersp
                                 var pose = _this._frameData.pose;
@@ -31532,7 +31527,6 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                                 THREE.WebAR.updateCameraMeshOrientation(_this._vrDisplay, _this._cameraMesh);
                                 // RENDER
                                 _this._renderer.resetGLState();
-                                var ac = _this._renderer.autoClear;
                                 _this._renderer.autoClear = false;
                                 _this._renderer.clear();
                                 _this._renderer.render(_this._cameraScene, _this._cameraOrtho);
@@ -31542,7 +31536,6 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                                     _this._renderer.render(_this._scene, _this._cameraPersp);
                                     _this._renderer.context.colorMask(true, true, true, true);
                                 }
-                                _this._renderer.autoClear = ac;
                             }
                             var contextFrameState = childContextService.createFrameState(time, frameState.viewport, subviews, {
                                 overrideUser: overrideUser,
@@ -31618,9 +31611,11 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         uniforms: {
                             size: { value: 30 },
                             opacity: { value: 0.1 },
-                            color: { value: new THREE.Color(0xffffff) },
+                            // color: { value: new THREE.Color(0xffffff) },
                             plane: { value: new THREE.Vector4() },
-                            distance: { value: 0.05 }
+                            distance: { value: 0.05 },
+                            cameraNear: { value: this._cameraPersp.near },
+                            cameraFar: { value: 3 }
                         },
                         vertexShader: this.points_vertexShader,
                         fragmentShader: this.points_fragmentShader
@@ -31653,7 +31648,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     if (this.isSharedCanvas && argonCanvas) {
                         // found an existing canvas, use it
                         console.log("Found argon canvas, video background is sharing its context");
-                        this._renderer = new THREE.WebGLRenderer({ canvas: argonCanvas, antialias: false, alpha: true, logarithmicDepthBuffer: true });
+                        this._renderer = new THREE.WebGLRenderer({ canvas: argonCanvas, antialias: false, alpha: true, logarithmicDepthBuffer: false });
                         this._sharedCanvasFinal = true;
                     } else {
                         // no canvas, create a new one
