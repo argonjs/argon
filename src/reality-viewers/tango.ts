@@ -313,7 +313,6 @@ export class TangoRealityViewer extends RealityViewer {
 
                     this._renderer.resetGLState();
 
-                    var ac = this._renderer.autoClear;
                     this._renderer.autoClear = false;
                     this._renderer.clear();
                     this._renderer.render(this._cameraScene, this._cameraOrtho);
@@ -324,9 +323,6 @@ export class TangoRealityViewer extends RealityViewer {
                         this._renderer.render(this._scene, this._cameraPersp);
                         this._renderer.context.colorMask( true, true, true, true );
                     }
-
-                    this._renderer.autoClear = ac;
-
                 }
 
                 const contextFrameState = childContextService.createFrameState(
@@ -404,31 +400,36 @@ export class TangoRealityViewer extends RealityViewer {
     }
 
     private points_vertexShader =
-        "attribute vec3 position;\n" +
-        "uniform float size;\n" +
-        "uniform mat4 modelViewMatrix;\n" +
-        "uniform mat4 projectionMatrix;\n" +
-        "uniform vec4 plane;\n" +
-        "uniform float distance;\n" +
-        "varying float v_discard;\n" +
-        "void main(void) {\n" +
-        "  vec4 v4Position = vec4(position, 1.0);\n" +
-        "  float d = dot(plane, v4Position);\n" +
-        "  v_discard = 0.0;\n" +
-        "  if (abs(d) < distance) v_discard = 1.0;\n" +
-        "  gl_PointSize = size;\n" +
-        "  gl_Position = projectionMatrix * modelViewMatrix * v4Position;\n" +
-        "}";
+`attribute vec3 position;
+uniform float size;
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+uniform vec4 plane;
+uniform float distance;
+uniform float cameraNear;
+uniform float cameraFar;
+varying float v_discard;
+varying vec3 color;
+void main(void) {
+    vec4 v4Position = vec4(position, 1.0);
+    float d = dot(plane, v4Position);
+    v_discard = 0.0;
+    if (abs(d) < distance) v_discard = 1.0;
+    gl_PointSize = size;
+    gl_Position = projectionMatrix * modelViewMatrix * v4Position;
+    float depth = 1.0 - ((gl_Position.z - cameraNear) / (cameraFar - cameraNear));
+    color = vec3(depth);
+}`;
 
     private points_fragmentShader =
-        "precision mediump float;\n" +
-        "uniform vec3 color;\n" +
-        "uniform float opacity;\n" +
-        "varying float v_discard;\n" +
-        "void main(void) {\n" +
-        "  if (v_discard > 0.0) discard;\n" +
-        "  gl_FragColor = vec4( color, opacity );\n" +
-        "}";
+`precision mediump float;
+varying vec3 color;
+uniform float opacity;
+varying float v_discard;
+void main(void) {
+    if (v_discard > 0.0) discard;
+    gl_FragColor = vec4( color, opacity );
+}`;
     
     protected initCameraAndPointcloud() {
         this._scene = new THREE.Scene();
@@ -446,9 +447,11 @@ export class TangoRealityViewer extends RealityViewer {
           uniforms: {
             size: { value: 30 },
             opacity: { value: 0.1 },
-            color: { value: new THREE.Color(0xffffff) },
+            // color: { value: new THREE.Color(0xffffff) },
             plane: { value: new THREE.Vector4() },
-            distance: { value: 0.05 }
+            distance: { value: 0.05 },
+            cameraNear: { value: this._cameraPersp.near },
+            cameraFar:  { value: 3 }
           },
           vertexShader: this.points_vertexShader,
           fragmentShader: this.points_fragmentShader
@@ -459,7 +462,7 @@ export class TangoRealityViewer extends RealityViewer {
         // pointsMaterial.depthWrite = false;
         this._pointCloud = new (THREE as any).WebAR.VRPointCloud(this._vrDisplay, true);
         this._points = new THREE.Points(this._pointCloud.getBufferGeometry(),
-            pointsMaterial);
+        pointsMaterial);
         // Points are changing all the time so calculating the frustum culling
         // volume is not very convenient.
         this._points.frustumCulled = false;
@@ -487,7 +490,7 @@ export class TangoRealityViewer extends RealityViewer {
         if (this.isSharedCanvas && argonCanvas) {
             // found an existing canvas, use it
             console.log("Found argon canvas, video background is sharing its context");
-            this._renderer = new THREE.WebGLRenderer({canvas: argonCanvas, antialias: false, alpha: true, logarithmicDepthBuffer: true});
+            this._renderer = new THREE.WebGLRenderer({canvas: argonCanvas, antialias: false, alpha: true, logarithmicDepthBuffer: false});
             this._sharedCanvasFinal = true;
 
         } else {
