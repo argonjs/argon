@@ -37,6 +37,7 @@ export declare class TangoRealityViewer extends RealityViewer {
     private _scratchMatrix3;
     private _scratchMatrix4;
     private _scratchCartesian;
+    private _scratchQuaternion;
     load(): void;
     protected initTango(): void;
     protected loadScripts(): Promise<void>;

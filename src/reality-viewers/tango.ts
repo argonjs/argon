@@ -9,11 +9,11 @@ import {
     Matrix3,
     Matrix4,
     // CesiumMath
-    // Entity
+    Entity
 } from '../cesium/cesium-imports'
-import { Configuration, Role, SerializedSubviewList, CanvasViewport, AVERAGE_EYE_HEIGHT } from '../common'
+import { Configuration, Role, SerializedSubviewList, CanvasViewport } from '../common'
 import { SessionService, ConnectService, SessionConnectService, Message } from '../session'
-import { eastUpSouthToFixedFrame } from '../utils'
+import { eastUpSouthToFixedFrame, getEntityPosition, getEntityOrientation } from '../utils'
 import { EntityService } from '../entity'
 import { ContextService } from '../context'
 import { DeviceService } from '../device'
@@ -73,6 +73,7 @@ export class TangoRealityViewer extends RealityViewer {
     private _scratchMatrix3 = new Matrix3;
     private _scratchMatrix4 = new Matrix4;
     private _scratchCartesian = new Cartesian3;
+    private _scratchQuaternion = new Quaternion;
 
     public load(): void {
 
@@ -103,15 +104,19 @@ export class TangoRealityViewer extends RealityViewer {
         });
 
         // Create the basic services that we need to use. 
-        // Note: we won't create a child ViewService here,
-        // as we are already managing the DOM with the
-        // ViewService that exists in the root container. 
         child.autoRegisterAll([SessionService, EntityService, VisibilityService, ContextService, DeviceService, RealityService]);
         const childContextService = child.get(ContextService) as ContextService;
         const childDeviceService = child.get(DeviceService) as DeviceService;
         const childSessionService = child.get(SessionService) as SessionService;
         const childRealityService = child.get(RealityService) as RealityService;
+        // const childEntityService = child.get(EntityService) as EntityService;
         // const childViewService = child.get(ViewService) as ViewService;
+
+        var tangoOrigin = new Entity({
+            id: 'tango',
+            position: new ConstantPositionProperty(undefined, childContextService.stage),
+            orientation: new ConstantProperty(Quaternion.IDENTITY)
+        });
 
         // the child device service should *not* submit frames to the vrdisplay. 
         childDeviceService.autoSubmitFrame = false;
@@ -215,89 +220,66 @@ export class TangoRealityViewer extends RealityViewer {
                 const contextUser = childContextService.user;
                 const contextStage = childContextService.stage;
 
-                var userPosition: Cartesian3 | undefined;
-                var userOrientation: Quaternion | undefined;
+                var tangoUserPosition: Cartesian3 | undefined;
+                var tangoUserOrientation: Quaternion | undefined;
 
                 // Override user
                 (<VRDisplay>this._vrDisplay)['getFrameData'](this._frameData);
                 const tangoPos = this._frameData.pose.position;
-                userPosition = new Cartesian3(tangoPos[0], tangoPos[1], tangoPos[2]);
+                tangoUserPosition = new Cartesian3(tangoPos[0], tangoPos[1], tangoPos[2]);
 
                 // Check if tango tracking is lost
                 this._tangoOriginLostPreviousFrame = this._tangoOriginLost;
-                this._tangoOriginLost = userPosition.equals(Cartesian3.ZERO);
-
-                // Position user at half of eye height AFTER TangoTrackingLost is checked
-                userPosition.y += AVERAGE_EYE_HEIGHT/2;
-
+                this._tangoOriginLost = tangoUserPosition.equals(Cartesian3.ZERO) || tangoUserPosition.x === NaN;
                 
                 // If tango tracking is lost, set userPosition to undefined -> results in user pose status LOST
                 if (this._tangoOriginLost) {
-                    userPosition = undefined;
-                    userOrientation = undefined;
+                    tangoUserPosition = undefined;
+                    tangoUserOrientation = undefined;
                 } else {
                     const tangoRot = this._frameData.pose.orientation;
-                    userOrientation = new Quaternion(tangoRot[0], tangoRot[1], tangoRot[2], tangoRot[3]);
+                    tangoUserOrientation = new Quaternion(tangoRot[0], tangoRot[1], tangoRot[2], tangoRot[3]);
                 }
 
-                (contextUser.position as ConstantPositionProperty).setValue(userPosition, contextStage);
-                (contextUser.orientation as ConstantProperty).setValue(userOrientation);
+                (contextUser.position as ConstantPositionProperty).setValue(tangoUserPosition, tangoOrigin);
+                (contextUser.orientation as ConstantProperty).setValue(tangoUserOrientation);
+
+                
+                if (tangoUserPosition && tangoUserOrientation) {
+                    // Get tango origin relative to context user.
+                    // First two lines should be removed after bugfix of not being able to reference a lost entity
+                    (tangoOrigin.position as ConstantPositionProperty).setValue(Cartesian3.ZERO, ReferenceFrame.FIXED);
+                    (tangoOrigin.orientation as ConstantProperty).setValue(Quaternion.IDENTITY);
+                    const tangoOriginPosition = getEntityPosition(tangoOrigin, time, contextUser, this._scratchCartesian);
+                    const tangoOriginOrientation = getEntityOrientation(tangoOrigin, time, contextUser, this._scratchQuaternion);
+                    // Set tango origin relative to device user (which has geopose)
+                    (tangoOrigin.position as ConstantPositionProperty).setValue(tangoOriginPosition, this.deviceService.user);
+                    (tangoOrigin.orientation as ConstantProperty).setValue(tangoOriginOrientation);
+                    // Redefine tango origin relative to fixed
+                    const tangoOriginPositionFixed = getEntityPosition(tangoOrigin, time, ReferenceFrame.FIXED, this._scratchCartesian);
+                    const tangoOriginOrientationFixed = getEntityOrientation(tangoOrigin, time, ReferenceFrame.FIXED, this._scratchQuaternion);
+                    (tangoOrigin.position as ConstantPositionProperty).setValue(tangoOriginPositionFixed, ReferenceFrame.FIXED);
+                    (tangoOrigin.orientation as ConstantProperty).setValue(tangoOriginOrientationFixed);
+                }
 
                 // Update stage geopose when GPS accuracy improves or Tango origin is repositioned
                 const gpsAccuracyHasImproved = this._lastGeoHorizontalAccuracy < (this.deviceService.geoHorizontalAccuracy || 0);
                 const tangoOriginRepositioned = this._tangoOriginLostPreviousFrame && !this._tangoOriginLost;
-                const geopositionStage = gpsAccuracyHasImproved || tangoOriginRepositioned;
+                // const geopositionStage = gpsAccuracyHasImproved || tangoOriginRepositioned;
                 const overrideStage = true;
 
-                if (geopositionStage) {
-                    if (tangoOriginRepositioned) {
-                        console.log("Tango origin has been reset. Updating stage geopose.")
-                        this._tangoOriginLost = false;
-                    }
-                    else if (gpsAccuracyHasImproved) {
-                        console.log("Updating stage geopose. Current horizontal accuracy is " + this.deviceService.geoHorizontalAccuracy)
-                        this._lastGeoHorizontalAccuracy = this.deviceService.geoHorizontalAccuracy || 0;
-                    }
-
-                    const deviceStage = this.deviceService.stage;
-
-                    if (deviceStage.position) { // If GPS info is provided
-                        // this.contextService.defaultReferenceFrame = ReferenceFrame.FIXED;
-
-                        // Get GPS coordinates of phone and subtract local tango coordinates to get the GPS coord of Stage origin
-                        customStagePosition = deviceStage.position.getValue(time);
-                        customStagePosition = Cartesian3.subtract(customStagePosition, userPosition || Cartesian3.ZERO, this._scratchCartesian);
-                        // Set the height of the stage origin to the floor height
-                        customStagePosition.y -= AVERAGE_EYE_HEIGHT/2;
-
-                        let customStageOrientation: Quaternion = this.deviceService.user.orientation ? 
-                            this.deviceService.user.orientation.getValue(time) : new Quaternion(0, 0, 0, 1);
-
-                        // Use only yaw as in a compass
-                        customStageOrientation.x = 0;
-                        customStageOrientation.y = -customStageOrientation.y;
-                        customStageOrientation.z = 0;
-                        Quaternion.normalize(customStageOrientation, customStageOrientation);
-
-                        let userOrientationYaw = userOrientation || new Quaternion(0, 0, 0, 1);
-                        userOrientationYaw.x = 0;
-                        userOrientationYaw.z = 0;
-                        Quaternion.normalize(userOrientationYaw, userOrientationYaw);
-
-                        Quaternion.multiply(customStageOrientation, userOrientationYaw, customStageOrientation);
-
-                        (contextStage.position as ConstantPositionProperty).setValue(customStagePosition, ReferenceFrame.FIXED);
-                        (contextStage.orientation as ConstantProperty).setValue(customStageOrientation);
-                    } else {
-                        // this.contextService.defaultReferenceFrame = this.contextService.origin;
-                        (contextStage.position as ConstantPositionProperty).setValue(undefined, undefined);
-                        (contextStage.orientation as ConstantProperty).setValue(undefined);
-                    }
+                if (tangoOriginRepositioned) {
+                    console.log("Tango origin has been reset.")
+                    this._tangoOriginLost = false;
+                }
+                else if (gpsAccuracyHasImproved) {
+                    console.log("Current horizontal accuracy has been inproved to:" + this.deviceService.geoHorizontalAccuracy)
+                    this._lastGeoHorizontalAccuracy = this.deviceService.geoHorizontalAccuracy || 0;
                 }
 
-                // Use this to check the device rotation. Result is in (pitch, yaw, roll, -) format
-                // if (this.deviceService.user.orientation) 
-                //     console.log(this.deviceService.user.orientation.getValue(time));
+                // Set stage at floor of tango origin using user height assumption
+                (contextStage.position as ConstantPositionProperty).setValue(Cartesian3.fromElements(0, -this.deviceService.suggestedUserHeight, 0, this._scratchCartesian), tangoOrigin);
+                (contextStage.orientation as ConstantProperty).setValue(Quaternion.IDENTITY);                
 
                 if (this._initFinished && this._vrDisplay) {
                     //update cameraPersp
