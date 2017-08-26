@@ -20937,7 +20937,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-22");
+            _export('version', version = "1.4.0-23");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -25890,23 +25890,25 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                             contextUser.position.setValue(tangoUserPosition, tangoOrigin);
                             contextUser.orientation.setValue(tangoUserOrientation);
                             // Update stage geopose when GPS accuracy improves or Tango origin is repositioned
-                            var gpsAccuracyHasImproved = _this._lastGeoHorizontalAccuracy > (_this.deviceService.geoHorizontalAccuracy || 0);
-                            var compassAccuracyHasImproved = _this._lastGeoHeadingAccuracy > (_this.deviceService.geoHeadingAccuracy || 0);
+                            var currentGeoHorizontalAccuracy = _this.deviceService.geoHorizontalAccuracy || 999;
+                            var currentGeoHeadingAccuracy = _this.deviceService.geoHeadingAccuracy || 999;
+                            var gpsAccuracyHasImproved = _this._lastGeoHorizontalAccuracy > currentGeoHorizontalAccuracy;
+                            var compassAccuracyHasImproved = _this._lastGeoHeadingAccuracy > currentGeoHeadingAccuracy;
                             var tangoOriginRepositioned = _this._tangoOriginLostPreviousFrame && !_this._tangoOriginLost;
                             var tangoOriginNeedsUpdate = gpsAccuracyHasImproved || tangoOriginRepositioned || compassAccuracyHasImproved;
                             var overrideStage = true;
-                            if (tangoOriginRepositioned) {
-                                console.log("Tango origin has been reset.");
-                                _this._lastGeoHeadingAccuracy = _this._lastGeoHorizontalAccuracy = 999;
-                                _this._tangoOriginLost = false;
-                            } else if (gpsAccuracyHasImproved) {
-                                console.log("Current horizontal accuracy has been inproved to:" + _this.deviceService.geoHorizontalAccuracy);
-                                _this._lastGeoHorizontalAccuracy = _this.deviceService.geoHorizontalAccuracy || 0;
-                            } else if (compassAccuracyHasImproved) {
-                                console.log("Current heading accuracy has been inproved to:" + _this.deviceService.geoHeadingAccuracy);
-                                _this._lastGeoHeadingAccuracy = _this.deviceService.geoHeadingAccuracy || 0;
-                            }
                             if (tangoUserPosition && tangoUserOrientation && tangoOriginNeedsUpdate) {
+                                if (tangoOriginRepositioned) {
+                                    console.log("Tango origin has been reset.");
+                                    _this._lastGeoHeadingAccuracy = _this._lastGeoHorizontalAccuracy = 999;
+                                    _this._tangoOriginLost = false;
+                                } else if (gpsAccuracyHasImproved) {
+                                    console.log("Current horizontal accuracy has been inproved to:" + _this.deviceService.geoHorizontalAccuracy);
+                                    _this._lastGeoHorizontalAccuracy = currentGeoHorizontalAccuracy;
+                                } else if (compassAccuracyHasImproved) {
+                                    console.log("Current heading accuracy has been inproved to:" + _this.deviceService.geoHeadingAccuracy);
+                                    _this._lastGeoHeadingAccuracy = currentGeoHeadingAccuracy;
+                                }
                                 // Get tango origin relative to context user.
                                 // First two lines should be removed after bugfix of not being able to get transform of an entity with an undefined position|orientation relative to one of it's children
                                 tangoOrigin.position.setValue(Cartesian3.ZERO, ReferenceFrame.FIXED);
