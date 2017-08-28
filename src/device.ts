@@ -337,6 +337,8 @@ export class DeviceService {
     private _updateFrameState = () => {
         if (!this._updatingFrameState) return;
 
+        if (this.sessionService.isRealityViewer) return; // hack. Try to fix later. 
+
         this.requestAnimationFrame(this._updateFrameState);
 
         const state = this.frameState;

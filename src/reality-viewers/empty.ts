@@ -62,6 +62,7 @@ export class EmptyRealityViewer extends RealityViewer {
         private sessionService: SessionService,
         private viewService: ViewService,
         private container: Container,
+        private deviceService: DeviceService,
         public uri:string) {
         super(uri);
 
@@ -223,7 +224,7 @@ export class EmptyRealityViewer extends RealityViewer {
             
             const remove1 = childDeviceService.suggestedGeolocationSubscriptionChangeEvent.addEventListener(checkSuggestedGeolocationSubscription);
 
-            const remove2 = childDeviceService.frameStateEvent.addEventListener((frameState) => {
+            const remove2 = this.deviceService.frameStateEvent.addEventListener((frameState) => {
                 if (childSessionService.manager.isClosed) return;
                 
                 const aggregator = this._aggregator;
