@@ -1,4 +1,4 @@
-import { autoinject, inject, Factory, Container } from 'aurelia-dependency-injection'
+import { autoinject } from 'aurelia-dependency-injection'
 import {
     createGuid,
     PerspectiveFrustum,
