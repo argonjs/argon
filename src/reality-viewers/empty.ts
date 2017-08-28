@@ -42,7 +42,7 @@ interface PinchMovement {
     angleAndHeight: Movement;
 }
 
-@inject(SessionService, ViewService, Container)
+@inject(SessionService, ViewService, Container, DeviceService)
 export class EmptyRealityViewer extends RealityViewer {
 
     public type = 'empty';
