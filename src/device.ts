@@ -916,7 +916,7 @@ export class DeviceService {
                 const viewService = this.viewService;
                 const display:VRDisplay|undefined = e.display || e.detail.vrdisplay || e.detail.display;
                 if (display) {
-                    if (display.isPresenting) {
+                    if (display['hasPosition'] && display['hasOrientation']) {
                         this._userTracking = '6DOF';
                         this._vrDisplay = display;
                         if (display.displayName.match(/polyfill/g)) {
