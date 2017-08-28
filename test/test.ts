@@ -324,9 +324,7 @@ describe('RealityService', () => {
     describe('new RealityService()', () => {
 
         it('the default reality should be used when no reality has been requested', (done) => {
-            const container = new Argon.DI.Container();
-            container.registerInstance(Argon.Configuration, {role: Argon.Role.REALITY_MANAGER});
-            container.registerSingleton(Argon.ConnectService, Argon.LoopbackConnectService);
+            const container = new Argon.ArgonContainerManager({role: Argon.Role.REALITY_MANAGER}).container;
             const realityService:Argon.RealityService = container.get(Argon.RealityService);
             const contextService:Argon.ContextService = container.get(Argon.ContextService);
             sessionService = container.get(Argon.SessionService);
@@ -351,10 +349,8 @@ describe('RealityService', () => {
 
     describe('#request', () => {
 
-        it('should raise an error for unsupported realities', (done) => {
-            const container = new Argon.DI.Container();
-            container.registerInstance(Argon.Configuration, {role: Argon.Role.REALITY_MANAGER});
-            container.registerSingleton(Argon.ConnectService, Argon.LoopbackConnectService);
+        it('should raise an error for unsupported realities', (done) => {            
+            const container = new Argon.ArgonContainerManager({role: Argon.Role.REALITY_MANAGER}).container;
             const realityService:Argon.RealityService = container.get(Argon.RealityService);
             sessionService = container.get(Argon.SessionService);
             container.get(Argon.ArgonSystemProvider);

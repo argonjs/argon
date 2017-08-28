@@ -1,4 +1,4 @@
-import { autoinject, inject, Factory } from 'aurelia-dependency-injection'
+import { autoinject, inject, Factory, Container } from 'aurelia-dependency-injection'
 import {
     createGuid,
     PerspectiveFrustum,
@@ -14,48 +14,19 @@ import {
 } from './common'
 import { SessionPort, SessionService } from './session'
 import { Event, deprecated, decomposePerspectiveProjectionMatrix } from './utils'
-import { ContextService } from './context'
+import { EntityService } from './entity'
 import { FocusServiceProvider } from './focus'
 import { VisibilityServiceProvider } from './visibility'
 
 import { RealityViewer } from './reality-viewers/base'
-import { EmptyRealityViewer } from './reality-viewers/empty'
-import { LiveRealityViewer } from './reality-viewers/live'
-import { WebRTCRealityViewer } from './reality-viewers/webrtc'
-import { HostedRealityViewer } from './reality-viewers/hosted'
-import { TangoRealityViewer } from './reality-viewers/tango'
 
 import {ViewServiceProvider} from './view'
 import {DeviceService} from './device'
 
 import * as utils from './utils'
 
-@inject(Factory.of(EmptyRealityViewer), Factory.of(LiveRealityViewer), Factory.of(WebRTCRealityViewer), Factory.of(HostedRealityViewer), Factory.of(TangoRealityViewer))
-export abstract class RealityViewerFactory {
-    constructor(
-        private _createEmptyReality, 
-        private _createLiveReality, 
-        private _createWebRTCReality, 
-        private _createHostedReality,
-        private _createTangoReality) {
-    }
-
-    createRealityViewer(uri:string) : RealityViewer {
-        switch (RealityViewer.getType(uri)) {
-            case RealityViewer.EMPTY: 
-                return this._createEmptyReality(uri);
-            case RealityViewer.LIVE:
-                return this._createLiveReality(uri);
-            case RealityViewer.WEBRTC:
-                return this._createWebRTCReality(uri);
-            case 'hosted':
-                return this._createHostedReality(uri);
-            case RealityViewer.TANGO:
-                return this._createTangoReality(uri);
-            default:
-                throw new Error('Unsupported Reality Viewer: ' + uri)
-        }
-    }
+export abstract class RealityFactory {
+    abstract createRealityViewer(uri:string) : RealityViewer;
 }
 
 /**
@@ -122,8 +93,7 @@ export class RealityService {
     // private _scratchFrustum = new PerspectiveFrustum();
 
     constructor(
-        private sessionService: SessionService,
-        private contextService: ContextService
+        private sessionService: SessionService
     ) {
         if ((utils.isIOS || utils.isAndroid) && navigator.getUserMedia && navigator.mediaDevices) {
             let vrDisplay:any = null;
@@ -182,32 +152,40 @@ export class RealityService {
         };
         
         // let i = 0;
+    }
 
-        this.contextService.updateEvent.addEventListener(()=>{
-            const frameState = this.contextService.serializedFrameState;
-            if (sessionService.isRealityViewer && sessionService.manager.isConnected) {
-                // backwards compatability
-                if (sessionService.manager.isConnected && sessionService.manager.version[0] === 0) {
-                    const eye = frameState['eye'] = frameState['eye'] || {};
-                    eye.pose = frameState.entities['ar.user'];
-                    eye.viewport = Viewport.clone(frameState.subviews[0].viewport, eye.viewport);
-                    delete frameState.entities['ar.user'];
-                    // throttle for 30fps
-                    // i++ % 2 === 0 && 
-                    sessionService.manager.send('ar.reality.frameState', frameState);
-                    frameState.entities['ar.user'] = eye.pose;
-                } else {
-                    sessionService.manager.send('ar.reality.frameState', frameState);
-                }   
-            }
-            
-            const current = frameState.reality!;
-            const previous = this._current;
-            if (previous !== current) {
-                this._current = current;
-                this.changeEvent.raiseEvent({ previous, current });
-            }
-        });
+    /**
+     * @private
+     */
+    public _processContextFrameState(frameState: ContextFrameState) {
+        const current = frameState.reality!;
+        const previous = this._current;
+        if (previous !== current) {
+            this._current = current;
+            this.changeEvent.raiseEvent({ previous, current });
+        }
+    }
+
+    /**
+     * @private
+     */
+    public _publishContextFrameState(frameState: ContextFrameState ) {
+        const sessionService = this.sessionService;
+        if (sessionService.isRealityViewer && sessionService.manager.isConnected) {
+            // backwards compatability
+            if (sessionService.manager.isConnected && sessionService.manager.version[0] === 0) {
+                const eye = frameState['eye'] = frameState['eye'] || {};
+                eye.pose = frameState.entities['ar.user'];
+                eye.viewport = Viewport.clone(frameState.subviews[0].viewport, eye.viewport);
+                delete frameState.entities['ar.user'];
+                // throttle for 30fps
+                // i++ % 2 === 0 && 
+                sessionService.manager.send('ar.reality.frameState', frameState);
+                frameState.entities['ar.user'] = eye.pose;
+            } else {
+                sessionService.manager.send('ar.reality.frameState', frameState);
+            }   
+        }
     }
 
     /**
@@ -292,6 +270,11 @@ export class RealityServiceProvider {
      */
     public uninstalledEvent = new Event<{ viewer:RealityViewer }>();
 
+    /**
+     * An event that is raised when the next frame state is published
+     */
+    public nextFrameStateEvent = new Event<ContextFrameState>();
+
     public get presentingRealityViewer() { return this._presentingRealityViewer }
     private _presentingRealityViewer:RealityViewer|undefined;
 
@@ -301,12 +284,12 @@ export class RealityServiceProvider {
     constructor(
         private sessionService:SessionService,
         private realityService:RealityService,
-        private contextService:ContextService,
+        private entityService:EntityService,
         private deviceService:DeviceService,
         private viewServiceProvider:ViewServiceProvider,
         private visibilityServiceProvider:VisibilityServiceProvider,
         private focusServiceProvider: FocusServiceProvider,
-        private realityViewerFactory:RealityViewerFactory,
+        private realityViewerFactory:RealityFactory,
     ) {
         sessionService.ensureIsRealityManager();
         
@@ -404,7 +387,7 @@ export class RealityServiceProvider {
                         frame.reality = viewer.uri;
                         this.realityService._sharedCanvas = !!(this.sessionService.configuration['sharedCanvas'] && viewer.session!.info['sharedCanvas']);
                         viewer._sharedCanvas = this.realityService._sharedCanvas;
-                        this.contextService.submitFrameState(frame);
+                        this.nextFrameStateEvent.raiseEvent(frame);
                     }
                 }
 
@@ -430,7 +413,7 @@ export class RealityServiceProvider {
 
                 viewerSession.closeEvent.addEventListener(() => {
                     removePresentChangeListener();
-                    this.contextService.entities.removeById(viewerSession.uri);
+                    this.entityService.collection.removeById(viewerSession.uri);
                     console.log('Reality session closed: ' + uri);
                 });
             });

@@ -43,6 +43,7 @@ import { EntityService, EntityServiceProvider, EntityPose } from './entity'
 import { DeviceService } from './device'
 import { ViewService } from './view'
 import { PermissionState, PermissionServiceProvider } from './permission'
+import { RealityService, RealityServiceProvider } from './reality'
 
 /**
  * Provides a means of querying the current state of reality.
@@ -55,6 +56,7 @@ export class ContextService {
         protected sessionService: SessionService,
         protected deviceService: DeviceService,
         protected viewService: ViewService,
+        protected realityService: RealityService
     ) {
         this.sessionService.manager.on['ar.context.update'] = (state: ContextFrameState) => {
             const scratchFrustum = this._scratchFrustum;
@@ -677,7 +679,7 @@ export class ContextService {
 
         // update view
         this.viewService._processContextFrameState(frameState, this);
-        // TODO: realityService._processContextFrameState(frameState); 
+        this.realityService._processContextFrameState(frameState); 
 
         // raise origin change event if necessary
         const originReferenceFrame = this._getReachableAncestorReferenceFrames(this.origin, time, this._scratchArray)[0] || ReferenceFrame.FIXED;
@@ -701,6 +703,9 @@ export class ContextService {
         this.updateEvent.raiseEvent(this);
         this.renderEvent.raiseEvent(this);
         this.postRenderEvent.raiseEvent(this);
+
+        // publish frameState to the manager (noop if this session is not a reality)
+        this.realityService._publishContextFrameState(frameState);
 
         // submit frame if necessary
         const vrDisplay:VRDisplay|undefined = this.deviceService.vrDisplay;
@@ -783,7 +788,8 @@ export class ContextServiceProvider {
         protected sessionService:SessionService,
         protected contextService:ContextService,
         protected entityServiceProvider:EntityServiceProvider,
-        protected permissionServiceProvider:PermissionServiceProvider
+        protected permissionServiceProvider:PermissionServiceProvider,
+        protected realityServiceProvider:RealityServiceProvider
     ) {
         this.entityServiceProvider.targetReferenceFrameMap.set(this.contextService.stage.id, ReferenceFrame.FIXED);
         this.entityServiceProvider.targetReferenceFrameMap.set(this.contextService.origin.id, this.contextService.stage.id);
@@ -808,6 +814,10 @@ export class ContextServiceProvider {
         this.contextService.updateEvent.addEventListener(()=>{
             this._publishUpdates();
         });
+
+        this.realityServiceProvider.nextFrameStateEvent.addEventListener((frameState)=>{
+            this.contextService.submitFrameState(frameState);
+        })
     }
     
     private _publishUpdates() {

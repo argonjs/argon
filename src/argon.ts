@@ -21,7 +21,7 @@ import { EntityService, EntityServiceProvider } from './entity'
 import { ContextService, ContextServiceProvider } from './context'
 import { FocusService, FocusServiceProvider } from './focus'
 import { DeviceService, DeviceServiceProvider } from './device'
-import { RealityService, RealityServiceProvider } from './reality'
+import { RealityService, RealityServiceProvider, RealityFactory } from './reality'
 import { ViewService, ViewServiceProvider, ViewItems, ViewportMode } from './view'
 import { VisibilityService, VisibilityServiceProvider } from './visibility'
 import { VuforiaService, VuforiaServiceProvider } from './vuforia'
@@ -31,6 +31,8 @@ import { RealityViewer } from './reality-viewers/base'
 import { EmptyRealityViewer } from './reality-viewers/empty'
 import { LiveRealityViewer } from './reality-viewers/live'
 import { HostedRealityViewer } from './reality-viewers/hosted'
+import { WebRTCRealityViewer } from './reality-viewers/webrtc'
+import { TangoRealityViewer } from './reality-viewers/tango'
 
 export { DI, Cesium }
 export * from './common'
@@ -51,7 +53,9 @@ export {
     RealityViewer,
     EmptyRealityViewer,
     LiveRealityViewer,
-    HostedRealityViewer
+    HostedRealityViewer,
+    WebRTCRealityViewer,
+    TangoRealityViewer
 }
 
 @DI.autoinject()
@@ -258,9 +262,9 @@ export class ArgonSystem {
     }
 }
 
-export class ArgonConfigurationManager {
+export class ArgonContainerManager {
 
-    static configure(configurationManager:ArgonConfigurationManager) {
+    static configure(configurationManager:ArgonContainerManager) {
         configurationManager.standardConfiguration();
     }
 
@@ -299,11 +303,16 @@ export class ArgonConfigurationManager {
         viewItems.element = element;
         container.registerInstance(ViewItems, viewItems);
 
-        ArgonConfigurationManager.configure(this);
+        ArgonContainerManager.configure(this);
+    }
+
+    get app() : ArgonSystem {
+        return this.container.get(ArgonSystem);
     }
     
     standardConfiguration() {
         this.defaultConnect();
+        this.defaultRealityFactory();
         this.defaultUI();
     }
 
@@ -339,6 +348,13 @@ export class ArgonConfigurationManager {
         }
     }
 
+    defaultRealityFactory() {
+        this.container.registerSingleton(
+            RealityFactory, 
+            DefaultRealityFactory
+        );
+    }
+
     defaultUI() {
         if (Role.isRealityManager(this.configuration.role)) {
             if (typeof document !== 'undefined') {
@@ -348,6 +364,27 @@ export class ArgonConfigurationManager {
     }
 
     
+}
+
+@DI.autoinject
+class DefaultRealityFactory {
+    constructor(private container:DI.Container) {};
+    createRealityViewer(uri:string) : RealityViewer {
+        switch (RealityViewer.getType(uri)) {
+            case RealityViewer.EMPTY: 
+                return this.container.invoke(EmptyRealityViewer, [uri]);
+            case RealityViewer.LIVE:
+                return this.container.invoke(LiveRealityViewer, [uri]);
+            case RealityViewer.WEBRTC:
+                return this.container.invoke(WebRTCRealityViewer, [uri]);
+            case 'hosted':
+                return this.container.invoke(HostedRealityViewer, [uri]);
+            case RealityViewer.TANGO:
+                return this.container.invoke(TangoRealityViewer, [uri]);
+            default:
+                throw new Error('Unsupported Reality Viewer: ' + uri)
+        }
+    }
 }
 
 /**
@@ -402,7 +439,7 @@ export function init(
 
     if (!dependencyInjectionContainer) dependencyInjectionContainer = new DI.Container();
 
-    return new ArgonConfigurationManager(configuration, dependencyInjectionContainer, element).container.get(ArgonSystem);
+    return new ArgonContainerManager(configuration, dependencyInjectionContainer, element).app;
 }
 
 /**
@@ -420,7 +457,7 @@ export function initRealityViewer(
     configuration['reality.supportsControlPort'] = true; // backwards compat for above
     configuration.protocols = configuration.protocols || [];
     configuration.protocols.push('ar.uievent')
-    return new ArgonConfigurationManager(configuration, dependencyInjectionContainer).container.get(ArgonSystem);
+    return new ArgonContainerManager(configuration, dependencyInjectionContainer).app;
 }
 
 /**
