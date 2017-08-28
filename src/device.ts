@@ -278,6 +278,9 @@ export class DeviceService {
             navigator.getVRDisplays().then(displays => {
                 this._vrDisplays = displays;
                 this._vrDisplay = displays[0];
+
+                if (!this._vrDisplay) return;
+
                 // Tango devices have 6DOF
                 if (this._vrDisplay.displayName === "Tango VR Device")
                     this._userTracking = "6DOF";
