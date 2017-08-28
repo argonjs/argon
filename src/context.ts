@@ -709,7 +709,9 @@ export class ContextService {
 
         // submit frame if necessary
         const vrDisplay:VRDisplay|undefined = this.deviceService.vrDisplay;
-        if (this.deviceService.autoSubmitFrame && vrDisplay && vrDisplay.isPresenting) {
+        if (this.deviceService.autoSubmitFrame && 
+            vrDisplay && vrDisplay.isPresenting && 
+            !this.sessionService.isRealityViewer) {
             vrDisplay.submitFrame();
         }
     }
