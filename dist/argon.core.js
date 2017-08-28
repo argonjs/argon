@@ -20937,7 +20937,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-25");
+            _export('version', version = "1.4.0-26");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -25779,7 +25779,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return EmptyRealityViewer;
             }(RealityViewer));
 
-            _export('EmptyRealityViewer', EmptyRealityViewer = __decorate$12([inject(SessionService, ViewService, Container), __metadata$12("design:paramtypes", [typeof (_a$12 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$12 || Object, typeof (_b$12 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$12 || Object, typeof (_c$7 = typeof Container !== "undefined" && Container) === "function" && _c$7 || Object, typeof (_d$6 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _d$6 || Object, String])], EmptyRealityViewer));
+            _export('EmptyRealityViewer', EmptyRealityViewer = __decorate$12([inject(SessionService, ViewService, Container, DeviceService), __metadata$12("design:paramtypes", [typeof (_a$12 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$12 || Object, typeof (_b$12 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$12 || Object, typeof (_c$7 = typeof Container !== "undefined" && Container) === "function" && _c$7 || Object, typeof (_d$6 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _d$6 || Object, String])], EmptyRealityViewer));
 
             __extends$4 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
