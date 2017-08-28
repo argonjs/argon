@@ -1,28 +1,22 @@
 /// <reference types="cesium" />
 import { Cartographic } from './cesium/cesium-imports';
+import { ContextFrameState } from './common';
 import { SessionPort, SessionService } from './session';
 import { Event } from './utils';
-import { ContextService } from './context';
+import { EntityService } from './entity';
 import { FocusServiceProvider } from './focus';
 import { VisibilityServiceProvider } from './visibility';
 import { RealityViewer } from './reality-viewers/base';
 import { ViewServiceProvider } from './view';
 import { DeviceService } from './device';
-export declare abstract class RealityViewerFactory {
-    private _createEmptyReality;
-    private _createLiveReality;
-    private _createWebRTCReality;
-    private _createHostedReality;
-    private _createTangoReality;
-    constructor(_createEmptyReality: any, _createLiveReality: any, _createWebRTCReality: any, _createHostedReality: any, _createTangoReality: any);
-    createRealityViewer(uri: string): RealityViewer;
+export declare abstract class RealityFactory {
+    abstract createRealityViewer(uri: string): RealityViewer;
 }
 /**
 * A service which makes requests to manage the reality viewer.
 */
 export declare class RealityService {
     private sessionService;
-    private contextService;
     /**
      * An event that provides a session for sending / receiving
      * commands to / from a reality.
@@ -71,7 +65,15 @@ export declare class RealityService {
      */
     readonly isSharedCanvas: boolean;
     _sharedCanvas: boolean;
-    constructor(sessionService: SessionService, contextService: ContextService);
+    constructor(sessionService: SessionService);
+    /**
+     * @private
+     */
+    _processContextFrameState(frameState: ContextFrameState): void;
+    /**
+     * @private
+     */
+    _publishContextFrameState(frameState: ContextFrameState): void;
     /**
      * Install the specified reality viewer
      */
@@ -109,7 +111,7 @@ export declare class RealityService {
 export declare class RealityServiceProvider {
     private sessionService;
     private realityService;
-    private contextService;
+    private entityService;
     private deviceService;
     private viewServiceProvider;
     private visibilityServiceProvider;
@@ -127,11 +129,15 @@ export declare class RealityServiceProvider {
     uninstalledEvent: Event<{
         viewer: RealityViewer;
     }>;
+    /**
+     * An event that is raised when the next frame state is published
+     */
+    nextFrameStateEvent: Event<ContextFrameState>;
     readonly presentingRealityViewer: RealityViewer | undefined;
     private _presentingRealityViewer;
     private _viewerByURI;
     private _installersByURI;
-    constructor(sessionService: SessionService, realityService: RealityService, contextService: ContextService, deviceService: DeviceService, viewServiceProvider: ViewServiceProvider, visibilityServiceProvider: VisibilityServiceProvider, focusServiceProvider: FocusServiceProvider, realityViewerFactory: RealityViewerFactory);
+    constructor(sessionService: SessionService, realityService: RealityService, entityService: EntityService, deviceService: DeviceService, viewServiceProvider: ViewServiceProvider, visibilityServiceProvider: VisibilityServiceProvider, focusServiceProvider: FocusServiceProvider, realityViewerFactory: RealityFactory);
     private _scratchFrustum;
     private _handleInstall(session, uri);
     private _connectViewerWithSession(viewerSession, session);

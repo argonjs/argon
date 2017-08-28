@@ -18,6 +18,8 @@ import { RealityViewer } from './reality-viewers/base';
 import { EmptyRealityViewer } from './reality-viewers/empty';
 import { LiveRealityViewer } from './reality-viewers/live';
 import { HostedRealityViewer } from './reality-viewers/hosted';
+import { WebRTCRealityViewer } from './reality-viewers/webrtc';
+import { TangoRealityViewer } from './reality-viewers/tango';
 export { DI, Cesium };
 export * from './common';
 export * from './context';
@@ -32,7 +34,7 @@ export * from './view';
 export * from './visibility';
 export * from './vuforia';
 export * from './permission';
-export { RealityViewer, EmptyRealityViewer, LiveRealityViewer, HostedRealityViewer };
+export { RealityViewer, EmptyRealityViewer, LiveRealityViewer, HostedRealityViewer, WebRTCRealityViewer, TangoRealityViewer };
 export declare class ArgonSystemProvider {
     entity: EntityServiceProvider;
     context: ContextServiceProvider;
@@ -79,14 +81,16 @@ export declare class ArgonSystem {
     readonly blurEvent: Event<void>;
     destroy(): void;
 }
-export declare class ArgonConfigurationManager {
+export declare class ArgonContainerManager {
     configuration: Configuration;
     container: DI.Container;
     elementOrSelector: string | HTMLElement | null | undefined;
-    static configure(configurationManager: ArgonConfigurationManager): void;
+    static configure(configurationManager: ArgonContainerManager): void;
     constructor(configuration: Configuration, container?: DI.Container, elementOrSelector?: string | HTMLElement | null | undefined);
+    readonly app: ArgonSystem;
     standardConfiguration(): void;
     defaultConnect(): void;
+    defaultRealityFactory(): void;
     defaultUI(): void;
 }
 /**

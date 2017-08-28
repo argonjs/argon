@@ -7,6 +7,7 @@ import { EntityService, EntityServiceProvider, EntityPose } from './entity';
 import { DeviceService } from './device';
 import { ViewService } from './view';
 import { PermissionServiceProvider } from './permission';
+import { RealityService, RealityServiceProvider } from './reality';
 /**
  * Provides a means of querying the current state of reality.
  */
@@ -15,7 +16,8 @@ export declare class ContextService {
     protected sessionService: SessionService;
     protected deviceService: DeviceService;
     protected viewService: ViewService;
-    constructor(entityService: EntityService, sessionService: SessionService, deviceService: DeviceService, viewService: ViewService);
+    protected realityService: RealityService;
+    constructor(entityService: EntityService, sessionService: SessionService, deviceService: DeviceService, viewService: ViewService, realityService: RealityService);
     readonly entities: EntityCollection;
     /**
      * An event that is raised after managed entities have been updated for
@@ -265,8 +267,9 @@ export declare class ContextServiceProvider {
     protected contextService: ContextService;
     protected entityServiceProvider: EntityServiceProvider;
     protected permissionServiceProvider: PermissionServiceProvider;
+    protected realityServiceProvider: RealityServiceProvider;
     private _cacheTime;
-    constructor(sessionService: SessionService, contextService: ContextService, entityServiceProvider: EntityServiceProvider, permissionServiceProvider: PermissionServiceProvider);
+    constructor(sessionService: SessionService, contextService: ContextService, entityServiceProvider: EntityServiceProvider, permissionServiceProvider: PermissionServiceProvider, realityServiceProvider: RealityServiceProvider);
     private _publishUpdates();
     private _sessionEntities;
     private _temp;
