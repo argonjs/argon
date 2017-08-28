@@ -246,27 +246,29 @@ export class TangoRealityViewer extends RealityViewer {
                 (contextUser.orientation as ConstantProperty).setValue(tangoUserOrientation);
 
                 // Update stage geopose when GPS accuracy improves or Tango origin is repositioned
-                const gpsAccuracyHasImproved = this._lastGeoHorizontalAccuracy > (this.deviceService.geoHorizontalAccuracy || 0);
-                const compassAccuracyHasImproved = this._lastGeoHeadingAccuracy > (this.deviceService.geoHeadingAccuracy || 0);
+                const currentGeoHorizontalAccuracy = this.deviceService.geoHorizontalAccuracy || 999;
+                const currentGeoHeadingAccuracy = this.deviceService.geoHeadingAccuracy || 999;
+                const gpsAccuracyHasImproved = this._lastGeoHorizontalAccuracy > currentGeoHorizontalAccuracy;
+                const compassAccuracyHasImproved = this._lastGeoHeadingAccuracy > currentGeoHeadingAccuracy;
                 const tangoOriginRepositioned = this._tangoOriginLostPreviousFrame && !this._tangoOriginLost;
                 const tangoOriginNeedsUpdate = gpsAccuracyHasImproved || tangoOriginRepositioned || compassAccuracyHasImproved;
                 const overrideStage = true;
-
-                if (tangoOriginRepositioned) {
-                    console.log("Tango origin has been reset.")
-                    this._lastGeoHeadingAccuracy = this._lastGeoHorizontalAccuracy = 999;
-                    this._tangoOriginLost = false;
-                }
-                else if (gpsAccuracyHasImproved) {
-                    console.log("Current horizontal accuracy has been inproved to:" + this.deviceService.geoHorizontalAccuracy)
-                    this._lastGeoHorizontalAccuracy = this.deviceService.geoHorizontalAccuracy || 0;
-                }
-                else if (compassAccuracyHasImproved) {
-                    console.log("Current heading accuracy has been inproved to:" + this.deviceService.geoHeadingAccuracy)
-                    this._lastGeoHeadingAccuracy = this.deviceService.geoHeadingAccuracy || 0;
-                }
                 
                 if (tangoUserPosition && tangoUserOrientation && tangoOriginNeedsUpdate) {
+                    if (tangoOriginRepositioned) {
+                        console.log("Tango origin has been reset.")
+                        this._lastGeoHeadingAccuracy = this._lastGeoHorizontalAccuracy = 999;
+                        this._tangoOriginLost = false;
+                    }
+                    else if (gpsAccuracyHasImproved) {
+                        console.log("Current horizontal accuracy has been inproved to:" + this.deviceService.geoHorizontalAccuracy)
+                        this._lastGeoHorizontalAccuracy = currentGeoHorizontalAccuracy;
+                    }
+                    else if (compassAccuracyHasImproved) {
+                        console.log("Current heading accuracy has been inproved to:" + this.deviceService.geoHeadingAccuracy)
+                        this._lastGeoHeadingAccuracy = currentGeoHeadingAccuracy;
+                    }
+
                     // Get tango origin relative to context user.
                     // First two lines should be removed after bugfix of not being able to get transform of an entity with an undefined position|orientation relative to one of it's children
                     (tangoOrigin.position as ConstantPositionProperty).setValue(Cartesian3.ZERO, ReferenceFrame.FIXED);
