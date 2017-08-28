@@ -18509,7 +18509,7 @@ define("7f", ["48", "5", "7"], function(when, defined, DeveloperError) {
 $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', '13', '14', '18', '1e', '24', '15', '5', '7', '42', '1a', '1b', '8', '39', '3c', '51', '6e', '2d', '17', 'd', '27', '28', '2e', '2f', '30', '21', '26', '29', '35', '20', '36', '37', '38', 'e', 'f', '2a', '3d', '44', '7c', '46', '49', '4c', '4f', '7d', '7e', '7f', '@empty'], function (_export, _context) {
     "use strict";
 
-    var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, cesium_Source_Core_Clock_js, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, defaultValue, defined, cesium_Source_Core_DeveloperError_js, Ellipsoid, Entity, EntityCollection, Event, cesium_Source_Core_ExtrapolationType_js, cesium_Source_Core_FeatureDetection_js, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HeadingPitchRoll_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, ReferenceEntity, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, TerrainProvider, throttleRequestByServer, loadImage, WebMercatorTilingScheme, getImagePixels, HeightmapTerrainData, Credit, sampleTerrain, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, DI, after, lut, i, cesiumImports, __extends$1, AVERAGE_EYE_HEIGHT, DEFAULT_NEAR_PLANE, DEFAULT_FAR_PLANE, Role, Configuration, Viewport, CanvasViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event$1, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, getEventSynthesizier$1, cloneTouch, cloneTouches, reNative, hasNativeWebVRImplementation, suggestedWebGLContextAntialiasAttribute, eastUpSouthToFixedFrame, scratchAncestorCartesian, scratchAncestorQuaternion, getEntityPosition, getEntityOrientation, _scratchFramesArray, _entityStateCache, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, isAndroid, lastTime, rAF, cAF, defaultTerrainProvider, version, __extends, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, SessionConnectService, WKWebViewConnectService, AndroidWebViewConnectService, _a$1, _b$1, __decorate$5, __metadata$5, Permission, PermissionState, PermissionService, PermissionServiceProvider, _a$5, _b$5, __decorate$4, __metadata$4, EntityPose, PoseStatus, EntityService, EntityServiceProvider, _a$4, _b$4, _c$3, __decorate$7, __metadata$7, FocusService, FocusServiceProvider, _a$7, _b$7, __decorate$8, __metadata$8, VisibilityService, VisibilityServiceProvider, _a$8, _b$8, __decorate$6, __metadata$6, Subview, ViewportMode, ViewItems, ViewService, ViewServiceProvider, viewportMetaTag, argonMetaTag, style, sheet, _a$6, _b$6, _c$4, _d$3, _e$3, __decorate$3, __metadata$3, DeviceStableState$$1, DeviceFrameState$$1, DeviceService, DeviceServiceProvider, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, _h$1, _j$1, _k$1, _l$1, __decorate$10, __metadata$10, ContextService, ContextServiceProvider, _a$10, _b$10, _c$6, _d$5, _e$5, _f$3, _g$3, _h$3, _j$2, _k$2, RealityViewer, __extends$2, __decorate$11, __metadata$11, EmptyRealityViewer, _a$11, _b$11, _c$7, __extends$3, __decorate$12, __metadata$12, LiveRealityViewer, _a$12, _b$12, _c$8, _d$6, __extends$4, __decorate$13, __metadata$13, WebRTCRealityViewer, integrateCustomARToolKit, _a$13, _b$13, _c$9, _d$7, __extends$5, __decorate$14, __metadata$14, HostedRealityViewer, _a$14, _b$14, __extends$6, __decorate$15, __metadata$15, TangoRealityViewer, _a$15, _b$15, _c$10, _d$8, _e$6, __decorate$9, __metadata$9, RealityViewerFactory, RealityService, RealityServiceProvider, _a$9, _b$9, _c$5, _d$4, _e$4, _f$2, _g$2, _h$2, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __extends$7, __decorate$16, __metadata$16, VuforiaServiceProvider, VuforiaHint, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$16, _b$16, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, ArgonConfigurationManager, initReality, _a, _b, _c, _d, _e, _f, _g, _h, _j, ArgonSystem_1, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
+    var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, cesium_Source_Core_Clock_js, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, defaultValue, defined, cesium_Source_Core_DeveloperError_js, Ellipsoid, Entity, EntityCollection, Event, cesium_Source_Core_ExtrapolationType_js, cesium_Source_Core_FeatureDetection_js, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HeadingPitchRoll_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, ReferenceEntity, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, TerrainProvider, throttleRequestByServer, loadImage, WebMercatorTilingScheme, getImagePixels, HeightmapTerrainData, Credit, sampleTerrain, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, DI, after, lut, i, cesiumImports, __extends$1, AVERAGE_EYE_HEIGHT, DEFAULT_NEAR_PLANE, DEFAULT_FAR_PLANE, Role, Configuration, Viewport, CanvasViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event$1, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, getEventSynthesizier$1, cloneTouch, cloneTouches, reNative, hasNativeWebVRImplementation, suggestedWebGLContextAntialiasAttribute, eastUpSouthToFixedFrame, scratchAncestorCartesian, scratchAncestorQuaternion, getEntityPosition, getEntityOrientation, _scratchFramesArray, _entityStateCache, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, isAndroid, lastTime, rAF, cAF, defaultTerrainProvider, version, __extends, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, SessionConnectService, WKWebViewConnectService, AndroidWebViewConnectService, _a$1, _b$1, __decorate$5, __metadata$5, Permission, PermissionState, PermissionService, PermissionServiceProvider, _a$5, _b$5, __decorate$4, __metadata$4, EntityPose, PoseStatus, EntityService, EntityServiceProvider, _a$4, _b$4, _c$3, __decorate$7, __metadata$7, FocusService, FocusServiceProvider, _a$7, _b$7, __decorate$8, __metadata$8, VisibilityService, VisibilityServiceProvider, _a$8, _b$8, __decorate$6, __metadata$6, Subview, ViewportMode, ViewItems, ViewService, ViewServiceProvider, viewportMetaTag, argonMetaTag, style, sheet, _a$6, _b$6, _c$4, _d$3, _e$3, __decorate$3, __metadata$3, DeviceStableState$$1, DeviceFrameState$$1, DeviceService, DeviceServiceProvider, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, _h$1, _j$1, _k$1, _l$1, RealityViewer, __decorate$9, __metadata$9, RealityFactory, RealityService, RealityServiceProvider, _a$9, _b$9, _c$5, _d$4, _e$4, _f$2, _g$2, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __decorate$10, __metadata$10, ContextService, ContextServiceProvider, _a$10, _b$10, _c$6, _d$5, _e$5, _f$3, _g$3, _h$2, _j$2, _k$2, _l$2, _m$1, __extends$2, __decorate$11, __metadata$11, VuforiaServiceProvider, VuforiaHint, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$11, _b$11, __extends$3, __decorate$12, __metadata$12, EmptyRealityViewer, _a$12, _b$12, _c$7, __extends$4, __decorate$13, __metadata$13, LiveRealityViewer, _a$13, _b$13, _c$8, _d$6, __extends$5, __decorate$14, __metadata$14, HostedRealityViewer, _a$14, _b$14, __extends$6, __decorate$15, __metadata$15, WebRTCRealityViewer, integrateCustomARToolKit, _a$15, _b$15, _c$9, _d$7, __extends$7, __decorate$16, __metadata$16, TangoRealityViewer, _a$16, _b$16, _c$10, _d$8, _e$6, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, ArgonContainerManager, DefaultRealityFactory, initReality, _a, _b, _c, _d, _e, _f, _g, _h, _j, ArgonSystem_1, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
 
     function alwaysValid() {
         return true;
@@ -19494,7 +19494,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
             configuration.role = role;
         }
         if (!dependencyInjectionContainer) dependencyInjectionContainer = new Container();
-        return new ArgonConfigurationManager(configuration, dependencyInjectionContainer, element).container.get(ArgonSystem);
+        return new ArgonContainerManager(configuration, dependencyInjectionContainer, element).app;
     }
     /**
      * Initialize an [[ArgonSystem]] with the [[REALITY_VIEWER]] role
@@ -19513,7 +19513,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
         configuration['reality.supportsControlPort'] = true; // backwards compat for above
         configuration.protocols = configuration.protocols || [];
         configuration.protocols.push('ar.uievent');
-        return new ArgonConfigurationManager(configuration, dependencyInjectionContainer).container.get(ArgonSystem);
+        return new ArgonContainerManager(configuration, dependencyInjectionContainer).app;
     }
     /**
      * @private
@@ -20937,7 +20937,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-22");
+            _export('version', version = "1.4.0-24");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -22821,6 +22821,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         navigator.getVRDisplays().then(function (displays) {
                             _this._vrDisplays = displays;
                             _this._vrDisplay = displays[0];
+                            if (!_this._vrDisplay) return;
                             // Tango devices have 6DOF
                             if (_this._vrDisplay.displayName === "Tango VR Device") _this._userTracking = "6DOF";
                             _this.getVRDisplayFinishedEvent.raiseEvent(undefined);
@@ -23573,6 +23574,838 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _export('DeviceServiceProvider', DeviceServiceProvider = __decorate$3([autoinject(), __metadata$3("design:paramtypes", [typeof (_h$1 = typeof SessionService !== "undefined" && SessionService) === "function" && _h$1 || Object, DeviceService, typeof (_j$1 = typeof ViewService !== "undefined" && ViewService) === "function" && _j$1 || Object, typeof (_k$1 = typeof EntityService !== "undefined" && EntityService) === "function" && _k$1 || Object, typeof (_l$1 = typeof EntityServiceProvider !== "undefined" && EntityServiceProvider) === "function" && _l$1 || Object])], DeviceServiceProvider));
 
+            _export('RealityViewer', RealityViewer = function () {
+                function RealityViewer(uri) {
+                    var _this = this;
+                    this.uri = uri;
+                    this.providedReferenceFrames = [];
+                    this.connectEvent = new Event$1();
+                    this.presentChangeEvent = new Event$1();
+                    this._isPresenting = false;
+                    this.connectEvent.addEventListener(function (session) {
+                        if (_this._session) _this._session.close();
+                        _this._session = session;
+                        session.closeEvent.addEventListener(function () {
+                            if (_this._session === session) _this._session = undefined;
+                        });
+                    });
+                }
+                Object.defineProperty(RealityViewer.prototype, "isPresenting", {
+                    get: function () {
+                        return this._isPresenting;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(RealityViewer.prototype, "session", {
+                    get: function () {
+                        return this._session;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(RealityViewer.prototype, "isSharedCanvas", {
+                    get: function () {
+                        return this._sharedCanvas;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                RealityViewer.prototype.destroy = function () {
+                    this.setPresenting(false);
+                    if (this.session) {
+                        this.session.close();
+                    }
+                };
+
+                RealityViewer.prototype.setPresenting = function (flag) {
+                    if (this._isPresenting !== flag) {
+                        this._isPresenting = flag;
+                        this.presentChangeEvent.raiseEvent(undefined);
+                    }
+                };
+                RealityViewer.getType = function (uri) {
+                    if (uri === undefined) return undefined;
+                    if (uri.split(':')[0] === 'reality') {
+                        return uri;
+                    }
+                    return 'hosted';
+                };
+                return RealityViewer;
+            }());
+
+            RealityViewer.DEFAULT = 'reality:default';
+            RealityViewer.EMPTY = 'reality:empty';
+            RealityViewer.LIVE = 'reality:live';
+            RealityViewer.WEBRTC = 'reality:webrtc';
+            RealityViewer.TANGO = 'reality:tango';
+
+            __decorate$9 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
+                var c = arguments.length,
+                    r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+                    d;
+                if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+                return c > 3 && r && Object.defineProperty(target, key, r), r;
+            };
+
+            __metadata$9 = undefined && undefined.__metadata || function (k, v) {
+                if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+            };
+
+            _export('RealityFactory', RealityFactory = function () {
+                function RealityFactory() {}
+                return RealityFactory;
+            }());
+
+            _export('RealityService', RealityService = function () {
+                // private _scratchFrustum = new PerspectiveFrustum();
+                function RealityService(sessionService) {
+                    var _this = this;
+                    this.sessionService = sessionService;
+                    this._connectEvent = new Event$1();
+                    this._sessions = [];
+                    this._changeEvent = new Event$1();
+                    /**
+                     * The default Reality Viewer.
+                     */
+                    this.default = RealityViewer.EMPTY;
+                    if ((isIOS || isAndroid) && navigator.getUserMedia && navigator.mediaDevices) {
+                        var vrDisplay_1 = null;
+                        if (navigator.getVRDisplays) {
+                            navigator.getVRDisplays().then(function (vrDisplays) {
+                                if (vrDisplays && vrDisplays.length > 0) {
+                                    for (var i = 0; !vrDisplay_1 && i < vrDisplays.length; i++) {
+                                        vrDisplay_1 = vrDisplays[i];
+                                        if (vrDisplay_1.displayName !== "Tango VR Device") {
+                                            vrDisplay_1 = null;
+                                        }
+                                    }
+                                }
+                            }).then(function () {
+                                _this.default = vrDisplay_1 ? RealityViewer.TANGO : RealityViewer.WEBRTC;
+                            });
+                        }
+                    }
+                    sessionService.manager.on['ar.reality.connect'] = function (_a) {
+                        var id = _a.id;
+                        var realityControlSession = _this.sessionService.createSessionPort(id);
+                        var messageChannel = _this.sessionService.createSynchronousMessageChannel();
+                        var ROUTE_MESSAGE_KEY = 'ar.reality.message.route.' + id;
+                        var SEND_MESSAGE_KEY = 'ar.reality.message.send.' + id;
+                        var CLOSE_SESSION_KEY = 'ar.reality.close.' + id;
+                        messageChannel.port1.onmessage = function (msg) {
+                            _this.sessionService.manager.send(ROUTE_MESSAGE_KEY, msg.data);
+                        };
+                        _this.sessionService.manager.on[SEND_MESSAGE_KEY] = function (message) {
+                            messageChannel.port1.postMessage(message);
+                        };
+                        _this.sessionService.manager.on[CLOSE_SESSION_KEY] = function () {
+                            realityControlSession.close();
+                        };
+                        realityControlSession.connectEvent.addEventListener(function () {
+                            _this.sessions.push(realityControlSession);
+                            _this.connectEvent.raiseEvent(realityControlSession);
+                            realityControlSession.closeEvent.addEventListener(function () {
+                                var idx = _this.sessions.indexOf(realityControlSession);
+                                _this.sessions.splice(idx, 1);
+                            });
+                        });
+                        _this.sessionService.manager.closeEvent.addEventListener(function () {
+                            realityControlSession.close();
+                            delete _this.sessionService.manager.on[SEND_MESSAGE_KEY];
+                            delete _this.sessionService.manager.on[CLOSE_SESSION_KEY];
+                        });
+                        realityControlSession.open(messageChannel.port2, _this.sessionService.configuration);
+                    };
+                    // let i = 0;
+                }
+                Object.defineProperty(RealityService.prototype, "connectEvent", {
+                    /**
+                     * An event that provides a session for sending / receiving
+                     * commands to / from a reality.
+                     *
+                     * The session passed via this event can represent either endpoint of
+                     * a connection between RealityViewer <--> RealityAugmenter/RealityManager.
+                     *
+                     * If running in a RealityAugmenter, the session
+                     * represents a connection to a RealityViewer.
+                     *
+                     * If running in a RealityViewer, the session
+                     * represents a connection to a RealityAugmenter.
+                     */
+                    get: function () {
+                        return this._connectEvent;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+
+                Object.defineProperty(RealityService.prototype, "sessions", {
+                    /**
+                     * A collection of connected sessions.
+                     *
+                     * If running in a RealityAugmenter, this collection
+                     * represents connections to any loaded RealityViewers.
+                     *
+                     * If running in a RealityViewer, this collection
+                     * represents connections to any RealityAugmenters.
+                     */
+                    get: function () {
+                        return this._sessions;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+
+                Object.defineProperty(RealityService.prototype, "changeEvent", {
+                    /**
+                     * An event that is raised when the presenting reality viewer is changed.
+                     */
+                    get: function () {
+                        return this._changeEvent;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(RealityService.prototype, "current", {
+                    /**
+                     * The URI for the currently presenting Reality Viewer.
+                     */
+                    get: function () {
+                        return this._current;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(RealityService.prototype, "isSharedCanvas", {
+                    /**
+                     * Whether the current reality viewer shares a canvas with the reality augmenter.
+                     */
+                    get: function () {
+                        return this._sharedCanvas;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+
+                /**
+                 * @private
+                 */
+                RealityService.prototype._processContextFrameState = function (frameState) {
+                    var current = frameState.reality;
+                    var previous = this._current;
+                    if (previous !== current) {
+                        this._current = current;
+                        this.changeEvent.raiseEvent({ previous: previous, current: current });
+                    }
+                };
+                /**
+                 * @private
+                 */
+                RealityService.prototype._publishContextFrameState = function (frameState) {
+                    var sessionService = this.sessionService;
+                    if (sessionService.isRealityViewer && sessionService.manager.isConnected) {
+                        // backwards compatability
+                        if (sessionService.manager.isConnected && sessionService.manager.version[0] === 0) {
+                            var eye = frameState['eye'] = frameState['eye'] || {};
+                            eye.pose = frameState.entities['ar.user'];
+                            eye.viewport = Viewport.clone(frameState.subviews[0].viewport, eye.viewport);
+                            delete frameState.entities['ar.user'];
+                            // throttle for 30fps
+                            // i++ % 2 === 0 && 
+                            sessionService.manager.send('ar.reality.frameState', frameState);
+                            frameState.entities['ar.user'] = eye.pose;
+                        } else {
+                            sessionService.manager.send('ar.reality.frameState', frameState);
+                        }
+                    }
+                };
+                /**
+                 * Install the specified reality viewer
+                 */
+                RealityService.prototype.install = function (uri) {
+                    var _this = this;
+                    return this.sessionService.manager.whenConnected().then(function () {
+                        if (_this.sessionService.manager.version[0] >= 1 !== true) return Promise.reject(new Error('Not supported'));
+                        return _this.sessionService.manager.request('ar.reality.install', { uri: uri });
+                    });
+                };
+                /**
+                 * Uninstall the specified reality viewer
+                 */
+                RealityService.prototype.uninstall = function (uri) {
+                    var _this = this;
+                    return this.sessionService.manager.whenConnected().then(function () {
+                        if (_this.sessionService.manager.version[0] >= 1 !== true) return Promise.reject(new Error('Not supported'));
+                        return _this.sessionService.manager.request('ar.reality.uninstall', { uri: uri });
+                    });
+                };
+                /**
+                 * Request a reality viewer to be presented.
+                 * - Pass a url to request a (custum) hosted reality viewer
+                 * - [[RealityViewer.DEFAULT]] to request the system default reality viewer
+                 * - [[RealityViewer.LIVE]] to request a live reality viewer
+                 * - [[RealityViewer.WEBTRC]] to request a webrtc reality viewer
+                 * - [[RealityViewer.EMPTY]] to request an empty reality viewer
+                 * - [[RealityViewer.TANGO]] to request a Tango reality viewer
+                 */
+                RealityService.prototype.request = function (uri) {
+                    var _this = this;
+                    return this.sessionService.manager.whenConnected().then(function () {
+                        if (_this.sessionService.manager.version[0] >= 1 !== true) return _this.sessionService.manager.request('ar.reality.desired', { reality: { uri: uri } });
+                        return _this.sessionService.manager.request('ar.reality.request', { uri: uri });
+                    });
+                };
+                /**
+                 * Deprecated. Use [[RealityService#request]]
+                 * @deprecated
+                 */
+                RealityService.prototype.setDesired = function (reality) {
+                    this.request(reality ? reality.uri : RealityViewer.DEFAULT);
+                };
+                /**
+                 * Ask a reality to move the stage to the given geolocation
+                 */
+                RealityService.prototype.setStageGeolocation = function (realitySession, geolocation) {
+                    if (!realitySession.supportsProtocol('ar.configureStage')) return Promise.reject('Protocol `ar.configureStage` is not supported');
+                    return realitySession.request('ar.configureStage.setStageGeolocation', { geolocation: geolocation });
+                };
+                /**
+                 * Ask a reality to move the stage to the given geolocation
+                 */
+                RealityService.prototype.resetStageGeolocation = function (realitySession) {
+                    if (!realitySession.supportsProtocol('ar.configureStage')) return Promise.reject('Protocol `ar.configureStage` is not supported');
+                    return realitySession.request('ar.configureStage.resetStageGeolocation');
+                };
+                return RealityService;
+            }());
+
+            __decorate$9([deprecated$1('request'), __metadata$9("design:type", Function), __metadata$9("design:paramtypes", [Object]), __metadata$9("design:returntype", void 0)], RealityService.prototype, "setDesired", null);
+            _export('RealityService', RealityService = __decorate$9([autoinject(), __metadata$9("design:paramtypes", [typeof (_a$9 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$9 || Object])], RealityService));
+
+            _export('RealityServiceProvider', RealityServiceProvider = function () {
+                function RealityServiceProvider(sessionService, realityService, entityService, deviceService, viewServiceProvider, visibilityServiceProvider, focusServiceProvider, realityViewerFactory) {
+                    var _this = this;
+                    this.sessionService = sessionService;
+                    this.realityService = realityService;
+                    this.entityService = entityService;
+                    this.deviceService = deviceService;
+                    this.viewServiceProvider = viewServiceProvider;
+                    this.visibilityServiceProvider = visibilityServiceProvider;
+                    this.focusServiceProvider = focusServiceProvider;
+                    this.realityViewerFactory = realityViewerFactory;
+                    /**
+                     * An event that is raised when a reality viewer is installed.
+                     */
+                    this.installedEvent = new Event$1();
+                    /**
+                     * An event that is raised when a reality viewer is uninstalled.
+                     */
+                    this.uninstalledEvent = new Event$1();
+                    /**
+                     * An event that is raised when the next frame state is published
+                     */
+                    this.nextFrameStateEvent = new Event$1();
+                    this._viewerByURI = new Map();
+                    this._installersByURI = new Map();
+                    this._scratchFrustum = new PerspectiveFrustum();
+                    sessionService.ensureIsRealityManager();
+                    sessionService.manager.connectEvent.addEventListener(function () {
+                        setTimeout(function () {
+                            if (!_this._presentingRealityViewer && _this.realityService.default) _this._handleRequest(_this.sessionService.manager, {
+                                uri: _this.realityService.default
+                            });
+                        });
+                    });
+                    sessionService.manager.closeEvent.addEventListener(function () {
+                        _this._viewerByURI.forEach(function (v) {
+                            v.destroy();
+                        });
+                    });
+                    sessionService.connectEvent.addEventListener(function (session) {
+                        if (!Role.isRealityViewer(session.info.role)) {
+                            session.on['ar.reality.install'] = function (_a) {
+                                var uri = _a.uri;
+                                return _this._handleInstall(session, uri);
+                            };
+                            session.on['ar.reality.uninstall'] = function (_a) {
+                                var uri = _a.uri;
+                                return _this._handleUninstall(session, uri);
+                            };
+                            session.on['ar.reality.request'] = function (message) {
+                                return _this._handleRequest(session, message);
+                            };
+                            // For backwards compatability. 
+                            session.on['ar.reality.desired'] = function (message) {
+                                var reality = message.reality;
+                                if (reality) {
+                                    if (reality['type']) {
+                                        var type = reality['type'];
+                                        reality.uri = reality.uri || 'reality:' + type;
+                                        if (type === 'hosted') reality.uri = reality['url'];
+                                    }
+                                }
+                                _this._handleRequest(session, { uri: reality.uri });
+                            };
+                        }
+                    });
+                    this.viewServiceProvider.forwardedUIEvent.addEventListener(function (uievent) {
+                        var session = _this._presentingRealityViewer && _this._presentingRealityViewer.session;
+                        if (session) _this.viewServiceProvider.sendUIEventToSession(uievent, session);
+                    });
+                }
+                Object.defineProperty(RealityServiceProvider.prototype, "presentingRealityViewer", {
+                    get: function () {
+                        return this._presentingRealityViewer;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                RealityServiceProvider.prototype._handleInstall = function (session, uri) {
+                    var _this = this;
+                    var installers = this._installersByURI.get(uri);
+                    if (installers) {
+                        installers.add(session);
+                    } else {
+                        var viewer_1 = this.realityViewerFactory.createRealityViewer(uri);
+                        this._viewerByURI.set(uri, viewer_1);
+                        installers = new Set();
+                        installers.add(session);
+                        this._installersByURI.set(uri, installers);
+                        viewer_1.connectEvent.addEventListener(function (viewerSession) {
+                            if (_this.sessionService.manager.isClosed) return;
+                            if (!Role.isRealityViewer(viewerSession.info.role)) {
+                                viewerSession.sendError({ message: "Expected a reality viewer" });
+                                viewerSession.close();
+                                throw new Error('The application "' + viewerSession.uri + '" does not support being loaded as a reality viewer');
+                            }
+                            viewerSession.on['ar.reality.frameState'] = function (frame) {
+                                if (_this._presentingRealityViewer === viewer_1) {
+                                    if (viewerSession.version[0] === 0) {
+                                        var deviceState = _this.deviceService.frameState;
+                                        if (!deviceState) return;
+                                        frame.viewport = CanvasViewport.clone(deviceState.viewport, frame.viewport);
+                                        frame.subviews = SerializedSubviewList.clone(deviceState.subviews, frame.subviews);
+                                        var eye = frame['eye'];
+                                        var eyePose = eye.pose;
+                                        var eyeFov = eye.fov;
+                                        frame.entities = frame.entities || {};
+                                        frame.entities['ar.user'] = eyePose;
+                                        for (var _i = 0, _a = frame.subviews; _i < _a.length; _i++) {
+                                            var s = _a[_i];
+                                            var f = decomposePerspectiveProjectionMatrix(s.projectionMatrix, s['frustum'] || {});
+                                            f.fov = eyeFov;
+                                            _this._scratchFrustum.clone(f);
+                                            s.projectionMatrix = Matrix4.clone(_this._scratchFrustum.projectionMatrix, s.projectionMatrix);
+                                        }
+                                    }
+                                    frame.reality = viewer_1.uri;
+                                    _this.realityService._sharedCanvas = !!(_this.sessionService.configuration['sharedCanvas'] && viewer_1.session.info['sharedCanvas']);
+                                    viewer_1._sharedCanvas = _this.realityService._sharedCanvas;
+                                    _this.nextFrameStateEvent.raiseEvent(frame);
+                                }
+                            };
+                            if (viewerSession.info['supportsCustomProtocols']) {
+                                _this._connectViewerWithSession(viewerSession, _this.sessionService.manager);
+                                for (var _i = 0, _a = _this.sessionService.managedSessions; _i < _a.length; _i++) {
+                                    session = _a[_i];
+                                    _this._connectViewerWithSession(viewerSession, session);
+                                }
+                                var remove_1 = _this.sessionService.connectEvent.addEventListener(function (session) {
+                                    _this._connectViewerWithSession(viewerSession, session);
+                                });
+                                viewerSession.closeEvent.addEventListener(function () {
+                                    return remove_1();
+                                });
+                            }
+                            var removePresentChangeListener = viewer_1.presentChangeEvent.addEventListener(function () {
+                                _this.visibilityServiceProvider.set(viewerSession, viewer_1.isPresenting);
+                            });
+                            _this.visibilityServiceProvider.set(viewerSession, viewer_1.isPresenting);
+                            viewerSession.closeEvent.addEventListener(function () {
+                                removePresentChangeListener();
+                                _this.entityService.collection.removeById(viewerSession.uri);
+                                console.log('Reality session closed: ' + uri);
+                            });
+                        });
+                        viewer_1.load();
+                        this.installedEvent.raiseEvent({ viewer: viewer_1 });
+                    }
+                };
+                RealityServiceProvider.prototype._connectViewerWithSession = function (viewerSession, session) {
+                    if (Role.isRealityViewer(session.info.role)) return;
+                    var id = createGuid();
+                    var ROUTE_MESSAGE_KEY = 'ar.reality.message.route.' + id;
+                    var SEND_MESSAGE_KEY = 'ar.reality.message.send.' + id;
+                    var CLOSE_SESSION_KEY = 'ar.reality.close.' + id;
+                    viewerSession.on[ROUTE_MESSAGE_KEY] = function (message) {
+                        session.send(SEND_MESSAGE_KEY, message);
+                    };
+                    session.on[ROUTE_MESSAGE_KEY] = function (message) {
+                        viewerSession.send(SEND_MESSAGE_KEY, message);
+                    };
+                    viewerSession.send('ar.reality.connect', { id: id });
+                    session.send('ar.reality.connect', { id: id });
+                    viewerSession.closeEvent.addEventListener(function () {
+                        session.send(CLOSE_SESSION_KEY);
+                    });
+                    session.closeEvent.addEventListener(function () {
+                        viewerSession.send(CLOSE_SESSION_KEY);
+                    });
+                };
+                RealityServiceProvider.prototype._handleUninstall = function (session, uri) {
+                    var installers = this._installersByURI.get(uri);
+                    if (installers) {
+                        if (installers.size === 0) {
+                            var viewer = this._viewerByURI.get(uri);
+                            this._viewerByURI.delete(uri);
+                            viewer.destroy();
+                            this.uninstalledEvent.raiseEvent({ viewer: viewer });
+                        }
+                    }
+                    return Promise.reject(new Error("Unable to uninstall a reality viewer which is not installed"));
+                };
+                RealityServiceProvider.prototype._handleRequest = function (session, options) {
+                    if (this.focusServiceProvider.session === session || session === this.sessionService.manager) {
+                        var uri = options && options.uri || RealityViewer.DEFAULT;
+                        switch (uri) {
+                            case RealityViewer.DEFAULT:
+                                uri = this.realityService.default;
+                        }
+                        this._handleInstall(session, uri);
+                        this._setPresentingRealityViewer(this._viewerByURI.get(uri));
+                        return Promise.resolve();
+                    }
+                    throw new Error('Request Denied');
+                };
+                RealityServiceProvider.prototype._setPresentingRealityViewer = function (viewer) {
+                    if (!viewer) throw new Error('Invalid State. Expected a RealityViewer instance');
+                    if (this._presentingRealityViewer === viewer) return;
+                    this._viewerByURI.forEach(function (v) {
+                        v.setPresenting(v === viewer);
+                    });
+                    this._presentingRealityViewer = viewer;
+                    console.log('Presenting reality viewer changed to: ' + viewer.uri);
+                };
+                RealityServiceProvider.prototype.getViewerByURI = function (uri) {
+                    return this._viewerByURI.get(uri);
+                };
+                RealityServiceProvider.prototype.removeInstaller = function (installerSession) {
+                    var _this = this;
+                    this._viewerByURI.forEach(function (viewer, realityUri, map) {
+                        var installers = _this._installersByURI.get(realityUri);
+                        if (installers && installers.has(installerSession)) {
+                            installers.delete(installerSession);
+                            if (installers.size === 0 && viewer.session) {
+                                _this._handleUninstall(viewer.session, realityUri);
+                                _this._installersByURI.delete(realityUri);
+                            }
+                        }
+                    });
+                };
+                return RealityServiceProvider;
+            }());
+
+            _export('RealityServiceProvider', RealityServiceProvider = __decorate$9([autoinject, __metadata$9("design:paramtypes", [typeof (_b$9 = typeof SessionService !== "undefined" && SessionService) === "function" && _b$9 || Object, RealityService, typeof (_c$5 = typeof EntityService !== "undefined" && EntityService) === "function" && _c$5 || Object, typeof (_d$4 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _d$4 || Object, typeof (_e$4 = typeof ViewServiceProvider !== "undefined" && ViewServiceProvider) === "function" && _e$4 || Object, typeof (_f$2 = typeof VisibilityServiceProvider !== "undefined" && VisibilityServiceProvider) === "function" && _f$2 || Object, typeof (_g$2 = typeof FocusServiceProvider !== "undefined" && FocusServiceProvider) === "function" && _g$2 || Object, RealityFactory])], RealityServiceProvider));
+
+            __decorate$2 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
+                var c = arguments.length,
+                    r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+                    d;
+                if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+                return c > 3 && r && Object.defineProperty(target, key, r), r;
+            };
+
+            __metadata$2 = undefined && undefined.__metadata || function (k, v) {
+                if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+            };
+
+            openIcon = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='768' height='768'%3E%3Cpath fill='white' d='M448.5 96H672v223.5h-64.5v-114L294 519l-45-45 313.5-313.5h-114V96zm159 511.5V384H672v223.5c0 34.5-30 64.5-64.5 64.5h-447c-36 0-64.5-30-64.5-64.5v-447C96 126 124.5 96 160.5 96H384v64.5H160.5v447h447z'/%3E%3C/svg%3E\")";
+            eyeIcon = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512'%3E%3Cpath fill='white' d='M256 96C144.34 96 47.56 161.02 0 256c47.56 94.98 144.34 160 256 160 111.656 0 208.438-65.02 256-160-47.558-94.98-144.344-160-256-160zm126.225 84.852c30.08 19.187 55.57 44.887 74.717 75.148-19.146 30.26-44.637 55.96-74.718 75.148C344.427 355.258 300.78 368 256 368s-88.43-12.743-126.226-36.852c-30.08-19.186-55.57-44.886-74.716-75.148 19.146-30.262 44.637-55.962 74.717-75.148 1.96-1.25 3.938-2.46 5.93-3.65C130.725 190.866 128 205.612 128 221c0 70.69 57.308 128 128 128s128-57.31 128-128c0-15.387-2.726-30.134-7.704-43.8 1.99 1.19 3.97 2.402 5.93 3.652zM256 208c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48z'/%3E%3C/svg%3E\")";
+            vrIcon = "url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E)";
+            fullscreenIcon = "url('data:image/svg+xml;utf8,<svg width=\"512\" height=\"512\" version=\"1.1\" viewBox=\"-3 -3 17 17\" xmlns=\"http://www.w3.org/2000/svg\"><g fill=\"none\" fill-rule=\"evenodd\" id=\"Page-1\" stroke=\"none\" stroke-width=\"1\"><g fill=\"white\" id=\"Core\" transform=\"translate(-215.000000, -257.000000)\"><g id=\"fullscreen\" transform=\"translate(215.000000, 257.000000)\"><path d=\"M2,9 L0,9 L0,14 L5,14 L5,12 L2,12 L2,9 L2,9 Z M0,5 L2,5 L2,2 L5,2 L5,0 L0,0 L0,5 L0,5 Z M12,12 L9,12 L9,14 L14,14 L14,9 L12,9 L12,12 L12,12 Z M9,0 L9,2 L12,2 L12,5 L14,5 L14,0 L9,0 L9,0 Z\" id=\"Shape\"/></g></g></g></svg>')";
+            argonAppIcon = "url(data:image/jpeg;base64,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)";
+
+            _export('DefaultUIService', DefaultUIService = function () {
+                function DefaultUIService(sessionService, viewService, realityService, realityServiceProvider, deviceService) {
+                    var _this = this;
+                    this.sessionService = sessionService;
+                    this.viewService = viewService;
+                    this.realityService = realityService;
+                    this.realityServiceProvider = realityServiceProvider;
+                    this.deviceService = deviceService;
+                    this.realityViewerItemElements = new Map();
+                    this.menuItems = [];
+                    this.menuOpen = false;
+                    var config = this.sessionService.configuration.defaultUI || {};
+                    if (document && !config.disable) {
+                        var style = document.createElement("style");
+                        style.type = 'text/css';
+                        document.head.insertBefore(style, document.head.firstChild);
+                        var sheet = style.sheet;
+                        sheet.insertRule("\n                .argon-ui {\n                    -webkit-tap-highlight-color: transparent;\n                    -webkit-user-select: none;\n                }\n            ", sheet.cssRules.length);
+                        sheet.insertRule("\n                .argon-ui-button {\n                    background-image: " + argonAppIcon + ";\n                    width: 144px;\n                    height: 144px;\n                }\n            ", sheet.cssRules.length);
+                        sheet.insertRule("\n                .argon-ui-blur {\n                    background-color: rgba(238, 178, 17, 0.7);\n                    -webkit-backdrop-filter: blur(5px);\n                }\n            ", sheet.cssRules.length);
+                        sheet.insertRule("\n                .argon-ui-box {\n                    webkit-user-select: none;\n                    ms-user-select: none;\n                    user-select: none;\n                }\n            ", sheet.cssRules.length);
+                        sheet.insertRule("\n                .argon-ui-list-item {\n                    align-items: center;\n                    background: white;\n                    border-top: 1px solid lightgrey;\n                    display: flex;\n                    height: 20px;\n                    justify-content: space-between;\n                    padding: 20px;\n                    width: 100%;\n                    cursor: pointer;\n                    font-family: 'Sans-serif';\n                    font-size: 12px;\n                    color: #5F5F5F;\n                    box-sizing: border-box;\n                }\n            ", sheet.cssRules.length);
+                        sheet.insertRule("\n                .argon-ui-list-item:hover {\n                    background: rgb(240,240,240);\n                }\n            ", sheet.cssRules.length);
+                        this.element = document.createElement('div');
+                        this.element.className = 'argon-ui';
+                        this.element.style.position = 'absolute';
+                        this.element.style.bottom = '0';
+                        this.element.style.right = '0';
+                        this.element.style.width = '100%';
+                        this.element.style.height = '100%';
+                        this.element.style['userSelect'] = 'none';
+                        this.element.style.webkitUserSelect = 'none';
+                        this.element.style.zIndex = '10';
+                        this.element.style.pointerEvents = 'none';
+                        this.element.style.overflow = 'hidden';
+                        this.viewService.element.appendChild(this.element);
+                        this.sessionService.manager.closeEvent.addEventListener(function () {
+                            _this.element.remove();
+                        });
+                        var realityViewerOverlayElement_1 = document.createElement('div');
+                        realityViewerOverlayElement_1.className = 'argon-overlay';
+                        realityViewerOverlayElement_1.style.width = '100%';
+                        realityViewerOverlayElement_1.style.height = '100%';
+                        realityViewerOverlayElement_1.style.display = 'flex';
+                        realityViewerOverlayElement_1.style.alignItems = 'center';
+                        realityViewerOverlayElement_1.style.pointerEvents = 'auto';
+                        realityViewerOverlayElement_1.addEventListener('click', function (e) {
+                            if (e.target === realityViewerOverlayElement_1) {
+                                realityViewerOverlayElement_1.remove();
+                                e.stopPropagation();
+                            }
+                        });
+                        // realityViewerOverlayElement.addEventListener('touchend', (e)=> {
+                        //     if (e.target === realityViewerOverlayElement) {
+                        //         e.preventDefault();
+                        //         e.stopPropagation();
+                        //         realityViewerOverlayElement.remove();
+                        //     }
+                        // });
+                        this.realityViewerSelectorElement = document.createElement('div');
+                        this.realityViewerSelectorElement.classList.add('argon-ui-box');
+                        this.realityViewerSelectorElement.classList.add('argon-ui-blur');
+                        this.realityViewerSelectorElement.style.maxWidth = '300px';
+                        this.realityViewerSelectorElement.style.maxHeight = '70%';
+                        this.realityViewerSelectorElement.style.width = '70%';
+                        this.realityViewerSelectorElement.style.margin = 'auto';
+                        this.realityViewerSelectorElement.style.padding = '20px';
+                        this.realityViewerSelectorElement.style.boxShadow = 'rgb(102,102,102) 0 5px 20px';
+                        realityViewerOverlayElement_1.appendChild(this.realityViewerSelectorElement);
+                        var realitySelectorPrompt = document.createElement('h2');
+                        realitySelectorPrompt.innerText = 'Select a Reality';
+                        realitySelectorPrompt.style.fontFamily = 'Sans-Serif';
+                        realitySelectorPrompt.style.color = 'white';
+                        realitySelectorPrompt.style.marginTop = '0';
+                        realitySelectorPrompt.style.flex = '0 1 auto';
+                        this.realityViewerSelectorElement.appendChild(realitySelectorPrompt);
+                        this.realityViewerListElement = document.createElement('div');
+                        this.realityViewerListElement.style.flex = '1 1 auto';
+                        this.realityViewerListElement.style.maxHeight = '250px';
+                        this.realityViewerListElement.style.overflowY = 'auto';
+                        this.realityViewerSelectorElement.appendChild(this.realityViewerListElement);
+                        this.realityServiceProvider.installedEvent.addEventListener(function (_a) {
+                            var viewer = _a.viewer;
+                            var uri = viewer.uri;
+                            var e = document.createElement('div');
+                            e.innerText = uri;
+                            viewer.connectEvent.addEventListener(function (session) {
+                                e.innerText = session.info.title || uri;
+                            });
+                            e.className = 'argon-ui-list-item';
+                            _this.realityViewerItemElements.set(uri, e);
+                            _this.realityViewerListElement.appendChild(e);
+                            e.addEventListener('click', function () {
+                                _this.realityService.request(uri);
+                                realityViewerOverlayElement_1.remove();
+                            });
+                        });
+                        this.realityServiceProvider.uninstalledEvent.addEventListener(function (_a) {
+                            var viewer = _a.viewer;
+                            var uri = viewer.uri;
+                            var e = _this.realityViewerItemElements.get(uri);
+                            _this.realityViewerItemElements.delete(uri);
+                            e.remove();
+                        });
+                        this.menuBackgroundElement = document.createElement('div');
+                        this.menuBackgroundElement.className = 'argon-ui-blur';
+                        this.menuBackgroundElement.style.position = 'absolute';
+                        this.menuBackgroundElement.style.bottom = '-150px';
+                        this.menuBackgroundElement.style.right = '-150px';
+                        this.menuBackgroundElement.style.width = '300px';
+                        this.menuBackgroundElement.style.height = '300px';
+                        this.menuBackgroundElement.style.transform = 'scale(0.1)';
+                        this.menuBackgroundElement.style.transition = 'transform 0.3s, opacity 0.3s';
+                        this.menuBackgroundElement.style.borderRadius = '150px';
+                        this.menuBackgroundElement.style.zIndex = '-2';
+                        this.element.appendChild(this.menuBackgroundElement);
+                        var menuButton = document.createElement('div');
+                        this.element.appendChild(menuButton);
+                        menuButton.className = 'argon-ui-button';
+                        menuButton.style.position = 'absolute';
+                        menuButton.style.bottom = '0';
+                        menuButton.style.right = '0';
+                        menuButton.style.transform = 'scale(0.36)';
+                        menuButton.style.transformOrigin = '110% 110%';
+                        menuButton.style.borderRadius = '72px';
+                        menuButton.style.cursor = 'pointer';
+                        menuButton.style.pointerEvents = 'auto';
+                        menuButton.style.zIndex = '-1';
+                        this.openInArgonMenuItem = this._createMenuItem(openIcon, 'Open in Argon');
+                        if (isIOS) {
+                            this.openInArgonMenuItem.addEventListener('touchstart', function () {
+                                openInArgonApp();
+                            });
+                            this.openInArgonMenuItem.addEventListener('touchend', function () {
+                                if (confirm('Oops, it looks like you are still here! You may not have the Argon Browser installed. Would you like to install it now?')) {
+                                    installArgonApp();
+                                }
+                                _this.menuOpen = false;
+                                _this.updateMenu();
+                            });
+                        } else if (isAndroid) {
+                            this.openInArgonMenuItem.onclick = function () {
+                                // on Android an intent must be launched from a click event
+                                // the intent will automatically redirect to the Google Play store if the app is not installed
+                                openInArgonApp();
+                            };
+                        }
+                        this.hmdMenuItem = this._createMenuItem(vrIcon, 'Toggle HMD', function () {
+                            _this.menuOpen = false;
+                            _this.updateMenu();
+                            if (_this.deviceService.isPresentingHMD) {
+                                _this.deviceService.exitPresentHMD();
+                            } else {
+                                _this.deviceService.requestPresentHMD();
+                            }
+                        });
+                        this.realityMenuItem = this._createMenuItem(eyeIcon, 'Select Reality Viewer...', function () {
+                            _this.menuOpen = false;
+                            _this.updateMenu();
+                            realityViewerOverlayElement_1.style.backgroundColor = 'rgba(0,0,0,0.3)';
+                            _this.element.appendChild(realityViewerOverlayElement_1);
+                        });
+                        this.maximizeMenuItem = this._createMenuItem(fullscreenIcon, 'Toggle Immersive View', function () {
+                            _this.menuOpen = false;
+                            _this.updateMenu();
+                            if (_this.viewService.viewportMode === ViewportMode.IMMERSIVE) {
+                                _this.viewService.desiredViewportMode = ViewportMode.EMBEDDED;
+                            } else {
+                                _this.viewService.desiredViewportMode = ViewportMode.IMMERSIVE;
+                            }
+                        });
+                        this.onSelect(menuButton, this.toggleMenu.bind(this));
+                        this.updateMenu();
+                        this.viewService.viewportChangeEvent.addEventListener(function () {
+                            _this.updateMenu();
+                        });
+                        this.viewService.viewportModeChangeEvent.addEventListener(function () {
+                            _this.updateMenu();
+                        });
+                    }
+                }
+                DefaultUIService.prototype._createMenuItem = function (icon, hint, onSelect) {
+                    var menuItem = document.createElement('div');
+                    menuItem.style.position = 'absolute';
+                    menuItem.style.bottom = '-20px';
+                    menuItem.style.right = '-20px';
+                    menuItem.style.textAlign = 'left';
+                    menuItem.style.width = '40px';
+                    menuItem.style.height = '40px';
+                    menuItem.style.fontFamily = 'Arial Black';
+                    menuItem.style.color = 'black';
+                    menuItem.style.cursor = 'default';
+                    menuItem.style.textShadow = '-1px -1px 0px #545454, 1px -1px 0px #545454, -1px 1px 0px #545454, 1px 1px 0px #545454';
+                    menuItem.style.transition = 'transform 0.3s ease 0.1s, opacity 0.3s ease 0.1s';
+                    menuItem.style.opacity = '0';
+                    menuItem.style.pointerEvents = 'none';
+                    menuItem.style.transformOrigin = '50% 50%';
+                    menuItem.style.backgroundImage = icon;
+                    menuItem.style.backgroundSize = '100% 100%';
+                    menuItem.style.backgroundRepeat = 'no-repeat';
+                    menuItem.style.zIndex = '2';
+                    menuItem.style.cursor = 'pointer';
+                    this.element.appendChild(menuItem);
+                    menuItem.title = hint;
+                    if (onSelect) this.onSelect(menuItem, onSelect);
+                    menuItem.addEventListener('mouseenter', function () {
+                        menuItem.style.color = '#eeb211';
+                    });
+                    menuItem.addEventListener('mouseleave', function () {
+                        menuItem.style.color = 'white';
+                    });
+                    return menuItem;
+                };
+                DefaultUIService.prototype.onSelect = function (element, cb) {
+                    element.addEventListener('touchend', function (ev) {
+                        ev.preventDefault();
+                        ev.stopPropagation();
+                        cb();
+                    });
+                    element.addEventListener('click', function (ev) {
+                        ev.stopPropagation();
+                        cb();
+                    });
+                };
+                DefaultUIService.prototype.toggleMenu = function () {
+                    if (this.menuOpen) {
+                        this.menuOpen = false;
+                    } else {
+                        this.menuOpen = true;
+                    }
+                    this.updateMenu();
+                };
+                DefaultUIService.prototype._hideMenuItem = function (e) {
+                    e.style.transform = 'scale(0.2)';
+                    e.style.opacity = '0';
+                    e.style.pointerEvents = 'none';
+                };
+                DefaultUIService.prototype.updateMenu = function () {
+                    var _this = this;
+                    if (this.deviceService.isPresentingHMD && isIOS) {
+                        this.element.style.display = 'none';
+                    } else {
+                        this.element.style.display = 'block';
+                    }
+                    this.menuItems = [];
+                    this.menuItems.push(null);
+                    if (isIOS || isAndroid) this.menuItems.push(this.openInArgonMenuItem);else this._hideMenuItem(this.openInArgonMenuItem);
+                    var parentElement = this.viewService.element.parentElement;
+                    var parentWidth = parentElement ? parentElement.clientWidth : 0;
+                    var parentHeight = parentElement ? parentElement.clientHeight : 0;
+                    if (!(window.innerWidth === parentWidth && window.innerHeight === parentHeight)) this.menuItems.push(this.maximizeMenuItem);else this._hideMenuItem(this.maximizeMenuItem);
+                    if (isIOS || 'getVRDisplays' in navigator) this.menuItems.push(this.hmdMenuItem);else this._hideMenuItem(this.hmdMenuItem);
+                    if (this.realityViewerItemElements.size > 0) this.menuItems.push(this.realityMenuItem);else this._hideMenuItem(this.realityMenuItem);
+                    this.menuItems.push(null);
+                    if (!this.menuOpen) {
+                        this.menuItems.forEach(function (e, i) {
+                            if (!e) return;
+                            _this._hideMenuItem(e);
+                        });
+                        this.menuBackgroundElement.style.transform = 'scale(0.1)';
+                    } else {
+                        var length_1 = this.menuItems.length;
+                        this.menuItems.forEach(function (e, i) {
+                            if (!e) return;
+                            var angle = i / (length_1 - 1) * (Math.PI / 2 + Math.PI / 8) - Math.PI / 16;
+                            var d = 100;
+                            var x = d * Math.cos(angle);
+                            var y = d * Math.sin(angle);
+                            e.style.transform = "translateX(" + -x + "px) translateY(" + -y + "px) scale(0.8)";
+                            e.style.opacity = '1';
+                            e.style.pointerEvents = 'auto';
+                        });
+                        this.menuBackgroundElement.style.transform = 'scale(1)';
+                    }
+                };
+                return DefaultUIService;
+            }());
+
+            _export('DefaultUIService', DefaultUIService = __decorate$2([autoinject(), __metadata$2("design:paramtypes", [typeof (_a$2 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$2 || Object, typeof (_b$2 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$2 || Object, typeof (_c$1 = typeof RealityService !== "undefined" && RealityService) === "function" && _c$1 || Object, typeof (_d$1 = typeof RealityServiceProvider !== "undefined" && RealityServiceProvider) === "function" && _d$1 || Object, typeof (_e$1 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _e$1 || Object])], DefaultUIService));
+
             __decorate$10 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
                 var c = arguments.length,
                     r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
@@ -23586,12 +24419,13 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
             };
 
             _export('ContextService', ContextService = function () {
-                function ContextService(entityService, sessionService, deviceService, viewService) {
+                function ContextService(entityService, sessionService, deviceService, viewService, realityService) {
                     var _this = this;
                     this.entityService = entityService;
                     this.sessionService = sessionService;
                     this.deviceService = deviceService;
                     this.viewService = viewService;
+                    this.realityService = realityService;
                     /**
                      * An event that is raised after managed entities have been updated for
                      * the current frame.
@@ -24162,7 +24996,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     }
                     // update view
                     this.viewService._processContextFrameState(frameState, this);
-                    // TODO: realityService._processContextFrameState(frameState); 
+                    this.realityService._processContextFrameState(frameState);
                     // raise origin change event if necessary
                     var originReferenceFrame = this._getReachableAncestorReferenceFrames(this.origin, time, this._scratchArray)[0] || ReferenceFrame.FIXED;
                     var originPosition = this._getEntityPositionInReferenceFrame(this.origin, time, originReferenceFrame, this._scratchCartesian);
@@ -24178,9 +25012,11 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     this.updateEvent.raiseEvent(this);
                     this.renderEvent.raiseEvent(this);
                     this.postRenderEvent.raiseEvent(this);
+                    // publish frameState to the manager (noop if this session is not a reality)
+                    this.realityService._publishContextFrameState(frameState);
                     // submit frame if necessary
                     var vrDisplay = this.deviceService.vrDisplay;
-                    if (this.deviceService.autoSubmitFrame && vrDisplay && vrDisplay.isPresenting) {
+                    if (this.deviceService.autoSubmitFrame && vrDisplay && vrDisplay.isPresenting && !this.sessionService.isRealityViewer) {
                         vrDisplay.submitFrame();
                     }
                 };
@@ -24273,15 +25109,16 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
             __decorate$10([deprecated$1('defaultReferenceFrame'), __metadata$10("design:type", Function), __metadata$10("design:paramtypes", []), __metadata$10("design:returntype", Object)], ContextService.prototype, "getDefaultReferenceFrame", null);
             __decorate$10([deprecated$1('subscribe'), __metadata$10("design:type", Function), __metadata$10("design:paramtypes", [String]), __metadata$10("design:returntype", typeof (_b$10 = typeof Entity !== "undefined" && Entity) === "function" && _b$10 || Object)], ContextService.prototype, "subscribeToEntityById", null);
             __decorate$10([deprecated$1('EntityService.createFixed'), __metadata$10("design:type", Function), __metadata$10("design:paramtypes", [typeof (_c$6 = typeof Cartographic !== "undefined" && Cartographic) === "function" && _c$6 || Object, Object]), __metadata$10("design:returntype", void 0)], ContextService.prototype, "createGeoEntity", null);
-            _export('ContextService', ContextService = __decorate$10([autoinject(), __metadata$10("design:paramtypes", [typeof (_d$5 = typeof EntityService !== "undefined" && EntityService) === "function" && _d$5 || Object, typeof (_e$5 = typeof SessionService !== "undefined" && SessionService) === "function" && _e$5 || Object, typeof (_f$3 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _f$3 || Object, typeof (_g$3 = typeof ViewService !== "undefined" && ViewService) === "function" && _g$3 || Object])], ContextService));
+            _export('ContextService', ContextService = __decorate$10([autoinject(), __metadata$10("design:paramtypes", [typeof (_d$5 = typeof EntityService !== "undefined" && EntityService) === "function" && _d$5 || Object, typeof (_e$5 = typeof SessionService !== "undefined" && SessionService) === "function" && _e$5 || Object, typeof (_f$3 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _f$3 || Object, typeof (_g$3 = typeof ViewService !== "undefined" && ViewService) === "function" && _g$3 || Object, typeof (_h$2 = typeof RealityService !== "undefined" && RealityService) === "function" && _h$2 || Object])], ContextService));
 
             _export('ContextServiceProvider', ContextServiceProvider = function () {
-                function ContextServiceProvider(sessionService, contextService, entityServiceProvider, permissionServiceProvider) {
+                function ContextServiceProvider(sessionService, contextService, entityServiceProvider, permissionServiceProvider, realityServiceProvider) {
                     var _this = this;
                     this.sessionService = sessionService;
                     this.contextService = contextService;
                     this.entityServiceProvider = entityServiceProvider;
                     this.permissionServiceProvider = permissionServiceProvider;
+                    this.realityServiceProvider = realityServiceProvider;
                     this._cacheTime = new JulianDate(0, 0);
                     this._sessionEntities = {};
                     this._temp = {};
@@ -24306,6 +25143,9 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     // publish updates to child sessions
                     this.contextService.updateEvent.addEventListener(function () {
                         _this._publishUpdates();
+                    });
+                    this.realityServiceProvider.nextFrameStateEvent.addEventListener(function (frameState) {
+                        _this.contextService.submitFrameState(frameState);
                     });
                 }
                 ContextServiceProvider.prototype._publishUpdates = function () {
@@ -24399,73 +25239,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return ContextServiceProvider;
             }());
 
-            _export('ContextServiceProvider', ContextServiceProvider = __decorate$10([autoinject(), __metadata$10("design:paramtypes", [typeof (_h$3 = typeof SessionService !== "undefined" && SessionService) === "function" && _h$3 || Object, ContextService, typeof (_j$2 = typeof EntityServiceProvider !== "undefined" && EntityServiceProvider) === "function" && _j$2 || Object, typeof (_k$2 = typeof PermissionServiceProvider !== "undefined" && PermissionServiceProvider) === "function" && _k$2 || Object])], ContextServiceProvider));
-
-            _export('RealityViewer', RealityViewer = function () {
-                function RealityViewer(uri) {
-                    var _this = this;
-                    this.uri = uri;
-                    this.providedReferenceFrames = [];
-                    this.connectEvent = new Event$1();
-                    this.presentChangeEvent = new Event$1();
-                    this._isPresenting = false;
-                    this.connectEvent.addEventListener(function (session) {
-                        if (_this._session) _this._session.close();
-                        _this._session = session;
-                        session.closeEvent.addEventListener(function () {
-                            if (_this._session === session) _this._session = undefined;
-                        });
-                    });
-                }
-                Object.defineProperty(RealityViewer.prototype, "isPresenting", {
-                    get: function () {
-                        return this._isPresenting;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(RealityViewer.prototype, "session", {
-                    get: function () {
-                        return this._session;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(RealityViewer.prototype, "isSharedCanvas", {
-                    get: function () {
-                        return this._sharedCanvas;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                RealityViewer.prototype.destroy = function () {
-                    this.setPresenting(false);
-                    if (this.session) {
-                        this.session.close();
-                    }
-                };
-
-                RealityViewer.prototype.setPresenting = function (flag) {
-                    if (this._isPresenting !== flag) {
-                        this._isPresenting = flag;
-                        this.presentChangeEvent.raiseEvent(undefined);
-                    }
-                };
-                RealityViewer.getType = function (uri) {
-                    if (uri === undefined) return undefined;
-                    if (uri.split(':')[0] === 'reality') {
-                        return uri;
-                    }
-                    return 'hosted';
-                };
-                return RealityViewer;
-            }());
-
-            RealityViewer.DEFAULT = 'reality:default';
-            RealityViewer.EMPTY = 'reality:empty';
-            RealityViewer.LIVE = 'reality:live';
-            RealityViewer.WEBRTC = 'reality:webrtc';
-            RealityViewer.TANGO = 'reality:tango';
+            _export('ContextServiceProvider', ContextServiceProvider = __decorate$10([autoinject(), __metadata$10("design:paramtypes", [typeof (_j$2 = typeof SessionService !== "undefined" && SessionService) === "function" && _j$2 || Object, ContextService, typeof (_k$2 = typeof EntityServiceProvider !== "undefined" && EntityServiceProvider) === "function" && _k$2 || Object, typeof (_l$2 = typeof PermissionServiceProvider !== "undefined" && PermissionServiceProvider) === "function" && _l$2 || Object, typeof (_m$1 = typeof RealityServiceProvider !== "undefined" && RealityServiceProvider) === "function" && _m$1 || Object])], ContextServiceProvider));
 
             __extends$2 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -24487,8 +25261,268 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
             };
 
+            _export('VuforiaServiceProvider', VuforiaServiceProvider = function () {
+                function VuforiaServiceProvider(sessionService) {
+                    if (sessionService.isRealityManager) {
+                        sessionService.connectEvent.addEventListener(function (session) {
+                            session.on['ar.vuforia.isAvailable'] = function () {
+                                return Promise.resolve({ available: false });
+                            };
+                        });
+                        sessionService.connectEvent.addEventListener(function (session) {
+                            session.on['ar.vuforia.init'] = function () {
+                                return Promise.reject(new Error("Vuforia is not supported on this system"));
+                            };
+                        });
+                    }
+                }
+                return VuforiaServiceProvider;
+            }());
+
+            _export('VuforiaServiceProvider', VuforiaServiceProvider = __decorate$11([inject(SessionService), __metadata$11("design:paramtypes", [typeof (_a$11 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$11 || Object])], VuforiaServiceProvider));
+            /**
+             * Enum for the setHint function
+             */
+
+            (function (VuforiaHint) {
+                VuforiaHint[VuforiaHint["MaxSimultaneousImageTargets"] = 0] = "MaxSimultaneousImageTargets";
+                VuforiaHint[VuforiaHint["MaxSimultaneousObjectTargets"] = 1] = "MaxSimultaneousObjectTargets";
+                VuforiaHint[VuforiaHint["DelayedLoadingObjectDatasets"] = 2] = "DelayedLoadingObjectDatasets";
+            })(VuforiaHint || _export('VuforiaHint', VuforiaHint = {}));
+            /**
+             * A service for interacting with the Vuforia API
+             */
+
+            _export('VuforiaService', VuforiaService = function () {
+                function VuforiaService(sessionService) {
+                    this.sessionService = sessionService;
+                }
+                /**
+                 * Resolves to a boolean indicating whether or not the Vuforia API is available on this system
+                 */
+                VuforiaService.prototype.isAvailable = function () {
+                    return this.sessionService.manager.request('ar.vuforia.isAvailable').then(function (message) {
+                        return message.available;
+                    });
+                };
+                /**
+                 * Initialize vuforia using an encrypted license.
+                 * You can get a vuforia license key from https://developer.vuforia.com/
+                 * You can encrypt your vuforia license with the tool at http://docs.argonjs.io/start/vuforia-pgp-encryptor
+                 */
+                VuforiaService.prototype.init = function (options) {
+                    var _this = this;
+                    if (typeof options === 'string') options = { encryptedLicenseData: options };
+                    if (!options.encryptedLicenseData || typeof options.encryptedLicenseData !== 'string') throw new Error('options.encryptedLicenseData is required.');
+                    return this.sessionService.manager.request('ar.vuforia.init', options).then(function () {
+                        return new VuforiaAPI(_this.sessionService.manager);
+                    });
+                };
+                /**
+                 * Initialize vuforia with an unecrypted key.
+                 * It's a bad idea to publish your unencrypted vuforia key on the internet.
+                 * @private
+                 */
+                VuforiaService.prototype.initWithUnencryptedKey = function (options) {
+                    var _this = this;
+                    if (typeof options === 'string') options = { key: options };
+                    return this.sessionService.manager.request('ar.vuforia.init', options).then(function () {
+                        return new VuforiaAPI(_this.sessionService.manager);
+                    });
+                };
+                return VuforiaService;
+            }());
+
+            _export('VuforiaService', VuforiaService = __decorate$11([inject(SessionService, VuforiaServiceProvider), __metadata$11("design:paramtypes", [typeof (_b$11 = typeof SessionService !== "undefined" && SessionService) === "function" && _b$11 || Object])], VuforiaService));
+
+            _export('VuforiaAPI', VuforiaAPI = function () {
+                function VuforiaAPI(manager) {
+                    this.manager = manager;
+                    this.objectTracker = new VuforiaObjectTracker(manager);
+                }
+                // setHint should be called after Vuforia is initialized
+                VuforiaAPI.prototype.setHint = function (hint, value) {
+                    var options = { hint: hint, value: value };
+                    return this.manager.request('ar.vuforia.setHint', options).then(function (message) {
+                        return message.result;
+                    });
+                };
+                return VuforiaAPI;
+            }());
+
+            _export('VuforiaTracker', VuforiaTracker = function () {
+                function VuforiaTracker() {}
+                return VuforiaTracker;
+            }());
+
+            _export('VuforiaObjectTracker', VuforiaObjectTracker = function (_super) {
+                __extends$2(VuforiaObjectTracker, _super);
+                function VuforiaObjectTracker(managerSession) {
+                    var _this = _super.call(this) || this;
+                    _this.managerSession = managerSession;
+                    _this.dataSetLoadEvent = new Event$1();
+                    _this.dataSetUnloadEvent = new Event$1();
+                    _this.dataSetActivateEvent = new Event$1();
+                    _this.dataSetDeactivateEvent = new Event$1();
+                    _this._deprecatedDataSetInstanceMap = new Map();
+                    managerSession.on['ar.vuforia.objectTrackerLoadDataSetEvent'] = function (message) {
+                        _this.dataSetLoadEvent.raiseEvent(message);
+                    };
+                    managerSession.on['ar.vuforia.objectTrackerUnloadDataSetEvent'] = function (message) {
+                        _this.dataSetUnloadEvent.raiseEvent(message);
+                    };
+                    managerSession.on['ar.vuforia.objectTrackerActivateDataSetEvent'] = function (message) {
+                        var deprecatedDataSetInstance = _this._deprecatedDataSetInstanceMap.get(message.id);
+                        if (deprecatedDataSetInstance) {
+                            deprecatedDataSetInstance._onActivate();
+                            _this.dataSetActivateEvent.raiseEvent(deprecatedDataSetInstance);
+                        } else _this.dataSetActivateEvent.raiseEvent(message);
+                    };
+                    managerSession.on['ar.vuforia.objectTrackerDeactivateDataSetEvent'] = function (message) {
+                        var deprecatedDataSetInstance = _this._deprecatedDataSetInstanceMap.get(message.id);
+                        if (deprecatedDataSetInstance) {
+                            deprecatedDataSetInstance._onDeactivate();
+                            _this.dataSetActivateEvent.raiseEvent(deprecatedDataSetInstance);
+                        } else _this.dataSetDeactivateEvent.raiseEvent(message);
+                    };
+                    return _this;
+                }
+                /**
+                 * Deprecated. Please use createDataSetFromURI instead.
+                 * @deprecated To be removed.
+                 */
+                VuforiaObjectTracker.prototype.createDataSet = function (url) {
+                    var _this = this;
+                    if (url && window.document) {
+                        url = resolveURL(url);
+                    }
+                    return this.managerSession.request('ar.vuforia.objectTrackerCreateDataSet', { url: url }).then(function (message) {
+                        var dataSet = new DeprecatedVuforiaDataSet(message.id, _this.managerSession);
+                        _this._deprecatedDataSetInstanceMap.set(message.id, dataSet);
+                        return dataSet;
+                    });
+                };
+                /**
+                 * Fetch a dataset from the provided url.
+                 * If successfull, resolves to an id which represents the dataset.
+                 */
+                VuforiaObjectTracker.prototype.createDataSetFromURL = function (url) {
+                    if (url && window.document) {
+                        url = resolveURL(url);
+                    }
+                    return this.managerSession.request('ar.vuforia.objectTrackerCreateDataSet', { url: url }).then(function (message) {
+                        return message.id;
+                    });
+                };
+                Object.defineProperty(VuforiaObjectTracker.prototype, "createDataSetFromURI", {
+                    get: function () {
+                        return this.createDataSetFromURL;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+
+                /**
+                 * Load the dataset into memory, and return a promise which
+                 * resolves to the contained trackables
+                 */
+                VuforiaObjectTracker.prototype.loadDataSet = function (id) {
+                    var _this = this;
+                    return this.managerSession.whenConnected().then(function () {
+                        if (_this.managerSession.version[0] == 0) {
+                            return _this.managerSession.request('ar.vuforia.dataSetLoad', { id: id });
+                        }
+                        return _this.managerSession.request('ar.vuforia.objectTrackerLoadDataSet', { id: id });
+                    });
+                };
+                /**
+                 * Unload a dataset from memory (deactivating it if necessary)
+                 */
+                VuforiaObjectTracker.prototype.unloadDataSet = function (id) {
+                    var _this = this;
+                    return this.managerSession.whenConnected().then(function () {
+                        if (_this.managerSession.version[0] == 0) {
+                            return _this.deactivateDataSet(id);
+                        }
+                        return _this.managerSession.request('ar.vuforia.objectTrackerUnloadDataSet', { id: id });
+                    });
+                };
+                /**
+                 * Load (if necessary) and activate a dataset to enable tracking of the contained trackables
+                 */
+                VuforiaObjectTracker.prototype.activateDataSet = function (id) {
+                    id = id instanceof DeprecatedVuforiaDataSet ? id.id : id; // backwards compatability
+                    return this.managerSession.request('ar.vuforia.objectTrackerActivateDataSet', { id: id });
+                };
+                /**
+                 * Deactivate a loaded dataset to disable tracking of the contained trackables
+                 */
+                VuforiaObjectTracker.prototype.deactivateDataSet = function (id) {
+                    id = id instanceof DeprecatedVuforiaDataSet ? id.id : id; // backwards compatability
+                    return this.managerSession.request('ar.vuforia.objectTrackerDeactivateDataSet', { id: id });
+                };
+                return VuforiaObjectTracker;
+            }(VuforiaTracker));
+
+            __decorate$11([deprecated$1('createDataSetFromURL'), __metadata$11("design:type", Function), __metadata$11("design:paramtypes", [String]), __metadata$11("design:returntype", Object)], VuforiaObjectTracker.prototype, "createDataSet", null);
+            __decorate$11([deprecated$1('createDataSetFromURL'), __metadata$11("design:type", Object), __metadata$11("design:paramtypes", [])], VuforiaObjectTracker.prototype, "createDataSetFromURI", null);
+            /**
+             * @deprecated To be removed.
+             */
+
+            _export('DeprecatedVuforiaDataSet', DeprecatedVuforiaDataSet = function () {
+                function DeprecatedVuforiaDataSet(id, managerSession) {
+                    this.id = id;
+                    this.managerSession = managerSession;
+                    this._isActive = false;
+                }
+                DeprecatedVuforiaDataSet.prototype._onActivate = function () {
+                    this._isActive = true;
+                };
+                DeprecatedVuforiaDataSet.prototype._onDeactivate = function () {
+                    this._isActive = false;
+                };
+                DeprecatedVuforiaDataSet.prototype.fetch = function () {
+                    return this.managerSession.request('ar.vuforia.dataSetFetch', { id: this.id });
+                };
+                DeprecatedVuforiaDataSet.prototype.load = function () {
+                    var _this = this;
+                    return this.managerSession.request('ar.vuforia.dataSetLoad', { id: this.id }).then(function (trackables) {
+                        _this._trackables = trackables;
+                        return trackables;
+                    });
+                };
+                DeprecatedVuforiaDataSet.prototype.isActive = function () {
+                    return this._isActive;
+                };
+                DeprecatedVuforiaDataSet.prototype.getTrackables = function () {
+                    return this._trackables;
+                };
+                return DeprecatedVuforiaDataSet;
+            }());
+
+            __extends$3 = undefined && undefined.__extends || function (d, b) {
+                for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+                function __() {
+                    this.constructor = d;
+                }
+                d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+            };
+
+            __decorate$12 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
+                var c = arguments.length,
+                    r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+                    d;
+                if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+                return c > 3 && r && Object.defineProperty(target, key, r), r;
+            };
+
+            __metadata$12 = undefined && undefined.__metadata || function (k, v) {
+                if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+            };
+
             _export('EmptyRealityViewer', EmptyRealityViewer = function (_super) {
-                __extends$2(EmptyRealityViewer, _super);
+                __extends$3(EmptyRealityViewer, _super);
                 function EmptyRealityViewer(sessionService, viewService, container, uri) {
                     var _this = _super.call(this, uri) || this;
                     _this.sessionService = sessionService;
@@ -24741,9 +25775,9 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return EmptyRealityViewer;
             }(RealityViewer));
 
-            _export('EmptyRealityViewer', EmptyRealityViewer = __decorate$11([inject(SessionService, ViewService, Container), __metadata$11("design:paramtypes", [typeof (_a$11 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$11 || Object, typeof (_b$11 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$11 || Object, typeof (_c$7 = typeof Container !== "undefined" && Container) === "function" && _c$7 || Object, String])], EmptyRealityViewer));
+            _export('EmptyRealityViewer', EmptyRealityViewer = __decorate$12([inject(SessionService, ViewService, Container), __metadata$12("design:paramtypes", [typeof (_a$12 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$12 || Object, typeof (_b$12 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$12 || Object, typeof (_c$7 = typeof Container !== "undefined" && Container) === "function" && _c$7 || Object, String])], EmptyRealityViewer));
 
-            __extends$3 = undefined && undefined.__extends || function (d, b) {
+            __extends$4 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
                 function __() {
                     this.constructor = d;
@@ -24751,7 +25785,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
             };
 
-            __decorate$12 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
+            __decorate$13 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
                 var c = arguments.length,
                     r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
                     d;
@@ -24759,12 +25793,12 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return c > 3 && r && Object.defineProperty(target, key, r), r;
             };
 
-            __metadata$12 = undefined && undefined.__metadata || function (k, v) {
+            __metadata$13 = undefined && undefined.__metadata || function (k, v) {
                 if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
             };
 
             _export('LiveRealityViewer', LiveRealityViewer = function (_super) {
-                __extends$3(LiveRealityViewer, _super);
+                __extends$4(LiveRealityViewer, _super);
                 function LiveRealityViewer(sessionService, viewService, contextService, deviceService, uri) {
                     var _this = _super.call(this, uri) || this;
                     _this.sessionService = sessionService;
@@ -24898,9 +25932,9 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return LiveRealityViewer;
             }(RealityViewer));
 
-            _export('LiveRealityViewer', LiveRealityViewer = __decorate$12([inject(SessionService, ViewService, ContextService, DeviceService), __metadata$12("design:paramtypes", [typeof (_a$12 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$12 || Object, typeof (_b$12 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$12 || Object, typeof (_c$8 = typeof ContextService !== "undefined" && ContextService) === "function" && _c$8 || Object, typeof (_d$6 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _d$6 || Object, String])], LiveRealityViewer));
+            _export('LiveRealityViewer', LiveRealityViewer = __decorate$13([inject(SessionService, ViewService, ContextService, DeviceService), __metadata$13("design:paramtypes", [typeof (_a$13 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$13 || Object, typeof (_b$13 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$13 || Object, typeof (_c$8 = typeof ContextService !== "undefined" && ContextService) === "function" && _c$8 || Object, typeof (_d$6 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _d$6 || Object, String])], LiveRealityViewer));
 
-            __extends$4 = undefined && undefined.__extends || function (d, b) {
+            __extends$5 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
                 function __() {
                     this.constructor = d;
@@ -24908,7 +25942,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
             };
 
-            __decorate$13 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
+            __decorate$14 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
                 var c = arguments.length,
                     r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
                     d;
@@ -24916,12 +25950,91 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return c > 3 && r && Object.defineProperty(target, key, r), r;
             };
 
-            __metadata$13 = undefined && undefined.__metadata || function (k, v) {
+            __metadata$14 = undefined && undefined.__metadata || function (k, v) {
                 if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
             };
 
-            WebRTCRealityViewer = function (_super) {
-                __extends$4(WebRTCRealityViewer, _super);
+            _export('HostedRealityViewer', HostedRealityViewer = function (_super) {
+                __extends$5(HostedRealityViewer, _super);
+                function HostedRealityViewer(sessionService, viewService, uri) {
+                    var _this = _super.call(this, uri) || this;
+                    _this.sessionService = sessionService;
+                    _this.viewService = viewService;
+                    _this.uri = uri;
+                    _this.type = 'hosted';
+                    if (typeof document !== 'undefined' && document.createElement) {
+                        var iframeElement = _this.iframeElement = document.createElement('iframe');
+                        iframeElement.name = createGuid();
+                        iframeElement.style.border = '0';
+                        iframeElement.width = '100%';
+                        iframeElement.height = '100%';
+                        iframeElement.style.position = 'absolute';
+                        iframeElement.style.opacity = '0';
+                        iframeElement.style.pointerEvents = 'none';
+                        iframeElement.style.zIndex = "-100";
+                        var viewElement = _this.viewService.element;
+                        viewElement.insertBefore(iframeElement, viewElement.firstChild);
+                        _this.presentChangeEvent.addEventListener(function () {
+                            _this.iframeElement.style.opacity = _this.isPresenting ? '1' : '0';
+                        });
+                    }
+                    return _this;
+                }
+                HostedRealityViewer.prototype.destroy = function () {
+                    _super.prototype.destroy.call(this);
+                    if (this.iframeElement) {
+                        this.iframeElement.remove();
+                    }
+                };
+                HostedRealityViewer.prototype.load = function () {
+                    var _this = this;
+                    if (typeof document !== 'undefined' && document.createElement) {
+                        var session_1 = this.sessionService.addManagedSessionPort(this.uri);
+                        session_1.connectEvent.addEventListener(function () {
+                            if (_this.sessionService.manager.isClosed) return;
+                            _this.connectEvent.raiseEvent(session_1);
+                        });
+                        var handleConnectMessage_1 = function (ev) {
+                            if (ev.data.type !== 'ARGON_SESSION') return;
+                            var name = ev.data.name;
+                            var messagePort = ev.ports && ev.ports[0];
+                            if (!messagePort) throw new Error('Received an ARGON_SESSION message without a MessagePort object');
+                            if (name !== _this.iframeElement.name) return;
+                            window.removeEventListener('message', handleConnectMessage_1);
+                            session_1.open(messagePort, _this.sessionService.configuration);
+                        };
+                        window.addEventListener('message', handleConnectMessage_1);
+                        this.iframeElement.src = '';
+                        this.iframeElement.src = this.uri;
+                    }
+                };
+                return HostedRealityViewer;
+            }(RealityViewer));
+
+            _export('HostedRealityViewer', HostedRealityViewer = __decorate$14([inject(SessionService, ViewService), __metadata$14("design:paramtypes", [typeof (_a$14 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$14 || Object, typeof (_b$14 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$14 || Object, String])], HostedRealityViewer));
+
+            __extends$6 = undefined && undefined.__extends || function (d, b) {
+                for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+                function __() {
+                    this.constructor = d;
+                }
+                d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+            };
+
+            __decorate$15 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
+                var c = arguments.length,
+                    r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+                    d;
+                if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+                return c > 3 && r && Object.defineProperty(target, key, r), r;
+            };
+
+            __metadata$15 = undefined && undefined.__metadata || function (k, v) {
+                if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+            };
+
+            _export('WebRTCRealityViewer', WebRTCRealityViewer = function (_super) {
+                __extends$6(WebRTCRealityViewer, _super);
                 function WebRTCRealityViewer(sessionService, viewService, contextService, container, uri) {
                     var _this = _super.call(this, uri) || this;
                     _this.sessionService = sessionService;
@@ -25419,9 +26532,9 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     }
                 };
                 return WebRTCRealityViewer;
-            }(RealityViewer);
+            }(RealityViewer));
 
-            WebRTCRealityViewer = __decorate$13([inject(SessionService, ViewService, ContextService, Container), __metadata$13("design:paramtypes", [typeof (_a$13 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$13 || Object, typeof (_b$13 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$13 || Object, typeof (_c$9 = typeof ContextService !== "undefined" && ContextService) === "function" && _c$9 || Object, typeof (_d$7 = typeof Container !== "undefined" && Container) === "function" && _d$7 || Object, String])], WebRTCRealityViewer);
+            _export('WebRTCRealityViewer', WebRTCRealityViewer = __decorate$15([inject(SessionService, ViewService, ContextService, Container), __metadata$15("design:paramtypes", [typeof (_a$15 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$15 || Object, typeof (_b$15 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$15 || Object, typeof (_c$9 = typeof ContextService !== "undefined" && ContextService) === "function" && _c$9 || Object, typeof (_d$7 = typeof Container !== "undefined" && Container) === "function" && _d$7 || Object, String])], WebRTCRealityViewer));
 
             integrateCustomARToolKit = function () {
                 /**
@@ -25618,7 +26731,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 };
             };
 
-            __extends$5 = undefined && undefined.__extends || function (d, b) {
+            __extends$7 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
                 function __() {
                     this.constructor = d;
@@ -25626,7 +26739,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
             };
 
-            __decorate$14 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
+            __decorate$16 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
                 var c = arguments.length,
                     r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
                     d;
@@ -25634,91 +26747,12 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return c > 3 && r && Object.defineProperty(target, key, r), r;
             };
 
-            __metadata$14 = undefined && undefined.__metadata || function (k, v) {
+            __metadata$16 = undefined && undefined.__metadata || function (k, v) {
                 if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
             };
 
-            _export('HostedRealityViewer', HostedRealityViewer = function (_super) {
-                __extends$5(HostedRealityViewer, _super);
-                function HostedRealityViewer(sessionService, viewService, uri) {
-                    var _this = _super.call(this, uri) || this;
-                    _this.sessionService = sessionService;
-                    _this.viewService = viewService;
-                    _this.uri = uri;
-                    _this.type = 'hosted';
-                    if (typeof document !== 'undefined' && document.createElement) {
-                        var iframeElement = _this.iframeElement = document.createElement('iframe');
-                        iframeElement.name = createGuid();
-                        iframeElement.style.border = '0';
-                        iframeElement.width = '100%';
-                        iframeElement.height = '100%';
-                        iframeElement.style.position = 'absolute';
-                        iframeElement.style.opacity = '0';
-                        iframeElement.style.pointerEvents = 'none';
-                        iframeElement.style.zIndex = "-100";
-                        var viewElement = _this.viewService.element;
-                        viewElement.insertBefore(iframeElement, viewElement.firstChild);
-                        _this.presentChangeEvent.addEventListener(function () {
-                            _this.iframeElement.style.opacity = _this.isPresenting ? '1' : '0';
-                        });
-                    }
-                    return _this;
-                }
-                HostedRealityViewer.prototype.destroy = function () {
-                    _super.prototype.destroy.call(this);
-                    if (this.iframeElement) {
-                        this.iframeElement.remove();
-                    }
-                };
-                HostedRealityViewer.prototype.load = function () {
-                    var _this = this;
-                    if (typeof document !== 'undefined' && document.createElement) {
-                        var session_1 = this.sessionService.addManagedSessionPort(this.uri);
-                        session_1.connectEvent.addEventListener(function () {
-                            if (_this.sessionService.manager.isClosed) return;
-                            _this.connectEvent.raiseEvent(session_1);
-                        });
-                        var handleConnectMessage_1 = function (ev) {
-                            if (ev.data.type !== 'ARGON_SESSION') return;
-                            var name = ev.data.name;
-                            var messagePort = ev.ports && ev.ports[0];
-                            if (!messagePort) throw new Error('Received an ARGON_SESSION message without a MessagePort object');
-                            if (name !== _this.iframeElement.name) return;
-                            window.removeEventListener('message', handleConnectMessage_1);
-                            session_1.open(messagePort, _this.sessionService.configuration);
-                        };
-                        window.addEventListener('message', handleConnectMessage_1);
-                        this.iframeElement.src = '';
-                        this.iframeElement.src = this.uri;
-                    }
-                };
-                return HostedRealityViewer;
-            }(RealityViewer));
-
-            _export('HostedRealityViewer', HostedRealityViewer = __decorate$14([inject(SessionService, ViewService), __metadata$14("design:paramtypes", [typeof (_a$14 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$14 || Object, typeof (_b$14 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$14 || Object, String])], HostedRealityViewer));
-
-            __extends$6 = undefined && undefined.__extends || function (d, b) {
-                for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-                function __() {
-                    this.constructor = d;
-                }
-                d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-            };
-
-            __decorate$15 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
-                var c = arguments.length,
-                    r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
-                    d;
-                if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-                return c > 3 && r && Object.defineProperty(target, key, r), r;
-            };
-
-            __metadata$15 = undefined && undefined.__metadata || function (k, v) {
-                if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-            };
-
-            TangoRealityViewer = function (_super) {
-                __extends$6(TangoRealityViewer, _super);
+            _export('TangoRealityViewer', TangoRealityViewer = function (_super) {
+                __extends$7(TangoRealityViewer, _super);
                 function TangoRealityViewer(sessionService, viewService, contextService, container, deviceService, uri, vrDisplay) {
                     var _this = _super.call(this, uri) || this;
                     _this.sessionService = sessionService;
@@ -25890,23 +26924,25 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                             contextUser.position.setValue(tangoUserPosition, tangoOrigin);
                             contextUser.orientation.setValue(tangoUserOrientation);
                             // Update stage geopose when GPS accuracy improves or Tango origin is repositioned
-                            var gpsAccuracyHasImproved = _this._lastGeoHorizontalAccuracy > (_this.deviceService.geoHorizontalAccuracy || 0);
-                            var compassAccuracyHasImproved = _this._lastGeoHeadingAccuracy > (_this.deviceService.geoHeadingAccuracy || 0);
+                            var currentGeoHorizontalAccuracy = _this.deviceService.geoHorizontalAccuracy || 999;
+                            var currentGeoHeadingAccuracy = _this.deviceService.geoHeadingAccuracy || 999;
+                            var gpsAccuracyHasImproved = _this._lastGeoHorizontalAccuracy > currentGeoHorizontalAccuracy;
+                            var compassAccuracyHasImproved = _this._lastGeoHeadingAccuracy > currentGeoHeadingAccuracy;
                             var tangoOriginRepositioned = _this._tangoOriginLostPreviousFrame && !_this._tangoOriginLost;
                             var tangoOriginNeedsUpdate = gpsAccuracyHasImproved || tangoOriginRepositioned || compassAccuracyHasImproved;
                             var overrideStage = true;
-                            if (tangoOriginRepositioned) {
-                                console.log("Tango origin has been reset.");
-                                _this._lastGeoHeadingAccuracy = _this._lastGeoHorizontalAccuracy = 999;
-                                _this._tangoOriginLost = false;
-                            } else if (gpsAccuracyHasImproved) {
-                                console.log("Current horizontal accuracy has been inproved to:" + _this.deviceService.geoHorizontalAccuracy);
-                                _this._lastGeoHorizontalAccuracy = _this.deviceService.geoHorizontalAccuracy || 0;
-                            } else if (compassAccuracyHasImproved) {
-                                console.log("Current heading accuracy has been inproved to:" + _this.deviceService.geoHeadingAccuracy);
-                                _this._lastGeoHeadingAccuracy = _this.deviceService.geoHeadingAccuracy || 0;
-                            }
                             if (tangoUserPosition && tangoUserOrientation && tangoOriginNeedsUpdate) {
+                                if (tangoOriginRepositioned) {
+                                    console.log("Tango origin has been reset.");
+                                    _this._lastGeoHeadingAccuracy = _this._lastGeoHorizontalAccuracy = 999;
+                                    _this._tangoOriginLost = false;
+                                } else if (gpsAccuracyHasImproved) {
+                                    console.log("Current horizontal accuracy has been inproved to:" + _this.deviceService.geoHorizontalAccuracy);
+                                    _this._lastGeoHorizontalAccuracy = currentGeoHorizontalAccuracy;
+                                } else if (compassAccuracyHasImproved) {
+                                    console.log("Current heading accuracy has been inproved to:" + _this.deviceService.geoHeadingAccuracy);
+                                    _this._lastGeoHeadingAccuracy = currentGeoHeadingAccuracy;
+                                }
                                 // Get tango origin relative to context user.
                                 // First two lines should be removed after bugfix of not being able to get transform of an entity with an undefined position|orientation relative to one of it's children
                                 tangoOrigin.position.setValue(Cartesian3.ZERO, ReferenceFrame.FIXED);
@@ -26083,1051 +27119,9 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     }
                 };
                 return TangoRealityViewer;
-            }(RealityViewer);
+            }(RealityViewer));
 
-            TangoRealityViewer = __decorate$15([inject(SessionService, ViewService, ContextService, Container, DeviceService), __metadata$15("design:paramtypes", [typeof (_a$15 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$15 || Object, typeof (_b$15 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$15 || Object, typeof (_c$10 = typeof ContextService !== "undefined" && ContextService) === "function" && _c$10 || Object, typeof (_d$8 = typeof Container !== "undefined" && Container) === "function" && _d$8 || Object, typeof (_e$6 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _e$6 || Object, String, Object])], TangoRealityViewer);
-
-            __decorate$9 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
-                var c = arguments.length,
-                    r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
-                    d;
-                if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-                return c > 3 && r && Object.defineProperty(target, key, r), r;
-            };
-
-            __metadata$9 = undefined && undefined.__metadata || function (k, v) {
-                if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-            };
-
-            _export('RealityViewerFactory', RealityViewerFactory = function () {
-                function RealityViewerFactory(_createEmptyReality, _createLiveReality, _createWebRTCReality, _createHostedReality, _createTangoReality) {
-                    this._createEmptyReality = _createEmptyReality;
-                    this._createLiveReality = _createLiveReality;
-                    this._createWebRTCReality = _createWebRTCReality;
-                    this._createHostedReality = _createHostedReality;
-                    this._createTangoReality = _createTangoReality;
-                }
-                RealityViewerFactory.prototype.createRealityViewer = function (uri) {
-                    switch (RealityViewer.getType(uri)) {
-                        case RealityViewer.EMPTY:
-                            return this._createEmptyReality(uri);
-                        case RealityViewer.LIVE:
-                            return this._createLiveReality(uri);
-                        case RealityViewer.WEBRTC:
-                            return this._createWebRTCReality(uri);
-                        case 'hosted':
-                            return this._createHostedReality(uri);
-                        case RealityViewer.TANGO:
-                            return this._createTangoReality(uri);
-                        default:
-                            throw new Error('Unsupported Reality Viewer: ' + uri);
-                    }
-                };
-                return RealityViewerFactory;
-            }());
-
-            _export('RealityViewerFactory', RealityViewerFactory = __decorate$9([inject(Factory.of(EmptyRealityViewer), Factory.of(LiveRealityViewer), Factory.of(WebRTCRealityViewer), Factory.of(HostedRealityViewer), Factory.of(TangoRealityViewer)), __metadata$9("design:paramtypes", [Object, Object, Object, Object, Object])], RealityViewerFactory));
-            /**
-            * A service which makes requests to manage the reality viewer.
-            */
-
-            _export('RealityService', RealityService = function () {
-                // private _scratchFrustum = new PerspectiveFrustum();
-                function RealityService(sessionService, contextService) {
-                    var _this = this;
-                    this.sessionService = sessionService;
-                    this.contextService = contextService;
-                    this._connectEvent = new Event$1();
-                    this._sessions = [];
-                    this._changeEvent = new Event$1();
-                    /**
-                     * The default Reality Viewer.
-                     */
-                    this.default = RealityViewer.EMPTY;
-                    if ((isIOS || isAndroid) && navigator.getUserMedia && navigator.mediaDevices) {
-                        var vrDisplay_1 = null;
-                        if (navigator.getVRDisplays) {
-                            navigator.getVRDisplays().then(function (vrDisplays) {
-                                if (vrDisplays && vrDisplays.length > 0) {
-                                    for (var i = 0; !vrDisplay_1 && i < vrDisplays.length; i++) {
-                                        vrDisplay_1 = vrDisplays[i];
-                                        if (vrDisplay_1.displayName !== "Tango VR Device") {
-                                            vrDisplay_1 = null;
-                                        }
-                                    }
-                                }
-                            }).then(function () {
-                                _this.default = vrDisplay_1 ? RealityViewer.TANGO : RealityViewer.WEBRTC;
-                            });
-                        }
-                    }
-                    sessionService.manager.on['ar.reality.connect'] = function (_a) {
-                        var id = _a.id;
-                        var realityControlSession = _this.sessionService.createSessionPort(id);
-                        var messageChannel = _this.sessionService.createSynchronousMessageChannel();
-                        var ROUTE_MESSAGE_KEY = 'ar.reality.message.route.' + id;
-                        var SEND_MESSAGE_KEY = 'ar.reality.message.send.' + id;
-                        var CLOSE_SESSION_KEY = 'ar.reality.close.' + id;
-                        messageChannel.port1.onmessage = function (msg) {
-                            _this.sessionService.manager.send(ROUTE_MESSAGE_KEY, msg.data);
-                        };
-                        _this.sessionService.manager.on[SEND_MESSAGE_KEY] = function (message) {
-                            messageChannel.port1.postMessage(message);
-                        };
-                        _this.sessionService.manager.on[CLOSE_SESSION_KEY] = function () {
-                            realityControlSession.close();
-                        };
-                        realityControlSession.connectEvent.addEventListener(function () {
-                            _this.sessions.push(realityControlSession);
-                            _this.connectEvent.raiseEvent(realityControlSession);
-                            realityControlSession.closeEvent.addEventListener(function () {
-                                var idx = _this.sessions.indexOf(realityControlSession);
-                                _this.sessions.splice(idx, 1);
-                            });
-                        });
-                        _this.sessionService.manager.closeEvent.addEventListener(function () {
-                            realityControlSession.close();
-                            delete _this.sessionService.manager.on[SEND_MESSAGE_KEY];
-                            delete _this.sessionService.manager.on[CLOSE_SESSION_KEY];
-                        });
-                        realityControlSession.open(messageChannel.port2, _this.sessionService.configuration);
-                    };
-                    // let i = 0;
-                    this.contextService.updateEvent.addEventListener(function () {
-                        var frameState = _this.contextService.serializedFrameState;
-                        if (sessionService.isRealityViewer && sessionService.manager.isConnected) {
-                            // backwards compatability
-                            if (sessionService.manager.isConnected && sessionService.manager.version[0] === 0) {
-                                var eye = frameState['eye'] = frameState['eye'] || {};
-                                eye.pose = frameState.entities['ar.user'];
-                                eye.viewport = Viewport.clone(frameState.subviews[0].viewport, eye.viewport);
-                                delete frameState.entities['ar.user'];
-                                // throttle for 30fps
-                                // i++ % 2 === 0 && 
-                                sessionService.manager.send('ar.reality.frameState', frameState);
-                                frameState.entities['ar.user'] = eye.pose;
-                            } else {
-                                sessionService.manager.send('ar.reality.frameState', frameState);
-                            }
-                        }
-                        var current = frameState.reality;
-                        var previous = _this._current;
-                        if (previous !== current) {
-                            _this._current = current;
-                            _this.changeEvent.raiseEvent({ previous: previous, current: current });
-                        }
-                    });
-                }
-                Object.defineProperty(RealityService.prototype, "connectEvent", {
-                    /**
-                     * An event that provides a session for sending / receiving
-                     * commands to / from a reality.
-                     *
-                     * The session passed via this event can represent either endpoint of
-                     * a connection between RealityViewer <--> RealityAugmenter/RealityManager.
-                     *
-                     * If running in a RealityAugmenter, the session
-                     * represents a connection to a RealityViewer.
-                     *
-                     * If running in a RealityViewer, the session
-                     * represents a connection to a RealityAugmenter.
-                     */
-                    get: function () {
-                        return this._connectEvent;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-
-                Object.defineProperty(RealityService.prototype, "sessions", {
-                    /**
-                     * A collection of connected sessions.
-                     *
-                     * If running in a RealityAugmenter, this collection
-                     * represents connections to any loaded RealityViewers.
-                     *
-                     * If running in a RealityViewer, this collection
-                     * represents connections to any RealityAugmenters.
-                     */
-                    get: function () {
-                        return this._sessions;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-
-                Object.defineProperty(RealityService.prototype, "changeEvent", {
-                    /**
-                     * An event that is raised when the presenting reality viewer is changed.
-                     */
-                    get: function () {
-                        return this._changeEvent;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(RealityService.prototype, "current", {
-                    /**
-                     * The URI for the currently presenting Reality Viewer.
-                     */
-                    get: function () {
-                        return this._current;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(RealityService.prototype, "isSharedCanvas", {
-                    /**
-                     * Whether the current reality viewer shares a canvas with the reality augmenter.
-                     */
-                    get: function () {
-                        return this._sharedCanvas;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-
-                /**
-                 * Install the specified reality viewer
-                 */
-                RealityService.prototype.install = function (uri) {
-                    var _this = this;
-                    return this.sessionService.manager.whenConnected().then(function () {
-                        if (_this.sessionService.manager.version[0] >= 1 !== true) return Promise.reject(new Error('Not supported'));
-                        return _this.sessionService.manager.request('ar.reality.install', { uri: uri });
-                    });
-                };
-                /**
-                 * Uninstall the specified reality viewer
-                 */
-                RealityService.prototype.uninstall = function (uri) {
-                    var _this = this;
-                    return this.sessionService.manager.whenConnected().then(function () {
-                        if (_this.sessionService.manager.version[0] >= 1 !== true) return Promise.reject(new Error('Not supported'));
-                        return _this.sessionService.manager.request('ar.reality.uninstall', { uri: uri });
-                    });
-                };
-                /**
-                 * Request a reality viewer to be presented.
-                 * - Pass a url to request a (custum) hosted reality viewer
-                 * - [[RealityViewer.DEFAULT]] to request the system default reality viewer
-                 * - [[RealityViewer.LIVE]] to request a live reality viewer
-                 * - [[RealityViewer.WEBTRC]] to request a webrtc reality viewer
-                 * - [[RealityViewer.EMPTY]] to request an empty reality viewer
-                 * - [[RealityViewer.TANGO]] to request a Tango reality viewer
-                 */
-                RealityService.prototype.request = function (uri) {
-                    var _this = this;
-                    return this.sessionService.manager.whenConnected().then(function () {
-                        if (_this.sessionService.manager.version[0] >= 1 !== true) return _this.sessionService.manager.request('ar.reality.desired', { reality: { uri: uri } });
-                        return _this.sessionService.manager.request('ar.reality.request', { uri: uri });
-                    });
-                };
-                /**
-                 * Deprecated. Use [[RealityService#request]]
-                 * @deprecated
-                 */
-                RealityService.prototype.setDesired = function (reality) {
-                    this.request(reality ? reality.uri : RealityViewer.DEFAULT);
-                };
-                /**
-                 * Ask a reality to move the stage to the given geolocation
-                 */
-                RealityService.prototype.setStageGeolocation = function (realitySession, geolocation) {
-                    if (!realitySession.supportsProtocol('ar.configureStage')) return Promise.reject('Protocol `ar.configureStage` is not supported');
-                    return realitySession.request('ar.configureStage.setStageGeolocation', { geolocation: geolocation });
-                };
-                /**
-                 * Ask a reality to move the stage to the given geolocation
-                 */
-                RealityService.prototype.resetStageGeolocation = function (realitySession) {
-                    if (!realitySession.supportsProtocol('ar.configureStage')) return Promise.reject('Protocol `ar.configureStage` is not supported');
-                    return realitySession.request('ar.configureStage.resetStageGeolocation');
-                };
-                return RealityService;
-            }());
-
-            __decorate$9([deprecated$1('request'), __metadata$9("design:type", Function), __metadata$9("design:paramtypes", [Object]), __metadata$9("design:returntype", void 0)], RealityService.prototype, "setDesired", null);
-            _export('RealityService', RealityService = __decorate$9([autoinject(), __metadata$9("design:paramtypes", [typeof (_a$9 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$9 || Object, typeof (_b$9 = typeof ContextService !== "undefined" && ContextService) === "function" && _b$9 || Object])], RealityService));
-
-            _export('RealityServiceProvider', RealityServiceProvider = function () {
-                function RealityServiceProvider(sessionService, realityService, contextService, deviceService, viewServiceProvider, visibilityServiceProvider, focusServiceProvider, realityViewerFactory) {
-                    var _this = this;
-                    this.sessionService = sessionService;
-                    this.realityService = realityService;
-                    this.contextService = contextService;
-                    this.deviceService = deviceService;
-                    this.viewServiceProvider = viewServiceProvider;
-                    this.visibilityServiceProvider = visibilityServiceProvider;
-                    this.focusServiceProvider = focusServiceProvider;
-                    this.realityViewerFactory = realityViewerFactory;
-                    /**
-                     * An event that is raised when a reality viewer is installed.
-                     */
-                    this.installedEvent = new Event$1();
-                    /**
-                     * An event that is raised when a reality viewer is uninstalled.
-                     */
-                    this.uninstalledEvent = new Event$1();
-                    this._viewerByURI = new Map();
-                    this._installersByURI = new Map();
-                    this._scratchFrustum = new PerspectiveFrustum();
-                    sessionService.ensureIsRealityManager();
-                    sessionService.manager.connectEvent.addEventListener(function () {
-                        setTimeout(function () {
-                            if (!_this._presentingRealityViewer && _this.realityService.default) _this._handleRequest(_this.sessionService.manager, {
-                                uri: _this.realityService.default
-                            });
-                        });
-                    });
-                    sessionService.manager.closeEvent.addEventListener(function () {
-                        _this._viewerByURI.forEach(function (v) {
-                            v.destroy();
-                        });
-                    });
-                    sessionService.connectEvent.addEventListener(function (session) {
-                        if (!Role.isRealityViewer(session.info.role)) {
-                            session.on['ar.reality.install'] = function (_a) {
-                                var uri = _a.uri;
-                                return _this._handleInstall(session, uri);
-                            };
-                            session.on['ar.reality.uninstall'] = function (_a) {
-                                var uri = _a.uri;
-                                return _this._handleUninstall(session, uri);
-                            };
-                            session.on['ar.reality.request'] = function (message) {
-                                return _this._handleRequest(session, message);
-                            };
-                            // For backwards compatability. 
-                            session.on['ar.reality.desired'] = function (message) {
-                                var reality = message.reality;
-                                if (reality) {
-                                    if (reality['type']) {
-                                        var type = reality['type'];
-                                        reality.uri = reality.uri || 'reality:' + type;
-                                        if (type === 'hosted') reality.uri = reality['url'];
-                                    }
-                                }
-                                _this._handleRequest(session, { uri: reality.uri });
-                            };
-                        }
-                    });
-                    this.viewServiceProvider.forwardedUIEvent.addEventListener(function (uievent) {
-                        var session = _this._presentingRealityViewer && _this._presentingRealityViewer.session;
-                        if (session) _this.viewServiceProvider.sendUIEventToSession(uievent, session);
-                    });
-                }
-                Object.defineProperty(RealityServiceProvider.prototype, "presentingRealityViewer", {
-                    get: function () {
-                        return this._presentingRealityViewer;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                RealityServiceProvider.prototype._handleInstall = function (session, uri) {
-                    var _this = this;
-                    var installers = this._installersByURI.get(uri);
-                    if (installers) {
-                        installers.add(session);
-                    } else {
-                        var viewer_1 = this.realityViewerFactory.createRealityViewer(uri);
-                        this._viewerByURI.set(uri, viewer_1);
-                        installers = new Set();
-                        installers.add(session);
-                        this._installersByURI.set(uri, installers);
-                        viewer_1.connectEvent.addEventListener(function (viewerSession) {
-                            if (_this.sessionService.manager.isClosed) return;
-                            if (!Role.isRealityViewer(viewerSession.info.role)) {
-                                viewerSession.sendError({ message: "Expected a reality viewer" });
-                                viewerSession.close();
-                                throw new Error('The application "' + viewerSession.uri + '" does not support being loaded as a reality viewer');
-                            }
-                            viewerSession.on['ar.reality.frameState'] = function (frame) {
-                                if (_this._presentingRealityViewer === viewer_1) {
-                                    if (viewerSession.version[0] === 0) {
-                                        var deviceState = _this.deviceService.frameState;
-                                        if (!deviceState) return;
-                                        frame.viewport = CanvasViewport.clone(deviceState.viewport, frame.viewport);
-                                        frame.subviews = SerializedSubviewList.clone(deviceState.subviews, frame.subviews);
-                                        var eye = frame['eye'];
-                                        var eyePose = eye.pose;
-                                        var eyeFov = eye.fov;
-                                        frame.entities = frame.entities || {};
-                                        frame.entities['ar.user'] = eyePose;
-                                        for (var _i = 0, _a = frame.subviews; _i < _a.length; _i++) {
-                                            var s = _a[_i];
-                                            var f = decomposePerspectiveProjectionMatrix(s.projectionMatrix, s['frustum'] || {});
-                                            f.fov = eyeFov;
-                                            _this._scratchFrustum.clone(f);
-                                            s.projectionMatrix = Matrix4.clone(_this._scratchFrustum.projectionMatrix, s.projectionMatrix);
-                                        }
-                                    }
-                                    frame.reality = viewer_1.uri;
-                                    _this.realityService._sharedCanvas = !!(_this.sessionService.configuration['sharedCanvas'] && viewer_1.session.info['sharedCanvas']);
-                                    viewer_1._sharedCanvas = _this.realityService._sharedCanvas;
-                                    _this.contextService.submitFrameState(frame);
-                                }
-                            };
-                            if (viewerSession.info['supportsCustomProtocols']) {
-                                _this._connectViewerWithSession(viewerSession, _this.sessionService.manager);
-                                for (var _i = 0, _a = _this.sessionService.managedSessions; _i < _a.length; _i++) {
-                                    session = _a[_i];
-                                    _this._connectViewerWithSession(viewerSession, session);
-                                }
-                                var remove_1 = _this.sessionService.connectEvent.addEventListener(function (session) {
-                                    _this._connectViewerWithSession(viewerSession, session);
-                                });
-                                viewerSession.closeEvent.addEventListener(function () {
-                                    return remove_1();
-                                });
-                            }
-                            var removePresentChangeListener = viewer_1.presentChangeEvent.addEventListener(function () {
-                                _this.visibilityServiceProvider.set(viewerSession, viewer_1.isPresenting);
-                            });
-                            _this.visibilityServiceProvider.set(viewerSession, viewer_1.isPresenting);
-                            viewerSession.closeEvent.addEventListener(function () {
-                                removePresentChangeListener();
-                                _this.contextService.entities.removeById(viewerSession.uri);
-                                console.log('Reality session closed: ' + uri);
-                            });
-                        });
-                        viewer_1.load();
-                        this.installedEvent.raiseEvent({ viewer: viewer_1 });
-                    }
-                };
-                RealityServiceProvider.prototype._connectViewerWithSession = function (viewerSession, session) {
-                    if (Role.isRealityViewer(session.info.role)) return;
-                    var id = createGuid();
-                    var ROUTE_MESSAGE_KEY = 'ar.reality.message.route.' + id;
-                    var SEND_MESSAGE_KEY = 'ar.reality.message.send.' + id;
-                    var CLOSE_SESSION_KEY = 'ar.reality.close.' + id;
-                    viewerSession.on[ROUTE_MESSAGE_KEY] = function (message) {
-                        session.send(SEND_MESSAGE_KEY, message);
-                    };
-                    session.on[ROUTE_MESSAGE_KEY] = function (message) {
-                        viewerSession.send(SEND_MESSAGE_KEY, message);
-                    };
-                    viewerSession.send('ar.reality.connect', { id: id });
-                    session.send('ar.reality.connect', { id: id });
-                    viewerSession.closeEvent.addEventListener(function () {
-                        session.send(CLOSE_SESSION_KEY);
-                    });
-                    session.closeEvent.addEventListener(function () {
-                        viewerSession.send(CLOSE_SESSION_KEY);
-                    });
-                };
-                RealityServiceProvider.prototype._handleUninstall = function (session, uri) {
-                    var installers = this._installersByURI.get(uri);
-                    if (installers) {
-                        if (installers.size === 0) {
-                            var viewer = this._viewerByURI.get(uri);
-                            this._viewerByURI.delete(uri);
-                            viewer.destroy();
-                            this.uninstalledEvent.raiseEvent({ viewer: viewer });
-                        }
-                    }
-                    return Promise.reject(new Error("Unable to uninstall a reality viewer which is not installed"));
-                };
-                RealityServiceProvider.prototype._handleRequest = function (session, options) {
-                    if (this.focusServiceProvider.session === session || session === this.sessionService.manager) {
-                        var uri = options && options.uri || RealityViewer.DEFAULT;
-                        switch (uri) {
-                            case RealityViewer.DEFAULT:
-                                uri = this.realityService.default;
-                        }
-                        this._handleInstall(session, uri);
-                        this._setPresentingRealityViewer(this._viewerByURI.get(uri));
-                        return Promise.resolve();
-                    }
-                    throw new Error('Request Denied');
-                };
-                RealityServiceProvider.prototype._setPresentingRealityViewer = function (viewer) {
-                    if (!viewer) throw new Error('Invalid State. Expected a RealityViewer instance');
-                    if (this._presentingRealityViewer === viewer) return;
-                    this._viewerByURI.forEach(function (v) {
-                        v.setPresenting(v === viewer);
-                    });
-                    this._presentingRealityViewer = viewer;
-                    console.log('Presenting reality viewer changed to: ' + viewer.uri);
-                };
-                RealityServiceProvider.prototype.getViewerByURI = function (uri) {
-                    return this._viewerByURI.get(uri);
-                };
-                RealityServiceProvider.prototype.removeInstaller = function (installerSession) {
-                    var _this = this;
-                    this._viewerByURI.forEach(function (viewer, realityUri, map) {
-                        var installers = _this._installersByURI.get(realityUri);
-                        if (installers && installers.has(installerSession)) {
-                            installers.delete(installerSession);
-                            if (installers.size === 0 && viewer.session) {
-                                _this._handleUninstall(viewer.session, realityUri);
-                                _this._installersByURI.delete(realityUri);
-                            }
-                        }
-                    });
-                };
-                return RealityServiceProvider;
-            }());
-
-            _export('RealityServiceProvider', RealityServiceProvider = __decorate$9([autoinject, __metadata$9("design:paramtypes", [typeof (_c$5 = typeof SessionService !== "undefined" && SessionService) === "function" && _c$5 || Object, RealityService, typeof (_d$4 = typeof ContextService !== "undefined" && ContextService) === "function" && _d$4 || Object, typeof (_e$4 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _e$4 || Object, typeof (_f$2 = typeof ViewServiceProvider !== "undefined" && ViewServiceProvider) === "function" && _f$2 || Object, typeof (_g$2 = typeof VisibilityServiceProvider !== "undefined" && VisibilityServiceProvider) === "function" && _g$2 || Object, typeof (_h$2 = typeof FocusServiceProvider !== "undefined" && FocusServiceProvider) === "function" && _h$2 || Object, RealityViewerFactory])], RealityServiceProvider));
-
-            __decorate$2 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
-                var c = arguments.length,
-                    r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
-                    d;
-                if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-                return c > 3 && r && Object.defineProperty(target, key, r), r;
-            };
-
-            __metadata$2 = undefined && undefined.__metadata || function (k, v) {
-                if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-            };
-
-            openIcon = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='768' height='768'%3E%3Cpath fill='white' d='M448.5 96H672v223.5h-64.5v-114L294 519l-45-45 313.5-313.5h-114V96zm159 511.5V384H672v223.5c0 34.5-30 64.5-64.5 64.5h-447c-36 0-64.5-30-64.5-64.5v-447C96 126 124.5 96 160.5 96H384v64.5H160.5v447h447z'/%3E%3C/svg%3E\")";
-            eyeIcon = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512'%3E%3Cpath fill='white' d='M256 96C144.34 96 47.56 161.02 0 256c47.56 94.98 144.34 160 256 160 111.656 0 208.438-65.02 256-160-47.558-94.98-144.344-160-256-160zm126.225 84.852c30.08 19.187 55.57 44.887 74.717 75.148-19.146 30.26-44.637 55.96-74.718 75.148C344.427 355.258 300.78 368 256 368s-88.43-12.743-126.226-36.852c-30.08-19.186-55.57-44.886-74.716-75.148 19.146-30.262 44.637-55.962 74.717-75.148 1.96-1.25 3.938-2.46 5.93-3.65C130.725 190.866 128 205.612 128 221c0 70.69 57.308 128 128 128s128-57.31 128-128c0-15.387-2.726-30.134-7.704-43.8 1.99 1.19 3.97 2.402 5.93 3.652zM256 208c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48z'/%3E%3C/svg%3E\")";
-            vrIcon = "url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E)";
-            fullscreenIcon = "url('data:image/svg+xml;utf8,<svg width=\"512\" height=\"512\" version=\"1.1\" viewBox=\"-3 -3 17 17\" xmlns=\"http://www.w3.org/2000/svg\"><g fill=\"none\" fill-rule=\"evenodd\" id=\"Page-1\" stroke=\"none\" stroke-width=\"1\"><g fill=\"white\" id=\"Core\" transform=\"translate(-215.000000, -257.000000)\"><g id=\"fullscreen\" transform=\"translate(215.000000, 257.000000)\"><path d=\"M2,9 L0,9 L0,14 L5,14 L5,12 L2,12 L2,9 L2,9 Z M0,5 L2,5 L2,2 L5,2 L5,0 L0,0 L0,5 L0,5 Z M12,12 L9,12 L9,14 L14,14 L14,9 L12,9 L12,12 L12,12 Z M9,0 L9,2 L12,2 L12,5 L14,5 L14,0 L9,0 L9,0 Z\" id=\"Shape\"/></g></g></g></svg>')";
-            argonAppIcon = "url(data:image/jpeg;base64,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)";
-
-            _export('DefaultUIService', DefaultUIService = function () {
-                function DefaultUIService(sessionService, viewService, realityService, realityServiceProvider, deviceService) {
-                    var _this = this;
-                    this.sessionService = sessionService;
-                    this.viewService = viewService;
-                    this.realityService = realityService;
-                    this.realityServiceProvider = realityServiceProvider;
-                    this.deviceService = deviceService;
-                    this.realityViewerItemElements = new Map();
-                    this.menuItems = [];
-                    this.menuOpen = false;
-                    var config = this.sessionService.configuration.defaultUI || {};
-                    if (document && !config.disable) {
-                        var style = document.createElement("style");
-                        style.type = 'text/css';
-                        document.head.insertBefore(style, document.head.firstChild);
-                        var sheet = style.sheet;
-                        sheet.insertRule("\n                .argon-ui {\n                    -webkit-tap-highlight-color: transparent;\n                    -webkit-user-select: none;\n                }\n            ", sheet.cssRules.length);
-                        sheet.insertRule("\n                .argon-ui-button {\n                    background-image: " + argonAppIcon + ";\n                    width: 144px;\n                    height: 144px;\n                }\n            ", sheet.cssRules.length);
-                        sheet.insertRule("\n                .argon-ui-blur {\n                    background-color: rgba(238, 178, 17, 0.7);\n                    -webkit-backdrop-filter: blur(5px);\n                }\n            ", sheet.cssRules.length);
-                        sheet.insertRule("\n                .argon-ui-box {\n                    webkit-user-select: none;\n                    ms-user-select: none;\n                    user-select: none;\n                }\n            ", sheet.cssRules.length);
-                        sheet.insertRule("\n                .argon-ui-list-item {\n                    align-items: center;\n                    background: white;\n                    border-top: 1px solid lightgrey;\n                    display: flex;\n                    height: 20px;\n                    justify-content: space-between;\n                    padding: 20px;\n                    width: 100%;\n                    cursor: pointer;\n                    font-family: 'Sans-serif';\n                    font-size: 12px;\n                    color: #5F5F5F;\n                    box-sizing: border-box;\n                }\n            ", sheet.cssRules.length);
-                        sheet.insertRule("\n                .argon-ui-list-item:hover {\n                    background: rgb(240,240,240);\n                }\n            ", sheet.cssRules.length);
-                        this.element = document.createElement('div');
-                        this.element.className = 'argon-ui';
-                        this.element.style.position = 'absolute';
-                        this.element.style.bottom = '0';
-                        this.element.style.right = '0';
-                        this.element.style.width = '100%';
-                        this.element.style.height = '100%';
-                        this.element.style['userSelect'] = 'none';
-                        this.element.style.webkitUserSelect = 'none';
-                        this.element.style.zIndex = '10';
-                        this.element.style.pointerEvents = 'none';
-                        this.element.style.overflow = 'hidden';
-                        this.viewService.element.appendChild(this.element);
-                        this.sessionService.manager.closeEvent.addEventListener(function () {
-                            _this.element.remove();
-                        });
-                        var realityViewerOverlayElement_1 = document.createElement('div');
-                        realityViewerOverlayElement_1.className = 'argon-overlay';
-                        realityViewerOverlayElement_1.style.width = '100%';
-                        realityViewerOverlayElement_1.style.height = '100%';
-                        realityViewerOverlayElement_1.style.display = 'flex';
-                        realityViewerOverlayElement_1.style.alignItems = 'center';
-                        realityViewerOverlayElement_1.style.pointerEvents = 'auto';
-                        realityViewerOverlayElement_1.addEventListener('click', function (e) {
-                            if (e.target === realityViewerOverlayElement_1) {
-                                realityViewerOverlayElement_1.remove();
-                                e.stopPropagation();
-                            }
-                        });
-                        // realityViewerOverlayElement.addEventListener('touchend', (e)=> {
-                        //     if (e.target === realityViewerOverlayElement) {
-                        //         e.preventDefault();
-                        //         e.stopPropagation();
-                        //         realityViewerOverlayElement.remove();
-                        //     }
-                        // });
-                        this.realityViewerSelectorElement = document.createElement('div');
-                        this.realityViewerSelectorElement.classList.add('argon-ui-box');
-                        this.realityViewerSelectorElement.classList.add('argon-ui-blur');
-                        this.realityViewerSelectorElement.style.maxWidth = '300px';
-                        this.realityViewerSelectorElement.style.maxHeight = '70%';
-                        this.realityViewerSelectorElement.style.width = '70%';
-                        this.realityViewerSelectorElement.style.margin = 'auto';
-                        this.realityViewerSelectorElement.style.padding = '20px';
-                        this.realityViewerSelectorElement.style.boxShadow = 'rgb(102,102,102) 0 5px 20px';
-                        realityViewerOverlayElement_1.appendChild(this.realityViewerSelectorElement);
-                        var realitySelectorPrompt = document.createElement('h2');
-                        realitySelectorPrompt.innerText = 'Select a Reality';
-                        realitySelectorPrompt.style.fontFamily = 'Sans-Serif';
-                        realitySelectorPrompt.style.color = 'white';
-                        realitySelectorPrompt.style.marginTop = '0';
-                        realitySelectorPrompt.style.flex = '0 1 auto';
-                        this.realityViewerSelectorElement.appendChild(realitySelectorPrompt);
-                        this.realityViewerListElement = document.createElement('div');
-                        this.realityViewerListElement.style.flex = '1 1 auto';
-                        this.realityViewerListElement.style.maxHeight = '250px';
-                        this.realityViewerListElement.style.overflowY = 'auto';
-                        this.realityViewerSelectorElement.appendChild(this.realityViewerListElement);
-                        this.realityServiceProvider.installedEvent.addEventListener(function (_a) {
-                            var viewer = _a.viewer;
-                            var uri = viewer.uri;
-                            var e = document.createElement('div');
-                            e.innerText = uri;
-                            viewer.connectEvent.addEventListener(function (session) {
-                                e.innerText = session.info.title || uri;
-                            });
-                            e.className = 'argon-ui-list-item';
-                            _this.realityViewerItemElements.set(uri, e);
-                            _this.realityViewerListElement.appendChild(e);
-                            e.addEventListener('click', function () {
-                                _this.realityService.request(uri);
-                                realityViewerOverlayElement_1.remove();
-                            });
-                        });
-                        this.realityServiceProvider.uninstalledEvent.addEventListener(function (_a) {
-                            var viewer = _a.viewer;
-                            var uri = viewer.uri;
-                            var e = _this.realityViewerItemElements.get(uri);
-                            _this.realityViewerItemElements.delete(uri);
-                            e.remove();
-                        });
-                        this.menuBackgroundElement = document.createElement('div');
-                        this.menuBackgroundElement.className = 'argon-ui-blur';
-                        this.menuBackgroundElement.style.position = 'absolute';
-                        this.menuBackgroundElement.style.bottom = '-150px';
-                        this.menuBackgroundElement.style.right = '-150px';
-                        this.menuBackgroundElement.style.width = '300px';
-                        this.menuBackgroundElement.style.height = '300px';
-                        this.menuBackgroundElement.style.transform = 'scale(0.1)';
-                        this.menuBackgroundElement.style.transition = 'transform 0.3s, opacity 0.3s';
-                        this.menuBackgroundElement.style.borderRadius = '150px';
-                        this.menuBackgroundElement.style.zIndex = '-2';
-                        this.element.appendChild(this.menuBackgroundElement);
-                        var menuButton = document.createElement('div');
-                        this.element.appendChild(menuButton);
-                        menuButton.className = 'argon-ui-button';
-                        menuButton.style.position = 'absolute';
-                        menuButton.style.bottom = '0';
-                        menuButton.style.right = '0';
-                        menuButton.style.transform = 'scale(0.36)';
-                        menuButton.style.transformOrigin = '110% 110%';
-                        menuButton.style.borderRadius = '72px';
-                        menuButton.style.cursor = 'pointer';
-                        menuButton.style.pointerEvents = 'auto';
-                        menuButton.style.zIndex = '-1';
-                        this.openInArgonMenuItem = this._createMenuItem(openIcon, 'Open in Argon');
-                        if (isIOS) {
-                            this.openInArgonMenuItem.addEventListener('touchstart', function () {
-                                openInArgonApp();
-                            });
-                            this.openInArgonMenuItem.addEventListener('touchend', function () {
-                                if (confirm('Oops, it looks like you are still here! You may not have the Argon Browser installed. Would you like to install it now?')) {
-                                    installArgonApp();
-                                }
-                                _this.menuOpen = false;
-                                _this.updateMenu();
-                            });
-                        } else if (isAndroid) {
-                            this.openInArgonMenuItem.onclick = function () {
-                                // on Android an intent must be launched from a click event
-                                // the intent will automatically redirect to the Google Play store if the app is not installed
-                                openInArgonApp();
-                            };
-                        }
-                        this.hmdMenuItem = this._createMenuItem(vrIcon, 'Toggle HMD', function () {
-                            _this.menuOpen = false;
-                            _this.updateMenu();
-                            if (_this.deviceService.isPresentingHMD) {
-                                _this.deviceService.exitPresentHMD();
-                            } else {
-                                _this.deviceService.requestPresentHMD();
-                            }
-                        });
-                        this.realityMenuItem = this._createMenuItem(eyeIcon, 'Select Reality Viewer...', function () {
-                            _this.menuOpen = false;
-                            _this.updateMenu();
-                            realityViewerOverlayElement_1.style.backgroundColor = 'rgba(0,0,0,0.3)';
-                            _this.element.appendChild(realityViewerOverlayElement_1);
-                        });
-                        this.maximizeMenuItem = this._createMenuItem(fullscreenIcon, 'Toggle Immersive View', function () {
-                            _this.menuOpen = false;
-                            _this.updateMenu();
-                            if (_this.viewService.viewportMode === ViewportMode.IMMERSIVE) {
-                                _this.viewService.desiredViewportMode = ViewportMode.EMBEDDED;
-                            } else {
-                                _this.viewService.desiredViewportMode = ViewportMode.IMMERSIVE;
-                            }
-                        });
-                        this.onSelect(menuButton, this.toggleMenu.bind(this));
-                        this.updateMenu();
-                        this.viewService.viewportChangeEvent.addEventListener(function () {
-                            _this.updateMenu();
-                        });
-                        this.viewService.viewportModeChangeEvent.addEventListener(function () {
-                            _this.updateMenu();
-                        });
-                    }
-                }
-                DefaultUIService.prototype._createMenuItem = function (icon, hint, onSelect) {
-                    var menuItem = document.createElement('div');
-                    menuItem.style.position = 'absolute';
-                    menuItem.style.bottom = '-20px';
-                    menuItem.style.right = '-20px';
-                    menuItem.style.textAlign = 'left';
-                    menuItem.style.width = '40px';
-                    menuItem.style.height = '40px';
-                    menuItem.style.fontFamily = 'Arial Black';
-                    menuItem.style.color = 'black';
-                    menuItem.style.cursor = 'default';
-                    menuItem.style.textShadow = '-1px -1px 0px #545454, 1px -1px 0px #545454, -1px 1px 0px #545454, 1px 1px 0px #545454';
-                    menuItem.style.transition = 'transform 0.3s ease 0.1s, opacity 0.3s ease 0.1s';
-                    menuItem.style.opacity = '0';
-                    menuItem.style.pointerEvents = 'none';
-                    menuItem.style.transformOrigin = '50% 50%';
-                    menuItem.style.backgroundImage = icon;
-                    menuItem.style.backgroundSize = '100% 100%';
-                    menuItem.style.backgroundRepeat = 'no-repeat';
-                    menuItem.style.zIndex = '2';
-                    menuItem.style.cursor = 'pointer';
-                    this.element.appendChild(menuItem);
-                    menuItem.title = hint;
-                    if (onSelect) this.onSelect(menuItem, onSelect);
-                    menuItem.addEventListener('mouseenter', function () {
-                        menuItem.style.color = '#eeb211';
-                    });
-                    menuItem.addEventListener('mouseleave', function () {
-                        menuItem.style.color = 'white';
-                    });
-                    return menuItem;
-                };
-                DefaultUIService.prototype.onSelect = function (element, cb) {
-                    element.addEventListener('touchend', function (ev) {
-                        ev.preventDefault();
-                        ev.stopPropagation();
-                        cb();
-                    });
-                    element.addEventListener('click', function (ev) {
-                        ev.stopPropagation();
-                        cb();
-                    });
-                };
-                DefaultUIService.prototype.toggleMenu = function () {
-                    if (this.menuOpen) {
-                        this.menuOpen = false;
-                    } else {
-                        this.menuOpen = true;
-                    }
-                    this.updateMenu();
-                };
-                DefaultUIService.prototype._hideMenuItem = function (e) {
-                    e.style.transform = 'scale(0.2)';
-                    e.style.opacity = '0';
-                    e.style.pointerEvents = 'none';
-                };
-                DefaultUIService.prototype.updateMenu = function () {
-                    var _this = this;
-                    if (this.deviceService.isPresentingHMD && isIOS) {
-                        this.element.style.display = 'none';
-                    } else {
-                        this.element.style.display = 'block';
-                    }
-                    this.menuItems = [];
-                    this.menuItems.push(null);
-                    if (isIOS || isAndroid) this.menuItems.push(this.openInArgonMenuItem);else this._hideMenuItem(this.openInArgonMenuItem);
-                    var parentElement = this.viewService.element.parentElement;
-                    var parentWidth = parentElement ? parentElement.clientWidth : 0;
-                    var parentHeight = parentElement ? parentElement.clientHeight : 0;
-                    if (!(window.innerWidth === parentWidth && window.innerHeight === parentHeight)) this.menuItems.push(this.maximizeMenuItem);else this._hideMenuItem(this.maximizeMenuItem);
-                    if (isIOS || 'getVRDisplays' in navigator) this.menuItems.push(this.hmdMenuItem);else this._hideMenuItem(this.hmdMenuItem);
-                    if (this.realityViewerItemElements.size > 0) this.menuItems.push(this.realityMenuItem);else this._hideMenuItem(this.realityMenuItem);
-                    this.menuItems.push(null);
-                    if (!this.menuOpen) {
-                        this.menuItems.forEach(function (e, i) {
-                            if (!e) return;
-                            _this._hideMenuItem(e);
-                        });
-                        this.menuBackgroundElement.style.transform = 'scale(0.1)';
-                    } else {
-                        var length_1 = this.menuItems.length;
-                        this.menuItems.forEach(function (e, i) {
-                            if (!e) return;
-                            var angle = i / (length_1 - 1) * (Math.PI / 2 + Math.PI / 8) - Math.PI / 16;
-                            var d = 100;
-                            var x = d * Math.cos(angle);
-                            var y = d * Math.sin(angle);
-                            e.style.transform = "translateX(" + -x + "px) translateY(" + -y + "px) scale(0.8)";
-                            e.style.opacity = '1';
-                            e.style.pointerEvents = 'auto';
-                        });
-                        this.menuBackgroundElement.style.transform = 'scale(1)';
-                    }
-                };
-                return DefaultUIService;
-            }());
-
-            _export('DefaultUIService', DefaultUIService = __decorate$2([autoinject(), __metadata$2("design:paramtypes", [typeof (_a$2 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$2 || Object, typeof (_b$2 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$2 || Object, typeof (_c$1 = typeof RealityService !== "undefined" && RealityService) === "function" && _c$1 || Object, typeof (_d$1 = typeof RealityServiceProvider !== "undefined" && RealityServiceProvider) === "function" && _d$1 || Object, typeof (_e$1 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _e$1 || Object])], DefaultUIService));
-
-            __extends$7 = undefined && undefined.__extends || function (d, b) {
-                for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-                function __() {
-                    this.constructor = d;
-                }
-                d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-            };
-
-            __decorate$16 = undefined && undefined.__decorate || function (decorators, target, key, desc) {
-                var c = arguments.length,
-                    r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
-                    d;
-                if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-                return c > 3 && r && Object.defineProperty(target, key, r), r;
-            };
-
-            __metadata$16 = undefined && undefined.__metadata || function (k, v) {
-                if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-            };
-
-            _export('VuforiaServiceProvider', VuforiaServiceProvider = function () {
-                function VuforiaServiceProvider(sessionService) {
-                    if (sessionService.isRealityManager) {
-                        sessionService.connectEvent.addEventListener(function (session) {
-                            session.on['ar.vuforia.isAvailable'] = function () {
-                                return Promise.resolve({ available: false });
-                            };
-                        });
-                        sessionService.connectEvent.addEventListener(function (session) {
-                            session.on['ar.vuforia.init'] = function () {
-                                return Promise.reject(new Error("Vuforia is not supported on this system"));
-                            };
-                        });
-                    }
-                }
-                return VuforiaServiceProvider;
-            }());
-
-            _export('VuforiaServiceProvider', VuforiaServiceProvider = __decorate$16([inject(SessionService), __metadata$16("design:paramtypes", [typeof (_a$16 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$16 || Object])], VuforiaServiceProvider));
-            /**
-             * Enum for the setHint function
-             */
-
-            (function (VuforiaHint) {
-                VuforiaHint[VuforiaHint["MaxSimultaneousImageTargets"] = 0] = "MaxSimultaneousImageTargets";
-                VuforiaHint[VuforiaHint["MaxSimultaneousObjectTargets"] = 1] = "MaxSimultaneousObjectTargets";
-                VuforiaHint[VuforiaHint["DelayedLoadingObjectDatasets"] = 2] = "DelayedLoadingObjectDatasets";
-            })(VuforiaHint || _export('VuforiaHint', VuforiaHint = {}));
-            /**
-             * A service for interacting with the Vuforia API
-             */
-
-            _export('VuforiaService', VuforiaService = function () {
-                function VuforiaService(sessionService) {
-                    this.sessionService = sessionService;
-                }
-                /**
-                 * Resolves to a boolean indicating whether or not the Vuforia API is available on this system
-                 */
-                VuforiaService.prototype.isAvailable = function () {
-                    return this.sessionService.manager.request('ar.vuforia.isAvailable').then(function (message) {
-                        return message.available;
-                    });
-                };
-                /**
-                 * Initialize vuforia using an encrypted license.
-                 * You can get a vuforia license key from https://developer.vuforia.com/
-                 * You can encrypt your vuforia license with the tool at http://docs.argonjs.io/start/vuforia-pgp-encryptor
-                 */
-                VuforiaService.prototype.init = function (options) {
-                    var _this = this;
-                    if (typeof options === 'string') options = { encryptedLicenseData: options };
-                    if (!options.encryptedLicenseData || typeof options.encryptedLicenseData !== 'string') throw new Error('options.encryptedLicenseData is required.');
-                    return this.sessionService.manager.request('ar.vuforia.init', options).then(function () {
-                        return new VuforiaAPI(_this.sessionService.manager);
-                    });
-                };
-                /**
-                 * Initialize vuforia with an unecrypted key.
-                 * It's a bad idea to publish your unencrypted vuforia key on the internet.
-                 * @private
-                 */
-                VuforiaService.prototype.initWithUnencryptedKey = function (options) {
-                    var _this = this;
-                    if (typeof options === 'string') options = { key: options };
-                    return this.sessionService.manager.request('ar.vuforia.init', options).then(function () {
-                        return new VuforiaAPI(_this.sessionService.manager);
-                    });
-                };
-                return VuforiaService;
-            }());
-
-            _export('VuforiaService', VuforiaService = __decorate$16([inject(SessionService, VuforiaServiceProvider), __metadata$16("design:paramtypes", [typeof (_b$16 = typeof SessionService !== "undefined" && SessionService) === "function" && _b$16 || Object])], VuforiaService));
-
-            _export('VuforiaAPI', VuforiaAPI = function () {
-                function VuforiaAPI(manager) {
-                    this.manager = manager;
-                    this.objectTracker = new VuforiaObjectTracker(manager);
-                }
-                // setHint should be called after Vuforia is initialized
-                VuforiaAPI.prototype.setHint = function (hint, value) {
-                    var options = { hint: hint, value: value };
-                    return this.manager.request('ar.vuforia.setHint', options).then(function (message) {
-                        return message.result;
-                    });
-                };
-                return VuforiaAPI;
-            }());
-
-            _export('VuforiaTracker', VuforiaTracker = function () {
-                function VuforiaTracker() {}
-                return VuforiaTracker;
-            }());
-
-            _export('VuforiaObjectTracker', VuforiaObjectTracker = function (_super) {
-                __extends$7(VuforiaObjectTracker, _super);
-                function VuforiaObjectTracker(managerSession) {
-                    var _this = _super.call(this) || this;
-                    _this.managerSession = managerSession;
-                    _this.dataSetLoadEvent = new Event$1();
-                    _this.dataSetUnloadEvent = new Event$1();
-                    _this.dataSetActivateEvent = new Event$1();
-                    _this.dataSetDeactivateEvent = new Event$1();
-                    _this._deprecatedDataSetInstanceMap = new Map();
-                    managerSession.on['ar.vuforia.objectTrackerLoadDataSetEvent'] = function (message) {
-                        _this.dataSetLoadEvent.raiseEvent(message);
-                    };
-                    managerSession.on['ar.vuforia.objectTrackerUnloadDataSetEvent'] = function (message) {
-                        _this.dataSetUnloadEvent.raiseEvent(message);
-                    };
-                    managerSession.on['ar.vuforia.objectTrackerActivateDataSetEvent'] = function (message) {
-                        var deprecatedDataSetInstance = _this._deprecatedDataSetInstanceMap.get(message.id);
-                        if (deprecatedDataSetInstance) {
-                            deprecatedDataSetInstance._onActivate();
-                            _this.dataSetActivateEvent.raiseEvent(deprecatedDataSetInstance);
-                        } else _this.dataSetActivateEvent.raiseEvent(message);
-                    };
-                    managerSession.on['ar.vuforia.objectTrackerDeactivateDataSetEvent'] = function (message) {
-                        var deprecatedDataSetInstance = _this._deprecatedDataSetInstanceMap.get(message.id);
-                        if (deprecatedDataSetInstance) {
-                            deprecatedDataSetInstance._onDeactivate();
-                            _this.dataSetActivateEvent.raiseEvent(deprecatedDataSetInstance);
-                        } else _this.dataSetDeactivateEvent.raiseEvent(message);
-                    };
-                    return _this;
-                }
-                /**
-                 * Deprecated. Please use createDataSetFromURI instead.
-                 * @deprecated To be removed.
-                 */
-                VuforiaObjectTracker.prototype.createDataSet = function (url) {
-                    var _this = this;
-                    if (url && window.document) {
-                        url = resolveURL(url);
-                    }
-                    return this.managerSession.request('ar.vuforia.objectTrackerCreateDataSet', { url: url }).then(function (message) {
-                        var dataSet = new DeprecatedVuforiaDataSet(message.id, _this.managerSession);
-                        _this._deprecatedDataSetInstanceMap.set(message.id, dataSet);
-                        return dataSet;
-                    });
-                };
-                /**
-                 * Fetch a dataset from the provided url.
-                 * If successfull, resolves to an id which represents the dataset.
-                 */
-                VuforiaObjectTracker.prototype.createDataSetFromURL = function (url) {
-                    if (url && window.document) {
-                        url = resolveURL(url);
-                    }
-                    return this.managerSession.request('ar.vuforia.objectTrackerCreateDataSet', { url: url }).then(function (message) {
-                        return message.id;
-                    });
-                };
-                Object.defineProperty(VuforiaObjectTracker.prototype, "createDataSetFromURI", {
-                    get: function () {
-                        return this.createDataSetFromURL;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-
-                /**
-                 * Load the dataset into memory, and return a promise which
-                 * resolves to the contained trackables
-                 */
-                VuforiaObjectTracker.prototype.loadDataSet = function (id) {
-                    var _this = this;
-                    return this.managerSession.whenConnected().then(function () {
-                        if (_this.managerSession.version[0] == 0) {
-                            return _this.managerSession.request('ar.vuforia.dataSetLoad', { id: id });
-                        }
-                        return _this.managerSession.request('ar.vuforia.objectTrackerLoadDataSet', { id: id });
-                    });
-                };
-                /**
-                 * Unload a dataset from memory (deactivating it if necessary)
-                 */
-                VuforiaObjectTracker.prototype.unloadDataSet = function (id) {
-                    var _this = this;
-                    return this.managerSession.whenConnected().then(function () {
-                        if (_this.managerSession.version[0] == 0) {
-                            return _this.deactivateDataSet(id);
-                        }
-                        return _this.managerSession.request('ar.vuforia.objectTrackerUnloadDataSet', { id: id });
-                    });
-                };
-                /**
-                 * Load (if necessary) and activate a dataset to enable tracking of the contained trackables
-                 */
-                VuforiaObjectTracker.prototype.activateDataSet = function (id) {
-                    id = id instanceof DeprecatedVuforiaDataSet ? id.id : id; // backwards compatability
-                    return this.managerSession.request('ar.vuforia.objectTrackerActivateDataSet', { id: id });
-                };
-                /**
-                 * Deactivate a loaded dataset to disable tracking of the contained trackables
-                 */
-                VuforiaObjectTracker.prototype.deactivateDataSet = function (id) {
-                    id = id instanceof DeprecatedVuforiaDataSet ? id.id : id; // backwards compatability
-                    return this.managerSession.request('ar.vuforia.objectTrackerDeactivateDataSet', { id: id });
-                };
-                return VuforiaObjectTracker;
-            }(VuforiaTracker));
-
-            __decorate$16([deprecated$1('createDataSetFromURL'), __metadata$16("design:type", Function), __metadata$16("design:paramtypes", [String]), __metadata$16("design:returntype", Object)], VuforiaObjectTracker.prototype, "createDataSet", null);
-            __decorate$16([deprecated$1('createDataSetFromURL'), __metadata$16("design:type", Object), __metadata$16("design:paramtypes", [])], VuforiaObjectTracker.prototype, "createDataSetFromURI", null);
-            /**
-             * @deprecated To be removed.
-             */
-
-            _export('DeprecatedVuforiaDataSet', DeprecatedVuforiaDataSet = function () {
-                function DeprecatedVuforiaDataSet(id, managerSession) {
-                    this.id = id;
-                    this.managerSession = managerSession;
-                    this._isActive = false;
-                }
-                DeprecatedVuforiaDataSet.prototype._onActivate = function () {
-                    this._isActive = true;
-                };
-                DeprecatedVuforiaDataSet.prototype._onDeactivate = function () {
-                    this._isActive = false;
-                };
-                DeprecatedVuforiaDataSet.prototype.fetch = function () {
-                    return this.managerSession.request('ar.vuforia.dataSetFetch', { id: this.id });
-                };
-                DeprecatedVuforiaDataSet.prototype.load = function () {
-                    var _this = this;
-                    return this.managerSession.request('ar.vuforia.dataSetLoad', { id: this.id }).then(function (trackables) {
-                        _this._trackables = trackables;
-                        return trackables;
-                    });
-                };
-                DeprecatedVuforiaDataSet.prototype.isActive = function () {
-                    return this._isActive;
-                };
-                DeprecatedVuforiaDataSet.prototype.getTrackables = function () {
-                    return this._trackables;
-                };
-                return DeprecatedVuforiaDataSet;
-            }());
+            _export('TangoRealityViewer', TangoRealityViewer = __decorate$16([inject(SessionService, ViewService, ContextService, Container, DeviceService), __metadata$16("design:paramtypes", [typeof (_a$16 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$16 || Object, typeof (_b$16 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$16 || Object, typeof (_c$10 = typeof ContextService !== "undefined" && ContextService) === "function" && _c$10 || Object, typeof (_d$8 = typeof Container !== "undefined" && Container) === "function" && _d$8 || Object, typeof (_e$6 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _e$6 || Object, String, Object])], TangoRealityViewer));
 
             __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
                 var c = arguments.length,
@@ -27339,8 +27333,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _export('ArgonSystem', ArgonSystem = ArgonSystem_1 = __decorate([autoinject, __metadata("design:paramtypes", [typeof (_k = (typeof DI !== "undefined" && DI).Container) === "function" && _k || Object, typeof (_l = typeof EntityService !== "undefined" && EntityService) === "function" && _l || Object, typeof (_m = typeof ContextService !== "undefined" && ContextService) === "function" && _m || Object, typeof (_o = typeof DeviceService !== "undefined" && DeviceService) === "function" && _o || Object, typeof (_p = typeof FocusService !== "undefined" && FocusService) === "function" && _p || Object, typeof (_q = typeof RealityService !== "undefined" && RealityService) === "function" && _q || Object, typeof (_r = typeof SessionService !== "undefined" && SessionService) === "function" && _r || Object, typeof (_s = typeof ViewService !== "undefined" && ViewService) === "function" && _s || Object, typeof (_t = typeof VisibilityService !== "undefined" && VisibilityService) === "function" && _t || Object, typeof (_u = typeof VuforiaService !== "undefined" && VuforiaService) === "function" && _u || Object, typeof (_v = typeof PermissionService !== "undefined" && PermissionService) === "function" && _v || Object])], ArgonSystem));
 
-            _export('ArgonConfigurationManager', ArgonConfigurationManager = function () {
-                function ArgonConfigurationManager(configuration, container, elementOrSelector) {
+            _export('ArgonContainerManager', ArgonContainerManager = function () {
+                function ArgonContainerManager(configuration, container, elementOrSelector) {
                     if (container === void 0) {
                         container = new Container();
                     }
@@ -27372,16 +27366,24 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     var viewItems = new ViewItems();
                     viewItems.element = element;
                     container.registerInstance(ViewItems, viewItems);
-                    ArgonConfigurationManager.configure(this);
+                    ArgonContainerManager.configure(this);
                 }
-                ArgonConfigurationManager.configure = function (configurationManager) {
+                ArgonContainerManager.configure = function (configurationManager) {
                     configurationManager.standardConfiguration();
                 };
-                ArgonConfigurationManager.prototype.standardConfiguration = function () {
+                Object.defineProperty(ArgonContainerManager.prototype, "app", {
+                    get: function () {
+                        return this.container.get(ArgonSystem);
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                ArgonContainerManager.prototype.standardConfiguration = function () {
                     this.defaultConnect();
+                    this.defaultRealityFactory();
                     this.defaultUI();
                 };
-                ArgonConfigurationManager.prototype.defaultConnect = function () {
+                ArgonContainerManager.prototype.defaultConnect = function () {
                     var container = this.container;
                     var configuration = this.configuration;
                     if (Role.isRealityManager(configuration.role)) {
@@ -27396,16 +27398,44 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         container.registerSingleton(ConnectService, DebugConnectService);
                     }
                 };
-                ArgonConfigurationManager.prototype.defaultUI = function () {
+                ArgonContainerManager.prototype.defaultRealityFactory = function () {
+                    this.container.registerSingleton(RealityFactory, DefaultRealityFactory);
+                };
+                ArgonContainerManager.prototype.defaultUI = function () {
                     if (Role.isRealityManager(this.configuration.role)) {
                         if (typeof document !== 'undefined') {
                             this.container.get(DefaultUIService);
                         }
                     }
                 };
-                return ArgonConfigurationManager;
+                return ArgonContainerManager;
             }());
 
+            DefaultRealityFactory = function () {
+                function DefaultRealityFactory(container) {
+                    this.container = container;
+                }
+
+                DefaultRealityFactory.prototype.createRealityViewer = function (uri) {
+                    switch (RealityViewer.getType(uri)) {
+                        case RealityViewer.EMPTY:
+                            return this.container.invoke(EmptyRealityViewer, [uri]);
+                        case RealityViewer.LIVE:
+                            return this.container.invoke(LiveRealityViewer, [uri]);
+                        case RealityViewer.WEBRTC:
+                            return this.container.invoke(WebRTCRealityViewer, [uri]);
+                        case 'hosted':
+                            return this.container.invoke(HostedRealityViewer, [uri]);
+                        case RealityViewer.TANGO:
+                            return this.container.invoke(TangoRealityViewer, [uri]);
+                        default:
+                            throw new Error('Unsupported Reality Viewer: ' + uri);
+                    }
+                };
+                return DefaultRealityFactory;
+            }();
+
+            DefaultRealityFactory = __decorate([autoinject, __metadata("design:paramtypes", [typeof (_w = (typeof DI !== "undefined" && DI).Container) === "function" && _w || Object])], DefaultRealityFactory);
             _export('initReality', initReality = initRealityViewer);
 
             _export('DI', DI);
@@ -27420,11 +27450,15 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _export('HostedRealityViewer', HostedRealityViewer);
 
+            _export('WebRTCRealityViewer', WebRTCRealityViewer);
+
+            _export('TangoRealityViewer', TangoRealityViewer);
+
             _export('ArgonSystemProvider', ArgonSystemProvider);
 
             _export('ArgonSystem', ArgonSystem);
 
-            _export('ArgonConfigurationManager', ArgonConfigurationManager);
+            _export('ArgonContainerManager', ArgonContainerManager);
 
             _export('init', init);
 
@@ -27478,7 +27512,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _export('DeviceServiceProvider', DeviceServiceProvider);
 
-            _export('RealityViewerFactory', RealityViewerFactory);
+            _export('RealityFactory', RealityFactory);
 
             _export('RealityService', RealityService);
 
