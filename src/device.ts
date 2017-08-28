@@ -1069,6 +1069,8 @@ export class DeviceServiceProvider {
     public publishStableState() {
         const stableState = this._stableState;
         
+        stableState.isPresentingHMD = this.deviceService.isPresentingHMD;
+        stableState.isPresentingRealityHMD = this.deviceService.isPresentingRealityHMD;
         stableState.suggestedGeolocationSubscription = this.deviceService.suggestedGeolocationSubscription;
         stableState.suggestedUserHeight = this.deviceService.suggestedUserHeight;
         stableState.strict = this.deviceService.strict;
