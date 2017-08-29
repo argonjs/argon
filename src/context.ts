@@ -458,7 +458,6 @@ export class ContextService {
         let overrideUser = options && options.overrideUser;
         if (this.deviceService.strict) {
             if (overrideUser) {
-                console.warn('The `overrideUser` flag is set, but the device is in strict mode');
                 overrideUser = false;
             }
         }
