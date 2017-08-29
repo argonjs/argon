@@ -60,21 +60,22 @@ describe('Argon', () => {
     })
 
     describe('app.context.subscribeGeolocation', () => {
-        it('should set suggestedGeolocationSubscription options in DeviceService', () => {
+        it('should set suggestedGeolocationSubscription options in DeviceService', (done) => {
             const manager = Argon.init(null, { role: Argon.Role.REALITY_MANAGER });
             
             manager.device.suggestedGeolocationSubscriptionChangeEvent.addEventListener(()=>{
                 expect(manager.device.suggestedGeolocationSubscription).to.exist;
                 expect(manager.device.suggestedGeolocationSubscription!.enableHighAccuracy).to.be.true;
+                done();
             });
 
             expect(manager.device.suggestedGeolocationSubscription).to.not.exist;
             manager.context.subscribeGeolocation({enableHighAccuracy:true});
         });
-    })
+    });
 
     describe('app.context.unsubscribeGeolocation', () => {
-        it('should unset suggestedGeolocationSubscription options in DeviceService', () => {
+        it('should unset suggestedGeolocationSubscription options in DeviceService', (done) => {
             const manager = Argon.init(null, { role: Argon.Role.REALITY_MANAGER });
             
             const remove = manager.device.suggestedGeolocationSubscriptionChangeEvent.addEventListener(()=>{
@@ -82,10 +83,11 @@ describe('Argon', () => {
                 expect(manager.device.suggestedGeolocationSubscription!.enableHighAccuracy).to.be.true;
                 remove();
 
-                manager.context.unsubscribeGeolocation();
                 manager.device.suggestedGeolocationSubscriptionChangeEvent.addEventListener(()=>{
                     expect(manager.device.suggestedGeolocationSubscription).to.not.exist;
-                })
+                    done();
+                });
+                manager.context.unsubscribeGeolocation();
             });
 
             expect(manager.device.suggestedGeolocationSubscription).to.not.exist;
