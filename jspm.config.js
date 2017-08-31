@@ -41,7 +41,6 @@ SystemJS.config({
             'net': 'npm:jspm-nodelibs-net@0.2.0',
             'os': 'npm:jspm-nodelibs-os@0.2.0',
             'crypto': 'npm:jspm-nodelibs-crypto@0.2.0',
-            'fs': 'npm:jspm-nodelibs-fs@0.2.0',
             'child_process': 'npm:jspm-nodelibs-child_process@0.2.0',
             'buffer': 'npm:jspm-nodelibs-buffer@0.2.0',
             'module': 'npm:jspm-nodelibs-module@0.2.0',
@@ -349,6 +348,7 @@ SystemJS.config({
         'github:*/*.json'
     ],
     map: {
+        'fs': 'npm:jspm-nodelibs-fs@0.2.0',
         'json': 'github:systemjs/plugin-json@0.2.3',
         'assert': 'npm:jspm-nodelibs-assert@0.2.0',
         'object-assign': 'npm:object-assign@4.1.0',
@@ -357,8 +357,7 @@ SystemJS.config({
         'aurelia-pal': 'npm:aurelia-pal@1.0.0',
         'aurelia-polyfills': 'npm:aurelia-polyfills@1.0.0-beta.1.0.0',
         'cesium': 'github:aelatgt/cesium@referenceFrames',
-        'googlevr/webvr-polyfill': 'github:googlevr/webvr-polyfill@0.9.3',
-        'mobile-detect': 'npm:mobile-detect@1.3.2'
+        'googlevr/webvr-polyfill': 'github:googlevr/webvr-polyfill@0.9.3'
     },
     packages: {}
 });

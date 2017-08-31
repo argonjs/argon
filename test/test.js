@@ -51,27 +51,29 @@ describe('Argon', function () {
         });
     });
     describe('app.context.subscribeGeolocation', function () {
-        it('should set suggestedGeolocationSubscription options in DeviceService', function () {
+        it('should set suggestedGeolocationSubscription options in DeviceService', function (done) {
             var manager = Argon.init(null, { role: Argon.Role.REALITY_MANAGER });
             manager.device.suggestedGeolocationSubscriptionChangeEvent.addEventListener(function () {
                 expect(manager.device.suggestedGeolocationSubscription).to.exist;
                 expect(manager.device.suggestedGeolocationSubscription.enableHighAccuracy).to.be.true;
+                done();
             });
             expect(manager.device.suggestedGeolocationSubscription).to.not.exist;
             manager.context.subscribeGeolocation({ enableHighAccuracy: true });
         });
     });
     describe('app.context.unsubscribeGeolocation', function () {
-        it('should unset suggestedGeolocationSubscription options in DeviceService', function () {
+        it('should unset suggestedGeolocationSubscription options in DeviceService', function (done) {
             var manager = Argon.init(null, { role: Argon.Role.REALITY_MANAGER });
             var remove = manager.device.suggestedGeolocationSubscriptionChangeEvent.addEventListener(function () {
                 expect(manager.device.suggestedGeolocationSubscription).to.exist;
                 expect(manager.device.suggestedGeolocationSubscription.enableHighAccuracy).to.be.true;
                 remove();
-                manager.context.unsubscribeGeolocation();
                 manager.device.suggestedGeolocationSubscriptionChangeEvent.addEventListener(function () {
                     expect(manager.device.suggestedGeolocationSubscription).to.not.exist;
+                    done();
                 });
+                manager.context.unsubscribeGeolocation();
             });
             expect(manager.device.suggestedGeolocationSubscription).to.not.exist;
             manager.context.subscribeGeolocation({ enableHighAccuracy: true });

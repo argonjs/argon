@@ -6,7 +6,8 @@
         "moduleResolution": "node",
         "strictNullChecks": true,
         "noUnusedLocals": true,
-        "traceResolution": false
+        "traceResolution": false,
+        "experimentalDecorators": true
     },
     "include": [
         "types/declarations.d.ts",

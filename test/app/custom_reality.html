@@ -2,6 +2,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
 <head>
     <title>Example</title>
+    <base href="/"/>
     <script src="three.min.js"></script>
     <script src="/jspm_packages/system.src.js"></script>
     <script src="/jspm.browser.js"></script>
@@ -15,6 +16,13 @@
 <body>
     <div id="content"></div>
     <script>
+        SystemJS.config({
+            typescriptOptions: {
+                module: "system",
+                target: "es5"
+            }
+        });
+
         System.import('test/app/custom_reality.ts!')
             .catch(function(e) {
                 console.error(e && e.stack || e)

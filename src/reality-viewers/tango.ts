@@ -349,8 +349,8 @@ export class TangoRealityViewer extends RealityViewer {
         })
 
         // Check if the browser supports Tango    
-        let remove = childDeviceService.getVRDisplayFinishedEvent.addEventListener(() => {
-            let vrDisplays:VRDisplay[] = childDeviceService.vrDisplays;
+        let remove = childDeviceService.vrDisplaysUpdatedEvent.addEventListener(() => {
+            let vrDisplays = childDeviceService.vrDisplays;
             if (vrDisplays && vrDisplays.length > 0) {
                 for (var i = 0; !this._vrDisplay && i < vrDisplays.length; i++) {
                     this._vrDisplay = vrDisplays[i];

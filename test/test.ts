@@ -326,32 +326,27 @@ describe('RealityService', () => {
     describe('new RealityService()', () => {
 
         it('the default reality should be used when no reality has been requested', (done) => {
-            const container = new Argon.ArgonContainerManager({role: Argon.Role.REALITY_MANAGER}).container;
-            const realityService:Argon.RealityService = container.get(Argon.RealityService);
-            const contextService:Argon.ContextService = container.get(Argon.ContextService);
-            sessionService = container.get(Argon.SessionService);
-            container.get(Argon.ArgonSystemProvider);
+            const app = new Argon.ArgonContainerManager({role: Argon.Role.REALITY_MANAGER}).app;
+            sessionService = app.session;
             
-            realityService.default = Argon.RealityViewer.EMPTY;
+            app.reality.default = Argon.RealityViewer.EMPTY;
             
-            let removeListener = contextService.updateEvent.addEventListener(() => {
-                const frameState = contextService.serializedFrameState;
-                expect(realityService.current === Argon.RealityViewer.EMPTY);
+            let removeListener = app.context.updateEvent.addEventListener(() => {
+                const frameState = app.context.serializedFrameState;
+                expect(app.reality.current === Argon.RealityViewer.EMPTY);
                 expect(frameState.reality === Argon.RealityViewer.EMPTY);
                 expect(frameState.time).to.haveOwnProperty('dayNumber');
                 expect(frameState.time).to.haveOwnProperty('secondsOfDay');
                 removeListener();
                 done();
-            })
-            
-            sessionService.connect();
+            });
         });
         
     })
 
     describe('#request', () => {
 
-        it('should raise an error for unsupported realities', (done) => {            
+        it('should raise an error for unsupported realities', (done) => {
             const container = new Argon.ArgonContainerManager({role: Argon.Role.REALITY_MANAGER}).container;
             const realityService:Argon.RealityService = container.get(Argon.RealityService);
             sessionService = container.get(Argon.SessionService);

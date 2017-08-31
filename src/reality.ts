@@ -406,10 +406,11 @@ export class RealityServiceProvider {
                 }
 
                 const removePresentChangeListener = viewer.presentChangeEvent.addEventListener(()=>{
-                    this.visibilityServiceProvider.set(viewerSession, viewer.isPresenting)
+                    this.visibilityServiceProvider.set(viewerSession, viewer.isPresenting);
                 });
 
                 this.visibilityServiceProvider.set(viewerSession, viewer.isPresenting);
+                console.log('set visibile : ' + viewer.uri)
 
                 viewerSession.closeEvent.addEventListener(() => {
                     removePresentChangeListener();

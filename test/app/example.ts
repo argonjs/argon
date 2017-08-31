@@ -1,78 +1,78 @@
+import * as Argon from '../../src/argon'
 // import * as Argon from '@argonjs/argon'
 // import * as Argon from '../dist/src/argon'
-import * as Argon from '../../src/argon'
 
-declare const THREE: any;
+import __THREE from 'three';
+declare global {
+  const THREE: typeof __THREE;
+}
 
 window['Argon'] = Argon;
 
-export const app = Argon.init();
+const app = window['app'] = Argon.init();
 
-export const scene = new THREE.Scene();
-export const camera = new THREE.PerspectiveCamera();
-export const user = new THREE.Object3D();
-export const userLocation = new THREE.Object3D;
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera();
+const user = new THREE.Object3D();
+const stage = new THREE.Object3D;
 scene.add(camera);
 scene.add(user);
-scene.add(userLocation);
+scene.add(stage);
 
 const renderer = new THREE.WebGLRenderer({ 
     alpha: true, 
     logarithmicDepthBuffer: true
 });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-app.view.element.appendChild(renderer.domElement);
-renderer.domElement.style.width = '100%';
-renderer.domElement.style.height = '100%';
 
-// app.context.setDefaultReferenceFrame(app.context.localOriginEastUpSouth);
-app.context.setDefaultReferenceFrame(app.context.localOriginEastNorthUp);
+app.view.setLayers([
+    {source: renderer.domElement}
+]);
 
 const geometry = new THREE.SphereGeometry( 30, 32, 32 );
 
 let mat = new THREE.MeshBasicMaterial( {color: 0xff0000} );
 
-export const posXSphere = new THREE.Mesh( geometry, mat );
+const posXSphere = new THREE.Mesh( geometry, mat );
 posXSphere.position.x = 200;
-userLocation.add( posXSphere );
+stage.add( posXSphere );
 
 mat = new THREE.MeshBasicMaterial( {color: 0xffaaaa} );
 
-export const negXSphere = new THREE.Mesh( geometry, mat );
+const negXSphere = new THREE.Mesh( geometry, mat );
 negXSphere.position.x = -200;
-userLocation.add( negXSphere );
+stage.add( negXSphere );
 
 mat = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
 
-export const posYSphere = new THREE.Mesh( geometry, mat );
+const posYSphere = new THREE.Mesh( geometry, mat );
 posYSphere.position.y = 200;
-userLocation.add( posYSphere );
+stage.add( posYSphere );
 
 mat = new THREE.MeshBasicMaterial( {color: 0xaaffaa} );
 
-export const negYSphere = new THREE.Mesh( geometry, mat );
+const negYSphere = new THREE.Mesh( geometry, mat );
 negYSphere.position.y = -200;
-userLocation.add( negYSphere );
+stage.add( negYSphere );
 
 mat = new THREE.MeshBasicMaterial( {color: 0x0000ff} );
 
-export const posZSphere = new THREE.Mesh( geometry, mat );
+const posZSphere = new THREE.Mesh( geometry, mat );
 posZSphere.position.z = 200;
-userLocation.add( posZSphere );
+stage.add( posZSphere );
 
 mat = new THREE.MeshBasicMaterial( {color: 0xaaaaff} );
 
-export const negZSphere = new THREE.Mesh( geometry, mat );
+const negZSphere = new THREE.Mesh( geometry, mat );
 negZSphere.position.z = -200;
-userLocation.add( negZSphere );
+stage.add( negZSphere );
 
             
 var axisHelper = new THREE.AxisHelper( 10 );
-userLocation.add( axisHelper );
+stage.add( axisHelper );
 axisHelper.position.z = 50;
 
 var axisHelper = new THREE.AxisHelper( 10 );
-userLocation.add( axisHelper );
+stage.add( axisHelper );
 axisHelper.position.y = -50;
 
 // var textShapes = THREE.FontUtils.generateShapes( "PosZ", options );
@@ -133,13 +133,10 @@ kDYZIbq+RqPwaZhg0hXpT5Fwz97y4Z5NyjAu44kiYAK2Du0Vyi1e0PMtW2ja4ZH0
                 const stonesPose = app.context.getEntityPose(stonesEntity);
 
                 if (stonesPose.status & Argon.PoseStatus.KNOWN) {
-                    stonesObject.position.copy(stonesPose.position);
-                    stonesObject.quaternion.copy(stonesPose.orientation);
-                }
-                
-                if (stonesPose.status & Argon.PoseStatus.FOUND) {
+                    stonesObject.position.copy(<any>stonesPose.position);
+                    stonesObject.quaternion.copy(<any>stonesPose.orientation);
                     stonesObject.add(box);
-                } else if (stonesPose.status & Argon.PoseStatus.LOST) {
+                } else {
                     stonesObject.remove(box);
                 }
             })
@@ -151,12 +148,12 @@ kDYZIbq+RqPwaZhg0hXpT5Fwz97y4Z5NyjAu44kiYAK2Du0Vyi1e0PMtW2ja4ZH0
 
 app.updateEvent.addEventListener(() => {
     const userPose = app.context.getEntityPose(app.context.user);
+    user.position.copy(<any>userPose.position);
+    user.quaternion.copy(<any>userPose.orientation);
 
-    if (userPose.status & Argon.PoseStatus.KNOWN) {
-        user.position.copy(userPose.position);
-        user.quaternion.copy(userPose.orientation);
-        userLocation.position.copy(userPose.position);
-    }
+    const stagePose = app.context.getEntityPose(app.context.stage);
+    stage.position.copy(<any>stagePose.position);
+    stage.quaternion.copy(<any>stagePose.orientation);
 })
 
 app.renderEvent.addEventListener(() => {
@@ -167,9 +164,9 @@ app.renderEvent.addEventListener(() => {
     renderer.setSize(app.view.renderWidth, app.view.renderHeight, false);
     
     for (let subview of app.view.subviews) {
-        camera.position.copy(subview.pose.position);
-        camera.quaternion.copy(subview.pose.orientation);
-        camera.projectionMatrix.fromArray(subview.frustum.projectionMatrix);
+        camera.position.copy(<any>subview.pose.position);
+        camera.quaternion.copy(<any>subview.pose.orientation);
+        camera.projectionMatrix.fromArray(<any>subview.frustum.projectionMatrix);
 
         let {x,y,width,height} = subview.renderViewport;
         renderer.setViewport(x,y,width,height);

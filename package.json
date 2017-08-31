@@ -19,8 +19,8 @@
       "aurelia-polyfills": "npm:aurelia-polyfills@^1.0.0-beta.1.0.0",
       "googlevr/webvr-polyfill": "github:googlevr/webvr-polyfill@0.9.27",
       "json": "github:systemjs/plugin-json@^0.2.3",
-      "mobile-detect": "npm:mobile-detect@^1.3.2",
-      "object-assign": "npm:object-assign@^4.1.0"
+      "object-assign": "npm:object-assign@^4.1.0",
+      "orientationchangeend": "npm:orientationchangeend@^1.1.2"
     },
     "devDependencies": {
       "buffer": "npm:jspm-nodelibs-buffer@^0.2.0",
@@ -48,7 +48,8 @@
     "peerDependencies": {
       "assert": "npm:jspm-nodelibs-assert@^0.2.0",
       "aurelia-metadata": "npm:aurelia-metadata@^1.0.0",
-      "aurelia-pal": "npm:aurelia-pal@^1.0.0"
+      "aurelia-pal": "npm:aurelia-pal@^1.0.0",
+      "fs": "npm:jspm-nodelibs-fs@^0.2.0"
     },
     "overrides": {
       "npm:aurelia-dependency-injection@1.2.0": {
@@ -115,11 +116,6 @@
         "ignore": [
           "test.js"
         ]
-      },
-      "npm:mobile-detect@1.3.2": {
-        "format": "cjs",
-        "jspmPackage": true,
-        "map": {}
       },
       "github:aelatgt/cesium@referenceFrames": {
         "registry": "github",
@@ -217,18 +213,22 @@
   },
   "scripts": {
     "format": "tsfmt -r",
+    "clean": "rm -rf .tmp",
+    "bundle-deps": "test -f .tmp/deps-bundle.js || jspm bundle 'src/**/* - [src/**/*]' .tmp/deps-bundle.js --inject",
     "build:browser": "jspm build src/argon.ts .tmp/argon-build.js --format umd --global-name Argon --skip-source-maps && derequire .tmp/argon-build.js > dist/argon.js",
     "build:core": "jspm build src/argon.ts .tmp/argon-build.js --node --format umd --global-name Argon --skip-source-maps && derequire .tmp/argon-build.js > dist/argon.core.js",
-    "prebuild": "npm run build:core && npm run build:browser",
-    "build": "uglifyjs dist/argon.js -m -c -o dist/argon.min.js",
-    "browser-sync": "browser-sync  start --server --directory --startPath \"index.html\" --files \"src/**\"",
+    "build": "npm run bundle-deps && npm run build:browser",
+    "uglify": "uglifyjs dist/argon.js -m -c -o dist/argon.min.js",
+    "build-full": "npm run clean && npm run bundle-deps && npm run build:core && npm run build:browser && npm run uglify",
+    "dev": "npm run bundle-deps && browser-sync  start --server --directory --startPath \"index.html\" --files \"src/**\"",
     "test": "jspm run test/runner.js",
+    "test-debug": "node --inspect --debug-brk node_modules/.bin/jspm run test/runner.js",
     "static": "static -p 3000",
     "typedoc": "typedoc --tsconfig tsconfig.build.json --out docs --mode file --gaID UA-63191442-2 --name argon.js --readme src/README.md --target ES6 --module commonjs --moduleResolution node --experimentalDecorators --includeDeclarations --excludeNotExported --excludeExternals --ignoreCompilerErrors src",
-    "postinstall": "npm install types/cesium types/mobile-detect",
+    "postinstall": "npm install types/cesium",
     "tsc": "tsc",
     "preversion": "[[ -z $(git status --porcelain) ]]",
-    "version": "npm run tsc && npm run build && git add -u",
+    "version": "npm run tsc && npm run build-full && git add -u",
     "postversion": "git push && git push --tags",
     "check-git-status": "[[ -z $(git status --porcelain) ]] && npm run tsc",
     "release:next": "standard-version --commit-all --prerelease --skip.changelog true && npm publish --tag next",
@@ -248,8 +248,9 @@
     "@types/chai": "^3.4.29",
     "@types/mocha": "^2.2.28",
     "@types/systemjs": "^0.18.27",
+    "@types/three": "^0.84.20",
     "@types/webvr-api": "0.0.31",
-    "browser-sync": "^2.11.0",
+    "browser-sync": "^2.18.13",
     "derequire": "^2.0.3",
     "jspm": "0.17.0-beta.32",
     "node-static": "^0.7.7",

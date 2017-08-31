@@ -489,13 +489,13 @@ export class ContextService {
         }
         
         // subviews
-        for (let index=0; index < subviewList.length; index++) {
-            // check for valid projection matrices
-            const subview = subviewList[index];
-            if (!isFinite(subview.projectionMatrix[0]))
-                throw new Error('Invalid projection matrix (contains non-finite values)');
-            
-            if (options && options.overrideSubviews) {
+        if (options && options.overrideSubviews) {
+            for (let index=0; index < subviewList.length; index++) {
+                // check for valid projection matrices
+                const subview = subviewList[index];
+                if (!isFinite(subview.projectionMatrix[0]))
+                    throw new Error('Invalid projection matrix (contains non-finite values)');
+                // subview
                 const subviewEntity = this.getSubviewEntity(index);
                 entities[subviewEntity.id] = getSerializedEntityState(subviewEntity, time, view);
             }
@@ -810,18 +810,15 @@ export class ContextServiceProvider {
                 this.contextService.unsubscribeGeolocation();
             }
         })
-
-        // publish updates to child sessions
-        this.contextService.updateEvent.addEventListener(()=>{
-            this._publishUpdates();
-        });
-
+        
+        // submit frame state from reality
         this.realityServiceProvider.nextFrameStateEvent.addEventListener((frameState)=>{
             this.contextService.submitFrameState(frameState);
+            this._publishFrameState(); // publish frame state to child sessions
         })
     }
     
-    private _publishUpdates() {
+    private _publishFrameState() {
         const state = this.contextService.serializedFrameState!;
         this._cacheTime = JulianDate.clone(state.time, this._cacheTime);
         for (const session of this.sessionService.managedSessions) {

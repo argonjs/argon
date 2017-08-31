@@ -143,33 +143,39 @@ export class ArgonSystem {
             }
 
             // add/remove document-level css classes
-            this.focus.focusEvent.addEventListener(() => {
-                document.documentElement.classList.remove('argon-no-focus');
-                document.documentElement.classList.remove('argon-blur');
-                document.documentElement.classList.add('argon-focus');
+            this.focus.focusEvent.on(() => {
+                this.context.renderEvent.onNext(()=>{
+                    document.documentElement.classList.remove('argon-no-focus');
+                    document.documentElement.classList.remove('argon-blur');
+                    document.documentElement.classList.add('argon-focus');
+                })
             });
 
-            this.focus.blurEvent.addEventListener(() => {
-                document.documentElement.classList.remove('argon-focus');
-                document.documentElement.classList.add('argon-blur');
-                document.documentElement.classList.add('argon-no-focus');
+            this.focus.blurEvent.on(() => {
+                this.context.renderEvent.onNext(()=>{
+                    document.documentElement.classList.remove('argon-focus');
+                    document.documentElement.classList.add('argon-blur');
+                    document.documentElement.classList.add('argon-no-focus');
+                });
             });
 
             this.view.viewportModeChangeEvent.addEventListener((mode)=>{
-                switch (mode) {
-                    case ViewportMode.EMBEDDED:
-                        const elementStyle = this.view.element.style;
-                        elementStyle.position = '';
-                        elementStyle.left = '0px';
-                        elementStyle.bottom = '0px';
-                        elementStyle.width = '100%';
-                        elementStyle.height = '100%';
-                        document.documentElement.classList.remove('argon-immersive');
-                        break;
-                    case ViewportMode.IMMERSIVE:
-                        document.documentElement.classList.add('argon-immersive');
-                        break;
-                }
+                this.context.renderEvent.onNext(()=>{
+                    switch (mode) {
+                        case ViewportMode.EMBEDDED:
+                            const elementStyle = this.view.element.style;
+                            elementStyle.position = '';
+                            elementStyle.left = '0px';
+                            elementStyle.bottom = '0px';
+                            elementStyle.width = '100%';
+                            elementStyle.height = '100%';
+                            document.documentElement.classList.remove('argon-immersive');
+                            break;
+                        case ViewportMode.IMMERSIVE:
+                            document.documentElement.classList.add('argon-immersive');
+                            break;
+                    }
+                });
             });
 
             // Setup event forwarding / synthesizing
@@ -181,6 +187,22 @@ export class ArgonSystem {
                         this.session.manager.send('ar.view.forwardUIEvent', event);
                 });
                 this.view._watchEmbeddedViewport();
+            }
+            
+            if (!this.session.isRealityManager) {
+                this.view.viewportChangeEvent.addEventListener((viewport)=>{
+                    this.context.renderEvent.onNext(()=>{
+                        if (this.view.element && this.view.autoLayoutImmersiveMode && 
+                            this.view.viewportMode === ViewportMode.IMMERSIVE) {
+                            const elementStyle = this.view.element.style;
+                            elementStyle.position = 'fixed';
+                            elementStyle.left = viewport.x + 'px';
+                            elementStyle.bottom = viewport.y + 'px';
+                            elementStyle.width = viewport.width + 'px';
+                            elementStyle.height = viewport.height + 'px';
+                        }
+                    });
+                });
             }
 
             this.context.renderEvent.addEventListener(()=>{
@@ -202,20 +224,6 @@ export class ArgonSystem {
                     }
                 }
             });
-
-            if (!this.session.isRealityManager) {
-                this.view.viewportChangeEvent.addEventListener((viewport)=>{
-                    if (this.view.element && this.view.autoLayoutImmersiveMode && 
-                    this.view.viewportMode === ViewportMode.IMMERSIVE) {
-                        const elementStyle = this.view.element.style;
-                        elementStyle.position = 'fixed';
-                        elementStyle.left = viewport.x + 'px';
-                        elementStyle.bottom = viewport.y + 'px';
-                        elementStyle.width = viewport.width + 'px';
-                        elementStyle.height = viewport.height + 'px';
-                    }
-                });
-            }
         }
     }
 
@@ -275,8 +283,10 @@ export class ArgonContainerManager {
     ) {
         container.registerInstance(Configuration, configuration);
         
-        if (Role.isRealityManager(configuration.role)) 
+        if (Role.isRealityManager(configuration.role)) {
+            console.log('adding providers')
             container.registerSingleton(ArgonSystemProvider);
+        }
 
         let element = elementOrSelector;
         if (!element || typeof element === 'string') {
@@ -294,7 +304,6 @@ export class ArgonContainerManager {
                     throw new Error('Unable to find element with selector: ' + selector);
                 }
             } else {
-                console.warn('No DOM environment is available');
                 element = undefined;
             }
         }
@@ -370,6 +379,8 @@ export class ArgonContainerManager {
 class DefaultRealityFactory {
     constructor(private container:DI.Container) {};
     createRealityViewer(uri:string) : RealityViewer {
+
+        console.log('creating ' + uri)
         switch (RealityViewer.getType(uri)) {
             case RealityViewer.EMPTY: 
                 return this.container.invoke(EmptyRealityViewer, [uri]);

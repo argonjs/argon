@@ -42,7 +42,7 @@ interface PinchMovement {
     angleAndHeight: Movement;
 }
 
-@inject(SessionService, ViewService, Container, DeviceService)
+@inject(SessionService, ViewService, Container)
 export class EmptyRealityViewer extends RealityViewer {
 
     public type = 'empty';
@@ -62,7 +62,6 @@ export class EmptyRealityViewer extends RealityViewer {
         private sessionService: SessionService,
         private viewService: ViewService,
         private container: Container,
-        private deviceService: DeviceService,
         public uri:string) {
         super(uri);
 
@@ -127,6 +126,7 @@ export class EmptyRealityViewer extends RealityViewer {
     private _scratchMatrix4 = new Matrix4;
 
     public load(): void {
+        console.log('loading');
         // Create a child container so that we can conveniently setup all the services
         // that would exist in a normal hosted reality viewer 
         const child = this.container.createChild();
@@ -224,7 +224,7 @@ export class EmptyRealityViewer extends RealityViewer {
             
             const remove1 = childDeviceService.suggestedGeolocationSubscriptionChangeEvent.addEventListener(checkSuggestedGeolocationSubscription);
 
-            const remove2 = this.deviceService.frameStateEvent.addEventListener((frameState) => {
+            const remove2 = childDeviceService.frameStateEvent.addEventListener((frameState) => {
                 if (childSessionService.manager.isClosed) return;
                 
                 const aggregator = this._aggregator;

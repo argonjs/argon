@@ -358,6 +358,9 @@ export function convertEntityReferenceFrame(entity:Entity, time:JulianDate, fram
     return true;
 }
 
+export const isArgonApp = typeof navigator !== 'undefined' &&  typeof window !== 'undefined' &&
+    navigator.userAgent.indexOf('Argon') > 0;
+
 export const isIOS = typeof navigator !== 'undefined' &&  typeof window !== 'undefined' &&
     /iPad|iPhone|iPod/.test(navigator.userAgent) && !window['MSStream'];
 
