@@ -270,7 +270,7 @@ export declare class ContextServiceProvider {
     protected realityServiceProvider: RealityServiceProvider;
     private _cacheTime;
     constructor(sessionService: SessionService, contextService: ContextService, entityServiceProvider: EntityServiceProvider, permissionServiceProvider: PermissionServiceProvider, realityServiceProvider: RealityServiceProvider);
-    private _publishUpdates();
+    private _publishFrameState();
     private _sessionEntities;
     private _temp;
     private _sendUpdateForSession(state, session);

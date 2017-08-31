@@ -239,22 +239,18 @@ describe('RealityService', function () {
     });
     describe('new RealityService()', function () {
         it('the default reality should be used when no reality has been requested', function (done) {
-            var container = new Argon.ArgonContainerManager({ role: Argon.Role.REALITY_MANAGER }).container;
-            var realityService = container.get(Argon.RealityService);
-            var contextService = container.get(Argon.ContextService);
-            sessionService = container.get(Argon.SessionService);
-            container.get(Argon.ArgonSystemProvider);
-            realityService.default = Argon.RealityViewer.EMPTY;
-            var removeListener = contextService.updateEvent.addEventListener(function () {
-                var frameState = contextService.serializedFrameState;
-                expect(realityService.current === Argon.RealityViewer.EMPTY);
+            var app = new Argon.ArgonContainerManager({ role: Argon.Role.REALITY_MANAGER }).app;
+            sessionService = app.session;
+            app.reality.default = Argon.RealityViewer.EMPTY;
+            var removeListener = app.context.updateEvent.addEventListener(function () {
+                var frameState = app.context.serializedFrameState;
+                expect(app.reality.current === Argon.RealityViewer.EMPTY);
                 expect(frameState.reality === Argon.RealityViewer.EMPTY);
                 expect(frameState.time).to.haveOwnProperty('dayNumber');
                 expect(frameState.time).to.haveOwnProperty('secondsOfDay');
                 removeListener();
                 done();
             });
-            sessionService.connect();
         });
     });
     describe('#request', function () {

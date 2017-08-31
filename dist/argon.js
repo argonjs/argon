@@ -24067,7 +24067,7 @@ $__System.registerDynamic('98', ['82', '97'], true, function ($__require, export
 $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', '13', '14', '18', '1e', '24', '15', '5', '7', '42', '1a', '1b', '8', '39', '3c', '51', '6e', '2d', '17', 'd', '27', '28', '2e', '2f', '30', '21', '26', '29', '35', '20', '36', '37', '38', 'e', 'f', '2a', '3d', '44', '7c', '46', '49', '4c', '4f', '7d', '7e', '7f', '81', '98'], function (_export, _context) {
     "use strict";
 
-    var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, cesium_Source_Core_Clock_js, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, defaultValue, defined, cesium_Source_Core_DeveloperError_js, Ellipsoid, Entity, EntityCollection, Event, cesium_Source_Core_ExtrapolationType_js, cesium_Source_Core_FeatureDetection_js, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HeadingPitchRoll_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, ReferenceEntity, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, TerrainProvider, throttleRequestByServer, loadImage, WebMercatorTilingScheme, getImagePixels, HeightmapTerrainData, Credit, sampleTerrain, CardboardUI, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, DI, after, lut, i, cesiumImports, kButtonWidthDp, kTouchSlopFactor, __extends$1, AVERAGE_EYE_HEIGHT, DEFAULT_NEAR_PLANE, DEFAULT_FAR_PLANE, Role, Configuration, Viewport, CanvasViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event$1, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, getEventSynthesizier$1, cloneTouch, cloneTouches, reNative, hasNativeWebVRImplementation, suggestedWebGLContextAntialiasAttribute, eastUpSouthToFixedFrame, scratchAncestorCartesian, scratchAncestorQuaternion, getEntityPosition, getEntityOrientation, _scratchFramesArray, _entityStateCache, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isIOS, isAndroid, lastTime, rAF, cAF, defaultTerrainProvider, version, __extends, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, SessionConnectService, WKWebViewConnectService, AndroidWebViewConnectService, _a$1, _b$1, __decorate$5, __metadata$5, Permission, PermissionState, PermissionService, PermissionServiceProvider, _a$5, _b$5, __decorate$4, __metadata$4, EntityPose, PoseStatus, EntityService, EntityServiceProvider, _a$4, _b$4, _c$3, __decorate$7, __metadata$7, FocusService, FocusServiceProvider, _a$7, _b$7, __decorate$8, __metadata$8, VisibilityService, VisibilityServiceProvider, _a$8, _b$8, __decorate$6, __metadata$6, Subview, ViewportMode, ViewItems, ViewService, ViewServiceProvider, viewportMetaTag, argonMetaTag, style, sheet, _a$6, _b$6, _c$4, _d$3, _e$3, __decorate$3, __metadata$3, DeviceStableState$$1, DeviceFrameState$$1, DeviceService, DeviceServiceProvider, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, _h$1, _j$1, _k$1, _l$1, RealityViewer, __decorate$9, __metadata$9, RealityFactory, RealityService, RealityServiceProvider, _a$9, _b$9, _c$5, _d$4, _e$4, _f$2, _g$2, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __decorate$10, __metadata$10, ContextService, ContextServiceProvider, _a$10, _b$10, _c$6, _d$5, _e$5, _f$3, _g$3, _h$2, _j$2, _k$2, _l$2, _m$1, __extends$2, __decorate$11, __metadata$11, VuforiaServiceProvider, VuforiaHint, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$11, _b$11, __extends$3, __decorate$12, __metadata$12, EmptyRealityViewer, _a$12, _b$12, _c$7, _d$6, __extends$4, __decorate$13, __metadata$13, LiveRealityViewer, _a$13, _b$13, _c$8, _d$7, __extends$5, __decorate$14, __metadata$14, HostedRealityViewer, _a$14, _b$14, __extends$6, __decorate$15, __metadata$15, WebRTCRealityViewer, integrateCustomARToolKit, _a$15, _b$15, _c$9, _d$8, __extends$7, __decorate$16, __metadata$16, TangoRealityViewer, _a$16, _b$16, _c$10, _d$9, _e$6, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, ArgonContainerManager, DefaultRealityFactory, initReality, _a, _b, _c, _d, _e, _f, _g, _h, _j, ArgonSystem_1, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
+    var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, cesium_Source_Core_Clock_js, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, defaultValue, defined, cesium_Source_Core_DeveloperError_js, Ellipsoid, Entity, EntityCollection, Event, cesium_Source_Core_ExtrapolationType_js, cesium_Source_Core_FeatureDetection_js, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HeadingPitchRoll_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, ReferenceEntity, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, TerrainProvider, throttleRequestByServer, loadImage, WebMercatorTilingScheme, getImagePixels, HeightmapTerrainData, Credit, sampleTerrain, CardboardUI, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, DI, after, lut, i, cesiumImports, kButtonWidthDp, kTouchSlopFactor, __extends$1, AVERAGE_EYE_HEIGHT, DEFAULT_NEAR_PLANE, DEFAULT_FAR_PLANE, Role, Configuration, Viewport, CanvasViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event$1, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, getEventSynthesizier$1, cloneTouch, cloneTouches, reNative, hasNativeWebVRImplementation, suggestedWebGLContextAntialiasAttribute, eastUpSouthToFixedFrame, scratchAncestorCartesian, scratchAncestorQuaternion, getEntityPosition, getEntityOrientation, _scratchFramesArray, _entityStateCache, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isArgonApp, isIOS, isAndroid, lastTime, rAF, cAF, defaultTerrainProvider, version, __extends, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, SessionConnectService, WKWebViewConnectService, AndroidWebViewConnectService, _a$1, _b$1, __decorate$5, __metadata$5, Permission, PermissionState, PermissionService, PermissionServiceProvider, _a$5, _b$5, __decorate$4, __metadata$4, EntityPose, PoseStatus, EntityService, EntityServiceProvider, _a$4, _b$4, _c$3, __decorate$7, __metadata$7, FocusService, FocusServiceProvider, _a$7, _b$7, __decorate$8, __metadata$8, VisibilityService, VisibilityServiceProvider, _a$8, _b$8, __decorate$6, __metadata$6, Subview, ViewportMode, ViewItems, ViewService, ViewServiceProvider, viewportMetaTag, argonMetaTag, style, sheet, _a$6, _b$6, _c$4, _d$3, _e$3, __decorate$3, __metadata$3, DeviceStableState$$1, DeviceFrameState$$1, Device, DeviceService, DeviceServiceProvider, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, _h$1, _j$1, _k$1, _l$1, _m$1, _o$1, _p$1, RealityViewer, __decorate$9, __metadata$9, RealityFactory, RealityService, RealityServiceProvider, _a$9, _b$9, _c$5, _d$4, _e$4, _f$2, _g$2, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __decorate$10, __metadata$10, ContextService, ContextServiceProvider, _a$10, _b$10, _c$6, _d$5, _e$5, _f$3, _g$3, _h$2, _j$2, _k$2, _l$2, _m$2, __extends$2, __decorate$11, __metadata$11, VuforiaServiceProvider, VuforiaHint, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$11, _b$11, __extends$3, __decorate$12, __metadata$12, EmptyRealityViewer, _a$12, _b$12, _c$7, __extends$4, __decorate$13, __metadata$13, LiveRealityViewer, _a$13, _b$13, _c$8, _d$6, __extends$5, __decorate$14, __metadata$14, HostedRealityViewer, _a$14, _b$14, __extends$6, __decorate$15, __metadata$15, WebRTCRealityViewer, integrateCustomARToolKit, _a$15, _b$15, _c$9, _d$7, __extends$7, __decorate$16, __metadata$16, TangoRealityViewer, _a$16, _b$16, _c$10, _d$8, _e$6, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, ArgonContainerManager, DefaultRealityFactory, initReality, _a, _b, _c, _d, _e, _f, _g, _h, _j, ArgonSystem_1, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
 
     function alwaysValid() {
         return true;
@@ -26224,6 +26224,14 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                      * @param This method takes any number of parameters and passes them through to the listener functions.
                      */
                     this.raiseEvent = this._event.raiseEvent.bind(this._event);
+                    /**
+                     * Alias for addEventListener;
+                     */
+                    this.on = this.addEventListener;
+                    /**
+                     * Alias for removeEventListener;
+                     */
+                    this.off = this.removeEventListener;
                 }
                 Object.defineProperty(Event$$1.prototype, "numberOfListeners", {
                     /**
@@ -26236,6 +26244,17 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     enumerable: true,
                     configurable: true
                 });
+                /**
+                  * Add an event listener that is removed after the next event is raised.
+                  * @param The function to be executed when the event is raised.
+                  * @return A convenience function which removes this event listener when called
+                  */
+                Event$$1.prototype.onNext = function (listener, scope) {
+                    var remove = this.addEventListener(function (data) {
+                        remove();
+                        listener.apply(scope, data);
+                    });
+                };
                 return Event$$1;
             }());
 
@@ -26498,6 +26517,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
             scratchCartesian = new Cartesian3();
             scratchOrientation = new Quaternion();
 
+            _export('isArgonApp', isArgonApp = typeof navigator !== 'undefined' && typeof window !== 'undefined' && navigator.userAgent.indexOf('Argon') > 0);
+
             _export('isIOS', isIOS = typeof navigator !== 'undefined' && typeof window !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent) && !window['MSStream']);
 
             _export('isAndroid', isAndroid = typeof navigator !== 'undefined' && typeof window !== 'undefined' && /Android/.test(navigator.userAgent) && !window['MSStream']);
@@ -26522,7 +26543,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-26");
+            _export('version', version = "1.4.0-27");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -28244,13 +28265,10 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _export('DeviceStableState', DeviceStableState$$1 = function () {
                 function DeviceStableState$$1() {
-                    this.entities = {};
                     this.suggestedGeolocationSubscription = undefined;
                     this.suggestedUserHeight = AVERAGE_EYE_HEIGHT;
-                    /** @deprecated */
-                    this.geolocationDesired = false;
-                    /** @deprecated */
-                    this.geolocationOptions = undefined;
+                    this.userTracking = 'none';
+                    this.displayMode = 'other';
                     this.isPresentingHMD = false;
                     this.isPresentingRealityHMD = false;
                     this.strict = false;
@@ -28273,112 +28291,98 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return DeviceFrameState$$1;
             }());
 
-            _export('DeviceService', DeviceService = function () {
-                function DeviceService$$1(sessionService, entityService, viewService, visibilityService) {
+            _export('Device', Device = function () {
+                function Device$$1(owner, entityService, viewItems) {
                     var _this = this;
-                    this.sessionService = sessionService;
+                    this.owner = owner;
                     this.entityService = entityService;
-                    this.viewService = viewService;
-                    this.visibilityService = visibilityService;
-                    /**
-                     * If this is true (and we are presenting via webvr api), then
-                     * vrDisplay.submitFrame is called after the frameState event
-                     */
-                    this.autoSubmitFrame = true;
-                    /**
-                     * Device state for the current frame. This
-                     * is not updated unless the view is visible.
-                     */
+                    this.viewItems = viewItems;
+                    this.userTracking = 'none';
+                    this.screenOrientation = 0;
                     this.frameState = new DeviceFrameState$$1();
-                    /**
-                     * An event that fires every time the device frameState is updated.
-                     */
                     this.frameStateEvent = new Event$1();
-                    /**
-                     * An even that fires when the view starts or stops presenting to an HMD
-                     */
-                    this.presentHMDChangeEvent = new Event$1();
-                    /*
-                     * An event that fires when the screen orientation changes
-                     */
+                    this.vrDisplaysUpdatedEvent = new Event$1();
+                    this.vrDisplayChangeEvent = new Event$1();
+                    this.userTrackingChangeEvent = new Event$1();
+                    this.displayModeChangeEvent = new Event$1();
                     this.screenOrientationChangeEvent = new Event$1();
-                    /*
-                     * An event that fires when the screen orientation changes
-                     */
                     this.suggestedGeolocationSubscriptionChangeEvent = new Event$1();
-                    /*
-                     * An event that fires when getVRDisplay() is finished
-                     */
-                    this.getVRDisplayFinishedEvent = new Event$1();
-                    /**
-                     * A coordinate system representing the physical space in which the user is free to
-                     * move around, positioned on the surface the user is standing on,
-                     * where +X is east, +Y is up, and +Z is south (East-Up-South), if geolocation is known.
-                     * If the stage is not geolocated, then the +X and +Z directions are arbitrary.
-                     */
-                    this.stage = this.entityService.collection.add(new Entity({
+                    this.stage = new Entity({
                         id: 'ar.device.stage',
                         name: 'Device Stage',
                         position: undefined,
                         orientation: undefined
-                    }));
-                    /**
-                     * An entity representing the origin of the device coordinate system, +Y up.
-                     */
-                    this.origin = this.entityService.collection.add(new Entity({
+                    });
+                    this.origin = new Entity({
                         id: 'ar.device.origin',
                         name: 'Device Origin',
                         position: new ConstantPositionProperty(Cartesian3.ZERO, this.stage),
                         orientation: new ConstantProperty(Quaternion.IDENTITY)
-                    }));
-                    /**
-                     * An entity representing the physical pose of the user,
-                     * where +X is right, +Y is up, and -Z is forward
-                     */
-                    this.user = this.entityService.collection.add(new Entity({
+                    });
+                    this.user = new Entity({
                         id: 'ar.device.user',
                         name: 'Device User',
                         position: undefined,
                         orientation: undefined
-                    }));
-                    this.defaultUserHeight = AVERAGE_EYE_HEIGHT;
-                    this._userTracking = "3DOF";
+                    });
+                    // for now, only use webvr when not in argon-app
+                    this._useWebVR = typeof navigator !== 'undefined' && navigator.getVRDisplays && navigator.userAgent.indexOf('Argon') > 0 === false;
                     this._scratchCartesian = new Cartesian3();
                     this._scratchFrustum = new PerspectiveFrustum();
-                    this._updatingFrameState = false;
-                    this._updateFrameState = function () {
-                        if (!_this._updatingFrameState) return;
-                        if (_this.sessionService.isRealityViewer) return; // hack. Try to fix later. 
-                        _this.requestAnimationFrame(_this._updateFrameState);
+                    this.defaultUserHeight = AVERAGE_EYE_HEIGHT;
+                    this._running = false;
+                    this._previousNumListeners = 0;
+                    this._handleScreenOrientationChange = function () {
+                        var end = function (dispatchEvent) {
+                            clearInterval(interval);
+                            clearTimeout(timeout);
+                            this.screenOrientationChangeEvent.raiseEvent(undefined);
+                        };
+                        var lastInnerWidth;
+                        var lastInnerHeight;
+                        var noChangeCount;
+                        var interval = setInterval(function () {
+                            if (window.innerWidth === lastInnerWidth && window.innerHeight === lastInnerHeight) {
+                                noChangeCount++;
+                                if (noChangeCount === 100) {
+                                    end(true);
+                                }
+                            } else {
+                                lastInnerWidth = window.innerWidth;
+                                lastInnerHeight = window.innerHeight;
+                                noChangeCount = 0;
+                            }
+                        });
+                        var timeout = setTimeout(function () {
+                            end(true);
+                        }, 1000);
+                    };
+                    this._handleVRDisplayPresentChange = function (e) {
+                        var display = e.display || e.detail.vrdisplay || e.detail.display;
+                        if (display && display === _this.vrDisplay) {
+                            var newDisplayMode = display.isPresenting ? 'head' : display.capabilities.hasOrientation ? 'hand' : 'other';
+                            if (newDisplayMode !== _this.displayMode) {
+                                _this.displayMode = newDisplayMode;
+                                _this.displayModeChangeEvent.raiseEvent(undefined);
+                            }
+                        }
+                    };
+                    this._onUpdateFrameState = function () {
+                        if (_this.frameStateEvent.numberOfListeners > 0) {
+                            _this.requestAnimationFrame(_this._onUpdateFrameState);
+                        } else {
+                            _this._running = false;
+                            return;
+                        }
                         var state = _this.frameState;
                         JulianDate.now(state.time);
                         state['strict'] = _this.strict; // backwards-compat
-                        _this.onUpdateFrameState();
                         try {
+                            _this.onUpdateFrameState();
                             _this.frameStateEvent.raiseEvent(state);
                         } catch (e) {
-                            _this.sessionService.manager.sendError(e);
-                            _this.sessionService.errorEvent.raiseEvent(e);
-                        }
-                    };
-                    /**
-                     * Request an animation frame callback for the current view.
-                     */
-                    this.requestAnimationFrame = function (callback) {
-                        if (_this._vrDisplay && _this.isPresentingHMD) {
-                            return _this._vrDisplay.requestAnimationFrame(callback);
-                        } else {
-                            return rAF(callback);
-                        }
-                    };
-                    /**
-                     * Cancel an animation frame callback for the current view.
-                     */
-                    this.cancelAnimationFrame = function (id) {
-                        if (_this._vrDisplay && _this.isPresentingHMD) {
-                            _this._vrDisplay.cancelAnimationFrame(id);
-                        } else {
-                            cAF(id);
+                            _this.owner.manager.sendError(e);
+                            _this.owner.errorEvent.raiseEvent(e);
                         }
                     };
                     this._stringIdentifierFromReferenceFrame = stringIdentifierFromReferenceFrame;
@@ -28392,219 +28396,155 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     this._defaultLeftBounds = [0.0, 0.0, 0.5, 1.0];
                     this._defaultRightBounds = [0.5, 0.0, 0.5, 1.0];
                     this._negX90 = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, -CesiumMath.PI_OVER_TWO);
-                    this.visibilityService.showEvent.addEventListener(function () {
-                        return _this._startUpdates();
-                    });
-                    this.visibilityService.hideEvent.addEventListener(function () {
-                        return _this._stopUpdates();
-                    });
-                    // On iOS or Android, we have 3DOF
-                    if (isIOS || isAndroid) {
-                        this._userTracking = "3DOF";
-                    }
-                    if (typeof navigator !== 'undefined' && navigator.getVRDisplays && navigator.userAgent.indexOf('Argon') > 0 === false) {
-                        this._setupVRPresentChangeHandler();
-                        navigator.getVRDisplays().then(function (displays) {
-                            _this._vrDisplays = displays;
-                            _this._vrDisplay = displays[0];
-                            if (!_this._vrDisplay) return;
-                            // Tango devices have 6DOF
-                            if (_this._vrDisplay.displayName === "Tango VR Device") _this._userTracking = "6DOF";
-                            _this.getVRDisplayFinishedEvent.raiseEvent(undefined);
-                        });
-                        // VR has 6DOF
-                        this._userTracking = 'none';
-                    }
-                    if (typeof window !== 'undefined' && window.addEventListener) {
-                        var orientationChangeListener_1 = function () {
-                            _this.screenOrientationChangeEvent.raiseEvent(undefined);
-                        };
-                        window.addEventListener('orientationchange', orientationChangeListener_1);
-                        sessionService.manager.closeEvent.addEventListener(function () {
-                            window.removeEventListener('orientationchange', orientationChangeListener_1);
-                        });
-                    }
-                    if (this.sessionService.isRealityManager) {
+                    /**
+                     * Request an animation frame callback
+                     */
+                    this.requestAnimationFrame = function (callback) {
+                        if (_this.vrDisplay && _this.vrDisplay.isPresenting) {
+                            return _this.vrDisplay.requestAnimationFrame(callback);
+                        } else {
+                            return rAF(callback);
+                        }
+                    };
+                    /**
+                     * Cancel an animation frame callback
+                     */
+                    this.cancelAnimationFrame = function (id) {
+                        if (_this.vrDisplay) {
+                            _this.vrDisplay.cancelAnimationFrame(id);
+                        } else {
+                            cAF(id);
+                        }
+                    };
+                    var addEventListener = this.frameStateEvent.addEventListener.bind(this.frameStateEvent);
+                    this.frameStateEvent.addEventListener = function (callback) {
+                        var result = addEventListener(callback);
+                        _this._checkFrameStateListeners();
+                        return result;
+                    };
+                    var removeEventListener = this.frameStateEvent.removeEventListener.bind(this.frameStateEvent);
+                    this.frameStateEvent.removeEventListener = function (callback) {
+                        var result = removeEventListener(callback);
+                        _this._checkFrameStateListeners();
+                        return result;
+                    };
+                    if (owner.isRealityManager) {
                         this.entityService.subscribedEvent.addEventListener(function (evt) {
-                            if (evt.id === 'ar.stage') _this._setSuggestedGeolocationSubscription(evt.options || {});
+                            if (evt.id === 'ar.stage') {
+                                _this.suggestedGeolocationSubscription = evt.options || {};
+                                _this.suggestedGeolocationSubscriptionChangeEvent.raiseEvent(undefined);
+                            }
                         });
                         this.entityService.unsubscribedEvent.addEventListener(function (evt) {
-                            if (evt.id === 'ar.stage') _this._setSuggestedGeolocationSubscription(undefined);
+                            if (evt.id === 'ar.stage') {
+                                _this.suggestedGeolocationSubscription = undefined;
+                                _this.suggestedGeolocationSubscriptionChangeEvent.raiseEvent(undefined);
+                            }
                         });
-                    } else {
-                        sessionService.manager.on['ar.device.state'] = sessionService.manager.on['ar.device.frameState'] = function (stableState) {
-                            var entities = stableState.entities;
-                            var entityService = _this.entityService;
-                            if (entities) for (var id in entities) {
-                                entityService.updateEntityFromSerializedState(id, entities[id]);
-                            }
-                            _this._setSuggestedGeolocationSubscription(stableState.geolocationOptions || stableState.suggestedGeolocationSubscription);
-
-                            if (_this._parentState && _this._parentState.isPresentingHMD !== stableState.isPresentingHMD || _this._parentState && _this._parentState.isPresentingRealityHMD !== stableState.isPresentingRealityHMD) {
-                                _this.presentHMDChangeEvent.raiseEvent(undefined);
-                            }
-                            _this._parentState = stableState;
-                        };
                     }
                 }
-                Object.defineProperty(DeviceService$$1.prototype, "geoHeadingAccuracy", {
-                    /**
-                     * The heading accuracy of the user's geopose
-                     */
+                Device$$1.prototype.getSubviewEntity = function (index) {
+                    var subviewEntity = this.entityService.collection.getOrCreateEntity('ar.device.view_' + index);
+                    if (!subviewEntity.position) {
+                        subviewEntity.position = new ConstantPositionProperty(Cartesian3.ZERO, this.user);
+                    }
+                    if (!subviewEntity.orientation) {
+                        subviewEntity.orientation = new ConstantProperty(Quaternion.IDENTITY);
+                    }
+                    return subviewEntity;
+                };
+                Object.defineProperty(Device$$1.prototype, "strict", {
                     get: function () {
-                        return this.stage['meta'] ? this.stage['meta'].geoHeadingAccuracy : undefined;
+                        return !!(this._overrideState && this._overrideState.strict) || this.displayMode === 'head' && !this._hasPolyfillWebVRDisplay();
                     },
                     enumerable: true,
                     configurable: true
                 });
-                Object.defineProperty(DeviceService$$1.prototype, "geoHorizontalAccuracy", {
-                    /**
-                     * The horizontal accuracy of the user's geopose
-                     */
+                Object.defineProperty(Device$$1.prototype, "suggestedUserHeight", {
                     get: function () {
-                        return this.stage['meta'] ? this.stage['meta'].geoHorizontalAccuracy : undefined;
+                        return this._overrideState && this._overrideState.suggestedUserHeight || this.displayMode === 'head' ? this.defaultUserHeight : this.defaultUserHeight / 2;
                     },
                     enumerable: true,
                     configurable: true
                 });
-                Object.defineProperty(DeviceService$$1.prototype, "geoVerticalAccuracy", {
-                    /**
-                     * The horizontal accuracy of the user's geopose
-                     */
+                Object.defineProperty(Device$$1.prototype, "hasSeparateRealityLayer", {
+                    // The device is able to render reality into a separate layer in the primary display
                     get: function () {
-                        return this.stage['meta'] ? this.stage['meta'].geoVerticalAccuracy : undefined;
+                        return this.vrDisplay && !!this.vrDisplay.displayName.match(/polyfill/g) || this.vrDisplay === undefined;
                     },
                     enumerable: true,
                     configurable: true
                 });
-                Object.defineProperty(DeviceService$$1.prototype, "geolocationDesired", {
-                    /**
-                     * To be removed.
-                     */
-                    get: function () {
-                        return this._parentState ? this._parentState.suggestedGeolocationSubscription || this._parentState.geolocationDesired : false;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(DeviceService$$1.prototype, "geolocationOptions", {
-                    /**
-                     * To be removed.
-                     */
-                    get: function () {
-                        return this._suggestedGeolocationSubscription;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                DeviceService$$1.prototype._setSuggestedGeolocationSubscription = function (options) {
-                    if (!jsonEquals(this._suggestedGeolocationSubscription, options)) {
-                        this._suggestedGeolocationSubscription = options;
-                        this.suggestedGeolocationSubscriptionChangeEvent.raiseEvent(undefined);
+                Device$$1.prototype._checkFrameStateListeners = function () {
+                    // if we have listeners, subscribe to device state, otherwise, unsubscribe
+                    var numListeners = this.frameStateEvent.numberOfListeners;
+                    var previousNumListeners = this._previousNumListeners;
+                    this._previousNumListeners = numListeners;
+                    if (typeof window === 'undefined' || !window.addEventListener) {
+                        if (previousNumListeners === 0 && numListeners === 1 && !this._running) {
+                            this._running = true;
+                            this.requestAnimationFrame(this._onUpdateFrameState);
+                        }
+                        return;
+                    }
+                    if (previousNumListeners === 0 && numListeners === 1) {
+                        if (this._useWebVR) {
+                            this._selectVRDisplay();
+                        } else {
+                            this.userTracking = isIOS || isAndroid ? '3DOF' : 'none';
+                            this.userTrackingChangeEvent.raiseEvent(undefined);
+                        }
+                        window.addEventListener('orientationchange', this._handleScreenOrientationChange);
+                        window.addEventListener('vrdisplaypresentchange', this._handleVRDisplayPresentChange);
+                        this.requestAnimationFrame(this._onUpdateFrameState);
+                    } else if (previousNumListeners === 1 && numListeners === 0) {
+                        var vrDisplay = this.vrDisplay;
+                        if (vrDisplay) {
+                            if (vrDisplay.isPresenting) vrDisplay.exitPresent();
+                            this.vrDisplay = undefined;
+                            this.vrDisplayChangeEvent.raiseEvent(undefined);
+                            this.userTracking = 'none';
+                            this.userTrackingChangeEvent.raiseEvent(undefined);
+                        }
+                        window.removeEventListener('orientationchange', this._handleScreenOrientationChange);
+                        window.removeEventListener('vrdisplaypresentchange', this._handleVRDisplayPresentChange);
                     }
                 };
-                Object.defineProperty(DeviceService$$1.prototype, "suggestedGeolocationSubscription", {
-                    get: function () {
-                        return this._suggestedGeolocationSubscription;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(DeviceService$$1.prototype, "suggestedUserHeight", {
-                    get: function () {
-                        return this._parentState && this._parentState.suggestedUserHeight || this.isPresentingHMD ? this.defaultUserHeight : this.defaultUserHeight / 2;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(DeviceService$$1.prototype, "strict", {
-                    get: function () {
-                        return !!(this._parentState && this._parentState.strict) || this.isPresentingHMD && !this._hasPolyfillWebVRDisplay() || false;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(DeviceService$$1.prototype, "userTracking", {
-                    /**
-                     * Returns the DOF support of the device.
-                     * "none"|"3DOF"|"6DOF"
-                     */
-                    get: function () {
-                        return this._userTracking;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(DeviceService$$1.prototype, "vrDisplay", {
-                    get: function () {
-                        return this._vrDisplay;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(DeviceService$$1.prototype, "vrDisplays", {
-                    get: function () {
-                        return this._vrDisplays;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(DeviceService$$1.prototype, "screenOrientationDegrees", {
-                    get: function () {
-                        return typeof window !== 'undefined' ? screen['orientation'] && -screen['orientation'].angle || -window.orientation || 0 : 0;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                DeviceService$$1.prototype.getScreenOrientationDegrees = function () {
-                    return this.getScreenOrientationDegrees;
-                };
-                /**
-                 * Start emmitting frameState events
-                 */
-                DeviceService$$1.prototype._startUpdates = function () {
+                Device$$1.prototype._selectVRDisplay = function () {
                     var _this = this;
-                    if (!this._updatingFrameState) this.requestAnimationFrame(this._updateFrameState);
-                    this._updatingFrameState = true;
-                    this.sessionService.manager.whenConnected().then(function () {
-                        if (_this.sessionService.manager.version[0] > 0) {
-                            _this.sessionService.manager.send('ar.device.startUpdates');
-                        }
+                    navigator.getVRDisplays().then(function (displays) {
+                        _this.vrDisplays = displays;
+                        var display = _this.vrDisplay = displays[0];
+                        if (!display) return;
+                        _this.userTracking = display.capabilities.hasPosition && display.capabilities.hasOrientation ? "6DOF" : "3DOF";
+                        _this.vrDisplaysUpdatedEvent.raiseEvent(undefined);
+                        _this.vrDisplayChangeEvent.raiseEvent(undefined);
+                        _this.userTrackingChangeEvent.raiseEvent(undefined);
                     });
                 };
-                /**
-                 * Stop emitting frameState events
-                 */
-                DeviceService$$1.prototype._stopUpdates = function () {
-                    var _this = this;
-                    this._updatingFrameState = false;
-                    this.sessionService.manager.whenConnected().then(function () {
-                        if (_this.sessionService.manager.version[0] > 0) {
-                            _this.sessionService.manager.send('ar.device.stopUpdates');
-                        }
-                    });
-                };
-                DeviceService$$1.prototype.onUpdateFrameState = function () {
+                Device$$1.prototype.onUpdateFrameState = function () {
                     this._updateViewport();
-                    if (this._vrDisplay && this._vrDisplay.isPresenting) {
+                    // use webvr if the current display is not an external display, 
+                    // or if it is an external display that is currently presenting
+                    if (this.vrDisplay && !this.vrDisplay.capabilities.hasExternalDisplay || this.vrDisplay && this.vrDisplay.capabilities.hasExternalDisplay && this.vrDisplay.isPresenting) {
                         this._updateForWebVR();
                     } else {
                         this._updateDefault();
                     }
                 };
-                DeviceService$$1.prototype._updateViewport = function () {
-                    var parentState = this._parentState;
+                Device$$1.prototype._updateViewport = function () {
+                    var overrideState = this._overrideState;
                     var state = this.frameState;
                     var viewport = state.viewport;
-                    if (parentState && parentState.viewport) {
-                        CanvasViewport.clone(parentState.viewport, viewport);
+                    if (overrideState && overrideState.viewport) {
+                        CanvasViewport.clone(overrideState.viewport, viewport);
                     } else {
-                        var element = this.viewService.element;
+                        var element = this.viewItems.element;
                         viewport.x = 0;
                         viewport.y = 0;
                         viewport.width = element && element.clientWidth || 0;
                         viewport.height = element && element.clientHeight || 0;
-                        var vrDisplay = this._vrDisplay;
+                        var vrDisplay = this.vrDisplay;
                         if (vrDisplay && vrDisplay.isPresenting) {
                             var leftEye = vrDisplay.getEyeParameters("left");
                             var rightEye = vrDisplay.getEyeParameters("right");
@@ -28617,18 +28557,18 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         }
                     }
                 };
-                DeviceService$$1.prototype._updateDefault = function () {
+                Device$$1.prototype._updateDefault = function () {
                     this._updateDefaultOrigin();
                     this._updateDefaultUser();
-                    var parentState = this._parentState;
+                    var overrideState = this._overrideState;
                     var frameState = this.frameState;
                     var viewport = frameState.viewport;
-                    if (parentState && parentState.viewport) {
-                        CanvasViewport.clone(parentState.viewport, viewport);
+                    if (overrideState && overrideState.viewport) {
+                        CanvasViewport.clone(overrideState.viewport, viewport);
                     }
                     var subviews = frameState.subviews;
-                    if (parentState && parentState.subviews) {
-                        SerializedSubviewList.clone(parentState.subviews, subviews);
+                    if (overrideState && overrideState.subviews) {
+                        SerializedSubviewList.clone(overrideState.subviews, subviews);
                     } else {
                         subviews.length = 1;
                         var subview = subviews[0] || {};
@@ -28649,7 +28589,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         subviewEntity.orientation.setValue(Quaternion.IDENTITY);
                     }
                 };
-                DeviceService$$1.prototype._updateDefaultOrigin = function () {
+                Device$$1.prototype._updateDefaultOrigin = function () {
                     var origin = this.origin;
                     var stage = this.stage;
                     var originPose = this._originPose;
@@ -28673,7 +28613,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     origin.position.setValue(Cartesian3.ZERO, stage);
                     origin.orientation.setValue(Quaternion.IDENTITY);
                 };
-                DeviceService$$1.prototype._updateDefaultUser = function () {
+                Device$$1.prototype._updateDefaultUser = function () {
                     var deviceUser = this.user;
                     var deviceStage = this.stage;
                     var deviceOrientation = this._deviceOrientation;
@@ -28691,8 +28631,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     deviceStage['meta'] = deviceStage['meta'] || {};
                     deviceStage['meta'].geoHeadingAccuracy = this._deviceOrientationHeadingAccuracy;
                 };
-                DeviceService$$1.prototype._updateForWebVR = function () {
-                    var vrDisplay = this._vrDisplay;
+                Device$$1.prototype._updateForWebVR = function () {
+                    var vrDisplay = this.vrDisplay;
                     if (!vrDisplay) throw new Error('No vr display!');
                     var frameState = this.frameState;
                     var vrFrameData = this._vrFrameData = this._vrFrameData || new VRFrameData();
@@ -28772,88 +28712,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         this.origin.orientation.setValue(Quaternion.IDENTITY);
                     }
                 };
-                DeviceService$$1.prototype._hasPolyfillWebVRDisplay = function () {
-                    return !!this._vrDisplay && !!this._vrDisplay.displayName.match(/polyfill/g);
-                };
-                DeviceService$$1.prototype.onRequestPresentHMD = function () {
-                    if (this._vrDisplay) {
-                        var element = this.viewService.element;
-                        var viewLayers = this.viewService.layers;
-                        var layers = [{
-                            source: viewLayers && viewLayers[0] && viewLayers[0].source || element.querySelector('canvas') || element.lastElementChild
-                        }];
-                        return this._vrDisplay.requestPresent(layers).catch(function (e) {
-                            throw e;
-                        });
-                    }
-                    throw new Error('No HMD available');
-                };
-                DeviceService$$1.prototype.onExitPresentHMD = function () {
-                    if (this._vrDisplay && this._vrDisplay.isPresenting) {
-                        return this._vrDisplay.exitPresent();
-                    }
-                    return Promise.resolve();
-                };
-                DeviceService$$1.prototype.createContextFrameState = function (time, viewport, subviewList, options) {
-                    return ArgonSystem.instance.context.createFrameState(time, viewport, subviewList, options);
-                };
-                DeviceService$$1.prototype.getSubviewEntity = function (index) {
-                    var subviewEntity = this.entityService.collection.getOrCreateEntity('ar.device.view_' + index);
-                    if (!subviewEntity.position) {
-                        subviewEntity.position = new ConstantPositionProperty(Cartesian3.ZERO, this.user);
-                    }
-                    if (!subviewEntity.orientation) {
-                        subviewEntity.orientation = new ConstantProperty(Quaternion.IDENTITY);
-                    }
-                    return subviewEntity;
-                };
-                DeviceService$$1.prototype.subscribeGeolocation = function (options, session) {
-                    if (session === void 0) {
-                        session = this.sessionService.manager;
-                    }
-                    return this.entityService.subscribe(this.stage.id, options, session).then(function () {});
-                };
-                DeviceService$$1.prototype.unsubscribeGeolocation = function (session) {
-                    if (session === void 0) {
-                        session = this.sessionService.manager;
-                    }
-                    this.entityService.unsubscribe(this.stage.id, session);
-                };
-                Object.defineProperty(DeviceService$$1.prototype, "isPresentingHMD", {
-                    /**
-                     * Is the view presenting to an HMD
-                     */
-                    get: function () {
-                        return this._parentState && this._parentState.isPresentingHMD || this._vrDisplay && this._vrDisplay.isPresenting || false;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(DeviceService$$1.prototype, "isPresentingRealityHMD", {
-                    /**
-                     * Is the current reality presenting to an HMD
-                     */
-                    get: function () {
-                        return this._parentState && this._parentState.isPresentingRealityHMD || this._vrDisplay && this._vrDisplay.isPresenting && !!this._vrDisplay.displayName.match(/polyfill/g) || false;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                DeviceService$$1.prototype.requestPresentHMD = function () {
-                    if (!this.sessionService.manager.isConnected) throw new Error('Session must be connected');
-                    if (this.sessionService.isRealityManager) {
-                        return this.onRequestPresentHMD();
-                    }
-                    return this.sessionService.manager.request('ar.device.requestPresentHMD');
-                };
-                DeviceService$$1.prototype.exitPresentHMD = function () {
-                    if (!this.sessionService.manager.isConnected) throw new Error('Session must be connected');
-                    if (this.sessionService.isRealityManager) {
-                        return this.onExitPresentHMD();
-                    }
-                    return this.sessionService.manager.request('ar.device.exitPresentHMD');
-                };
-                DeviceService$$1.prototype._tryOrientationUpdates = function () {
+                Device$$1.prototype._tryOrientationUpdates = function () {
                     var _this = this;
                     if (typeof window == 'undefined' || !window.addEventListener) return;
                     if (defined(this._deviceOrientationListener)) return;
@@ -28909,47 +28768,337 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         window.addEventListener('deviceorientation', this._deviceOrientationListener);
                     }
                 };
-                DeviceService$$1.prototype._setupVRPresentChangeHandler = function () {
+                Device$$1.prototype._hasPolyfillWebVRDisplay = function () {
+                    return !!this.vrDisplay && !!this.vrDisplay.displayName.match(/polyfill/g);
+                };
+                Object.defineProperty(Device$$1.prototype, "screenOrientationDegrees", {
+                    get: function () {
+                        return typeof window !== 'undefined' ? screen['orientation'] && -screen['orientation'].angle || -window.orientation || 0 : 0;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Device$$1.prototype.requestDisplayMode = function (mode) {
+                    if (this.displayMode === mode) return Promise.resolve();
+                    switch (mode) {
+                        case 'head':
+                            var vrDisplay = this.vrDisplay;
+                            var element = this.viewItems.element;
+                            var viewLayers = this.viewItems.layers;
+                            if (!element) return Promise.reject(new Error("A DOM element is required"));
+                            if (!vrDisplay) return Promise.reject(new Error());
+                            var layers = [{
+                                source: viewLayers && viewLayers[0] && viewLayers[0].source || element.querySelector('canvas') || element.lastElementChild
+                            }];
+                            return vrDisplay.requestPresent(layers);
+                        case 'hand':
+                            if (isIOS || isAndroid) {
+                                return this.vrDisplay && this.vrDisplay.isPresenting ? this.vrDisplay.exitPresent() : Promise.reject(new Error());
+                            }
+                        default:
+                            return Promise.reject(new Error());
+                    }
+                };
+                Device$$1.prototype._setState = function (state) {
+                    this._overrideState = state;
+                    if (this.userTracking !== state.userTracking) if (!jsonEquals(this.suggestedGeolocationSubscription, state.suggestedGeolocationSubscription)) {
+                        this.suggestedGeolocationSubscription = state.suggestedGeolocationSubscription;
+                        this.suggestedGeolocationSubscriptionChangeEvent.raiseEvent(undefined);
+                    }
+                };
+                return Device$$1;
+            }());
+
+            _export('Device', Device = __decorate$3([autoinject, __metadata$3("design:paramtypes", [typeof (_a$3 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$3 || Object, typeof (_b$3 = typeof EntityService !== "undefined" && EntityService) === "function" && _b$3 || Object, typeof (_c$2 = typeof ViewItems !== "undefined" && ViewItems) === "function" && _c$2 || Object])], Device));
+            /**
+             * The DeviceService provides the current device state
+             */
+
+            _export('DeviceService', DeviceService = function () {
+                function DeviceService$$1(sessionService, entityService, viewService, visibilityService, _device) {
                     var _this = this;
-                    if (typeof window !== 'undefined' && window.addEventListener) {
-                        this.viewService.viewportModeChangeEvent.addEventListener(function (mode) {
-                            if (mode === ViewportMode.PAGE && _this._vrDisplay && _this._vrDisplay.displayName.match(/polyfill/g)) _this.exitPresentHMD();
-                        });
-                        var currentCanvas_1;
-                        var previousPresentationMode_1;
-                        var handleVRDisplayPresentChange = function (e) {
-                            var viewService = _this.viewService;
-                            var display = e.display || e.detail.vrdisplay || e.detail.display;
-                            if (display) {
-                                if (display['hasPosition'] && display['hasOrientation']) {
-                                    _this._userTracking = '6DOF';
-                                    _this._vrDisplay = display;
-                                    if (display.displayName.match(/polyfill/g)) {
-                                        currentCanvas_1 = display.getLayers()[0].source;
-                                        if (currentCanvas_1) currentCanvas_1.classList.add('argon-interactive'); // for now, only use webvr when not in Argon
-                                        previousPresentationMode_1 = viewService.viewportMode;
-                                        viewService.desiredViewportMode = ViewportMode.IMMERSIVE;
-                                    }
-                                } else {
-                                    _this._userTracking = 'none';
-                                    if (currentCanvas_1 && display.displayName.match(/polyfill/g)) {
-                                        currentCanvas_1.classList.remove('argon-interactive'); // for now, only use webvr when not in Argon
-                                        currentCanvas_1 = undefined;
-                                        viewService.desiredViewportMode = previousPresentationMode_1;
-                                    }
-                                }
+                    this.sessionService = sessionService;
+                    this.entityService = entityService;
+                    this.viewService = viewService;
+                    this.visibilityService = visibilityService;
+                    this._device = _device;
+                    /**
+                     * If this is true (and we are presenting via webvr api), then
+                     * vrDisplay.submitFrame is called after the frameState event
+                     */
+                    this.autoSubmitFrame = true;
+                    /**
+                     * Device state for the current frame. This
+                     * is not updated unless the view is visible.
+                     */
+                    this.frameState = this._device.frameState;
+                    /**
+                     * An event that fires every time the device frameState is updated.
+                     */
+                    this.frameStateEvent = new Event$1();
+                    /**
+                     * An even that fires when the view starts or stops presenting to an HMD.
+                     * Deprecated. Use displayModeChangeEvent
+                     */
+                    this.presentHMDChangeEvent = this._device.displayModeChangeEvent;
+                    /**
+                     * An event that fires when the display changes
+                     */
+                    this.vrDisplayChangeEvent = this._device.vrDisplayChangeEvent;
+                    /**
+                     * An even that fires when the display mode changes
+                     */
+                    this.displayModeChangeEvent = this._device.displayModeChangeEvent;
+                    /*
+                     * An event that fires when the screen orientation changes
+                     */
+                    this.screenOrientationChangeEvent = this._device.screenOrientationChangeEvent;
+                    /*
+                     * An event that fires when userTracking state changes
+                     */
+                    this.userTrackingChangeEvent = this._device.userTrackingChangeEvent;
+                    /*
+                     * An event that fires when getVRDisplay() is finished
+                     */
+                    this.vrDisplaysUpdatedEvent = this._device.vrDisplaysUpdatedEvent;
+                    /**
+                     * A coordinate system representing the physical space in which the user is free to
+                     * move around, positioned on the surface the user is standing on,
+                     * where +X is east, +Y is up, and +Z is south (East-Up-South), if geolocation is known.
+                     * If the stage is not geolocated, then the +X and +Z directions are arbitrary.
+                     */
+                    this.stage = this._device.stage;
+                    /**
+                     * An entity representing the origin of the device coordinate system, +Y up.
+                     */
+                    this.origin = this._device.origin;
+                    /**
+                     * An entity representing the physical pose of the user,
+                     * where +X is right, +Y is up, and -Z is forward
+                     */
+                    this.user = this._device.user;
+                    /*
+                    * An event that fires when the screen orientation changes
+                    */
+                    this.suggestedGeolocationSubscriptionChangeEvent = this._device.suggestedGeolocationSubscriptionChangeEvent;
+                    /**
+                     * Request an animation frame callback for the current view.
+                     */
+                    this.requestAnimationFrame = this._device.requestAnimationFrame.bind(this._device);
+                    /**
+                     * Cancel an animation frame callback for the current view.
+                     */
+                    this.cancelAnimationFrame = this._device.cancelAnimationFrame.bind(this._device);
+                    this._onDeviceFrameEvent = function () {
+                        _this.frameStateEvent.raiseEvent(_this._device.frameState);
+                    };
+                    this.getSubviewEntity = this._device.getSubviewEntity.bind(this._device);
+                    this.entityService.collection.add(this.stage);
+                    this.entityService.collection.add(this.origin);
+                    this.entityService.collection.add(this.user);
+                    this.visibilityService.showEvent.addEventListener(function () {
+                        return _this._startUpdates();
+                    });
+                    this.visibilityService.hideEvent.addEventListener(function () {
+                        return _this._stopUpdates();
+                    });
+                    if (!this.sessionService.isRealityManager) {
+                        sessionService.manager.on['ar.device.state'] = sessionService.manager.on['ar.device.frameState'] = function (stableState) {
+                            // only apply device state if we the owning session
+                            if (_this._device.owner === _this.sessionService) {
+                                _this._device._setState(stableState);
                             }
                         };
-                        window.addEventListener('vrdisplaypresentchange', handleVRDisplayPresentChange);
                     }
+                }
+                Object.defineProperty(DeviceService$$1.prototype, "vrDisplay", {
+                    get: function () {
+                        return this._device.vrDisplay;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+
+                Object.defineProperty(DeviceService$$1.prototype, "vrDisplays", {
+                    get: function () {
+                        return this._device.vrDisplays;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+
+                Object.defineProperty(DeviceService$$1.prototype, "displayMode", {
+                    get: function () {
+                        return this._device.displayMode;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+
+                Object.defineProperty(DeviceService$$1.prototype, "screenOrientationDegrees", {
+                    get: function () {
+                        return this._device.screenOrientationDegrees;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(DeviceService$$1.prototype, "userTracking", {
+                    /**
+                     * Returns the DOF support of the device.
+                     * "none"|"3DOF"|"6DOF"
+                     */
+                    get: function () {
+                        return this._device.userTracking;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(DeviceService$$1.prototype, "geoHeadingAccuracy", {
+                    /**
+                     * The heading accuracy of the user's geopose
+                     */
+                    get: function () {
+                        return this.stage['meta'] ? this.stage['meta'].geoHeadingAccuracy : undefined;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(DeviceService$$1.prototype, "geoHorizontalAccuracy", {
+                    /**
+                     * The horizontal accuracy of the user's geopose
+                     */
+                    get: function () {
+                        return this.stage['meta'] ? this.stage['meta'].geoHorizontalAccuracy : undefined;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(DeviceService$$1.prototype, "geoVerticalAccuracy", {
+                    /**
+                     * The horizontal accuracy of the user's geopose
+                     */
+                    get: function () {
+                        return this.stage['meta'] ? this.stage['meta'].geoVerticalAccuracy : undefined;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(DeviceService$$1.prototype, "suggestedGeolocationSubscription", {
+                    get: function () {
+                        return this._device.suggestedGeolocationSubscription;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(DeviceService$$1.prototype, "suggestedUserHeight", {
+                    get: function () {
+                        return this._device.suggestedUserHeight;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(DeviceService$$1.prototype, "strict", {
+                    get: function () {
+                        return this._device.strict;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                /**
+                 * Start emmitting frameState events
+                 */
+                DeviceService$$1.prototype._startUpdates = function () {
+                    var _this = this;
+                    this.sessionService.manager.whenConnected().then(function () {
+                        if (_this.sessionService.manager.version[0] > 0) {
+                            _this.sessionService.manager.send('ar.device.startUpdates');
+                        }
+                    });
+                    this._device.frameStateEvent.addEventListener(this._onDeviceFrameEvent);
+                };
+                /**
+                 * Stop emitting frameState events
+                 */
+                DeviceService$$1.prototype._stopUpdates = function () {
+                    var _this = this;
+                    this.sessionService.manager.whenConnected().then(function () {
+                        if (_this.sessionService.manager.version[0] > 0) {
+                            _this.sessionService.manager.send('ar.device.stopUpdates');
+                        }
+                    });
+                    this._device.frameStateEvent.removeEventListener(this._onDeviceFrameEvent);
+                };
+                DeviceService$$1.prototype.onRequestPresentHMD = function () {
+                    return this._device.requestDisplayMode('head');
+                };
+                DeviceService$$1.prototype.onExitPresentHMD = function () {
+                    return this._device.requestDisplayMode('hand');
+                };
+                DeviceService$$1.prototype.createContextFrameState = function (time, viewport, subviewList, options) {
+                    return ArgonSystem.instance.context.createFrameState(time, viewport, subviewList, options);
+                };
+                DeviceService$$1.prototype.subscribeGeolocation = function (options, session) {
+                    if (session === void 0) {
+                        session = this.sessionService.manager;
+                    }
+                    return this.entityService.subscribe(this.stage.id, options, session).then(function () {});
+                };
+                DeviceService$$1.prototype.unsubscribeGeolocation = function (session) {
+                    if (session === void 0) {
+                        session = this.sessionService.manager;
+                    }
+                    this.entityService.unsubscribe(this.stage.id, session);
+                };
+                Object.defineProperty(DeviceService$$1.prototype, "isPresentingHMD", {
+                    /**
+                     * Is the view presenting to an HMD.
+                     * Same as `displayMode === 'head'`.
+                     */
+                    get: function () {
+                        return this._device.displayMode === 'head';
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(DeviceService$$1.prototype, "isPresentingRealityHMD", {
+                    /**
+                     * Is the current reality presenting to an HMD.
+                     * Same as `displayMode === 'head' && `hasSeparateRealityLayer === true`.
+                     */
+                    get: function () {
+                        return this._device.displayMode === 'head' && this._device.hasSeparateRealityLayer;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(DeviceService$$1.prototype, "hasSeparateRealityLayer", {
+                    get: function () {
+                        return this._device.hasSeparateRealityLayer;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                DeviceService$$1.prototype.requestPresentHMD = function () {
+                    if (!this.sessionService.manager.isConnected) throw new Error('Session must be connected');
+                    if (this.sessionService.isRealityManager) {
+                        return this.onRequestPresentHMD();
+                    }
+                    return this.sessionService.manager.request('ar.device.requestPresentHMD');
+                };
+                DeviceService$$1.prototype.exitPresentHMD = function () {
+                    if (!this.sessionService.manager.isConnected) throw new Error('Session must be connected');
+                    if (this.sessionService.isRealityManager) {
+                        return this.onExitPresentHMD();
+                    }
+                    return this.sessionService.manager.request('ar.device.exitPresentHMD');
                 };
                 return DeviceService$$1;
             }());
 
-            __decorate$3([deprecated$1(), __metadata$3("design:type", Object), __metadata$3("design:paramtypes", [])], DeviceService.prototype, "geolocationDesired", null);
-            __decorate$3([deprecated$1(), __metadata$3("design:type", Object), __metadata$3("design:paramtypes", [])], DeviceService.prototype, "geolocationOptions", null);
-            __decorate$3([deprecated$1(), __metadata$3("design:type", Function), __metadata$3("design:paramtypes", [typeof (_a$3 = typeof JulianDate !== "undefined" && JulianDate) === "function" && _a$3 || Object, typeof (_b$3 = typeof CanvasViewport !== "undefined" && CanvasViewport) === "function" && _b$3 || Object, typeof (_c$2 = typeof SerializedSubviewList !== "undefined" && SerializedSubviewList) === "function" && _c$2 || Object, Object]), __metadata$3("design:returntype", Object)], DeviceService.prototype, "createContextFrameState", null);
-            _export('DeviceService', DeviceService = __decorate$3([autoinject(), __metadata$3("design:paramtypes", [typeof (_d$2 = typeof SessionService !== "undefined" && SessionService) === "function" && _d$2 || Object, typeof (_e$2 = typeof EntityService !== "undefined" && EntityService) === "function" && _e$2 || Object, typeof (_f$1 = typeof ViewService !== "undefined" && ViewService) === "function" && _f$1 || Object, typeof (_g$1 = typeof VisibilityService !== "undefined" && VisibilityService) === "function" && _g$1 || Object])], DeviceService));
+            __decorate$3([deprecated$1(), __metadata$3("design:type", Function), __metadata$3("design:paramtypes", [typeof (_d$2 = typeof JulianDate !== "undefined" && JulianDate) === "function" && _d$2 || Object, typeof (_e$2 = typeof CanvasViewport !== "undefined" && CanvasViewport) === "function" && _e$2 || Object, typeof (_f$1 = typeof SerializedSubviewList !== "undefined" && SerializedSubviewList) === "function" && _f$1 || Object, Object]), __metadata$3("design:returntype", Object)], DeviceService.prototype, "createContextFrameState", null);
+            _export('DeviceService', DeviceService = __decorate$3([singleton(true) // register in child container
+
+            , __metadata$3("design:paramtypes", [typeof (_g$1 = typeof SessionService !== "undefined" && SessionService) === "function" && _g$1 || Object, typeof (_h$1 = typeof EntityService !== "undefined" && EntityService) === "function" && _h$1 || Object, typeof (_j$1 = typeof ViewService !== "undefined" && ViewService) === "function" && _j$1 || Object, typeof (_k$1 = typeof VisibilityService !== "undefined" && VisibilityService) === "function" && _k$1 || Object, Device])], DeviceService));
             /**
              *
              */
@@ -28963,8 +29112,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     this.entityService = entityService;
                     this.entityServiceProvider = entityServiceProvider;
                     this._subscribers = {};
-                    this._needsPublish = false;
-                    this._publishTime = new JulianDate(0, 0);
+                    this.needsPublish = false;
                     this._stableState = new DeviceStableState$$1();
                     this._targetGeolocationOptions = {};
                     this._sessionGeolocationOptions = new Map();
@@ -29011,7 +29159,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                                 _this._checkDeviceGeolocationSubscribers();
                             }
                         });
-                        _this._needsPublish = true;
+                        _this.needsPublish = true;
                     });
                     this.entityServiceProvider.sessionSubscribedEvent.addEventListener(function (_a) {
                         var id = _a.id,
@@ -29026,34 +29174,55 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         var id = _a.id;
                         if (_this.deviceService.stage.id === id) _this._checkDeviceGeolocationSubscribers();
                     });
-                    this.deviceService.suggestedGeolocationSubscriptionChangeEvent.addEventListener(function () {
-                        _this._needsPublish = true;
-                    });
-                    this.viewService.viewportChangeEvent.addEventListener(function () {
-                        _this._needsPublish = true;
-                    });
-                    this.viewService.viewportModeChangeEvent.addEventListener(function () {
-                        _this._needsPublish = true;
-                    });
-                    this.deviceService.screenOrientationChangeEvent.addEventListener(function () {
-                        _this._needsPublish = true;
+                    var setNeedsPublish = function () {
+                        return _this.needsPublish = true;
+                    };
+                    this.deviceService.suggestedGeolocationSubscriptionChangeEvent.addEventListener(setNeedsPublish);
+                    this.deviceService.screenOrientationChangeEvent.addEventListener(setNeedsPublish);
+                    this.deviceService.userTrackingChangeEvent.addEventListener(setNeedsPublish);
+                    this.deviceService.displayModeChangeEvent.addEventListener(setNeedsPublish);
+                    this.viewService.viewportChangeEvent.addEventListener(setNeedsPublish);
+                    this.viewService.viewportModeChangeEvent.addEventListener(setNeedsPublish);
+                    var previousViewportMode = this.viewService.viewportMode;
+                    this.deviceService.displayModeChangeEvent.addEventListener(function () {
+                        // if device mode changes to 'head', enter immersive viewport mode
+                        if (_this.deviceService.displayMode === 'head') {
+                            var vrDisplay = _this.deviceService.vrDisplay;
+                            if (vrDisplay && vrDisplay.displayName.match(/polyfill/g)) {
+                                var layers = viewService.layers;
+                                var baseLayer = layers && layers[0];
+                                var canvas = baseLayer && baseLayer.source;
+                                if (canvas) canvas.classList.add('argon-interactive');
+                                previousViewportMode = viewService.viewportMode;
+                                viewService.desiredViewportMode = ViewportMode.IMMERSIVE;
+                            }
+                        } else {
+                            var layers = viewService.layers;
+                            var baseLayer = layers && layers[0];
+                            var canvas = baseLayer && baseLayer.source;
+                            if (canvas) canvas.classList.remove('argon-interactive');
+                            viewService.desiredViewportMode = previousViewportMode;
+                        }
                     });
                     this.deviceService.frameStateEvent.addEventListener(function (state) {
-                        if (_this._needsPublish || _this._stableState.isPresentingHMD !== _this.deviceService.isPresentingHMD || _this._stableState.isPresentingRealityHMD !== _this.deviceService.isPresentingRealityHMD || CanvasViewport.equals(_this._stableState.viewport, state.viewport) === false) {
-                            _this._needsPublish = true;
+                        if (_this.needsPublish || _this._stableState.isPresentingHMD !== _this.deviceService.isPresentingHMD || _this._stableState.isPresentingRealityHMD !== _this.deviceService.isPresentingRealityHMD || CanvasViewport.equals(_this._stableState.viewport, state.viewport) === false) {
+                            _this.needsPublish = true;
                         } else if (_this._stableState.subviews) {
                             if (_this._stableState.subviews.length === state.subviews.length) {
                                 for (var i = 0; i < state.subviews.length; i++) {
                                     if (!SerializedSubview.equals(state.subviews[i], _this._stableState.subviews[i])) {
-                                        _this._needsPublish = true;
+                                        _this.needsPublish = true;
                                         break;
                                     }
                                 }
                             } else {
-                                _this._needsPublish = true;
+                                _this.needsPublish = true;
                             }
                         }
-                        if (_this._needsPublish) _this.publishStableState();
+                        if (_this.needsPublish) _this.publishStableState();
+                    });
+                    this.viewService.viewportModeChangeEvent.addEventListener(function (mode) {
+                        if (mode === ViewportMode.PAGE && _this.deviceService.vrDisplay && _this.deviceService.vrDisplay.displayName.match(/polyfill/g)) _this.deviceService.exitPresentHMD();
                     });
                 }
                 DeviceServiceProvider$$1.prototype.handleRequestPresentHMD = function (session) {
@@ -29071,21 +29240,17 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     stableState.strict = this.deviceService.strict;
                     stableState.viewport = CanvasViewport.clone(this.deviceService.frameState.viewport, stableState.viewport);
                     stableState.subviews = SerializedSubviewList.clone(this.deviceService.frameState.subviews, stableState.subviews);
+                    stableState.displayMode = this.deviceService.displayMode;
+                    stableState.userTracking = this.deviceService.userTracking;
                     this.onUpdateStableState(this._stableState);
-                    // send stable state to each subscribed session 
-                    JulianDate.now(this._publishTime);
+                    // send stable state to each subscribed session
                     for (var id in this._subscribers) {
                         var session = this._subscribers[id];
                         if (session.version[0] > 0 && session !== this.sessionService.manager) {
-                            for (var k in stableState.entities) {
-                                delete stableState.entities[k];
-                            }
-
-                            this.entityServiceProvider.fillEntityStateMapForSession(session, this._publishTime, stableState.entities);
                             session.send('ar.device.state', stableState);
                         }
                     }
-                    this._needsPublish = false;
+                    this.needsPublish = false;
                 };
                 DeviceServiceProvider$$1.prototype.onUpdateStableState = function (stableState) {};
                 DeviceServiceProvider$$1.prototype._checkDeviceGeolocationSubscribers = function () {
@@ -29107,7 +29272,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         this.onStopGeolocationUpdates();
                         this._currentGeolocationOptions = undefined;
                     }
-                    this._needsPublish = true;
+                    this.needsPublish = true;
                 };
                 DeviceServiceProvider$$1.prototype.configureStage = function (cartographic, geoHorizontalAccuracy, geoVerticalAccuracy) {
                     var _this = this;
@@ -29160,7 +29325,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return DeviceServiceProvider$$1;
             }());
 
-            _export('DeviceServiceProvider', DeviceServiceProvider = __decorate$3([autoinject(), __metadata$3("design:paramtypes", [typeof (_h$1 = typeof SessionService !== "undefined" && SessionService) === "function" && _h$1 || Object, DeviceService, typeof (_j$1 = typeof ViewService !== "undefined" && ViewService) === "function" && _j$1 || Object, typeof (_k$1 = typeof EntityService !== "undefined" && EntityService) === "function" && _k$1 || Object, typeof (_l$1 = typeof EntityServiceProvider !== "undefined" && EntityServiceProvider) === "function" && _l$1 || Object])], DeviceServiceProvider));
+            _export('DeviceServiceProvider', DeviceServiceProvider = __decorate$3([autoinject(), __metadata$3("design:paramtypes", [typeof (_l$1 = typeof SessionService !== "undefined" && SessionService) === "function" && _l$1 || Object, DeviceService, typeof (_m$1 = typeof ViewService !== "undefined" && ViewService) === "function" && _m$1 || Object, typeof (_o$1 = typeof EntityService !== "undefined" && EntityService) === "function" && _o$1 || Object, typeof (_p$1 = typeof EntityServiceProvider !== "undefined" && EntityServiceProvider) === "function" && _p$1 || Object])], DeviceServiceProvider));
 
             _export('RealityViewer', RealityViewer = function () {
                 function RealityViewer(uri) {
@@ -29610,6 +29775,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                                 _this.visibilityServiceProvider.set(viewerSession, viewer_1.isPresenting);
                             });
                             _this.visibilityServiceProvider.set(viewerSession, viewer_1.isPresenting);
+                            console.log('set visibile : ' + viewer_1.uri);
                             viewerSession.closeEvent.addEventListener(function () {
                                 removePresentChangeListener();
                                 _this.entityService.collection.removeById(viewerSession.uri);
@@ -30401,7 +30567,6 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     var overrideUser = options && options.overrideUser;
                     if (this.deviceService.strict) {
                         if (overrideUser) {
-                            console.warn('The `overrideUser` flag is set, but the device is in strict mode');
                             overrideUser = false;
                         }
                     }
@@ -30427,11 +30592,12 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         entities[view.id] = getSerializedEntityState$$1(view, time, user);
                     }
                     // subviews
-                    for (var index = 0; index < subviewList.length; index++) {
-                        // check for valid projection matrices
-                        var subview = subviewList[index];
-                        if (!isFinite(subview.projectionMatrix[0])) throw new Error('Invalid projection matrix (contains non-finite values)');
-                        if (options && options.overrideSubviews) {
+                    if (options && options.overrideSubviews) {
+                        for (var index = 0; index < subviewList.length; index++) {
+                            // check for valid projection matrices
+                            var subview = subviewList[index];
+                            if (!isFinite(subview.projectionMatrix[0])) throw new Error('Invalid projection matrix (contains non-finite values)');
+                            // subview
                             var subviewEntity = this.getSubviewEntity(index);
                             entities[subviewEntity.id] = getSerializedEntityState$$1(subviewEntity, time, view);
                         }
@@ -30728,15 +30894,13 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                             _this.contextService.unsubscribeGeolocation();
                         }
                     });
-                    // publish updates to child sessions
-                    this.contextService.updateEvent.addEventListener(function () {
-                        _this._publishUpdates();
-                    });
+                    // submit frame state from reality
                     this.realityServiceProvider.nextFrameStateEvent.addEventListener(function (frameState) {
                         _this.contextService.submitFrameState(frameState);
+                        _this._publishFrameState(); // publish frame state to child sessions
                     });
                 }
-                ContextServiceProvider.prototype._publishUpdates = function () {
+                ContextServiceProvider.prototype._publishFrameState = function () {
                     var state = this.contextService.serializedFrameState;
                     this._cacheTime = JulianDate.clone(state.time, this._cacheTime);
                     for (var _i = 0, _a = this.sessionService.managedSessions; _i < _a.length; _i++) {
@@ -30827,7 +30991,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return ContextServiceProvider;
             }());
 
-            _export('ContextServiceProvider', ContextServiceProvider = __decorate$10([autoinject(), __metadata$10("design:paramtypes", [typeof (_j$2 = typeof SessionService !== "undefined" && SessionService) === "function" && _j$2 || Object, ContextService, typeof (_k$2 = typeof EntityServiceProvider !== "undefined" && EntityServiceProvider) === "function" && _k$2 || Object, typeof (_l$2 = typeof PermissionServiceProvider !== "undefined" && PermissionServiceProvider) === "function" && _l$2 || Object, typeof (_m$1 = typeof RealityServiceProvider !== "undefined" && RealityServiceProvider) === "function" && _m$1 || Object])], ContextServiceProvider));
+            _export('ContextServiceProvider', ContextServiceProvider = __decorate$10([autoinject(), __metadata$10("design:paramtypes", [typeof (_j$2 = typeof SessionService !== "undefined" && SessionService) === "function" && _j$2 || Object, ContextService, typeof (_k$2 = typeof EntityServiceProvider !== "undefined" && EntityServiceProvider) === "function" && _k$2 || Object, typeof (_l$2 = typeof PermissionServiceProvider !== "undefined" && PermissionServiceProvider) === "function" && _l$2 || Object, typeof (_m$2 = typeof RealityServiceProvider !== "undefined" && RealityServiceProvider) === "function" && _m$2 || Object])], ContextServiceProvider));
 
             __extends$2 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -31111,12 +31275,11 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _export('EmptyRealityViewer', EmptyRealityViewer = function (_super) {
                 __extends$3(EmptyRealityViewer, _super);
-                function EmptyRealityViewer(sessionService, viewService, container, deviceService, uri) {
+                function EmptyRealityViewer(sessionService, viewService, container, uri) {
                     var _this = _super.call(this, uri) || this;
                     _this.sessionService = sessionService;
                     _this.viewService = viewService;
                     _this.container = container;
-                    _this.deviceService = deviceService;
                     _this.uri = uri;
                     _this.type = 'empty';
                     _this.userTracking = '6DOF';
@@ -31186,6 +31349,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 }
                 EmptyRealityViewer.prototype.load = function () {
                     var _this = this;
+                    console.log('loading');
                     // Create a child container so that we can conveniently setup all the services
                     // that would exist in a normal hosted reality viewer 
                     var child = this.container.createChild();
@@ -31260,7 +31424,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         };
                         checkSuggestedGeolocationSubscription();
                         var remove1 = childDeviceService.suggestedGeolocationSubscriptionChangeEvent.addEventListener(checkSuggestedGeolocationSubscription);
-                        var remove2 = _this.deviceService.frameStateEvent.addEventListener(function (frameState) {
+                        var remove2 = childDeviceService.frameStateEvent.addEventListener(function (frameState) {
                             if (childSessionService.manager.isClosed) return;
                             var aggregator = _this._aggregator;
                             var flags = _this._moveFlags;
@@ -31364,7 +31528,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return EmptyRealityViewer;
             }(RealityViewer));
 
-            _export('EmptyRealityViewer', EmptyRealityViewer = __decorate$12([inject(SessionService, ViewService, Container, DeviceService), __metadata$12("design:paramtypes", [typeof (_a$12 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$12 || Object, typeof (_b$12 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$12 || Object, typeof (_c$7 = typeof Container !== "undefined" && Container) === "function" && _c$7 || Object, typeof (_d$6 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _d$6 || Object, String])], EmptyRealityViewer));
+            _export('EmptyRealityViewer', EmptyRealityViewer = __decorate$12([inject(SessionService, ViewService, Container), __metadata$12("design:paramtypes", [typeof (_a$12 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$12 || Object, typeof (_b$12 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$12 || Object, typeof (_c$7 = typeof Container !== "undefined" && Container) === "function" && _c$7 || Object, String])], EmptyRealityViewer));
 
             __extends$4 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -31521,7 +31685,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return LiveRealityViewer;
             }(RealityViewer));
 
-            _export('LiveRealityViewer', LiveRealityViewer = __decorate$13([inject(SessionService, ViewService, ContextService, DeviceService), __metadata$13("design:paramtypes", [typeof (_a$13 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$13 || Object, typeof (_b$13 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$13 || Object, typeof (_c$8 = typeof ContextService !== "undefined" && ContextService) === "function" && _c$8 || Object, typeof (_d$7 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _d$7 || Object, String])], LiveRealityViewer));
+            _export('LiveRealityViewer', LiveRealityViewer = __decorate$13([inject(SessionService, ViewService, ContextService, DeviceService), __metadata$13("design:paramtypes", [typeof (_a$13 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$13 || Object, typeof (_b$13 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$13 || Object, typeof (_c$8 = typeof ContextService !== "undefined" && ContextService) === "function" && _c$8 || Object, typeof (_d$6 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _d$6 || Object, String])], LiveRealityViewer));
 
             __extends$5 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -32123,7 +32287,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return WebRTCRealityViewer;
             }(RealityViewer));
 
-            _export('WebRTCRealityViewer', WebRTCRealityViewer = __decorate$15([inject(SessionService, ViewService, ContextService, Container), __metadata$15("design:paramtypes", [typeof (_a$15 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$15 || Object, typeof (_b$15 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$15 || Object, typeof (_c$9 = typeof ContextService !== "undefined" && ContextService) === "function" && _c$9 || Object, typeof (_d$8 = typeof Container !== "undefined" && Container) === "function" && _d$8 || Object, String])], WebRTCRealityViewer));
+            _export('WebRTCRealityViewer', WebRTCRealityViewer = __decorate$15([inject(SessionService, ViewService, ContextService, Container), __metadata$15("design:paramtypes", [typeof (_a$15 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$15 || Object, typeof (_b$15 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$15 || Object, typeof (_c$9 = typeof ContextService !== "undefined" && ContextService) === "function" && _c$9 || Object, typeof (_d$7 = typeof Container !== "undefined" && Container) === "function" && _d$7 || Object, String])], WebRTCRealityViewer));
 
             integrateCustomARToolKit = function () {
                 /**
@@ -32590,7 +32754,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         });
                     });
                     // Check if the browser supports Tango    
-                    var remove = childDeviceService.getVRDisplayFinishedEvent.addEventListener(function () {
+                    var remove = childDeviceService.vrDisplaysUpdatedEvent.addEventListener(function () {
                         var vrDisplays = childDeviceService.vrDisplays;
                         if (vrDisplays && vrDisplays.length > 0) {
                             for (var i = 0; !_this._vrDisplay && i < vrDisplays.length; i++) {
@@ -32710,7 +32874,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 return TangoRealityViewer;
             }(RealityViewer));
 
-            _export('TangoRealityViewer', TangoRealityViewer = __decorate$16([inject(SessionService, ViewService, ContextService, Container, DeviceService), __metadata$16("design:paramtypes", [typeof (_a$16 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$16 || Object, typeof (_b$16 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$16 || Object, typeof (_c$10 = typeof ContextService !== "undefined" && ContextService) === "function" && _c$10 || Object, typeof (_d$9 = typeof Container !== "undefined" && Container) === "function" && _d$9 || Object, typeof (_e$6 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _e$6 || Object, String, Object])], TangoRealityViewer));
+            _export('TangoRealityViewer', TangoRealityViewer = __decorate$16([inject(SessionService, ViewService, ContextService, Container, DeviceService), __metadata$16("design:paramtypes", [typeof (_a$16 = typeof SessionService !== "undefined" && SessionService) === "function" && _a$16 || Object, typeof (_b$16 = typeof ViewService !== "undefined" && ViewService) === "function" && _b$16 || Object, typeof (_c$10 = typeof ContextService !== "undefined" && ContextService) === "function" && _c$10 || Object, typeof (_d$8 = typeof Container !== "undefined" && Container) === "function" && _d$8 || Object, typeof (_e$6 = typeof DeviceService !== "undefined" && DeviceService) === "function" && _e$6 || Object, String, Object])], TangoRealityViewer));
 
             __decorate = undefined && undefined.__decorate || function (decorators, target, key, desc) {
                 var c = arguments.length,
@@ -32793,31 +32957,37 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                             document.documentElement.classList.add('argon-reality-manager');
                         }
                         // add/remove document-level css classes
-                        this.focus.focusEvent.addEventListener(function () {
-                            document.documentElement.classList.remove('argon-no-focus');
-                            document.documentElement.classList.remove('argon-blur');
-                            document.documentElement.classList.add('argon-focus');
+                        this.focus.focusEvent.on(function () {
+                            _this.context.renderEvent.onNext(function () {
+                                document.documentElement.classList.remove('argon-no-focus');
+                                document.documentElement.classList.remove('argon-blur');
+                                document.documentElement.classList.add('argon-focus');
+                            });
                         });
-                        this.focus.blurEvent.addEventListener(function () {
-                            document.documentElement.classList.remove('argon-focus');
-                            document.documentElement.classList.add('argon-blur');
-                            document.documentElement.classList.add('argon-no-focus');
+                        this.focus.blurEvent.on(function () {
+                            _this.context.renderEvent.onNext(function () {
+                                document.documentElement.classList.remove('argon-focus');
+                                document.documentElement.classList.add('argon-blur');
+                                document.documentElement.classList.add('argon-no-focus');
+                            });
                         });
                         this.view.viewportModeChangeEvent.addEventListener(function (mode) {
-                            switch (mode) {
-                                case ViewportMode.EMBEDDED:
-                                    var elementStyle = _this.view.element.style;
-                                    elementStyle.position = '';
-                                    elementStyle.left = '0px';
-                                    elementStyle.bottom = '0px';
-                                    elementStyle.width = '100%';
-                                    elementStyle.height = '100%';
-                                    document.documentElement.classList.remove('argon-immersive');
-                                    break;
-                                case ViewportMode.IMMERSIVE:
-                                    document.documentElement.classList.add('argon-immersive');
-                                    break;
-                            }
+                            _this.context.renderEvent.onNext(function () {
+                                switch (mode) {
+                                    case ViewportMode.EMBEDDED:
+                                        var elementStyle = _this.view.element.style;
+                                        elementStyle.position = '';
+                                        elementStyle.left = '0px';
+                                        elementStyle.bottom = '0px';
+                                        elementStyle.width = '100%';
+                                        elementStyle.height = '100%';
+                                        document.documentElement.classList.remove('argon-immersive');
+                                        break;
+                                    case ViewportMode.IMMERSIVE:
+                                        document.documentElement.classList.add('argon-immersive');
+                                        break;
+                                }
+                            });
                         });
                         // Setup event forwarding / synthesizing
                         if (this.session.isRealityViewer) {
@@ -32827,6 +32997,20 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                                 if (_this.session.manager.isConnected && _this.session.manager.version[0] >= 1) _this.session.manager.send('ar.view.forwardUIEvent', event);
                             });
                             this.view._watchEmbeddedViewport();
+                        }
+                        if (!this.session.isRealityManager) {
+                            this.view.viewportChangeEvent.addEventListener(function (viewport) {
+                                _this.context.renderEvent.onNext(function () {
+                                    if (_this.view.element && _this.view.autoLayoutImmersiveMode && _this.view.viewportMode === ViewportMode.IMMERSIVE) {
+                                        var elementStyle = _this.view.element.style;
+                                        elementStyle.position = 'fixed';
+                                        elementStyle.left = viewport.x + 'px';
+                                        elementStyle.bottom = viewport.y + 'px';
+                                        elementStyle.width = viewport.width + 'px';
+                                        elementStyle.height = viewport.height + 'px';
+                                    }
+                                });
+                            });
                         }
                         this.context.renderEvent.addEventListener(function () {
                             if (_this.view.autoStyleLayerElements) {
@@ -32847,18 +33031,6 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                                 }
                             }
                         });
-                        if (!this.session.isRealityManager) {
-                            this.view.viewportChangeEvent.addEventListener(function (viewport) {
-                                if (_this.view.element && _this.view.autoLayoutImmersiveMode && _this.view.viewportMode === ViewportMode.IMMERSIVE) {
-                                    var elementStyle = _this.view.element.style;
-                                    elementStyle.position = 'fixed';
-                                    elementStyle.left = viewport.x + 'px';
-                                    elementStyle.bottom = viewport.y + 'px';
-                                    elementStyle.width = viewport.width + 'px';
-                                    elementStyle.height = viewport.height + 'px';
-                                }
-                            });
-                        }
                     }
                 };
                 Object.defineProperty(ArgonSystem.prototype, "suggestedPixelRatio", {
@@ -32931,7 +33103,10 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                     this.container = container;
                     this.elementOrSelector = elementOrSelector;
                     container.registerInstance(Configuration, configuration);
-                    if (Role.isRealityManager(configuration.role)) container.registerSingleton(ArgonSystemProvider);
+                    if (Role.isRealityManager(configuration.role)) {
+                        console.log('adding providers');
+                        container.registerSingleton(ArgonSystemProvider);
+                    }
                     var element = elementOrSelector;
                     if (!element || typeof element === 'string') {
                         if (typeof document !== 'undefined') {
@@ -32948,7 +33123,6 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                                 throw new Error('Unable to find element with selector: ' + selector);
                             }
                         } else {
-                            console.warn('No DOM environment is available');
                             element = undefined;
                         }
                     }
@@ -33006,6 +33180,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 }
 
                 DefaultRealityFactory.prototype.createRealityViewer = function (uri) {
+                    console.log('creating ' + uri);
                     switch (RealityViewer.getType(uri)) {
                         case RealityViewer.EMPTY:
                             return this.container.invoke(EmptyRealityViewer, [uri]);
@@ -33097,6 +33272,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
 
             _export('DeviceFrameState', DeviceFrameState$$1);
 
+            _export('Device', Device);
+
             _export('DeviceService', DeviceService);
 
             _export('DeviceServiceProvider', DeviceServiceProvider);
@@ -33168,6 +33345,8 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
             _export('decomposePerspectiveProjectionMatrix', decomposePerspectiveProjectionMatrix);
 
             _export('convertEntityReferenceFrame', convertEntityReferenceFrame);
+
+            _export('isArgonApp', isArgonApp);
 
             _export('isIOS', isIOS);
 

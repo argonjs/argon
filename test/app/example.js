@@ -1,55 +1,50 @@
-// import * as Argon from '@argonjs/argon'
-// import * as Argon from '../dist/src/argon'
 import * as Argon from '../../src/argon';
 window['Argon'] = Argon;
-export var app = Argon.init();
-export var scene = new THREE.Scene();
-export var camera = new THREE.PerspectiveCamera();
-export var user = new THREE.Object3D();
-export var userLocation = new THREE.Object3D;
+var app = window['app'] = Argon.init();
+var scene = new THREE.Scene();
+var camera = new THREE.PerspectiveCamera();
+var user = new THREE.Object3D();
+var stage = new THREE.Object3D;
 scene.add(camera);
 scene.add(user);
-scene.add(userLocation);
+scene.add(stage);
 var renderer = new THREE.WebGLRenderer({
     alpha: true,
     logarithmicDepthBuffer: true
 });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-app.view.element.appendChild(renderer.domElement);
-renderer.domElement.style.width = '100%';
-renderer.domElement.style.height = '100%';
-// app.context.setDefaultReferenceFrame(app.context.localOriginEastUpSouth);
-app.context.setDefaultReferenceFrame(app.context.localOriginEastNorthUp);
+app.view.setLayers([
+    { source: renderer.domElement }
+]);
 var geometry = new THREE.SphereGeometry(30, 32, 32);
 var mat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-export var posXSphere = new THREE.Mesh(geometry, mat);
+var posXSphere = new THREE.Mesh(geometry, mat);
 posXSphere.position.x = 200;
-userLocation.add(posXSphere);
+stage.add(posXSphere);
 mat = new THREE.MeshBasicMaterial({ color: 0xffaaaa });
-export var negXSphere = new THREE.Mesh(geometry, mat);
+var negXSphere = new THREE.Mesh(geometry, mat);
 negXSphere.position.x = -200;
-userLocation.add(negXSphere);
+stage.add(negXSphere);
 mat = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-export var posYSphere = new THREE.Mesh(geometry, mat);
+var posYSphere = new THREE.Mesh(geometry, mat);
 posYSphere.position.y = 200;
-userLocation.add(posYSphere);
+stage.add(posYSphere);
 mat = new THREE.MeshBasicMaterial({ color: 0xaaffaa });
-export var negYSphere = new THREE.Mesh(geometry, mat);
+var negYSphere = new THREE.Mesh(geometry, mat);
 negYSphere.position.y = -200;
-userLocation.add(negYSphere);
+stage.add(negYSphere);
 mat = new THREE.MeshBasicMaterial({ color: 0x0000ff });
-export var posZSphere = new THREE.Mesh(geometry, mat);
+var posZSphere = new THREE.Mesh(geometry, mat);
 posZSphere.position.z = 200;
-userLocation.add(posZSphere);
+stage.add(posZSphere);
 mat = new THREE.MeshBasicMaterial({ color: 0xaaaaff });
-export var negZSphere = new THREE.Mesh(geometry, mat);
+var negZSphere = new THREE.Mesh(geometry, mat);
 negZSphere.position.z = -200;
-userLocation.add(negZSphere);
+stage.add(negZSphere);
 var axisHelper = new THREE.AxisHelper(10);
-userLocation.add(axisHelper);
+stage.add(axisHelper);
 axisHelper.position.z = 50;
 var axisHelper = new THREE.AxisHelper(10);
-userLocation.add(axisHelper);
+stage.add(axisHelper);
 axisHelper.position.y = -50;
 // var textShapes = THREE.FontUtils.generateShapes( "PosZ", options );
 // var text = new THREE.ShapeGeometry( textShapes );
@@ -77,11 +72,9 @@ app.vuforia.init({
                 if (stonesPose.status & Argon.PoseStatus.KNOWN) {
                     stonesObject.position.copy(stonesPose.position);
                     stonesObject.quaternion.copy(stonesPose.orientation);
-                }
-                if (stonesPose.status & Argon.PoseStatus.FOUND) {
                     stonesObject.add(box);
                 }
-                else if (stonesPose.status & Argon.PoseStatus.LOST) {
+                else {
                     stonesObject.remove(box);
                 }
             });
@@ -91,11 +84,11 @@ app.vuforia.init({
 });
 app.updateEvent.addEventListener(function () {
     var userPose = app.context.getEntityPose(app.context.user);
-    if (userPose.status & Argon.PoseStatus.KNOWN) {
-        user.position.copy(userPose.position);
-        user.quaternion.copy(userPose.orientation);
-        userLocation.position.copy(userPose.position);
-    }
+    user.position.copy(userPose.position);
+    user.quaternion.copy(userPose.orientation);
+    var stagePose = app.context.getEntityPose(app.context.stage);
+    stage.position.copy(stagePose.position);
+    stage.quaternion.copy(stagePose.orientation);
 });
 app.renderEvent.addEventListener(function () {
     // css renderer, if used:

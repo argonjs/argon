@@ -60,11 +60,13 @@ export declare class Device {
     defaultUserHeight: number;
     readonly suggestedUserHeight: number;
     readonly hasSeparateRealityLayer: boolean;
-    checkFrameStateListeners(): void;
+    private _running;
+    private _previousNumListeners;
+    private _checkFrameStateListeners();
     private _selectVRDisplay();
     private _handleScreenOrientationChange;
     private _handleVRDisplayPresentChange;
-    private _onUpdateFrameState();
+    private _onUpdateFrameState;
     onUpdateFrameState(): void;
     private _updateViewport();
     private _updateDefault();
@@ -129,7 +131,7 @@ export declare class DeviceService {
      */
     presentHMDChangeEvent: Event<void>;
     /**
-     * An even that fires when the display changes
+     * An event that fires when the display changes
      */
     vrDisplayChangeEvent: Event<void>;
     readonly vrDisplay: VRDisplay | undefined;
@@ -186,11 +188,11 @@ export declare class DeviceService {
     /**
      * Request an animation frame callback for the current view.
      */
-    requestAnimationFrame: (callback: (timestamp: number) => void) => number;
+    requestAnimationFrame: any;
     /**
      * Cancel an animation frame callback for the current view.
      */
-    cancelAnimationFrame: (id: number) => void;
+    cancelAnimationFrame: any;
     /**
      * Start emmitting frameState events
      */
@@ -199,7 +201,7 @@ export declare class DeviceService {
      * Stop emitting frameState events
      */
     private _stopUpdates();
-    private _onDeviceFrameEvent();
+    private _onDeviceFrameEvent;
     protected onRequestPresentHMD(): Promise<void>;
     protected onExitPresentHMD(): Promise<void>;
     createContextFrameState(time: JulianDate, viewport: CanvasViewport, subviewList: SerializedSubviewList, options?: {
@@ -209,7 +211,7 @@ export declare class DeviceService {
         floorOffset?: number;
         userTracking?: 'none' | '3DOF' | '6DOF';
     }): any;
-    getSubviewEntity: (index: number) => Entity;
+    getSubviewEntity: any;
     subscribeGeolocation(options?: GeolocationOptions, session?: SessionPort): Promise<void>;
     unsubscribeGeolocation(session?: SessionPort): void;
     /**

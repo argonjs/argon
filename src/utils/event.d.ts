@@ -17,7 +17,13 @@ export declare class Event<T> {
       * @param The function to be executed when the event is raised.
       * @return A convenience function which removes this event listener when called
       */
-    addEventListener: (listener: (data: T) => void) => RemoveCallback;
+    addEventListener: (listener: (data: T) => void, scope?: any) => RemoveCallback;
+    /**
+      * Add an event listener that is removed after the next event is raised.
+      * @param The function to be executed when the event is raised.
+      * @return A convenience function which removes this event listener when called
+      */
+    onNext(listener: (data: T) => void, scope?: any): void;
     /**
      * Remove an event listener.
      * @param The function to be unregistered.
@@ -30,4 +36,12 @@ export declare class Event<T> {
      * @param This method takes any number of parameters and passes them through to the listener functions.
      */
     raiseEvent: (data: T) => void;
+    /**
+     * Alias for addEventListener;
+     */
+    on: (listener: (data: T) => void, scope?: any) => RemoveCallback;
+    /**
+     * Alias for removeEventListener;
+     */
+    off: (listener: (data: T) => void) => boolean;
 }
