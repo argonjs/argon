@@ -26543,7 +26543,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-27");
+            _export('version', version = "1.4.0-28");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -28524,9 +28524,10 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 };
                 Device$$1.prototype.onUpdateFrameState = function () {
                     this._updateViewport();
-                    // use webvr if the current display is not an external display, 
-                    // or if it is an external display that is currently presenting
-                    if (this.vrDisplay && !this.vrDisplay.capabilities.hasExternalDisplay || this.vrDisplay && this.vrDisplay.capabilities.hasExternalDisplay && this.vrDisplay.isPresenting) {
+                    // use webvr if the current display is not an external display and can't present, 
+                    // or if it is currently presenting
+                    var vrDisp = this.vrDisplay;
+                    if (vrDisp && vrDisp.capabilities.hasExternalDisplay === false && vrDisp.capabilities.canPresent === false || vrDisp && vrDisp.isPresenting) {
                         this._updateForWebVR();
                     } else {
                         this._updateDefault();

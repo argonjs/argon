@@ -1,13 +1,15 @@
 import * as Argon from '../../src/argon';
 window['Argon'] = Argon;
 var app = window['app'] = Argon.init();
-var scene = new THREE.Scene();
-var camera = new THREE.PerspectiveCamera();
-var user = new THREE.Object3D();
-var stage = new THREE.Object3D;
+var scene = window['app'] = new THREE.Scene();
+var camera = window['camera'] = new THREE.PerspectiveCamera();
+var user = window['user'] = new THREE.Object3D();
+var stage = window['stage'] = new THREE.Object3D;
+var center = window['center'] = new THREE.Object3D;
 scene.add(camera);
 scene.add(user);
 scene.add(stage);
+stage.add(center);
 var renderer = new THREE.WebGLRenderer({
     alpha: true,
     logarithmicDepthBuffer: true
@@ -15,37 +17,33 @@ var renderer = new THREE.WebGLRenderer({
 app.view.setLayers([
     { source: renderer.domElement }
 ]);
-var geometry = new THREE.SphereGeometry(30, 32, 32);
+var geometry = new THREE.SphereGeometry(0.1, 32, 32);
 var mat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
 var posXSphere = new THREE.Mesh(geometry, mat);
-posXSphere.position.x = 200;
-stage.add(posXSphere);
+posXSphere.position.x = 1;
+center.add(posXSphere);
 mat = new THREE.MeshBasicMaterial({ color: 0xffaaaa });
 var negXSphere = new THREE.Mesh(geometry, mat);
-negXSphere.position.x = -200;
-stage.add(negXSphere);
+negXSphere.position.x = -1;
+center.add(negXSphere);
 mat = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 var posYSphere = new THREE.Mesh(geometry, mat);
-posYSphere.position.y = 200;
-stage.add(posYSphere);
+posYSphere.position.y = 1;
+center.add(posYSphere);
 mat = new THREE.MeshBasicMaterial({ color: 0xaaffaa });
 var negYSphere = new THREE.Mesh(geometry, mat);
-negYSphere.position.y = -200;
-stage.add(negYSphere);
+negYSphere.position.y = -1;
+center.add(negYSphere);
 mat = new THREE.MeshBasicMaterial({ color: 0x0000ff });
 var posZSphere = new THREE.Mesh(geometry, mat);
-posZSphere.position.z = 200;
-stage.add(posZSphere);
+posZSphere.position.z = 1;
+center.add(posZSphere);
 mat = new THREE.MeshBasicMaterial({ color: 0xaaaaff });
 var negZSphere = new THREE.Mesh(geometry, mat);
-negZSphere.position.z = -200;
-stage.add(negZSphere);
-var axisHelper = new THREE.AxisHelper(10);
-stage.add(axisHelper);
-axisHelper.position.z = 50;
-var axisHelper = new THREE.AxisHelper(10);
-stage.add(axisHelper);
-axisHelper.position.y = -50;
+negZSphere.position.z = -1;
+center.add(negZSphere);
+var axisHelper = new THREE.AxisHelper(0.1);
+center.add(axisHelper);
 // var textShapes = THREE.FontUtils.generateShapes( "PosZ", options );
 // var text = new THREE.ShapeGeometry( textShapes );
 // var textMesh = new THREE.Mesh( text, new THREE.MeshBasicMaterial( { color: 0xff0000 } ) ) ;
@@ -82,6 +80,13 @@ app.vuforia.init({
         api.objectTracker.activateDataSet(id);
     });
 });
+// On first update event, set the scene center based on the initial user height 
+app.updateEvent.onNext(function () {
+    var userStagePose = app.context.getEntityPose(app.context.user, app.context.stage);
+    var userHeightOnStage = userStagePose.position.y;
+    center.position.y = userHeightOnStage;
+});
+// On every update event, update user and stage pose
 app.updateEvent.addEventListener(function () {
     var userPose = app.context.getEntityPose(app.context.user);
     user.position.copy(userPose.position);
