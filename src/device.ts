@@ -328,8 +328,9 @@ export class Device {
         // use webvr if the current display is not an external display and can't present, 
         // or if it is currently presenting
         const vrDisp = this.vrDisplay;
-        if (vrDisp && vrDisp.capabilities.hasExternalDisplay === false && vrDisp.capabilities.canPresent === false || 
-            vrDisp && vrDisp.isPresenting) {
+        if (vrDisp && vrDisp.isPresenting ||
+                vrDisp && !vrDisp.capabilities.hasExternalDisplay && 
+                !vrDisp.capabilities.canPresent && vrDisp.displayName.indexOf('polyfill') === -1) {
             this._updateForWebVR();
         } else {
             this._updateDefault();
