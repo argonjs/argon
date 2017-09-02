@@ -621,8 +621,13 @@ export class ContextService {
             const deviceOriginOrientationValue =  this._getEntityOrientationInReferenceFrame(deviceOrigin, time, deviceUser, this._scratchQuaternion);
             const contextOriginPosition = contextOrigin.position as ConstantPositionProperty;
             const contextOriginOrientation = contextOrigin.orientation as ConstantProperty;
-            contextOriginPosition.setValue(deviceOriginPositionValue, contextUser);
-            contextOriginOrientation.setValue(deviceOriginOrientationValue);
+            if (deviceOriginPositionValue && deviceOriginOrientationValue) {
+                contextOriginPosition.setValue(deviceOriginPositionValue, contextUser);
+                contextOriginOrientation.setValue(deviceOriginOrientationValue);
+            } else {
+                contextOriginPosition.setValue(Cartesian3.ZERO, contextStage);
+                contextOriginOrientation.setValue(Quaternion.IDENTITY);
+            }
         }
 
         // update view entity (if the reality did not set it)
