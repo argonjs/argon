@@ -26543,7 +26543,7 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-29");
+            _export('version', version = "1.4.0-30");
 
             __extends = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -30699,8 +30699,13 @@ $__System.register('1', ['2', '3', '3b', '4', '9', '10', 'a', '1f', '32', '41', 
                         var deviceOriginOrientationValue = this._getEntityOrientationInReferenceFrame(deviceOrigin, time, deviceUser, this._scratchQuaternion);
                         var contextOriginPosition = contextOrigin.position;
                         var contextOriginOrientation = contextOrigin.orientation;
-                        contextOriginPosition.setValue(deviceOriginPositionValue, contextUser);
-                        contextOriginOrientation.setValue(deviceOriginOrientationValue);
+                        if (deviceOriginPositionValue && deviceOriginOrientationValue) {
+                            contextOriginPosition.setValue(deviceOriginPositionValue, contextUser);
+                            contextOriginOrientation.setValue(deviceOriginOrientationValue);
+                        } else {
+                            contextOriginPosition.setValue(Cartesian3.ZERO, contextStage);
+                            contextOriginOrientation.setValue(Quaternion.IDENTITY);
+                        }
                     }
                     // update view entity (if the reality did not set it)
                     var contextView = this.view;
