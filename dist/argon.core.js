@@ -21397,7 +21397,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-33");
+            _export('version', version = "1.4.0-34");
 
             __extends$1 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -24720,8 +24720,9 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                             viewer.destroy();
                             this.uninstalledEvent.raiseEvent({ viewer: viewer });
                         }
+                    } else {
+                        return Promise.reject(new Error("Unable to uninstall a reality viewer which is not installed"));
                     }
-                    return Promise.reject(new Error("Unable to uninstall a reality viewer which is not installed"));
                 };
                 RealityServiceProvider.prototype._handleRequest = function (session, options) {
                     if (this.focusServiceProvider.session === session || session === this.sessionService.manager) {
@@ -27950,6 +27951,19 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                             if (_this.view.autoStyleLayerElements) {
                                 var layers = _this.view.layers;
                                 if (!layers) return;
+                                var viewport = _this.view.viewport;
+                                var zIndex = 1;
+                                for (var _i = 0, layers_1 = layers; _i < layers_1.length; _i++) {
+                                    var layer = layers_1[_i];
+                                    var layerStyle = layer.source.style;
+                                    layerStyle.position = 'absolute';
+                                    layerStyle.left = viewport.x + 'px';
+                                    layerStyle.bottom = viewport.y + 'px';
+                                    layerStyle.width = viewport.width + 'px';
+                                    layerStyle.height = viewport.height + 'px';
+                                    layerStyle.zIndex = '' + zIndex;
+                                    zIndex++;
+                                }
                             }
                         });
                     }

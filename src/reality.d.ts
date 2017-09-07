@@ -141,7 +141,7 @@ export declare class RealityServiceProvider {
     private _scratchFrustum;
     private _handleInstall(session, uri);
     private _connectViewerWithSession(viewerSession, session);
-    protected _handleUninstall(session: SessionPort, uri: string): Promise<never>;
+    protected _handleUninstall(session: SessionPort, uri: string): Promise<never> | undefined;
     protected _handleRequest(session: SessionPort, options: {
         uri: string;
     }): Promise<void>;
