@@ -239,6 +239,7 @@ export declare class ContextService {
     getSubviewEntity(index: number): Entity;
     subscribeGeolocation(options?: GeolocationOptions): Promise<void>;
     unsubscribeGeolocation(): void;
+    private _getInheritedMetaProperty(entity, metaPropKey);
     /**
      * If geopose is available, this is the accuracy of the user heading
      */
