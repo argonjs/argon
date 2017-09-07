@@ -210,18 +210,18 @@ export class ArgonSystem {
                     const layers = this.view.layers;
                     if (!layers) return;
 
-                    // const viewport = this.view.viewport;
-                    // let zIndex = 1;
-                    // for (const layer of layers) {
-                    //     const layerStyle = layer.source.style;
-                    //     layerStyle.position = 'absolute';
-                    //     layerStyle.left = viewport.x + 'px';
-                    //     layerStyle.bottom = viewport.y + 'px';
-                    //     layerStyle.width = viewport.width + 'px';
-                    //     layerStyle.height = viewport.height + 'px';
-                    //     layerStyle.zIndex = '' + zIndex;
-                    //     zIndex++;
-                    // }
+                    const viewport = this.view.viewport;
+                    let zIndex = 1;
+                    for (const layer of layers) {
+                        const layerStyle = layer.source.style;
+                        layerStyle.position = 'absolute';
+                        layerStyle.left = viewport.x + 'px';
+                        layerStyle.bottom = viewport.y + 'px';
+                        layerStyle.width = viewport.width + 'px';
+                        layerStyle.height = viewport.height + 'px';
+                        layerStyle.zIndex = '' + zIndex;
+                        zIndex++;
+                    }
                 }
             });
         }
