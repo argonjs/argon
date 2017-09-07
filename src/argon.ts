@@ -244,7 +244,7 @@ export class ArgonSystem {
         return this._provider;
     }
 
-    // events
+    // event shortcuts
 
     public get updateEvent(): Event<any> {
         return this.context.updateEvent;
@@ -260,6 +260,74 @@ export class ArgonSystem {
 
     public get blurEvent(): Event<void> {
         return this.focus.blurEvent;
+    }
+
+    // entity shortcuts
+
+    public get stage() : Cesium.Entity {
+        return this.context.stage;
+    }
+    
+    public get stageEUS() : Cesium.Entity {
+        return this.context.stageEUS;
+    }
+    
+    public get stageENU() : Cesium.Entity {
+        return this.context.stageENU;
+    }
+
+    public get user() : Cesium.Entity {
+        return this.context.user;
+    }
+
+    // method shorcuts
+
+    public getEntityPose : typeof ContextService.prototype.getEntityPose = 
+        this.context.getEntityPose.bind(this.context);
+
+    public subscribeGeolocation : typeof ContextService.prototype.subscribeGeolocation = 
+        this.context.subscribeGeolocation.bind(this.context);
+    
+    public unsubscribeGeolocation : typeof ContextService.prototype.unsubscribeGeolocation = 
+        this.context.unsubscribeGeolocation.bind(this.context);
+
+    // other shorcuts
+
+    /**
+     * The mode of the current display. This can be either
+     * 'hand' for handheld display mode, 'head' for a head-mounted mode,
+     * or 'other'.
+     */
+    public get displayMode() {
+        return this.device.displayMode;
+    }
+
+    /**
+     * The DOF supported by the current reality.
+     */
+    public get userTracking() {
+        return this.context.userTracking;
+    }
+
+    /**
+     * If geopose is available, this is the accuracy of the user heading
+     */
+    public get geoHeadingAccuracy() {
+        return this.context.geoHeadingAccuracy;
+    }
+
+    /**
+     * If geopose is available, this is the vertical accuracy of the user geolocation
+     */
+    public get geoVerticalAccuracy() {
+        return this.context.geoVerticalAccuracy;
+    }
+
+    /**
+     * If geopose is available, this is the vertical accuracy of the user geolocation
+     */
+    public get geoHorizontalAccuracy() {
+        return this.context.geoHorizontalAccuracy;
     }
 
     public destroy() {
