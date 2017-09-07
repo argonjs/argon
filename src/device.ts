@@ -123,7 +123,7 @@ export class Device {
     public origin: Entity = new Entity({
         id: 'ar.device.origin',
         name: 'Device Origin',
-        position: new DynamicPositionProperty(undefined, ReferenceFrame.FIXED),
+        position: new DynamicPositionProperty(undefined, this.deviceGeolocation),
         orientation: new DynamicProperty(undefined)
     });
     
@@ -137,7 +137,7 @@ export class Device {
     public user: Entity = new Entity({
         id: 'ar.device.user',
         name: 'Device User',
-        position: new DynamicPositionProperty(undefined, this.deviceOrientation),
+        position: new DynamicPositionProperty(undefined, this.origin),
         orientation: new DynamicProperty(undefined)
     });
 
@@ -504,8 +504,10 @@ export class Device {
             return;
         }
 
-        (origin.position as DynamicPositionProperty).setValue(Cartesian3.ZERO, deviceGeolocation);
-        (origin.orientation as DynamicProperty).setValue(Quaternion.IDENTITY);
+        if ((deviceGeolocationPose.status & PoseStatus.KNOWN) === 0) {
+            (origin.position as DynamicPositionProperty).setValue(Cartesian3.ZERO, deviceGeolocation);
+            (origin.orientation as DynamicProperty).setValue(Quaternion.IDENTITY);
+        }
     }
 
     private _vrFrameData?:any;
