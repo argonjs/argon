@@ -238,7 +238,7 @@
   "standard-version": {
     "scripts": {
       "prebump": "npm run check-git-status",
-      "postbump": "npm run build && git add -u",
+      "postbump": "npm run build-full && git add -u",
       "posttag": "git push --follow-tags"
     }
   },
