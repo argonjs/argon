@@ -65,12 +65,14 @@ export declare class SessionPort {
      */
     readonly version: number[];
     private _version;
+    readonly versionNumber: number;
     static OPEN: string;
     static CLOSE: string;
     static ERROR: string;
     private _isOpened;
     private _isConnected;
     private _isClosed;
+    private _shouldStringify;
     constructor(uri?: string | undefined);
     /**
      * Check if a protocol is supported by this session.
@@ -83,6 +85,7 @@ export declare class SessionPort {
      * @param options the configuration which describes this [[ArgonSystem]].
      */
     open(messagePort: MessagePortLike, options: Configuration): void;
+    private _packet;
     /**
      * Send a message
      * @param topic the message topic.

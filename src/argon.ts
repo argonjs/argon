@@ -210,18 +210,18 @@ export class ArgonSystem {
                     const layers = this.view.layers;
                     if (!layers) return;
 
-                    const viewport = this.view.viewport;
-                    let zIndex = 1;
-                    for (const layer of layers) {
-                        const layerStyle = layer.source.style;
-                        layerStyle.position = 'absolute';
-                        layerStyle.left = viewport.x + 'px';
-                        layerStyle.bottom = viewport.y + 'px';
-                        layerStyle.width = viewport.width + 'px';
-                        layerStyle.height = viewport.height + 'px';
-                        layerStyle.zIndex = '' + zIndex;
-                        zIndex++;
-                    }
+                    // const viewport = this.view.viewport;
+                    // let zIndex = 1;
+                    // for (const layer of layers) {
+                    //     const layerStyle = layer.source.style;
+                    //     layerStyle.position = 'absolute';
+                    //     layerStyle.left = viewport.x + 'px';
+                    //     layerStyle.bottom = viewport.y + 'px';
+                    //     layerStyle.width = viewport.width + 'px';
+                    //     layerStyle.height = viewport.height + 'px';
+                    //     layerStyle.zIndex = '' + zIndex;
+                    //     zIndex++;
+                    // }
                 }
             });
         }
@@ -284,7 +284,6 @@ export class ArgonContainerManager {
         container.registerInstance(Configuration, configuration);
         
         if (Role.isRealityManager(configuration.role)) {
-            console.log('adding providers')
             container.registerSingleton(ArgonSystemProvider);
         }
 

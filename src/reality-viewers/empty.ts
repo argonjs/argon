@@ -126,7 +126,6 @@ export class EmptyRealityViewer extends RealityViewer {
     private _scratchMatrix4 = new Matrix4;
 
     public load(): void {
-        console.log('loading');
         // Create a child container so that we can conveniently setup all the services
         // that would exist in a normal hosted reality viewer 
         const child = this.container.createChild();

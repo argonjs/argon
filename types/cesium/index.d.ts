@@ -4417,21 +4417,21 @@ declare module 'cesium' {
 
     function jsonp(url: string, options?: { parameters?: any; callbackParameterName?: string; proxy?: any }): Promise<any>;
 
-    function loadArrayBuffer(url: string | Promise<string>, headers?: any): Promise<ArrayBuffer>;
+    function loadArrayBuffer(url: string | Promise<string>, headers?: any, request?:any): Promise<ArrayBuffer>;
+    
+    function loadBlob(url: string | Promise<string>, headers?: any, request?:any): Promise<Blob>;
 
-    function loadBlob(url: string | Promise<string>, headers?: any): Promise<Blob>;
+    function loadImage(url: string | Promise<string>, allowCrossOrigin?: boolean, request?:any): Promise<HTMLImageElement>;
 
-    function loadImage(url: string | Promise<string>, allowCrossOrigin?: boolean): Promise<HTMLImageElement>;
+    function loadImageViaBlob(url: string | Promise<string>, request?:any): Promise<HTMLImageElement>;
 
-    function loadImageViaBlob(url: string | Promise<string>): Promise<HTMLImageElement>;
+    function loadJson(url: string | Promise<string>, headers?: any, request?:any): Promise<any>;
 
-    function loadJson(url: string | Promise<string>, headers?: any): Promise<any>;
-
-    function loadText(url: string | Promise<string>, headers?: any): Promise<string>;
+    function loadText(url: string | Promise<string>, headers?: any, request?:any): Promise<string>;
 
     function loadWithXhr(options: { url: string | Promise<string>; responseType?: string; method?: string; data?: string; headers?: any; overrideMimeType?: string }): Promise<any>;
 
-    function loadXML(url: string | Promise<string>, headers?: any): Promise<XMLDocument>;
+    function loadXML(url: string | Promise<string>, headers?: any, request?:any): Promise<XMLDocument>;
 
     function mergeSort(array: any[], comparator: mergeSort.Comparator, userDefinedObject?: any);
 

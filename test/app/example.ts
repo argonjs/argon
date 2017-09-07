@@ -11,7 +11,9 @@ window['Argon'] = Argon;
 
 const app = window['app'] = Argon.init();
 
-const scene = window['app'] = new THREE.Scene();
+app.context.subscribeGeolocation();
+
+const scene = window['scene'] = new THREE.Scene();
 const camera = window['camera'] = new THREE.PerspectiveCamera();
 const user = window['user'] = new THREE.Object3D();
 const stage = window['stage'] = new THREE.Object3D;

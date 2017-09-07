@@ -1,6 +1,7 @@
 /// <reference types="cesium" />
 /// <reference types="webvr-api" />
 import { Entity, Cartesian3, JulianDate, PerspectiveFrustum, Cartographic } from './cesium/cesium-imports';
+import { ContextFrameState } from './common';
 import { EntityService, EntityServiceProvider } from './entity';
 import { SessionService, SessionPort } from './session';
 import { CanvasViewport, SerializedSubviewList, GeolocationOptions } from './common';
@@ -47,8 +48,10 @@ export declare class Device {
     displayModeChangeEvent: Event<void>;
     screenOrientationChangeEvent: Event<void>;
     suggestedGeolocationSubscriptionChangeEvent: Event<void>;
-    stage: Entity;
+    deviceGeolocation: Entity;
+    deviceOrientation: Entity;
     origin: Entity;
+    stage: Entity;
     user: Entity;
     getSubviewEntity(index: number): Entity;
     constructor(owner: SessionService, entityService: EntityService, viewItems: ViewItems);
@@ -70,12 +73,9 @@ export declare class Device {
     onUpdateFrameState(): void;
     private _updateViewport();
     private _updateDefault();
-    private _stringIdentifierFromReferenceFrame;
-    private _getReachableAncestorReferenceFrames;
-    private _scratchArray;
-    private _originPose;
-    private _updateDefaultOrigin();
+    private _updateDefaultStage();
     private _updateDefaultUser();
+    private _updateDefaultOrigin();
     private _vrFrameData?;
     private _scratchQuaternion;
     private _scratchQuaternion2;
@@ -85,7 +85,6 @@ export declare class Device {
     private _defaultRightBounds;
     private _updateForWebVR();
     private _deviceOrientationListener;
-    private _deviceOrientation;
     private _deviceOrientationHeadingAccuracy;
     private _negX90;
     private _tryOrientationUpdates();
@@ -99,8 +98,27 @@ export declare class Device {
      * Cancel an animation frame callback
      */
     cancelAnimationFrame: ((id: number) => void);
-    requestDisplayMode(mode: 'head' | 'hand'): Promise<void>;
+    requestHeadDisplayMode(): Promise<void>;
+    exitHeadDisplayMode(): Promise<void>;
     _setState(state: DeviceStableState): void;
+    private _contextFrameState;
+    _setFrameState(state: ContextFrameState): void;
+    private _scratchGeolocationCartesian;
+    private _scratchGeolocationMatrix4;
+    private _srcatchGeolocationMatrix3;
+    private _scratchGeolocationQuaternion;
+    private _eastUpSouthToFixedFrame;
+    protected onGeolocationUpdate(cartographic: Cartographic, geoHorizontalAccuracy?: number, geoVerticalAccuracy?: number): void;
+    private _geolocationWatchId?;
+    private _scratchCartographic;
+    /**
+     * Overridable. Should call configureStage when new geolocation is available
+     */
+    startGeolocationUpdates(options: GeolocationOptions): void;
+    /**
+     * Overridable.
+     */
+    stopGeolocationUpdates(): void;
 }
 /**
  * The DeviceService provides the current device state
@@ -237,8 +255,9 @@ export declare class DeviceServiceProvider {
     protected viewService: ViewService;
     protected entityService: EntityService;
     protected entityServiceProvider: EntityServiceProvider;
+    protected device: Device;
     private _subscribers;
-    constructor(sessionService: SessionService, deviceService: DeviceService, viewService: ViewService, entityService: EntityService, entityServiceProvider: EntityServiceProvider);
+    constructor(sessionService: SessionService, deviceService: DeviceService, viewService: ViewService, entityService: EntityService, entityServiceProvider: EntityServiceProvider, device: Device);
     protected handleRequestPresentHMD(session: SessionPort): Promise<void>;
     protected handleExitPresentHMD(session: SessionPort): Promise<void>;
     needsPublish: boolean;
@@ -249,20 +268,4 @@ export declare class DeviceServiceProvider {
     private _targetGeolocationOptions;
     private _sessionGeolocationOptions;
     private _checkDeviceGeolocationSubscribers();
-    private _sctachStageCartesian;
-    private _scatchStageMatrix4;
-    private _scatchStageMatrix3;
-    private _scatchStageQuaternion;
-    private _eastUpSouthToFixedFrame;
-    protected configureStage(cartographic: Cartographic, geoHorizontalAccuracy?: number, geoVerticalAccuracy?: number): void;
-    private _geolocationWatchId?;
-    private _scratchCartographic;
-    /**
-     * Overridable. Should call configureStage when new geolocation is available
-     */
-    onStartGeolocationUpdates(options: GeolocationOptions): void;
-    /**
-     * Overridable.
-     */
-    onStopGeolocationUpdates(): void;
 }

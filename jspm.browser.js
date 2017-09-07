@@ -12,15 +12,16 @@ SystemJS.config({
         "github:aelatgt/cesium@referenceFrames/Source/Core/AttributeCompression.js": [
             "./Cartesian2",
             "./Cartesian3",
+            "./Check",
             "./defined",
             "./DeveloperError",
             "./Math"
         ],
         "github:aelatgt/cesium@referenceFrames/Source/Core/AxisAlignedBoundingBox.js": [
             "./Cartesian3",
+            "./Check",
             "./defaultValue",
             "./defined",
-            "./DeveloperError",
             "./Intersect"
         ],
         "github:aelatgt/cesium@referenceFrames/Source/Core/BoundingSphere.js": [
@@ -63,9 +64,9 @@ SystemJS.config({
         ],
         "github:aelatgt/cesium@referenceFrames/Source/Core/Cartographic.js": [
             "./Cartesian3",
+            "./Check",
             "./defaultValue",
             "./defined",
-            "./DeveloperError",
             "./freezeObject",
             "./Math",
             "./scaleToGeodeticSurface"
@@ -108,6 +109,15 @@ SystemJS.config({
             "./DeveloperError",
             "./QuadraticRealPolynomial"
         ],
+        "github:aelatgt/cesium@referenceFrames/Source/Core/CullingVolume.js": [
+            "./Cartesian3",
+            "./Cartesian4",
+            "./defaultValue",
+            "./defined",
+            "./DeveloperError",
+            "./Intersect",
+            "./Plane"
+        ],
         "github:aelatgt/cesium@referenceFrames/Source/Core/DeveloperError.js": [
             "./defined"
         ],
@@ -128,6 +138,7 @@ SystemJS.config({
         "github:aelatgt/cesium@referenceFrames/Source/Core/Ellipsoid.js": [
             "./Cartesian3",
             "./Cartographic",
+            "./Check",
             "./defaultValue",
             "./defined",
             "./defineProperties",
@@ -139,10 +150,10 @@ SystemJS.config({
         "github:aelatgt/cesium@referenceFrames/Source/Core/EllipsoidGeodesic.js": [
             "./Cartesian3",
             "./Cartographic",
+            "./Check",
             "./defaultValue",
             "./defined",
             "./defineProperties",
-            "./DeveloperError",
             "./Ellipsoid",
             "./Math"
         ],
@@ -165,16 +176,16 @@ SystemJS.config({
         "github:aelatgt/cesium@referenceFrames/Source/Core/EllipsoidalOccluder.js": [
             "./BoundingSphere",
             "./Cartesian3",
+            "./Check",
             "./defaultValue",
             "./defined",
             "./defineProperties",
-            "./DeveloperError",
             "./Rectangle"
         ],
         "github:aelatgt/cesium@referenceFrames/Source/Core/Event.js": [
+            "./Check",
             "./defined",
-            "./defineProperties",
-            "./DeveloperError"
+            "./defineProperties"
         ],
         "github:aelatgt/cesium@referenceFrames/Source/Core/ExtrapolationType.js": [
             "./freezeObject"
@@ -199,10 +210,10 @@ SystemJS.config({
         ],
         "github:aelatgt/cesium@referenceFrames/Source/Core/GeographicTilingScheme.js": [
             "./Cartesian2",
+            "./Check",
             "./defaultValue",
             "./defined",
             "./defineProperties",
-            "./DeveloperError",
             "./Ellipsoid",
             "./GeographicProjection",
             "./Math",
@@ -213,6 +224,12 @@ SystemJS.config({
             "./defined",
             "./DeveloperError",
             "./Math"
+        ],
+        "github:aelatgt/cesium@referenceFrames/Source/Core/Heap.js": [
+            "./Check",
+            "./defaultValue",
+            "./defined",
+            "./defineProperties"
         ],
         "github:aelatgt/cesium@referenceFrames/Source/Core/HeightmapTerrainData.js": [
             "../ThirdParty/when",
@@ -352,11 +369,30 @@ SystemJS.config({
             "./Plane",
             "./Rectangle"
         ],
+        "github:aelatgt/cesium@referenceFrames/Source/Core/PerspectiveFrustum.js": [
+            "./Check",
+            "./defaultValue",
+            "./defined",
+            "./defineProperties",
+            "./DeveloperError",
+            "./PerspectiveOffCenterFrustum"
+        ],
+        "github:aelatgt/cesium@referenceFrames/Source/Core/PerspectiveOffCenterFrustum.js": [
+            "./Cartesian3",
+            "./Cartesian4",
+            "./CullingVolume",
+            "./defaultValue",
+            "./defined",
+            "./defineProperties",
+            "./DeveloperError",
+            "./Matrix4"
+        ],
         "github:aelatgt/cesium@referenceFrames/Source/Core/Plane.js": [
             "./Cartesian3",
             "./defined",
             "./DeveloperError",
-            "./freezeObject"
+            "./freezeObject",
+            "./Math"
         ],
         "github:aelatgt/cesium@referenceFrames/Source/Core/PolylinePipeline.js": [
             "./Cartesian3",
@@ -387,7 +423,6 @@ SystemJS.config({
             "./Check",
             "./defaultValue",
             "./defined",
-            "./deprecationWarning",
             "./FeatureDetection",
             "./freezeObject",
             "./HeadingPitchRoll",
@@ -413,9 +448,34 @@ SystemJS.config({
         "github:aelatgt/cesium@referenceFrames/Source/Core/ReferenceFrame.js": [
             "./freezeObject"
         ],
+        "github:aelatgt/cesium@referenceFrames/Source/Core/Request.js": [
+            "./defaultValue",
+            "./defined",
+            "./defineProperties",
+            "./RequestState",
+            "./RequestType"
+        ],
         "github:aelatgt/cesium@referenceFrames/Source/Core/RequestErrorEvent.js": [
             "./defined",
             "./parseResponseHeaders"
+        ],
+        "github:aelatgt/cesium@referenceFrames/Source/Core/RequestScheduler.js": [
+            "../ThirdParty/Uri",
+            "../ThirdParty/when",
+            "./Check",
+            "./clone",
+            "./defined",
+            "./defineProperties",
+            "./Heap",
+            "./isBlobUri",
+            "./isDataUri",
+            "./RequestState"
+        ],
+        "github:aelatgt/cesium@referenceFrames/Source/Core/RequestState.js": [
+            "../Core/freezeObject"
+        ],
+        "github:aelatgt/cesium@referenceFrames/Source/Core/RequestType.js": [
+            "../Core/freezeObject"
         ],
         "github:aelatgt/cesium@referenceFrames/Source/Core/RuntimeError.js": [
             "./defined"
@@ -483,10 +543,10 @@ SystemJS.config({
             "./freezeObject"
         ],
         "github:aelatgt/cesium@referenceFrames/Source/Core/TimeInterval.js": [
+            "./Check",
             "./defaultValue",
             "./defined",
             "./defineProperties",
-            "./DeveloperError",
             "./freezeObject",
             "./JulianDate"
         ],
@@ -502,7 +562,6 @@ SystemJS.config({
             "./Check",
             "./defaultValue",
             "./defined",
-            "./deprecationWarning",
             "./DeveloperError",
             "./EarthOrientationParameters",
             "./EarthOrientationParametersSample",
@@ -544,8 +603,8 @@ SystemJS.config({
             "./WebMercatorProjection"
         ],
         "github:aelatgt/cesium@referenceFrames/Source/Core/binarySearch.js": [
-            "./defined",
-            "./DeveloperError"
+            "./Check",
+            "./defined"
         ],
         "github:aelatgt/cesium@referenceFrames/Source/Core/buildModuleUrl.js": [
             "../ThirdParty/Uri",
@@ -590,8 +649,14 @@ SystemJS.config({
         "github:aelatgt/cesium@referenceFrames/Source/Core/isArray.js": [
             "./defined"
         ],
+        "github:aelatgt/cesium@referenceFrames/Source/Core/isBlobUri.js": [
+            "./Check"
+        ],
         "github:aelatgt/cesium@referenceFrames/Source/Core/isCrossOriginUrl.js": [
             "./defined"
+        ],
+        "github:aelatgt/cesium@referenceFrames/Source/Core/isDataUri.js": [
+            "./Check"
         ],
         "github:aelatgt/cesium@referenceFrames/Source/Core/isLeapYear.js": [
             "./DeveloperError"
@@ -604,10 +669,14 @@ SystemJS.config({
         ],
         "github:aelatgt/cesium@referenceFrames/Source/Core/loadImage.js": [
             "../ThirdParty/when",
+            "./Check",
             "./defaultValue",
             "./defined",
             "./DeveloperError",
             "./isCrossOriginUrl",
+            "./isDataUri",
+            "./Request",
+            "./RequestScheduler",
             "./TrustedServers"
         ],
         "github:aelatgt/cesium@referenceFrames/Source/Core/loadJson.js": [
@@ -621,10 +690,13 @@ SystemJS.config({
         ],
         "github:aelatgt/cesium@referenceFrames/Source/Core/loadWithXhr.js": [
             "../ThirdParty/when",
+            "./Check",
             "./defaultValue",
             "./defined",
             "./DeveloperError",
+            "./Request",
             "./RequestErrorEvent",
+            "./RequestScheduler",
             "./RuntimeError",
             "./TrustedServers"
         ],
@@ -635,19 +707,13 @@ SystemJS.config({
         ],
         "github:aelatgt/cesium@referenceFrames/Source/Core/sampleTerrain.js": [
             "../ThirdParty/when",
-            "./defined",
-            "./DeveloperError"
+            "./Check"
         ],
         "github:aelatgt/cesium@referenceFrames/Source/Core/scaleToGeodeticSurface.js": [
             "./Cartesian3",
             "./defined",
             "./DeveloperError",
             "./Math"
-        ],
-        "github:aelatgt/cesium@referenceFrames/Source/Core/throttleRequestByServer.js": [
-            "../ThirdParty/Uri",
-            "../ThirdParty/when",
-            "./defaultValue"
         ],
         "github:aelatgt/cesium@referenceFrames/Source/DataSources/CallbackProperty.js": [
             "../Core/defined",
@@ -681,6 +747,7 @@ SystemJS.config({
         ],
         "github:aelatgt/cesium@referenceFrames/Source/DataSources/Entity.js": [
             "../Core/Cartesian3",
+            "../Core/Check",
             "../Core/createGuid",
             "../Core/defaultValue",
             "../Core/defined",
@@ -822,29 +889,13 @@ SystemJS.config({
         "github:aelatgt/cesium@referenceFrames/Source/Scene/CameraEventType.js": [
             "../Core/freezeObject"
         ],
-        "github:aelatgt/cesium@referenceFrames/Source/Scene/CullingVolume.js": [
-            "../Core/Cartesian3",
-            "../Core/Cartesian4",
-            "../Core/defaultValue",
-            "../Core/defined",
-            "../Core/DeveloperError",
-            "../Core/Intersect",
-            "../Core/Plane"
-        ],
         "github:aelatgt/cesium@referenceFrames/Source/Scene/PerspectiveFrustum.js": [
-            "../Core/defined",
-            "../Core/defineProperties",
-            "../Core/DeveloperError",
-            "./PerspectiveOffCenterFrustum"
+            "../Core/deprecationWarning",
+            "../Core/PerspectiveFrustum"
         ],
         "github:aelatgt/cesium@referenceFrames/Source/Scene/PerspectiveOffCenterFrustum.js": [
-            "../Core/Cartesian3",
-            "../Core/Cartesian4",
-            "../Core/defined",
-            "../Core/defineProperties",
-            "../Core/DeveloperError",
-            "../Core/Matrix4",
-            "./CullingVolume"
+            "../Core/deprecationWarning",
+            "../Core/PerspectiveOffCenterFrustum"
         ],
         "github:googlevr/webvr-polyfill@0.9.3/src/base.js": [
             "./util.js",
@@ -1019,7 +1070,6 @@ SystemJS.config({
             "cesium/Source/Core/Simon1994PlanetaryPositions",
             "cesium/Source/Core/PolylinePipeline",
             "cesium/Source/Core/TerrainProvider",
-            "cesium/Source/Core/throttleRequestByServer",
             "cesium/Source/Core/loadImage",
             "cesium/Source/Core/WebMercatorTilingScheme",
             "cesium/Source/Core/getImagePixels",
@@ -1240,25 +1290,29 @@ SystemJS.config({
             "github:googlevr/webvr-polyfill@0.9.3/src/deps/wglu-preserve-state.js",
             "github:googlevr/webvr-polyfill@0.9.3/src/cardboard-distorter.js",
             "github:frankwallis/plugin-typescript@5.3.3.json",
-            "github:aelatgt/cesium@referenceFrames/Source/Scene/PerspectiveFrustum.js",
-            "github:aelatgt/cesium@referenceFrames.json",
             "github:aelatgt/cesium@referenceFrames/Source/Scene/PerspectiveOffCenterFrustum.js",
-            "github:aelatgt/cesium@referenceFrames/Source/Scene/CullingVolume.js",
-            "github:aelatgt/cesium@referenceFrames/Source/Core/Plane.js",
-            "github:aelatgt/cesium@referenceFrames/Source/Core/freezeObject.js",
-            "github:aelatgt/cesium@referenceFrames/Source/Core/defined.js",
-            "github:aelatgt/cesium@referenceFrames/Source/Core/DeveloperError.js",
-            "github:aelatgt/cesium@referenceFrames/Source/Core/Cartesian3.js",
-            "github:aelatgt/cesium@referenceFrames/Source/Core/Math.js",
-            "github:aelatgt/cesium@referenceFrames/Source/Core/defaultValue.js",
-            "github:aelatgt/cesium@referenceFrames/Source/ThirdParty/mersenne-twister.js",
-            "github:aelatgt/cesium@referenceFrames/Source/Core/Check.js",
-            "github:aelatgt/cesium@referenceFrames/Source/Core/Intersect.js",
-            "github:aelatgt/cesium@referenceFrames/Source/Core/Cartesian4.js",
+            "github:aelatgt/cesium@referenceFrames.json",
+            "github:aelatgt/cesium@referenceFrames/Source/Core/PerspectiveOffCenterFrustum.js",
             "github:aelatgt/cesium@referenceFrames/Source/Core/Matrix4.js",
             "github:aelatgt/cesium@referenceFrames/Source/Core/RuntimeError.js",
+            "github:aelatgt/cesium@referenceFrames/Source/Core/defined.js",
             "github:aelatgt/cesium@referenceFrames/Source/Core/Matrix3.js",
+            "github:aelatgt/cesium@referenceFrames/Source/Core/Math.js",
+            "github:aelatgt/cesium@referenceFrames/Source/Core/DeveloperError.js",
+            "github:aelatgt/cesium@referenceFrames/Source/Core/defaultValue.js",
+            "github:aelatgt/cesium@referenceFrames/Source/Core/freezeObject.js",
+            "github:aelatgt/cesium@referenceFrames/Source/ThirdParty/mersenne-twister.js",
             "github:aelatgt/cesium@referenceFrames/Source/Core/defineProperties.js",
+            "github:aelatgt/cesium@referenceFrames/Source/Core/Check.js",
+            "github:aelatgt/cesium@referenceFrames/Source/Core/Cartesian3.js",
+            "github:aelatgt/cesium@referenceFrames/Source/Core/Cartesian4.js",
+            "github:aelatgt/cesium@referenceFrames/Source/Core/CullingVolume.js",
+            "github:aelatgt/cesium@referenceFrames/Source/Core/Plane.js",
+            "github:aelatgt/cesium@referenceFrames/Source/Core/Intersect.js",
+            "github:aelatgt/cesium@referenceFrames/Source/Core/deprecationWarning.js",
+            "github:aelatgt/cesium@referenceFrames/Source/Core/oneTimeWarning.js",
+            "github:aelatgt/cesium@referenceFrames/Source/Scene/PerspectiveFrustum.js",
+            "github:aelatgt/cesium@referenceFrames/Source/Core/PerspectiveFrustum.js",
             "github:aelatgt/cesium@referenceFrames/Source/Scene/CameraEventAggregator.js",
             "github:aelatgt/cesium@referenceFrames/Source/Scene/CameraEventType.js",
             "github:aelatgt/cesium@referenceFrames/Source/Core/ScreenSpaceEventType.js",
@@ -1288,8 +1342,6 @@ SystemJS.config({
             "github:aelatgt/cesium@referenceFrames/Source/Core/Transforms.js",
             "github:aelatgt/cesium@referenceFrames/Source/Core/Quaternion.js",
             "github:aelatgt/cesium@referenceFrames/Source/Core/HeadingPitchRoll.js",
-            "github:aelatgt/cesium@referenceFrames/Source/Core/deprecationWarning.js",
-            "github:aelatgt/cesium@referenceFrames/Source/Core/oneTimeWarning.js",
             "github:aelatgt/cesium@referenceFrames/Source/Core/Iau2006XysSample.js",
             "github:aelatgt/cesium@referenceFrames/Source/Core/Iau2006XysData.js",
             "github:aelatgt/cesium@referenceFrames/Source/Core/loadJson.js",
@@ -1297,10 +1349,17 @@ SystemJS.config({
             "github:aelatgt/cesium@referenceFrames/Source/Core/loadWithXhr.js",
             "github:aelatgt/cesium@referenceFrames/Source/Core/TrustedServers.js",
             "github:aelatgt/cesium@referenceFrames/Source/ThirdParty/Uri.js",
+            "github:aelatgt/cesium@referenceFrames/Source/Core/RequestScheduler.js",
+            "github:aelatgt/cesium@referenceFrames/Source/Core/RequestState.js",
+            "github:aelatgt/cesium@referenceFrames/Source/Core/isDataUri.js",
+            "github:aelatgt/cesium@referenceFrames/Source/Core/isBlobUri.js",
+            "github:aelatgt/cesium@referenceFrames/Source/Core/Heap.js",
+            "github:aelatgt/cesium@referenceFrames/Source/Core/clone.js",
+            "github:aelatgt/cesium@referenceFrames/Source/ThirdParty/when.js",
             "github:aelatgt/cesium@referenceFrames/Source/Core/RequestErrorEvent.js",
             "github:aelatgt/cesium@referenceFrames/Source/Core/parseResponseHeaders.js",
-            "github:aelatgt/cesium@referenceFrames/Source/ThirdParty/when.js",
-            "github:aelatgt/cesium@referenceFrames/Source/Core/clone.js",
+            "github:aelatgt/cesium@referenceFrames/Source/Core/Request.js",
+            "github:aelatgt/cesium@referenceFrames/Source/Core/RequestType.js",
             "github:aelatgt/cesium@referenceFrames/Source/Core/buildModuleUrl.js",
             "github:aelatgt/cesium@referenceFrames/Source/Core/joinUrls.js",
             "github:aelatgt/cesium@referenceFrames/Source/Core/getAbsoluteUri.js",
@@ -1325,7 +1384,6 @@ SystemJS.config({
             "github:aelatgt/cesium@referenceFrames/Source/Core/TimeInterval.js",
             "github:aelatgt/cesium@referenceFrames/Source/Core/Iso8601.js",
             "github:aelatgt/cesium@referenceFrames/Source/DataSources/CallbackProperty.js",
-            "github:aelatgt/cesium@referenceFrames/Source/Core/throttleRequestByServer.js",
             "github:aelatgt/cesium@referenceFrames/Source/Core/sampleTerrain.js",
             "github:aelatgt/cesium@referenceFrames/Source/Core/loadImage.js",
             "github:aelatgt/cesium@referenceFrames/Source/Core/isCrossOriginUrl.js",

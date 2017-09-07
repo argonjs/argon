@@ -148,7 +148,9 @@ export class RealityService {
                 delete this.sessionService.manager.on[CLOSE_SESSION_KEY];
             });
 
-            realityControlSession.open(messageChannel.port2, this.sessionService.configuration);
+            setTimeout(()=>{
+                realityControlSession.open(messageChannel.port2, this.sessionService.configuration);
+            });
         };
         
         // let i = 0;
@@ -356,8 +358,6 @@ export class RealityServiceProvider {
             this._installersByURI.set(uri, installers);
 
             viewer.connectEvent.addEventListener((viewerSession)=>{
-
-                if (this.sessionService.manager.isClosed) return;
 
                 if (!Role.isRealityViewer(viewerSession.info.role)) {
                     viewerSession.sendError({ message: "Expected a reality viewer" });

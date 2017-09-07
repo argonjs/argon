@@ -1,3 +1,4 @@
+/// <reference types="cesium" />
 export { default as binarySearch } from 'cesium/Source/Core/binarySearch';
 export { default as CallbackProperty } from 'cesium/Source/DataSources/CallbackProperty';
 export { default as CameraEventAggregator } from 'cesium/Source/Scene/CameraEventAggregator';
@@ -44,7 +45,6 @@ export { default as Transforms } from 'cesium/Source/Core/Transforms';
 export { default as Simon1994PlanetaryPositions } from 'cesium/Source/Core/Simon1994PlanetaryPositions';
 export { default as PolylinePipeline } from 'cesium/Source/Core/PolylinePipeline';
 export { default as TerrainProvider } from 'cesium/Source/Core/TerrainProvider';
-export { default as throttleRequestByServer } from 'cesium/Source/Core/throttleRequestByServer';
 export { default as loadImage } from 'cesium/Source/Core/loadImage';
 export { default as WebMercatorTilingScheme } from 'cesium/Source/Core/WebMercatorTilingScheme';
 export { default as getImagePixels } from 'cesium/Source/Core/getImagePixels';
@@ -53,3 +53,16 @@ export { default as Credit } from 'cesium/Source/Core/Credit';
 export { default as sampleTerrain } from 'cesium/Source/Core/sampleTerrain';
 export declare function createGuid(): string;
 import './cesium-extensions';
+import { default as Cartesian3 } from 'cesium/Source/Core/Cartesian3';
+import { default as Entity } from 'cesium/Source/DataSources/Entity';
+import { default as ReferenceFrame } from 'cesium/Source/Core/ReferenceFrame';
+import { default as ConstantPositionProperty } from 'cesium/Source/DataSources/ConstantPositionProperty';
+import { default as ConstantProperty } from 'cesium/Source/DataSources/ConstantProperty';
+export declare class DynamicPositionProperty extends ConstantPositionProperty {
+    readonly isConstant: boolean;
+    setValue(value: Cartesian3 | undefined, referenceFrame?: Entity | ReferenceFrame): void;
+}
+export declare class DynamicProperty extends ConstantProperty {
+    readonly isConstant: boolean;
+    setValue(value: any): void;
+}

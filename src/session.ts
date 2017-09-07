@@ -106,6 +106,10 @@ export class SessionPort {
     }
     private _version: number[];
 
+    public get versionNumber() {
+        return Number(this.version[0] + '.' + this.version[1]);
+    }
+
     public static OPEN = 'ar.session.open';
     public static CLOSE = 'ar.session.close';
     public static ERROR = 'ar.session.error';
@@ -113,6 +117,8 @@ export class SessionPort {
     private _isOpened = false;
     private _isConnected = false;
     private _isClosed = false;
+
+    private _shouldStringify = true;
 
     constructor(public uri?: string) {
 
@@ -202,6 +208,10 @@ export class SessionPort {
         this.messagePort = messagePort;
         this._isOpened = true;
 
+        if (messagePort instanceof SynchronousMessageChannel || isIOS) {
+            this._shouldStringify = false;
+        }
+
         this.messagePort.onmessage = (evt: MessageEvent) => {
             if (this._isClosed) return;
 
@@ -245,6 +255,8 @@ export class SessionPort {
         this.send(SessionPort.OPEN, options)
     }
 
+    private _packet = <[string, string, Message|undefined|void]><any>[];
+
     /**
      * Send a message 
      * @param topic the message topic.
@@ -256,8 +268,11 @@ export class SessionPort {
         if (!this._isOpened) throw new Error('Session must be open to send messages');
         if (this._isClosed) return false;
         const id = createGuid();
-        const packet = [id, topic, message];
-        this.messagePort.postMessage(isIOS ? packet : JSON.stringify(packet)); // http://blog.runspired.com/2016/03/15/webworker-performance-benchmarks/
+        const packet = this._packet;
+        packet[0] = id;
+        packet[1] = topic
+        packet[2] = message;
+        this.messagePort.postMessage(this._shouldStringify ? JSON.stringify(packet) : packet); // http://blog.runspired.com/2016/03/15/webworker-performance-benchmarks/
         return true;
     }
 
@@ -453,6 +468,9 @@ export class SessionService {
             const index = this.managedSessions.indexOf(session);
             if (index > -1) this.managedSessions.splice(index, 1);
         });
+        this.manager.closeEvent.addEventListener(()=>{
+            session.close();
+        })
         return session;
     }
 

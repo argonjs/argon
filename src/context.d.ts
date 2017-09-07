@@ -1,10 +1,10 @@
 /// <reference types="cesium" />
 import { Entity, EntityCollection, Cartographic, Transforms, JulianDate, ReferenceFrame } from './cesium/cesium-imports';
-import { SerializedSubviewList, ContextFrameState, GeolocationOptions, CanvasViewport } from './common';
+import { SerializedEntityStateMap, SerializedSubviewList, ContextFrameState, GeolocationOptions, CanvasViewport } from './common';
 import { SessionService, SessionPort } from './session';
 import { Event } from './utils';
 import { EntityService, EntityServiceProvider, EntityPose } from './entity';
-import { DeviceService } from './device';
+import { DeviceService, Device } from './device';
 import { ViewService } from './view';
 import { PermissionServiceProvider } from './permission';
 import { RealityService, RealityServiceProvider } from './reality';
@@ -126,7 +126,6 @@ export declare class ContextService {
      */
     readonly serializedFrameState: ContextFrameState;
     private _serializedFrameState;
-    private _entityPoseMap;
     private _updatingEntities;
     private _knownEntities;
     private _scratchCartesian;
@@ -188,11 +187,9 @@ export declare class ContextService {
      * @param referenceFrameOrId - The intended reference frame. Defaults to `this.defaultReferenceFrame`.
      */
     createEntityPose(entityOrId: Entity | string, referenceFrameOrId?: string | ReferenceFrame | Entity): EntityPose;
-    private _stringIdentifierFromReferenceFrame;
     /**
      * Gets the current pose of an entity, relative to a given reference frame.
      *
-     * @deprecated
      * @param entityOrId - The entity whose state is to be queried.
      * @param referenceFrameOrId - The intended reference frame. Defaults to `this.defaultReferenceFrame`.
      */
@@ -234,6 +231,11 @@ export declare class ContextService {
     private _previousOriginPosition?;
     private _previousOriginOrientation?;
     private _update(frameState);
+    _updateEntities(entities: SerializedEntityStateMap): void;
+    _updateContextEntities(frameState: ContextFrameState): void;
+    _updateStageGeo(): void;
+    _checkOriginChange(): void;
+    _trySubmitFrame(): void;
     getSubviewEntity(index: number): Entity;
     subscribeGeolocation(options?: GeolocationOptions): Promise<void>;
     unsubscribeGeolocation(): void;
@@ -265,14 +267,16 @@ export declare class ContextService {
 export declare class ContextServiceProvider {
     protected sessionService: SessionService;
     protected contextService: ContextService;
+    protected deviceService: DeviceService;
     protected entityServiceProvider: EntityServiceProvider;
     protected permissionServiceProvider: PermissionServiceProvider;
     protected realityServiceProvider: RealityServiceProvider;
+    protected device: Device;
     private _cacheTime;
-    constructor(sessionService: SessionService, contextService: ContextService, entityServiceProvider: EntityServiceProvider, permissionServiceProvider: PermissionServiceProvider, realityServiceProvider: RealityServiceProvider);
+    constructor(sessionService: SessionService, contextService: ContextService, deviceService: DeviceService, entityServiceProvider: EntityServiceProvider, permissionServiceProvider: PermissionServiceProvider, realityServiceProvider: RealityServiceProvider, device: Device);
     private _publishFrameState();
     private _sessionEntities;
-    private _temp;
+    private _excludedFramesForSerialization;
     private _sendUpdateForSession(state, session);
     desiredGeolocationOptions: GeolocationOptions;
     sessionGeolocationOptions: Map<SessionPort, GeolocationOptions | undefined>;

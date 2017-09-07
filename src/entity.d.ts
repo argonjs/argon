@@ -124,6 +124,15 @@ export declare class EntityService {
      * @param referenceFrameOrId - the reference frame to use
      */
     createEntityPose(entityOrId: Entity | string, referenceFrameOrId: string | ReferenceFrame | Entity): EntityPose;
+    private _entityPoseMap;
+    private _stringIdentifierFromReferenceFrame;
+    /**
+     * Gets the pose of an entity, relative to a given reference frame at a given time.
+     *
+     * @param entityOrId - The entity whose state is to be queried.
+     * @param referenceFrameOrId - The intended reference frame. Defaults to `this.defaultReferenceFrame`.
+     */
+    getEntityPose(entityOrId: Entity | string, referenceFrameOrId: string | ReferenceFrame | Entity, time: JulianDate): EntityPose;
     /**
      *
      * @param id
@@ -138,7 +147,9 @@ export declare class EntityServiceProvider {
     private sessionService;
     private entityService;
     private permissionServiceProvider;
-    subscriptionsBySubscriber: WeakMap<SessionPort, Map<string, {} | undefined>>;
+    subscriptionsBySubscriber: WeakMap<SessionPort, {
+        [entityId: string]: {} | undefined;
+    }>;
     subscribersByEntity: Map<string, Set<SessionPort>>;
     sessionSubscribedEvent: Event<{
         session: SessionPort;
@@ -149,11 +160,14 @@ export declare class EntityServiceProvider {
         session: SessionPort;
         id: string;
     }>;
-    targetReferenceFrameMap: Map<string, string | ReferenceFrame>;
     constructor(sessionService: SessionService, entityService: EntityService, permissionServiceProvider: PermissionServiceProvider);
-    fillEntityStateMapForSession(session: SessionPort, time: JulianDate, entities: SerializedEntityStateMap): void;
+    /**
+     * Serialize into a serialization state mpat, the given entities using the given time.
+     * Serialization includes the ancestor reference frames of included, excluding any entities in the excludedFrames list.
+     */
+    fillEntityStateMap(entities: SerializedEntityStateMap, time: JulianDate, includedMap: {}, excludedMap: {}): void;
     private _cacheTime;
-    private _entityPoseCache;
+    private _entityStateCache;
     private _getSerializedEntityState;
-    getCachedSerializedEntityState(entity: Entity | undefined, time: JulianDate): SerializedEntityState | null;
+    private _getCachedSerializedEntityState(entity, time, referenceFrame);
 }

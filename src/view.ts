@@ -219,7 +219,6 @@ export class ViewService {
             subview['projectionMatrix'] = <Matrix4>subview.frustum.projectionMatrix;
 
             subview.pose = contextService.getEntityPose(contextService.getSubviewEntity(index));
-            subview.pose.update(state.time);
             
             index++;
         }
@@ -281,36 +280,36 @@ export class ViewService {
         if (session && session.isConnected) session.send('ar.view.uievent', uievent);
     }
 
-    private _embeddedViewport = new Viewport; 
+    // private _embeddedViewport = new Viewport; 
 
     /**
      * @private
      */
     public _watchEmbeddedViewport() {
         const publish = () => {
-            if (this.element && this.autoPublishEmbeddedMode) {
-                const parentElement = this.element.parentElement;
-                const rect = parentElement && parentElement.getBoundingClientRect();
-                if (rect) {
-                    const x = rect.left;
-                    const y = window.innerHeight - rect.bottom;
-                    const width = rect.width;
-                    const height = rect.height;
+            // if (this.element && this.autoPublishEmbeddedMode) {
+            //     const parentElement = this.element.parentElement;
+            //     const rect = parentElement && parentElement.getBoundingClientRect();
+            //     if (rect) {
+            //         const x = rect.left;
+            //         const y = window.innerHeight - rect.bottom;
+            //         const width = rect.width;
+            //         const height = rect.height;
 
-                    const embeddedViewport = this._embeddedViewport;
+            //         const embeddedViewport = this._embeddedViewport;
 
-                    if (embeddedViewport.x !== x || 
-                        embeddedViewport.y !== y || 
-                        embeddedViewport.width !== width ||
-                        embeddedViewport.height !== height) {
-                            embeddedViewport.x = x;
-                            embeddedViewport.y = y;
-                            embeddedViewport.width = width;
-                            embeddedViewport.height = height;
-                            this.publishEmbeddedViewport(this._embeddedViewport);
-                    }
-                }
-            }
+            //         if (embeddedViewport.x !== x || 
+            //             embeddedViewport.y !== y || 
+            //             embeddedViewport.width !== width ||
+            //             embeddedViewport.height !== height) {
+            //                 embeddedViewport.x = x;
+            //                 embeddedViewport.y = y;
+            //                 embeddedViewport.width = width;
+            //                 embeddedViewport.height = height;
+            //                 this.publishEmbeddedViewport(this._embeddedViewport);
+            //         }
+            //     }
+            // }
         }
 
         setInterval(()=>{

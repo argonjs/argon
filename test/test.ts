@@ -98,32 +98,36 @@ describe('Argon', () => {
     describe('app.device.subscribeGeolocation', () => {
         it('should attempt to start geolocation updates', (done) => {
 
-            const manager = Argon.init(null, { role: Argon.Role.REALITY_MANAGER });
+            const app = new Argon.ArgonContainerManager({role: Argon.Role.REALITY_MANAGER}).app;
+            const device:Argon.Device = app.container.get(Argon.Device);
             
-            manager.provider.device.onStartGeolocationUpdates = (options) => {
+            device.startGeolocationUpdates = (options) => {
                 expect(options && options.enableHighAccuracy).to.be.true;
                 done();
             }
 
-            manager.device.subscribeGeolocation({enableHighAccuracy:true});
+            app.device.subscribeGeolocation({enableHighAccuracy:true})
         });
     })
 
     describe('app.device.unsubscribeGeolocation', () => {
         it('should attempt to stop geolocation updates', (done) => {
-
-            const manager = Argon.init(null, { role: Argon.Role.REALITY_MANAGER });
             
-            manager.provider.device.onStartGeolocationUpdates = (options) => {
+            const app = new Argon.ArgonContainerManager({role: Argon.Role.REALITY_MANAGER}).app;
+            const device:Argon.Device = app.container.get(Argon.Device);
+            
+            device.startGeolocationUpdates = (options) => {
                 expect(options && options.enableHighAccuracy).to.be.true;
+    
+                device.stopGeolocationUpdates = () => {
+                    done();
+                    device.stopGeolocationUpdates = () => {};
+                }
+
+                app.device.unsubscribeGeolocation();
             }
 
-            manager.provider.device.onStopGeolocationUpdates = () => {
-                done();
-                manager.provider.device.onStopGeolocationUpdates = () => {};
-            }
-
-            manager.device.subscribeGeolocation({enableHighAccuracy:true});
+            app.device.subscribeGeolocation({enableHighAccuracy:true});
         });
     })
 
@@ -208,8 +212,8 @@ describe('EntityService', () => {
                 expect(options).to.exist && expect(options['something']).to.equal('here');
                 const subscribers = entityServiceProvider.subscribersByEntity.get(testId);
                 expect(subscribers).to.exist && expect(subscribers!.has(sessionService.manager));
-                const subscriptions = entityServiceProvider.subscriptionsBySubscriber.get(sessionService.manager);
-                expect(subscriptions).to.exist && expect(Argon.jsonEquals(subscriptions!.get(id),options));
+                const subscriptions = entityServiceProvider.subscriptionsBySubscriber.get(sessionService.manager)!;
+                expect(subscriptions).to.exist && expect(Argon.jsonEquals(subscriptions[id],options));
                 done();
             });
 

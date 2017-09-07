@@ -1,7 +1,7 @@
 // Add functionality for keeping a moving window of samples per SampledProperty,
 // so that the data doesn't accumulate indefinitely
 
-import { 
+import {
     SampledProperty, 
     SampledPositionProperty, 
     binarySearch, 

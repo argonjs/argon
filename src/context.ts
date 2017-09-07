@@ -1,10 +1,11 @@
 import { autoinject } from 'aurelia-dependency-injection'
 import {
+    defined,
     Entity,
     EntityCollection,
     Cartographic,
-    ConstantPositionProperty,
-    ConstantProperty,
+    DynamicPositionProperty,
+    DynamicProperty,
     Cartesian3,
     Quaternion,
     Matrix3,
@@ -36,13 +37,12 @@ import {
     getEntityPositionInReferenceFrame,
     getEntityOrientationInReferenceFrame,
     deprecated,
-    decomposePerspectiveProjectionMatrix ,
     eastUpSouthToFixedFrame
 } from './utils'
 import { EntityService, EntityServiceProvider, EntityPose } from './entity'
-import { DeviceService } from './device'
+import { DeviceService, Device } from './device'
 import { ViewService } from './view'
-import { PermissionState, PermissionServiceProvider } from './permission'
+import { PermissionServiceProvider, PermissionState } from './permission'
 import { RealityService, RealityServiceProvider } from './reality'
 
 /**
@@ -173,8 +173,8 @@ export class ContextService {
     public origin: Entity = this.entities.add(new Entity({
         id: 'ar.origin',
         name: 'Origin',
-        position: new ConstantPositionProperty(undefined, ReferenceFrame.FIXED),
-        orientation: new ConstantProperty(undefined)
+        position: new DynamicPositionProperty(undefined, ReferenceFrame.FIXED),
+        orientation: new DynamicProperty(undefined)
     }));
 
     /**
@@ -191,8 +191,8 @@ export class ContextService {
     private _localOrigin = this.entities.add(new Entity({
         id: 'ar.localOrigin',
         name: 'Local Origin',
-        position: new ConstantPositionProperty(Cartesian3.ZERO, this.origin),
-        orientation: new ConstantProperty(Quaternion.IDENTITY)
+        position: new DynamicPositionProperty(Cartesian3.ZERO, this.origin),
+        orientation: new DynamicProperty(Quaternion.IDENTITY)
     }));
 
     // To be removed. This is no longer useful.
@@ -205,8 +205,8 @@ export class ContextService {
     private _localOriginEastNorthUp: Entity = this.entities.add(new Entity({
         id: 'ar.localOriginENU',
         name: 'Local Origin (ENU)',
-        position: new ConstantPositionProperty(Cartesian3.ZERO, this.origin),
-        orientation: new ConstantProperty(Quaternion.fromAxisAngle(Cartesian3.UNIT_X, -Math.PI / 2))
+        position: new DynamicPositionProperty(Cartesian3.ZERO, this.origin),
+        orientation: new DynamicProperty(Quaternion.fromAxisAngle(Cartesian3.UNIT_X, -Math.PI / 2))
     }));
 
     /**
@@ -217,8 +217,8 @@ export class ContextService {
     public stage: Entity = this.entities.add(new Entity({
         id: 'ar.stage',
         name: 'Stage',
-        position: new ConstantPositionProperty(undefined, ReferenceFrame.FIXED),
-        orientation: new ConstantProperty(undefined)
+        position: new DynamicPositionProperty(undefined, ReferenceFrame.FIXED),
+        orientation: new DynamicProperty(undefined)
     }));
 
     /**
@@ -229,8 +229,8 @@ export class ContextService {
     public stageEUS: Entity = this.entities.add(new Entity({
         id: 'ar.stageEUS',
         name: 'Stage (EUS)',
-        position: new ConstantPositionProperty(undefined, this.stage),
-        orientation: new ConstantProperty(undefined)
+        position: new DynamicPositionProperty(undefined, this.stage),
+        orientation: new DynamicProperty(undefined)
     }))
 
     /**
@@ -241,8 +241,8 @@ export class ContextService {
     public stageENU: Entity = this.entities.add(new Entity({
         id: 'ar.stageENU',
         name: 'Stage (ENU)',
-        position: new ConstantPositionProperty(undefined, this.stage),
-        orientation: new ConstantProperty(undefined)
+        position: new DynamicPositionProperty(undefined, this.stage),
+        orientation: new DynamicProperty(undefined)
     }))
 
     /**
@@ -253,8 +253,8 @@ export class ContextService {
     public floor: Entity = this.entities.add(new Entity({
         id: 'ar.floor',
         name: 'Floor',
-        position: new ConstantPositionProperty(Cartesian3.ZERO, this.stage),
-        orientation: new ConstantProperty(Quaternion.IDENTITY)
+        position: new DynamicPositionProperty(Cartesian3.ZERO, this.stage),
+        orientation: new DynamicProperty(Quaternion.IDENTITY)
     }));
 
     /**
@@ -264,8 +264,8 @@ export class ContextService {
     public user: Entity = this.entities.add(new Entity({
         id: 'ar.user',
         name: 'User',
-        position: new ConstantPositionProperty(undefined, this.stage),
-        orientation: new ConstantProperty(undefined)
+        position: new DynamicPositionProperty(undefined, this.stage),
+        orientation: new DynamicProperty(undefined)
     }));
     
     /**
@@ -275,8 +275,8 @@ export class ContextService {
     public view: Entity = this.entities.add(new Entity({
         id: 'ar.view',
         name: 'View',
-        position: new ConstantPositionProperty(Cartesian3.ZERO, this.user),
-        orientation: new ConstantProperty(Quaternion.IDENTITY)
+        position: new DynamicPositionProperty(Cartesian3.ZERO, this.user),
+        orientation: new DynamicProperty(Quaternion.IDENTITY)
     }));
 
     /**
@@ -295,7 +295,6 @@ export class ContextService {
     // the current serialized frame state
     private _serializedFrameState: ContextFrameState;
 
-    private _entityPoseMap = new Map<string, EntityPose | undefined>();
     private _updatingEntities = new Set<string>();
     private _knownEntities = new Set<string>();
 
@@ -392,26 +391,14 @@ export class ContextService {
         return this.entityService.createEntityPose(entityOrId, referenceFrameOrId);
     }
 
-    private _stringIdentifierFromReferenceFrame = stringIdentifierFromReferenceFrame;
-
     /**
      * Gets the current pose of an entity, relative to a given reference frame.
      *
-     * @deprecated
      * @param entityOrId - The entity whose state is to be queried.
      * @param referenceFrameOrId - The intended reference frame. Defaults to `this.defaultReferenceFrame`.
      */
     public getEntityPose(entityOrId: Entity|string, referenceFrameOrId: string | ReferenceFrame | Entity = this.defaultReferenceFrame): EntityPose {
-        const key = this._stringIdentifierFromReferenceFrame(entityOrId) + '@' + this._stringIdentifierFromReferenceFrame(referenceFrameOrId);
-        
-        let entityPose = this._entityPoseMap.get(key);
-        if (!entityPose) {
-            entityPose = this.entityService.createEntityPose(entityOrId, referenceFrameOrId);
-            this._entityPoseMap.set(key, entityPose);
-        }
-        entityPose.update(this.time);
-
-        return entityPose;
+        return this.entityService.getEntityPose(entityOrId, referenceFrameOrId, this.time);
     }
 
     private _frameIndex = -1;
@@ -504,7 +491,7 @@ export class ContextService {
         // floor
         const floorOffset = options && options.floorOffset || 0;
         const floor = this.floor;
-        (floor.position as ConstantPositionProperty).setValue(Cartesian3.fromElements(0,floorOffset,0, this._scratchCartesian), stage);
+        (floor.position as DynamicPositionProperty).setValue(Cartesian3.fromElements(0,floorOffset,0, this._scratchCartesian), stage);
         if (floorOffset !== 0) {
             frameState.entities[this.floor.id] = getSerializedEntityState(floor, time, stage);
         }
@@ -536,8 +523,8 @@ export class ContextService {
             if (!this._knownEntities.has(id)) {
                 let entity = this.entities.getById(id);
                 if (entity) {
-                    if (entity.position) (entity.position as ConstantPositionProperty).setValue(undefined);
-                    if (entity.orientation) (entity.orientation as ConstantProperty).setValue(undefined);
+                    if (entity.position) (entity.position as DynamicPositionProperty).setValue(undefined);
+                    if (entity.orientation) (entity.orientation as DynamicProperty).setValue(undefined);
                 }
                 this._updatingEntities.delete(id);
             }
@@ -554,11 +541,11 @@ export class ContextService {
             const eusToFixedFrameTransform = eastUpSouthToFixedFrame(userPositionFixed, undefined, this._scratchMatrix4);
             const eusRotationMatrix = Matrix4.getRotation(eusToFixedFrameTransform, this._scratchMatrix3);
             const eusOrientation = Quaternion.fromRotationMatrix(eusRotationMatrix);
-            (this.stage.position as ConstantPositionProperty).setValue(userPositionFixed, ReferenceFrame.FIXED);
-            (this.stage.orientation as ConstantProperty).setValue(eusOrientation);
+            (this.stage.position as DynamicPositionProperty).setValue(userPositionFixed, ReferenceFrame.FIXED);
+            (this.stage.orientation as DynamicProperty).setValue(eusOrientation);
         } else {
-            (this.stage.position as ConstantPositionProperty).setValue(Cartesian3.fromElements(0,-this.deviceService.suggestedUserHeight, 0, this._scratchCartesian), this.user.position!.referenceFrame);
-            (this.stage.orientation as ConstantProperty).setValue(Quaternion.IDENTITY);
+            (this.stage.position as DynamicPositionProperty).setValue(Cartesian3.fromElements(0,-this.deviceService.suggestedUserHeight, 0, this._scratchCartesian), this.user.position!.referenceFrame);
+            (this.stage.orientation as DynamicProperty).setValue(Quaternion.IDENTITY);
         }
         frameState.entities[this.stage.id] = <any>true; // assume overriden for _update
     }
@@ -569,10 +556,7 @@ export class ContextService {
 
     // TODO: This function is called a lot. Potential for optimization. 
     private _update(frameState: ContextFrameState) {
-
         this._serializedFrameState = frameState;
-        const time = frameState.time;
-        const entities = frameState.entities;
 
         // update our time values
         const timestamp = performance.now();
@@ -584,57 +568,86 @@ export class ContextService {
         if (this.sessionService.manager.isConnected && this.sessionService.manager.version[0] === 0) {
             this._updateBackwardsCompatability(frameState);
         } else {
-            const entityService = this.entityService;
-            for (const id in entities) {
-                entityService.updateEntityFromSerializedState(id, entities[id]);
-            }
-        }
-        
-        // update stage entity based on device if the reality did not override it
-        const deviceStage = this.deviceService.stage;
-        const contextStage = this.stage;
-        if (entities[contextStage.id] === undefined) {
-            const contextStagePosition = contextStage.position as ConstantPositionProperty;
-            const contextStageOrientation = contextStage.orientation as ConstantProperty;
-            contextStagePosition.setValue(Cartesian3.ZERO, deviceStage);
-            contextStageOrientation.setValue(Quaternion.IDENTITY);
-            contextStage['meta'] = this.deviceService.stage['meta']; // To serialize the user geopose metadata
+            this._updateEntities(frameState.entities);
         }
 
-        // update user entity (relative to stage) based on device (relative to stage) if the reality did not override it
+        this._updateContextEntities(frameState);
+        this._updateStageGeo();
+
+        // update view and reality service
+        this.viewService._processContextFrameState(frameState, this);
+        this.realityService._processContextFrameState(frameState); 
+
+        // raise origin change event if necessary
+        this._checkOriginChange();
+
+        // raise events for the user to update and render the scene
+        this.updateEvent.raiseEvent(this);
+        this.renderEvent.raiseEvent(this);
+        this.postRenderEvent.raiseEvent(this);
+
+        // publish frameState to the manager (noop if this session is not a reality)
+        this.realityService._publishContextFrameState(frameState);
+
+        // submit frame if necessary
+        this._trySubmitFrame();
+    }
+
+    _updateEntities(entities:SerializedEntityStateMap) {
+        const entityService = this.entityService;
+        for (const id in entities) {
+            entityService.updateEntityFromSerializedState(id, entities[id]);
+        }
+    }
+
+    _updateContextEntities(frameState:ContextFrameState) {
+        const time = frameState.time;
+        const entities = frameState.entities;
+        
+        // If the reality did not override the stage, then set the origin to the device origin.
+        // Otherwise, find the appropriate origin pose. 
+        const contextOrigin = this.origin;
+        const contextStage = this.stage;
+        const deviceOrigin = this.deviceService.origin;
+        const deviceStage = this.deviceService.stage;
+        const contextStagePosition = contextStage.position as DynamicPositionProperty;
+        const contextStageOrientation = contextStage.orientation as DynamicProperty;
+        const contextOriginPosition = contextOrigin.position as DynamicPositionProperty;
+        const contextOriginOrientation = contextOrigin.orientation as DynamicProperty;
+        if (entities[contextStage.id] === undefined) {
+            contextStagePosition.setValue(Cartesian3.ZERO, deviceStage);
+            contextStageOrientation.setValue(Quaternion.IDENTITY);
+            contextOriginPosition.setValue(Cartesian3.ZERO, deviceOrigin);
+            contextOriginOrientation.setValue(Quaternion.IDENTITY);
+        } else { 
+            // first figure out where the origin should be
+            const originRelativeToStage = this.getEntityPose(deviceOrigin, deviceStage);
+            contextOriginPosition.setValue(originRelativeToStage.position, contextStage);
+            contextOriginOrientation.setValue(originRelativeToStage.orientation);
+            // then convert the origin to the same frame used by the overridden stage
+            const rootFrame = getReachableAncestorReferenceFrames(contextStage, time, this._scratchArray)[0];
+            if (!defined(rootFrame)) throw new Error("Stage frame must have a reachable parent reference frame!");
+            const originRelativeToRoot = this.getEntityPose(contextOrigin, rootFrame);
+            contextOriginPosition.setValue(originRelativeToRoot.position, rootFrame);
+            contextOriginOrientation.setValue(originRelativeToRoot.orientation);
+        }
+
+        // update user entity (relative to origin) based on device user (relative to device origin) if the reality did not override it
         const deviceUser = this.deviceService.user;
         const contextUser = this.user;
         if (entities[contextUser.id] === undefined) {
-            const userPositionValue = this._getEntityPositionInReferenceFrame(deviceUser, time, deviceStage, this._scratchCartesian);
-            const userOrientationValue =  this._getEntityOrientationInReferenceFrame(deviceUser, time, deviceStage, this._scratchQuaternion);
-            const contextUserPosition = contextUser.position as ConstantPositionProperty;
-            const contextUserOrientation = contextUser.orientation as ConstantProperty;
-            contextUserPosition.setValue(userPositionValue, contextStage);
-            contextUserOrientation.setValue(userOrientationValue);
-        }
-        
-        // update origin (relative to user) to match device origin (relative to user)
-        const deviceOrigin = this.deviceService.origin;
-        const contextOrigin = this.origin;
-        if (entities[this.origin.id] === undefined) {
-            const deviceOriginPositionValue = this._getEntityPositionInReferenceFrame(deviceOrigin, time, deviceUser, this._scratchCartesian);
-            const deviceOriginOrientationValue =  this._getEntityOrientationInReferenceFrame(deviceOrigin, time, deviceUser, this._scratchQuaternion);
-            const contextOriginPosition = contextOrigin.position as ConstantPositionProperty;
-            const contextOriginOrientation = contextOrigin.orientation as ConstantProperty;
-            if (deviceOriginPositionValue && deviceOriginOrientationValue) {
-                contextOriginPosition.setValue(deviceOriginPositionValue, contextUser);
-                contextOriginOrientation.setValue(deviceOriginOrientationValue);
-            } else {
-                contextOriginPosition.setValue(Cartesian3.ZERO, contextStage);
-                contextOriginOrientation.setValue(Quaternion.IDENTITY);
-            }
+            const userRelativeToOrigin = this.getEntityPose(deviceUser, deviceOrigin);
+            const contextUserPosition = contextUser.position as DynamicPositionProperty;
+            const contextUserOrientation = contextUser.orientation as DynamicProperty;
+            contextUserPosition.setValue(userRelativeToOrigin.position, contextOrigin);
+            contextUserOrientation.setValue(userRelativeToOrigin.orientation);
         }
 
         // update view entity (if the reality did not set it)
         const contextView = this.view;
         if (entities[contextView.id] === undefined) {
-            const contextViewPosition = contextView.position as ConstantPositionProperty;
-            const contextViewOrientation = contextView.orientation as ConstantProperty;
+            const contextViewPosition = contextView.position as DynamicPositionProperty;
+            const contextViewOrientation = contextView.orientation as DynamicProperty;
             contextViewPosition.setValue(Cartesian3.ZERO, contextUser);
             contextViewOrientation.setValue(Quaternion.IDENTITY);
         }
@@ -646,8 +659,8 @@ export class ContextService {
                 const contextSubview = this.getSubviewEntity(i);
                 const subviewPositionValue = this._getEntityPositionInReferenceFrame(deviceSubview, time, deviceUser, this._scratchCartesian);
                 const subviewOrientationValue = this._getEntityOrientationInReferenceFrame(deviceSubview, time, deviceUser, this._scratchQuaternion);
-                const contextSubviewPosition = contextSubview.position as ConstantPositionProperty;
-                const contextSubviewOrientation = contextSubview.orientation as ConstantProperty;
+                const contextSubviewPosition = contextSubview.position as DynamicPositionProperty;
+                const contextSubviewOrientation = contextSubview.orientation as DynamicProperty;
                 contextSubviewPosition.setValue(subviewPositionValue, contextView);
                 contextSubviewOrientation.setValue(subviewOrientationValue);
             }
@@ -655,37 +668,39 @@ export class ContextService {
 
         // update floor entity (if the reality did not set it)
         if (entities[this.floor.id] === undefined) {
-            const floorPosition = this.floor.position as ConstantPositionProperty;
+            const floorPosition = this.floor.position as DynamicPositionProperty;
             floorPosition.setValue(Cartesian3.ZERO, contextStage);
         }
+    }
 
+    _updateStageGeo() {
         // update stageEUS and stageENU
+        const time = this.time;
+        const contextStage = this.stage;
         const stageFixedPosition = this._getEntityPositionInReferenceFrame(contextStage, time, ReferenceFrame.FIXED, this._scratchCartesian);
         if (stageFixedPosition) { // TODO: only do this math if fixed position differs from previous frame
             // EUS
             const eusTransform = this._eastUpSouthToFixedFrame(stageFixedPosition, undefined, this._scratchMatrix4);
             const eusRotation = Matrix4.getRotation(eusTransform, this._scratchMatrix3);
             const eusOrientation = Quaternion.fromRotationMatrix(eusRotation, this._scratchQuaternion);
-            (this.stageEUS.position as ConstantPositionProperty).setValue(stageFixedPosition, ReferenceFrame.FIXED);
-            (this.stageEUS.orientation as ConstantProperty).setValue(eusOrientation);
+            (this.stageEUS.position as DynamicPositionProperty).setValue(stageFixedPosition, ReferenceFrame.FIXED);
+            (this.stageEUS.orientation as DynamicProperty).setValue(eusOrientation);
             // ENU
             const enuTransform = this._eastNorthUpToFixedFrame(stageFixedPosition, undefined, this._scratchMatrix4);
             const enuRotation = Matrix4.getRotation(enuTransform, this._scratchMatrix3);
             const enuOrientation = Quaternion.fromRotationMatrix(enuRotation, this._scratchQuaternion);
-            (this.stageENU.position as ConstantPositionProperty).setValue(stageFixedPosition, ReferenceFrame.FIXED);
-            (this.stageENU.orientation as ConstantProperty).setValue(enuOrientation);
+            (this.stageENU.position as DynamicPositionProperty).setValue(stageFixedPosition, ReferenceFrame.FIXED);
+            (this.stageENU.orientation as DynamicProperty).setValue(enuOrientation);
         } else {
-            (this.stageEUS.position as ConstantPositionProperty).setValue(undefined, ReferenceFrame.FIXED);
-            (this.stageEUS.orientation as ConstantProperty).setValue(undefined);
-            (this.stageENU.position as ConstantPositionProperty).setValue(undefined, ReferenceFrame.FIXED);
-            (this.stageENU.orientation as ConstantProperty).setValue(undefined);
+            (this.stageEUS.position as DynamicPositionProperty).setValue(undefined, ReferenceFrame.FIXED);
+            (this.stageEUS.orientation as DynamicProperty).setValue(undefined);
+            (this.stageENU.position as DynamicPositionProperty).setValue(undefined, ReferenceFrame.FIXED);
+            (this.stageENU.orientation as DynamicProperty).setValue(undefined);
         }
+    }
 
-        // update view
-        this.viewService._processContextFrameState(frameState, this);
-        this.realityService._processContextFrameState(frameState); 
-
-        // raise origin change event if necessary
+    _checkOriginChange() {
+        const time = this.time;
         const originReferenceFrame = this._getReachableAncestorReferenceFrames(this.origin, time, this._scratchArray)[0] || ReferenceFrame.FIXED;
         const originPosition = this._getEntityPositionInReferenceFrame(this.origin, time, originReferenceFrame, this._scratchCartesian);
         const originOrientation = this._getEntityOrientationInReferenceFrame(this.origin, time, originReferenceFrame, this._scratchQuaternion);
@@ -699,19 +714,12 @@ export class ContextService {
             this._previousOriginReferenceFrame = originReferenceFrame;
             this._previousOriginPosition = originPosition && Cartesian3.clone(originPosition, this._previousOriginPosition);
             this._previousOriginOrientation = originOrientation && Quaternion.clone(originOrientation, this._previousOriginOrientation);
-            console.log('Updated context origin to ' + JSON.stringify(originPosition) + " at " + this._stringIdentifierFromReferenceFrame(originReferenceFrame));
+            console.log('Updated context origin to ' + JSON.stringify(originPosition) + " at " + stringIdentifierFromReferenceFrame(originReferenceFrame));
             this.originChangeEvent.raiseEvent(undefined);
         }
+    }
 
-        // raise events for the user to update and render the scene
-        this.updateEvent.raiseEvent(this);
-        this.renderEvent.raiseEvent(this);
-        this.postRenderEvent.raiseEvent(this);
-
-        // publish frameState to the manager (noop if this session is not a reality)
-        this.realityService._publishContextFrameState(frameState);
-
-        // submit frame if necessary
+    _trySubmitFrame() {
         const vrDisplay:VRDisplay|undefined = this.deviceService.vrDisplay;
         if (this.deviceService.autoSubmitFrame && 
             vrDisplay && vrDisplay.isPresenting && 
@@ -723,42 +731,61 @@ export class ContextService {
     getSubviewEntity(index:number) {
         const subviewEntity = this.entityService.collection.getOrCreateEntity('ar.view_'+index);
         if (!subviewEntity.position) {
-            subviewEntity.position = new ConstantPositionProperty(Cartesian3.ZERO, this.user);
+            subviewEntity.position = new DynamicPositionProperty(Cartesian3.ZERO, this.user);
         }
         if (!subviewEntity.orientation) {
-            subviewEntity.orientation = new ConstantProperty(Quaternion.IDENTITY);
+            subviewEntity.orientation = new DynamicProperty(Quaternion.IDENTITY);
         }
         return subviewEntity;
     }
 
 
     subscribeGeolocation(options?:GeolocationOptions) : Promise<void> {
-        return this.entityService.subscribe(this.stage.id, options).then(()=>{});
+        return this.sessionService.manager.whenConnected().then(()=>{
+            if (this.sessionService.manager.versionNumber >= 1.4)
+                return this.entityService.subscribe(this.origin.id, options).then(()=>{});
+            else 
+                return this.entityService.subscribe(this.stage.id, options).then(()=>{});
+        });
     }
 
     unsubscribeGeolocation() : void {
-        this.entityService.unsubscribe(this.stage.id);
+        this.sessionService.manager.whenConnected().then(()=>{
+            if (this.sessionService.manager.versionNumber >= 1.4)
+                this.entityService.unsubscribe(this.origin.id);
+            else 
+                this.entityService.unsubscribe(this.stage.id);
+        });
+    }
+
+    private _getInheritedMetaProperty(entity, metaPropKey:string) {
+        let referenceFrame = <Entity|undefined>entity.position!.referenceFrame;
+        while (referenceFrame) {
+            const metaProp = referenceFrame['meta'] && referenceFrame['meta'][metaPropKey];
+            if (defined(metaProp)) return metaProp;
+            referenceFrame = referenceFrame.position && <Entity>referenceFrame.position.referenceFrame;
+        }
     }
 
     /**
      * If geopose is available, this is the accuracy of the user heading
      */
     public get geoHeadingAccuracy() : number|undefined {
-        return this.stage['meta'] && this.stage['meta'].geoHeadingAccuracy;
+        return this._getInheritedMetaProperty(this.user, 'geoHeadingAccuracy');
     }
 
     /**
      * If geopose is available, this is the horizontal accuracy of the user geolocation
      */
     public get geoHorizontalAccuracy() : number|undefined {
-        return this.stage['meta'] && this.stage['meta'].geoHorizontalAccuracy;
+        return this._getInheritedMetaProperty(this.stage, 'geoHorizontalAccuracy');
     }
     
     /**
      * If geopose is available, this is the vertical accuracy of the user geolocation
      */
     public get geoVerticalAccuracy() : number|undefined {
-        return this.stage['meta'] && this.stage['meta'].geoVerticalAccuracy;
+        return this._getInheritedMetaProperty(this.stage, 'geoVerticalAccuracy');
     }
 
 
@@ -788,18 +815,17 @@ export class ContextService {
 @autoinject()
 export class ContextServiceProvider {
     
-    private _cacheTime = new JulianDate(0,0)
+    private _cacheTime = new JulianDate(0,0);
 
     constructor(
         protected sessionService:SessionService,
         protected contextService:ContextService,
+        protected deviceService:DeviceService,
         protected entityServiceProvider:EntityServiceProvider,
         protected permissionServiceProvider:PermissionServiceProvider,
-        protected realityServiceProvider:RealityServiceProvider
+        protected realityServiceProvider:RealityServiceProvider,
+        protected device:Device
     ) {
-        this.entityServiceProvider.targetReferenceFrameMap.set(this.contextService.stage.id, ReferenceFrame.FIXED);
-        this.entityServiceProvider.targetReferenceFrameMap.set(this.contextService.origin.id, this.contextService.stage.id);
-
         // subscribe to context geolocation if any child sessions have subscribed
         this.entityServiceProvider.sessionSubscribedEvent.addEventListener((evt)=>{
             if (evt.id === this.contextService.stage.id && evt.session !== this.sessionService.manager) {
@@ -814,6 +840,14 @@ export class ContextServiceProvider {
             if (subscribers && subscribers.size === 1 && subscribers.has(this.sessionService.manager)) {
                 this.contextService.unsubscribeGeolocation();
             }
+        });
+
+        this.sessionService.connectEvent.addEventListener((session)=>{
+            const subscriptions = this.entityServiceProvider.subscriptionsBySubscriber.get(session)!;
+            subscriptions[this.contextService.user.id] = {};
+            subscriptions[this.contextService.stage.id] = {};
+            subscriptions[this.deviceService.user.id] = {};
+            subscriptions[this.deviceService.stage.id] = {};
         })
         
         // submit frame state from reality
@@ -833,7 +867,9 @@ export class ContextServiceProvider {
     }
 
     private _sessionEntities:SerializedEntityStateMap = {};
-    private _temp:any = {};
+    // private _temp:any = {};
+
+    private _excludedFramesForSerialization = {};
 
     private _sendUpdateForSession(state:ContextFrameState, session: SessionPort) {
         const sessionEntities = this._sessionEntities;
@@ -844,35 +880,50 @@ export class ContextServiceProvider {
             delete sessionEntities[id];
         }
 
-        // reference all entities from the primary frame state
+        // reference all entities from the primary frame state.
         if (state.entities) {
             for (var id in state.entities) {
                 sessionEntities[id] = state.entities[id];
             }
         }
-        
-        const subscriptions = entityServiceProvider.subscriptionsBySubscriber.get(session)!;
-        const contextService = this.contextService;
-        const contextStageId = contextService.stage.id;
-        
-        // always send the origin and user state
-        sessionEntities[contextService.origin.id] = entityServiceProvider.getCachedSerializedEntityState(contextService.origin, state.time)        
-        sessionEntities[contextService.user.id] = entityServiceProvider.getCachedSerializedEntityState(contextService.user, state.time)
 
-        // exclude the stage state unless it is explicitly subscribed with permission granted
-        if (!subscriptions[contextStageId]) 
-            delete sessionEntities[contextStageId];
-        if (this.permissionServiceProvider.getPermissionState(session, 'geolocation') != PermissionState.GRANTED)
-            delete sessionEntities[contextStageId];
-        
-        // add the entity states for all subscribed entities
-        const iter = subscriptions.keys();
-        let item:IteratorResult<string>;
-        while (item = iter.next(), !item.done) { // not using for-of since typescript converts this to broken es5
-            const id = item.value;
-            const entity = contextService.entities.getById(id);
-            sessionEntities[id] = entityServiceProvider.getCachedSerializedEntityState(entity, state.time);
+        const excludedFrames = this._excludedFramesForSerialization;
+        excludedFrames[this.device.deviceOrientation.id] = true;
+
+        if (this.permissionServiceProvider.getPermissionState(session, 'geolocation') != PermissionState.GRANTED) {
+            excludedFrames[this.deviceService.origin.id] = true;
+            excludedFrames[this.contextService.origin.id] = true;
+        } else {
+            delete excludedFrames[this.deviceService.origin.id];
+            delete excludedFrames[this.contextService.origin.id];
         }
+
+        // add the entity states for all subscribed entities, excluding those in the excluded list
+        const subscriptions = entityServiceProvider.subscriptionsBySubscriber.get(session);
+        subscriptions && entityServiceProvider.fillEntityStateMap(sessionEntities, state.time, subscriptions, excludedFrames);
+        
+        
+        // const subscriptions = entityServiceProvider.subscriptionsBySubscriber.get(session)!;
+        // const contextService = this.contextService;
+        // const contextStageId = contextService.stage.id;
+        
+        // // always send the origin and user state
+        // sessionEntities[contextService.origin.id] = entityServiceProvider.getCachedSerializedEntityState(contextService.origin, state.time)        
+        // sessionEntities[contextService.user.id] = entityServiceProvider.getCachedSerializedEntityState(contextService.user, state.time)
+
+        // // exclude the stage state unless it is explicitly subscribed with permission granted
+        // if (!subscriptions[contextStageId]) 
+        //     delete sessionEntities[contextStageId];
+        // if (this.permissionServiceProvider.getPermissionState(session, 'geolocation') != PermissionState.GRANTED)
+        //     delete sessionEntities[contextStageId];
+        
+        // const iter = subscriptions.keys();
+        // let item:IteratorResult<string>;
+        // while (item = iter.next(), !item.done) { // not using for-of since typescript converts this to broken es5
+        //     const id = item.value;
+        //     const entity = contextService.entities.getById(id);
+        //     sessionEntities[id] = entityServiceProvider.getCachedSerializedEntityState(entity, state.time);
+        // }
              
         // recycle the frame state object, but with the session entities
         const parentEntities = state.entities;
@@ -880,29 +931,7 @@ export class ContextServiceProvider {
         state.time = state.time;
         state.sendTime = JulianDate.now(state.sendTime);
 
-        if (session.version[0] === 0) { // backwards compatability with older viewers / augmenters
-
-            for (const s of state.subviews) {
-                s['frustum'] = s['frustum'] || decomposePerspectiveProjectionMatrix(s.projectionMatrix, <any>{});
-            }
-
-            const view = this._temp;
-            view.viewport = state.viewport;
-            view.subviews = state.subviews;
-            view.pose = state.entities['ar.user'];
-            
-            delete state.subviews;
-            delete state.viewport;
-            delete state.entities['ar.user'];
-            state['view'] = view;
-
-            session.send('ar.context.update', state);
-
-            delete state['view'];
-            state.viewport = view.viewport;
-            state.subviews = view.subviews;
-
-        } else if (session.version[0] === 1 && session.version[1] === 1 && state.entities['ar.user']) {
+        if (session.version[0] === 1 && session.version[1] === 1 && state.entities['ar.user']) {
             state.entities['ar.user']!.r = 'ar.stageEUS';
             session.send('ar.context.update', state);
             state.entities['ar.user']!.r = 'ar.stage';

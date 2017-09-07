@@ -120,7 +120,6 @@ export declare class ViewService {
     publishEmbeddedViewport(viewport?: Viewport): void;
     private _updateViewport(viewport);
     sendUIEventToSession(uievent: UIEvent, session?: SessionPort): void;
-    private _embeddedViewport;
     /**
      * @private
      */

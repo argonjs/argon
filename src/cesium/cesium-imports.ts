@@ -50,7 +50,6 @@ export { default as PolylinePipeline } from 'cesium/Source/Core/PolylinePipeline
 
 //Terrain Tiles
 export { default as TerrainProvider } from 'cesium/Source/Core/TerrainProvider'
-export { default as throttleRequestByServer } from 'cesium/Source/Core/throttleRequestByServer'
 export { default as loadImage } from 'cesium/Source/Core/loadImage'
 
 export { default as WebMercatorTilingScheme } from 'cesium/Source/Core/WebMercatorTilingScheme'
@@ -74,3 +73,51 @@ export function createGuid() { // from http://www.chengxuyuans.com/qa/javascript
 }
 
 import './cesium-extensions'
+
+
+
+
+
+import { default as defined } from 'cesium/Source/Core/defined'
+import { default as Cartesian3 } from 'cesium/Source/Core/Cartesian3'
+import { default as Entity } from 'cesium/Source/DataSources/Entity'
+import { default as ReferenceFrame } from 'cesium/Source/Core/ReferenceFrame'
+
+import { default as ConstantPositionProperty } from 'cesium/Source/DataSources/ConstantPositionProperty'
+import { default as ConstantProperty } from 'cesium/Source/DataSources/ConstantProperty'
+
+
+// DynamicProperties do not fire change events
+
+export class DynamicPositionProperty extends ConstantPositionProperty {
+
+  get isConstant() {
+    return false;
+  }
+
+  setValue(value:Cartesian3|undefined, referenceFrame?:Entity|ReferenceFrame) {
+    this['_value'] = Cartesian3.clone(value!);
+    this['_referenceFrame'] = referenceFrame;
+  }
+}
+    
+    
+export class DynamicProperty extends ConstantProperty {
+
+  get isConstant() {
+    return false;
+  }
+
+  setValue(value:any) {
+    var oldValue = this['_value'];
+    if (oldValue !== value) {
+        var isDefined = defined(value);
+        var hasClone = isDefined && typeof value.clone === 'function';
+        var hasEquals = isDefined && typeof value.equals === 'function';
+
+        this['_hasClone'] = hasClone;
+        this['_hasEquals'] = hasEquals;
+        this['_value'] = !hasClone ? value : value.clone(this['_value']);
+    }
+  }
+}

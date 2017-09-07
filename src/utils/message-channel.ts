@@ -127,46 +127,72 @@ export class SynchronousMessageChannel {
     constructor() {
         const messageChannel = this;
 
-        let pendingMessages1: any[] = []
-        let onmessage1 = function(message) {
-            pendingMessages1.push(message);
+        let pendingMessagesToPort2: any[] = []
+        let onmessage1 = undefined;
+
+        const port1Event:{data:any} = {data:null};
+        let port1Closed = false;
+
+        var tryPendingMessagesToPort2 = () => {
+            for (var i=0; i < pendingMessagesToPort2.length; i++) {
+                messageChannel.port2.onmessage!(pendingMessagesToPort2[i]);
+            }
+            pendingMessagesToPort2.length = 0;
         }
+
+        var tryPendingMessagesToPort1 = () => {
+            for (var i=0; i < pendingMessagesToPort1.length; i++) {
+                messageChannel.port1.onmessage!(pendingMessagesToPort1[i]);
+            }
+            pendingMessagesToPort1.length = 0;
+        }
+
         messageChannel.port1 = {
             get onmessage() { return onmessage1 },
             set onmessage(func) {
-                setTimeout(()=>{
-                    onmessage1 = func;
-                    pendingMessages1.forEach((data) => func(data))
-                    pendingMessages1 = [];
-                },0);
+                onmessage1 = func;
+                tryPendingMessagesToPort1();
             },
             postMessage(data: any) {
-                if (messageChannel.port2.onmessage)
-                    messageChannel.port2.onmessage({ data });
+                if (messageChannel.port2.onmessage) {
+                    port1Event.data = data;                    
+                    // port1Event.data = typeof data === 'string' ? data : JSON.stringify(data);
+                    // console.log(JSON.stringify(port1Event.data));
+                    messageChannel.port2.onmessage(port1Event);
+                } else if (!port1Closed) {
+                    pendingMessagesToPort2.push({data:data});
+                }
             },
             close() {
+                port1Closed = true;
                 messageChannel.port1.onmessage = undefined;
-                messageChannel.port2.onmessage = undefined;
             }
         }
 
-        let pendingMessages2: any[] = []
-        let onmessage2 = function(message) {
-            pendingMessages2.push(message);
-        }
+        let pendingMessagesToPort1: any[] = []
+        let onmessage2 = undefined;
+        
+        const port2Event:{data:any} = {data:null};
+        let port2Closed = false;
+
         messageChannel.port2 = <MessagePortLike>{
             get onmessage() { return onmessage2 },
             set onmessage(func) {
                 onmessage2 = func;
-                pendingMessages2.forEach((data) => func(data))
-                pendingMessages2 = [];
+                tryPendingMessagesToPort2();
             },
             postMessage(data: any) {
-                if (messageChannel.port1.onmessage)
-                    messageChannel.port1.onmessage({ data });
+                if (messageChannel.port1.onmessage) {
+                    // port2Event.data = typeof data === 'string' ? data : JSON.stringify(data);
+                    port2Event.data = data;
+                    // console.log(JSON.stringify(data));
+                    messageChannel.port1.onmessage(port2Event);
+                } else if (!port2Closed) {
+                    pendingMessagesToPort1.push({data:data});
+                }
             },
             close() {
-                messageChannel.port1.onmessage = undefined;
+                port2Closed = true;
                 messageChannel.port2.onmessage = undefined;
             }
         }

@@ -1,6 +1,13 @@
 import { autoinject } from 'aurelia-dependency-injection';
 import { SessionService, SessionPort } from './session';
-import { Event, getEntityPositionInReferenceFrame, getEntityOrientationInReferenceFrame, getSerializedEntityState, jsonEquals } from './utils';
+import {
+    Event, 
+    getEntityPositionInReferenceFrame, 
+    getEntityOrientationInReferenceFrame, 
+    getSerializedEntityState, 
+    jsonEquals, 
+    stringIdentifierFromReferenceFrame 
+} from './utils';
 import { SerializedEntityState, SerializedEntityStateMap } from './common';
 import { PermissionServiceProvider } from './permission'
 import {
@@ -33,6 +40,8 @@ export class EntityPose {
         entityOrId:Entity|string, 
         referenceFrameId:Entity|ReferenceFrame|string
     ){
+        this._collection['_firing'] = true; // hack: disable collectionChanged event
+
         if (typeof entityOrId === 'string') {
             let entity:Entity|ReferenceEntity|undefined = this._collection.getById(entityOrId);
             if (!entity) entity = <Entity><any> new ReferenceEntity(this._collection, entityOrId);
@@ -288,6 +297,28 @@ export class EntityService {
         return new EntityPose(this.collection, entityOrId, referenceFrameOrId);
     }
 
+    private _entityPoseMap = new Map<string, EntityPose | undefined>();
+    private _stringIdentifierFromReferenceFrame = stringIdentifierFromReferenceFrame;
+
+    /**
+     * Gets the pose of an entity, relative to a given reference frame at a given time.
+     *
+     * @param entityOrId - The entity whose state is to be queried.
+     * @param referenceFrameOrId - The intended reference frame. Defaults to `this.defaultReferenceFrame`.
+     */
+    public getEntityPose(entityOrId: Entity|string, referenceFrameOrId: string | ReferenceFrame | Entity, time: JulianDate): EntityPose {
+        const key = this._stringIdentifierFromReferenceFrame(entityOrId) + '@' + this._stringIdentifierFromReferenceFrame(referenceFrameOrId);
+        
+        let entityPose = this._entityPoseMap.get(key);
+        if (!entityPose) {
+            entityPose = this.createEntityPose(entityOrId, referenceFrameOrId);
+            this._entityPoseMap.set(key, entityPose);
+        }
+        entityPose.update(time);
+
+        return entityPose;
+    }
+
     /**
      * 
      * @param id 
@@ -342,12 +373,10 @@ export class EntityService {
 @autoinject
 export class EntityServiceProvider {
 
-    public subscriptionsBySubscriber = new WeakMap<SessionPort, Map<string,{}|undefined>>();
+    public subscriptionsBySubscriber = new WeakMap<SessionPort, {[entityId:string]:{}|undefined}>();
     public subscribersByEntity = new Map<string, Set<SessionPort>>();
     public sessionSubscribedEvent = new Event<{session:SessionPort, id:string, options:{}}>();
     public sessionUnsubscribedEvent = new Event<{session:SessionPort, id:string}>();
-
-    public targetReferenceFrameMap = new Map<string, string|ReferenceFrame>();
 
     constructor(
         private sessionService: SessionService,
@@ -357,72 +386,74 @@ export class EntityServiceProvider {
         this.sessionService.ensureIsRealityManager();
         
         this.sessionService.connectEvent.addEventListener((session) => {
-            const subscriptions = new Map<string, {}|undefined>();
+            const subscriptions = {};
             this.subscriptionsBySubscriber.set(session, subscriptions);
 
-            session.on['ar.entity.subscribe'] = session.on['ar.context.subscribe'] = ({id, options}:{id:string, options:any}) => {
-                const currentOptions = subscriptions.get(id);
+            session.on['ar.entity.subscribe'] = session.on['ar.context.subscribe'] = ({id, options}:{id:string, options:{}|undefined}) => {
+                const currentOptions = subscriptions[id];
                 if (currentOptions && jsonEquals(currentOptions,options)) return;
                 
+                options = options || {};
                 const subscribers = this.subscribersByEntity.get(id) || new Set<SessionPort>();
                 this.subscribersByEntity.set(id, subscribers);
                 subscribers.add(session);
-                subscriptions.set(id,options);
+                subscriptions[id] = options;
                 this.sessionSubscribedEvent.raiseEvent({session, id, options});
                 
                 return this.permissionServiceProvider.handlePermissionRequest(session, id, options).then(()=>{});
             }
 
             session.on['ar.entity.unsubscribe'] = session.on['ar.context.unsubscribe'] = ({id}:{id:string}) => {
-                if (!subscriptions.has(id)) return;
-
+                if (!subscriptions[id]) return;
                 const subscribers = this.subscribersByEntity.get(id);
                 subscribers && subscribers.delete(session);
-                subscriptions.delete(id);
+                delete subscriptions[id];
                 this.sessionUnsubscribedEvent.raiseEvent({id, session});
             }
 
             session.closeEvent.addEventListener(()=>{
                 this.subscriptionsBySubscriber.delete(session);
-                subscriptions.forEach((options, id)=>{
+                for (const id in subscriptions) {
                     const subscribers = this.subscribersByEntity.get(id);
                     subscribers && subscribers.delete(session);
                     this.sessionUnsubscribedEvent.raiseEvent({id, session});
-                });
+                }
             })
         });
     }
 
-    public fillEntityStateMapForSession(session:SessionPort, time:JulianDate, entities:SerializedEntityStateMap) {
-        const subscriptions = this.subscriptionsBySubscriber.get(session);
-        if (!subscriptions) return;
-
-        const iter = subscriptions.keys();
-        let item:IteratorResult<string>;
-        while (item = iter.next(), !item.done) { // not using for-of since typescript converts this to broken es5
-            const id = item.value;
-            const entity = this.entityService.collection.getById(id);
-            entities[id] = entity ? this.getCachedSerializedEntityState(entity, time) : null;
+    /**
+     * Serialize into a serialization state mpat, the given entities using the given time.
+     * Serialization includes the ancestor reference frames of included, excluding any entities in the excludedFrames list. 
+     */
+    public fillEntityStateMap(entities:SerializedEntityStateMap, time:JulianDate, includedMap:{}, excludedMap:{}) {
+        for (let id in includedMap) {
+            let entity = this.entityService.collection.getById(id);
+            while (
+                defined(entity) && 
+                entities[id = entity.id] !== undefined &&
+                !excludedMap[id]
+            ) {
+                const referenceFrame = entity && entity.position && entity.position.referenceFrame;
+                const pose = entities[id] = this._getCachedSerializedEntityState(entity, time, referenceFrame);
+                if (pose === null || typeof referenceFrame === 'number') break;
+                entity = referenceFrame;
+            }
         }
     }
 
     private _cacheTime = new JulianDate(0,0)
-    private _entityPoseCache: SerializedEntityStateMap = {};
+    private _entityStateCache: SerializedEntityStateMap = {};
     private _getSerializedEntityState = getSerializedEntityState;
 
-    public getCachedSerializedEntityState(entity: Entity|undefined, time: JulianDate) {
-        if (!entity) return null;
+    private _getCachedSerializedEntityState(entity: Entity|undefined, time:JulianDate, referenceFrame:Entity|ReferenceFrame|undefined) {
+        if (!entity || !referenceFrame) return null;
 
         const id = entity.id;
-
-        if (!defined(this._entityPoseCache[id]) || !this._cacheTime.equalsEpsilon(time, 0.000001)) {
-            const referenceFrameId = this.targetReferenceFrameMap.get(id);
-            const referenceFrame = defined(referenceFrameId) && typeof referenceFrameId === 'string' ? 
-                this.entityService.collection.getById(referenceFrameId) :
-                defined(referenceFrameId) ? referenceFrameId : this.entityService.collection.getById('ar.origin');
-            this._entityPoseCache[id] = this._getSerializedEntityState(entity, time, referenceFrame);
+        if (!defined(this._entityStateCache[id]) || !this._cacheTime.equalsEpsilon(time, 0.000001)) {
+            this._entityStateCache[id] = this._getSerializedEntityState(entity, time, referenceFrame);
         }
 
-        return this._entityPoseCache[id];
+        return this._entityStateCache[id];
     }
 }

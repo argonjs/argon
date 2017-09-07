@@ -11,8 +11,7 @@ import {
     getImagePixels,
     HeightmapTerrainData,
     loadImage,
-    TerrainProvider,
-    throttleRequestByServer
+    TerrainProvider
 } from './cesium-imports'
 
 
@@ -188,7 +187,7 @@ Object.defineProperties(MapzenTerrariumTerrainProvider.prototype, {
  *          returns undefined instead of a promise, it is an indication that too many requests are already
  *          pending and the request will be retried later.
  */
-MapzenTerrariumTerrainProvider.prototype.requestTileGeometry = function(x, y, level, throttleRequests) {
+MapzenTerrariumTerrainProvider.prototype.requestTileGeometry = function(x, y, level, request) {
     var url = this._url+level+'/'+x+'/'+y+'.png';
 
     var proxy = this._proxy;
@@ -199,15 +198,7 @@ MapzenTerrariumTerrainProvider.prototype.requestTileGeometry = function(x, y, le
     var promise = this._terrainPromises[url];
 
     if (!promise) {
-        throttleRequests = defaultValue(throttleRequests, true);
-        if (throttleRequests) {
-            promise = throttleRequestByServer(url, loadImage);
-            if (!defined(promise)) {
-                return undefined;
-            }
-        } else {
-            promise = loadImage(url);
-        }
+        promise = loadImage(url, true, request);
         this._terrainPromises[url] = promise;
     }
 

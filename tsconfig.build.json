@@ -8,6 +8,8 @@
         "allowSyntheticDefaultImports": true,
         "pretty": true,
         "sourceMap": true,
+        "inlineSourceMap": true,
+        "inlineSources": true,
         "moduleResolution": "node"
     },
     "include": [
