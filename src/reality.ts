@@ -461,8 +461,9 @@ export class RealityServiceProvider {
                 viewer.destroy();
                 this.uninstalledEvent.raiseEvent({viewer});
             }
+        } else {
+            return Promise.reject(new Error("Unable to uninstall a reality viewer which is not installed"));
         }
-        return Promise.reject(new Error("Unable to uninstall a reality viewer which is not installed"));
     }
 
     protected _handleRequest(session: SessionPort, options:{uri:string}) : Promise<void> {
