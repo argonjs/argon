@@ -772,7 +772,15 @@ export class Device {
     public _setState(state:DeviceStableState) {
         this._overrideState = state;
 
-        if (this.userTracking !== state.userTracking)
+        if (this.userTracking !== state.userTracking) {
+            this.userTracking = state.userTracking;
+            this.userTrackingChangeEvent.raiseEvent(undefined);
+        }
+
+        if (this.displayMode !== state.displayMode) {
+            this.displayMode = state.displayMode;
+            this.displayModeChangeEvent.raiseEvent(undefined);
+        }
 
         if (!jsonEquals(this.suggestedGeolocationSubscription, state.suggestedGeolocationSubscription)) {
             this.suggestedGeolocationSubscription = state.suggestedGeolocationSubscription;

@@ -365,7 +365,8 @@ export interface ContextFrameState {
     index?: number,
     entities: SerializedEntityStateMap,
     sendTime?: JulianDate, // the time this state was sent
-    userTracking?: 'none'|'3DOF'|'6DOF'
+    userTracking?: 'none'|'3DOF'|'6DOF',
+    displayMode?: 'hand'|'head'|'other'
 }
 
 export interface GeolocationOptions {
