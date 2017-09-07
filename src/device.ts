@@ -94,7 +94,7 @@ export class Device {
     vrDisplays:VRDisplay[]|undefined;
     vrDisplay:VRDisplay|undefined;
     userTracking:'none'|'3DOF'|'6DOF' = 'none';
-    displayMode:'hand'|'head'|'other';
+    displayMode:'hand'|'head'|'other' = isIOS || isAndroid ? 'hand' : 'other';
     screenOrientation = 0;
     suggestedGeolocationSubscription:{enableHighAccuracy?:boolean}|undefined;
 

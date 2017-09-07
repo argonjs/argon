@@ -15,13 +15,15 @@ import {
     PerspectiveFrustum,
     CesiumMath
 } from '../cesium/cesium-imports'
-import { Configuration, Role, SerializedSubviewList } from '../common'
+import { Configuration, Role, SerializedSubviewList, AVERAGE_EYE_HEIGHT } from '../common'
 import { SessionService, ConnectService, SessionConnectService } from '../session'
 import { 
     eastUpSouthToFixedFrame, 
     decomposePerspectiveProjectionMatrix, 
     getEntityPositionInReferenceFrame, 
-    getEntityOrientationInReferenceFrame 
+    getEntityOrientationInReferenceFrame,
+    isIOS,
+    isAndroid
 } from '../utils'
 import { EntityService } from '../entity'
 import { ContextService } from '../context'
@@ -46,7 +48,6 @@ interface PinchMovement {
 export class EmptyRealityViewer extends RealityViewer {
 
     public type = 'empty';
-    public userTracking: 'none'|'3DOF'|'6DOF' = '6DOF';
 
     private _aggregator:CameraEventAggregator|undefined;
     private _moveFlags = {
@@ -265,6 +266,9 @@ export class EmptyRealityViewer extends RealityViewer {
                 deviceUserPose.update(time);
 
                 const overrideUser = !(deviceUserPose.status & PoseStatus.KNOWN);
+                const userTracking = overrideUser ? 
+                    (isIOS || isAndroid ? '3DOF' : '6DOF') :  // we only have keyboard on desktop, so report 3DOF on mobile
+                    childDeviceService.userTracking;
                 
                 // provide controls if the device does not have a physical pose
                 if (overrideUser) {
@@ -274,7 +278,7 @@ export class EmptyRealityViewer extends RealityViewer {
 
                     const position = 
                         getEntityPositionInReferenceFrame(contextUser, time, contextStage, positionScratchCartesian) || 
-                        Cartesian3.fromElements(0, childDeviceService.suggestedUserHeight, 0, positionScratchCartesian);
+                        Cartesian3.fromElements(0, childDeviceService.displayMode === 'head' ? AVERAGE_EYE_HEIGHT : AVERAGE_EYE_HEIGHT / 2, 0, positionScratchCartesian);
 
                     let orientation = getEntityOrientationInReferenceFrame(contextUser, time, contextStage, scratchQuaternion) ||
                         Quaternion.clone(Quaternion.IDENTITY, scratchQuaternion);
@@ -342,7 +346,7 @@ export class EmptyRealityViewer extends RealityViewer {
                     {
                         overrideUser,
                         overrideStage,
-                        userTracking: this.userTracking
+                        userTracking,
                     }
                 );
                 childContextService.submitFrameState(contextFrameState);
