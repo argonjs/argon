@@ -26982,7 +26982,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-31");
+            _export('version', version = "1.4.0-32");
 
             __extends$1 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
