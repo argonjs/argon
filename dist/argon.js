@@ -26982,7 +26982,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-32");
+            _export('version', version = "1.4.0-33");
 
             __extends$1 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -28800,7 +28800,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     this.origin = new Entity({
                         id: 'ar.device.origin',
                         name: 'Device Origin',
-                        position: new DynamicPositionProperty(undefined, ReferenceFrame.FIXED),
+                        position: new DynamicPositionProperty(undefined, this.deviceGeolocation),
                         orientation: new DynamicProperty(undefined)
                     });
                     this.stage = new Entity({
@@ -28812,7 +28812,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     this.user = new Entity({
                         id: 'ar.device.user',
                         name: 'Device User',
-                        position: new DynamicPositionProperty(undefined, this.deviceOrientation),
+                        position: new DynamicPositionProperty(undefined, this.origin),
                         orientation: new DynamicProperty(undefined)
                     });
                     // for now, only use webvr when not in argon-app
@@ -29127,8 +29127,10 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                         console.log('Updated device origin to ' + JSON.stringify(deviceGeolocationPose.position) + " at FIXED");
                         return;
                     }
-                    origin.position.setValue(Cartesian3.ZERO, deviceGeolocation);
-                    origin.orientation.setValue(Quaternion.IDENTITY);
+                    if ((deviceGeolocationPose.status & PoseStatus.KNOWN) === 0) {
+                        origin.position.setValue(Cartesian3.ZERO, deviceGeolocation);
+                        origin.orientation.setValue(Quaternion.IDENTITY);
+                    }
                 };
                 Device$$1.prototype._updateForWebVR = function () {
                     var vrDisplay = this.vrDisplay;
