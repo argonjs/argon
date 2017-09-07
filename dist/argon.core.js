@@ -21397,7 +21397,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-34");
+            _export('version', version = "1.4.0-35");
 
             __extends$1 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -23193,6 +23193,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     this.entityService = entityService;
                     this.viewItems = viewItems;
                     this.userTracking = 'none';
+                    this.displayMode = isIOS || isAndroid ? 'hand' : 'other';
                     this.screenOrientation = 0;
                     this.frameState = new DeviceFrameState$$1();
                     this.frameStateEvent = new Event$1();
@@ -26218,7 +26219,6 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     _this.container = container;
                     _this.uri = uri;
                     _this.type = 'empty';
-                    _this.userTracking = '6DOF';
                     _this._moveFlags = {
                         moveForward: false,
                         moveBackward: false,
@@ -26391,11 +26391,12 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                             var time = frameState.time;
                             deviceUserPose.update(time);
                             var overrideUser = !(deviceUserPose.status & PoseStatus.KNOWN);
+                            var userTracking = overrideUser ? isIOS || isAndroid ? '3DOF' : '6DOF' : childDeviceService.userTracking;
                             // provide controls if the device does not have a physical pose
                             if (overrideUser) {
                                 var contextUser = childContextService.user;
                                 var contextStage = childContextService.stage;
-                                var position = getEntityPositionInReferenceFrame(contextUser, time, contextStage, positionScratchCartesian) || Cartesian3.fromElements(0, childDeviceService.suggestedUserHeight, 0, positionScratchCartesian);
+                                var position = getEntityPositionInReferenceFrame(contextUser, time, contextStage, positionScratchCartesian) || Cartesian3.fromElements(0, childDeviceService.displayMode === 'head' ? AVERAGE_EYE_HEIGHT : AVERAGE_EYE_HEIGHT / 2, 0, positionScratchCartesian);
                                 var orientation = getEntityOrientationInReferenceFrame(contextUser, time, contextStage, scratchQuaternion) || Quaternion.clone(Quaternion.IDENTITY, scratchQuaternion);
                                 if (aggregator && aggregator.isMoving(CameraEventType.LEFT_DRAG)) {
                                     var dragMovement = aggregator.getMovement(CameraEventType.LEFT_DRAG);
@@ -26448,7 +26449,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                             var contextFrameState = childContextService.createFrameState(time, frameState.viewport, subviews, {
                                 overrideUser: overrideUser,
                                 overrideStage: overrideStage,
-                                userTracking: _this.userTracking
+                                userTracking: userTracking
                             });
                             childContextService.submitFrameState(contextFrameState);
                             aggregator && aggregator.reset();
