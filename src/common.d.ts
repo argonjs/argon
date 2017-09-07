@@ -200,6 +200,7 @@ export interface ContextFrameState {
     entities: SerializedEntityStateMap;
     sendTime?: JulianDate;
     userTracking?: 'none' | '3DOF' | '6DOF';
+    displayMode?: 'hand' | 'head' | 'other';
 }
 export interface GeolocationOptions {
     enableHighAccuracy?: boolean;

@@ -1,3 +1,4 @@
+/// <reference types="cesium" />
 import 'aurelia-polyfills';
 import * as DI from 'aurelia-dependency-injection';
 import * as Cesium from './cesium/cesium-imports';
@@ -79,6 +80,35 @@ export declare class ArgonSystem {
     readonly renderEvent: Event<any>;
     readonly focusEvent: Event<void>;
     readonly blurEvent: Event<void>;
+    readonly stage: Cesium.Entity;
+    readonly stageEUS: Cesium.Entity;
+    readonly stageENU: Cesium.Entity;
+    readonly user: Cesium.Entity;
+    getEntityPose: typeof ContextService.prototype.getEntityPose;
+    subscribeGeolocation: typeof ContextService.prototype.subscribeGeolocation;
+    unsubscribeGeolocation: typeof ContextService.prototype.unsubscribeGeolocation;
+    /**
+     * The mode of the current display. This can be either
+     * 'hand' for handheld display mode, 'head' for a head-mounted mode,
+     * or 'other'.
+     */
+    readonly displayMode: "head" | "hand" | "other";
+    /**
+     * The DOF supported by the current reality.
+     */
+    readonly userTracking: "none" | "3DOF" | "6DOF";
+    /**
+     * If geopose is available, this is the accuracy of the user heading
+     */
+    readonly geoHeadingAccuracy: number | undefined;
+    /**
+     * If geopose is available, this is the vertical accuracy of the user geolocation
+     */
+    readonly geoVerticalAccuracy: number | undefined;
+    /**
+     * If geopose is available, this is the vertical accuracy of the user geolocation
+     */
+    readonly geoHorizontalAccuracy: number | undefined;
     destroy(): void;
 }
 export declare class ArgonContainerManager {

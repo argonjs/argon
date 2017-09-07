@@ -26982,7 +26982,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-35");
+            _export('version', version = "1.4.0-36");
 
             __extends$1 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -29292,7 +29292,15 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                 };
                 Device$$1.prototype._setState = function (state) {
                     this._overrideState = state;
-                    if (this.userTracking !== state.userTracking) if (!jsonEquals(this.suggestedGeolocationSubscription, state.suggestedGeolocationSubscription)) {
+                    if (this.userTracking !== state.userTracking) {
+                        this.userTracking = state.userTracking;
+                        this.userTrackingChangeEvent.raiseEvent(undefined);
+                    }
+                    if (this.displayMode !== state.displayMode) {
+                        this.displayMode = state.displayMode;
+                        this.displayModeChangeEvent.raiseEvent(undefined);
+                    }
+                    if (!jsonEquals(this.suggestedGeolocationSubscription, state.suggestedGeolocationSubscription)) {
                         this.suggestedGeolocationSubscription = state.suggestedGeolocationSubscription;
                         this.suggestedGeolocationSubscriptionChangeEvent.raiseEvent(undefined);
                     }
@@ -33446,6 +33454,10 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     this.visibility = visibility;
                     this.vuforia = vuforia;
                     this.permission = permission;
+                    // method shorcuts
+                    this.getEntityPose = this.context.getEntityPose.bind(this.context);
+                    this.subscribeGeolocation = this.context.subscribeGeolocation.bind(this.context);
+                    this.unsubscribeGeolocation = this.context.unsubscribeGeolocation.bind(this.context);
                     if (!ArgonSystem_1.instance) ArgonSystem_1.instance = this;
                     if (this.container.hasResolver(ArgonSystemProvider)) this._provider = this.container.get(ArgonSystemProvider);
                     this._setupDOM();
@@ -33576,7 +33588,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     configurable: true
                 });
                 Object.defineProperty(ArgonSystem.prototype, "updateEvent", {
-                    // events
+                    // event shortcuts
                     get: function () {
                         return this.context.updateEvent;
                     },
@@ -33600,6 +33612,88 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                 Object.defineProperty(ArgonSystem.prototype, "blurEvent", {
                     get: function () {
                         return this.focus.blurEvent;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(ArgonSystem.prototype, "stage", {
+                    // entity shortcuts
+                    get: function () {
+                        return this.context.stage;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(ArgonSystem.prototype, "stageEUS", {
+                    get: function () {
+                        return this.context.stageEUS;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(ArgonSystem.prototype, "stageENU", {
+                    get: function () {
+                        return this.context.stageENU;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(ArgonSystem.prototype, "user", {
+                    get: function () {
+                        return this.context.user;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(ArgonSystem.prototype, "displayMode", {
+                    // other shorcuts
+                    /**
+                     * The mode of the current display. This can be either
+                     * 'hand' for handheld display mode, 'head' for a head-mounted mode,
+                     * or 'other'.
+                     */
+                    get: function () {
+                        return this.device.displayMode;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(ArgonSystem.prototype, "userTracking", {
+                    /**
+                     * The DOF supported by the current reality.
+                     */
+                    get: function () {
+                        return this.context.userTracking;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(ArgonSystem.prototype, "geoHeadingAccuracy", {
+                    /**
+                     * If geopose is available, this is the accuracy of the user heading
+                     */
+                    get: function () {
+                        return this.context.geoHeadingAccuracy;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(ArgonSystem.prototype, "geoVerticalAccuracy", {
+                    /**
+                     * If geopose is available, this is the vertical accuracy of the user geolocation
+                     */
+                    get: function () {
+                        return this.context.geoVerticalAccuracy;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(ArgonSystem.prototype, "geoHorizontalAccuracy", {
+                    /**
+                     * If geopose is available, this is the vertical accuracy of the user geolocation
+                     */
+                    get: function () {
+                        return this.context.geoHorizontalAccuracy;
                     },
                     enumerable: true,
                     configurable: true
