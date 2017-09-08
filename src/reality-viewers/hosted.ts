@@ -27,7 +27,6 @@ export class HostedRealityViewer extends RealityViewer {
             iframeElement.style.position = 'absolute';
             iframeElement.style.opacity = '0';
             iframeElement.style.pointerEvents = 'none';
-            iframeElement.style.zIndex = "-100";
             const viewElement = this.viewService.element;
             viewElement.insertBefore(iframeElement!, viewElement.firstChild);
 

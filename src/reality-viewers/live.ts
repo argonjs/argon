@@ -42,7 +42,6 @@ export class LiveRealityViewer extends RealityViewer {
             this.videoElement.controls = false;
             this.videoElement.autoplay = true;
             this.videoElement.style.display = 'none';
-            this.videoElement.style.zIndex = "-100";
 
             const viewElement = this.viewService.element;
             viewElement.insertBefore(this.settingsIframe, viewElement.firstChild);
