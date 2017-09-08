@@ -26982,7 +26982,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-40");
+            _export('version', version = "1.4.0-41");
 
             __extends$1 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -27331,7 +27331,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     this._managedSessions = [];
                     configuration.version = extractVersion(version);
                     configuration.uri = typeof window !== 'undefined' && window.location ? window.location.href : undefined;
-                    configuration.title = typeof document !== 'undefined' ? document.title : undefined;
+                    configuration.title = configuration.title || (typeof document !== 'undefined' ? document.title : undefined);
                     this.errorEvent.addEventListener(function (error) {
                         if (_this.errorEvent.numberOfListeners === 1) console.error(error);
                     });
@@ -27822,7 +27822,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     this.position = new Cartesian3();
                     this.orientation = new Quaternion();
                     this.time = new JulianDate(0, 0);
-                    this._previousStatus = 0;
+                    this.previousStatus = 0;
                     this._getEntityPositionInReferenceFrame = getEntityPositionInReferenceFrame;
                     this._getEntityOrientationInReferenceFrame = getEntityOrientationInReferenceFrame;
                     this._collection['_firing'] = true; // hack: disable collectionChanged event
@@ -27870,9 +27870,11 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     var _JulianDate = JulianDate;
                     var _PoseStatus = PoseStatus;
                     _JulianDate.clone(time, this.time);
-                    if (!_JulianDate.equals(this._previousTime, time)) {
-                        this._previousStatus = this.status;
-                        this._previousTime = _JulianDate.clone(time, this._previousTime);
+                    if (!_JulianDate.equals(this.previousTime, time)) {
+                        this.previousStatus = this.status;
+                        this.previousTime = _JulianDate.clone(time, this.previousTime);
+                        this.previousPosition = Cartesian3.clone(this.position, this.previousPosition);
+                        this.previousOrientation = Quaternion.clone(this.orientation, this.previousOrientation);
                     }
                     var entity = this.entity;
                     var referenceFrame = this.referenceFrame;
@@ -27880,7 +27882,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     var orientation = this._getEntityOrientationInReferenceFrame(entity, time, referenceFrame, this.orientation);
                     var hasPose = position && orientation;
                     var currentStatus = 0;
-                    var previousStatus = this._previousStatus;
+                    var previousStatus = this.previousStatus;
                     if (hasPose) {
                         currentStatus |= _PoseStatus.KNOWN;
                     }
@@ -27888,6 +27890,9 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                         currentStatus |= _PoseStatus.FOUND;
                     } else if (!hasPose && previousStatus & _PoseStatus.KNOWN) {
                         currentStatus |= _PoseStatus.LOST;
+                    }
+                    if (!Cartesian3.equals(this.previousPosition, position) || !Quaternion.equals(this.previousOrientation, orientation)) {
+                        currentStatus |= _PoseStatus.CHANGED;
                     }
                     this.status = currentStatus;
                 };
@@ -27898,6 +27903,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                 PoseStatus[PoseStatus["KNOWN"] = 1] = "KNOWN";
                 PoseStatus[PoseStatus["FOUND"] = 2] = "FOUND";
                 PoseStatus[PoseStatus["LOST"] = 4] = "LOST";
+                PoseStatus[PoseStatus["CHANGED"] = 8] = "CHANGED";
             })(PoseStatus || _export('PoseStatus', PoseStatus = {}));
             /**
              * A service for subscribing/unsubscribing to entities
@@ -28746,7 +28752,6 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
             _export('DeviceStableState', DeviceStableState$$1 = function () {
                 function DeviceStableState$$1() {
                     this.suggestedGeolocationSubscription = undefined;
-                    this.suggestedUserHeight = AVERAGE_EYE_HEIGHT;
                     this.userTracking = 'none';
                     this.displayMode = 'other';
                     this.isPresentingHMD = false;
@@ -28820,7 +28825,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     this._useWebVR = typeof navigator !== 'undefined' && navigator.getVRDisplays && navigator.userAgent.indexOf('Argon') > 0 === false;
                     this._scratchCartesian = new Cartesian3();
                     this._scratchFrustum = new PerspectiveFrustum();
-                    this.defaultUserHeight = AVERAGE_EYE_HEIGHT;
+                    this.naturalUserHeight = AVERAGE_EYE_HEIGHT;
                     this._running = false;
                     this._previousNumListeners = 0;
                     this._handleScreenOrientationChange = function () {
@@ -28954,8 +28959,12 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     configurable: true
                 });
                 Object.defineProperty(Device$$1.prototype, "suggestedUserHeight", {
+                    /**
+                     * @private
+                     * deprecated
+                     * */
                     get: function () {
-                        return this._overrideState && this._overrideState.suggestedUserHeight || this.displayMode === 'head' ? this.defaultUserHeight : this.defaultUserHeight / 2;
+                        return this.displayMode === 'head' ? this.naturalUserHeight : this.naturalUserHeight * 0.75;
                     },
                     enumerable: true,
                     configurable: true
@@ -29181,7 +29190,8 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     this.stage.position.setValue(sittingToStandingPosition, this.origin);
                     this.stage.orientation.setValue(sittingToStandingOrientation);
                     // user pose is given in "sitting space"
-                    var userPosition = !vrDisplay.capabilities.hasPosition ? Cartesian3.ZERO : vrFrameData.pose.position ? Cartesian3.unpack(vrFrameData.pose.position, 0, this._scratchCartesian) : undefined;
+                    var hasPosition = vrDisplay.capabilities.hasPosition;
+                    var userPosition = !hasPosition ? Cartesian3.ZERO : vrFrameData.pose.position ? Cartesian3.unpack(vrFrameData.pose.position, 0, this._scratchCartesian) : undefined;
                     var userOrientation = vrFrameData.pose.orientation ? Quaternion.unpack(vrFrameData.pose.orientation, 0, this._scratchQuaternion2) : undefined;
                     user.position.setValue(userPosition, origin);
                     user.orientation.setValue(userOrientation);
@@ -29209,6 +29219,8 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                         var rightEyeRelativeToUser = this.entityService.getEntityPose(rightEye, user, frameState.time);
                         leftEye.position.setValue(leftEyeRelativeToUser.position, user);
                         rightEye.position.setValue(rightEyeRelativeToUser.position, user);
+                        leftEye.orientation.setValue(leftEyeRelativeToUser.orientation);
+                        rightEye.orientation.setValue(rightEyeRelativeToUser.orientation);
                         this._updateDefaultStage();
                         this._updateDefaultUser();
                         return;
@@ -29311,9 +29323,6 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                         this.suggestedGeolocationSubscriptionChangeEvent.raiseEvent(undefined);
                     }
                 };
-                Device$$1.prototype._setFrameState = function (state) {
-                    this._contextFrameState = state;
-                };
                 Device$$1.prototype.onGeolocationUpdate = function (cartographic, geoHorizontalAccuracy, geoVerticalAccuracy) {
                     var _this = this;
                     if (!defined(geoVerticalAccuracy) && cartographic.height === 0) {
@@ -29369,12 +29378,11 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
              */
 
             _export('DeviceService', DeviceService = function () {
-                function DeviceService$$1(sessionService, entityService, viewService, visibilityService, _device) {
+                function DeviceService$$1(sessionService, entityService, viewService, _device) {
                     var _this = this;
                     this.sessionService = sessionService;
                     this.entityService = entityService;
                     this.viewService = viewService;
-                    this.visibilityService = visibilityService;
                     this._device = _device;
                     /**
                      * If this is true (and we are presenting via webvr api), then
@@ -29557,6 +29565,13 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     configurable: true
                 });
                 /**
+                 * Internal.
+                 * @private
+                 */
+                DeviceService$$1.prototype._processContextFrameState = function (frameState) {
+                    this._device._contextFrameState = frameState;
+                };
+                /**
                  * Start emmitting frameState events
                  */
                 DeviceService$$1.prototype._startUpdates = function () {
@@ -29656,42 +29671,30 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
             __decorate$3([deprecated$1(), __metadata$3("design:type", Function), __metadata$3("design:paramtypes", [typeof (_d$2 = typeof JulianDate !== "undefined" && JulianDate) === "function" && _d$2 || Object, typeof (_e$2 = typeof CanvasViewport !== "undefined" && CanvasViewport) === "function" && _e$2 || Object, typeof (_f$1 = typeof SerializedSubviewList !== "undefined" && SerializedSubviewList) === "function" && _f$1 || Object, Object]), __metadata$3("design:returntype", Object)], DeviceService.prototype, "createContextFrameState", null);
             _export('DeviceService', DeviceService = __decorate$3([singleton(true) // register in child container
 
-            , __metadata$3("design:paramtypes", [typeof (_g$1 = typeof SessionService !== "undefined" && SessionService) === "function" && _g$1 || Object, typeof (_h$1 = typeof EntityService !== "undefined" && EntityService) === "function" && _h$1 || Object, typeof (_j$1 = typeof ViewService !== "undefined" && ViewService) === "function" && _j$1 || Object, typeof (_k$1 = typeof VisibilityService !== "undefined" && VisibilityService) === "function" && _k$1 || Object, Device])], DeviceService));
+            , __metadata$3("design:paramtypes", [typeof (_g$1 = typeof SessionService !== "undefined" && SessionService) === "function" && _g$1 || Object, typeof (_h$1 = typeof EntityService !== "undefined" && EntityService) === "function" && _h$1 || Object, typeof (_j$1 = typeof ViewService !== "undefined" && ViewService) === "function" && _j$1 || Object, Device])], DeviceService));
             /**
              *
              */
 
             _export('DeviceServiceProvider', DeviceServiceProvider = function () {
-                function DeviceServiceProvider$$1(sessionService, deviceService, viewService, entityService, entityServiceProvider, device) {
+                function DeviceServiceProvider$$1(sessionService, deviceService, viewService, entityService, entityServiceProvider, visibilityServiceProvider, device) {
                     var _this = this;
                     this.sessionService = sessionService;
                     this.deviceService = deviceService;
                     this.viewService = viewService;
                     this.entityService = entityService;
                     this.entityServiceProvider = entityServiceProvider;
+                    this.visibilityServiceProvider = visibilityServiceProvider;
                     this.device = device;
-                    this._subscribers = {};
                     this.needsPublish = false;
                     this._stableState = new DeviceStableState$$1();
                     this._targetGeolocationOptions = {};
                     this._sessionGeolocationOptions = new Map();
                     this.sessionService.connectEvent.addEventListener(function (session) {
-                        // backwards compat pre-v1.1.8
-                        session.on['ar.device.requestFrameState'] = function () {
-                            _this._subscribers[session.id] = session;
-                            return new Promise(function (resolve) {
-                                var remove = _this.deviceService.frameStateEvent.addEventListener(function (frameState) {
-                                    resolve(frameState);
-                                    remove();
-                                });
-                            });
-                        };
-                        session.on['ar.device.startUpdates'] = function () {
-                            _this._subscribers[session.id] = session;
-                        };
-                        session.on['ar.device.stopUpdates'] = function () {
-                            delete _this._subscribers[session.id];
-                        };
+                        // deprecated
+                        session.on['ar.device.requestFrameState'] = function () {};
+                        session.on['ar.device.startUpdates'] = function () {};
+                        session.on['ar.device.stopUpdates'] = function () {};
                         // to be removed (subscription options are handled by EntityService now)
                         session.on['ar.device.setGeolocationOptions'] = function (_a) {
                             var options = _a.options;
@@ -29787,17 +29790,16 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     stableState.isPresentingHMD = this.deviceService.isPresentingHMD;
                     stableState.isPresentingRealityHMD = this.deviceService.isPresentingRealityHMD;
                     stableState.suggestedGeolocationSubscription = this.deviceService.suggestedGeolocationSubscription;
-                    stableState.suggestedUserHeight = this.deviceService.suggestedUserHeight;
                     stableState.strict = this.deviceService.strict;
                     stableState.viewport = CanvasViewport.clone(this.deviceService.frameState.viewport, stableState.viewport);
                     stableState.subviews = SerializedSubviewList.clone(this.deviceService.frameState.subviews, stableState.subviews);
                     stableState.displayMode = this.deviceService.displayMode;
                     stableState.userTracking = this.deviceService.userTracking;
                     this.onUpdateStableState(this._stableState);
-                    // send stable state to each subscribed session
-                    for (var id in this._subscribers) {
-                        var session = this._subscribers[id];
-                        if (session.version[0] > 0 && session !== this.sessionService.manager) {
+                    // send stable state to each visible session
+                    for (var _i = 0, _a = this.sessionService.managedSessions; _i < _a.length; _i++) {
+                        var session = _a[_i];
+                        if (session.version[0] > 0 && session !== this.sessionService.manager && this.visibilityServiceProvider.visibleSessions.has(session)) {
                             session.send('ar.device.state', stableState);
                         }
                     }
@@ -29828,7 +29830,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                 return DeviceServiceProvider$$1;
             }());
 
-            _export('DeviceServiceProvider', DeviceServiceProvider = __decorate$3([autoinject(), __metadata$3("design:paramtypes", [typeof (_l$1 = typeof SessionService !== "undefined" && SessionService) === "function" && _l$1 || Object, DeviceService, typeof (_m$1 = typeof ViewService !== "undefined" && ViewService) === "function" && _m$1 || Object, typeof (_o$1 = typeof EntityService !== "undefined" && EntityService) === "function" && _o$1 || Object, typeof (_p$1 = typeof EntityServiceProvider !== "undefined" && EntityServiceProvider) === "function" && _p$1 || Object, Device])], DeviceServiceProvider));
+            _export('DeviceServiceProvider', DeviceServiceProvider = __decorate$3([autoinject(), __metadata$3("design:paramtypes", [typeof (_k$1 = typeof SessionService !== "undefined" && SessionService) === "function" && _k$1 || Object, DeviceService, typeof (_l$1 = typeof ViewService !== "undefined" && ViewService) === "function" && _l$1 || Object, typeof (_m$1 = typeof EntityService !== "undefined" && EntityService) === "function" && _m$1 || Object, typeof (_o$1 = typeof EntityServiceProvider !== "undefined" && EntityServiceProvider) === "function" && _o$1 || Object, typeof (_p$1 = typeof VisibilityServiceProvider !== "undefined" && VisibilityServiceProvider) === "function" && _p$1 || Object, Device])], DeviceServiceProvider));
 
             _export('RealityViewer', RealityViewer = function () {
                 function RealityViewer(uri) {
@@ -30284,8 +30286,8 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                                 console.log('Reality session closed: ' + uri);
                             });
                         });
-                        viewer_1.load();
                         this.installedEvent.raiseEvent({ viewer: viewer_1 });
+                        viewer_1.load();
                     }
                 };
                 RealityServiceProvider.prototype._connectViewerWithSession = function (viewerSession, session) {
@@ -30849,8 +30851,6 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     this._scratchArray = [];
                     this._scratchMatrix3 = new Matrix3();
                     this._scratchMatrix4 = new Matrix4();
-                    this._previousOriginPosition = undefined;
-                    this._previousOriginOrientation = undefined;
                     this.sessionService.manager.on['ar.context.update'] = function (state) {
                         var scratchFrustum = _this._scratchFrustum;
                         // backwards-compat
@@ -30878,7 +30878,12 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                             state.entities[_this.user.id] = state['view'].pose;
                         }
                         // end backwards-compat
-                        _this._update(state);
+                        // the `skipEvents` flag skips update/render events,
+                        // allowing a reality to process 'ar.context.update' so it knows 
+                        // what the current state of the system is, while maintaining control
+                        // over it's frame timing (by calling submitFrameState)
+                        var skipEvents = _this.sessionService.isRealityViewer;
+                        _this._update(state, skipEvents);
                     };
                     this._scratchFrustum.near = DEFAULT_NEAR_PLANE;
                     this._scratchFrustum.far = DEFAULT_FAR_PLANE;
@@ -31144,7 +31149,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     frameState.entities[this.stage.id] = true; // assume overriden for _update
                 };
                 // TODO: This function is called a lot. Potential for optimization. 
-                ContextService.prototype._update = function (frameState) {
+                ContextService.prototype._update = function (frameState, skipEvents) {
                     this._serializedFrameState = frameState;
                     // update our time values
                     var timestamp = performance.now();
@@ -31157,11 +31162,16 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     } else {
                         this._updateEntities(frameState.entities);
                     }
+                    // update device entities (device service needs to know if manager is overriding it's entities)
+                    this.deviceService._processContextFrameState(frameState);
+                    // update context entities
                     this._updateContextEntities(frameState);
                     this._updateStageGeo();
                     // update view and reality service
                     this.viewService._processContextFrameState(frameState, this);
                     this.realityService._processContextFrameState(frameState);
+                    // exit early if onlyUpdate flag is set
+                    if (skipEvents) return;
                     // raise origin change event if necessary
                     this._checkOriginChange();
                     // raise events for the user to update and render the scene
@@ -31274,13 +31284,10 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                 ContextService.prototype._checkOriginChange = function () {
                     var time = this.time;
                     var originReferenceFrame = this._getReachableAncestorReferenceFrames(this.origin, time, this._scratchArray)[0] || ReferenceFrame.FIXED;
-                    var originPosition = this._getEntityPositionInReferenceFrame(this.origin, time, originReferenceFrame, this._scratchCartesian);
-                    var originOrientation = this._getEntityOrientationInReferenceFrame(this.origin, time, originReferenceFrame, this._scratchQuaternion);
-                    if (originReferenceFrame !== this._previousOriginReferenceFrame || !originPosition && this._previousOriginPosition || !originOrientation && this._previousOriginOrientation || originPosition && !this._previousOriginPosition || originOrientation && !this._previousOriginOrientation || originPosition && this._previousOriginPosition && !Cartesian3.equalsEpsilon(originPosition, this._previousOriginPosition, CesiumMath.EPSILON4) || originOrientation && this._previousOriginOrientation && !Quaternion.equalsEpsilon(originOrientation, this._previousOriginOrientation, CesiumMath.EPSILON4)) {
+                    var originPose = this.getEntityPose(this.origin, originReferenceFrame);
+                    if (originReferenceFrame !== this._previousOriginReferenceFrame || originPose.status & PoseStatus.CHANGED) {
                         this._previousOriginReferenceFrame = originReferenceFrame;
-                        this._previousOriginPosition = originPosition && Cartesian3.clone(originPosition, this._previousOriginPosition);
-                        this._previousOriginOrientation = originOrientation && Quaternion.clone(originOrientation, this._previousOriginOrientation);
-                        if (this.sessionService.isRealityAugmenter) console.log('Updated context origin to ' + JSON.stringify(originPosition) + " at " + stringIdentifierFromReferenceFrame(originReferenceFrame));
+                        if (this.sessionService.isRealityAugmenter) console.log('Updated context origin to ' + JSON.stringify(originPose.position) + " at " + stringIdentifierFromReferenceFrame(originReferenceFrame));
                         this.originChangeEvent.raiseEvent(undefined);
                     }
                 };
@@ -31408,7 +31415,8 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     this._cacheTime = new JulianDate(0, 0);
                     this._sessionEntities = {};
                     // private _temp:any = {};
-                    this._excludedFramesForSerialization = {};
+                    this._includedFrames = {};
+                    this._excludedFrames = {};
                     this.desiredGeolocationOptions = {};
                     this.sessionGeolocationOptions = new Map();
                     // subscribe to context geolocation if any child sessions have subscribed
@@ -31443,7 +31451,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     this._cacheTime = JulianDate.clone(state.time, this._cacheTime);
                     for (var _i = 0, _a = this.sessionService.managedSessions; _i < _a.length; _i++) {
                         var session = _a[_i];
-                        if (Role.isRealityAugmenter(session.info.role)) this._sendUpdateForSession(state, session);
+                        this._sendUpdateForSession(state, session);
                     }
                 };
                 ContextServiceProvider.prototype._sendUpdateForSession = function (state, session) {
@@ -31459,8 +31467,12 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                             sessionEntities[id] = state.entities[id];
                         }
                     }
-                    var excludedFrames = this._excludedFramesForSerialization;
+                    // identify frames to hide from the session
+                    var excludedFrames = this._excludedFrames;
+                    for (id in excludedFrames) delete excludedFrames[id]; //clear
+                    // exclude device orientation frame since each session can get this directly
                     excludedFrames[this.device.deviceOrientation.id] = true;
+                    // exclude geolocated frames if necessary 
                     if (this.permissionServiceProvider.getPermissionState(session, 'geolocation') != PermissionState.GRANTED) {
                         excludedFrames[this.deviceService.origin.id] = true;
                         excludedFrames[this.contextService.origin.id] = true;
@@ -31468,39 +31480,32 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                         delete excludedFrames[this.deviceService.origin.id];
                         delete excludedFrames[this.contextService.origin.id];
                     }
-                    // add the entity states for all subscribed entities, excluding those in the excluded list
+                    // identity frames to provide to the session
+                    var includedFrames = this._includedFrames;
+                    for (id in includedFrames) delete includedFrames[id]; //clear
                     var subscriptions = entityServiceProvider.subscriptionsBySubscriber.get(session);
+                    if (subscriptions) {
+                        for (var id in subscriptions) {
+                            includedFrames[id] = true;
+                        }
+                    }
+                    includedFrames['ar.device.stage'] = true;
+                    includedFrames['ar.device.user'] = true;
+                    includedFrames['ar.stage'] = true;
+                    includedFrames['ar.user'] = true;
+                    includedFrames['ar.view'] = true;
+                    for (var i = 0; i < state.subviews.length; i++) {
+                        includedFrames['ar.view_' + i] = true;
+                        includedFrames['ar.device.view_' + i] = true;
+                    }
                     subscriptions && entityServiceProvider.fillEntityStateMap(sessionEntities, state.time, subscriptions, excludedFrames);
-                    // const subscriptions = entityServiceProvider.subscriptionsBySubscriber.get(session)!;
-                    // const contextService = this.contextService;
-                    // const contextStageId = contextService.stage.id;
-                    // // always send the origin and user state
-                    // sessionEntities[contextService.origin.id] = entityServiceProvider.getCachedSerializedEntityState(contextService.origin, state.time)        
-                    // sessionEntities[contextService.user.id] = entityServiceProvider.getCachedSerializedEntityState(contextService.user, state.time)
-                    // // exclude the stage state unless it is explicitly subscribed with permission granted
-                    // if (!subscriptions[contextStageId]) 
-                    //     delete sessionEntities[contextStageId];
-                    // if (this.permissionServiceProvider.getPermissionState(session, 'geolocation') != PermissionState.GRANTED)
-                    //     delete sessionEntities[contextStageId];
-                    // const iter = subscriptions.keys();
-                    // let item:IteratorResult<string>;
-                    // while (item = iter.next(), !item.done) { // not using for-of since typescript converts this to broken es5
-                    //     const id = item.value;
-                    //     const entity = contextService.entities.getById(id);
-                    //     sessionEntities[id] = entityServiceProvider.getCachedSerializedEntityState(entity, state.time);
-                    // }
                     // recycle the frame state object, but with the session entities
                     var parentEntities = state.entities;
                     state.entities = sessionEntities;
                     state.time = state.time;
                     state.sendTime = JulianDate.now(state.sendTime);
-                    if (session.version[0] === 1 && session.version[1] === 1 && state.entities['ar.user']) {
-                        state.entities['ar.user'].r = 'ar.stageEUS';
-                        session.send('ar.context.update', state);
-                        state.entities['ar.user'].r = 'ar.stage';
-                    } else {
-                        session.send('ar.context.update', state);
-                    }
+                    // send
+                    session.send('ar.context.update', state);
                     // restore the parent entities
                     state.entities = parentEntities;
                 };
@@ -31993,7 +31998,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                             if (overrideUser) {
                                 var contextUser = childContextService.user;
                                 var contextStage = childContextService.stage;
-                                var position = getEntityPositionInReferenceFrame(contextUser, time, contextStage, positionScratchCartesian) || Cartesian3.fromElements(0, childDeviceService.displayMode === 'head' ? AVERAGE_EYE_HEIGHT : AVERAGE_EYE_HEIGHT / 2, 0, positionScratchCartesian);
+                                var position = getEntityPositionInReferenceFrame(contextUser, time, contextStage, positionScratchCartesian) || Cartesian3.fromElements(0, childDeviceService.displayMode === 'head' ? AVERAGE_EYE_HEIGHT : AVERAGE_EYE_HEIGHT * 0.75, 0, positionScratchCartesian);
                                 var orientation = getEntityOrientationInReferenceFrame(contextUser, time, contextStage, scratchQuaternion) || Quaternion.clone(Quaternion.IDENTITY, scratchQuaternion);
                                 if (aggregator && aggregator.isMoving(CameraEventType.LEFT_DRAG)) {
                                     var dragMovement = aggregator.getMovement(CameraEventType.LEFT_DRAG);
