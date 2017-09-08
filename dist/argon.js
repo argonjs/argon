@@ -26982,7 +26982,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-37");
+            _export('version', version = "1.4.0-38");
 
             __extends$1 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -29170,6 +29170,22 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     rightSubview.projectionMatrix = Matrix4.clone(vrFrameData.rightProjectionMatrix, rightSubview.projectionMatrix);
                     var user = this.user;
                     var origin = this.origin;
+                    // let origin be equivalent to "sitting space", and assume origin is positioned at device geolocation
+                    this.origin.position.setValue(Cartesian3.ZERO, this.deviceGeolocation);
+                    this.origin.orientation.setValue(Quaternion.IDENTITY);
+                    // let stage be equivalent to "standing space"
+                    var sittingToStandingTransform = vrDisplay.stageParameters ? vrDisplay.stageParameters.sittingToStandingTransform : Matrix4.IDENTITY;
+                    var sittingToStandingPosition = Matrix4.multiplyByPoint(sittingToStandingTransform, Cartesian3.ZERO, this._scratchCartesian);
+                    var sittingToStandingRotation = Matrix4.getRotation(sittingToStandingTransform, this._scratchMatrix3);
+                    var sittingToStandingOrientation = Quaternion.fromRotationMatrix(sittingToStandingRotation, this._scratchQuaternion);
+                    this.stage.position.setValue(sittingToStandingPosition, this.origin);
+                    this.stage.orientation.setValue(sittingToStandingOrientation);
+                    // user pose is given in "sitting space"
+                    var userPosition = vrFrameData.pose.position ? Cartesian3.unpack(vrFrameData.pose.position, 0, this._scratchCartesian) : undefined;
+                    var userOrientation = vrFrameData.pose.orientation ? Quaternion.unpack(vrFrameData.pose.orientation, 0, this._scratchQuaternion2) : undefined;
+                    user.position.setValue(userPosition, origin);
+                    user.orientation.setValue(userOrientation);
+                    // left and right subview poses are given relative to origin
                     var leftEyeTransform = Matrix4.inverseTransformation(vrFrameData.leftViewMatrix, this._scratchMatrix4);
                     var leftEye = this.getSubviewEntity(0);
                     var leftEyePosition = Matrix4.getTranslation(leftEyeTransform, this._scratchCartesian);
@@ -29186,27 +29202,17 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     rightEye.orientation.setValue(rightEyeOrientation);
                     // the polyfill does not support reporting an absolute orientation (yet), 
                     // so fall back to the default origin/stage/user pose in this case
-                    if (vrDisplay.displayName.match(/polyfill/g)) {
-                        this._updateDefaultOrigin();
+                    if (!vrDisplay.displayName.includes('polyfill')) {
+                        // change left/right eye pose to be relative to user, 
+                        // which is necessary since we are redefining the user pose to use absolute orientation
+                        var leftEyeRelativeToUser = this.entityService.getEntityPose(leftEye, user, frameState.time);
+                        var rightEyeRelativeToUser = this.entityService.getEntityPose(leftEye, user, frameState.time);
+                        leftEye.position.setValue(leftEyeRelativeToUser.position, user);
+                        rightEye.position.setValue(rightEyeRelativeToUser.position, user);
                         this._updateDefaultStage();
                         this._updateDefaultUser();
                         return;
                     }
-                    // let origin be equivalent to "sitting space", and assume origin is positioned at device geolocation
-                    this.origin.position.setValue(Cartesian3.ZERO, this.deviceGeolocation);
-                    this.origin.orientation.setValue(Quaternion.IDENTITY);
-                    // let stage be equivalent to "standing space"
-                    var sittingToStandingTransform = vrDisplay.stageParameters ? vrDisplay.stageParameters.sittingToStandingTransform : Matrix4.IDENTITY;
-                    var sittingToStandingPosition = Matrix4.multiplyByPoint(sittingToStandingTransform, Cartesian3.ZERO, this._scratchCartesian);
-                    var sittingToStandingRotation = Matrix4.getRotation(sittingToStandingTransform, this._scratchMatrix3);
-                    var sittingToStandingOrientation = Quaternion.fromRotationMatrix(sittingToStandingRotation, this._scratchQuaternion);
-                    this.stage.position.setValue(sittingToStandingPosition, this.origin);
-                    this.stage.orientation.setValue(sittingToStandingOrientation);
-                    // user pose is given in "sitting space"
-                    var userPosition = vrFrameData.pose.position ? Cartesian3.unpack(vrFrameData.pose.position, 0, this._scratchCartesian) : undefined;
-                    var userOrientation = vrFrameData.pose.orientation ? Quaternion.unpack(vrFrameData.pose.orientation, 0, this._scratchQuaternion2) : undefined;
-                    user.position.setValue(userPosition, origin);
-                    user.orientation.setValue(userOrientation);
                 };
                 Device$$1.prototype._tryOrientationUpdates = function () {
                     var _this = this;
@@ -30621,7 +30627,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     } else {
                         this.element.style.display = 'block';
                     }
-                    this.menuItems = [];
+                    this.menuItems.length = 0;
                     this.menuItems.push(null);
                     if (isIOS || isAndroid) this.menuItems.push(this.openInArgonMenuItem);else this._hideMenuItem(this.openInArgonMenuItem);
                     var parentElement = this.viewService.element.parentElement;
@@ -31186,7 +31192,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     var contextStageOrientation = contextStage.orientation;
                     var contextOriginPosition = contextOrigin.position;
                     var contextOriginOrientation = contextOrigin.orientation;
-                    if (entities[contextStage.id] === undefined) {
+                    if (!entities[contextStage.id]) {
                         contextStagePosition.setValue(Cartesian3.ZERO, deviceStage);
                         contextStageOrientation.setValue(Quaternion.IDENTITY);
                         contextOriginPosition.setValue(Cartesian3.ZERO, deviceOrigin);
@@ -31206,7 +31212,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     // update user entity (relative to origin) based on device user (relative to device origin) if the reality did not override it
                     var deviceUser = this.deviceService.user;
                     var contextUser = this.user;
-                    if (entities[contextUser.id] === undefined) {
+                    if (!entities[contextUser.id]) {
                         var userRelativeToOrigin = this.getEntityPose(deviceUser, deviceOrigin);
                         var contextUserPosition = contextUser.position;
                         var contextUserOrientation = contextUser.orientation;
@@ -31215,7 +31221,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     }
                     // update view entity (if the reality did not set it)
                     var contextView = this.view;
-                    if (entities[contextView.id] === undefined) {
+                    if (!entities[contextView.id]) {
                         var contextViewPosition = contextView.position;
                         var contextViewOrientation = contextView.orientation;
                         contextViewPosition.setValue(Cartesian3.ZERO, contextUser);
@@ -31223,7 +31229,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     }
                     // update subview entities (if the reality did not set them)
                     for (var i = 0; i < frameState.subviews.length; i++) {
-                        if (entities['ar.view_' + i] === undefined) {
+                        if (!entities['ar.view_' + i]) {
                             var deviceSubview = this.deviceService.getSubviewEntity(i);
                             var contextSubview = this.getSubviewEntity(i);
                             var subviewPositionValue = this._getEntityPositionInReferenceFrame(deviceSubview, time, deviceUser, this._scratchCartesian);
@@ -31235,7 +31241,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                         }
                     }
                     // update floor entity (if the reality did not set it)
-                    if (entities[this.floor.id] === undefined) {
+                    if (!entities[this.floor.id]) {
                         var floorPosition = this.floor.position;
                         floorPosition.setValue(Cartesian3.ZERO, contextStage);
                     }
