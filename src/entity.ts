@@ -35,6 +35,7 @@ import {
  * The `update` method must be called in order to update the position / orientation / poseStatus. 
  */
 export class EntityPose {
+
     constructor(
         private _collection:EntityCollection, 
         entityOrId:Entity|string, 
@@ -92,8 +93,10 @@ export class EntityPose {
     time = new JulianDate(0,0)
 
     
-    private _previousTime:JulianDate;
-    private _previousStatus:PoseStatus = 0;
+    public previousTime:JulianDate;
+    public previousPosition:Cartesian3;
+    public previousOrientation:Quaternion;
+    public previousStatus:PoseStatus = 0;
 
     private _getEntityPositionInReferenceFrame = getEntityPositionInReferenceFrame;
     private _getEntityOrientationInReferenceFrame = getEntityOrientationInReferenceFrame;
@@ -104,9 +107,11 @@ export class EntityPose {
 
         _JulianDate.clone(time, this.time);
 
-        if (!_JulianDate.equals(this._previousTime, time)) {
-            this._previousStatus = this.status;
-            this._previousTime = _JulianDate.clone(time, this._previousTime)
+        if (!_JulianDate.equals(this.previousTime, time)) {
+            this.previousStatus = this.status;
+            this.previousTime = _JulianDate.clone(time, this.previousTime);
+            this.previousPosition = Cartesian3.clone(this.position, this.previousPosition);
+            this.previousOrientation = Quaternion.clone(this.orientation, this.previousOrientation);
         }
 
         const entity = this.entity;
@@ -129,7 +134,7 @@ export class EntityPose {
         const hasPose = position && orientation;
 
         let currentStatus: PoseStatus = 0;
-        const previousStatus = this._previousStatus;
+        const previousStatus = this.previousStatus;
 
         if (hasPose) {
             currentStatus |= _PoseStatus.KNOWN;
@@ -141,20 +146,27 @@ export class EntityPose {
             currentStatus |= _PoseStatus.LOST;
         }
 
+        if (!Cartesian3.equals(this.previousPosition, position) || 
+            !Quaternion.equals(this.previousOrientation, orientation)) {
+            currentStatus |= _PoseStatus.CHANGED;
+        }
+
         this.status = currentStatus;
     }
 }
 
 /**
 * A bitmask that provides metadata about the pose of an EntityPose.
-*   KNOWN - the pose of the entity state is defined. 
-*   KNOWN & FOUND - the pose was undefined when the entity state was last queried, and is now defined.
-*   LOST - the pose was defined when the entity state was last queried, and is now undefined
+*   KNOWN - the pose of the entity is defined in relation to the given reference frame
+*   FOUND - the pose was undefined at the previous time the entity pose was queried, and is now defined
+*   LOST - the pose was defined at the previous time the entity pose was queried, and is now undefined
+*   CHANGED - the pose has changed compared to the previous time the entity pose was queried
 */
 export enum PoseStatus {
     KNOWN = 1,
     FOUND = 2,
-    LOST = 4
+    LOST = 4,
+    CHANGED = 8
 }
 
 /**

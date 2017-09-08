@@ -36,22 +36,26 @@ export declare class EntityPose {
     position: Cartesian3;
     orientation: Quaternion;
     time: JulianDate;
-    private _previousTime;
-    private _previousStatus;
+    previousTime: JulianDate;
+    previousPosition: Cartesian3;
+    previousOrientation: Quaternion;
+    previousStatus: PoseStatus;
     private _getEntityPositionInReferenceFrame;
     private _getEntityOrientationInReferenceFrame;
     update(time: JulianDate): void;
 }
 /**
 * A bitmask that provides metadata about the pose of an EntityPose.
-*   KNOWN - the pose of the entity state is defined.
-*   KNOWN & FOUND - the pose was undefined when the entity state was last queried, and is now defined.
-*   LOST - the pose was defined when the entity state was last queried, and is now undefined
+*   KNOWN - the pose of the entity is defined in relation to the given reference frame
+*   FOUND - the pose was undefined at the previous time the entity pose was queried, and is now defined
+*   LOST - the pose was defined at the previous time the entity pose was queried, and is now undefined
+*   CHANGED - the pose has changed compared to the previous time the entity pose was queried
 */
 export declare enum PoseStatus {
     KNOWN = 1,
     FOUND = 2,
     LOST = 4,
+    CHANGED = 8,
 }
 /**
  * A service for subscribing/unsubscribing to entities

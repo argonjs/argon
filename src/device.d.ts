@@ -7,14 +7,13 @@ import { SessionService, SessionPort } from './session';
 import { CanvasViewport, SerializedSubviewList, GeolocationOptions } from './common';
 import { Event } from './utils';
 import { ViewService, ViewItems } from './view';
-import { VisibilityService } from './visibility';
+import { VisibilityServiceProvider } from './visibility';
 export declare class DeviceStableState {
     viewport?: CanvasViewport;
     subviews?: SerializedSubviewList;
     suggestedGeolocationSubscription?: {
         enableHighAccuracy?: boolean;
     };
-    suggestedUserHeight: number;
     userTracking: 'none' | '3DOF' | '6DOF';
     displayMode: 'hand' | 'head' | 'other';
     isPresentingHMD: boolean;
@@ -60,7 +59,11 @@ export declare class Device {
     protected _scratchCartesian: Cartesian3;
     protected _scratchFrustum: PerspectiveFrustum;
     readonly strict: boolean;
-    defaultUserHeight: number;
+    naturalUserHeight: number;
+    /**
+     * @private
+     * deprecated
+     * */
     readonly suggestedUserHeight: number;
     readonly hasSeparateRealityLayer: boolean;
     private _running;
@@ -101,8 +104,7 @@ export declare class Device {
     requestHeadDisplayMode(): Promise<void>;
     exitHeadDisplayMode(): Promise<void>;
     _setState(state: DeviceStableState): void;
-    private _contextFrameState;
-    _setFrameState(state: ContextFrameState): void;
+    _contextFrameState: ContextFrameState;
     private _scratchGeolocationCartesian;
     private _scratchGeolocationMatrix4;
     private _srcatchGeolocationMatrix3;
@@ -127,7 +129,6 @@ export declare class DeviceService {
     protected sessionService: SessionService;
     protected entityService: EntityService;
     protected viewService: ViewService;
-    protected visibilityService: VisibilityService;
     private _device;
     /**
      * If this is true (and we are presenting via webvr api), then
@@ -202,7 +203,12 @@ export declare class DeviceService {
     } | undefined;
     readonly suggestedUserHeight: number;
     readonly strict: boolean;
-    constructor(sessionService: SessionService, entityService: EntityService, viewService: ViewService, visibilityService: VisibilityService, _device: Device);
+    constructor(sessionService: SessionService, entityService: EntityService, viewService: ViewService, _device: Device);
+    /**
+     * Internal.
+     * @private
+     */
+    _processContextFrameState(frameState: ContextFrameState): void;
     /**
      * Request an animation frame callback for the current view.
      */
@@ -255,9 +261,9 @@ export declare class DeviceServiceProvider {
     protected viewService: ViewService;
     protected entityService: EntityService;
     protected entityServiceProvider: EntityServiceProvider;
+    protected visibilityServiceProvider: VisibilityServiceProvider;
     protected device: Device;
-    private _subscribers;
-    constructor(sessionService: SessionService, deviceService: DeviceService, viewService: ViewService, entityService: EntityService, entityServiceProvider: EntityServiceProvider, device: Device);
+    constructor(sessionService: SessionService, deviceService: DeviceService, viewService: ViewService, entityService: EntityService, entityServiceProvider: EntityServiceProvider, visibilityServiceProvider: VisibilityServiceProvider, device: Device);
     protected handleRequestPresentHMD(session: SessionPort): Promise<void>;
     protected handleExitPresentHMD(session: SessionPort): Promise<void>;
     needsPublish: boolean;

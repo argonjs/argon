@@ -278,7 +278,7 @@ export class EmptyRealityViewer extends RealityViewer {
 
                     const position = 
                         getEntityPositionInReferenceFrame(contextUser, time, contextStage, positionScratchCartesian) || 
-                        Cartesian3.fromElements(0, childDeviceService.displayMode === 'head' ? AVERAGE_EYE_HEIGHT : AVERAGE_EYE_HEIGHT / 2, 0, positionScratchCartesian);
+                        Cartesian3.fromElements(0, childDeviceService.displayMode === 'head' ? AVERAGE_EYE_HEIGHT : AVERAGE_EYE_HEIGHT * 0.75, 0, positionScratchCartesian);
 
                     let orientation = getEntityOrientationInReferenceFrame(contextUser, time, contextStage, scratchQuaternion) ||
                         Quaternion.clone(Quaternion.IDENTITY, scratchQuaternion);

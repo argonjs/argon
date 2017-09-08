@@ -23,7 +23,6 @@ import {
     SerializedSubviewList,
     SubviewType,
     ContextFrameState,
-    Role,
     GeolocationOptions,
     CanvasViewport,
     Viewport
@@ -39,7 +38,7 @@ import {
     deprecated,
     eastUpSouthToFixedFrame
 } from './utils'
-import { EntityService, EntityServiceProvider, EntityPose } from './entity'
+import { EntityService, EntityServiceProvider, EntityPose, PoseStatus } from './entity'
 import { DeviceService, Device } from './device'
 import { ViewService } from './view'
 import { PermissionServiceProvider, PermissionState } from './permission'
@@ -86,7 +85,12 @@ export class ContextService {
             }
             // end backwards-compat
 
-            this._update(state);
+            // the `skipEvents` flag skips update/render events,
+            // allowing a reality to process 'ar.context.update' so it knows 
+            // what the current state of the system is, while maintaining control
+            // over it's frame timing (by calling submitFrameState)
+            const skipEvents = this.sessionService.isRealityViewer
+            this._update(state, skipEvents);
         }
         
         this._scratchFrustum.near = DEFAULT_NEAR_PLANE;
@@ -550,12 +554,8 @@ export class ContextService {
         frameState.entities[this.stage.id] = <any>true; // assume overriden for _update
     }
 
-    private _previousOriginReferenceFrame? : ReferenceFrame|Entity;
-    private _previousOriginPosition? : Cartesian3 = undefined;
-    private _previousOriginOrientation? : Quaternion = undefined;
-
     // TODO: This function is called a lot. Potential for optimization. 
-    private _update(frameState: ContextFrameState) {
+    private _update(frameState: ContextFrameState, skipEvents?:boolean) {
         this._serializedFrameState = frameState;
 
         // update our time values
@@ -571,12 +571,19 @@ export class ContextService {
             this._updateEntities(frameState.entities);
         }
 
+        // update device entities (device service needs to know if manager is overriding it's entities)
+        this.deviceService._processContextFrameState(frameState);
+
+        // update context entities
         this._updateContextEntities(frameState);
         this._updateStageGeo();
 
         // update view and reality service
         this.viewService._processContextFrameState(frameState, this);
         this.realityService._processContextFrameState(frameState); 
+
+        // exit early if onlyUpdate flag is set
+        if (skipEvents) return;
 
         // raise origin change event if necessary
         this._checkOriginChange();
@@ -699,22 +706,14 @@ export class ContextService {
         }
     }
 
+    private _previousOriginReferenceFrame? : ReferenceFrame|Entity;
     _checkOriginChange() {
         const time = this.time;
         const originReferenceFrame = this._getReachableAncestorReferenceFrames(this.origin, time, this._scratchArray)[0] || ReferenceFrame.FIXED;
-        const originPosition = this._getEntityPositionInReferenceFrame(this.origin, time, originReferenceFrame, this._scratchCartesian);
-        const originOrientation = this._getEntityOrientationInReferenceFrame(this.origin, time, originReferenceFrame, this._scratchQuaternion);
-        if (originReferenceFrame !== this._previousOriginReferenceFrame || 
-            (!originPosition && this._previousOriginPosition) ||
-            (!originOrientation && this._previousOriginOrientation) ||
-            (originPosition && !this._previousOriginPosition) ||
-            (originOrientation && !this._previousOriginOrientation) ||
-            originPosition && this._previousOriginPosition && !Cartesian3.equalsEpsilon(originPosition, this._previousOriginPosition, CesiumMath.EPSILON4) ||
-            originOrientation && this._previousOriginOrientation && !Quaternion.equalsEpsilon(originOrientation, this._previousOriginOrientation, CesiumMath.EPSILON4)) {
+        const originPose = this.getEntityPose(this.origin, originReferenceFrame);
+        if (originReferenceFrame !== this._previousOriginReferenceFrame || originPose.status & PoseStatus.CHANGED) {
             this._previousOriginReferenceFrame = originReferenceFrame;
-            this._previousOriginPosition = originPosition && Cartesian3.clone(originPosition, this._previousOriginPosition);
-            this._previousOriginOrientation = originOrientation && Quaternion.clone(originOrientation, this._previousOriginOrientation);
-            if (this.sessionService.isRealityAugmenter) console.log('Updated context origin to ' + JSON.stringify(originPosition) + " at " + stringIdentifierFromReferenceFrame(originReferenceFrame));
+            if (this.sessionService.isRealityAugmenter) console.log('Updated context origin to ' + JSON.stringify(originPose.position) + " at " + stringIdentifierFromReferenceFrame(originReferenceFrame));
             this.originChangeEvent.raiseEvent(undefined);
         }
     }
@@ -861,15 +860,15 @@ export class ContextServiceProvider {
         const state = this.contextService.serializedFrameState!;
         this._cacheTime = JulianDate.clone(state.time, this._cacheTime);
         for (const session of this.sessionService.managedSessions) {
-            if (Role.isRealityAugmenter(session.info.role))
-                this._sendUpdateForSession(state, session);
+            this._sendUpdateForSession(state, session);
         }
     }
 
     private _sessionEntities:SerializedEntityStateMap = {};
     // private _temp:any = {};
 
-    private _excludedFramesForSerialization = {};
+    private _includedFrames = {};
+    private _excludedFrames = {};
 
     private _sendUpdateForSession(state:ContextFrameState, session: SessionPort) {
         const sessionEntities = this._sessionEntities;
@@ -887,9 +886,14 @@ export class ContextServiceProvider {
             }
         }
 
-        const excludedFrames = this._excludedFramesForSerialization;
-        excludedFrames[this.device.deviceOrientation.id] = true;
+        // identify frames to hide from the session
+        const excludedFrames = this._excludedFrames;
+        for (id in excludedFrames) delete excludedFrames[id]; //clear
 
+        // exclude device orientation frame since each session can get this directly
+        excludedFrames[this.device.deviceOrientation.id] = true; 
+
+        // exclude geolocated frames if necessary 
         if (this.permissionServiceProvider.getPermissionState(session, 'geolocation') != PermissionState.GRANTED) {
             excludedFrames[this.deviceService.origin.id] = true;
             excludedFrames[this.contextService.origin.id] = true;
@@ -898,32 +902,30 @@ export class ContextServiceProvider {
             delete excludedFrames[this.contextService.origin.id];
         }
 
-        // add the entity states for all subscribed entities, excluding those in the excluded list
-        const subscriptions = entityServiceProvider.subscriptionsBySubscriber.get(session);
-        subscriptions && entityServiceProvider.fillEntityStateMap(sessionEntities, state.time, subscriptions, excludedFrames);
-        
-        
-        // const subscriptions = entityServiceProvider.subscriptionsBySubscriber.get(session)!;
-        // const contextService = this.contextService;
-        // const contextStageId = contextService.stage.id;
-        
-        // // always send the origin and user state
-        // sessionEntities[contextService.origin.id] = entityServiceProvider.getCachedSerializedEntityState(contextService.origin, state.time)        
-        // sessionEntities[contextService.user.id] = entityServiceProvider.getCachedSerializedEntityState(contextService.user, state.time)
+        // identity frames to provide to the session
+        const includedFrames = this._includedFrames;
+        for (id in includedFrames) delete includedFrames[id]; //clear
 
-        // // exclude the stage state unless it is explicitly subscribed with permission granted
-        // if (!subscriptions[contextStageId]) 
-        //     delete sessionEntities[contextStageId];
-        // if (this.permissionServiceProvider.getPermissionState(session, 'geolocation') != PermissionState.GRANTED)
-        //     delete sessionEntities[contextStageId];
-        
-        // const iter = subscriptions.keys();
-        // let item:IteratorResult<string>;
-        // while (item = iter.next(), !item.done) { // not using for-of since typescript converts this to broken es5
-        //     const id = item.value;
-        //     const entity = contextService.entities.getById(id);
-        //     sessionEntities[id] = entityServiceProvider.getCachedSerializedEntityState(entity, state.time);
-        // }
+        const subscriptions = entityServiceProvider.subscriptionsBySubscriber.get(session);
+        if (subscriptions) {
+            for (var id in subscriptions) {
+                includedFrames[id] = true;
+            }
+        }
+
+        includedFrames['ar.device.stage'] = true;
+        includedFrames['ar.device.user'] = true;
+
+        includedFrames['ar.stage'] = true;
+        includedFrames['ar.user'] = true;
+        includedFrames['ar.view'] = true;
+
+        for (var i=0; i < state.subviews.length; i++) {
+            includedFrames['ar.view_' + i] = true;
+            includedFrames['ar.device.view_' + i] = true;
+        }
+
+        subscriptions && entityServiceProvider.fillEntityStateMap(sessionEntities, state.time, subscriptions, excludedFrames);
              
         // recycle the frame state object, but with the session entities
         const parentEntities = state.entities;
@@ -931,13 +933,8 @@ export class ContextServiceProvider {
         state.time = state.time;
         state.sendTime = JulianDate.now(state.sendTime);
 
-        if (session.version[0] === 1 && session.version[1] === 1 && state.entities['ar.user']) {
-            state.entities['ar.user']!.r = 'ar.stageEUS';
-            session.send('ar.context.update', state);
-            state.entities['ar.user']!.r = 'ar.stage';
-        } else {
-            session.send('ar.context.update', state);
-        }
+        // send
+        session.send('ar.context.update', state);
 
         // restore the parent entities
         state.entities = parentEntities;

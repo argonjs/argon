@@ -414,8 +414,8 @@ export class SessionService {
         configuration.version = extractVersion(version);
         configuration.uri = (typeof window !== 'undefined' && window.location) ?
             window.location.href : undefined;
-        configuration.title = (typeof document !== 'undefined') ? 
-            document.title : undefined;
+        configuration.title = configuration.title || 
+            (typeof document !== 'undefined' ? document.title : undefined);
 
         this.errorEvent.addEventListener((error) => {
             if (this.errorEvent.numberOfListeners === 1) console.error(error);

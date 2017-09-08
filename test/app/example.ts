@@ -27,6 +27,8 @@ stage.add(center);
 
 const circle = new THREE.Mesh(new THREE.CircleGeometry(1), new THREE.MeshBasicMaterial( {color: 0x888888} ));
 circle.rotation.x = -Math.PI/2;
+circle.material.opacity = 0.1;
+circle.material.transparent = true;
 stage.add(circle);
 
 const renderer = new THREE.WebGLRenderer({ 

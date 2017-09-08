@@ -227,13 +227,11 @@ export declare class ContextService {
     private _scratchMatrix3;
     private _scratchMatrix4;
     private _updateBackwardsCompatability(frameState);
-    private _previousOriginReferenceFrame?;
-    private _previousOriginPosition?;
-    private _previousOriginOrientation?;
-    private _update(frameState);
+    private _update(frameState, skipEvents?);
     _updateEntities(entities: SerializedEntityStateMap): void;
     _updateContextEntities(frameState: ContextFrameState): void;
     _updateStageGeo(): void;
+    private _previousOriginReferenceFrame?;
     _checkOriginChange(): void;
     _trySubmitFrame(): void;
     getSubviewEntity(index: number): Entity;
@@ -277,7 +275,8 @@ export declare class ContextServiceProvider {
     constructor(sessionService: SessionService, contextService: ContextService, deviceService: DeviceService, entityServiceProvider: EntityServiceProvider, permissionServiceProvider: PermissionServiceProvider, realityServiceProvider: RealityServiceProvider, device: Device);
     private _publishFrameState();
     private _sessionEntities;
-    private _excludedFramesForSerialization;
+    private _includedFrames;
+    private _excludedFrames;
     private _sendUpdateForSession(state, session);
     desiredGeolocationOptions: GeolocationOptions;
     sessionGeolocationOptions: Map<SessionPort, GeolocationOptions | undefined>;

@@ -49,7 +49,7 @@ import {
     ViewItems
 } from './view'
 
-import { VisibilityService } from './visibility'
+import { VisibilityServiceProvider } from './visibility'
 
 import { isAndroid, isIOS } from './utils'
 
@@ -57,7 +57,6 @@ export class DeviceStableState {
     viewport?:CanvasViewport;
     subviews?:SerializedSubviewList;
     suggestedGeolocationSubscription?:{enableHighAccuracy?:boolean} = undefined;
-    suggestedUserHeight = AVERAGE_EYE_HEIGHT;
 
     userTracking:'none'|'3DOF'|'6DOF' = 'none';
     displayMode:'hand'|'head'|'other' = 'other';
@@ -203,11 +202,14 @@ export class Device {
             this.displayMode === 'head' && !this._hasPolyfillWebVRDisplay();
     }
 
-    public defaultUserHeight = AVERAGE_EYE_HEIGHT;
+    public naturalUserHeight = AVERAGE_EYE_HEIGHT;
     
+    /**
+     * @private
+     * deprecated
+     * */
     public get suggestedUserHeight() {
-        return this._overrideState && this._overrideState.suggestedUserHeight || 
-            this.displayMode === 'head' ? this.defaultUserHeight : this.defaultUserHeight/2;
+        return this.displayMode === 'head' ? this.naturalUserHeight : this.naturalUserHeight * 0.75;
     }
 
     // The device is able to render reality into a separate layer in the primary display
@@ -590,7 +592,8 @@ export class Device {
         (this.stage.orientation as DynamicProperty).setValue(sittingToStandingOrientation);
 
         // user pose is given in "sitting space"
-        const userPosition : Cartesian3|undefined = !vrDisplay.capabilities.hasPosition ? 
+        const hasPosition = vrDisplay.capabilities.hasPosition;
+        const userPosition : Cartesian3|undefined = !hasPosition ? 
             Cartesian3.ZERO : vrFrameData.pose.position ? 
                 Cartesian3.unpack(<any>vrFrameData.pose.position, 0, this._scratchCartesian) : undefined;
         const userOrientation : Quaternion|undefined = vrFrameData.pose.orientation ? 
@@ -631,6 +634,8 @@ export class Device {
             const rightEyeRelativeToUser = this.entityService.getEntityPose(rightEye, user, frameState.time);
             (leftEye.position as DynamicPositionProperty).setValue(leftEyeRelativeToUser.position, user);
             (rightEye.position as DynamicPositionProperty).setValue(rightEyeRelativeToUser.position, user);
+            (leftEye.orientation as DynamicProperty).setValue(leftEyeRelativeToUser.orientation);
+            (rightEye.orientation as DynamicProperty).setValue(rightEyeRelativeToUser.orientation);
             this._updateDefaultStage();
             this._updateDefaultUser();
             return;
@@ -796,10 +801,7 @@ export class Device {
         }
     }
 
-    private _contextFrameState:ContextFrameState;
-    public _setFrameState(state:ContextFrameState) {
-        this._contextFrameState = state;
-    }
+    public _contextFrameState:ContextFrameState;
 
     private _scratchGeolocationCartesian = new Cartesian3;
     private _scratchGeolocationMatrix4 = new Matrix4;
@@ -1006,7 +1008,6 @@ export class DeviceService {
         protected sessionService:SessionService,
         protected entityService:EntityService,
         protected viewService:ViewService,
-        protected visibilityService:VisibilityService,
         private _device:Device,
     ) {
         this.entityService.collection.add(this.stage);
@@ -1024,6 +1025,14 @@ export class DeviceService {
                 }
             };
         }
+    }
+
+    /**
+     * Internal.
+     * @private 
+     */
+    public _processContextFrameState(frameState:ContextFrameState) {
+        this._device._contextFrameState = frameState;
     }
 
     /**
@@ -1146,8 +1155,6 @@ export class DeviceService {
  */
 @autoinject()
 export class DeviceServiceProvider {
-
-    private _subscribers:{[id:string]:SessionPort} = {};
     
     constructor(
         protected sessionService:SessionService,
@@ -1155,27 +1162,15 @@ export class DeviceServiceProvider {
         protected viewService:ViewService,
         protected entityService:EntityService,
         protected entityServiceProvider:EntityServiceProvider,
+        protected visibilityServiceProvider:VisibilityServiceProvider,
         protected device:Device,
     ) {
         this.sessionService.connectEvent.addEventListener((session)=>{
-            // backwards compat pre-v1.1.8
-            session.on['ar.device.requestFrameState'] = () => {
-                this._subscribers[session.id] = session;
-                return new Promise((resolve) => {
-                    const remove = this.deviceService.frameStateEvent.addEventListener((frameState)=>{
-                        resolve(frameState)
-                        remove();
-                    });
-                });
-            }
 
-            session.on['ar.device.startUpdates'] = () => {
-                this._subscribers[session.id] = session;
-            }
-
-            session.on['ar.device.stopUpdates'] = () => {
-                delete this._subscribers[session.id];
-            }
+            // deprecated
+            session.on['ar.device.requestFrameState'] = () => {}
+            session.on['ar.device.startUpdates'] = () => {}
+            session.on['ar.device.stopUpdates'] = () => {}
 
             // to be removed (subscription options are handled by EntityService now)
             session.on['ar.device.setGeolocationOptions'] = ({options}) => {
@@ -1246,7 +1241,7 @@ export class DeviceServiceProvider {
             }
         });
 
-        this.deviceService.frameStateEvent.addEventListener((state)=>{
+        this.deviceService.frameStateEvent.addEventListener((state)=>{            
             if (this.needsPublish ||
                 this._stableState.isPresentingHMD !== this.deviceService.isPresentingHMD ||
                 this._stableState.isPresentingRealityHMD !== this.deviceService.isPresentingRealityHMD ||
@@ -1291,20 +1286,19 @@ export class DeviceServiceProvider {
         stableState.isPresentingHMD = this.deviceService.isPresentingHMD;
         stableState.isPresentingRealityHMD = this.deviceService.isPresentingRealityHMD;
         stableState.suggestedGeolocationSubscription = this.deviceService.suggestedGeolocationSubscription;
-        stableState.suggestedUserHeight = this.deviceService.suggestedUserHeight;
         stableState.strict = this.deviceService.strict;
         stableState.viewport = CanvasViewport.clone(this.deviceService.frameState.viewport, stableState.viewport)
         stableState.subviews = SerializedSubviewList.clone(this.deviceService.frameState.subviews, stableState.subviews);
         stableState.displayMode = this.deviceService.displayMode;
         stableState.userTracking = this.deviceService.userTracking;
-        
+
         this.onUpdateStableState(this._stableState);
 
-        // send stable state to each subscribed session
-        for (const id in this._subscribers) {
-            const session = this._subscribers[id];
-            if (session.version[0] > 0 && session !== this.sessionService.manager) {
-                session.send('ar.device.state', stableState);
+        // send stable state to each visible session
+        for (const session of this.sessionService.managedSessions) {
+            if (session.version[0] > 0 && session !== this.sessionService.manager && 
+                this.visibilityServiceProvider.visibleSessions.has(session)) {
+                    session.send('ar.device.state', stableState);
             }
         }
 

@@ -417,8 +417,8 @@ export class RealityServiceProvider {
                 });
             });
 
-            viewer.load();
             this.installedEvent.raiseEvent({viewer});
+            viewer.load();
         }
     }
 
