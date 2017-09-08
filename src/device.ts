@@ -590,8 +590,9 @@ export class Device {
         (this.stage.orientation as DynamicProperty).setValue(sittingToStandingOrientation);
 
         // user pose is given in "sitting space"
-        const userPosition : Cartesian3|undefined = vrFrameData.pose.position ? 
-            Cartesian3.unpack(<any>vrFrameData.pose.position, 0, this._scratchCartesian) : undefined;
+        const userPosition : Cartesian3|undefined = !vrDisplay.capabilities.hasPosition ? 
+            Cartesian3.ZERO : vrFrameData.pose.position ? 
+                Cartesian3.unpack(<any>vrFrameData.pose.position, 0, this._scratchCartesian) : undefined;
         const userOrientation : Quaternion|undefined = vrFrameData.pose.orientation ? 
             Quaternion.unpack(<any>vrFrameData.pose.orientation, 0, this._scratchQuaternion2) : undefined;
         (user.position as DynamicPositionProperty).setValue(userPosition, origin);
@@ -623,11 +624,11 @@ export class Device {
 
         // the polyfill does not support reporting an absolute orientation (yet), 
         // so fall back to the default origin/stage/user pose in this case
-        if (!vrDisplay.displayName.includes('polyfill')) {
+        if (vrDisplay.displayName.includes('polyfill')) {
             // change left/right eye pose to be relative to user, 
             // which is necessary since we are redefining the user pose to use absolute orientation
             const leftEyeRelativeToUser = this.entityService.getEntityPose(leftEye, user, frameState.time);
-            const rightEyeRelativeToUser = this.entityService.getEntityPose(leftEye, user, frameState.time);
+            const rightEyeRelativeToUser = this.entityService.getEntityPose(rightEye, user, frameState.time);
             (leftEye.position as DynamicPositionProperty).setValue(leftEyeRelativeToUser.position, user);
             (rightEye.position as DynamicPositionProperty).setValue(rightEyeRelativeToUser.position, user);
             this._updateDefaultStage();
