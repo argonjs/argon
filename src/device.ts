@@ -575,6 +575,30 @@ export class Device {
         const user = this.user;
         const origin = this.origin;
 
+        // let origin be equivalent to "sitting space", and assume origin is positioned at device geolocation
+        (this.origin.position as DynamicPositionProperty).setValue(Cartesian3.ZERO, this.deviceGeolocation);
+        (this.origin.orientation as DynamicProperty).setValue(Quaternion.IDENTITY);
+        
+        // let stage be equivalent to "standing space"
+        const sittingToStandingTransform = vrDisplay.stageParameters ? 
+            <Matrix4><any> vrDisplay.stageParameters.sittingToStandingTransform :
+            Matrix4.IDENTITY;
+        const sittingToStandingPosition = Matrix4.multiplyByPoint(sittingToStandingTransform, Cartesian3.ZERO, this._scratchCartesian);
+        const sittingToStandingRotation = Matrix4.getRotation(sittingToStandingTransform, this._scratchMatrix3);
+        const sittingToStandingOrientation = Quaternion.fromRotationMatrix(sittingToStandingRotation, this._scratchQuaternion);
+        (this.stage.position as DynamicPositionProperty).setValue(sittingToStandingPosition, this.origin);
+        (this.stage.orientation as DynamicProperty).setValue(sittingToStandingOrientation);
+
+        // user pose is given in "sitting space"
+        const userPosition : Cartesian3|undefined = vrFrameData.pose.position ? 
+            Cartesian3.unpack(<any>vrFrameData.pose.position, 0, this._scratchCartesian) : undefined;
+        const userOrientation : Quaternion|undefined = vrFrameData.pose.orientation ? 
+            Quaternion.unpack(<any>vrFrameData.pose.orientation, 0, this._scratchQuaternion2) : undefined;
+        (user.position as DynamicPositionProperty).setValue(userPosition, origin);
+        (user.orientation as DynamicProperty).setValue(userOrientation);
+
+        // left and right subview poses are given relative to origin
+
         const leftEyeTransform = Matrix4.inverseTransformation(
             <any>vrFrameData.leftViewMatrix, 
             this._scratchMatrix4
@@ -599,34 +623,17 @@ export class Device {
 
         // the polyfill does not support reporting an absolute orientation (yet), 
         // so fall back to the default origin/stage/user pose in this case
-        if (vrDisplay.displayName.match(/polyfill/g)) {
-            this._updateDefaultOrigin();
+        if (!vrDisplay.displayName.includes('polyfill')) {
+            // change left/right eye pose to be relative to user, 
+            // which is necessary since we are redefining the user pose to use absolute orientation
+            const leftEyeRelativeToUser = this.entityService.getEntityPose(leftEye, user, frameState.time);
+            const rightEyeRelativeToUser = this.entityService.getEntityPose(leftEye, user, frameState.time);
+            (leftEye.position as DynamicPositionProperty).setValue(leftEyeRelativeToUser.position, user);
+            (rightEye.position as DynamicPositionProperty).setValue(rightEyeRelativeToUser.position, user);
             this._updateDefaultStage();
             this._updateDefaultUser();
             return;
         }
-        
-        // let origin be equivalent to "sitting space", and assume origin is positioned at device geolocation
-        (this.origin.position as DynamicPositionProperty).setValue(Cartesian3.ZERO, this.deviceGeolocation);
-        (this.origin.orientation as DynamicProperty).setValue(Quaternion.IDENTITY);
-        
-        // let stage be equivalent to "standing space"
-        const sittingToStandingTransform = vrDisplay.stageParameters ? 
-            <Matrix4><any> vrDisplay.stageParameters.sittingToStandingTransform :
-            Matrix4.IDENTITY;
-        const sittingToStandingPosition = Matrix4.multiplyByPoint(sittingToStandingTransform, Cartesian3.ZERO, this._scratchCartesian);
-        const sittingToStandingRotation = Matrix4.getRotation(sittingToStandingTransform, this._scratchMatrix3);
-        const sittingToStandingOrientation = Quaternion.fromRotationMatrix(sittingToStandingRotation, this._scratchQuaternion);
-        (this.stage.position as DynamicPositionProperty).setValue(sittingToStandingPosition, this.origin);
-        (this.stage.orientation as DynamicProperty).setValue(sittingToStandingOrientation);
-
-        // user pose is given in "sitting space"
-        const userPosition : Cartesian3|undefined = vrFrameData.pose.position ? 
-            Cartesian3.unpack(<any>vrFrameData.pose.position, 0, this._scratchCartesian) : undefined;
-        const userOrientation : Quaternion|undefined = vrFrameData.pose.orientation ? 
-            Quaternion.unpack(<any>vrFrameData.pose.orientation, 0, this._scratchQuaternion2) : undefined;
-        (user.position as DynamicPositionProperty).setValue(userPosition, origin);
-        (user.orientation as DynamicProperty).setValue(userOrientation);
     }
 
     private _deviceOrientationListener;
