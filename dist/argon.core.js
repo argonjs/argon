@@ -21397,7 +21397,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-36");
+            _export('version', version = "1.4.0-37");
 
             __extends$1 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -24578,10 +24578,8 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     this._scratchFrustum = new PerspectiveFrustum();
                     sessionService.ensureIsRealityManager();
                     sessionService.manager.connectEvent.addEventListener(function () {
-                        setTimeout(function () {
-                            if (!_this._presentingRealityViewer && _this.realityService.default) _this._handleRequest(_this.sessionService.manager, {
-                                uri: _this.realityService.default
-                            });
+                        if (!_this._presentingRealityViewer && _this.realityService.default) _this._handleRequest(_this.sessionService.manager, {
+                            uri: _this.realityService.default
                         });
                     });
                     sessionService.manager.closeEvent.addEventListener(function () {
