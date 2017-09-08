@@ -585,11 +585,12 @@ export class Device {
         const sittingToStandingTransform = vrDisplay.stageParameters ? 
             <Matrix4><any> vrDisplay.stageParameters.sittingToStandingTransform :
             Matrix4.IDENTITY;
-        const sittingToStandingPosition = Matrix4.multiplyByPoint(sittingToStandingTransform, Cartesian3.ZERO, this._scratchCartesian);
-        const sittingToStandingRotation = Matrix4.getRotation(sittingToStandingTransform, this._scratchMatrix3);
-        const sittingToStandingOrientation = Quaternion.fromRotationMatrix(sittingToStandingRotation, this._scratchQuaternion);
-        (this.stage.position as DynamicPositionProperty).setValue(sittingToStandingPosition, this.origin);
-        (this.stage.orientation as DynamicProperty).setValue(sittingToStandingOrientation);
+        const standingToSittingTransform = Matrix4.inverseTransformation(sittingToStandingTransform, this._scratchMatrix4);
+        const standingToSittingPosition = Matrix4.getTranslation(standingToSittingTransform, this._scratchCartesian);
+        const standingToSittingRotation = Matrix4.getRotation(standingToSittingTransform, this._scratchMatrix3);
+        const standingToSittingOrientation = Quaternion.fromRotationMatrix(standingToSittingRotation, this._scratchQuaternion);
+        (this.stage.position as DynamicPositionProperty).setValue(standingToSittingPosition, this.origin);
+        (this.stage.orientation as DynamicProperty).setValue(standingToSittingOrientation);
 
         // user pose is given in "sitting space"
         const hasPosition = vrDisplay.capabilities.hasPosition;
