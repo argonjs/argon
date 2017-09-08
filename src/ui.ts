@@ -336,6 +336,7 @@ export class DefaultUIService {
         e.style.opacity = '0';
         e.style.pointerEvents = 'none';
     }
+    
 
     public updateMenu() {
         if (this.deviceService.isPresentingHMD && utils.isIOS) { // TODO: fix this. Should only hide menu when webvr polyfill is used
@@ -344,7 +345,7 @@ export class DefaultUIService {
             this.element!.style.display = 'block';
         }
 
-        this.menuItems = [];
+        this.menuItems.length = 0;
         this.menuItems.push(null);
         if (utils.isIOS || utils.isAndroid) this.menuItems.push(this.openInArgonMenuItem);
         else this._hideMenuItem(this.openInArgonMenuItem);
