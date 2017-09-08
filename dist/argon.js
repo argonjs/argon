@@ -26982,7 +26982,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-41");
+            _export('version', version = "1.4.0-42");
 
             __extends$1 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -29184,11 +29184,12 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     this.origin.orientation.setValue(Quaternion.IDENTITY);
                     // let stage be equivalent to "standing space"
                     var sittingToStandingTransform = vrDisplay.stageParameters ? vrDisplay.stageParameters.sittingToStandingTransform : Matrix4.IDENTITY;
-                    var sittingToStandingPosition = Matrix4.multiplyByPoint(sittingToStandingTransform, Cartesian3.ZERO, this._scratchCartesian);
-                    var sittingToStandingRotation = Matrix4.getRotation(sittingToStandingTransform, this._scratchMatrix3);
-                    var sittingToStandingOrientation = Quaternion.fromRotationMatrix(sittingToStandingRotation, this._scratchQuaternion);
-                    this.stage.position.setValue(sittingToStandingPosition, this.origin);
-                    this.stage.orientation.setValue(sittingToStandingOrientation);
+                    var standingToSittingTransform = Matrix4.inverseTransformation(sittingToStandingTransform, this._scratchMatrix4);
+                    var standingToSittingPosition = Matrix4.getTranslation(standingToSittingTransform, this._scratchCartesian);
+                    var standingToSittingRotation = Matrix4.getRotation(standingToSittingTransform, this._scratchMatrix3);
+                    var standingToSittingOrientation = Quaternion.fromRotationMatrix(standingToSittingRotation, this._scratchQuaternion);
+                    this.stage.position.setValue(standingToSittingPosition, this.origin);
+                    this.stage.orientation.setValue(standingToSittingOrientation);
                     // user pose is given in "sitting space"
                     var hasPosition = vrDisplay.capabilities.hasPosition;
                     var userPosition = !hasPosition ? Cartesian3.ZERO : vrFrameData.pose.position ? Cartesian3.unpack(vrFrameData.pose.position, 0, this._scratchCartesian) : undefined;
