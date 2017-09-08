@@ -21397,7 +21397,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-39");
+            _export('version', version = "1.4.0-40");
 
             __extends$1 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -23596,7 +23596,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     this.stage.position.setValue(sittingToStandingPosition, this.origin);
                     this.stage.orientation.setValue(sittingToStandingOrientation);
                     // user pose is given in "sitting space"
-                    var userPosition = vrFrameData.pose.position ? Cartesian3.unpack(vrFrameData.pose.position, 0, this._scratchCartesian) : undefined;
+                    var userPosition = !vrDisplay.capabilities.hasPosition ? Cartesian3.ZERO : vrFrameData.pose.position ? Cartesian3.unpack(vrFrameData.pose.position, 0, this._scratchCartesian) : undefined;
                     var userOrientation = vrFrameData.pose.orientation ? Quaternion.unpack(vrFrameData.pose.orientation, 0, this._scratchQuaternion2) : undefined;
                     user.position.setValue(userPosition, origin);
                     user.orientation.setValue(userOrientation);
@@ -23617,11 +23617,11 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     rightEye.orientation.setValue(rightEyeOrientation);
                     // the polyfill does not support reporting an absolute orientation (yet), 
                     // so fall back to the default origin/stage/user pose in this case
-                    if (!vrDisplay.displayName.includes('polyfill')) {
+                    if (vrDisplay.displayName.includes('polyfill')) {
                         // change left/right eye pose to be relative to user, 
                         // which is necessary since we are redefining the user pose to use absolute orientation
                         var leftEyeRelativeToUser = this.entityService.getEntityPose(leftEye, user, frameState.time);
-                        var rightEyeRelativeToUser = this.entityService.getEntityPose(leftEye, user, frameState.time);
+                        var rightEyeRelativeToUser = this.entityService.getEntityPose(rightEye, user, frameState.time);
                         leftEye.position.setValue(leftEyeRelativeToUser.position, user);
                         rightEye.position.setValue(rightEyeRelativeToUser.position, user);
                         this._updateDefaultStage();
