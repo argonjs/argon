@@ -296,12 +296,10 @@ export class RealityServiceProvider {
         sessionService.ensureIsRealityManager();
         
         sessionService.manager.connectEvent.addEventListener(() => {
-            setTimeout(() => {
-                if (!this._presentingRealityViewer && this.realityService.default)
-                    this._handleRequest(this.sessionService.manager, {
-                        uri:this.realityService.default
-                    });
-            });
+            if (!this._presentingRealityViewer && this.realityService.default)
+                this._handleRequest(this.sessionService.manager, {
+                    uri:this.realityService.default
+                });
         });
 
         sessionService.manager.closeEvent.addEventListener(()=>{
