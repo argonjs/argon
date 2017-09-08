@@ -614,7 +614,7 @@ export class ContextService {
         const contextStageOrientation = contextStage.orientation as DynamicProperty;
         const contextOriginPosition = contextOrigin.position as DynamicPositionProperty;
         const contextOriginOrientation = contextOrigin.orientation as DynamicProperty;
-        if (entities[contextStage.id] === undefined) {
+        if (!entities[contextStage.id]) {
             contextStagePosition.setValue(Cartesian3.ZERO, deviceStage);
             contextStageOrientation.setValue(Quaternion.IDENTITY);
             contextOriginPosition.setValue(Cartesian3.ZERO, deviceOrigin);
@@ -635,7 +635,7 @@ export class ContextService {
         // update user entity (relative to origin) based on device user (relative to device origin) if the reality did not override it
         const deviceUser = this.deviceService.user;
         const contextUser = this.user;
-        if (entities[contextUser.id] === undefined) {
+        if (!entities[contextUser.id]) {
             const userRelativeToOrigin = this.getEntityPose(deviceUser, deviceOrigin);
             const contextUserPosition = contextUser.position as DynamicPositionProperty;
             const contextUserOrientation = contextUser.orientation as DynamicProperty;
@@ -645,7 +645,7 @@ export class ContextService {
 
         // update view entity (if the reality did not set it)
         const contextView = this.view;
-        if (entities[contextView.id] === undefined) {
+        if (!entities[contextView.id]) {
             const contextViewPosition = contextView.position as DynamicPositionProperty;
             const contextViewOrientation = contextView.orientation as DynamicProperty;
             contextViewPosition.setValue(Cartesian3.ZERO, contextUser);
@@ -654,7 +654,7 @@ export class ContextService {
 
         // update subview entities (if the reality did not set them)
         for (let i=0; i<frameState.subviews.length; i++) {
-            if (entities['ar.view_' + i] === undefined) {
+            if (!entities['ar.view_' + i]) {
                 const deviceSubview = this.deviceService.getSubviewEntity(i);
                 const contextSubview = this.getSubviewEntity(i);
                 const subviewPositionValue = this._getEntityPositionInReferenceFrame(deviceSubview, time, deviceUser, this._scratchCartesian);
@@ -667,7 +667,7 @@ export class ContextService {
         }
 
         // update floor entity (if the reality did not set it)
-        if (entities[this.floor.id] === undefined) {
+        if (!entities[this.floor.id]) {
             const floorPosition = this.floor.position as DynamicPositionProperty;
             floorPosition.setValue(Cartesian3.ZERO, contextStage);
         }
