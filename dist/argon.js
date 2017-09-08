@@ -26982,7 +26982,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-38");
+            _export('version', version = "1.4.0-39");
 
             __extends$1 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -31280,7 +31280,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                         this._previousOriginReferenceFrame = originReferenceFrame;
                         this._previousOriginPosition = originPosition && Cartesian3.clone(originPosition, this._previousOriginPosition);
                         this._previousOriginOrientation = originOrientation && Quaternion.clone(originOrientation, this._previousOriginOrientation);
-                        console.log('Updated context origin to ' + JSON.stringify(originPosition) + " at " + stringIdentifierFromReferenceFrame(originReferenceFrame));
+                        if (this.sessionService.isRealityAugmenter) console.log('Updated context origin to ' + JSON.stringify(originPosition) + " at " + stringIdentifierFromReferenceFrame(originReferenceFrame));
                         this.originChangeEvent.raiseEvent(undefined);
                     }
                 };
@@ -32106,7 +32106,6 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                         _this.videoElement.controls = false;
                         _this.videoElement.autoplay = true;
                         _this.videoElement.style.display = 'none';
-                        _this.videoElement.style.zIndex = "-100";
                         var viewElement = _this.viewService.element;
                         viewElement.insertBefore(_this.settingsIframe, viewElement.firstChild);
                         viewElement.insertBefore(_this.videoElement, viewElement.firstChild);
@@ -32257,7 +32256,6 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                         iframeElement.style.position = 'absolute';
                         iframeElement.style.opacity = '0';
                         iframeElement.style.pointerEvents = 'none';
-                        iframeElement.style.zIndex = "-100";
                         var viewElement = _this.viewService.element;
                         viewElement.insertBefore(iframeElement, viewElement.firstChild);
                         _this.presentChangeEvent.addEventListener(function () {
