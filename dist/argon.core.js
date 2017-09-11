@@ -21397,7 +21397,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-42");
+            _export('version', version = "1.4.0-43");
 
             __extends$1 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -26349,23 +26349,23 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     });
                     // Setup everything after connected to the manager. The manager only connects once.
                     childSessionService.manager.connectEvent.addEventListener(function () {
-                        // since we aren't create a child view service and viewport service, 
-                        // suppress any errors from not handling these messages
+                        // suppress any errors from not handling some messages
                         childSessionService.manager.suppressErrorOnUnknownTopic = true;
+                        var heading = 0;
+                        var pitch = 0;
                         var scratchQuaternion = new Quaternion();
-                        var scratchQuaternionDragYaw = new Quaternion();
-                        // const pitchQuat = new Quaternion;
+                        var scratchQuaternionPitch = new Quaternion();
+                        var scratchQuaternionHeading = new Quaternion();
                         var positionScratchCartesian = new Cartesian3();
                         var movementScratchCartesian = new Cartesian3();
                         var orientationMatrix = new Matrix3();
                         var up = new Cartesian3(0, 0, 1);
                         var right = new Cartesian3(1, 0, 0);
                         var forward = new Cartesian3(0, -1, 0);
-                        var scratchFrustum = new PerspectiveFrustum();
+                        var frustum = new PerspectiveFrustum();
+                        var NEGATIVE_UNIT_Z = new Cartesian3(0, 0, -1);
                         var deviceStage = childDeviceService.stage;
                         var deviceUser = childDeviceService.user;
-                        var NEGATIVE_UNIT_Z = new Cartesian3(0, 0, -1);
-                        // const X_90ROT = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, CesiumMath.PI_OVER_TWO);
                         var subviews = [];
                         var deviceUserPose = childContextService.createEntityPose(deviceUser, deviceStage);
                         var checkSuggestedGeolocationSubscription = function () {
@@ -26388,22 +26388,22 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                             SerializedSubviewList.clone(frameState.subviews, subviews);
                             // provide fov controls
                             if (!childDeviceService.strict) {
-                                decomposePerspectiveProjectionMatrix(subviews[0].projectionMatrix, scratchFrustum);
-                                scratchFrustum.fov = childViewService.subviews[0] && childViewService.subviews[0].frustum.fov || CesiumMath.PI_OVER_THREE;
+                                decomposePerspectiveProjectionMatrix(subviews[0].projectionMatrix, frustum);
+                                frustum.fov = childViewService.subviews[0] && childViewService.subviews[0].frustum.fov || CesiumMath.PI_OVER_THREE;
                                 if (aggregator && aggregator.isMoving(CameraEventType.WHEEL)) {
                                     var wheelMovement = aggregator.getMovement(CameraEventType.WHEEL);
                                     var diff = wheelMovement.endPosition.y;
-                                    scratchFrustum.fov = Math.min(Math.max(scratchFrustum.fov - diff * 0.02, Math.PI / 8), Math.PI - Math.PI / 8);
+                                    frustum.fov = Math.min(Math.max(frustum.fov - diff * 0.02, Math.PI / 8), Math.PI - Math.PI / 8);
                                 }
                                 if (aggregator && aggregator.isMoving(CameraEventType.PINCH)) {
                                     var pinchMovement = aggregator.getMovement(CameraEventType.PINCH);
                                     var diff = pinchMovement.distance.endPosition.y - pinchMovement.distance.startPosition.y;
-                                    scratchFrustum.fov = Math.min(Math.max(scratchFrustum.fov - diff * 0.02, Math.PI / 8), Math.PI - Math.PI / 8);
+                                    frustum.fov = Math.min(Math.max(frustum.fov - diff * 0.02, Math.PI / 8), Math.PI - Math.PI / 8);
                                 }
                                 subviews.forEach(function (s) {
                                     var aspect = s.viewport.width / s.viewport.height;
-                                    scratchFrustum.aspectRatio = isFinite(aspect) ? aspect : 1;
-                                    Matrix4.clone(scratchFrustum.projectionMatrix, s.projectionMatrix);
+                                    frustum.aspectRatio = isFinite(aspect) ? aspect : 1;
+                                    Matrix4.clone(frustum.projectionMatrix, s.projectionMatrix);
                                 });
                             }
                             var time = frameState.time;
@@ -26414,16 +26414,19 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                             if (overrideUser) {
                                 var contextUser = childContextService.user;
                                 var contextStage = childContextService.stage;
-                                var position = getEntityPositionInReferenceFrame(contextUser, time, contextStage, positionScratchCartesian) || Cartesian3.fromElements(0, childDeviceService.displayMode === 'head' ? AVERAGE_EYE_HEIGHT : AVERAGE_EYE_HEIGHT * 0.75, 0, positionScratchCartesian);
+                                var position = getEntityPositionInReferenceFrame(contextUser, time, contextStage, positionScratchCartesian) || Cartesian3.fromElements(0, childDeviceService.displayMode === 'hand' ? AVERAGE_EYE_HEIGHT * 0.75 : AVERAGE_EYE_HEIGHT, 0, positionScratchCartesian);
                                 var orientation = getEntityOrientationInReferenceFrame(contextUser, time, contextStage, scratchQuaternion) || Quaternion.clone(Quaternion.IDENTITY, scratchQuaternion);
                                 if (aggregator && aggregator.isMoving(CameraEventType.LEFT_DRAG)) {
                                     var dragMovement = aggregator.getMovement(CameraEventType.LEFT_DRAG);
                                     if (orientation) {
-                                        // const dragPitch = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, frustum.fov * (dragMovement.endPosition.y - dragMovement.startPosition.y) / app.view.getViewport().height, scratchQuaternionDragPitch);
-                                        var dragYaw = Quaternion.fromAxisAngle(Cartesian3.UNIT_Y, scratchFrustum.fov * (dragMovement.endPosition.x - dragMovement.startPosition.x) / frameState.viewport.width, scratchQuaternionDragYaw);
-                                        // const drag = Quaternion.multiply(dragPitch, dragYaw, dragYaw);
-                                        orientation = Quaternion.multiply(orientation, dragYaw, dragYaw);
-                                        contextUser.orientation.setValue(orientation);
+                                        var viewport = frameState.viewport;
+                                        heading += frustum.fov * (dragMovement.endPosition.x - dragMovement.startPosition.x) / viewport.width;
+                                        pitch += frustum.fovy * (dragMovement.endPosition.y - dragMovement.startPosition.y) / viewport.height;
+                                        pitch = Math.min(Math.max(-CesiumMath.PI_OVER_TWO, pitch), CesiumMath.PI_OVER_TWO);
+                                        var pitchQuat = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, pitch, scratchQuaternionPitch);
+                                        var headingQuat = Quaternion.fromAxisAngle(Cartesian3.UNIT_Y, heading, scratchQuaternionHeading);
+                                        var orientation_1 = Quaternion.multiply(headingQuat, pitchQuat, scratchQuaternion);
+                                        contextUser.orientation.setValue(orientation_1);
                                     }
                                 }
                                 Matrix3.fromQuaternion(orientation, orientationMatrix);
