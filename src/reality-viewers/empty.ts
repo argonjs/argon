@@ -186,27 +186,26 @@ export class EmptyRealityViewer extends RealityViewer {
         // Setup everything after connected to the manager. The manager only connects once.
         childSessionService.manager.connectEvent.addEventListener(()=>{
 
-            // since we aren't create a child view service and viewport service, 
-            // suppress any errors from not handling these messages
+            // suppress any errors from not handling some messages
             childSessionService.manager.suppressErrorOnUnknownTopic = true;
             
+            var heading = 0;
+            var pitch = 0;
             const scratchQuaternion = new Quaternion;
-            const scratchQuaternionDragYaw = new Quaternion;
-            // const pitchQuat = new Quaternion;
+            const scratchQuaternionPitch = new Quaternion;
+            const scratchQuaternionHeading = new Quaternion;
+            
             const positionScratchCartesian = new Cartesian3;
             const movementScratchCartesian = new Cartesian3;
             const orientationMatrix = new Matrix3;
             const up = new Cartesian3(0,0,1);
             const right = new Cartesian3(1,0,0);
             const forward = new Cartesian3(0,-1,0);
-            const scratchFrustum = new PerspectiveFrustum();
+            const frustum = new PerspectiveFrustum();
+            const NEGATIVE_UNIT_Z = new Cartesian3(0,0,-1);
 
             const deviceStage = childDeviceService.stage;
             const deviceUser = childDeviceService.user;
-
-            const NEGATIVE_UNIT_Z = new Cartesian3(0,0,-1);
-            // const X_90ROT = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, CesiumMath.PI_OVER_TWO);
-
             const subviews:SerializedSubviewList = [];
 
             const deviceUserPose = childContextService.createEntityPose(deviceUser, deviceStage);
@@ -239,25 +238,25 @@ export class EmptyRealityViewer extends RealityViewer {
                 
                 // provide fov controls
                 if (!childDeviceService.strict) {                    
-                    decomposePerspectiveProjectionMatrix(subviews[0].projectionMatrix, scratchFrustum);
-                    scratchFrustum.fov = childViewService.subviews[0] && childViewService.subviews[0].frustum.fov || CesiumMath.PI_OVER_THREE;
+                    decomposePerspectiveProjectionMatrix(subviews[0].projectionMatrix, frustum);
+                    frustum.fov = childViewService.subviews[0] && childViewService.subviews[0].frustum.fov || CesiumMath.PI_OVER_THREE;
 
                     if (aggregator && aggregator.isMoving(CameraEventType.WHEEL)) {
                         const wheelMovement = aggregator.getMovement(CameraEventType.WHEEL);
                         const diff = wheelMovement.endPosition.y;
-                        scratchFrustum.fov = Math.min(Math.max(scratchFrustum.fov - diff * 0.02, Math.PI/8), Math.PI-Math.PI/8);
+                        frustum.fov = Math.min(Math.max(frustum.fov - diff * 0.02, Math.PI/8), Math.PI-Math.PI/8);
                     }
 
                     if (aggregator && aggregator.isMoving(CameraEventType.PINCH)) {
                         const pinchMovement:PinchMovement = aggregator.getMovement(CameraEventType.PINCH);
                         const diff = pinchMovement.distance.endPosition.y - pinchMovement.distance.startPosition.y;
-                        scratchFrustum.fov = Math.min(Math.max(scratchFrustum.fov - diff * 0.02, Math.PI/8), Math.PI-Math.PI/8);
+                        frustum.fov = Math.min(Math.max(frustum.fov - diff * 0.02, Math.PI/8), Math.PI-Math.PI/8);
                     }
                     
                     subviews.forEach((s)=>{                    
                         const aspect = s.viewport.width / s.viewport.height;
-                        scratchFrustum.aspectRatio = isFinite(aspect) ? aspect : 1;
-                        Matrix4.clone(scratchFrustum.projectionMatrix, s.projectionMatrix);
+                        frustum.aspectRatio = isFinite(aspect) ? aspect : 1;
+                        Matrix4.clone(frustum.projectionMatrix, s.projectionMatrix);
                     });
                 }
 
@@ -285,13 +284,14 @@ export class EmptyRealityViewer extends RealityViewer {
                     
                     if (aggregator && aggregator.isMoving(CameraEventType.LEFT_DRAG)) {
                         const dragMovement = aggregator.getMovement(CameraEventType.LEFT_DRAG);
-
                         if (orientation) {
-                            // const dragPitch = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, frustum.fov * (dragMovement.endPosition.y - dragMovement.startPosition.y) / app.view.getViewport().height, scratchQuaternionDragPitch);
-                            const dragYaw = Quaternion.fromAxisAngle(Cartesian3.UNIT_Y, scratchFrustum.fov * (dragMovement.endPosition.x - dragMovement.startPosition.x) / frameState.viewport.width, scratchQuaternionDragYaw);
-                            // const drag = Quaternion.multiply(dragPitch, dragYaw, dragYaw);
-
-                            orientation = Quaternion.multiply(orientation, dragYaw, dragYaw);
+                            const viewport = frameState.viewport;
+                            heading += frustum.fov * (dragMovement.endPosition.x - dragMovement.startPosition.x) / viewport.width;
+                            pitch += frustum.fovy * (dragMovement.endPosition.y - dragMovement.startPosition.y) / viewport.height;
+                            pitch = Math.min(Math.max(-CesiumMath.PI_OVER_TWO, pitch), CesiumMath.PI_OVER_TWO);
+                            const pitchQuat = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, pitch, scratchQuaternionPitch);
+                            const headingQuat = Quaternion.fromAxisAngle(Cartesian3.UNIT_Y, heading, scratchQuaternionHeading);
+                            const orientation = Quaternion.multiply(headingQuat, pitchQuat, scratchQuaternion);
                             (<any>contextUser.orientation).setValue(orientation);
                         }
                     }
