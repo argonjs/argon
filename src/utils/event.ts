@@ -34,7 +34,7 @@ export class Event<T> {
       */
     onNext(listener: (data: T) => void, scope?:any) : void {
         let remove = this.addEventListener((data)=>{
-            remove();
+            Promise.resolve().then(()=>remove()); // temporary workaround for https://github.com/AnalyticalGraphicsInc/cesium/issues/5827
             listener.apply(scope, data);
         });
     }
