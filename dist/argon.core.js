@@ -21087,7 +21087,9 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                   */
                 Event$$1.prototype.onNext = function (listener, scope) {
                     var remove = this.addEventListener(function (data) {
-                        remove();
+                        Promise.resolve().then(function () {
+                            return remove();
+                        }); // temporary workaround for https://github.com/AnalyticalGraphicsInc/cesium/issues/5827
                         listener.apply(scope, data);
                     });
                 };
@@ -21397,7 +21399,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-43");
+            _export('version', version = "1.4.0-44");
 
             __extends$1 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
