@@ -21399,7 +21399,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-44");
+            _export('version', version = "1.4.0-45");
 
             __extends$1 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -23564,7 +23564,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     if (!vrDisplay) throw new Error('No vr display!');
                     var frameState = this.frameState;
                     var vrFrameData = this._vrFrameData = this._vrFrameData || new VRFrameData();
-                    if (!vrDisplay['getFrameData'](vrFrameData)) return this.frameState;
+                    vrDisplay.getFrameData(vrFrameData);
                     var layer = vrDisplay.getLayers()[0];
                     var leftBounds = layer && layer.leftBounds;
                     var rightBounds = layer && layer.rightBounds;
