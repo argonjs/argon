@@ -529,8 +529,7 @@ export class Device {
 
         const vrFrameData : VRFrameData = this._vrFrameData = 
             this._vrFrameData || new VRFrameData();
-        if (!vrDisplay['getFrameData'](vrFrameData)) 
-            return this.frameState;
+        vrDisplay.getFrameData(vrFrameData);
 
         const layer = vrDisplay.getLayers()[0];
         let leftBounds = layer && layer.leftBounds;
