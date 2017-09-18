@@ -86,6 +86,7 @@ export declare class Device {
     private _scratchMatrix4;
     private _defaultLeftBounds;
     private _defaultRightBounds;
+    private _sittingSpace;
     private _updateForWebVR();
     private _deviceOrientationListener;
     private _deviceOrientationHeadingAccuracy;

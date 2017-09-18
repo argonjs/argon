@@ -26984,7 +26984,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-45");
+            _export('version', version = "1.4.0-46");
 
             __extends$1 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -28889,6 +28889,10 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     this._scratchMatrix4 = new Matrix4();
                     this._defaultLeftBounds = [0.0, 0.0, 0.5, 1.0];
                     this._defaultRightBounds = [0.5, 0.0, 0.5, 1.0];
+                    this._sittingSpace = new Entity({
+                        position: new DynamicPositionProperty(),
+                        orientation: new DynamicProperty()
+                    });
                     this._negX90 = Quaternion.fromAxisAngle(Cartesian3.UNIT_X, -CesiumMath.PI_OVER_TWO);
                     /**
                      * Request an animation frame callback
@@ -29180,38 +29184,41 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     leftSubview.projectionMatrix = Matrix4.clone(vrFrameData.leftProjectionMatrix, leftSubview.projectionMatrix);
                     rightSubview.projectionMatrix = Matrix4.clone(vrFrameData.rightProjectionMatrix, rightSubview.projectionMatrix);
                     var user = this.user;
-                    var origin = this.origin;
-                    // let origin be equivalent to "sitting space", and assume origin is positioned at device geolocation
-                    this.origin.position.setValue(Cartesian3.ZERO, this.deviceGeolocation);
-                    this.origin.orientation.setValue(Quaternion.IDENTITY);
+                    // Define "sitting space", positioned at device geolocation
+                    this._sittingSpace.position.setValue(Cartesian3.ZERO, this.deviceGeolocation);
+                    this._sittingSpace.orientation.setValue(Quaternion.IDENTITY);
                     // let stage be equivalent to "standing space"
                     var sittingToStandingTransform = vrDisplay.stageParameters ? vrDisplay.stageParameters.sittingToStandingTransform : Matrix4.IDENTITY;
                     var standingToSittingTransform = Matrix4.inverseTransformation(sittingToStandingTransform, this._scratchMatrix4);
                     var standingToSittingPosition = Matrix4.getTranslation(standingToSittingTransform, this._scratchCartesian);
                     var standingToSittingRotation = Matrix4.getRotation(standingToSittingTransform, this._scratchMatrix3);
                     var standingToSittingOrientation = Quaternion.fromRotationMatrix(standingToSittingRotation, this._scratchQuaternion);
-                    this.stage.position.setValue(standingToSittingPosition, this.origin);
+                    this.stage.position.setValue(standingToSittingPosition, this._sittingSpace);
                     this.stage.orientation.setValue(standingToSittingOrientation);
+                    // let origin also be at "standing space"
+                    this.origin.position.setValue(Cartesian3.ZERO, this.stage);
+                    this.origin.orientation.setValue(Quaternion.IDENTITY);
                     // user pose is given in "sitting space"
                     var hasPosition = vrDisplay.capabilities.hasPosition;
                     var userPosition = !hasPosition ? Cartesian3.ZERO : vrFrameData.pose.position ? Cartesian3.unpack(vrFrameData.pose.position, 0, this._scratchCartesian) : undefined;
                     var userOrientation = vrFrameData.pose.orientation ? Quaternion.unpack(vrFrameData.pose.orientation, 0, this._scratchQuaternion2) : undefined;
-                    user.position.setValue(userPosition, origin);
+                    user.position.setValue(userPosition, this._sittingSpace);
                     user.orientation.setValue(userOrientation);
-                    // left and right subview poses are given relative to origin
+                    // left eye transform is given relative to sitting space
                     var leftEyeTransform = Matrix4.inverseTransformation(vrFrameData.leftViewMatrix, this._scratchMatrix4);
                     var leftEye = this.getSubviewEntity(0);
                     var leftEyePosition = Matrix4.getTranslation(leftEyeTransform, this._scratchCartesian);
                     var leftEyeRotation = Matrix4.getRotation(leftEyeTransform, this._scratchMatrix3);
                     var leftEyeOrientation = Quaternion.fromRotationMatrix(leftEyeRotation, this._scratchQuaternion);
-                    leftEye.position.setValue(leftEyePosition, origin);
+                    leftEye.position.setValue(leftEyePosition, this._sittingSpace);
                     leftEye.orientation.setValue(leftEyeOrientation);
+                    // right eye transform is given relative to sitting space
                     var rightEyeTransform = Matrix4.inverseTransformation(vrFrameData.rightViewMatrix, this._scratchMatrix4);
                     var rightEye = this.getSubviewEntity(1);
                     var rightEyePosition = Matrix4.getTranslation(rightEyeTransform, this._scratchCartesian);
                     var rightEyeRotation = Matrix4.getRotation(rightEyeTransform, this._scratchMatrix3);
                     var rightEyeOrientation = Quaternion.fromRotationMatrix(rightEyeRotation, this._scratchQuaternion);
-                    rightEye.position.setValue(rightEyePosition, origin);
+                    rightEye.position.setValue(rightEyePosition, this._sittingSpace);
                     rightEye.orientation.setValue(rightEyeOrientation);
                     // the polyfill does not support reporting an absolute orientation (yet), 
                     // so fall back to the default origin/stage/user pose in this case
