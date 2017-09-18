@@ -26984,7 +26984,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-46");
+            _export('version', version = "1.4.0-47");
 
             __extends$1 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -27194,7 +27194,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                                 _this.send(topic + ':reject:' + id, { reason: errorMessage });
                             });
                         } else if (!_this.suppressErrorOnUnknownTopic) {
-                            var errorMessage = 'Unable to handle message for topic ' + topic + ' (' + _this.uri + ')';
+                            var errorMessage = 'Unable to handle message for topic ' + topic + ' (to: ' + _this.uri + ')';
                             if (expectsResponse) {
                                 _this.send(topic + ':reject:' + id, { reason: errorMessage });
                             }
@@ -30279,6 +30279,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                                     _this._connectViewerWithSession(viewerSession, session);
                                 }
                                 var remove_1 = _this.sessionService.connectEvent.addEventListener(function (session) {
+                                    if (session === _this.sessionService.manager) return;
                                     _this._connectViewerWithSession(viewerSession, session);
                                 });
                                 viewerSession.closeEvent.addEventListener(function () {
@@ -30312,8 +30313,8 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     session.on[ROUTE_MESSAGE_KEY] = function (message) {
                         viewerSession.send(SEND_MESSAGE_KEY, message);
                     };
-                    viewerSession.send('ar.reality.connect', { id: id });
                     session.send('ar.reality.connect', { id: id });
+                    viewerSession.send('ar.reality.connect', { id: id });
                     viewerSession.closeEvent.addEventListener(function () {
                         session.send(CLOSE_SESSION_KEY);
                     });
