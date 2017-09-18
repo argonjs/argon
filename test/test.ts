@@ -360,17 +360,17 @@ describe('RealityService', () => {
 
             var count = 0;
             app.reality.connectEvent.addEventListener((realitySession)=>{
-                console.log('reality: ' + realitySession.info.title + 'COUNT: ' + count); count++;
+                expect(count).to.equal(0);
                 expect(realitySession.supportsProtocol('ar.configureStage')).is.true;
-                app.reality.setStageGeolocation(realitySession, new Argon.Cesium.Cartographic(10,10)).then(()=>{
+                app.reality.setStageGeolocation(realitySession, new Argon.Cesium.Cartographic(0,0)).then(()=>{
                     app.context.updateEvent.onNext(() => {
-                        console.log(app.reality.current);
                         const cartographic = app.context.getEntityCartographic(app.stage)!;
-                        expect(cartographic.latitude).to.equal(10);
-                        expect(cartographic.longitude).to.equal(10);
+                        expect(cartographic.latitude).to.equal(0);
+                        expect(cartographic.longitude).to.equal(0);
                         done();
                     });
                 }).catch(done);
+                count++;
             });
         });
         
