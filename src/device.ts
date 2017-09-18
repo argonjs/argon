@@ -519,7 +519,12 @@ export class Device {
     private _scratchMatrix4 = new Matrix4;
 
 	private _defaultLeftBounds = [ 0.0, 0.0, 0.5, 1.0 ];
-	private _defaultRightBounds = [ 0.5, 0.0, 0.5, 1.0 ];
+    private _defaultRightBounds = [ 0.5, 0.0, 0.5, 1.0 ];
+    
+    private _sittingSpace = new Entity({
+        position: new DynamicPositionProperty,
+        orientation: new DynamicProperty
+    });
 
     private _updateForWebVR() {
         const vrDisplay = this.vrDisplay;
@@ -574,11 +579,10 @@ export class Device {
         );
 
         const user = this.user;
-        const origin = this.origin;
 
-        // let origin be equivalent to "sitting space", and assume origin is positioned at device geolocation
-        (this.origin.position as DynamicPositionProperty).setValue(Cartesian3.ZERO, this.deviceGeolocation);
-        (this.origin.orientation as DynamicProperty).setValue(Quaternion.IDENTITY);
+        // Define "sitting space", positioned at device geolocation
+        (this._sittingSpace.position as DynamicPositionProperty).setValue(Cartesian3.ZERO, this.deviceGeolocation);
+        (this._sittingSpace.orientation as DynamicProperty).setValue(Quaternion.IDENTITY);
         
         // let stage be equivalent to "standing space"
         const sittingToStandingTransform = vrDisplay.stageParameters ? 
@@ -588,8 +592,12 @@ export class Device {
         const standingToSittingPosition = Matrix4.getTranslation(standingToSittingTransform, this._scratchCartesian);
         const standingToSittingRotation = Matrix4.getRotation(standingToSittingTransform, this._scratchMatrix3);
         const standingToSittingOrientation = Quaternion.fromRotationMatrix(standingToSittingRotation, this._scratchQuaternion);
-        (this.stage.position as DynamicPositionProperty).setValue(standingToSittingPosition, this.origin);
+        (this.stage.position as DynamicPositionProperty).setValue(standingToSittingPosition, this._sittingSpace);
         (this.stage.orientation as DynamicProperty).setValue(standingToSittingOrientation);
+
+        // let origin also be at "standing space"
+        (this.origin.position as DynamicPositionProperty).setValue(Cartesian3.ZERO, this.stage);
+        (this.origin.orientation as DynamicProperty).setValue(Quaternion.IDENTITY);
 
         // user pose is given in "sitting space"
         const hasPosition = vrDisplay.capabilities.hasPosition;
@@ -598,11 +606,10 @@ export class Device {
                 Cartesian3.unpack(<any>vrFrameData.pose.position, 0, this._scratchCartesian) : undefined;
         const userOrientation : Quaternion|undefined = vrFrameData.pose.orientation ? 
             Quaternion.unpack(<any>vrFrameData.pose.orientation, 0, this._scratchQuaternion2) : undefined;
-        (user.position as DynamicPositionProperty).setValue(userPosition, origin);
+        (user.position as DynamicPositionProperty).setValue(userPosition, this._sittingSpace);
         (user.orientation as DynamicProperty).setValue(userOrientation);
 
-        // left and right subview poses are given relative to origin
-
+        // left eye transform is given relative to sitting space
         const leftEyeTransform = Matrix4.inverseTransformation(
             <any>vrFrameData.leftViewMatrix, 
             this._scratchMatrix4
@@ -611,9 +618,10 @@ export class Device {
         const leftEyePosition = Matrix4.getTranslation(leftEyeTransform, this._scratchCartesian);
         const leftEyeRotation = Matrix4.getRotation(leftEyeTransform, this._scratchMatrix3);
         const leftEyeOrientation = Quaternion.fromRotationMatrix(leftEyeRotation, this._scratchQuaternion);
-        (leftEye.position as DynamicPositionProperty).setValue(leftEyePosition, origin);
+        (leftEye.position as DynamicPositionProperty).setValue(leftEyePosition, this._sittingSpace);
         (leftEye.orientation as DynamicProperty).setValue(leftEyeOrientation);
         
+        // right eye transform is given relative to sitting space
         const rightEyeTransform = Matrix4.inverseTransformation(
             <any>vrFrameData.rightViewMatrix, 
             this._scratchMatrix4
@@ -622,7 +630,7 @@ export class Device {
         const rightEyePosition = Matrix4.getTranslation(rightEyeTransform, this._scratchCartesian);
         const rightEyeRotation = Matrix4.getRotation(rightEyeTransform, this._scratchMatrix3);
         const rightEyeOrientation = Quaternion.fromRotationMatrix(rightEyeRotation, this._scratchQuaternion);
-        (rightEye.position as DynamicPositionProperty).setValue(rightEyePosition, origin);
+        (rightEye.position as DynamicPositionProperty).setValue(rightEyePosition, this._sittingSpace);
         (rightEye.orientation as DynamicProperty).setValue(rightEyeOrientation);
 
         // the polyfill does not support reporting an absolute orientation (yet), 
