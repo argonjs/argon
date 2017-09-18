@@ -397,6 +397,7 @@ export class RealityServiceProvider {
                     }
 
                     const remove = this.sessionService.connectEvent.addEventListener((session)=>{
+                        if (session === this.sessionService.manager) return;
                         this._connectViewerWithSession(viewerSession, session);
                     })
                     
@@ -438,8 +439,8 @@ export class RealityServiceProvider {
             viewerSession.send(SEND_MESSAGE_KEY, message);
         }
 
-        viewerSession.send('ar.reality.connect', { id });
         session.send('ar.reality.connect', { id });
+        viewerSession.send('ar.reality.connect', { id });
 
         viewerSession.closeEvent.addEventListener(() => {
             session.send(CLOSE_SESSION_KEY);

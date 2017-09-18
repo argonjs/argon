@@ -244,7 +244,7 @@ export class SessionPort {
                     this.send(topic + ':reject:' + id, { reason: errorMessage })
                 })
             } else if (!this.suppressErrorOnUnknownTopic) {
-                const errorMessage = 'Unable to handle message for topic ' + topic + ' (' + this.uri + ')';
+                const errorMessage = 'Unable to handle message for topic ' + topic + ' (to: ' + this.uri + ')';
                 if (expectsResponse) {
                     this.send(topic + ':reject:' + id, { reason: errorMessage });
                 }

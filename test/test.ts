@@ -348,6 +348,34 @@ describe('RealityService', () => {
         
     })
 
+
+    
+    describe('empty reality', () => {
+        
+        it('should implement ar.configureStage protocol', (done) => {
+            const app = new Argon.ArgonContainerManager({role: Argon.Role.REALITY_MANAGER}).app;
+            sessionService = app.session;
+            
+            app.reality.default = Argon.RealityViewer.EMPTY;
+
+            var count = 0;
+            app.reality.connectEvent.addEventListener((realitySession)=>{
+                console.log('reality: ' + realitySession.info.title + 'COUNT: ' + count); count++;
+                expect(realitySession.supportsProtocol('ar.configureStage')).is.true;
+                app.reality.setStageGeolocation(realitySession, new Argon.Cesium.Cartographic(10,10)).then(()=>{
+                    app.context.updateEvent.onNext(() => {
+                        console.log(app.reality.current);
+                        const cartographic = app.context.getEntityCartographic(app.stage)!;
+                        expect(cartographic.latitude).to.equal(10);
+                        expect(cartographic.longitude).to.equal(10);
+                        done();
+                    });
+                }).catch(done);
+            });
+        });
+        
+    })
+
     describe('#request', () => {
 
         it('should raise an error for unsupported realities', (done) => {
