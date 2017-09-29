@@ -134,11 +134,11 @@ declare module 'cesium/Source/DataSources/OrientationProperty' {
     import { OrientationProperty } from 'cesium';
     export default OrientationProperty;
 }
-declare module 'cesium/Source/Scene/PerspectiveFrustum' {
+declare module 'cesium/Source/Core/PerspectiveFrustum' {
     import { PerspectiveFrustum } from 'cesium';
     export default PerspectiveFrustum;
 }
-declare module 'cesium/Source/Scene/PerspectiveOffCenterFrustum' {
+declare module 'cesium/Source/Core/PerspectiveOffCenterFrustum' {
     import { PerspectiveOffCenterFrustum } from 'cesium';
     export default PerspectiveOffCenterFrustum;
 }
