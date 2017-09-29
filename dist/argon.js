@@ -2744,52 +2744,7 @@ define("30", ["1e", "15", "5", "6", "7", "31"], function(Check, defaultValue, de
 })();
 (function() {
 var define = $__System.amdDefine;
-define("32", ["33", "30"], function(deprecationWarning, PerspectiveFrustum) {
-  'use strict';
-  function DeprecatedPerspectiveFrustum(options) {
-    deprecationWarning('PerspectiveFrustum', 'Scene/PerspectiveFrustum is deprecated. It has moved to Core/PerspectiveFrustum in 1.36. Scene/PerspectiveFrustum will be removed in 1.38.');
-    return new PerspectiveFrustum(options);
-  }
-  return DeprecatedPerspectiveFrustum;
-});
-
-})();
-(function() {
-var define = $__System.amdDefine;
-define("34", ["15", "5", "7"], function(defaultValue, defined, DeveloperError) {
-  'use strict';
-  var warnings = {};
-  function oneTimeWarning(identifier, message) {
-    if (!defined(identifier)) {
-      throw new DeveloperError('identifier is required.');
-    }
-    if (!defined(warnings[identifier])) {
-      warnings[identifier] = true;
-      console.warn(defaultValue(message, identifier));
-    }
-  }
-  oneTimeWarning.geometryOutlines = 'Entity geometry outlines are unsupported on terrain. Outlines will be disabled. To enable outlines, disable geometry terrain clamping by explicitly setting height to 0.';
-  return oneTimeWarning;
-});
-
-})();
-(function() {
-var define = $__System.amdDefine;
-define("33", ["5", "7", "34"], function(defined, DeveloperError, oneTimeWarning) {
-  'use strict';
-  function deprecationWarning(identifier, message) {
-    if (!defined(identifier) || !defined(message)) {
-      throw new DeveloperError('identifier and message are required.');
-    }
-    oneTimeWarning(identifier, message);
-  }
-  return deprecationWarning;
-});
-
-})();
-(function() {
-var define = $__System.amdDefine;
-define("35", ["20", "36", "15", "5", "7", "37", "38"], function(Cartesian3, Cartesian4, defaultValue, defined, DeveloperError, Intersect, Plane) {
+define("32", ["20", "33", "15", "5", "7", "34", "35"], function(Cartesian3, Cartesian4, defaultValue, defined, DeveloperError, Intersect, Plane) {
   'use strict';
   function CullingVolume(planes) {
     this.planes = defaultValue(planes, []);
@@ -2893,7 +2848,7 @@ define("35", ["20", "36", "15", "5", "7", "37", "38"], function(Cartesian3, Cart
 })();
 (function() {
 var define = $__System.amdDefine;
-define("31", ["20", "36", "35", "15", "5", "6", "7", "29"], function(Cartesian3, Cartesian4, CullingVolume, defaultValue, defined, defineProperties, DeveloperError, Matrix4) {
+define("31", ["20", "33", "32", "15", "5", "6", "7", "29"], function(Cartesian3, Cartesian4, CullingVolume, defaultValue, defined, defineProperties, DeveloperError, Matrix4) {
   'use strict';
   function PerspectiveOffCenterFrustum(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
@@ -3101,19 +3056,7 @@ define("31", ["20", "36", "35", "15", "5", "6", "7", "29"], function(Cartesian3,
 })();
 (function() {
 var define = $__System.amdDefine;
-define("39", ["33", "31"], function(deprecationWarning, PerspectiveOffCenterFrustum) {
-  'use strict';
-  function DeprecatedPerspectiveOffCenterFrustum(options) {
-    deprecationWarning('PerspectiveOffCenterFrustum', 'Scene/PerspectiveOffCenterFrustum is deprecated. It has moved to Core/PerspectiveOffCenterFrustum in 1.36. Scene/PerspectiveOffCenterFrustum will be removed in 1.38.');
-    return new PerspectiveOffCenterFrustum(options);
-  }
-  return DeprecatedPerspectiveOffCenterFrustum;
-});
-
-})();
-(function() {
-var define = $__System.amdDefine;
-define("3a", ["5", "6", "7", "8", "27"], function(defined, defineProperties, DeveloperError, Event, Property) {
+define("36", ["5", "6", "7", "8", "27"], function(defined, defineProperties, DeveloperError, Event, Property) {
   'use strict';
   function resolve(that) {
     var targetEntity = that._targetEntity;
@@ -3184,7 +3127,7 @@ define("3a", ["5", "6", "7", "8", "27"], function(defined, defineProperties, Dev
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3b", ["5", "6", "7", "8", "2d", "27"], function(defined, defineProperties, DeveloperError, Event, RuntimeError, Property) {
+define("37", ["5", "6", "7", "8", "2d", "27"], function(defined, defineProperties, DeveloperError, Event, RuntimeError, Property) {
   'use strict';
   function resolveEntity(that) {
     var entityIsResolved = true;
@@ -3598,7 +3541,7 @@ define("27", ["15", "5", "6", "7"], function(defaultValue, defined, defineProper
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3c", ["20", "15", "5", "6", "7", "8", "21", "22", "27", "3d"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, Event, ReferenceFrame, PositionProperty, Property, SampledProperty) {
+define("38", ["20", "15", "5", "6", "7", "8", "21", "22", "27", "39"], function(Cartesian3, defaultValue, defined, defineProperties, DeveloperError, Event, ReferenceFrame, PositionProperty, Property, SampledProperty) {
   'use strict';
   function SampledPositionProperty(referenceFrame, numberOfDerivatives) {
     numberOfDerivatives = defaultValue(numberOfDerivatives, 0);
@@ -3782,7 +3725,7 @@ define("8", ["1e", "5", "6"], function(Check, defined, defineProperties) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3e", ["11"], function(freezeObject) {
+define("3a", ["11"], function(freezeObject) {
   'use strict';
   var ExtrapolationType = {
     NONE: 0,
@@ -3795,7 +3738,7 @@ define("3e", ["11"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3f", ["5", "7"], function(defined, DeveloperError) {
+define("3b", ["5", "7"], function(defined, DeveloperError) {
   'use strict';
   var LinearApproximation = {type: 'Linear'};
   LinearApproximation.getRequiredDataPoints = function(degree) {
@@ -3831,7 +3774,7 @@ define("3f", ["5", "7"], function(defined, DeveloperError) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("3d", ["40", "15", "5", "6", "7", "8", "3e", "17", "3f"], function(binarySearch, defaultValue, defined, defineProperties, DeveloperError, Event, ExtrapolationType, JulianDate, LinearApproximation) {
+define("39", ["3c", "15", "5", "6", "7", "8", "3a", "17", "3b"], function(binarySearch, defaultValue, defined, defineProperties, DeveloperError, Event, ExtrapolationType, JulianDate, LinearApproximation) {
   'use strict';
   var PackableNumber = {
     packedLength: 1,
@@ -4374,7 +4317,7 @@ define("c", ["11"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("e", ["2c", "a", "15", "5", "b", "7", "41", "16", "c", "f"], function(AssociativeArray, Cartesian2, defaultValue, defined, destroyObject, DeveloperError, FeatureDetection, getTimestamp, KeyboardEventModifier, ScreenSpaceEventType) {
+define("e", ["2c", "a", "15", "5", "b", "7", "3d", "16", "c", "f"], function(AssociativeArray, Cartesian2, defaultValue, defined, destroyObject, DeveloperError, FeatureDetection, getTimestamp, KeyboardEventModifier, ScreenSpaceEventType) {
   'use strict';
   function getPosition(screenSpaceEventHandler, event, result) {
     var element = screenSpaceEventHandler._element;
@@ -4903,7 +4846,7 @@ define("f", ["11"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("42", ["20", "5", "7", "17", "d", "28", "43", "44"], function(Cartesian3, defined, DeveloperError, JulianDate, CesiumMath, Matrix3, TimeConstants, TimeStandard) {
+define("3e", ["20", "5", "7", "17", "d", "28", "3f", "40"], function(Cartesian3, defined, DeveloperError, JulianDate, CesiumMath, Matrix3, TimeConstants, TimeStandard) {
   'use strict';
   var Simon1994PlanetaryPositions = {};
   function computeTdbMinusTtSpice(daysSinceJ2000InTerrestrialTime) {
@@ -5192,7 +5135,7 @@ define("42", ["20", "5", "7", "17", "d", "28", "43", "44"], function(Cartesian3,
 })();
 (function() {
 var define = $__System.amdDefine;
-define("45", ["20", "46", "1e", "15", "5", "6", "47", "d"], function(Cartesian3, Cartographic, Check, defaultValue, defined, defineProperties, Ellipsoid, CesiumMath) {
+define("41", ["20", "42", "1e", "15", "5", "6", "43", "d"], function(Cartesian3, Cartographic, Check, defaultValue, defined, defineProperties, Ellipsoid, CesiumMath) {
   'use strict';
   function setConstants(ellipsoidGeodesic) {
     var uSquared = ellipsoidGeodesic._uSquared;
@@ -5406,7 +5349,7 @@ define("45", ["20", "46", "1e", "15", "5", "6", "47", "d"], function(Cartesian3,
 })();
 (function() {
 var define = $__System.amdDefine;
-define("48", ["5"], function(defined) {
+define("44", ["5"], function(defined) {
   'use strict';
   var isArray = Array.isArray;
   if (!defined(isArray)) {
@@ -5420,7 +5363,7 @@ define("48", ["5"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("49", ["20", "46", "15", "5", "7", "47", "45", "4a", "48", "d", "29", "38"], function(Cartesian3, Cartographic, defaultValue, defined, DeveloperError, Ellipsoid, EllipsoidGeodesic, IntersectionTests, isArray, CesiumMath, Matrix4, Plane) {
+define("45", ["20", "42", "15", "5", "7", "43", "41", "46", "44", "d", "29", "35"], function(Cartesian3, Cartographic, defaultValue, defined, DeveloperError, Ellipsoid, EllipsoidGeodesic, IntersectionTests, isArray, CesiumMath, Matrix4, Plane) {
   'use strict';
   var PolylinePipeline = {};
   PolylinePipeline.numberOfPoints = function(p0, p1, minDistance) {
@@ -5602,7 +5545,7 @@ define("49", ["20", "46", "15", "5", "7", "47", "45", "4a", "48", "d", "29", "38
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4b", ["4c", "1e", "15", "5", "7", "4d", "4e", "4f", "50", "51"], function(when, Check, defaultValue, defined, DeveloperError, isCrossOriginUrl, isDataUri, Request, RequestScheduler, TrustedServers) {
+define("47", ["48", "1e", "15", "5", "7", "49", "4a", "4b", "4c", "4d"], function(when, Check, defaultValue, defined, DeveloperError, isCrossOriginUrl, isDataUri, Request, RequestScheduler, TrustedServers) {
   'use strict';
   function loadImage(url, allowCrossOrigin, request) {
     Check.defined('url', url);
@@ -5646,7 +5589,7 @@ define("4b", ["4c", "1e", "15", "5", "7", "4d", "4e", "4f", "50", "51"], functio
 })();
 (function() {
 var define = $__System.amdDefine;
-define("52", ["a", "15", "5", "6", "47", "53", "54"], function(Cartesian2, defaultValue, defined, defineProperties, Ellipsoid, Rectangle, WebMercatorProjection) {
+define("4e", ["a", "15", "5", "6", "43", "4f", "50"], function(Cartesian2, defaultValue, defined, defineProperties, Ellipsoid, Rectangle, WebMercatorProjection) {
   'use strict';
   function WebMercatorTilingScheme(options) {
     options = defaultValue(options, {});
@@ -5761,7 +5704,7 @@ define("52", ["a", "15", "5", "6", "47", "53", "54"], function(Cartesian2, defau
 })();
 (function() {
 var define = $__System.amdDefine;
-define("55", ["5"], function(defined) {
+define("51", ["5"], function(defined) {
   'use strict';
   var context2DsByWidthAndHeight = {};
   function getImagePixels(image, width, height) {
@@ -5794,7 +5737,7 @@ define("55", ["5"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("56", ["a", "1e", "15", "5", "6", "47", "57", "d", "53"], function(Cartesian2, Check, defaultValue, defined, defineProperties, Ellipsoid, GeographicProjection, CesiumMath, Rectangle) {
+define("52", ["a", "1e", "15", "5", "6", "43", "53", "d", "4f"], function(Cartesian2, Check, defaultValue, defined, defineProperties, Ellipsoid, GeographicProjection, CesiumMath, Rectangle) {
   'use strict';
   function GeographicTilingScheme(options) {
     options = defaultValue(options, {});
@@ -5897,7 +5840,7 @@ define("56", ["a", "1e", "15", "5", "6", "47", "57", "d", "53"], function(Cartes
 })();
 (function() {
 var define = $__System.amdDefine;
-define("58", ["59", "20", "1e", "15", "5", "6", "53"], function(BoundingSphere, Cartesian3, Check, defaultValue, defined, defineProperties, Rectangle) {
+define("54", ["55", "20", "1e", "15", "5", "6", "4f"], function(BoundingSphere, Cartesian3, Check, defaultValue, defined, defineProperties, Rectangle) {
   'use strict';
   function EllipsoidalOccluder(ellipsoid, cameraPosition) {
     Check.typeOf.object('ellipsoid', ellipsoid);
@@ -6025,7 +5968,7 @@ define("58", ["59", "20", "1e", "15", "5", "6", "53"], function(BoundingSphere, 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("57", ["20", "46", "15", "5", "6", "7", "47"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, Ellipsoid) {
+define("53", ["20", "42", "15", "5", "6", "7", "43"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, Ellipsoid) {
   'use strict';
   function GeographicProjection(ellipsoid) {
     this._ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
@@ -6070,7 +6013,7 @@ define("57", ["20", "46", "15", "5", "6", "7", "47"], function(Cartesian3, Carto
 })();
 (function() {
 var define = $__System.amdDefine;
-define("59", ["20", "46", "1e", "15", "5", "47", "57", "37", "5a", "28", "29", "53"], function(Cartesian3, Cartographic, Check, defaultValue, defined, Ellipsoid, GeographicProjection, Intersect, Interval, Matrix3, Matrix4, Rectangle) {
+define("55", ["20", "42", "1e", "15", "5", "43", "53", "34", "56", "28", "29", "4f"], function(Cartesian3, Cartographic, Check, defaultValue, defined, Ellipsoid, GeographicProjection, Intersect, Interval, Matrix3, Matrix4, Rectangle) {
   'use strict';
   function BoundingSphere(center, radius) {
     this.center = Cartesian3.clone(defaultValue(center, Cartesian3.ZERO));
@@ -6753,7 +6696,7 @@ define("59", ["20", "46", "1e", "15", "5", "47", "57", "37", "5a", "28", "29", "
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5b", ["20", "1e", "15", "5", "37"], function(Cartesian3, Check, defaultValue, defined, Intersect) {
+define("57", ["20", "1e", "15", "5", "34"], function(Cartesian3, Check, defaultValue, defined, Intersect) {
   'use strict';
   function AxisAlignedBoundingBox(minimum, maximum, center) {
     this.minimum = Cartesian3.clone(defaultValue(minimum, Cartesian3.ZERO));
@@ -6854,7 +6797,7 @@ define("5b", ["20", "1e", "15", "5", "37"], function(Cartesian3, Check, defaultV
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5c", ["7", "5d"], function(DeveloperError, QuadraticRealPolynomial) {
+define("58", ["7", "59"], function(DeveloperError, QuadraticRealPolynomial) {
   'use strict';
   var CubicRealPolynomial = {};
   CubicRealPolynomial.computeDiscriminant = function(a, b, c, d) {
@@ -7021,7 +6964,7 @@ define("5c", ["7", "5d"], function(DeveloperError, QuadraticRealPolynomial) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5d", ["7", "d"], function(DeveloperError, CesiumMath) {
+define("59", ["7", "d"], function(DeveloperError, CesiumMath) {
   'use strict';
   var QuadraticRealPolynomial = {};
   QuadraticRealPolynomial.computeDiscriminant = function(a, b, c) {
@@ -7102,7 +7045,7 @@ define("5d", ["7", "d"], function(DeveloperError, CesiumMath) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5e", ["5c", "7", "d", "5d"], function(CubicRealPolynomial, DeveloperError, CesiumMath, QuadraticRealPolynomial) {
+define("5a", ["58", "7", "d", "59"], function(CubicRealPolynomial, DeveloperError, CesiumMath, QuadraticRealPolynomial) {
   'use strict';
   var QuarticRealPolynomial = {};
   QuarticRealPolynomial.computeDiscriminant = function(a, b, c, d, e) {
@@ -7347,7 +7290,7 @@ define("5e", ["5c", "7", "d", "5d"], function(CubicRealPolynomial, DeveloperErro
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4a", ["20", "46", "15", "5", "7", "5a", "d", "28", "5d", "5e", "5f"], function(Cartesian3, Cartographic, defaultValue, defined, DeveloperError, Interval, CesiumMath, Matrix3, QuadraticRealPolynomial, QuarticRealPolynomial, Ray) {
+define("46", ["20", "42", "15", "5", "7", "56", "d", "28", "59", "5a", "5b"], function(Cartesian3, Cartographic, defaultValue, defined, DeveloperError, Interval, CesiumMath, Matrix3, QuadraticRealPolynomial, QuarticRealPolynomial, Ray) {
   'use strict';
   var IntersectionTests = {};
   IntersectionTests.rayPlane = function(ray, plane, result) {
@@ -7895,7 +7838,7 @@ define("4a", ["20", "46", "15", "5", "7", "5a", "d", "28", "5d", "5e", "5f"], fu
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5f", ["20", "15", "5", "7"], function(Cartesian3, defaultValue, defined, DeveloperError) {
+define("5b", ["20", "15", "5", "7"], function(Cartesian3, defaultValue, defined, DeveloperError) {
   'use strict';
   function Ray(origin, direction) {
     direction = Cartesian3.clone(defaultValue(direction, Cartesian3.ZERO));
@@ -7924,7 +7867,7 @@ define("5f", ["20", "15", "5", "7"], function(Cartesian3, defaultValue, defined,
 })();
 (function() {
 var define = $__System.amdDefine;
-define("60", ["5b", "a", "20", "36", "15", "5", "6", "7", "47", "4a", "29", "38", "5f", "2b"], function(AxisAlignedBoundingBox, Cartesian2, Cartesian3, Cartesian4, defaultValue, defined, defineProperties, DeveloperError, Ellipsoid, IntersectionTests, Matrix4, Plane, Ray, Transforms) {
+define("5c", ["57", "a", "20", "33", "15", "5", "6", "7", "43", "46", "29", "35", "5b", "2b"], function(AxisAlignedBoundingBox, Cartesian2, Cartesian3, Cartesian4, defaultValue, defined, defineProperties, DeveloperError, Ellipsoid, IntersectionTests, Matrix4, Plane, Ray, Transforms) {
   'use strict';
   var scratchCart4 = new Cartesian4();
   function EllipsoidTangentPlane(origin, ellipsoid) {
@@ -8089,7 +8032,7 @@ define("60", ["5b", "a", "20", "36", "15", "5", "6", "7", "47", "4a", "29", "38"
 })();
 (function() {
 var define = $__System.amdDefine;
-define("37", ["11"], function(freezeObject) {
+define("34", ["11"], function(freezeObject) {
   'use strict';
   var Intersect = {
     OUTSIDE: -1,
@@ -8102,7 +8045,7 @@ define("37", ["11"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("5a", ["15"], function(defaultValue) {
+define("56", ["15"], function(defaultValue) {
   'use strict';
   function Interval(start, stop) {
     this.start = defaultValue(start, 0.0);
@@ -8114,7 +8057,7 @@ define("5a", ["15"], function(defaultValue) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("38", ["20", "5", "7", "11", "d"], function(Cartesian3, defined, DeveloperError, freezeObject, CesiumMath) {
+define("35", ["20", "5", "7", "11", "d"], function(Cartesian3, defined, DeveloperError, freezeObject, CesiumMath) {
   'use strict';
   function Plane(normal, distance) {
     if (!defined(normal)) {
@@ -8182,7 +8125,7 @@ define("38", ["20", "5", "7", "11", "d"], function(Cartesian3, defined, Develope
 })();
 (function() {
 var define = $__System.amdDefine;
-define("61", ["59", "a", "20", "46", "15", "5", "7", "47", "60", "37", "5a", "d", "28", "38", "53"], function(BoundingSphere, Cartesian2, Cartesian3, Cartographic, defaultValue, defined, DeveloperError, Ellipsoid, EllipsoidTangentPlane, Intersect, Interval, CesiumMath, Matrix3, Plane, Rectangle) {
+define("5d", ["55", "a", "20", "42", "15", "5", "7", "43", "5c", "34", "56", "d", "28", "35", "4f"], function(BoundingSphere, Cartesian2, Cartesian3, Cartographic, defaultValue, defined, DeveloperError, Ellipsoid, EllipsoidTangentPlane, Intersect, Interval, CesiumMath, Matrix3, Plane, Rectangle) {
   'use strict';
   function OrientedBoundingBox(center, halfAxes) {
     this.center = Cartesian3.clone(defaultValue(center, Cartesian3.ZERO));
@@ -8566,7 +8509,7 @@ define("61", ["59", "a", "20", "46", "15", "5", "7", "47", "60", "37", "5a", "d"
 })();
 (function() {
 var define = $__System.amdDefine;
-define("62", ["4c", "40", "15", "5", "63", "11", "17", "64", "65", "2d", "43", "44"], function(when, binarySearch, defaultValue, defined, EarthOrientationParametersSample, freezeObject, JulianDate, LeapSecond, loadJson, RuntimeError, TimeConstants, TimeStandard) {
+define("5e", ["48", "3c", "15", "5", "5f", "11", "17", "60", "61", "2d", "3f", "40"], function(when, binarySearch, defaultValue, defined, EarthOrientationParametersSample, freezeObject, JulianDate, LeapSecond, loadJson, RuntimeError, TimeConstants, TimeStandard) {
   'use strict';
   function EarthOrientationParameters(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
@@ -8792,7 +8735,7 @@ define("62", ["4c", "40", "15", "5", "63", "11", "17", "64", "65", "2d", "43", "
 })();
 (function() {
 var define = $__System.amdDefine;
-define("63", [], function() {
+define("5f", [], function() {
   'use strict';
   function EarthOrientationParametersSample(xPoleWander, yPoleWander, xPoleOffset, yPoleOffset, ut1MinusUtc) {
     this.xPoleWander = xPoleWander;
@@ -8807,7 +8750,7 @@ define("63", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("66", ["11"], function(freezeObject) {
+define("62", ["11"], function(freezeObject) {
   'use strict';
   var RequestType = {
     TERRAIN: 0,
@@ -8821,7 +8764,7 @@ define("66", ["11"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4f", ["15", "5", "6", "67", "66"], function(defaultValue, defined, defineProperties, RequestState, RequestType) {
+define("4b", ["15", "5", "6", "63", "62"], function(defaultValue, defined, defineProperties, RequestState, RequestType) {
   'use strict';
   function Request(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
@@ -8849,7 +8792,7 @@ define("4f", ["15", "5", "6", "67", "66"], function(defaultValue, defined, defin
 })();
 (function() {
 var define = $__System.amdDefine;
-define("68", [], function() {
+define("64", [], function() {
   'use strict';
   function parseResponseHeaders(headerString) {
     var headers = {};
@@ -8874,7 +8817,7 @@ define("68", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("69", ["5", "68"], function(defined, parseResponseHeaders) {
+define("65", ["5", "64"], function(defined, parseResponseHeaders) {
   'use strict';
   function RequestErrorEvent(statusCode, response, responseHeaders) {
     this.statusCode = statusCode;
@@ -8897,7 +8840,7 @@ define("69", ["5", "68"], function(defined, parseResponseHeaders) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("6a", ["15"], function(defaultValue) {
+define("66", ["15"], function(defaultValue) {
   'use strict';
   function clone(object, deep) {
     if (object === null || typeof object !== 'object') {
@@ -8922,7 +8865,7 @@ define("6a", ["15"], function(defaultValue) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("6b", ["1e", "15", "5", "6"], function(Check, defaultValue, defined, defineProperties) {
+define("67", ["1e", "15", "5", "6"], function(Check, defaultValue, defined, defineProperties) {
   'use strict';
   function Heap(options) {
     Check.typeOf.object('options', options);
@@ -9041,7 +8984,7 @@ define("6b", ["1e", "15", "5", "6"], function(Check, defaultValue, defined, defi
 })();
 (function() {
 var define = $__System.amdDefine;
-define("6c", ["1e"], function(Check) {
+define("68", ["1e"], function(Check) {
   'use strict';
   var blobUriRegex = /^blob:/i;
   function isBlobUri(uri) {
@@ -9054,7 +8997,7 @@ define("6c", ["1e"], function(Check) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4e", ["1e"], function(Check) {
+define("4a", ["1e"], function(Check) {
   'use strict';
   var dataUriRegex = /^data:/i;
   function isDataUri(uri) {
@@ -9067,7 +9010,7 @@ define("4e", ["1e"], function(Check) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("67", ["11"], function(freezeObject) {
+define("63", ["11"], function(freezeObject) {
   'use strict';
   var RequestState = {
     UNISSUED: 0,
@@ -9083,7 +9026,7 @@ define("67", ["11"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("50", ["6d", "4c", "1e", "6a", "5", "6", "6b", "6c", "4e", "67"], function(Uri, when, Check, clone, defined, defineProperties, Heap, isBlobUri, isDataUri, RequestState) {
+define("4c", ["69", "48", "1e", "66", "5", "6", "67", "68", "4a", "63"], function(Uri, when, Check, clone, defined, defineProperties, Heap, isBlobUri, isDataUri, RequestState) {
   'use strict';
   function sortRequests(a, b) {
     return a.priority - b.priority;
@@ -9332,7 +9275,7 @@ define("50", ["6d", "4c", "1e", "6a", "5", "6", "6b", "6c", "4e", "67"], functio
 })();
 (function() {
 var define = $__System.amdDefine;
-define("51", ["6d", "5", "7"], function(Uri, defined, DeveloperError) {
+define("4d", ["69", "5", "7"], function(Uri, defined, DeveloperError) {
   'use strict';
   var TrustedServers = {};
   var _servers = {};
@@ -9406,7 +9349,7 @@ define("51", ["6d", "5", "7"], function(Uri, defined, DeveloperError) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("6e", ["4c", "1e", "15", "5", "7", "4f", "69", "50", "2d", "51"], function(when, Check, defaultValue, defined, DeveloperError, Request, RequestErrorEvent, RequestScheduler, RuntimeError, TrustedServers) {
+define("6a", ["48", "1e", "15", "5", "7", "4b", "65", "4c", "2d", "4d"], function(when, Check, defaultValue, defined, DeveloperError, Request, RequestErrorEvent, RequestScheduler, RuntimeError, TrustedServers) {
   'use strict';
   function loadWithXhr(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
@@ -9532,7 +9475,7 @@ define("6e", ["4c", "1e", "15", "5", "7", "4f", "69", "50", "2d", "51"], functio
 })();
 (function() {
 var define = $__System.amdDefine;
-define("6f", ["6e"], function(loadWithXhr) {
+define("6b", ["6a"], function(loadWithXhr) {
   'use strict';
   function loadText(url, headers, request) {
     return loadWithXhr({
@@ -9547,7 +9490,7 @@ define("6f", ["6e"], function(loadWithXhr) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("65", ["6a", "5", "7", "6f"], function(clone, defined, DeveloperError, loadText) {
+define("61", ["66", "5", "7", "6b"], function(clone, defined, DeveloperError, loadText) {
   'use strict';
   var defaultHeaders = {Accept: 'application/json,*/*;q=0.01'};
   function loadJson(url, headers, request) {
@@ -9574,7 +9517,7 @@ define("65", ["6a", "5", "7", "6f"], function(clone, defined, DeveloperError, lo
 })();
 (function() {
 var define = $__System.amdDefine;
-define("70", ["4c", "71", "15", "5", "72", "17", "65", "44"], function(when, buildModuleUrl, defaultValue, defined, Iau2006XysSample, JulianDate, loadJson, TimeStandard) {
+define("6c", ["48", "6d", "15", "5", "6e", "17", "61", "40"], function(when, buildModuleUrl, defaultValue, defined, Iau2006XysSample, JulianDate, loadJson, TimeStandard) {
   'use strict';
   function Iau2006XysData(options) {
     options = defaultValue(options, defaultValue.EMPTY_OBJECT);
@@ -9729,7 +9672,7 @@ define("70", ["4c", "71", "15", "5", "72", "17", "65", "44"], function(when, bui
 })();
 (function() {
 var define = $__System.amdDefine;
-define("72", [], function() {
+define("6e", [], function() {
   'use strict';
   function Iau2006XysSample(x, y, s) {
     this.x = x;
@@ -9742,7 +9685,7 @@ define("72", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("73", [], function() {
+define("6f", [], function() {
   function sprintf() {
     var regex = /%%|%(\d+\$)?([-+\'#0 ]*)(\*\d+\$|\*|\d+)?(\.(\*\d+\$|\*|\d+))?([scboxXuideEfFgG])/g;
     var a = arguments,
@@ -9891,7 +9834,7 @@ define("73", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("40", ["1e", "5"], function(Check, defined) {
+define("3c", ["1e", "5"], function(Check, defined) {
   'use strict';
   function binarySearch(array, itemToFind, comparator) {
     Check.defined('array', array);
@@ -9922,7 +9865,7 @@ define("40", ["1e", "5"], function(Check, defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("74", [], function() {
+define("70", [], function() {
   'use strict';
   function GregorianDate(year, month, day, hour, minute, second, millisecond, isLeapSecond) {
     this.year = year;
@@ -9940,7 +9883,7 @@ define("74", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("75", ["7"], function(DeveloperError) {
+define("71", ["7"], function(DeveloperError) {
   'use strict';
   function isLeapYear(year) {
     if (year === null || isNaN(year)) {
@@ -9954,7 +9897,7 @@ define("75", ["7"], function(DeveloperError) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("64", [], function() {
+define("60", [], function() {
   'use strict';
   function LeapSecond(date, offset) {
     this.julianDate = date;
@@ -9966,7 +9909,7 @@ define("64", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("44", ["11"], function(freezeObject) {
+define("40", ["11"], function(freezeObject) {
   'use strict';
   var TimeStandard = {
     UTC: 0,
@@ -9978,7 +9921,7 @@ define("44", ["11"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("17", ["73", "40", "15", "5", "7", "74", "75", "64", "43", "44"], function(sprintf, binarySearch, defaultValue, defined, DeveloperError, GregorianDate, isLeapYear, LeapSecond, TimeConstants, TimeStandard) {
+define("17", ["6f", "3c", "15", "5", "7", "70", "71", "60", "3f", "40"], function(sprintf, binarySearch, defaultValue, defined, DeveloperError, GregorianDate, isLeapYear, LeapSecond, TimeConstants, TimeStandard) {
   'use strict';
   var gregorianDateScratch = new GregorianDate();
   var daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -10524,7 +10467,7 @@ define("17", ["73", "40", "15", "5", "7", "74", "75", "64", "43", "44"], functio
 })();
 (function() {
 var define = $__System.amdDefine;
-define("76", ["15", "5", "7", "d"], function(defaultValue, defined, DeveloperError, CesiumMath) {
+define("72", ["15", "5", "7", "d"], function(defaultValue, defined, DeveloperError, CesiumMath) {
   'use strict';
   function HeadingPitchRoll(heading, pitch, roll) {
     this.heading = defaultValue(heading, 0.0);
@@ -10602,7 +10545,7 @@ define("76", ["15", "5", "7", "d"], function(defaultValue, defined, DeveloperErr
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2a", ["20", "1e", "15", "5", "41", "11", "76", "d", "28"], function(Cartesian3, Check, defaultValue, defined, FeatureDetection, freezeObject, HeadingPitchRoll, CesiumMath, Matrix3) {
+define("2a", ["20", "1e", "15", "5", "3d", "11", "72", "d", "28"], function(Cartesian3, Check, defaultValue, defined, FeatureDetection, freezeObject, HeadingPitchRoll, CesiumMath, Matrix3) {
   'use strict';
   function Quaternion(x, y, z, w) {
     this.x = defaultValue(x, 0.0);
@@ -11066,7 +11009,7 @@ define("2a", ["20", "1e", "15", "5", "41", "11", "76", "d", "28"], function(Cart
 })();
 (function() {
 var define = $__System.amdDefine;
-define("43", ["11"], function(freezeObject) {
+define("3f", ["11"], function(freezeObject) {
   'use strict';
   var TimeConstants = {
     SECONDS_PER_MILLISECOND: 0.001,
@@ -11086,7 +11029,7 @@ define("43", ["11"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("2b", ["4c", "a", "20", "36", "46", "1e", "15", "5", "7", "62", "63", "47", "70", "72", "17", "d", "28", "29", "2a", "43"], function(when, Cartesian2, Cartesian3, Cartesian4, Cartographic, Check, defaultValue, defined, DeveloperError, EarthOrientationParameters, EarthOrientationParametersSample, Ellipsoid, Iau2006XysData, Iau2006XysSample, JulianDate, CesiumMath, Matrix3, Matrix4, Quaternion, TimeConstants) {
+define("2b", ["48", "a", "20", "33", "42", "1e", "15", "5", "7", "5e", "5f", "43", "6c", "6e", "17", "d", "28", "29", "2a", "3f"], function(when, Cartesian2, Cartesian3, Cartesian4, Cartographic, Check, defaultValue, defined, DeveloperError, EarthOrientationParameters, EarthOrientationParametersSample, Ellipsoid, Iau2006XysData, Iau2006XysSample, JulianDate, CesiumMath, Matrix3, Matrix4, Quaternion, TimeConstants) {
   'use strict';
   var Transforms = {};
   var vectorProductLocalFrame = {
@@ -11488,7 +11431,7 @@ define("2b", ["4c", "a", "20", "36", "46", "1e", "15", "5", "7", "62", "63", "47
 })();
 (function() {
 var define = $__System.amdDefine;
-define("54", ["20", "46", "15", "5", "6", "7", "47", "d"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, Ellipsoid, CesiumMath) {
+define("50", ["20", "42", "15", "5", "6", "7", "43", "d"], function(Cartesian3, Cartographic, defaultValue, defined, defineProperties, DeveloperError, Ellipsoid, CesiumMath) {
   'use strict';
   function WebMercatorProjection(ellipsoid) {
     this._ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
@@ -11546,7 +11489,7 @@ define("54", ["20", "46", "15", "5", "6", "7", "47", "d"], function(Cartesian3, 
 })();
 (function() {
 var define = $__System.amdDefine;
-define("77", ["5b", "59", "a", "20", "15", "5", "7", "47", "58", "11", "d", "29", "61", "53", "78", "2b", "54"], function(AxisAlignedBoundingBox, BoundingSphere, Cartesian2, Cartesian3, defaultValue, defined, DeveloperError, Ellipsoid, EllipsoidalOccluder, freezeObject, CesiumMath, Matrix4, OrientedBoundingBox, Rectangle, TerrainEncoding, Transforms, WebMercatorProjection) {
+define("73", ["57", "55", "a", "20", "15", "5", "7", "43", "54", "11", "d", "29", "5d", "4f", "74", "2b", "50"], function(AxisAlignedBoundingBox, BoundingSphere, Cartesian2, Cartesian3, defaultValue, defined, DeveloperError, Ellipsoid, EllipsoidalOccluder, freezeObject, CesiumMath, Matrix4, OrientedBoundingBox, Rectangle, TerrainEncoding, Transforms, WebMercatorProjection) {
   'use strict';
   var HeightmapTessellator = {};
   HeightmapTessellator.DEFAULT_STRUCTURE = freezeObject({
@@ -11804,7 +11747,7 @@ define("77", ["5b", "59", "a", "20", "15", "5", "7", "47", "58", "11", "d", "29"
 })();
 (function() {
 var define = $__System.amdDefine;
-define("46", ["20", "1e", "15", "5", "11", "d", "79"], function(Cartesian3, Check, defaultValue, defined, freezeObject, CesiumMath, scaleToGeodeticSurface) {
+define("42", ["20", "1e", "15", "5", "11", "d", "75"], function(Cartesian3, Check, defaultValue, defined, freezeObject, CesiumMath, scaleToGeodeticSurface) {
   'use strict';
   function Cartographic(longitude, latitude, height) {
     this.longitude = defaultValue(longitude, 0.0);
@@ -11896,7 +11839,7 @@ define("46", ["20", "1e", "15", "5", "11", "d", "79"], function(Cartesian3, Chec
 })();
 (function() {
 var define = $__System.amdDefine;
-define("79", ["20", "5", "7", "d"], function(Cartesian3, defined, DeveloperError, CesiumMath) {
+define("75", ["20", "5", "7", "d"], function(Cartesian3, defined, DeveloperError, CesiumMath) {
   'use strict';
   var scaleToGeodeticSurfaceIntersection = new Cartesian3();
   var scaleToGeodeticSurfaceGradient = new Cartesian3();
@@ -11978,7 +11921,7 @@ define("79", ["20", "5", "7", "d"], function(Cartesian3, defined, DeveloperError
 })();
 (function() {
 var define = $__System.amdDefine;
-define("47", ["20", "46", "1e", "15", "5", "6", "7", "11", "d", "79"], function(Cartesian3, Cartographic, Check, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
+define("43", ["20", "42", "1e", "15", "5", "6", "7", "11", "d", "75"], function(Cartesian3, Cartographic, Check, defaultValue, defined, defineProperties, DeveloperError, freezeObject, CesiumMath, scaleToGeodeticSurface) {
   'use strict';
   function initialize(ellipsoid, x, y, z) {
     x = defaultValue(x, 0.0);
@@ -12226,7 +12169,7 @@ define("47", ["20", "46", "1e", "15", "5", "6", "7", "11", "d", "79"], function(
 })();
 (function() {
 var define = $__System.amdDefine;
-define("53", ["46", "1e", "15", "5", "6", "47", "11", "d"], function(Cartographic, Check, defaultValue, defined, defineProperties, Ellipsoid, freezeObject, CesiumMath) {
+define("4f", ["42", "1e", "15", "5", "6", "43", "11", "d"], function(Cartographic, Check, defaultValue, defined, defineProperties, Ellipsoid, freezeObject, CesiumMath) {
   'use strict';
   function Rectangle(west, south, east, north) {
     this.west = defaultValue(west, 0.0);
@@ -12647,7 +12590,7 @@ define("53", ["46", "1e", "15", "5", "6", "47", "11", "d"], function(Cartographi
 })();
 (function() {
 var define = $__System.amdDefine;
-define("7a", ["6d", "15", "5", "7"], function(Uri, defaultValue, defined, DeveloperError) {
+define("76", ["69", "15", "5", "7"], function(Uri, defaultValue, defined, DeveloperError) {
   'use strict';
   function joinUrls(first, second, appendSlash) {
     if (!defined(first)) {
@@ -12723,7 +12666,7 @@ define("7a", ["6d", "15", "5", "7"], function(Uri, defaultValue, defined, Develo
 })();
 (function() {
 var define = $__System.amdDefine;
-define("71", ["6d", "5", "7", "7b", "7a", "require"], function(Uri, defined, DeveloperError, getAbsoluteUri, joinUrls, _dereq_) {
+define("6d", ["69", "5", "7", "77", "76", "require"], function(Uri, defined, DeveloperError, getAbsoluteUri, joinUrls, _dereq_) {
   'use strict';
   var cesiumScriptRegex = /((?:.*\/)|^)cesium[\w-]*\.js(?:\W|$)/i;
   function getBaseUrlFromCesiumScript() {
@@ -12813,7 +12756,7 @@ define("b", ["15", "7"], function(defaultValue, DeveloperError) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("6d", [], function() {
+define("69", [], function() {
   function URI(uri) {
     if (uri instanceof URI) {
       this.scheme = uri.scheme;
@@ -12961,7 +12904,7 @@ define("6d", [], function() {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("7b", ["6d", "15", "5", "7"], function(Uri, defaultValue, defined, DeveloperError) {
+define("77", ["69", "15", "5", "7"], function(Uri, defaultValue, defined, DeveloperError) {
   'use strict';
   function getAbsoluteUri(relative, base) {
     if (!defined(relative)) {
@@ -12978,7 +12921,7 @@ define("7b", ["6d", "15", "5", "7"], function(Uri, defaultValue, defined, Develo
 })();
 (function() {
 var define = $__System.amdDefine;
-define("4d", ["5"], function(defined) {
+define("49", ["5"], function(defined) {
   'use strict';
   var a;
   function isCrossOriginUrl(url) {
@@ -12998,7 +12941,7 @@ define("4d", ["5"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("7c", ["4c", "71", "15", "5", "b", "7", "7b", "4d", "2d", "require"], function(when, buildModuleUrl, defaultValue, defined, destroyObject, DeveloperError, getAbsoluteUri, isCrossOriginUrl, RuntimeError, _dereq_) {
+define("78", ["48", "6d", "15", "5", "b", "7", "77", "49", "2d", "require"], function(when, buildModuleUrl, defaultValue, defined, destroyObject, DeveloperError, getAbsoluteUri, isCrossOriginUrl, RuntimeError, _dereq_) {
   'use strict';
   function canTransferArrayBuffer() {
     if (!defined(TaskProcessor._canTransferArrayBuffer)) {
@@ -13145,7 +13088,7 @@ define("7c", ["4c", "71", "15", "5", "b", "7", "7b", "4d", "2d", "require"], fun
 })();
 (function() {
 var define = $__System.amdDefine;
-define("7d", ["a", "20", "1e", "5", "7", "d"], function(Cartesian2, Cartesian3, Check, defined, DeveloperError, CesiumMath) {
+define("79", ["a", "20", "1e", "5", "7", "d"], function(Cartesian2, Cartesian3, Check, defined, DeveloperError, CesiumMath) {
   'use strict';
   var AttributeCompression = {};
   AttributeCompression.octEncodeInRange = function(vector, rangeMax, result) {
@@ -13510,7 +13453,7 @@ define("a", ["1e", "15", "5", "7", "11", "d"], function(Check, defaultValue, def
 })();
 (function() {
 var define = $__System.amdDefine;
-define("7e", ["5", "6"], function(defined, defineProperties) {
+define("7a", ["5", "6"], function(defined, defineProperties) {
   'use strict';
   var _supportsFullscreen;
   var _names = {
@@ -13648,7 +13591,7 @@ define("7e", ["5", "6"], function(defined, defineProperties) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("41", ["15", "5", "7e"], function(defaultValue, defined, Fullscreen) {
+define("3d", ["15", "5", "7a"], function(defaultValue, defined, Fullscreen) {
   'use strict';
   var theNavigator;
   if (typeof navigator !== 'undefined') {
@@ -13839,7 +13782,7 @@ define("41", ["15", "5", "7e"], function(defaultValue, defined, Fullscreen) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("7f", ["11"], function(freezeObject) {
+define("7b", ["11"], function(freezeObject) {
   'use strict';
   var WebGLConstants = {
     DEPTH_BUFFER_BIT: 0x00000100,
@@ -14428,7 +14371,7 @@ define("7f", ["11"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("80", ["15", "5", "7", "41", "11", "7f"], function(defaultValue, defined, DeveloperError, FeatureDetection, freezeObject, WebGLConstants) {
+define("7c", ["15", "5", "7", "3d", "11", "7b"], function(defaultValue, defined, DeveloperError, FeatureDetection, freezeObject, WebGLConstants) {
   'use strict';
   if (!FeatureDetection.supportsTypedArrays()) {
     return {};
@@ -14583,7 +14526,7 @@ define("80", ["15", "5", "7", "41", "11", "7f"], function(defaultValue, defined,
 })();
 (function() {
 var define = $__System.amdDefine;
-define("36", ["1e", "15", "5", "7", "11", "d"], function(Check, defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
+define("33", ["1e", "15", "5", "7", "11", "d"], function(Check, defaultValue, defined, DeveloperError, freezeObject, CesiumMath) {
   'use strict';
   function Cartesian4(x, y, z, w) {
     this.x = defaultValue(x, 0.0);
@@ -16019,7 +15962,7 @@ define("2d", ["5"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("29", ["20", "36", "1e", "15", "5", "6", "11", "d", "28", "2d"], function(Cartesian3, Cartesian4, Check, defaultValue, defined, defineProperties, freezeObject, CesiumMath, Matrix3, RuntimeError) {
+define("29", ["20", "33", "1e", "15", "5", "6", "11", "d", "28", "2d"], function(Cartesian3, Cartesian4, Check, defaultValue, defined, defineProperties, freezeObject, CesiumMath, Matrix3, RuntimeError) {
   'use strict';
   function Matrix4(column0Row0, column1Row0, column2Row0, column3Row0, column0Row1, column1Row1, column2Row1, column3Row1, column0Row2, column1Row2, column2Row2, column3Row2, column0Row3, column1Row3, column2Row3, column3Row3) {
     this[0] = defaultValue(column0Row0, 0.0);
@@ -17266,7 +17209,7 @@ define("29", ["20", "36", "1e", "15", "5", "6", "11", "d", "28", "2d"], function
 })();
 (function() {
 var define = $__System.amdDefine;
-define("81", ["11"], function(freezeObject) {
+define("7d", ["11"], function(freezeObject) {
   'use strict';
   var TerrainQuantization = {
     NONE: 0,
@@ -17278,7 +17221,7 @@ define("81", ["11"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("78", ["7d", "a", "20", "80", "15", "5", "d", "29", "81"], function(AttributeCompression, Cartesian2, Cartesian3, ComponentDatatype, defaultValue, defined, CesiumMath, Matrix4, TerrainQuantization) {
+define("74", ["79", "a", "20", "7c", "15", "5", "d", "29", "7d"], function(AttributeCompression, Cartesian2, Cartesian3, ComponentDatatype, defaultValue, defined, CesiumMath, Matrix4, TerrainQuantization) {
   'use strict';
   var cartesian3Scratch = new Cartesian3();
   var cartesian3DimScratch = new Cartesian3();
@@ -17528,7 +17471,7 @@ define("78", ["7d", "a", "20", "80", "15", "5", "d", "29", "81"], function(Attri
 })();
 (function() {
 var define = $__System.amdDefine;
-define("82", ["15"], function(defaultValue) {
+define("7e", ["15"], function(defaultValue) {
   'use strict';
   function TerrainMesh(center, vertices, indices, minimumHeight, maximumHeight, boundingSphere3D, occludeePointInScaledSpace, vertexStride, orientedBoundingBox, encoding, exaggeration) {
     this.center = center;
@@ -17549,7 +17492,7 @@ define("82", ["15"], function(defaultValue) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("83", [], function() {
+define("7f", [], function() {
   var MersenneTwister = function(seed) {
     if (seed == undefined) {
       seed = new Date().getTime();
@@ -17635,7 +17578,7 @@ define("15", ["11"], function(freezeObject) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("d", ["83", "15", "5", "7"], function(MersenneTwister, defaultValue, defined, DeveloperError) {
+define("d", ["7f", "15", "5", "7"], function(MersenneTwister, defaultValue, defined, DeveloperError) {
   'use strict';
   var CesiumMath = {};
   CesiumMath.EPSILON1 = 0.1;
@@ -17890,7 +17833,7 @@ define("d", ["83", "15", "5", "7"], function(MersenneTwister, defaultValue, defi
 })();
 (function() {
 var define = $__System.amdDefine;
-define("84", ["5", "6", "7", "d"], function(defined, defineProperties, DeveloperError, CesiumMath) {
+define("80", ["5", "6", "7", "d"], function(defined, defineProperties, DeveloperError, CesiumMath) {
   'use strict';
   function TerrainProvider() {
     DeveloperError.throwInstantiationError();
@@ -17951,7 +17894,7 @@ define("84", ["5", "6", "7", "d"], function(defined, defineProperties, Developer
 })();
 (function() {
 var define = $__System.amdDefine;
-define("85", ["4c", "15", "5", "6", "7", "56", "77", "d", "53", "7c", "78", "82", "84"], function(when, defaultValue, defined, defineProperties, DeveloperError, GeographicTilingScheme, HeightmapTessellator, CesiumMath, Rectangle, TaskProcessor, TerrainEncoding, TerrainMesh, TerrainProvider) {
+define("81", ["48", "15", "5", "6", "7", "52", "73", "d", "4f", "78", "74", "7e", "80"], function(when, defaultValue, defined, defineProperties, DeveloperError, GeographicTilingScheme, HeightmapTessellator, CesiumMath, Rectangle, TaskProcessor, TerrainEncoding, TerrainMesh, TerrainProvider) {
   'use strict';
   function HeightmapTerrainData(options) {
     if (!defined(options) || !defined(options.buffer)) {
@@ -18279,7 +18222,7 @@ define("6", ["5"], function(defined) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("86", ["5", "6", "7"], function(defined, defineProperties, DeveloperError) {
+define("82", ["5", "6", "7"], function(defined, defineProperties, DeveloperError) {
   'use strict';
   var nextCreditId = 0;
   var creditToId = {};
@@ -18342,7 +18285,7 @@ define("86", ["5", "6", "7"], function(defined, defineProperties, DeveloperError
 var define = $__System.amdDefine;
 (function(define) {
   'use strict';
-  define("4c", [], function() {
+  define("48", [], function() {
     var reduceArray,
         slice,
         undef;
@@ -18806,7 +18749,7 @@ define("1e", ["5", "7"], function(defined, DeveloperError) {
 })();
 (function() {
 var define = $__System.amdDefine;
-define("87", ["4c", "1e"], function(when, Check) {
+define("83", ["48", "1e"], function(when, Check) {
   'use strict';
   function sampleTerrain(terrainProvider, level, positions) {
     Check.typeOf.object('terrainProvider', terrainProvider);
@@ -18881,7 +18824,7 @@ define("87", ["4c", "1e"], function(when, Check) {
 });
 
 })();
-$__System.registerDynamic('88', ['89', '8a', '8b'], true, function ($__require, exports, module) {
+$__System.registerDynamic('84', ['85', '86', '87'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -18900,9 +18843,9 @@ $__System.registerDynamic('88', ['89', '8a', '8b'], true, function ($__require, 
    * limitations under the License.
    */
 
-  var CardboardUI = $__require('89');
-  var Util = $__require('8a');
-  var WGLUPreserveGLState = $__require('8b');
+  var CardboardUI = $__require('85');
+  var Util = $__require('86');
+  var WGLUPreserveGLState = $__require('87');
 
   var distortionVS = ['attribute vec2 position;', 'attribute vec3 texCoord;', 'varying vec2 vTexCoord;', 'uniform vec4 viewportOffsetScale[2];', 'void main() {', '  vec4 viewport = viewportOffsetScale[int(texCoord.z)];', '  vTexCoord = (texCoord.xy * viewport.zw) + viewport.xy;', '  gl_Position = vec4( position, 1.0, 1.0 );', '}'].join('\n');
 
@@ -19527,7 +19470,7 @@ $__System.registerDynamic('88', ['89', '8a', '8b'], true, function ($__require, 
   module.exports = CardboardDistorter;
   return module.exports;
 });
-$__System.registerDynamic("8b", [], true, function ($__require, exports, module) {
+$__System.registerDynamic("87", [], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -19695,7 +19638,7 @@ $__System.registerDynamic("8b", [], true, function ($__require, exports, module)
   module.exports = WGLUPreserveGLState;
   return module.exports;
 });
-$__System.registerDynamic('89', ['8a', '8b'], true, function ($__require, exports, module) {
+$__System.registerDynamic('85', ['86', '87'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -19714,8 +19657,8 @@ $__System.registerDynamic('89', ['8a', '8b'], true, function ($__require, export
    * limitations under the License.
    */
 
-  var Util = $__require('8a');
-  var WGLUPreserveGLState = $__require('8b');
+  var Util = $__require('86');
+  var WGLUPreserveGLState = $__require('87');
 
   var uiVS = ['attribute vec2 position;', 'uniform mat4 projectionMat;', 'void main() {', '  gl_Position = projectionMat * vec4( position, -1.0, 1.0 );', '}'].join('\n');
 
@@ -19952,7 +19895,7 @@ $__System.registerDynamic('89', ['8a', '8b'], true, function ($__require, export
   module.exports = CardboardUI;
   return module.exports;
 });
-$__System.registerDynamic("8c", [], true, function ($__require, exports, module) {
+$__System.registerDynamic("88", [], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -20510,7 +20453,7 @@ $__System.registerDynamic("8c", [], true, function ($__require, exports, module)
   module.exports = DPDB_CACHE;
   return module.exports;
 });
-$__System.registerDynamic('8d', ['8c', '8a'], true, function ($__require, exports, module) {
+$__System.registerDynamic('89', ['88', '86'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -20531,8 +20474,8 @@ $__System.registerDynamic('8d', ['8c', '8a'], true, function ($__require, export
 
   // Offline cache of the DPDB, to be used until we load the online one (and
   // as a fallback in case we can't load the online one).
-  var DPDB_CACHE = $__require('8c');
-  var Util = $__require('8a');
+  var DPDB_CACHE = $__require('88');
+  var Util = $__require('86');
 
   // Online DPDB URL.
   var ONLINE_DPDB_URL = 'https://storage.googleapis.com/cardboard-dpdb/dpdb.json';
@@ -20704,7 +20647,7 @@ $__System.registerDynamic('8d', ['8c', '8a'], true, function ($__require, export
   module.exports = Dpdb;
   return module.exports;
 });
-$__System.registerDynamic("8e", [], true, function ($__require, exports, module) {
+$__System.registerDynamic("8a", [], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -20724,7 +20667,7 @@ $__System.registerDynamic("8e", [], true, function ($__require, exports, module)
   module.exports = SensorSample;
   return module.exports;
 });
-$__System.registerDynamic('8f', ['8e', '90', '8a'], true, function ($__require, exports, module) {
+$__System.registerDynamic('8b', ['8a', '8c', '86'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -20743,9 +20686,9 @@ $__System.registerDynamic('8f', ['8e', '90', '8a'], true, function ($__require, 
    * limitations under the License.
    */
 
-  var SensorSample = $__require('8e');
-  var MathUtil = $__require('90');
-  var Util = $__require('8a');
+  var SensorSample = $__require('8a');
+  var MathUtil = $__require('8c');
+  var Util = $__require('86');
 
   var DEBUG = false;
 
@@ -20889,7 +20832,7 @@ $__System.registerDynamic('8f', ['8e', '90', '8a'], true, function ($__require, 
   module.exports = ComplementaryFilter;
   return module.exports;
 });
-$__System.registerDynamic('91', ['90'], true, function ($__require, exports, module) {
+$__System.registerDynamic('8d', ['8c'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -20907,7 +20850,7 @@ $__System.registerDynamic('91', ['90'], true, function ($__require, exports, mod
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
-  var MathUtil = $__require('90');
+  var MathUtil = $__require('8c');
   var DEBUG = false;
 
   /**
@@ -20974,7 +20917,7 @@ $__System.registerDynamic('91', ['90'], true, function ($__require, exports, mod
   module.exports = PosePredictor;
   return module.exports;
 });
-$__System.registerDynamic('92', ['90', '8a'], true, function ($__require, exports, module) {
+$__System.registerDynamic('8e', ['8c', '86'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -20992,8 +20935,8 @@ $__System.registerDynamic('92', ['90', '8a'], true, function ($__require, export
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
-  var MathUtil = $__require('90');
-  var Util = $__require('8a');
+  var MathUtil = $__require('8c');
+  var Util = $__require('86');
 
   var ROTATE_SPEED = 0.5;
   /**
@@ -21056,7 +20999,7 @@ $__System.registerDynamic('92', ['90', '8a'], true, function ($__require, export
   module.exports = TouchPanner;
   return module.exports;
 });
-$__System.registerDynamic('93', ['8f', '91', '92', '90', '8a'], true, function ($__require, exports, module) {
+$__System.registerDynamic('8f', ['8b', '8d', '8e', '8c', '86'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -21074,11 +21017,11 @@ $__System.registerDynamic('93', ['8f', '91', '92', '90', '8a'], true, function (
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
-  var ComplementaryFilter = $__require('8f');
-  var PosePredictor = $__require('91');
-  var TouchPanner = $__require('92');
-  var MathUtil = $__require('90');
-  var Util = $__require('8a');
+  var ComplementaryFilter = $__require('8b');
+  var PosePredictor = $__require('8d');
+  var TouchPanner = $__require('8e');
+  var MathUtil = $__require('8c');
+  var Util = $__require('86');
 
   /**
    * The pose sensor, implemented using DeviceMotion APIs.
@@ -21242,7 +21185,7 @@ $__System.registerDynamic('93', ['8f', '91', '92', '90', '8a'], true, function (
   module.exports = FusionPoseSensor;
   return module.exports;
 });
-$__System.registerDynamic('94', ['8a'], true, function ($__require, exports, module) {
+$__System.registerDynamic('90', ['86'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -21261,7 +21204,7 @@ $__System.registerDynamic('94', ['8a'], true, function ($__require, exports, mod
    * limitations under the License.
    */
 
-  var Util = $__require('8a');
+  var Util = $__require('86');
 
   function RotateInstructions() {
     this.loadIcon_();
@@ -21391,7 +21334,7 @@ $__System.registerDynamic('94', ['8a'], true, function ($__require, exports, mod
   module.exports = RotateInstructions;
   return module.exports;
 });
-$__System.registerDynamic("95", [], true, function ($__require, exports, module) {
+$__System.registerDynamic("91", [], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -21439,7 +21382,7 @@ $__System.registerDynamic("95", [], true, function ($__require, exports, module)
   module.exports = Emitter;
   return module.exports;
 });
-$__System.registerDynamic("96", [], true, function ($__require, exports, module) {
+$__System.registerDynamic("92", [], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -21626,7 +21569,7 @@ $__System.registerDynamic("96", [], true, function ($__require, exports, module)
   module.exports = Distortion;
   return module.exports;
 });
-$__System.registerDynamic('97', ['96', '90', '8a'], true, function ($__require, exports, module) {
+$__System.registerDynamic('93', ['92', '8c', '86'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -21645,9 +21588,9 @@ $__System.registerDynamic('97', ['96', '90', '8a'], true, function ($__require, 
    * limitations under the License.
    */
 
-  var Distortion = $__require('96');
-  var MathUtil = $__require('90');
-  var Util = $__require('8a');
+  var Distortion = $__require('92');
+  var MathUtil = $__require('8c');
+  var Util = $__require('86');
 
   function Device(params) {
     this.width = params.width || Util.getScreenWidth();
@@ -21984,7 +21927,7 @@ $__System.registerDynamic('97', ['96', '90', '8a'], true, function ($__require, 
   module.exports = DeviceInfo;
   return module.exports;
 });
-$__System.registerDynamic('98', ['95', '8a', '97'], true, function ($__require, exports, module) {
+$__System.registerDynamic('94', ['91', '86', '93'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -22003,9 +21946,9 @@ $__System.registerDynamic('98', ['95', '8a', '97'], true, function ($__require, 
    * limitations under the License.
    */
 
-  var Emitter = $__require('95');
-  var Util = $__require('8a');
-  var DeviceInfo = $__require('97');
+  var Emitter = $__require('91');
+  var Util = $__require('86');
+  var DeviceInfo = $__require('93');
 
   var DEFAULT_VIEWER = 'CardboardV1';
   var VIEWER_KEY = 'WEBVR_CARDBOARD_VIEWER';
@@ -22189,7 +22132,7 @@ $__System.registerDynamic('98', ['95', '8a', '97'], true, function ($__require, 
   module.exports = ViewerSelector;
   return module.exports;
 });
-$__System.registerDynamic('99', ['88', '89', '97', '8d', '93', '94', '98', '9a', '8a'], true, function ($__require, exports, module) {
+$__System.registerDynamic('95', ['84', '85', '93', '89', '8f', '90', '94', '96', '86'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -22208,15 +22151,15 @@ $__System.registerDynamic('99', ['88', '89', '97', '8d', '93', '94', '98', '9a',
    * limitations under the License.
    */
 
-  var CardboardDistorter = $__require('88');
-  var CardboardUI = $__require('89');
-  var DeviceInfo = $__require('97');
-  var Dpdb = $__require('8d');
-  var FusionPoseSensor = $__require('93');
-  var RotateInstructions = $__require('94');
-  var ViewerSelector = $__require('98');
-  var VRDisplay = $__require('9a').VRDisplay;
-  var Util = $__require('8a');
+  var CardboardDistorter = $__require('84');
+  var CardboardUI = $__require('85');
+  var DeviceInfo = $__require('93');
+  var Dpdb = $__require('89');
+  var FusionPoseSensor = $__require('8f');
+  var RotateInstructions = $__require('90');
+  var ViewerSelector = $__require('94');
+  var VRDisplay = $__require('96').VRDisplay;
+  var Util = $__require('86');
 
   var Eye = {
     LEFT: 'left',
@@ -22461,7 +22404,7 @@ $__System.registerDynamic('99', ['88', '89', '97', '8d', '93', '94', '98', '9a',
   module.exports = CardboardVRDisplay;
   return module.exports;
 });
-$__System.registerDynamic("90", [], true, function ($__require, exports, module) {
+$__System.registerDynamic("8c", [], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -22838,7 +22781,7 @@ $__System.registerDynamic("90", [], true, function ($__require, exports, module)
   module.exports = MathUtil;
   return module.exports;
 });
-$__System.registerDynamic('9b', ['9a', '90', '8a'], true, function ($__require, exports, module) {
+$__System.registerDynamic('97', ['96', '8c', '86'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -22857,9 +22800,9 @@ $__System.registerDynamic('9b', ['9a', '90', '8a'], true, function ($__require, 
    * limitations under the License.
    */
 
-  var VRDisplay = $__require('9a').VRDisplay;
-  var MathUtil = $__require('90');
-  var Util = $__require('8a');
+  var VRDisplay = $__require('96').VRDisplay;
+  var MathUtil = $__require('8c');
+  var Util = $__require('86');
 
   // How much to rotate per key stroke.
   var KEY_SPEED = 0.15;
@@ -23024,7 +22967,7 @@ $__System.registerDynamic('9b', ['9a', '90', '8a'], true, function ($__require, 
   module.exports = MouseKeyboardVRDisplay;
   return module.exports;
 });
-$__System.registerDynamic('9c', [], true, function ($__require, exports, module) {
+$__System.registerDynamic('98', [], true, function ($__require, exports, module) {
 	'use strict';
 	/* eslint-disable no-unused-vars */
 
@@ -23113,7 +23056,7 @@ $__System.registerDynamic('9c', [], true, function ($__require, exports, module)
 	};
 	return module.exports;
 });
-$__System.registerDynamic('8a', ['9c'], true, function ($__require, exports, module) {
+$__System.registerDynamic('86', ['98'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -23132,7 +23075,7 @@ $__System.registerDynamic('8a', ['9c'], true, function ($__require, exports, mod
    * limitations under the License.
    */
 
-  var objectAssign = $__require('9c');
+  var objectAssign = $__require('98');
 
   var Util = window.Util || {};
 
@@ -23529,7 +23472,7 @@ $__System.registerDynamic('8a', ['9c'], true, function ($__require, exports, mod
   module.exports = Util;
   return module.exports;
 });
-$__System.registerDynamic('9d', ['8a'], true, function ($__require, exports, module) {
+$__System.registerDynamic('99', ['86'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -23548,7 +23491,7 @@ $__System.registerDynamic('9d', ['8a'], true, function ($__require, exports, mod
    * limitations under the License.
    */
 
-  var Util = $__require('8a');
+  var Util = $__require('86');
 
   /**
    * Android and iOS compatible wakelock implementation.
@@ -23608,7 +23551,7 @@ $__System.registerDynamic('9d', ['8a'], true, function ($__require, exports, mod
   module.exports = getWakeLock();
   return module.exports;
 });
-$__System.registerDynamic('9a', ['8a', '9d'], true, function ($__require, exports, module) {
+$__System.registerDynamic('96', ['86', '99'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -23627,8 +23570,8 @@ $__System.registerDynamic('9a', ['8a', '9d'], true, function ($__require, export
    * limitations under the License.
    */
 
-  var Util = $__require('8a');
-  var WakeLock = $__require('9d');
+  var Util = $__require('86');
+  var WakeLock = $__require('99');
 
   // Start at a higher number to reduce chance of conflict.
   var nextDisplayId = 1000;
@@ -24045,7 +23988,7 @@ $__System.registerDynamic('9a', ['8a', '9d'], true, function ($__require, export
   module.exports.PositionSensorVRDevice = PositionSensorVRDevice;
   return module.exports;
 });
-$__System.registerDynamic('9e', ['9a'], true, function ($__require, exports, module) {
+$__System.registerDynamic('9a', ['96'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -24063,9 +24006,9 @@ $__System.registerDynamic('9e', ['9a'], true, function ($__require, exports, mod
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
-  var VRDisplay = $__require('9a').VRDisplay;
-  var HMDVRDevice = $__require('9a').HMDVRDevice;
-  var PositionSensorVRDevice = $__require('9a').PositionSensorVRDevice;
+  var VRDisplay = $__require('96').VRDisplay;
+  var HMDVRDevice = $__require('96').HMDVRDevice;
+  var PositionSensorVRDevice = $__require('96').PositionSensorVRDevice;
 
   /**
    * Wraps a VRDisplay and exposes it as a HMDVRDevice
@@ -24138,7 +24081,7 @@ $__System.registerDynamic('9e', ['9a'], true, function ($__require, exports, mod
   module.exports.VRDisplayPositionSensorDevice = VRDisplayPositionSensorDevice;
   return module.exports;
 });
-$__System.registerDynamic('9f', ['8a', '99', '9b', '9a', '9e'], true, function ($__require, exports, module) {
+$__System.registerDynamic('9b', ['86', '95', '97', '96', '9a'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -24157,17 +24100,17 @@ $__System.registerDynamic('9f', ['8a', '99', '9b', '9a', '9e'], true, function (
    * limitations under the License.
    */
 
-  var Util = $__require('8a');
-  var CardboardVRDisplay = $__require('99');
-  var MouseKeyboardVRDisplay = $__require('9b');
+  var Util = $__require('86');
+  var CardboardVRDisplay = $__require('95');
+  var MouseKeyboardVRDisplay = $__require('97');
   // Uncomment to add positional tracking via webcam.
   //var WebcamPositionSensorVRDevice = require('./webcam-position-sensor-vr-device.js');
-  var VRDisplay = $__require('9a').VRDisplay;
-  var VRFrameData = $__require('9a').VRFrameData;
-  var HMDVRDevice = $__require('9a').HMDVRDevice;
-  var PositionSensorVRDevice = $__require('9a').PositionSensorVRDevice;
-  var VRDisplayHMDDevice = $__require('9e').VRDisplayHMDDevice;
-  var VRDisplayPositionSensorDevice = $__require('9e').VRDisplayPositionSensorDevice;
+  var VRDisplay = $__require('96').VRDisplay;
+  var VRFrameData = $__require('96').VRFrameData;
+  var HMDVRDevice = $__require('96').HMDVRDevice;
+  var PositionSensorVRDevice = $__require('96').PositionSensorVRDevice;
+  var VRDisplayHMDDevice = $__require('9a').VRDisplayHMDDevice;
+  var VRDisplayPositionSensorDevice = $__require('9a').VRDisplayPositionSensorDevice;
 
   function WebVRPolyfill() {
     this.displays = [];
@@ -24358,7 +24301,7 @@ $__System.registerDynamic('9f', ['8a', '99', '9b', '9a', '9e'], true, function (
   module.exports.WebVRPolyfill = WebVRPolyfill;
   return module.exports;
 });
-$__System.registerDynamic('a0', ['8a', '9f'], true, function ($__require, exports, module) {
+$__System.registerDynamic('9c', ['86', '9b'], true, function ($__require, exports, module) {
   var define,
       global = this || self,
       GLOBAL = global;
@@ -24376,8 +24319,8 @@ $__System.registerDynamic('a0', ['8a', '9f'], true, function ($__require, export
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
-  var Util = $__require('8a');
-  var WebVRPolyfill = $__require('9f').WebVRPolyfill;
+  var Util = $__require('86');
+  var WebVRPolyfill = $__require('9b').WebVRPolyfill;
 
   // Initialize a WebVRConfig just in case.
   window.WebVRConfig = Util.extend({
@@ -24439,7 +24382,7 @@ $__System.registerDynamic('a0', ['8a', '9f'], true, function ($__require, export
   }
   return module.exports;
 });
-$__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', '13', '14', '18', '1f', '25', '15', '5', '7', '47', '1a', '1b', '8', '3e', '41', '57', '76', '2e', '17', 'd', '28', '29', '2f', '32', '39', '22', '27', '2a', '3a', '21', '3b', '3c', '3d', 'e', 'f', '2b', '42', '49', '84', '4b', '52', '55', '85', '86', '87', '89', 'a0'], function (_export, _context) {
+$__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', '13', '14', '18', '1f', '25', '15', '5', '7', '43', '1a', '1b', '8', '3a', '3d', '53', '72', '2e', '17', 'd', '28', '29', '2f', '30', '31', '22', '27', '2a', '36', '21', '37', '38', '39', 'e', 'f', '2b', '3e', '45', '80', '47', '4e', '51', '81', '82', '83', '85', '9c'], function (_export, _context) {
     "use strict";
 
     var AggregateError, PLATFORM, binarySearch, cesium_Source_DataSources_CallbackProperty_js, CameraEventAggregator, CameraEventType, cesium_Source_Core_Cartesian2_js, Cartesian3, cesium_Source_Core_Cartesian4_js, Cartographic, cesium_Source_Core_Clock_js, cesium_Source_Core_ClockStep_js, cesium_Source_DataSources_CompositeEntityCollection_js, ConstantPositionProperty, ConstantProperty, defaultValue, defined, cesium_Source_Core_DeveloperError_js, Ellipsoid, Entity, EntityCollection, Event, cesium_Source_Core_ExtrapolationType_js, cesium_Source_Core_FeatureDetection_js, cesium_Source_Core_GeographicProjection_js, cesium_Source_Core_HeadingPitchRoll_js, cesium_Source_Core_HermitePolynomialApproximation_js, JulianDate, CesiumMath, Matrix3, Matrix4, OrientationProperty, PerspectiveFrustum, PerspectiveOffCenterFrustum, cesium_Source_DataSources_PositionProperty_js, cesium_Source_DataSources_Property_js, Quaternion, ReferenceEntity, ReferenceFrame, cesium_Source_DataSources_ReferenceProperty_js, SampledPositionProperty, SampledProperty, cesium_Source_Core_ScreenSpaceEventHandler_js, cesium_Source_Core_ScreenSpaceEventType_js, Transforms, cesium_Source_Core_Simon1994PlanetaryPositions_js, cesium_Source_Core_PolylinePipeline_js, TerrainProvider, loadImage, WebMercatorTilingScheme, getImagePixels, HeightmapTerrainData, Credit, sampleTerrain, CardboardUI, _extends, _typeof, metadata, originStorage, unknownOrigin, Origin, _dec, _class, _dec2, _class3, _dec3, _class5, _dec4, _class7, _dec5, _class9, _dec6, _class11, _dec7, _class13, _classInvokers, resolver, Lazy, All, Optional, Parent, StrategyResolver, Factory, NewInstance, FactoryInvoker, TransientRegistration, SingletonRegistration, _emptyParameters, resolverDecorates, InvocationHandler, classInvokers, Container, DI, after, __extends, lut, i, DynamicPositionProperty, DynamicProperty, cesiumImports, kButtonWidthDp, kTouchSlopFactor, __extends$2, AVERAGE_EYE_HEIGHT, DEFAULT_NEAR_PLANE, DEFAULT_FAR_PLANE, Role, Configuration, Viewport, CanvasViewport, SubviewType, SerializedEntityState, SerializedSubview, SerializedSubviewList, Event$1, CommandQueue, MessageChannelLike, SynchronousMessageChannel, MessageChannelFactory, eventSynthesizerFunction, getEventSynthesizier$1, cloneTouch, cloneTouches, reNative, hasNativeWebVRImplementation, suggestedWebGLContextAntialiasAttribute, eastUpSouthToFixedFrame, scratchAncestorCartesian, scratchAncestorQuaternion, getEntityPosition, getEntityOrientation, _scratchFramesArray, _entityStateCache, urlParser, scratchPerspectiveOffCenterFrustum, scratchCartesian, scratchOrientation, isArgonApp, isIOS, isAndroid, lastTime, rAF, cAF, defaultTerrainProvider, version, __extends$1, __decorate$1, __metadata$1, emptyObject, SessionPort, SessionPortFactory, ConnectService, SessionService, LoopbackConnectService, DOMConnectService, DebugConnectService, SessionConnectService, WKWebViewConnectService, AndroidWebViewConnectService, _a$1, _b$1, __decorate$5, __metadata$5, Permission, PermissionState, PermissionService, PermissionServiceProvider, _a$5, _b$5, __decorate$4, __metadata$4, EntityPose, PoseStatus, EntityService, EntityServiceProvider, _a$4, _b$4, _c$3, __decorate$7, __metadata$7, FocusService, FocusServiceProvider, _a$7, _b$7, __decorate$8, __metadata$8, VisibilityService, VisibilityServiceProvider, _a$8, _b$8, __decorate$6, __metadata$6, Subview, ViewportMode, ViewItems, ViewService, ViewServiceProvider, viewportMetaTag, argonMetaTag, style, sheet, _a$6, _b$6, _c$4, _d$3, _e$3, __decorate$3, __metadata$3, DeviceStableState$$1, DeviceFrameState$$1, Device, DeviceService, DeviceServiceProvider, _a$3, _b$3, _c$2, _d$2, _e$2, _f$1, _g$1, _h$1, _j$1, _k$1, _l$1, _m$1, _o$1, _p$1, RealityViewer, __decorate$9, __metadata$9, RealityFactory, RealityService, RealityServiceProvider, _a$9, _b$9, _c$5, _d$4, _e$4, _f$2, _g$2, __decorate$2, __metadata$2, openIcon, eyeIcon, vrIcon, fullscreenIcon, argonAppIcon, DefaultUIService, _a$2, _b$2, _c$1, _d$1, _e$1, __decorate$10, __metadata$10, ContextService, ContextServiceProvider, _a$10, _b$10, _c$6, _d$5, _e$5, _f$3, _g$3, _h$2, _j$2, _k$2, _l$2, _m$2, _o$2, _p$2, __extends$3, __decorate$11, __metadata$11, VuforiaServiceProvider, VuforiaHint, VuforiaService, VuforiaAPI, VuforiaTracker, VuforiaObjectTracker, DeprecatedVuforiaDataSet, _a$11, _b$11, __extends$4, __decorate$12, __metadata$12, EmptyRealityViewer, _a$12, _b$12, _c$7, __extends$5, __decorate$13, __metadata$13, LiveRealityViewer, _a$13, _b$13, _c$8, _d$6, __extends$6, __decorate$14, __metadata$14, HostedRealityViewer, _a$14, _b$14, __extends$7, __decorate$15, __metadata$15, WebRTCRealityViewer, integrateCustomARToolKit, _a$15, _b$15, _c$9, _d$7, __extends$8, __decorate$16, __metadata$16, TangoRealityViewer, _a$16, _b$16, _c$10, _d$8, _e$6, __decorate, __metadata, ArgonSystemProvider, ArgonSystem, ArgonContainerManager, DefaultRealityFactory, initReality, _a, _b, _c, _d, _e, _f, _g, _h, _j, ArgonSystem_1, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
@@ -25457,113 +25400,113 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
         setters: [function (_) {}, function (_2) {
             AggregateError = _2.AggregateError;
             PLATFORM = _2.PLATFORM;
+        }, function (_c2) {
+            binarySearch = _c2.default;
         }, function (_3) {
-            binarySearch = _3.default;
+            cesium_Source_DataSources_CallbackProperty_js = _3.default;
         }, function (_4) {
-            cesium_Source_DataSources_CallbackProperty_js = _4.default;
+            CameraEventAggregator = _4.default;
         }, function (_5) {
-            CameraEventAggregator = _5.default;
-        }, function (_6) {
-            CameraEventType = _6.default;
+            CameraEventType = _5.default;
         }, function (_a2) {
             cesium_Source_Core_Cartesian2_js = _a2.default;
+        }, function (_6) {
+            Cartesian3 = _6.default;
         }, function (_7) {
-            Cartesian3 = _7.default;
+            cesium_Source_Core_Cartesian4_js = _7.default;
         }, function (_8) {
-            cesium_Source_Core_Cartesian4_js = _8.default;
+            Cartographic = _8.default;
         }, function (_9) {
-            Cartographic = _9.default;
+            cesium_Source_Core_Clock_js = _9.default;
         }, function (_10) {
-            cesium_Source_Core_Clock_js = _10.default;
+            cesium_Source_Core_ClockStep_js = _10.default;
         }, function (_11) {
-            cesium_Source_Core_ClockStep_js = _11.default;
-        }, function (_12) {
-            cesium_Source_DataSources_CompositeEntityCollection_js = _12.default;
+            cesium_Source_DataSources_CompositeEntityCollection_js = _11.default;
         }, function (_f2) {
             ConstantPositionProperty = _f2.default;
+        }, function (_12) {
+            ConstantProperty = _12.default;
         }, function (_13) {
-            ConstantProperty = _13.default;
+            defaultValue = _13.default;
         }, function (_14) {
-            defaultValue = _14.default;
+            defined = _14.default;
         }, function (_15) {
-            defined = _15.default;
+            cesium_Source_Core_DeveloperError_js = _15.default;
         }, function (_16) {
-            cesium_Source_Core_DeveloperError_js = _16.default;
-        }, function (_17) {
-            Ellipsoid = _17.default;
+            Ellipsoid = _16.default;
         }, function (_a3) {
             Entity = _a3.default;
         }, function (_b2) {
             EntityCollection = _b2.default;
-        }, function (_18) {
-            Event = _18.default;
-        }, function (_e2) {
-            cesium_Source_Core_ExtrapolationType_js = _e2.default;
-        }, function (_19) {
-            cesium_Source_Core_FeatureDetection_js = _19.default;
-        }, function (_20) {
-            cesium_Source_Core_GeographicProjection_js = _20.default;
-        }, function (_21) {
-            cesium_Source_Core_HeadingPitchRoll_js = _21.default;
-        }, function (_e3) {
-            cesium_Source_Core_HermitePolynomialApproximation_js = _e3.default;
-        }, function (_22) {
-            JulianDate = _22.default;
+        }, function (_17) {
+            Event = _17.default;
+        }, function (_a4) {
+            cesium_Source_Core_ExtrapolationType_js = _a4.default;
         }, function (_d2) {
-            CesiumMath = _d2.default;
-        }, function (_23) {
-            Matrix3 = _23.default;
-        }, function (_24) {
-            Matrix4 = _24.default;
+            cesium_Source_Core_FeatureDetection_js = _d2.default;
+        }, function (_18) {
+            cesium_Source_Core_GeographicProjection_js = _18.default;
+        }, function (_19) {
+            cesium_Source_Core_HeadingPitchRoll_js = _19.default;
+        }, function (_e2) {
+            cesium_Source_Core_HermitePolynomialApproximation_js = _e2.default;
+        }, function (_20) {
+            JulianDate = _20.default;
+        }, function (_d3) {
+            CesiumMath = _d3.default;
+        }, function (_21) {
+            Matrix3 = _21.default;
+        }, function (_22) {
+            Matrix4 = _22.default;
         }, function (_f3) {
             OrientationProperty = _f3.default;
+        }, function (_23) {
+            PerspectiveFrustum = _23.default;
+        }, function (_24) {
+            PerspectiveOffCenterFrustum = _24.default;
         }, function (_25) {
-            PerspectiveFrustum = _25.default;
+            cesium_Source_DataSources_PositionProperty_js = _25.default;
         }, function (_26) {
-            PerspectiveOffCenterFrustum = _26.default;
-        }, function (_27) {
-            cesium_Source_DataSources_PositionProperty_js = _27.default;
-        }, function (_28) {
-            cesium_Source_DataSources_Property_js = _28.default;
-        }, function (_a4) {
-            Quaternion = _a4.default;
+            cesium_Source_DataSources_Property_js = _26.default;
         }, function (_a5) {
-            ReferenceEntity = _a5.default;
+            Quaternion = _a5.default;
+        }, function (_27) {
+            ReferenceEntity = _27.default;
+        }, function (_28) {
+            ReferenceFrame = _28.default;
         }, function (_29) {
-            ReferenceFrame = _29.default;
-        }, function (_b3) {
-            cesium_Source_DataSources_ReferenceProperty_js = _b3.default;
-        }, function (_c2) {
-            SampledPositionProperty = _c2.default;
-        }, function (_d3) {
-            SampledProperty = _d3.default;
-        }, function (_e4) {
-            cesium_Source_Core_ScreenSpaceEventHandler_js = _e4.default;
+            cesium_Source_DataSources_ReferenceProperty_js = _29.default;
+        }, function (_30) {
+            SampledPositionProperty = _30.default;
+        }, function (_31) {
+            SampledProperty = _31.default;
+        }, function (_e3) {
+            cesium_Source_Core_ScreenSpaceEventHandler_js = _e3.default;
         }, function (_f4) {
             cesium_Source_Core_ScreenSpaceEventType_js = _f4.default;
-        }, function (_b4) {
-            Transforms = _b4.default;
-        }, function (_30) {
-            cesium_Source_Core_Simon1994PlanetaryPositions_js = _30.default;
-        }, function (_31) {
-            cesium_Source_Core_PolylinePipeline_js = _31.default;
+        }, function (_b3) {
+            Transforms = _b3.default;
+        }, function (_e4) {
+            cesium_Source_Core_Simon1994PlanetaryPositions_js = _e4.default;
         }, function (_32) {
-            TerrainProvider = _32.default;
-        }, function (_b5) {
-            loadImage = _b5.default;
+            cesium_Source_Core_PolylinePipeline_js = _32.default;
         }, function (_33) {
-            WebMercatorTilingScheme = _33.default;
+            TerrainProvider = _33.default;
         }, function (_34) {
-            getImagePixels = _34.default;
+            loadImage = _34.default;
+        }, function (_e5) {
+            WebMercatorTilingScheme = _e5.default;
         }, function (_35) {
-            HeightmapTerrainData = _35.default;
+            getImagePixels = _35.default;
         }, function (_36) {
-            Credit = _36.default;
+            HeightmapTerrainData = _36.default;
         }, function (_37) {
-            sampleTerrain = _37.default;
+            Credit = _37.default;
         }, function (_38) {
-            CardboardUI = _38.default;
-        }, function (_a6) {}],
+            sampleTerrain = _38.default;
+        }, function (_39) {
+            CardboardUI = _39.default;
+        }, function (_c3) {}],
         execute: function () {
             _extends = Object.assign || function (target) {
                 for (var i = 1; i < arguments.length; i++) {
@@ -26984,7 +26927,7 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-47");
+            _export('version', version = "1.4.0-48");
 
             __extends$1 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -30181,9 +30124,13 @@ $__System.register('1', ['2', '3', '40', '4', '9', '10', 'a', '20', '36', '46', 
                     this._scratchFrustum = new PerspectiveFrustum();
                     sessionService.ensureIsRealityManager();
                     sessionService.manager.connectEvent.addEventListener(function () {
-                        if (!_this._presentingRealityViewer && _this.realityService.default) _this._handleRequest(_this.sessionService.manager, {
-                            uri: _this.realityService.default
-                        });
+                        setTimeout(function () {
+                            if (_this.sessionService.manager.isConnected && !_this._presentingRealityViewer && _this.realityService.default) {
+                                _this._handleRequest(_this.sessionService.manager, {
+                                    uri: _this.realityService.default
+                                });
+                            }
+                        }, 0);
                     });
                     sessionService.manager.closeEvent.addEventListener(function () {
                         _this._viewerByURI.forEach(function (v) {
