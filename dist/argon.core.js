@@ -19708,11 +19708,15 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
      * @param entity The entity to convert.
      * @param time The time which to retrieve the pose up the reference chain.
      * @param referenceFrame The reference frame to convert the position and oriention to.
-     * @return a boolean indicating success or failure.  Will be false if either property is
-     * not constant, or if either property cannot be converted to the new frame.
+     * @return a boolean indicating success or failure. Will return true if the entity position/orientation
+     * is already in the specified reference frame. Will return false if either property does
+     * not have a `setValue` method, or if either property cannot be converted to the new frame.
      */
     function convertEntityReferenceFrame(entity, time, frame) {
-        if (!entity.position || !(entity.position instanceof ConstantPositionProperty) || !entity.orientation || !(entity.orientation instanceof ConstantProperty)) {
+        var entityPosition = entity.position;
+        var entityOrientation = entity.orientation;
+        if (entityPosition.referenceFrame === frame) return true;
+        if (!entityPosition || !entityPosition.setValue || !entityOrientation || !entityOrientation.setValue) {
             return false;
         }
         if (!getEntityPositionInReferenceFrame(entity, time, frame, scratchCartesian)) {
@@ -19721,8 +19725,8 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
         if (!getEntityOrientationInReferenceFrame(entity, time, frame, scratchOrientation)) {
             return false;
         }
-        entity.position.setValue(scratchCartesian, frame);
-        entity.orientation.setValue(scratchOrientation);
+        entityPosition.setValue(scratchCartesian, frame);
+        entityOrientation.setValue(scratchOrientation);
         return true;
     }
 
@@ -21342,7 +21346,7 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-54");
+            _export('version', version = "1.4.0-55");
 
             __extends$1 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -25226,6 +25230,7 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                     this._scratchArray = [];
                     this._scratchMatrix3 = new Matrix3();
                     this._scratchMatrix4 = new Matrix4();
+                    this._convertEntityReferenceFrame = convertEntityReferenceFrame;
                     this.sessionService.manager.on['ar.context.update'] = function (state) {
                         var scratchFrustum = _this._scratchFrustum;
                         // backwards-compat
@@ -25583,16 +25588,21 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                         contextOriginPosition.setValue(Cartesian3.ZERO, deviceOrigin);
                         contextOriginOrientation.setValue(Quaternion.IDENTITY);
                     } else {
+                        // save stage relative to origin
+                        var stageRelativeToOrigin = this.getEntityPose(deviceStage, deviceOrigin);
                         // first figure out where the origin should be
                         var originRelativeToStage = this.getEntityPose(deviceOrigin, deviceStage);
                         contextOriginPosition.setValue(originRelativeToStage.position, contextStage);
                         contextOriginOrientation.setValue(originRelativeToStage.orientation);
-                        // then convert the origin to the same frame used by the overridden stage
+                        // convert origin to the same frame used by the overridden stage
                         var rootFrame = getReachableAncestorReferenceFrames(contextStage, time, this._scratchArray)[0];
                         if (!defined(rootFrame)) throw new Error("Stage frame must have a reachable parent reference frame!");
                         var originRelativeToRoot = this.getEntityPose(contextOrigin, rootFrame);
                         contextOriginPosition.setValue(originRelativeToRoot.position, rootFrame);
                         contextOriginOrientation.setValue(originRelativeToRoot.orientation);
+                        // convert stage to be relative to origin
+                        contextStagePosition.setValue(stageRelativeToOrigin.position, contextOrigin);
+                        contextStageOrientation.setValue(stageRelativeToOrigin.orientation);
                     }
                     // update user entity (relative to origin) based on device user (relative to device origin) if the reality did not override it
                     var deviceUser = this.deviceService.user;
@@ -25603,6 +25613,8 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                         var contextUserOrientation = contextUser.orientation;
                         contextUserPosition.setValue(userRelativeToOrigin.position, contextOrigin);
                         contextUserOrientation.setValue(userRelativeToOrigin.orientation);
+                    } else {
+                        this._convertEntityReferenceFrame(contextUser, time, contextStage);
                     }
                     // update view entity (if the reality did not set it)
                     var contextView = this.view;
@@ -25611,6 +25623,8 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                         var contextViewOrientation = contextView.orientation;
                         contextViewPosition.setValue(Cartesian3.ZERO, contextUser);
                         contextViewOrientation.setValue(Quaternion.IDENTITY);
+                    } else {
+                        this._convertEntityReferenceFrame(contextView, time, contextUser);
                     }
                     // update subview entities (if the reality did not set them)
                     for (var i = 0; i < frameState.subviews.length; i++) {
@@ -25629,6 +25643,8 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                     if (!entities[this.floor.id]) {
                         var floorPosition = this.floor.position;
                         floorPosition.setValue(Cartesian3.ZERO, contextStage);
+                    } else {
+                        this._convertEntityReferenceFrame(this.floor, time, contextStage);
                     }
                 };
                 ContextService.prototype._updateStageGeo = function () {

@@ -102,8 +102,9 @@ export declare function decomposePerspectiveProjectionMatrix(mat: Matrix4, resul
  * @param entity The entity to convert.
  * @param time The time which to retrieve the pose up the reference chain.
  * @param referenceFrame The reference frame to convert the position and oriention to.
- * @return a boolean indicating success or failure.  Will be false if either property is
- * not constant, or if either property cannot be converted to the new frame.
+ * @return a boolean indicating success or failure. Will return true if the entity position/orientation
+ * is already in the specified reference frame. Will return false if either property does
+ * not have a `setValue` method, or if either property cannot be converted to the new frame.
  */
 export declare function convertEntityReferenceFrame(entity: Entity, time: JulianDate, frame: ReferenceFrame | Entity): boolean;
 export declare const isArgonApp: boolean;

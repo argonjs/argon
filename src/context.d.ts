@@ -2,7 +2,7 @@
 import { Entity, EntityCollection, Cartographic, Transforms, JulianDate, ReferenceFrame } from './cesium/cesium-imports';
 import { SerializedEntityStateMap, SerializedSubviewList, ContextFrameState, GeolocationOptions, CanvasViewport } from './common';
 import { SessionService, SessionPort } from './session';
-import { Event } from './utils';
+import { Event, convertEntityReferenceFrame } from './utils';
 import { EntityService, EntityServiceProvider, EntityPose } from './entity';
 import { DeviceService, Device } from './device';
 import { ViewService } from './view';
@@ -229,6 +229,7 @@ export declare class ContextService {
     private _updateBackwardsCompatability(frameState);
     private _update(frameState, skipEvents?);
     _updateEntities(entities: SerializedEntityStateMap): void;
+    _convertEntityReferenceFrame: typeof convertEntityReferenceFrame;
     _updateContextEntities(frameState: ContextFrameState): void;
     _updateStageGeo(): void;
     private _previousOriginReferenceFrame?;
