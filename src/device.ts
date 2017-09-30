@@ -107,38 +107,38 @@ export class Device {
     screenOrientationChangeEvent= new Event<void>();
     suggestedGeolocationSubscriptionChangeEvent = new Event<void>();
 
-    public deviceGeolocation = this.entityService.collection.add(new Entity({
+    public deviceGeolocation = new Entity({
         id: 'ar.device-geolocation',
         position: new DynamicPositionProperty(undefined, ReferenceFrame.FIXED),
         orientation: new DynamicProperty(undefined)
-    }));
+    });
     
-    public deviceOrientation = this.entityService.collection.add(new Entity({
+    public deviceOrientation = new Entity({
         id: 'ar.device-orientation',
         position: new DynamicPositionProperty(Cartesian3.ZERO, this.deviceGeolocation),
         orientation: new DynamicProperty(undefined)
-    }));
+    });
     
-    public origin: Entity = this.entityService.collection.add(new Entity({
+    public origin: Entity = new Entity({
         id: 'ar.device.origin',
         name: 'Device Origin',
         position: new DynamicPositionProperty(undefined, this.deviceGeolocation),
         orientation: new DynamicProperty(undefined)
-    }));
+    });
     
-    public stage: Entity = this.entityService.collection.add(new Entity({
+    public stage: Entity = new Entity({
         id: 'ar.device.stage',
         name: 'Device Stage',
         position: new DynamicPositionProperty(undefined, this.deviceGeolocation),
         orientation: new DynamicProperty(undefined)
-    }));
+    });
 
-    public user: Entity = this.entityService.collection.add(new Entity({
+    public user: Entity = new Entity({
         id: 'ar.device.user',
         name: 'Device User',
         position: new DynamicPositionProperty(undefined, this.origin),
         orientation: new DynamicProperty(undefined)
-    }));
+    });
 
     public getSubviewEntity(index:number) {
         const subviewEntity = this.entityService.collection.getOrCreateEntity('ar.device.view_'+index);
@@ -1021,6 +1021,8 @@ export class DeviceService {
         this.entityService.collection.add(this.stage);
         this.entityService.collection.add(this.origin);
         this.entityService.collection.add(this.user);
+        this.entityService.collection.add(this._device.deviceGeolocation);
+        this.entityService.collection.add(this._device.deviceOrientation);
 
         this._startUpdates();
         this.sessionService.manager.closeEvent.addEventListener(()=> this._stopUpdates());
