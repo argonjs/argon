@@ -21342,7 +21342,7 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-51");
+            _export('version', version = "1.4.0-52");
 
             __extends$1 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -25828,6 +25828,9 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                     }
                 };
                 ContextServiceProvider.prototype._sendUpdateForSession = function (state, session) {
+                    if (Role.isRealityViewer(session.info.role) && session.versionNumber < 1.4) {
+                        return; // older reality versions don't expect to receive update events from manager
+                    }
                     var sessionEntities = this._sessionEntities;
                     var entityServiceProvider = this.entityServiceProvider;
                     // clear session entities
