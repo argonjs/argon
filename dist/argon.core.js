@@ -21342,7 +21342,7 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-48");
+            _export('version', version = "1.4.0-49");
 
             __extends$1 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -22500,7 +22500,7 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                 EntityServiceProvider.prototype.fillEntityStateMap = function (entities, time, includedMap, excludedMap) {
                     for (var id in includedMap) {
                         var entity = this.entityService.collection.getById(id);
-                        while (defined(entity) && entities[id = entity.id] !== undefined && !excludedMap[id]) {
+                        while (defined(entity) && entities[id = entity.id] === undefined && !excludedMap[id]) {
                             var referenceFrame = entity && entity.position && entity.position.referenceFrame;
                             var pose = entities[id] = this._getCachedSerializedEntityState(entity, time, referenceFrame);
                             if (pose === null || typeof referenceFrame === 'number') break;
