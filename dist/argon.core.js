@@ -21342,7 +21342,7 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-52");
+            _export('version', version = "1.4.0-53");
 
             __extends$1 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -23153,34 +23153,34 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                     this.displayModeChangeEvent = new Event$1();
                     this.screenOrientationChangeEvent = new Event$1();
                     this.suggestedGeolocationSubscriptionChangeEvent = new Event$1();
-                    this.deviceGeolocation = new Entity({
+                    this.deviceGeolocation = this.entityService.collection.add(new Entity({
                         id: 'ar.device-geolocation',
                         position: new DynamicPositionProperty(undefined, ReferenceFrame.FIXED),
                         orientation: new DynamicProperty(undefined)
-                    });
-                    this.deviceOrientation = new Entity({
+                    }));
+                    this.deviceOrientation = this.entityService.collection.add(new Entity({
                         id: 'ar.device-orientation',
                         position: new DynamicPositionProperty(Cartesian3.ZERO, this.deviceGeolocation),
                         orientation: new DynamicProperty(undefined)
-                    });
-                    this.origin = new Entity({
+                    }));
+                    this.origin = this.entityService.collection.add(new Entity({
                         id: 'ar.device.origin',
                         name: 'Device Origin',
                         position: new DynamicPositionProperty(undefined, this.deviceGeolocation),
                         orientation: new DynamicProperty(undefined)
-                    });
-                    this.stage = new Entity({
+                    }));
+                    this.stage = this.entityService.collection.add(new Entity({
                         id: 'ar.device.stage',
                         name: 'Device Stage',
                         position: new DynamicPositionProperty(undefined, this.deviceGeolocation),
                         orientation: new DynamicProperty(undefined)
-                    });
-                    this.user = new Entity({
+                    }));
+                    this.user = this.entityService.collection.add(new Entity({
                         id: 'ar.device.user',
                         name: 'Device User',
                         position: new DynamicPositionProperty(undefined, this.origin),
                         orientation: new DynamicProperty(undefined)
-                    });
+                    }));
                     // for now, only use webvr when not in argon-app
                     this._useWebVR = typeof navigator !== 'undefined' && navigator.getVRDisplays && navigator.userAgent.indexOf('Argon') > 0 === false;
                     this._scratchCartesian = new Cartesian3();
