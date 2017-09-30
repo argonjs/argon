@@ -891,7 +891,8 @@ export class ContextServiceProvider {
         for (id in excludedFrames) delete excludedFrames[id]; //clear
 
         // exclude device orientation frame since each session can get this directly
-        excludedFrames[this.device.deviceOrientation.id] = true; 
+        if (session.versionNumber > 1.4)
+            excludedFrames[this.device.deviceOrientation.id] = true; 
 
         // exclude geolocated frames if necessary 
         if (this.permissionServiceProvider.getPermissionState(session, 'geolocation') != PermissionState.GRANTED) {
