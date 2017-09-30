@@ -25,7 +25,8 @@ import {
     ContextFrameState,
     GeolocationOptions,
     CanvasViewport,
-    Viewport
+    Viewport,
+    Role
 } from './common'
 import { SessionService, SessionPort } from './session'
 import { 
@@ -871,6 +872,11 @@ export class ContextServiceProvider {
     private _excludedFrames = {};
 
     private _sendUpdateForSession(state:ContextFrameState, session: SessionPort) {
+
+        if (Role.isRealityViewer(session.info.role) && session.versionNumber < 1.4) {
+            return; // older reality versions don't expect to receive update events from manager
+        }
+
         const sessionEntities = this._sessionEntities;
         const entityServiceProvider = this.entityServiceProvider
 
