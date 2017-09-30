@@ -331,12 +331,16 @@ var scratchOrientation = new Quaternion;
  * @param entity The entity to convert. 
  * @param time The time which to retrieve the pose up the reference chain.
  * @param referenceFrame The reference frame to convert the position and oriention to. 
- * @return a boolean indicating success or failure.  Will be false if either property is
- * not constant, or if either property cannot be converted to the new frame.
+ * @return a boolean indicating success or failure. Will return true if the entity position/orientation 
+ * is already in the specified reference frame. Will return false if either property does
+ * not have a `setValue` method, or if either property cannot be converted to the new frame.
  */
 export function convertEntityReferenceFrame(entity:Entity, time:JulianDate, frame:ReferenceFrame|Entity) {
-    if (!entity.position || !(entity.position instanceof ConstantPositionProperty) ||
-        !entity.orientation || !(entity.orientation instanceof ConstantProperty)) {
+    const entityPosition = entity.position as ConstantPositionProperty;
+    const entityOrientation = entity.orientation as ConstantProperty;
+    if (entityPosition.referenceFrame === frame) return true;
+    if (!entityPosition || !entityPosition.setValue ||
+        !entityOrientation || !entityOrientation.setValue) {
             return false;
     }
     if (!getEntityPositionInReferenceFrame(
@@ -353,8 +357,8 @@ export function convertEntityReferenceFrame(entity:Entity, time:JulianDate, fram
         scratchOrientation)) {
             return false;        
     }
-    entity.position.setValue(scratchCartesian, frame);
-    entity.orientation.setValue(scratchOrientation);
+    entityPosition.setValue(scratchCartesian, frame);
+    entityOrientation.setValue(scratchOrientation);
     return true;
 }
 

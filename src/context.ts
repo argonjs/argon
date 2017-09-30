@@ -37,7 +37,8 @@ import {
     getEntityPositionInReferenceFrame,
     getEntityOrientationInReferenceFrame,
     deprecated,
-    eastUpSouthToFixedFrame
+    eastUpSouthToFixedFrame,
+    convertEntityReferenceFrame
 } from './utils'
 import { EntityService, EntityServiceProvider, EntityPose, PoseStatus } from './entity'
 import { DeviceService, Device } from './device'
@@ -608,6 +609,8 @@ export class ContextService {
         }
     }
 
+    _convertEntityReferenceFrame = convertEntityReferenceFrame;
+
     _updateContextEntities(frameState:ContextFrameState) {
         const time = frameState.time;
         const entities = frameState.entities;
@@ -628,16 +631,21 @@ export class ContextService {
             contextOriginPosition.setValue(Cartesian3.ZERO, deviceOrigin);
             contextOriginOrientation.setValue(Quaternion.IDENTITY);
         } else { 
+            // save stage relative to origin
+            const stageRelativeToOrigin = this.getEntityPose(deviceStage, deviceOrigin);
             // first figure out where the origin should be
             const originRelativeToStage = this.getEntityPose(deviceOrigin, deviceStage);
             contextOriginPosition.setValue(originRelativeToStage.position, contextStage);
             contextOriginOrientation.setValue(originRelativeToStage.orientation);
-            // then convert the origin to the same frame used by the overridden stage
+            // convert origin to the same frame used by the overridden stage
             const rootFrame = getReachableAncestorReferenceFrames(contextStage, time, this._scratchArray)[0];
             if (!defined(rootFrame)) throw new Error("Stage frame must have a reachable parent reference frame!");
             const originRelativeToRoot = this.getEntityPose(contextOrigin, rootFrame);
             contextOriginPosition.setValue(originRelativeToRoot.position, rootFrame);
             contextOriginOrientation.setValue(originRelativeToRoot.orientation);
+            // convert stage to be relative to origin
+            contextStagePosition.setValue(stageRelativeToOrigin.position, contextOrigin);
+            contextStageOrientation.setValue(stageRelativeToOrigin.orientation);
         }
 
         // update user entity (relative to origin) based on device user (relative to device origin) if the reality did not override it
@@ -649,6 +657,8 @@ export class ContextService {
             const contextUserOrientation = contextUser.orientation as DynamicProperty;
             contextUserPosition.setValue(userRelativeToOrigin.position, contextOrigin);
             contextUserOrientation.setValue(userRelativeToOrigin.orientation);
+        } else {
+            this._convertEntityReferenceFrame(contextUser, time, contextStage);
         }
 
         // update view entity (if the reality did not set it)
@@ -658,6 +668,8 @@ export class ContextService {
             const contextViewOrientation = contextView.orientation as DynamicProperty;
             contextViewPosition.setValue(Cartesian3.ZERO, contextUser);
             contextViewOrientation.setValue(Quaternion.IDENTITY);
+        } else {
+            this._convertEntityReferenceFrame(contextView, time, contextUser);
         }
 
         // update subview entities (if the reality did not set them)
@@ -678,6 +690,8 @@ export class ContextService {
         if (!entities[this.floor.id]) {
             const floorPosition = this.floor.position as DynamicPositionProperty;
             floorPosition.setValue(Cartesian3.ZERO, contextStage);
+        } else {
+            this._convertEntityReferenceFrame(this.floor, time, contextStage);
         }
     }
 
