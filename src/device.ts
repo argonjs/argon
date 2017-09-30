@@ -107,38 +107,38 @@ export class Device {
     screenOrientationChangeEvent= new Event<void>();
     suggestedGeolocationSubscriptionChangeEvent = new Event<void>();
 
-    public deviceGeolocation = new Entity({
+    public deviceGeolocation = this.entityService.collection.add(new Entity({
         id: 'ar.device-geolocation',
         position: new DynamicPositionProperty(undefined, ReferenceFrame.FIXED),
         orientation: new DynamicProperty(undefined)
-    });
+    }));
     
-    public deviceOrientation = new Entity({
+    public deviceOrientation = this.entityService.collection.add(new Entity({
         id: 'ar.device-orientation',
         position: new DynamicPositionProperty(Cartesian3.ZERO, this.deviceGeolocation),
         orientation: new DynamicProperty(undefined)
-    });
+    }));
     
-    public origin: Entity = new Entity({
+    public origin: Entity = this.entityService.collection.add(new Entity({
         id: 'ar.device.origin',
         name: 'Device Origin',
         position: new DynamicPositionProperty(undefined, this.deviceGeolocation),
         orientation: new DynamicProperty(undefined)
-    });
+    }));
     
-    public stage: Entity = new Entity({
+    public stage: Entity = this.entityService.collection.add(new Entity({
         id: 'ar.device.stage',
         name: 'Device Stage',
         position: new DynamicPositionProperty(undefined, this.deviceGeolocation),
         orientation: new DynamicProperty(undefined)
-    });
+    }));
 
-    public user: Entity = new Entity({
+    public user: Entity = this.entityService.collection.add(new Entity({
         id: 'ar.device.user',
         name: 'Device User',
         position: new DynamicPositionProperty(undefined, this.origin),
         orientation: new DynamicProperty(undefined)
-    });
+    }));
 
     public getSubviewEntity(index:number) {
         const subviewEntity = this.entityService.collection.getOrCreateEntity('ar.device.view_'+index);
