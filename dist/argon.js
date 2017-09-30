@@ -26927,7 +26927,7 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-49");
+            _export('version', version = "1.4.0-50");
 
             __extends$1 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -31429,7 +31429,7 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                     var excludedFrames = this._excludedFrames;
                     for (id in excludedFrames) delete excludedFrames[id]; //clear
                     // exclude device orientation frame since each session can get this directly
-                    excludedFrames[this.device.deviceOrientation.id] = true;
+                    if (session.versionNumber > 1.4) excludedFrames[this.device.deviceOrientation.id] = true;
                     // exclude geolocated frames if necessary 
                     if (this.permissionServiceProvider.getPermissionState(session, 'geolocation') != PermissionState.GRANTED) {
                         excludedFrames[this.deviceService.origin.id] = true;
