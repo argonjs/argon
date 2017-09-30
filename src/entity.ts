@@ -443,7 +443,7 @@ export class EntityServiceProvider {
             let entity = this.entityService.collection.getById(id);
             while (
                 defined(entity) && 
-                entities[id = entity.id] !== undefined &&
+                entities[id = entity.id] === undefined &&
                 !excludedMap[id]
             ) {
                 const referenceFrame = entity && entity.position && entity.position.referenceFrame;
