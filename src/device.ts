@@ -172,13 +172,13 @@ export class Device {
 
             if (owner.isRealityManager) {
                 this.entityService.subscribedEvent.addEventListener((evt)=>{
-                    if (evt.id === 'ar.origin') {
+                    if (evt.id === 'ar.origin' || evt.id === 'ar.stage') {
                         this.suggestedGeolocationSubscription = evt.options || {};
                         this.suggestedGeolocationSubscriptionChangeEvent.raiseEvent(undefined);
                     }
                 });
                 this.entityService.unsubscribedEvent.addEventListener((evt)=>{
-                    if (evt.id === 'ar.origin') {
+                    if (evt.id === 'ar.origin' || evt.id === 'ar.stage') {
                         this.suggestedGeolocationSubscription = undefined;
                         this.suggestedGeolocationSubscriptionChangeEvent.raiseEvent(undefined);
                     }
