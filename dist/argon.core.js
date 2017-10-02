@@ -21346,7 +21346,7 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-55");
+            _export('version', version = "1.4.0-56");
 
             __extends$1 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -23296,13 +23296,13 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                     };
                     if (owner.isRealityManager) {
                         this.entityService.subscribedEvent.addEventListener(function (evt) {
-                            if (evt.id === 'ar.origin') {
+                            if (evt.id === 'ar.origin' || evt.id === 'ar.stage') {
                                 _this.suggestedGeolocationSubscription = evt.options || {};
                                 _this.suggestedGeolocationSubscriptionChangeEvent.raiseEvent(undefined);
                             }
                         });
                         this.entityService.unsubscribedEvent.addEventListener(function (evt) {
-                            if (evt.id === 'ar.origin') {
+                            if (evt.id === 'ar.origin' || evt.id === 'ar.stage') {
                                 _this.suggestedGeolocationSubscription = undefined;
                                 _this.suggestedGeolocationSubscriptionChangeEvent.raiseEvent(undefined);
                             }
