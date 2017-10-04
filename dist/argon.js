@@ -26931,7 +26931,7 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-57");
+            _export('version', version = "1.4.0-58");
 
             __extends$1 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -28098,7 +28098,7 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                     }
                 };
                 EntityServiceProvider.prototype._getCachedSerializedEntityState = function (entity, time, referenceFrame) {
-                    if (!entity || !referenceFrame) return null;
+                    if (!entity || !defined(referenceFrame)) return null;
                     var id = entity.id;
                     if (!defined(this._entityStateCache[id]) || !this._cacheTime.equalsEpsilon(time, 0.000001)) {
                         this._entityStateCache[id] = this._getSerializedEntityState(entity, time, referenceFrame);
