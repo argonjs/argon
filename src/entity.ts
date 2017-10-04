@@ -459,7 +459,7 @@ export class EntityServiceProvider {
     private _getSerializedEntityState = getSerializedEntityState;
 
     private _getCachedSerializedEntityState(entity: Entity|undefined, time:JulianDate, referenceFrame:Entity|ReferenceFrame|undefined) {
-        if (!entity || !referenceFrame) return null;
+        if (!entity || !defined(referenceFrame)) return null;
 
         const id = entity.id;
         if (!defined(this._entityStateCache[id]) || !this._cacheTime.equalsEpsilon(time, 0.000001)) {
