@@ -26931,7 +26931,7 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-56");
+            _export('version', version = "1.4.0-57");
 
             __extends$1 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -31446,19 +31446,6 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                             sessionEntities[id] = state.entities[id];
                         }
                     }
-                    // identify frames to hide from the session
-                    var excludedFrames = this._excludedFrames;
-                    for (id in excludedFrames) delete excludedFrames[id]; //clear
-                    // exclude device orientation frame since each session can get this directly
-                    if (session.versionNumber >= 1.4) excludedFrames[this.device.deviceOrientation.id] = true;
-                    // exclude geolocated frames if necessary 
-                    if (this.permissionServiceProvider.getPermissionState(session, 'geolocation') != PermissionState.GRANTED) {
-                        excludedFrames[this.deviceService.origin.id] = true;
-                        excludedFrames[this.contextService.origin.id] = true;
-                    } else {
-                        delete excludedFrames[this.deviceService.origin.id];
-                        delete excludedFrames[this.contextService.origin.id];
-                    }
                     // identity frames to provide to the session
                     var includedFrames = this._includedFrames;
                     for (id in includedFrames) delete includedFrames[id]; //clear
@@ -31468,16 +31455,37 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                             includedFrames[id] = true;
                         }
                     }
-                    includedFrames['ar.device.stage'] = true;
-                    includedFrames['ar.device.user'] = true;
-                    includedFrames['ar.stage'] = true;
-                    includedFrames['ar.user'] = true;
-                    includedFrames['ar.view'] = true;
+                    var deviceService = this.deviceService;
+                    var deviceOriginId = deviceService.origin.id;
+                    var deviceStageId = deviceService.stage.id;
+                    var deviceUserId = deviceService.stage.id;
+                    var contextService = this.contextService;
+                    var contextOriginId = contextService.origin.id;
+                    var contextStageId = contextService.stage.id;
+                    var contextUserId = contextService.stage.id;
+                    includedFrames[deviceOriginId] = true;
+                    includedFrames[deviceStageId] = true;
+                    includedFrames[deviceUserId] = true;
+                    includedFrames[contextOriginId] = true;
+                    includedFrames[contextStageId] = true;
+                    includedFrames[contextUserId] = true;
+                    includedFrames[contextService.view.id] = true;
                     for (var i = 0; i < state.subviews.length; i++) {
                         includedFrames['ar.view_' + i] = true;
                         includedFrames['ar.device.view_' + i] = true;
                     }
-                    subscriptions && entityServiceProvider.fillEntityStateMap(sessionEntities, state.time, subscriptions, excludedFrames);
+                    // identify frames to hide from the session
+                    var excludedFrames = this._excludedFrames;
+                    for (id in excludedFrames) delete excludedFrames[id]; //clear
+                    // exclude device orientation frame since each session can get this directly
+                    if (session.versionNumber >= 1.4) excludedFrames[this.device.deviceOrientation.id] = true;
+                    // exclude geolocated frames if necessary 
+                    if (this.permissionServiceProvider.getPermissionState(session, 'geolocation') != PermissionState.GRANTED) {
+                        excludedFrames[deviceOriginId] = true;
+                        excludedFrames[contextOriginId] = true;
+                    }
+                    // get states for all included frames, minus excluded frames
+                    entityServiceProvider.fillEntityStateMap(sessionEntities, state.time, includedFrames, excludedFrames);
                     // recycle the frame state object, but with the session entities
                     var parentEntities = state.entities;
                     state.entities = sessionEntities;
