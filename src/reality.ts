@@ -271,6 +271,11 @@ export class RealityServiceProvider {
      * An event that is raised when a reality viewer is uninstalled.
      */
     public uninstalledEvent = new Event<{ viewer:RealityViewer }>();
+    
+    /**
+     * An event that is raised when the presenting viewer has changed
+     */
+    public presentingRealityViewerChangeEvent = new Event<{ viewer: RealityViewer }>();
 
     /**
      * An event that is raised when the next frame state is published
@@ -492,12 +497,13 @@ export class RealityServiceProvider {
     private _setPresentingRealityViewer(viewer: RealityViewer) {
         if (!viewer) throw new Error('Invalid State. Expected a RealityViewer instance');
         if (this._presentingRealityViewer === viewer) return;
-    
+
+        this._presentingRealityViewer = viewer;
+        this.presentingRealityViewerChangeEvent.raiseEvent({viewer})
         this._viewerByURI.forEach((v)=>{
             v.setPresenting(v === viewer);
         });
 
-        this._presentingRealityViewer = viewer;
         console.log('Presenting reality viewer changed to: ' + viewer.uri);
     }
 
