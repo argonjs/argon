@@ -156,11 +156,11 @@ export class EntityPose {
 }
 
 /**
-* A bitmask that provides metadata about the pose of an EntityPose.
-*   KNOWN - the pose of the entity is defined in relation to the given reference frame
-*   FOUND - the pose was undefined at the previous time the entity pose was queried, and is now defined
-*   LOST - the pose was defined at the previous time the entity pose was queried, and is now undefined
-*   CHANGED - the pose has changed compared to the previous time the entity pose was queried
+* A bitmask that provides metadata about an EntityPose.
+*   KNOWN - the pose of the entity is defined for the current frame time
+*   FOUND - the pose was undefined at the previous frame time, and is now defined
+*   LOST - the pose was defined at the previous frame time, and is now undefined
+*   CHANGED - the pose has changed since the previous frame time
 */
 export enum PoseStatus {
     KNOWN = 1,
