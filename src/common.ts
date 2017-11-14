@@ -25,36 +25,33 @@ export enum Role {
      * generally by overlaying computer generated graphics. A reality augmentor may also, 
      * if appropriate, be elevated to the role of a [[REALITY_MANAGER]]. 
      */
+    AUGMENTER = "RealityAugmenter" as any,
     REALITY_AUGMENTER = "RealityAugmenter" as any,
 
     /**
      * A system with this role is responsible for (at minimum) describing (and providing, 
      * if necessary) a visual representation of the world and the 3D eye pose of the viewer.
      */
+    REALITY = "RealityViewer" as any,
     REALITY_VIEWER = "RealityViewer" as any,
 
     /**
      * A system with this role is responsible for mediating access to sensors/trackers 
      * and pose data for known entities in the world, selecting/configuring/loading 
-     * [[REALITY_VIEWER]]s, and providing the mechanism by which any given [[REALITY_AUGMENTER]]
-     * can augment any given [[REALITY_VIEWER]]. 
+     * [[REALITY]]s, and providing the mechanism by which any given [[AUGMENTER]]
+     * can augment any given [[REALITY]]. 
      */
+    MANAGER = "RealityManager" as any,
     REALITY_MANAGER = "RealityManager" as any,
 
     /**
-     * Deprecated. Use [[REALITY_AUGMENTER]]. 
+     * Deprecated. Use [[AUGMENTER]]. 
      * @private
      */
     APPLICATION = "Application" as any,
 
     /**
-     * Deprecated. Use [[REALITY_MANAGER]]. 
-     * @private
-     */
-    MANAGER = "Manager" as any,
-
-    /**
-     * Deprecated. Use [[REALITY_VIEWER]]
+     * Deprecated. Use [[REALITY]]
      * @private
      */
     REALITY_VIEW = "RealityView" as any,
@@ -68,7 +65,18 @@ export namespace Role {
         return r === Role.REALITY_AUGMENTER || r === Role.APPLICATION;
     }
     export function isRealityManager(r?:Role) {
-        return r === Role.REALITY_MANAGER || r === Role.MANAGER;
+        return r === Role.REALITY_MANAGER || r === <any>"Manager";
+    }
+
+    // simpler names (deprecate above)
+    export function isReality(r?:Role) {
+        return Role.isRealityViewer(r);
+    }
+    export function isAugmenter(r?:Role) {
+        return Role.isRealityAugmenter(r);
+    }
+    export function isManager(r?:Role) {
+        return Role.isRealityManager(r);
     }
 }
 

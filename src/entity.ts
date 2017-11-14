@@ -443,11 +443,17 @@ export class EntityServiceProvider {
             let entity = this.entityService.collection.getById(id);
             while (
                 defined(entity) && 
-                entities[id = entity.id] === undefined &&
-                !excludedMap[id]
-            ) {
+                entities[id = entity.id] === undefined
+            ) {                
                 const referenceFrame = entity && entity.position && entity.position.referenceFrame;
-                const pose = entities[id] = this._getCachedSerializedEntityState(entity, time, referenceFrame);
+                const pose = this._getCachedSerializedEntityState(entity, time, referenceFrame);
+                
+                if (excludedMap[id]) {
+                    entities[id] = null; 
+                } else {
+                    entities[id] = pose;
+                }
+
                 if (pose === null || typeof referenceFrame === 'number') break;
                 entity = referenceFrame;
             }

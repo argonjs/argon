@@ -499,31 +499,38 @@ export class SessionService {
     }
 
     /**
-     * Returns true if this system represents a [[REALITY_MANAGER]]
+     * Returns true if this system represents a [[MANAGER]]
      */
-    get isRealityManager() {
+    get isManager() {
         return Role.isRealityManager(this.configuration && this.configuration.role);
     }
+    // to be deprecated
+    get isRealityManager() {
+        return this.isManager;
+    }
+    
     /**
-     * Returns true if this system represents a [[REALITY_AUGMENTER]], meaning, 
-     * it is running within a [[REALITY_MANAGER]]
+     * Returns true if this system represents a [[AUGMENTER]], meaning, 
+     * it is running within a [[MANAGER]]
      */
-    get isRealityAugmenter() {
+    get isAugmenter() {
         return Role.isRealityAugmenter(this.configuration && this.configuration.role);
+    }
+    // to be deprecated
+    get isRealityAugmenter() {
+        return this.isAugmenter;
     }
 
     /**
      * Returns true if this system is a [[REALITY_VIEWER]]
      */
-    get isRealityViewer() {
+    get isReality() {
         return Role.isRealityViewer(this.configuration && this.configuration.role);
     }
-
-    /**
-     * @private
-     */
-    @deprecated('isRealityManager')
-    private get isManager() { return this.isRealityManager }
+    // to be deprecated
+    get isRealityViewer() {
+        return this.isReality;
+    }
 
     /**
      * @private
