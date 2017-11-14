@@ -130,6 +130,12 @@ export declare class RealityServiceProvider {
         viewer: RealityViewer;
     }>;
     /**
+     * An event that is raised when the presenting viewer has changed
+     */
+    presentingRealityViewerChangeEvent: Event<{
+        viewer: RealityViewer;
+    }>;
+    /**
      * An event that is raised when the next frame state is published
      */
     nextFrameStateEvent: Event<ContextFrameState>;

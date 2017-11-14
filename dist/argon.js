@@ -26234,31 +26234,29 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                  * generally by overlaying computer generated graphics. A reality augmentor may also,
                  * if appropriate, be elevated to the role of a [[REALITY_MANAGER]].
                  */
+                Role[Role["AUGMENTER"] = "RealityAugmenter"] = "AUGMENTER";
                 Role[Role["REALITY_AUGMENTER"] = "RealityAugmenter"] = "REALITY_AUGMENTER";
                 /**
                  * A system with this role is responsible for (at minimum) describing (and providing,
                  * if necessary) a visual representation of the world and the 3D eye pose of the viewer.
                  */
+                Role[Role["REALITY"] = "RealityViewer"] = "REALITY";
                 Role[Role["REALITY_VIEWER"] = "RealityViewer"] = "REALITY_VIEWER";
                 /**
                  * A system with this role is responsible for mediating access to sensors/trackers
                  * and pose data for known entities in the world, selecting/configuring/loading
-                 * [[REALITY_VIEWER]]s, and providing the mechanism by which any given [[REALITY_AUGMENTER]]
-                 * can augment any given [[REALITY_VIEWER]].
+                 * [[REALITY]]s, and providing the mechanism by which any given [[AUGMENTER]]
+                 * can augment any given [[REALITY]].
                  */
+                Role[Role["MANAGER"] = "RealityManager"] = "MANAGER";
                 Role[Role["REALITY_MANAGER"] = "RealityManager"] = "REALITY_MANAGER";
                 /**
-                 * Deprecated. Use [[REALITY_AUGMENTER]].
+                 * Deprecated. Use [[AUGMENTER]].
                  * @private
                  */
                 Role[Role["APPLICATION"] = "Application"] = "APPLICATION";
                 /**
-                 * Deprecated. Use [[REALITY_MANAGER]].
-                 * @private
-                 */
-                Role[Role["MANAGER"] = "Manager"] = "MANAGER";
-                /**
-                 * Deprecated. Use [[REALITY_VIEWER]]
+                 * Deprecated. Use [[REALITY]]
                  * @private
                  */
                 Role[Role["REALITY_VIEW"] = "RealityView"] = "REALITY_VIEW";
@@ -26273,9 +26271,22 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                 }
                 Role.isRealityAugmenter = isRealityAugmenter;
                 function isRealityManager(r) {
-                    return r === Role.REALITY_MANAGER || r === Role.MANAGER;
+                    return r === Role.REALITY_MANAGER || r === "Manager";
                 }
                 Role.isRealityManager = isRealityManager;
+                // simpler names (deprecate above)
+                function isReality(r) {
+                    return Role.isRealityViewer(r);
+                }
+                Role.isReality = isReality;
+                function isAugmenter(r) {
+                    return Role.isRealityAugmenter(r);
+                }
+                Role.isAugmenter = isAugmenter;
+                function isManager(r) {
+                    return Role.isRealityManager(r);
+                }
+                Role.isManager = isManager;
             })(Role || _export('Role', Role = {}));
             /**
              * Configuration options for an [[ArgonSystem]]
@@ -26931,7 +26942,7 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-58");
+            _export('version', version = "1.4.0-59");
 
             __extends$1 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -27375,9 +27386,9 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                 SessionService.prototype.createSynchronousMessageChannel = function () {
                     return this.messageChannelFactory.createSynchronous();
                 };
-                Object.defineProperty(SessionService.prototype, "isRealityManager", {
+                Object.defineProperty(SessionService.prototype, "isManager", {
                     /**
-                     * Returns true if this system represents a [[REALITY_MANAGER]]
+                     * Returns true if this system represents a [[MANAGER]]
                      */
                     get: function () {
                         return Role.isRealityManager(this.configuration && this.configuration.role);
@@ -27385,10 +27396,18 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                     enumerable: true,
                     configurable: true
                 });
-                Object.defineProperty(SessionService.prototype, "isRealityAugmenter", {
+                Object.defineProperty(SessionService.prototype, "isRealityManager", {
+                    // to be deprecated
+                    get: function () {
+                        return this.isManager;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(SessionService.prototype, "isAugmenter", {
                     /**
-                     * Returns true if this system represents a [[REALITY_AUGMENTER]], meaning,
-                     * it is running within a [[REALITY_MANAGER]]
+                     * Returns true if this system represents a [[AUGMENTER]], meaning,
+                     * it is running within a [[MANAGER]]
                      */
                     get: function () {
                         return Role.isRealityAugmenter(this.configuration && this.configuration.role);
@@ -27396,7 +27415,15 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                     enumerable: true,
                     configurable: true
                 });
-                Object.defineProperty(SessionService.prototype, "isRealityViewer", {
+                Object.defineProperty(SessionService.prototype, "isRealityAugmenter", {
+                    // to be deprecated
+                    get: function () {
+                        return this.isAugmenter;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(SessionService.prototype, "isReality", {
                     /**
                      * Returns true if this system is a [[REALITY_VIEWER]]
                      */
@@ -27406,12 +27433,10 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                     enumerable: true,
                     configurable: true
                 });
-                Object.defineProperty(SessionService.prototype, "isManager", {
-                    /**
-                     * @private
-                     */
+                Object.defineProperty(SessionService.prototype, "isRealityViewer", {
+                    // to be deprecated
                     get: function () {
-                        return this.isRealityManager;
+                        return this.isReality;
                     },
                     enumerable: true,
                     configurable: true
@@ -27469,7 +27494,6 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                 return SessionService;
             }());
 
-            __decorate$1([deprecated$1('isRealityManager'), __metadata$1("design:type", Object), __metadata$1("design:paramtypes", [])], SessionService.prototype, "isManager", null);
             __decorate$1([deprecated$1('isRealityAugmenter'), __metadata$1("design:type", Object), __metadata$1("design:paramtypes", [])], SessionService.prototype, "isApplication", null);
             __decorate$1([deprecated$1('isRealityViewer'), __metadata$1("design:type", Object), __metadata$1("design:paramtypes", [])], SessionService.prototype, "isRealityView", null);
             _export('SessionService', SessionService = __decorate$1([autoinject, __metadata$1("design:paramtypes", [typeof (_a$1 = typeof Configuration !== "undefined" && Configuration) === "function" && _a$1 || Object, ConnectService, SessionPortFactory, typeof (_b$1 = typeof MessageChannelFactory !== "undefined" && MessageChannelFactory) === "function" && _b$1 || Object])], SessionService));
@@ -28089,9 +28113,14 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                 EntityServiceProvider.prototype.fillEntityStateMap = function (entities, time, includedMap, excludedMap) {
                     for (var id in includedMap) {
                         var entity = this.entityService.collection.getById(id);
-                        while (defined(entity) && entities[id = entity.id] === undefined && !excludedMap[id]) {
+                        while (defined(entity) && entities[id = entity.id] === undefined) {
                             var referenceFrame = entity && entity.position && entity.position.referenceFrame;
-                            var pose = entities[id] = this._getCachedSerializedEntityState(entity, time, referenceFrame);
+                            var pose = this._getCachedSerializedEntityState(entity, time, referenceFrame);
+                            if (excludedMap[id]) {
+                                entities[id] = null;
+                            } else {
+                                entities[id] = pose;
+                            }
                             if (pose === null || typeof referenceFrame === 'number') break;
                             entity = referenceFrame;
                         }
@@ -30122,6 +30151,10 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                      */
                     this.uninstalledEvent = new Event$1();
                     /**
+                     * An event that is raised when the presenting viewer has changed
+                     */
+                    this.presentingRealityViewerChangeEvent = new Event$1();
+                    /**
                      * An event that is raised when the next frame state is published
                      */
                     this.nextFrameStateEvent = new Event$1();
@@ -30304,10 +30337,11 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                 RealityServiceProvider.prototype._setPresentingRealityViewer = function (viewer) {
                     if (!viewer) throw new Error('Invalid State. Expected a RealityViewer instance');
                     if (this._presentingRealityViewer === viewer) return;
+                    this._presentingRealityViewer = viewer;
+                    this.presentingRealityViewerChangeEvent.raiseEvent({ viewer: viewer });
                     this._viewerByURI.forEach(function (v) {
                         v.setPresenting(v === viewer);
                     });
-                    this._presentingRealityViewer = viewer;
                     console.log('Presenting reality viewer changed to: ' + viewer.uri);
                 };
                 RealityServiceProvider.prototype.getViewerByURI = function (uri) {

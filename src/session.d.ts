@@ -196,22 +196,21 @@ export declare class SessionService {
      */
     createSynchronousMessageChannel(): SynchronousMessageChannel;
     /**
-     * Returns true if this system represents a [[REALITY_MANAGER]]
+     * Returns true if this system represents a [[MANAGER]]
      */
+    readonly isManager: boolean;
     readonly isRealityManager: boolean;
     /**
-     * Returns true if this system represents a [[REALITY_AUGMENTER]], meaning,
-     * it is running within a [[REALITY_MANAGER]]
+     * Returns true if this system represents a [[AUGMENTER]], meaning,
+     * it is running within a [[MANAGER]]
      */
+    readonly isAugmenter: boolean;
     readonly isRealityAugmenter: boolean;
     /**
      * Returns true if this system is a [[REALITY_VIEWER]]
      */
+    readonly isReality: boolean;
     readonly isRealityViewer: boolean;
-    /**
-     * @private
-     */
-    private readonly isManager;
     /**
      * @private
      */

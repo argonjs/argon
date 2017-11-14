@@ -21,31 +21,29 @@ export declare enum Role {
      * generally by overlaying computer generated graphics. A reality augmentor may also,
      * if appropriate, be elevated to the role of a [[REALITY_MANAGER]].
      */
+    AUGMENTER,
     REALITY_AUGMENTER,
     /**
      * A system with this role is responsible for (at minimum) describing (and providing,
      * if necessary) a visual representation of the world and the 3D eye pose of the viewer.
      */
+    REALITY,
     REALITY_VIEWER,
     /**
      * A system with this role is responsible for mediating access to sensors/trackers
      * and pose data for known entities in the world, selecting/configuring/loading
-     * [[REALITY_VIEWER]]s, and providing the mechanism by which any given [[REALITY_AUGMENTER]]
-     * can augment any given [[REALITY_VIEWER]].
+     * [[REALITY]]s, and providing the mechanism by which any given [[AUGMENTER]]
+     * can augment any given [[REALITY]].
      */
+    MANAGER,
     REALITY_MANAGER,
     /**
-     * Deprecated. Use [[REALITY_AUGMENTER]].
+     * Deprecated. Use [[AUGMENTER]].
      * @private
      */
     APPLICATION,
     /**
-     * Deprecated. Use [[REALITY_MANAGER]].
-     * @private
-     */
-    MANAGER,
-    /**
-     * Deprecated. Use [[REALITY_VIEWER]]
+     * Deprecated. Use [[REALITY]]
      * @private
      */
     REALITY_VIEW,
@@ -54,6 +52,9 @@ export declare namespace Role {
     function isRealityViewer(r?: Role): boolean;
     function isRealityAugmenter(r?: Role): boolean;
     function isRealityManager(r?: Role): boolean;
+    function isReality(r?: Role): boolean;
+    function isAugmenter(r?: Role): boolean;
+    function isManager(r?: Role): boolean;
 }
 /**
  * Configuration options for an [[ArgonSystem]]
