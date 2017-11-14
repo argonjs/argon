@@ -21357,7 +21357,7 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                 requestVertexNormals: true
             }));
 
-            _export('version', version = "1.4.0-60");
+            _export('version', version = "1.4.0-61");
 
             __extends$1 = undefined && undefined.__extends || function (d, b) {
                 for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -23495,7 +23495,7 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                     var stage = this.stage;
                     // if manager is updating the device stage state, don't update it here
                     var contextFrameState = this._contextFrameState;
-                    if (contextFrameState && contextFrameState.entities[stage.id]) return;
+                    if (contextFrameState && stage.id in contextFrameState.entities) return;
                     stage.position.setValue(Cartesian3.fromElements(0, -this.suggestedUserHeight, 0, this._scratchCartesian), this.deviceGeolocation);
                     stage.orientation.setValue(Quaternion.IDENTITY);
                 };
@@ -23504,7 +23504,7 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                     this._tryOrientationUpdates();
                     // if manager is updating the device user state, don't update it here
                     var contextFrameState = this._contextFrameState;
-                    if (contextFrameState && contextFrameState.entities[user.id]) return;
+                    if (contextFrameState && user.id in contextFrameState.entities) return;
                     var screenOrientation = Quaternion.fromAxisAngle(Cartesian3.UNIT_Z, this.screenOrientationDegrees * CesiumMath.RADIANS_PER_DEGREE, this._scratchQuaternion);
                     user.position.setValue(Cartesian3.ZERO, this.deviceOrientation);
                     user.orientation.setValue(screenOrientation);
@@ -23525,7 +23525,7 @@ $__System.register('1', ['2', '3', '3c', '4', '9', '10', 'a', '20', '33', '42', 
                     var deviceGeolocation = this.deviceGeolocation;
                     // if manager is updating the device origin state, don't update it here
                     var contextFrameState = this._contextFrameState;
-                    if (contextFrameState && contextFrameState.entities[origin.id]) return;
+                    if (contextFrameState && origin.id in contextFrameState.entities) return;
                     var time = this.frameState.time;
                     var originPose = this.entityService.getEntityPose(origin, deviceGeolocation, time);
                     var deviceGeolocationPose = this.entityService.getEntityPose(deviceGeolocation, ReferenceFrame.FIXED, time);
