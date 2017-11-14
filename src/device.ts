@@ -434,7 +434,7 @@ export class Device {
 
         // if manager is updating the device stage state, don't update it here
         const contextFrameState = this._contextFrameState;
-        if (contextFrameState && contextFrameState.entities[stage.id]) return;
+        if (contextFrameState && stage.id in contextFrameState.entities) return;
 
         (stage.position as DynamicPositionProperty).setValue(
             Cartesian3.fromElements(0,-this.suggestedUserHeight,0, this._scratchCartesian), 
@@ -450,7 +450,7 @@ export class Device {
 
         // if manager is updating the device user state, don't update it here
         const contextFrameState = this._contextFrameState;
-        if (contextFrameState && contextFrameState.entities[user.id]) return;
+        if (contextFrameState && user.id in contextFrameState.entities) return;
 
         const screenOrientation = 
             Quaternion.fromAxisAngle(
@@ -489,7 +489,7 @@ export class Device {
 
         // if manager is updating the device origin state, don't update it here
         const contextFrameState = this._contextFrameState;
-        if (contextFrameState && contextFrameState.entities[origin.id]) return;
+        if (contextFrameState && origin.id in contextFrameState.entities) return;
 
         const time = this.frameState.time;
         const originPose = this.entityService.getEntityPose(origin, deviceGeolocation, time);
