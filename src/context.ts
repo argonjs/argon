@@ -944,10 +944,6 @@ export class ContextServiceProvider {
         const excludedFrames = this._excludedFrames;
         for (id in excludedFrames) delete excludedFrames[id]; //clear
 
-        // exclude device orientation frame since each session can get this directly
-        if (session.versionNumber >= 1.4)
-            excludedFrames[this.device.deviceOrientation.id] = true; 
-
         // exclude geolocated frames if necessary 
         if (this.permissionServiceProvider.getPermissionState(session, 'geolocation') != PermissionState.GRANTED) {
             excludedFrames[deviceOriginId] = true;
@@ -957,6 +953,10 @@ export class ContextServiceProvider {
         // get states for all included frames, minus excluded frames
         entityServiceProvider.fillEntityStateMap(sessionEntities, state.time, includedFrames, excludedFrames);
              
+        // remove device orientation frame since each session can get this directly
+        if (session.versionNumber >= 1.4)
+            delete sessionEntities[this.device.deviceOrientation.id]; 
+
         // recycle the frame state object, but with the session entities
         const parentEntities = state.entities;
         state.entities = sessionEntities;
