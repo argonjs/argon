@@ -446,16 +446,16 @@ export class EntityServiceProvider {
                 entities[id = entity.id] === undefined
             ) {                
                 const referenceFrame = entity && entity.position && entity.position.referenceFrame;
-                const pose = this._getCachedSerializedEntityState(entity, time, referenceFrame);
                 
                 if (excludedMap[id]) {
                     entities[id] = null; 
+                    break;
                 } else {
+                    const pose = this._getCachedSerializedEntityState(entity, time, referenceFrame);
                     entities[id] = pose;
+                    if (pose === null || typeof referenceFrame === 'number') break;
+                    entity = referenceFrame;
                 }
-
-                if (pose === null || typeof referenceFrame === 'number') break;
-                entity = referenceFrame;
             }
         }
     }
