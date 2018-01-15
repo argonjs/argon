@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.4.0"></a>
+# [1.4.0](https://github.com/argonjs/argon/compare/v1.4.0-61...v1.4.0) (2018-01-15)
+
+
+### Bug Fixes
+
+* **context:** delete rather than exclude deivceorientation state from framestate ([c804c7a](https://github.com/argonjs/argon/commit/c804c7a))
+
+
+
 <a name="1.4.0-12"></a>
 # [1.4.0-12](https://github.com/argonjs/argon/compare/v1.4.0-11...v1.4.0-12) (2017-08-23)
 
